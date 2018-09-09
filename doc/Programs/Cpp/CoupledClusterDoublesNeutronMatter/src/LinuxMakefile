@@ -1,0 +1,16 @@
+CC= clang-omp
+CFLAGS= -Wall -Wextra -pedantic -std=c++11 -fopenmp -g 
+LIBS= -lblas -lm  -L/usr/local/lib -I/usr/local/include
+EXECUTABLES = main.exe
+
+O_FILES = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
+
+$(EXECUTABLES): $(O_FILES)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+
+%.o: %.cpp  
+	$(CC) $(CFLAGS) -c -o $@ $< 
+
+clean:
+	rm *.o *~ *# $(EXECUTABLES) 
+ 

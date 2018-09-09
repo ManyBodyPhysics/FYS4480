@@ -1,0 +1,815 @@
+======= Introduction =======
+
+A theoretical understanding of the behavior of many-body systems
+is a  great challenge and provides fundamental insights into quantum 
+mechanical studies, as well
+as offering potential areas of applications.
+However, apart from some few analytically solvable problems,
+the typical absence of an exactly solvable contribution to the
+many-particle
+ Hamiltonian
+means that we need reliable numerical many-body methods.
+These methods should allow for controlled approximations
+and provide a computational scheme which accounts for successive
+many-body corrections in a systematic way.
+Typical examples of
+popular many-body methods are coupled-cluster methods
+cite{bartlett81,helgaker,Dean2004},
+various types of
+Monte Carlo methods cite{Pudliner1997,kdl97,ceperley1995},
+perturbative expansions cite{lindgren,mhj95},
+Green's function methods cite{dickhoff,blaizot},
+the density-matrix renormalization group cite{white1992,schollwock2005},
+ab initio density functional theory
+cite{bartlett2005,peirs2003,vanneck2006}
+and large-scale diagonalization methods
+cite{Whitehead1977,caurier2005,navratil2004,horoi2006}. 
+
+However, all these methods have to face in some form or the other the problem of 
+an exponential growth in dimensionality. For a system of $P$ fermions
+which 
+can be placed 
+into $N$ levels, the total number of basis states are given by
+$\left(\begin{array}{c}N\\P\end{array}\right)$.
+The dimensional curse means that most quantum
+mechanical calculations on classical computers have exponential
+complexity and therefore are very hard to solve for larger systems. On 
+the other hand, a so-called 
+quantum computer, a particularly dedicated computer,
+can improve greatly on the size of systems that can be simulated, as
+foreseen by Feynman cite{feynman1982,feynman1986}. A quantum computer 
+does not need
+an exponential amount of memory to represent a quantum state.  
+The basic unit of information for a  quantum computer 
+is the so-called qubit or quantum bit. Any
+suitable 
+two-level quantum system can be a qubit, but the  
+standard model of quantum computation is a model where two-level
+quantum systems are located at different points in
+space, and are manipulated by a small universal set of  operations.
+These operations are called gates in the same fashion as operations on
+bits in classical computers are called gates. 
+
+For the example of $P$ spin $1/2$  particles, 
+a classical computer needs $2^P$ bits to represent all possible states, while  
+a quantum computer needs only $P$ qubits. The complexity in
+number of qubits is thus linear.  Based on these ideas, several groups have proposed
+various algorithms for simulating quantal many-body systems on quantum computers.
+Abrams 
+and  Lloyd, see for example Refs. cite{lloyd1997,lloyd1999a}, introduced a  
+quantum algorithm that uses the quantum fast Fourier transform to find 
+eigenvalues and eigenvectors of a given Hamiltonian,
+illustrating how one could solve classically intractable problems with  
+less than 100 qubits.
+Achieving a polynomial complexity in the number of operations needed
+to simulate a quantum system is not that straightforward however.
+To get efficient simulations in time one
+needs to transform the  many-body Hamiltonian into a sum of operations
+on qubits, the building blocks of the quantum simulator and computer,
+so that the time evolution operator can be implemented in polynomial
+time. 
+In Refs. cite{somma2002,somma2005,ortiz2002} it was shown how the
+Jordan-Wigner 
+transformation in principle
+does this for all Hamiltonians acting on fermionic many-body states.
+Based on this approach, recently two groups, see Refs. cite{krbrown2006,yang2006}, published 
+results where 
+they used Nuclear Magnetic Resonance (NMR) qubits to simulate the
+pairing Hamiltonian.  
+
+
+The aim of this work is to develop an algorithm than allows one to perform   
+a quantum computer simulation (or simply quantum simulation hereafter) of  any many-body
+fermionic Hamiltonian. We show how to generate, via various Jordan-Wigner
+transformations, all qubit operations
+needed to simulate the time evolution operator of a given  Hamiltonian.
+We also show that for a given term in an $m$-body fermionic
+Hamiltonian, the number of operations needed to simulate it is linear
+in the number of qubits or energy-levels of the system. The number of
+terms in the Hamiltonian is of the order of $m^2$ for a
+general $m$-body interaction, making the simulation increasingly
+harder with higher order interactions. We specialize our examples to a two-body Hamiltonian,
+since this is also the most general  type of Hamiltonian encountered in many-body physics.
+Besides fields like nuclear physics, where three-body forces play a non-neglible role,
+a two-body Hamiltonian captures most of the relevant physics. The various transformations are
+detailed in the next section. In Section ref{sec:details} 
+we show in detail how to simulate a quantum computer finding the
+eigenvalues of any two-body Hamiltonian, with all available particle
+numbers, 
+using the simulated time
+#  til mhj fra eirik
+evolution operator. In that section we describe also the techniques which are necessary for the
+extraction of information using a phase-estimation algorithm. 
+
+To demonstrate the feasibility of our algorithm, 
+we present in Section ref{sec:results} selected results from applications of 
+our algorithm to two simple model-Hamiltonians, a pairing Hamiltonian and the Hubbard model.
+We summarize our results and present future perspectives in  
+Section ref{sec:conclusion}.
+
+
+======= Algorithm for quantum computations of fermionic systems =======
+label{sec:algo}
+===== Hamiltonians =====
+
+A general two-body Hamiltonian for fermionic system 
+can be written as
+
+!bt
+\begin{equation}
+label{eq:twobodyH}
+H = E_0 + \sum_{ij=1} E_{ij} a^\dag_i a_j
++\sum_{ijkl = 1} V_{ijkl} a^\dag_i a^\dag_j a_l a_k,
+\end{equation}
+!et 
+where $E_0$ is a constant energy term, $E_{ij}$ represent all the
+one-particle terms, allowing for non-diagonal terms as well. The
+one-body term can represent 
+a chosen single-particle potential, the kinetic energy or other more
+specialized terms such as  
+those discussed in connection with the Hubbard model
+cite{hubbardmodel} or the pairing Hamiltonian  
+discussed below.
+The two-body interaction part is given by $V_{ijkl}$ and can be any
+two-body interaction, from 
+Coulomb interaction to the interaction between nucleons.  
+The sums run over all possible single-particle levels $N$. 
+Note that
+this model includes particle numbers from zero to the number of
+available quantum levels, $n$. To simulate states with fixed numbers
+of fermions one would have to either rewrite the Hamiltonian or
+generate specialized input states in the simulation.
+# Hereafter we let $n$ represent the number of fermions, while $N$
+# represents the number of qubits. 
+
+The algorithm which we will develop in this section and in
+Section ref{sec:details} can treat any 
+two-body Hamiltonian. However, 
+in our demonstrations of the quantum computing algorithm, we will limit ourselves to
+two simple models, which however capture much of the important physics
+in quantum mechanical 
+many-body systems. We will also limit ourselves to spin $j=1/2$
+systems, although our algorithm 
+can also simulate  higher $j$-values, such as those which occur in nuclear, atomic and
+molecular physics, it simply uses one qubit for every available
+quantum state.   
+These simple models are the Hubbard model and a pairing
+Hamiltonian.
+We start with the spin $1/2$ Hubbard model, described by the following Hamiltonian
+
+!bt
+
+!bt
+\begin{align}
+H_H &&= \epsilon \sum_{i, \sigma} a_{i\sigma}^\dag a_{i\sigma} 
+-t \sum_{i, \sigma} \left(a^\dag_{i+1, \sigma}a_{i, \sigma}
++a^\dag_{i, \sigma}a_{i+1, \sigma} \right) \notag \\
+&& + U \sum_{i=1} a_{i+}^\dag a_{i-}^\dag a_{i-}a_{i+},
+label{eq:hubbard}
+\end{align}
+!et
+!et
+where $a^{\dagger}$ and $a$ are fermion creation and annihilation operators, respectively.
+This is a chain of sites where each site has room for one spin up
+fermion and one spin down fermion. 
+The number of sites is $N$, and the sums over $\sigma$ are sums over
+spin up and down only.
+Each site has a single-particle
+energy $\epsilon$. There is a repulsive term $U$ if there is a pair
+of particles at the same site. It is energetically favourable to tunnel to
+neighbouring sites, described by 
+the hopping terms with coupling constant $-t$.
+
+The second model-Hamiltonian is the simple pairing Hamiltonian
+
+!bt
+\begin{equation}
+   H_P=\sum_i \varepsilon_i a^{\dagger}_i a_i -\frac{1}{2} g\sum_{ij>0}
+           a^{\dagger}_{i}
+     a^{\dagger}_{\bar{\imath}}a_{\bar{\jmath}}a_{j},
+     label{eq:pairing}
+\end{equation}
+!et
+ The indices $i$ and $j$ run over the number of levels $N$, and the label $\bar{\imath}$ 
+stands for a time-reversed state. The parameter $g$ is the strength of the pairing force 
+while $\varepsilon_i$ is the single-particle energy of level $i$. 
+In our case
+we assume that the single-particle levels are equidistant (or
+degenerate) with a fixed spacing $d$. 
+Moreover, in our simple model, the degeneracy of the single-particle
+levels is set to $2j+1=2$, with $j=1/2$  
+being the spin of the particle. This gives a set of single-particle
+states with the same spin projections as 
+for the Hubbard model.  Whereas in the Hubbard model we operate with
+different sites with  
+spin up or spin down particles, our pairing models deals thus with
+levels  with double degeneracy. 
+Introducing the pair-creation operator 
+$S^+_i=a^{\dagger}_{im}a^{\dagger}_{i-m}$,
+one can rewrite the Hamiltonian in 
+Eq.\ (ref{eq:pairing}) as
+
+!bt
+\begin{equation*}
+   H_P=d\sum_iiN_i+
+     \frac{1}{2} G\sum_{ij>0}S^+_iS^-_j,
+\end{equation*}
+!et
+where  $N_i=a^{\dagger}_i a_i$
+is the number operator, and 
+$\varepsilon_i = id$ so that the single-particle orbitals 
+are equally spaced at intervals $d$. The latter commutes with the 
+Hamiltonian $H$. In this model, quantum numbers like seniority 
+$\cal{S}$ are good quantum numbers, and the eigenvalue problem 
+can be rewritten in terms of blocks with good seniority. 
+Loosely 
+speaking, the seniority quantum number $\cal{S}$ is equal to 
+the number of unpaired particles; see  cite{Talmi1993} for 
+further details. 
+Furthermore, in  a series of papers, Richardson, see for example 
+Refs. cite{richardson1,richardson2,richardson3},  
+obtained the exact solution of the pairing Hamiltonian, with 
+semi-analytic (since there is still the need for a numerical solution) 
+expressions for the eigenvalues and eigenvectors. The exact solutions
+have had important consequences for several fields, from Bose condensates to
+nuclear superconductivity and is currently a very active field of studies, see for example
+Refs. cite{dukelsky2004,rmp75mhj}.
+Finally, for particle numbers up to $P \sim 20$, the above model can be 
+solved exactly through numerical diagonalization and one can obtain all eigenvalues.
+It serves therefore also as an excellent ground for comparison with our algorithm based
+on models from quantum computing.
+
+
+===== Basic quantum  gates =====
+
+Benioff showed that one could make a quantum mechanical Turing machine
+by using various  unitary operations on a quantum system, see Ref. cite{benioff}.
+Benioff  demonstrated 
+that a quantum computer can calculate anything a
+classical computer can. To do this one needs a quantum system and
+basic operations that can approximate all unitary operations
+on the chosen many-body system. We describe in this subsection the basic ingredients entering 
+our algorithms.
+
+=== Qubits, gates and circuits ===
+label{sec:gates}
+In this article we will use the standard model of quantum information,
+where
+the basic unit of information is the qubit, the quantum bit. 
+As mentioned in the introduction, any
+suitable 
+two-level quantum system can be a qubit, 
+it is the smallest system there is with the
+least complex dynamics.
+Qubits are both abstract measures of information and physical objects.
+Actual physical qubits can be ions trapped in magnetic fields where
+lasers can access only two energy levels or  the nuclear spins of some of
+the atoms in molecules accessed and manipulated by an NMR machine.
+Several other ideas have been proposed and some tested, see
+cite{nielsen2000}. 
+
+The computational basis for one qubit is ${\ensuremath{|0\rangle}}$ (representing for example bit $0$) 
+for the first state
+and ${\ensuremath{|1\rangle}}$ (representing bit $1$) for the second, and for a set of qubits  
+the tensor products of
+these basis states for each qubit form a product basis. Below we write out the different
+basis states for a system of $n$ qubits.
+
+!bt
+
+!bt
+\begin{align}
+label{eq:compBasis}
+&{\ensuremath{|0\rangle}} \equiv {\ensuremath{|00\cdots 0\rangle}} =
+      {\ensuremath{|0\rangle}} \otimes {\ensuremath{| 0\rangle}} \otimes
+          \cdots 
+\otimes {\ensuremath{|0\rangle}} 
+\notag \\
+&{\ensuremath{|1\rangle}} \equiv {\ensuremath{|00\cdots 1\rangle}} =
+    {\ensuremath{|0\rangle}} \otimes {\ensuremath{| 0\rangle}} \otimes
+        \cdots 
+\otimes {\ensuremath{|1\rangle}} 
+\notag \\
+&\vdots \notag \\
+&{\ensuremath{|2^n-1\rangle}} \equiv {\ensuremath{|11\cdots 1\rangle}} =
+    {\ensuremath{|1\rangle}} \otimes {\ensuremath{| 1\rangle}} \otimes 
+\cdots \otimes {\ensuremath{|1 \rangle}}.
+\notag \\
+\end{align}
+!et
+!et
+This is a $2^n$-dimensional system and we number the different basis
+states using binary numbers corresponding to the order in which they appear in the
+tensor product.
+
+Quantum computing means to  manipulate and measure  qubits in such a
+way that the results from a measurement yield the solutions to  a given problem. 
+The quantum operations we need to be able to perform our simulations are 
+a small set of elementary single-qubit
+operations, or single-qubit gates, and one universal two-qubit gate,
+in our case the so-called CNOT gate defined below.
+
+To represent quantum computer algorithms graphically we use circuit
+diagrams. In a circuit diagram each qubit is represented by a line,
+and operations on the different qubits are represented by boxes.
+In fig. ref{fig:circ} we show an example of a quantum circuit, with the arrow 
+indicating the time evolution,
+FIGURE: [fig6.eps}
+	}
+	\caption{Resulting probability
+          distribution from the simulated measurements, width=400] The eigenvalues           of the non-degenerate pairing model with four energy levels with a total           possibility of 8  particles, the level spacing $d$ is $0.5$           and the  pairing strength $g$ is $1$.            The correct eigenvalues are obtained from exact           diagonalization, but in this case there is a multitude of           eigenvalues and only some eigenvalues are found from this           first simulation.         } 	 \end{center label{fig:P24-17-e3IMd}
+
+===== Number of work qubits versus number of simulation qubits =====
+
+The largest possible amount of different eigenvalues is $2^s$, where
+$s$ is the number of simulation qubits. The resolution in the energy
+spectrum we get from measuring upon the work qubits is $2^w$, with $w$ the number of
+work qubits.
+Therefore the resolution per eigenvalue in a non-degenerate system is
+$2^{w-s}$. The higher the degeneracy the less work qubits are needed. 
+
+
+In Figure ref{fig:24-17-1T0} we see the results for the Hubbard model
+Eq. (ref{eq:hubbard})
+with $\epsilon=1$, $t=0$ and $U=1$. The reason we chose $t=0$ was just
+because of the higher degeneracy and therefore fewer eigenvalues.
+ The number of work qubits is $16$
+and the number of simulation qubits is eight for a total of $24$
+qubits. The difference between work qubits and simulation qubits is
+eight which means there are $2^8$ possible energy values for each
+eigenvalue. Combining that with the high degeneracy we get a very sharp
+resolution. The correct eigenvalues with degeneracies are obtained from exact
+diagonalization of  the Hamiltonian, the degeneracy follows the
+eigenvalue in paranthesis: 0(1), 1(8), 2(24), 3(36), 4(40), 5(48), 6(38),
+7(24), 8(24), 9(4), 10(8), 12(1). We can clearly see that even though
+we have a random input state, with a random superposition of the
+eigenvectors, there is a correspondence between the height of the
+peaks in the plot and the degeneracy of the eigenvalues they represent.
+
+FIGURE: [fig8.eps}
+	}
+	\caption{The energy levels of  the Hubbard model of Eq. (ref{eq:hubbard}), width=400] Pairing model simulated with $24$ qubits, where $14$           were simulation qubits, i.e. there are $14$ available           quantum levels,  and           $10$ were work qubits.  The correct eigenvalues are $0$, $-1$,           $-2$,  $-3$, $-4$, $-5$, $-6$, $-8$, $ -9$. In this run we           did not divide up the time interval to reduce the error in           the Trotter approximation, i.e., $I=1$.} 	 \end{center label{fig:P24-15-1IM}
+
+FIGURE: [fig10.eps}
+	}
+	, width=400] Pairing model simulated with $24$ qubits, where $14$           were simulation qubits, i.e. there are $14$ available           quantum levels,  and           $10$ were work qubits.           The correct eigenvalues are $0$, $-1$,           $-2$,  $-3$, $-4$, $-5$, $-6$, $-8$, $ -9$. In this run we           divided the time interval into $10$ equally space parts           in order to reduce the error in           the Trotter approximation, i.e., $I=10$.} 	 \end{center label{fig:P24-15-e1IM}
+
+
+===== Number of operations =====
+
+Counting the number of single-qubit and $\sigma_z\sigma_z$ operations
+for different sizes of systems simulated gives us an indication of the
+decoherence time needed for different physical realizations of a
+quantum simulator or computer. The decoherence time is an average time
+in which the state of the qubits will be destroyed by noise, also called 
+decoherence, while the operation time is the average time an operation takes
+to perform on the given system. Their fraction is the number of
+operations possible to perform before decoherence destroys the
+computation. In table ref{fig:noOfGates} we have listed the number of
+gates used for the pairing model, $H_P$, and the Hubbard model, $H_H$,
+for different number of simulation qubits. 
+
+|--------------------------------------------------------------|
+|        | $s=2$  | $s=4$  | $s=6$  | $s=8$  | $s=10$ | $s=12$ |
+|---l-------c-------c-------c-------c-------c-------c----------|
+| $H_P$  | 9      | 119    | 333    | 651    | 1073   | 1598   |
+| $H_H$  | 9      | 51     | 93     | 135    | 177    | 219    |
+|--------------------------------------------------------------|
+
+
+\end{center}
+\caption{Number of two-qubit gates used in simulating the time
+  evolution operator of the pairing model, $H_P$, and the Hubbard
+  model, $H_H$, for different number of simulation qubits $s$.}
+label{fig:noOfGates}
+
+
+
+
+======= Conclusion =======
+label{sec:conclusion}
+
+In this article we have shown explicitly how the Jordan-Wigner
+transformation is used to simulate any many-body fermionic Hamiltonian
+by two-qubit operations. We have shown how the simulation of such
+Hamiltonian terms of products of creation and annihilation operators
+are represented by a number of operations linear in the number of
+qubits. 
+To perform efficient quantum simulations on quantum computers one
+needs transformations that take the Hamiltonian in question to a set
+of operations on the qubits simulating the physical system. An example of 
+such a transformation employed in ths work, is 
+the Jordan-Wigner transformation.  With the appropriate transformation and
+relevant gates or quantum circuits, one can taylor  an actual quantum computer to
+simulate and solve the eigenvalue and eigenvector problems for different quantum systems. 
+Specialized quantum simulators might be more efficient in solving some
+problems than others because of similarities in algebras between physical system
+of qubits and the physical system simulated. 
+
+We have limited the applications to two simple and well-studied models that provide,
+via exact eigenvalues, a good testing ground for our quantum computing based 
+algorithm.  For both the pairing model and the Hubbard model we obtain an excellent agreement.
+We plan to extend the area of application to quantum mechanical studies  of systems in nuclear physics,
+such as a comparison of shell-model studies of oxygen or calcium isotopes where the nucleons are active 
+in a given number of single-particle orbits cite{mhj95,caurier2005}. These single-particle orbits have normally a higher 
+degeneracy than $2$, a degeneracy  studied here.  However, the algorithm we have developed allows
+for the inclusion of any  degeneracy, meaning in turn that with a given interaction $V_{ijkl}$   
+and single-particle energies, we can compare the nuclear shell-model (configuration interaction) calculations
+with our algorithm. 
+
+
+
+======= Acknowledgment =======
+
+This work has received support from the Research Council of Norway through the center of
+excellence program. 
+
+
+\appendix*
+
+======= Useful relations =======
+
+We list here some useful relations involving different $\sigma$ matrices,
+
+!bt
+\begin{equation}
+\sigma_x \sigma_z = -i\sigma_y, \quad
+\sigma_z \sigma_x = i\sigma_y, \quad [\sigma_x, \sigma_z]=-2i\sigma_y,
+\end{equation}
+!et
+
+!bt
+\begin{equation}
+\sigma_x \sigma_y = i\sigma_z, \quad
+\sigma_y \sigma_x = -i\sigma_z, \quad [\sigma_x, \sigma_y]=2i\sigma_z,
+\end{equation}
+!et
+and
+
+!bt
+\begin{equation}
+\sigma_y \sigma_z = i\sigma_x, \quad
+\sigma_z \sigma_y = -i\sigma_x, \quad [\sigma_y, \sigma_z]=2i\sigma_x.
+\end{equation}
+!et
+
+
+For any two non-equal $\sigma$-matrices $a$ and $b$ we have
+
+!bt
+\begin{equation}
+aba = -b.
+\end{equation}
+!et
+
+The Hermitian $\sigma$-matrices $\sigma_x$, $\sigma_y$ and $\sigma_z$
+result in the identity matrix when squared
+
+!bt
+\begin{equation}
+\sigma_x^2 = _1_,\quad 
+\sigma_y^2 = _1_,\quad 
+\sigma_z^2 = _1_,\quad 
+\end{equation}
+!et
+which can be used to obtain  simplified expressions for exponential functions involving $\sigma$-matrices
+
+!bt
+\begin{equation}
+e^{\pm i\alpha \sigma}=\cos(\alpha) _1_ \pm i \sin(\alpha) \sigma. 
+\end{equation}
+!et
+
+The equations we list below are necessary for the relation between  a general unitary
+transformation on a set of qubits with  a product of two-qubit unitary
+transformations. We have the general equation for $a,b \in \{\sigma_x,\sigma_y, \sigma_z\}$, where $a\neq b$.
+
+!bt
+
+!bt
+\begin{align}
+  e^{-i\pi/4a} b e^{i\pi/4a} &&= \frac{1}{2} (_1_ -ia) b ( _1_ + ia)
+  \notag\\ 
+  &&=  \frac{1}{2} (b + aba + i[b,a]) \notag\\
+  &&= \frac{i}{2}[b,a].
+\end{align}
+!et
+!et
+The more specialized equations read
+
+!bt
+
+!bt
+\begin{align}
+  label{eq:rotations1}
+  &&e^{-i\pi/4 \sigma_x} \sigma_z e^{i\pi/4 \sigma_x} = -\sigma_y, \\
+  label{eq:rotations2}
+  &&e^{-i\pi/4 \sigma_y} \sigma_z e^{i\pi/4 \sigma_y} = \sigma_x, \\
+  label{eq:rotations3}
+  &&e^{-i\pi/4 \sigma_z} \sigma_x e^{i\pi/4 \sigma_z} = \sigma_y, \\
+  label{eq:rotations4}
+  &&e^{-i\pi/4 \sigma_z} \sigma_y e^{i\pi/4 \sigma_z} = -\sigma_x. 
+\end{align}
+!et
+!et
+
+We need also different products of the operator$\sigma_z$  with the  raising and lowering operators
+
+!bt
+
+!bt
+\begin{align}
+label{eq:pmzs}
+  &&\sigma_+ \sigma_z = -\sigma_+ \\
+  &&\sigma_z \sigma_+ = \sigma_+, \\
+  &&\sigma_- \sigma_z = \sigma_-, \\
+  &&\sigma_z \sigma_- = -\sigma_-. \\
+\end{align}
+!et
+!et
+
+
+
+
+# 
+_Must run publish import on BibTeX file ../../../Library_of_Topics/mylib!_
+BIBFILE: papers.pub
+
+
+\begin{thebibliography}{100}
+
+
+
+\bibitem{bartlett81}
+R. J. Bartlett.
+\newblock {Many-body perturbation theory and coupled-cluster theory for
+  electron correlations in molecules}.
+\newblock *Ann. Rev. Phys. Chem.*, 32:359, 1981.
+
+\bibitem{Dean2004}
+D. J. Dean and M. Hjorth-Jensen.
+\newblock Coupled-cluster approach to nuclear physics.
+\newblock *Phys. Rev. C*, 69:054320, 2004.
+
+\bibitem{helgaker}
+T. Helgaker, P. J{\o}rgensen, and J. Olsen.
+\newblock {\em Molecular Electronic Structure Theory. Energy and Wave
+  Functions}.
+\newblock Wiley, Chichester, 2000.
+
+\bibitem{ceperley1995}
+D. M. Ceperley.
+\newblock Path integrals in the theory of condensed helium.
+\newblock *Rev. Mod. Phys.*, 67:279, 1995.
+
+\bibitem{kdl97}
+S.E. Koonin, D.J. Dean, and K. Langanke.
+# \newblock Shell model monte carlo methods.
+\newblock *Phys. Rep.*, 278:1, 1997.
+
+\bibitem{Pudliner1997}
+B. S. Pudliner, V. R. Pandharipande, J. Carlson, Steven C. Pieper, and R. B.
+  Wiringa.
+\newblock Quantum monte carlo calculations of nuclei with $A \le 7$.
+\newblock *Phys. Rev. C*, 56:1720, 1997.
+
+
+\bibitem{mhj95}
+M. Hjorth-Jensen, T. T. S. Kuo, and E. Osnes.
+\newblock Realistic effective interactions for nuclear systems.
+\newblock *Phys. Rep.*, 261:125, 1995.
+
+\bibitem{lindgren}
+I. Lindgren and J. Morrison.
+\newblock *Atomic Many-Body Theory*.
+\newblock Springer, Berlin, 1985.
+
+\bibitem{blaizot}
+J. P. Blaizot and G. Ripka.
+\newblock *Quantum theory of Finite Systems*.
+\newblock MIT press, Cambridge, USA, 1986.
+
+\bibitem{dickhoff}
+W. H. Dickhoff and D. Van Neck.
+\newblock *Many-Body Theory exposed!*
+\newblock World Scientific, 2005.
+
+
+\bibitem{schollwock2005}
+U. Schollwock.
+\newblock The density-matrix renormalization group.
+\newblock *Rev. Mod. Phys.*, 77:259, 2005.
+
+\bibitem{white1992}
+S. R. White.
+\newblock Density matrix formulation for quantum renormalization groups.
+\newblock *Phys. Rev. Lett.*, 69:2863, 1992.
+
+\bibitem{bartlett2005}
+R. J. Bartlett, V. F. Lotrich, and I. V. Schweigert.
+\newblock Ab initio density functional theory: The best of both worlds?
+\newblock *J. Chem. Phys.*, 123:062205, 2005.
+
+\bibitem{vanneck2006}
+D. Van Neck, S. Verdonck, G. Bonny, P. W. Ayers, and M. Waroquier.
+\newblock Quasiparticle properties in a density-functional framework.
+\newblock *Phys. Rev. A*,
+  74:042501, 2006.
+
+\bibitem{peirs2003}
+K. Peirs, D. Van Neck, and M. Waroquier.
+\newblock Algorithm to derive exact exchange-correlation potentials from
+  correlated densities in atoms.
+\newblock *Phys. Rev. A*,
+  67:012505, 2003.
+
+\bibitem{caurier2005}
+E. Caurier, G. Martinez-Pinedo, F. Nowacki, A. Poves, and A. P. Zuker.
+\newblock The shell model as a unified view of nuclear structure.
+\newblock *Rev. Mod. Phys.*, 77:427, 2005.
+
+\bibitem{horoi2006}
+M. Horoi, B. A. Brown, T. Otsuka, M. Honma, and T. Mizusaki.
+\newblock Shell model analysis of the $^{56}$Ni spectrum in the full pf model
+  space.
+\newblock *Phys. Rev. C*, 73:061305, 2006.
+
+\bibitem{navratil2004}
+P. Navratil and E. Caurier.
+\newblock Nuclear structure with accurate chiral perturbation theory
+  nucleon-nucleon potential: Application to $^6$Li and $^{10}$B.
+\newblock *Phys. Rev. C*, 69:014311, 2004.
+
+\bibitem{Whitehead1977}
+R. R. Whitehead, A. Watt, B. J. Cole, and I. Morrison.
+\newblock Computational methods for shell-model calculations.
+\newblock *Adv.Nucl.Phys.*, 9:123, 1977.
+
+\bibitem{lloyd1997}
+D. S. Abrams and S. Lloyd.
+\newblock Simulation of many-body fermi systems on a universal quantum
+  computer.
+\newblock *Phys. Rev. Lett.*, 79:2586, 1997.
+
+\bibitem{lloyd1999a}
+D. S. Abrams and S. Lloyd.
+\newblock Quantum algorithm providing exponential speed increase for finding
+  eigenvalues and eigenvectors.
+\newblock *Phys. Rev. Lett.*, 83:5162, 1999.
+
+\bibitem{feynman1982}
+R. P. Feynman.
+\newblock Simulating physics with computers.
+\newblock *Int. J. Theor. Phys.*, 21:467, 1982.
+
+\bibitem{feynman1986}
+R. P. Feynman.
+\newblock Quantum mechanical computers.
+\newblock *Foundations. Phys.*, 16:507, 1986.
+
+\bibitem{ortiz2002}
+G. Ortiz, J. E. Gubernatis, E. Knill, and R. Laflamme.
+\newblock Simulating fermions on a quantum computer.
+\newblock *Comp. Phys. Comm.*, 146:302, 2002.
+
+\bibitem{somma2002}
+R. Somma, G. Ortiz, J. E. Gubernatis, E. Knill, and R. Laflamme.
+\newblock Simulating physical phenomena by quantum networks.
+\newblock *Phys. Rev. A*, 65:042323, 2002.
+
+\bibitem{somma2005}
+R. D. Somma.
+\newblock *Quantum Computation, Complexity, and Many-Body Physics*.
+\newblock PhD thesis, Instituto Balseiro, S.C. de Bariloche, Argentina and Los
+  Alamos National Laboratory, Los Alamos, U.S.A., 2005.
+
+\bibitem{krbrown2006}
+K. R. Brown, R. J. Clark, and I. L. Chuang.
+\newblock Limitations of quantum simulation examined by simulating a pairing
+  hamiltonian using nuclear magnetic resonance.
+\newblock *Phys. Rev. Lett.*, 97:050504, 2006.
+
+\bibitem{yang2006}
+X. Yang, A. Wang, F. Xu, and J. Du.
+\newblock Experimental simulation of a pairing hamiltonian on an NMR quantum
+  computer.
+\newblock *Chem. Phys. Lett.*, 422:20, 2006.
+
+\bibitem{hubbardmodel}
+J. Hubbard.
+\newblock Electron correlations in narrow energy bands.
+\newblock *Proc. R. Soc. A*, 276:238, 1963.
+
+\bibitem{Talmi1993}
+I. Talmi.
+\newblock *Simple Models of Complex Nuclei*.
+\newblock Harwood Academic Publishers, 1993.
+
+\bibitem{richardson1}
+R. W. Richardson.
+\newblock   A restricted class of exact eigenstates of the pairing-force Hamiltonian
+\newblock *Phys. Lett.*, 3:277, 1963.
+
+
+\bibitem{richardson2}
+R. W. Richardson and N. Sherman.
+\newblock  Exact Eigenstates of the Pairing-Force Hamiltonian. I
+\newblock *Nucl. Phys.*, 52:221, 1964.
+
+
+\bibitem{richardson3}
+R. W. Richardson.
+\newblock  Exact Eigenstates of the Pairing-Force Hamiltonian. II 
+\newblock *J. Math. Phys.*, 6:1034, 1965.
+
+\bibitem{rmp75mhj}
+D. J. Dean and M. Hjorth-Jensen.
+\newblock Pairing in nuclear systems: from neutron stars to finite nuclei.
+\newblock *Rev. Mod. Phys.*, 75:607, 2003.
+
+\bibitem{dukelsky2004}
+J. Dukelsky, S. Pittel, and G. Sierra.
+\newblock Exactly solvable Richardson-Gaudin models for many-body
+  quantum systems.
+\newblock *Rev. Mod. Phys.*, 76:643, 2004.
+
+\bibitem{benioff}
+P.Benioff.
+\newblock The computer as a physical system: A microscopic quantum mechanical
+  hamiltonian model of computers as represented by turing machines.
+\newblock *J. Stat. Phys.*, 22:563, 1980.
+
+\bibitem{nielsen2000}
+M. A. Nielsen and I. L. Chaung.
+\newblock *Quantum Computation and Quantum Information*.
+\newblock Cambridge University Press, 2000.
+
+\bibitem{ortiz2001}
+G. Ortiz, J. E. Gubernatis, E. Knill, and R. Laflamme.
+\newblock Quantum algorithms for fermionic simulations.
+\newblock *Phys. Rev. A*, 64:022319, 2001.
+
+\bibitem{dargis1998}
+P. Dargis and Z. Maassarani.
+\newblock Fermionization and Hubbard models.
+\newblock *Nucl. Phys. B*, 535:681, 1998.
+
+
+\bibitem{Pieper2001}
+Steven C. Pieper, V. R. Pandharipande, R. B. Wiringa, and J. Carlson.
+\newblock Realistic models of pion-exchange three-nucleon interactions.
+\newblock *Phys. Rev. C*, 64:014001, 2001.
+
+\bibitem{navratil2002}
+P. Navr\'atil and W. E. Ormand.
+\newblock Ab initio shell model calculations with three-body effective
+  interactions for $p$-shell nuclei.
+\newblock *Phys. Rev. Lett.*, 88:152502, 2002.
+
+\bibitem{ccsdt03}
+G. Hagen, T. Papenbrock, D. J. Dean, A. Schwenk, M. W{\l}och, P. Piecuch, and
+  A. Nogga.
+\newblock Coupled-cluster theory for three-body hamiltonians.
+\newblock arXiv:nucl-th/0704.2854, 2007.
+
+\bibitem{ovrum2003}
+E. Ovrum.
+\newblock Quantum computing and many-body physics.
+\newblock Master's thesis, University of Oslo, 2003.
+
+\bibitem{lawu2002}
+L.-A. Wu, M. S. Byrd, and D. A. Lidar.
+\newblock Polynomial-time simulation of pairing models on a quantum computer.
+\newblock *Phys. Rev. Lett.*, 89:057904, 2002.
+
+\bibitem{golub1996}
+G.H. Golub and C.F. Van Loan.
+\newblock *Matrix Computations*.
+\newblock John Hopkins University Press, 1996.
+
+\bibitem{trotter1959}
+H. F. Trotter.
+\newblock On the product of semi-groups of operators.
+\newblock *Proc. Am. Math. Soc.*, 10:545, 1959.
+
+\bibitem{suzukitrotter}
+M. Suzuki.
+\newblock Transfer-matrix method and monte carlo simulation in quantum spin
+  systems.
+\newblock *Phys. Rev. B*, 31:2957, Mar 1985.
+
+\bibitem{suzuki1985}
+M. Suzuki.
+\newblock Decomposition formulas of exponential operators and Lie exponentials
+  with some applications to quantum mechanics and statistical physics.
+\newblock *J. Math. Phys.*, 26:601, 1985.
+
+
+
+\end{thebibliography}
+
+
+
+
+
+

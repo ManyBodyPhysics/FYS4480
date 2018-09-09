@@ -1,0 +1,2174 @@
+\
+<!DOCTYPE html>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="description" content="Hartree-Fock methods">
+
+<title>Hartree-Fock methods</title>
+
+
+
+
+
+
+
+<!-- reveal.js: http://lab.hakim.se/reveal-js/ -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="reveal.js/css/reveal.css">
+<link rel="stylesheet" href="reveal.js/css/theme/beige.css" id="theme">
+<!--
+<link rel="stylesheet" href="reveal.js/css/reveal.css">
+<link rel="stylesheet" href="reveal.js/css/theme/beige.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/beigesmall.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/solarized.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/serif.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/night.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/moon.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/sky.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/darkgray.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/cbc.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/simula.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+<link rel="stylesheet" href="reveal.js/css/theme/league.css" id="theme">
+-->
+
+<!-- For syntax highlighting -->
+<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<style type="text/css">
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    p.caption { width: 80%; font-size: 60%; font-style: italic; text-align: left; }
+    hr.figure { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .reveal .alert-text-small   { font-size: 80%;  }
+    .reveal .alert-text-large   { font-size: 130%; }
+    .reveal .alert-text-normal  { font-size: 90%;  }
+    .reveal .alert {
+             padding:8px 35px 8px 14px; margin-bottom:18px;
+             text-shadow:0 1px 0 rgba(255,255,255,0.5);
+             border:5px solid #bababa;
+             -webkit-border-radius: 14px; -moz-border-radius: 14px;
+             border-radius:14px;
+             background-position: 10px 10px;
+             background-repeat: no-repeat;
+             background-size: 38px;
+             padding-left: 30px; /* 55px; if icon */
+     }
+     .reveal .alert-block {padding-top:14px; padding-bottom:14px}
+     .reveal .alert-block > p, .alert-block > ul {margin-bottom:1em}
+     /*.reveal .alert li {margin-top: 1em}*/
+     .reveal .alert-block p+p {margin-top:5px}
+     /*.reveal .alert-notice { background-image: url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_notice.png); }
+     .reveal .alert-summary  { background-image:url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_summary.png); }
+     .reveal .alert-warning { background-image: url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_warning.png); }
+     .reveal .alert-question {background-image:url(http://hplgit.github.io/doconce/bundled/html_images/small_gray_question.png); } */
+
+</style>
+
+
+
+<!-- Styles for table layout of slides -->
+<style type="text/css">
+td.padding {
+  padding-top:20px;
+  padding-bottom:20px;
+  padding-right:50px;
+  padding-left:50px;
+}
+</style>
+
+</head>
+
+<body>
+<div class="reveal">
+
+<!-- Any section element inside the <div class="slides"> container
+     is displayed as a slide -->
+
+<div class="slides">
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "none"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+    
+
+
+
+<section>
+<!-- ------------------- main content ---------------------- -->
+
+<!-- Slides for PHY981 -->
+
+
+<center><h1 style="text-align: center;">Hartree-Fock methods</h1></center>  <!-- document title -->
+
+<p>
+<!-- author(s): <a href="http://mhjgit.github.io/info/doc/web/" target="_blank">Morten Hjorth-Jensen</a>, National Superconducting Cyclotron Laboratory and Department of Physics and Astronomy, Michigan State University, East Lansing, MI 48824, USA -->
+
+<center>
+<b><a href="http://mhjgit.github.io/info/doc/web/" target="_blank">Morten Hjorth-Jensen</a>, National Superconducting Cyclotron Laboratory and Department of Physics and Astronomy, Michigan State University, East Lansing, MI 48824, USA</b> 
+</center>
+
+<p>&nbsp;<br>
+<!-- institution(s) -->
+
+<br>
+<p>&nbsp;<br>
+<center><h4>Sep 9, 2018</h4></center> <!-- date -->
+<br>
+
+<h2 id="___sec0">Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space </h2>
+
+<p>
+Hartree-Fock (HF) theory is an algorithm for finding an approximative expression for the ground state of a given Hamiltonian. The basic ingredients are
+
+<ul>
+
+<p><li> Define a single-particle basis \( \{\psi_{\alpha}\} \) so that</li>
+</ul>
+<p>&nbsp;<br>
+$$ 
+\hat{h}^{\mathrm{HF}}\psi_{\alpha} = \varepsilon_{\alpha}\psi_{\alpha}
+$$
+<p>&nbsp;<br>
+
+with the Hartree-Fock Hamiltonian defined as
+<p>&nbsp;<br>
+$$
+\hat{h}^{\mathrm{HF}}=\hat{t}+\hat{u}_{\mathrm{ext}}+\hat{u}^{\mathrm{HF}}
+$$
+<p>&nbsp;<br>
+
+
+<ul>
+
+<p><li> The term  \( \hat{u}^{\mathrm{HF}} \) is a single-particle potential to be determined by the HF algorithm.</li>
+
+<p><li> The HF algorithm means to choose \( \hat{u}^{\mathrm{HF}} \) in order to have</li> 
+</ul>
+<p>&nbsp;<br>
+$$ \langle \hat{H} \rangle = E^{\mathrm{HF}}= \langle \Phi_0 | \hat{H}|\Phi_0 \rangle
+$$
+<p>&nbsp;<br>
+
+that is to find a local minimum with a Slater determinant \( \Phi_0 \) being the ansatz for the ground state. 
+
+<ul>
+
+<p><li> The variational principle ensures that \( E^{\mathrm{HF}} \ge E_0 \), with \( E_0 \) the exact ground state energy.</li>
+</ul>
+<p>
+
+We will show that the Hartree-Fock Hamiltonian \( \hat{h}^{\mathrm{HF}} \) equals our definition of the operator \( \hat{f} \) discussed in connection with the new definition of the normal-ordered Hamiltonian (see later lectures), that is we have, for a specific matrix element
+<p>&nbsp;<br>
+$$
+\langle p |\hat{h}^{\mathrm{HF}}| q \rangle =\langle p |\hat{f}| q \rangle=\langle p|\hat{t}+\hat{u}_{\mathrm{ext}}|q \rangle +\sum_{i\le F} \langle pi | \hat{V} | qi\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+meaning that
+<p>&nbsp;<br>
+$$
+\langle p|\hat{u}^{\mathrm{HF}}|q\rangle = \sum_{i\le F} \langle pi | \hat{V} | qi\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+The so-called Hartree-Fock potential \( \hat{u}^{\mathrm{HF}} \) brings an explicit medium dependence due to the summation over all single-particle states below the Fermi level \( F \). It brings also in an explicit dependence on the two-body interaction (in nuclear physics we can also have complicated three- or higher-body forces). The two-body interaction, with its contribution from the other bystanding fermions, creates an effective mean field in which a given fermion moves, in addition to the external potential \( \hat{u}_{\mathrm{ext}} \) which confines the motion of the fermion. For systems like nuclei, there is no external confining potential. Nuclei are examples of self-bound systems, where the binding arises due to the intrinsic nature of the strong force. For nuclear systems thus, there would be no external one-body potential in the Hartree-Fock Hamiltonian.
+
+<h2 id="___sec1">Variational Calculus and Lagrangian Multipliers  </h2>
+
+<p>
+The calculus of variations involves 
+problems where the quantity to be minimized or maximized is an integral.
+
+<p>
+In the general case we have an integral of the type
+<p>&nbsp;<br>
+$$ 
+E[\Phi]= \int_a^b f(\Phi(x),\frac{\partial \Phi}{\partial x},x)dx,
+$$
+<p>&nbsp;<br>
+
+where \( E \) is the quantity which is sought minimized or maximized.
+The problem is that although \( f \) is a function of the variables \( \Phi \), \( \partial \Phi/\partial x \) and \( x \), the exact dependence of
+\( \Phi \) on \( x \) is not known.  This means again that even though the integral has fixed limits \( a \) and \( b \), the path of integration is
+not known. In our case the unknown quantities are the single-particle wave functions and we wish to choose an integration path which makes
+the functional \( E[\Phi] \) stationary. This means that we want to find minima, or maxima or saddle points. In physics we search normally for minima.
+Our task is therefore to find the minimum of \( E[\Phi] \) so that its variation \( \delta E \) is zero  subject to specific
+constraints. In our case the constraints appear as the integral which expresses the orthogonality of the  single-particle wave functions.
+The constraints can be treated via the technique of Lagrangian multipliers
+
+<p>
+Let us specialize to the expectation value of the energy for one particle in three-dimensions.
+This expectation value reads
+<p>&nbsp;<br>
+$$
+  E=\int dxdydz \psi^*(x,y,z) \hat{H} \psi(x,y,z),
+$$
+<p>&nbsp;<br>
+
+with the constraint
+<p>&nbsp;<br>
+$$
+ \int dxdydz \psi^*(x,y,z) \psi(x,y,z)=1,
+$$
+<p>&nbsp;<br>
+
+and a Hamiltonian
+<p>&nbsp;<br>
+$$
+\hat{H}=-\frac{1}{2}\nabla^2+V(x,y,z).
+$$
+<p>&nbsp;<br>
+
+We will, for the sake of notational convenience,  skip the variables \( x,y,z \) below, and write for example \( V(x,y,z)=V \).
+
+<p>
+The integral involving the kinetic energy can be written as, with the function \( \psi \) vanishing
+strongly for large values of \( x,y,z \) (given here by the limits \( a \) and \( b \)), 
+<p>&nbsp;<br>
+$$
+  \int_a^b dxdydz \psi^* \left(-\frac{1}{2}\nabla^2\right) \psi dxdydz = \psi^*\nabla\psi|_a^b+\int_a^b dxdydz\frac{1}{2}\nabla\psi^*\nabla\psi.
+$$
+<p>&nbsp;<br>
+
+We will drop the limits \( a \) and \( b \) in the remaining discussion. 
+Inserting this expression into the expectation value for the energy and taking the variational minimum  we obtain
+<p>&nbsp;<br>
+$$
+\delta E = \delta \left\{\int dxdydz\left( \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi\right)\right\} = 0.
+$$
+<p>&nbsp;<br>
+
+<p>
+The constraint appears in integral form as 
+<p>&nbsp;<br>
+$$
+ \int dxdydz \psi^* \psi=\mathrm{constant},
+$$
+<p>&nbsp;<br>
+
+and multiplying with a Lagrangian multiplier \( \lambda \) and taking the variational minimum we obtain the final variational equation
+<p>&nbsp;<br>
+$$
+\delta \left\{\int dxdydz\left( \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi-\lambda\psi^*\psi\right)\right\} = 0.
+$$
+<p>&nbsp;<br>
+
+We introduce the function  \( f \)
+<p>&nbsp;<br>
+$$
+  f =  \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi-\lambda\psi^*\psi=
+\frac{1}{2}(\psi^*_x\psi_x+\psi^*_y\psi_y+\psi^*_z\psi_z)+V\psi^*\psi-\lambda\psi^*\psi,
+$$
+<p>&nbsp;<br>
+
+where we have skipped the dependence on \( x,y,z \) and introduced the shorthand \( \psi_x \), \( \psi_y \) and \( \psi_z \)  for the various derivatives.
+
+<p>
+For \( \psi^* \) the Euler-Lagrange  equations yield
+<p>&nbsp;<br>
+$$
+\frac{\partial f}{\partial \psi^*}- \frac{\partial }{\partial x}\frac{\partial f}{\partial \psi^*_x}-\frac{\partial }{\partial y}\frac{\partial f}{\partial \psi^*_y}-\frac{\partial }{\partial z}\frac{\partial f}{\partial \psi^*_z}=0,
+$$
+<p>&nbsp;<br>
+
+which results in 
+<p>&nbsp;<br>
+$$
+    -\frac{1}{2}(\psi_{xx}+\psi_{yy}+\psi_{zz})+V\psi=\lambda \psi.
+$$
+<p>&nbsp;<br>
+
+We can then identify the  Lagrangian multiplier as the energy of the system. The last equation is 
+nothing but the standard 
+Schroedinger equation and the variational  approach discussed here provides 
+a powerful method for obtaining approximate solutions of the wave function.
+
+<h2 id="___sec2">Derivation of Hartree-Fock equations in coordinate space </h2>
+
+<p>
+Let us denote the ground state energy by \( E_0 \). According to the
+variational principle we have
+<p>&nbsp;<br>
+$$
+  E_0 \le E[\Phi] = \int \Phi^*\hat{H}\Phi d\mathbf{\tau}
+$$
+<p>&nbsp;<br>
+
+where \( \Phi \) is a trial function which we assume to be normalized
+<p>&nbsp;<br>
+$$
+  \int \Phi^*\Phi d\mathbf{\tau} = 1,
+$$
+<p>&nbsp;<br>
+
+where we have used the shorthand \( d\mathbf{\tau}=dx_1dx_2\dots dx_A \).
+
+<p>
+In the Hartree-Fock method the trial function is a Slater
+determinant which can be rewritten as 
+<p>&nbsp;<br>
+$$
+  \Psi(x_1,x_2,\dots,x_A,\alpha,\beta,\dots,\nu) = \frac{1}{\sqrt{A!}}\sum_{P} (-)^PP\psi_{\alpha}(x_1)
+    \psi_{\beta}(x_2)\dots\psi_{\nu}(x_A)=\sqrt{A!}\hat{A}\Phi_H,
+$$
+<p>&nbsp;<br>
+
+where we have introduced the anti-symmetrization operator \( \hat{A} \) defined by the 
+summation over all possible permutations <em>p</em> of two fermions.
+It is defined as
+<p>&nbsp;<br>
+$$
+  \hat{A} = \frac{1}{A!}\sum_{p} (-)^p\hat{P},
+$$
+<p>&nbsp;<br>
+
+with the the Hartree-function given by the simple product of all possible single-particle function
+<p>&nbsp;<br>
+$$
+  \Phi_H(x_1,x_2,\dots,x_A,\alpha,\beta,\dots,\nu) =
+  \psi_{\alpha}(x_1)
+    \psi_{\beta}(x_2)\dots\psi_{\nu}(x_A).
+$$
+<p>&nbsp;<br>
+
+<p>
+Our functional is written as
+<p>&nbsp;<br>
+$$
+  E[\Phi] = \sum_{\mu=1}^A \int \psi_{\mu}^*(x_i)\hat{h}_0(x_i)\psi_{\mu}(x_i) dx_i 
+  + \frac{1}{2}\sum_{\mu=1}^A\sum_{\nu=1}^A
+   \left[ \int \psi_{\mu}^*(x_i)\psi_{\nu}^*(x_j)\hat{v}(r_{ij})\psi_{\mu}(x_i)\psi_{\nu}(x_j)dx_idx_j- \int \psi_{\mu}^*(x_i)\psi_{\nu}^*(x_j)
+ \hat{v}(r_{ij})\psi_{\nu}(x_i)\psi_{\mu}(x_j)dx_idx_j\right]
+$$
+<p>&nbsp;<br>
+
+The more compact version reads
+<p>&nbsp;<br>
+$$
+  E[\Phi] 
+  = \sum_{\mu}^A \langle \mu | \hat{h}_0 | \mu\rangle+ \frac{1}{2}\sum_{\mu\nu}^A\left[\langle \mu\nu |\hat{v}|\mu\nu\rangle-\langle \nu\mu |\hat{v}|\mu\nu\rangle\right].
+$$
+<p>&nbsp;<br>
+
+<p>
+Since the interaction is invariant under the interchange of two particles it means for example that we have
+<p>&nbsp;<br>
+$$
+\langle \mu\nu|\hat{v}|\mu\nu\rangle =  \langle \nu\mu|\hat{v}|\nu\mu\rangle,  
+$$
+<p>&nbsp;<br>
+
+or in the more general case
+<p>&nbsp;<br>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle =  \langle \nu\mu|\hat{v}|\tau\sigma\rangle.  
+$$
+<p>&nbsp;<br>
+
+<p>
+The direct and exchange matrix elements can be  brought together if we define the antisymmetrized matrix element
+<p>&nbsp;<br>
+$$
+\langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS}= \langle \mu\nu|\hat{v}|\mu\nu\rangle-\langle \mu\nu|\hat{v}|\nu\mu\rangle,
+$$
+<p>&nbsp;<br>
+
+or for a general matrix element
+
+<p>&nbsp;<br>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle_{AS}= \langle \mu\nu|\hat{v}|\sigma\tau\rangle-\langle \mu\nu|\hat{v}|\tau\sigma\rangle.
+$$
+<p>&nbsp;<br>
+
+It has the symmetry property
+<p>&nbsp;<br>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle_{AS}= -\langle \mu\nu|\hat{v}|\tau\sigma\rangle_{AS}=-\langle \nu\mu|\hat{v}|\sigma\tau\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+The antisymmetric matrix element is also hermitian, implying 
+<p>&nbsp;<br>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle_{AS}= \langle \sigma\tau|\hat{v}|\mu\nu\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+<p>
+With these notations we rewrite the Hartree-Fock functional as
+<p>&nbsp;<br>
+$$
+\begin{equation}
+  \int \Phi^*\hat{H_I}\Phi d\mathbf{\tau} 
+  = \frac{1}{2}\sum_{\mu=1}^A\sum_{\nu=1}^A \langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS}. \tag{1}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+<p>
+Adding the contribution from the one-body operator \( \hat{H}_0 \) to
+<a href="#mjx-eqn-1">(1)</a> we obtain the energy functional 
+<p>&nbsp;<br>
+$$
+\begin{equation}
+  E[\Phi] 
+  = \sum_{\mu=1}^A \langle \mu | h | \mu \rangle +
+  \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS}. \tag{2}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+In our coordinate space derivations below we will spell out the Hartree-Fock equations in terms of their integrals.
+
+<p>
+If we generalize the Euler-Lagrange equations to more variables 
+and introduce \( N^2 \) Lagrange multipliers which we denote by 
+\( \epsilon_{\mu\nu} \), we can write the variational equation for the functional of \( E \)
+<p>&nbsp;<br>
+$$
+  \delta E - \sum_{\mu\nu}^A \epsilon_{\mu\nu} \delta
+  \int \psi_{\mu}^* \psi_{\nu} = 0.
+$$
+<p>&nbsp;<br>
+
+For the orthogonal wave functions \( \psi_{i} \) this reduces to
+<p>&nbsp;<br>
+$$
+  \delta E - \sum_{\mu=1}^A \epsilon_{\mu} \delta
+  \int \psi_{\mu}^* \psi_{\mu} = 0.
+$$
+<p>&nbsp;<br>
+
+<p>
+Variation with respect to the single-particle wave functions \( \psi_{\mu} \) yields then
+<p>&nbsp;<br>
+$$
+  \sum_{\mu=1}^A \int \delta\psi_{\mu}^*\hat{h_0}(x_i)\psi_{\mu}
+  dx_i  
+  + \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \left[ \int
+  \delta\psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\psi_{\mu}\psi_{\nu} dx_idx_j- \int
+  \delta\psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\psi_{\nu}\psi_{\mu}
+  dx_idx_j \right]+ 
+$$
+<p>&nbsp;<br>
+
+<p>&nbsp;<br>
+$$
+\sum_{\mu=1}^A \int \psi_{\mu}^*\hat{h_0}(x_i)\delta\psi_{\mu}
+  dx_i 
+  + \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \left[ \int
+  \psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\delta\psi_{\mu}\psi_{\nu} dx_idx_j- \int
+  \psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\psi_{\nu}\delta\psi_{\mu}
+  dx_idx_j \right]-  \sum_{{\mu}=1}^A E_{\mu} \int \delta\psi_{\mu}^*
+  \psi_{\mu}dx_i
+  -  \sum_{{\mu}=1}^A E_{\mu} \int \psi_{\mu}^*
+  \delta\psi_{\mu}dx_i = 0.
+$$
+<p>&nbsp;<br>
+
+<p>
+Although the variations \( \delta\psi \) and \( \delta\psi^* \) are not
+independent, they may in fact be treated as such, so that the 
+terms dependent on either \( \delta\psi \) and \( \delta\psi^* \) individually 
+may be set equal to zero. To see this, simply 
+replace the arbitrary variation \( \delta\psi \) by \( i\delta\psi \), so that
+\( \delta\psi^* \) is replaced by \( -i\delta\psi^* \), and combine the two
+equations. We thus arrive at the Hartree-Fock equations
+<p>&nbsp;<br>
+$$
+\begin{equation}
+\left[ -\frac{1}{2}\nabla_i^2+ \sum_{\nu=1}^A\int \psi_{\nu}^*(x_j)\hat{v}(r_{ij})\psi_{\nu}(x_j)dx_j \right]\psi_{\mu}(x_i) - \left[ \sum_{{\nu}=1}^A \int\psi_{\nu}^*(x_j)\hat{v}(r_{ij})\psi_{\mu}(x_j) dx_j\right] \psi_{\nu}(x_i) = \epsilon_{\mu} \psi_{\mu}(x_i).  \tag{3}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+Notice that the integration \( \int dx_j \) implies an
+integration over the spatial coordinates \( \mathbf{r_j} \) and a summation
+over the spin-coordinate of fermion \( j \). We note that the factor of \( 1/2 \) in front of the sum involving the two-body interaction, has been removed. This is due to the fact that we need to vary both \( \delta\psi_{\mu}^* \) and
+\( \delta\psi_{\nu}^* \). Using the symmetry properties of the two-body interaction and interchanging \( \mu \) and \( \nu \)
+as summation indices, we obtain two identical terms.
+
+<p>
+The two first terms in the last equation are the one-body kinetic energy and the
+electron-nucleus potential. The third or <em>direct</em> term is the averaged electronic repulsion of the other
+electrons. As written, the
+term includes the <em>self-interaction</em> of 
+electrons when \( \mu=\nu \). The self-interaction is cancelled in the fourth
+term, or the <em>exchange</em> term. The exchange term results from our
+inclusion of the Pauli principle and the assumed determinantal form of
+the wave-function. Equation <a href="#mjx-eqn-3">(3)</a>, in addition to the kinetic energy and the attraction from the atomic nucleus that confines the motion of a single electron,   represents now the motion of a single-particle modified by the two-body interaction. The additional contribution to the Schroedinger equation due to the two-body interaction, represents a mean field set up by all the other bystanding electrons, the latter given by the sum over all single-particle states occupied by \( N \) electrons.
+
+<p>
+The Hartree-Fock equation is an example of an integro-differential equation. These equations involve repeated calculations of integrals, in addition to the solution of a set of coupled differential equations. 
+The Hartree-Fock equations can also be rewritten in terms of an eigenvalue problem. The solution of an eigenvalue problem represents often a more practical algorithm and the  solution of  coupled  integro-differential equations.
+This alternative derivation of the Hartree-Fock equations is given below.
+
+<h2 id="___sec3">Analysis of Hartree-Fock equations in coordinate space </h2>
+
+<p>
+  A theoretically convenient form of the
+Hartree-Fock equation is to regard the direct and exchange operator
+defined through 
+<p>&nbsp;<br>
+$$
+\begin{equation*}
+  V_{\mu}^{d}(x_i) = \int \psi_{\mu}^*(x_j) 
+ \hat{v}(r_{ij})\psi_{\mu}(x_j) dx_j
+\end{equation*}
+$$
+<p>&nbsp;<br>
+
+and
+<p>&nbsp;<br>
+$$
+\begin{equation*}
+  V_{\mu}^{ex}(x_i) g(x_i) 
+  = \left(\int \psi_{\mu}^*(x_j) 
+ \hat{v}(r_{ij})g(x_j) dx_j
+  \right)\psi_{\mu}(x_i),
+\end{equation*}
+$$
+<p>&nbsp;<br>
+
+respectively.
+
+<p>
+The function \( g(x_i) \) is an arbitrary function,
+and by the substitution \( g(x_i) = \psi_{\nu}(x_i) \)
+we get
+<p>&nbsp;<br>
+$$
+\begin{equation*}
+  V_{\mu}^{ex}(x_i) \psi_{\nu}(x_i) 
+  = \left(\int \psi_{\mu}^*(x_j) 
+ \hat{v}(r_{ij})\psi_{\nu}(x_j)
+  dx_j\right)\psi_{\mu}(x_i).
+\end{equation*}
+$$
+<p>&nbsp;<br>
+
+We may then rewrite the Hartree-Fock equations as
+<p>&nbsp;<br>
+$$
+  \hat{h}^{HF}(x_i) \psi_{\nu}(x_i) = \epsilon_{\nu}\psi_{\nu}(x_i),
+$$
+<p>&nbsp;<br>
+
+with
+<p>&nbsp;<br>
+$$
+  \hat{h}^{HF}(x_i)= \hat{h}_0(x_i) + \sum_{\mu=1}^AV_{\mu}^{d}(x_i) -
+  \sum_{\mu=1}^AV_{\mu}^{ex}(x_i),
+$$
+<p>&nbsp;<br>
+
+and where \( \hat{h}_0(i) \) is the one-body part. The latter is normally chosen as a part which yields solutions in closed form. The harmonic oscilltor is a classical problem thereof.
+We normally rewrite the last equation as
+<p>&nbsp;<br>
+$$
+  \hat{h}^{HF}(x_i)= \hat{h}_0(x_i) + \hat{u}^{HF}(x_i). 
+$$
+<p>&nbsp;<br>
+
+<h2 id="___sec4">Hartree-Fock by varying the coefficients of a wave function expansion </h2>
+
+<p>
+Another possibility is to expand the single-particle functions in a known basis  and vary the coefficients, 
+that is, the new single-particle wave function is written as a linear expansion
+in terms of a fixed chosen orthogonal basis (for example the well-known harmonic oscillator functions or the hydrogen-like functions etc).
+We define our new Hartree-Fock single-particle basis by performing a unitary transformation 
+on our previous basis (labelled with greek indices) as
+<p>&nbsp;<br>
+$$
+\begin{equation}
+\psi_p^{HF}  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda}. \tag{4}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+In this case we vary the coefficients \( C_{p\lambda} \). If the basis has infinitely many solutions, we need
+to truncate the above sum.  We assume that the basis \( \phi_{\lambda} \) is orthogonal.
+
+<p>
+It is normal to choose a single-particle basis defined as the eigenfunctions
+of parts of the full Hamiltonian. The typical situation consists of the solutions of the one-body part of the Hamiltonian, that is we have
+<p>&nbsp;<br>
+$$
+\hat{h}_0\phi_{\lambda}=\epsilon_{\lambda}\phi_{\lambda}.
+$$
+<p>&nbsp;<br>
+
+The single-particle wave functions \( \phi_{\lambda}(\mathbf{r}) \), defined by the quantum numbers \( \lambda \) and \( \mathbf{r} \)
+are defined as the overlap 
+<p>&nbsp;<br>
+$$
+   \phi_{\lambda}(\mathbf{r})  = \langle \mathbf{r} | \lambda \rangle .
+$$
+<p>&nbsp;<br>
+
+<p>
+In deriving the Hartree-Fock equations, we  will expand the single-particle functions in a known basis  and vary the coefficients, 
+that is, the new single-particle wave function is written as a linear expansion
+in terms of a fixed chosen orthogonal basis (for example the well-known harmonic oscillator functions or the hydrogen-like functions etc).
+
+<p>
+We stated that a unitary transformation keeps the orthogonality. To see this consider first a basis of vectors \( \mathbf{v}_i \),
+<p>&nbsp;<br>
+$$
+\mathbf{v}_i = \begin{bmatrix} v_{i1} \\ \dots \\ \dots \\v_{in} \end{bmatrix}
+$$
+<p>&nbsp;<br>
+
+We assume that the basis is orthogonal, that is 
+<p>&nbsp;<br>
+$$
+\mathbf{v}_j^T\mathbf{v}_i = \delta_{ij}.
+$$
+<p>&nbsp;<br>
+
+An orthogonal or unitary transformation
+<p>&nbsp;<br>
+$$
+\mathbf{w}_i=\mathbf{U}\mathbf{v}_i,
+$$
+<p>&nbsp;<br>
+
+preserves the dot product and orthogonality since
+<p>&nbsp;<br>
+$$
+\mathbf{w}_j^T\mathbf{w}_i=(\mathbf{U}\mathbf{v}_j)^T\mathbf{U}\mathbf{v}_i=\mathbf{v}_j^T\mathbf{U}^T\mathbf{U}\mathbf{v}_i= \mathbf{v}_j^T\mathbf{v}_i = \delta_{ij}.
+$$
+<p>&nbsp;<br>
+
+<p>
+This means that if the coefficients \( C_{p\lambda} \) belong to a unitary or orthogonal trasformation (using the Dirac bra-ket notation)
+<p>&nbsp;<br>
+$$
+\vert p\rangle  = \sum_{\lambda} C_{p\lambda}\vert\lambda\rangle,
+$$
+<p>&nbsp;<br>
+
+orthogonality is preserved, that is \( \langle \alpha \vert \beta\rangle = \delta_{\alpha\beta} \)
+and \( \langle p \vert q\rangle = \delta_{pq} \).
+
+<p>
+This propertry is extremely useful when we build up a basis of many-body Stater determinant based states.
+
+<p>
+<b>Note also that although a basis \( \vert \alpha\rangle \) contains an infinity of states, for practical calculations we have always to make some truncations.</b>
+
+<p>
+Before we develop the Hartree-Fock equations, there is another very useful property of determinants that we will use both in connection with Hartree-Fock calculations and later shell-model calculations.
+
+<p>
+Consider the following determinant
+<p>&nbsp;<br>
+$$
+\left| \begin{array}{cc} \alpha_1b_{11}+\alpha_2sb_{12}& a_{12}\\
+                         \alpha_1b_{21}+\alpha_2b_{22}&a_{22}\end{array} \right|=\alpha_1\left|\begin{array}{cc} b_{11}& a_{12}\\
+                         b_{21}&a_{22}\end{array} \right|+\alpha_2\left| \begin{array}{cc} b_{12}& a_{12}\\b_{22}&a_{22}\end{array} \right|
+$$
+<p>&nbsp;<br>
+
+<p>
+We can generalize this to  an \( n\times n \) matrix and have 
+<p>&nbsp;<br>
+$$
+\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots & \sum_{k=1}^n c_k b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots & \sum_{k=1}^n c_k b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+a_{n1}& a_{n2} & \dots & \sum_{k=1}^n c_k b_{nk} &\dots & a_{nn}\end{array} \right|=
+\sum_{k=1}^n c_k\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots &  b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots &  b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+a_{n1}& a_{n2} & \dots &  b_{nk} &\dots & a_{nn}\end{array} \right| .
+$$
+<p>&nbsp;<br>
+
+This is a property we will use in our Hartree-Fock discussions.
+
+<p>
+We can generalize the previous results, now 
+with all elements \( a_{ij} \)  being given as functions of 
+linear combinations  of various coefficients \( c \) and elements \( b_{ij} \),
+<p>&nbsp;<br>
+$$
+\left| \begin{array}{cccccc} \sum_{k=1}^n b_{1k}c_{k1}& \sum_{k=1}^n b_{1k}c_{k2} & \dots & \sum_{k=1}^n b_{1k}c_{kj}  &\dots & \sum_{k=1}^n b_{1k}c_{kn}\\
+\sum_{k=1}^n b_{2k}c_{k1}& \sum_{k=1}^n b_{2k}c_{k2} & \dots & \sum_{k=1}^n b_{2k}c_{kj} &\dots & \sum_{k=1}^n b_{2k}c_{kn}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots &\dots \\
+\sum_{k=1}^n b_{nk}c_{k1}& \sum_{k=1}^n b_{nk}c_{k2} & \dots & \sum_{k=1}^n b_{nk}c_{kj} &\dots & \sum_{k=1}^n b_{nk}c_{kn}\end{array} \right|=det(\mathbf{C})det(\mathbf{B}),
+$$
+<p>&nbsp;<br>
+
+where \( det(\mathbf{C}) \) and \( det(\mathbf{B}) \) are the determinants of \( n\times n \) matrices
+with elements \( c_{ij} \) and \( b_{ij} \) respectively.  
+This is a property we will use in our Hartree-Fock discussions. Convince yourself about the correctness of the above expression by setting \( n=2 \).
+
+<p>
+With our definition of the new basis in terms of an orthogonal basis we have
+<p>&nbsp;<br>
+$$
+\psi_p(x)  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x).
+$$
+<p>&nbsp;<br>
+
+If the coefficients \( C_{p\lambda} \) belong to an orthogonal or unitary matrix, the new basis
+is also orthogonal. 
+Our Slater determinant in the new basis \( \psi_p(x) \) is written as
+<p>&nbsp;<br>
+$$
+\frac{1}{\sqrt{A!}}
+\left| \begin{array}{ccccc} \psi_{p}(x_1)& \psi_{p}(x_2)& \dots & \dots & \psi_{p}(x_A)\\
+                            \psi_{q}(x_1)&\psi_{q}(x_2)& \dots & \dots & \psi_{q}(x_A)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \psi_{t}(x_1)&\psi_{t}(x_2)& \dots & \dots & \psi_{t}(x_A)\end{array} \right|=\frac{1}{\sqrt{A!}}
+\left| \begin{array}{ccccc} \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_1)& \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_A)\\
+                            \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_A)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_A)\end{array} \right|,
+$$
+<p>&nbsp;<br>
+
+which is nothing but \( det(\mathbf{C})det(\Phi) \), with \( det(\Phi) \) being the determinant given by the basis functions \( \phi_{\lambda}(x) \).
+
+<p>
+In our discussions hereafter we will use our definitions of single-particle states above and below the Fermi (\( F \)) level given by the labels
+\( ijkl\dots \le F \) for so-called single-hole states and \( abcd\dots > F \) for so-called particle states.
+For general single-particle states we employ the labels \( pqrs\dots \).
+
+<p>
+In Eq.&nbsp;<a href="#mjx-eqn-2">(2)</a>, restated here
+<p>&nbsp;<br>
+$$
+  E[\Phi] 
+  = \sum_{\mu=1}^A \langle \mu | h | \mu \rangle +
+  \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+we found the expression for the energy functional in terms of the basis function \( \phi_{\lambda}(\mathbf{r}) \). We then  varied the above energy functional with respect to the basis functions \( |\mu \rangle \). 
+Now we are interested in defining a new basis defined in terms of
+a chosen basis as defined in Eq.&nbsp;<a href="#mjx-eqn-4">(4)</a>. We can then rewrite the energy functional as
+<p>&nbsp;<br>
+$$
+\begin{equation}
+  E[\Phi^{HF}] 
+  = \sum_{i=1}^A \langle i | h | i \rangle +
+  \frac{1}{2}\sum_{ij=1}^A\langle ij|\hat{v}|ij\rangle_{AS}, \tag{5}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+where \( \Phi^{HF} \) is the new Slater determinant defined by the new basis of Eq.&nbsp;<a href="#mjx-eqn-4">(4)</a>.
+
+<p>
+Using Eq.&nbsp;<a href="#mjx-eqn-4">(4)</a> we can rewrite Eq.&nbsp;<a href="#mjx-eqn-5">(5)</a> as 
+<p>&nbsp;<br>
+$$
+\begin{equation}
+  E[\Psi] 
+  = \sum_{i=1}^A \sum_{\alpha\beta} C^*_{i\alpha}C_{i\beta}\langle \alpha | h | \beta \rangle +
+  \frac{1}{2}\sum_{ij=1}^A\sum_{{\alpha\beta\gamma\delta}} C^*_{i\alpha}C^*_{j\beta}C_{i\gamma}C_{j\delta}\langle \alpha\beta|\hat{v}|\gamma\delta\rangle_{AS}. \tag{6}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+<p>
+We wish now to minimize the above functional. We introduce again a set of Lagrange multipliers, noting that
+since \( \langle i | j \rangle = \delta_{i,j} \) and \( \langle \alpha | \beta \rangle = \delta_{\alpha,\beta} \), 
+the coefficients \( C_{i\gamma} \) obey the relation
+<p>&nbsp;<br>
+$$
+ \langle i | j \rangle=\delta_{i,j}=\sum_{\alpha\beta} C^*_{i\alpha}C_{i\beta}\langle \alpha | \beta \rangle=
+\sum_{\alpha} C^*_{i\alpha}C_{i\alpha},
+$$
+<p>&nbsp;<br>
+
+which allows us to define a functional to be minimized that reads
+<p>&nbsp;<br>
+$$
+\begin{equation}
+  F[\Phi^{HF}]=E[\Phi^{HF}] - \sum_{i=1}^A\epsilon_i\sum_{\alpha} C^*_{i\alpha}C_{i\alpha}.
+\tag{7}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+<p>
+Minimizing with respect to \( C^*_{i\alpha} \), remembering that the equations for \( C^*_{i\alpha} \) and \( C_{i\alpha} \)
+can be written as two  independent equations, we obtain
+<p>&nbsp;<br>
+$$
+\frac{d}{dC^*_{i\alpha}}\left[  E[\Phi^{HF}] - \sum_{j}\epsilon_j\sum_{\alpha} C^*_{j\alpha}C_{j\alpha}\right]=0,
+$$
+<p>&nbsp;<br>
+
+which yields for every single-particle state \( i \) and index \( \alpha \) (recalling that the coefficients \( C_{i\alpha} \) are matrix elements of a unitary (or orthogonal for a real symmetric matrix) matrix)
+the following Hartree-Fock equations
+<p>&nbsp;<br>
+$$
+\sum_{\beta} C_{i\beta}\langle \alpha | h | \beta \rangle+
+\sum_{j=1}^A\sum_{\beta\gamma\delta} C^*_{j\beta}C_{j\delta}C_{i\gamma}\langle \alpha\beta|\hat{v}|\gamma\delta\rangle_{AS}=\epsilon_i^{HF}C_{i\alpha}.
+$$
+<p>&nbsp;<br>
+
+<p>
+We can rewrite this equation as (changing dummy variables)
+<p>&nbsp;<br>
+$$
+\sum_{\beta} \left\{\langle \alpha | h | \beta \rangle+
+\sum_{j}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}\right\}C_{i\beta}=\epsilon_i^{HF}C_{i\alpha}.
+$$
+<p>&nbsp;<br>
+
+Note that the sums over greek indices run over the number of basis set functions (in principle an infinite number).
+
+<p>
+Defining 
+<p>&nbsp;<br>
+$$
+h_{\alpha\beta}^{HF}=\langle \alpha | h | \beta \rangle+
+\sum_{j=1}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+we can rewrite the new equations as 
+<p>&nbsp;<br>
+$$
+\begin{equation}
+\sum_{\gamma}h_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{HF}C_{i\alpha}. \tag{8}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+The latter is nothing but a standard eigenvalue problem. Compared with Eq.&nbsp;<a href="#mjx-eqn-3">(3)</a>,
+we see that we do not need to compute any integrals in an iterative procedure for solving the equations.
+It suffices to tabulate the matrix elements \( \langle \alpha | h | \beta \rangle \) and \( \langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS} \) once and for all. Successive iterations require thus only a look-up in tables over one-body and two-body matrix elements. These details will be discussed below when we solve the Hartree-Fock equations numerical.
+
+<h2 id="___sec5">Hartree-Fock algorithm </h2>
+
+<p>
+Our Hartree-Fock matrix  is thus
+<p>&nbsp;<br>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\langle \alpha | \hat{h}_0 | \beta \rangle+
+\sum_{j=1}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+The Hartree-Fock equations are solved in an iterative waym starting with a guess for the coefficients \( C_{j\gamma}=\delta_{j,\gamma} \) and solving the equations by diagonalization till the new single-particle energies
+\( \epsilon_i^{\mathrm{HF}} \) do not change anymore by a prefixed quantity.
+
+<p>
+Normally we assume that the single-particle basis \( |\beta\rangle \) forms an eigenbasis for the operator
+\( \hat{h}_0 \), meaning that the Hartree-Fock matrix becomes
+
+<p>&nbsp;<br>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j=1}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+The Hartree-Fock eigenvalue problem
+<p>&nbsp;<br>
+$$
+\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
+$$
+<p>&nbsp;<br>
+
+can be written out in a more compact form as
+<p>&nbsp;<br>
+$$
+\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
+$$
+<p>&nbsp;<br>
+
+<p>
+The Hartree-Fock equations are, in their simplest form, solved in an iterative way, starting with a guess for the
+coefficients \( C_{i\alpha} \). We label the coefficients as \( C_{i\alpha}^{(n)} \), where the subscript \( n \) stands for iteration \( n \).
+To set up the algorithm we can proceed as follows:
+
+<ul>
+ <p><li> We start with a guess \( C_{i\alpha}^{(0)}=\delta_{i,\alpha} \). Alternatively, we could have used random starting values as long as the vectors are normalized. Another possibility is to give states below the Fermi level a larger weight.</li>
+ <p><li> The Hartree-Fock matrix simplifies then to (assuming that the coefficients \( C_{i\alpha}  \)  are real)</li>
+</ul>
+<p>&nbsp;<br>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j = 1}^A\sum_{\gamma\delta} C_{j\gamma}^{(0)}C_{j\delta}^{(0)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+<p>
+Solving the Hartree-Fock eigenvalue problem yields then new eigenvectors \( C_{i\alpha}^{(1)} \) and eigenvalues
+\( \epsilon_i^{HF(1)} \). 
+
+<ul>
+ <p><li> With the new eigenvalues we can set up a new Hartree-Fock potential</li> 
+</ul>
+<p>&nbsp;<br>
+$$
+\sum_{j = 1}^A\sum_{\gamma\delta} C_{j\gamma}^{(1)}C_{j\delta}^{(1)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+The diagonalization with the new Hartree-Fock potential yields new eigenvectors and eigenvalues.
+This process is continued till for example
+<p>&nbsp;<br>
+$$
+\frac{\sum_{p} |\epsilon_i^{(n)}-\epsilon_i^{(n-1)}|}{m} \le \lambda,  
+$$
+<p>&nbsp;<br>
+
+where \( \lambda \) is a user prefixed quantity (\( \lambda \sim 10^{-8} \) or smaller) and \( p \) runs over all calculated single-particle
+energies and \( m \) is the number of single-particle states.
+
+<h2 id="___sec6">Analysis of Hartree-Fock equations and Koopman's theorem </h2>
+
+<p>
+We can rewrite the ground state energy by adding and subtracting \( \hat{u}^{HF}(x_i) \) 
+<p>&nbsp;<br>
+$$
+  E_0^{HF} =\langle \Phi_0 | \hat{H} | \Phi_0\rangle = 
+\sum_{i\le F}^A \langle i | \hat{h}_0 +\hat{u}^{HF}| j\rangle+ \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F}^A \langle i |\hat{u}^{HF}| i\rangle,
+$$
+<p>&nbsp;<br>
+
+which results in
+<p>&nbsp;<br>
+$$
+  E_0^{HF}
+  = \sum_{i\le F}^A \varepsilon_i^{HF} + \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F}^A \langle i |\hat{u}^{HF}| i\rangle.
+$$
+<p>&nbsp;<br>
+
+Our single-particle states \( ijk\dots \) are now single-particle states obtained from the solution of the Hartree-Fock equations.
+
+<p>
+Using our definition of the Hartree-Fock single-particle energies we obtain then the following expression for the total ground-state energy
+<p>&nbsp;<br>
+$$
+  E_0^{HF}
+  = \sum_{i\le F}^A \varepsilon_i - \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right].
+$$
+<p>&nbsp;<br>
+
+This form will be used in our discussion of Koopman's theorem.
+
+<p>
+In the   atomic physics case we have 
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(N)] 
+  = \sum_{i=1}^H \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1}^N\langle ij|\hat{v}|ij\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+where \( \Phi^{\mathrm{HF}}(N) \) is the new Slater determinant defined by the new basis of Eq.&nbsp;<a href="#mjx-eqn-4">(4)</a>
+for \( N \) electrons (same \( Z \)).  If we assume that the single-particle wave functions in the new basis do not change 
+when we remove one electron or add one electron, we can then define the corresponding energy for the \( N-1 \) systems as 
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(N-1)] 
+  = \sum_{i=1; i\ne k}^N \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1;i,j\ne k}^N\langle ij|\hat{v}|ij\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+where we have removed a single-particle state \( k\le F \), that is a state below the Fermi level.
+
+<p>
+Calculating the difference 
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(N)]-   E[\Phi^{\mathrm{HF}}(N-1)] = \langle k | \hat{h}_0 | k \rangle +
+  \frac{1}{2}\sum_{i=1;i\ne k}^N\langle ik|\hat{v}|ik\rangle_{AS} + \frac{1}{2}\sum_{j=1;j\ne k}^N\langle kj|\hat{v}|kj\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+we obtain
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(N)]-   E[\Phi^{\mathrm{HF}}(N-1)] = \langle k | \hat{h}_0 | k \rangle +\sum_{j=1}^N\langle kj|\hat{v}|kj\rangle_{AS}
+$$
+<p>&nbsp;<br>
+
+which is just our definition of the Hartree-Fock single-particle energy
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(N)]-   E[\Phi^{\mathrm{HF}}(N-1)] = \epsilon_k^{\mathrm{HF}} 
+$$
+<p>&nbsp;<br>
+
+<p>
+Similarly, we can now compute the difference (we label the single-particle states above the Fermi level as \( abcd > F \))
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(N+1)]-   E[\Phi^{\mathrm{HF}}(N)]= \epsilon_a^{\mathrm{HF}}. 
+$$
+<p>&nbsp;<br>
+
+These two equations can thus be used to the electron affinity or ionization energies, respectively. 
+Koopman's theorem states that for example the ionization energy of a closed-shell system is given by the energy of the highest occupied single-particle state.  If we assume that changing the number of electrons from \( N \) to \( N+1 \) does not change the Hartree-Fock single-particle energies and eigenfunctions, then Koopman's theorem simply states that the ionization energy of an atom is given by the single-particle energy of the last bound state. In a similar way, we can also define the electron affinities.
+
+<p>
+As an example, consider a simple model for atomic sodium, Na. Neutral sodium has eleven electrons, 
+with the weakest bound one being confined the \( 3s \) single-particle quantum numbers. The energy needed to remove an electron from neutral sodium is rather small, 5.1391 eV, a feature which pertains to all alkali metals.
+Having performed a  Hartree-Fock calculation for neutral sodium would then allows us to compute the
+ionization energy by using the single-particle energy for the \( 3s \) states, namely \( \epsilon_{3s}^{\mathrm{HF}} \).
+
+<p>
+From these considerations, we see that Hartree-Fock theory allows us to make a connection between experimental 
+observables (here ionization and affinity energies) and the underlying interactions between particles.  
+In this sense, we are now linking the dynamics and structure of a many-body system with the laws of motion which govern the system. Our approach is a reductionistic one, meaning that we want to understand the laws of motion 
+in terms of the particles or degrees of freedom which we believe are the fundamental ones. Our Slater determinant, being constructed as the product of various single-particle functions, follows this philosophy.
+
+<p>
+With similar arguments as in atomic physics, we can now use Hartree-Fock theory to make a link
+between nuclear forces and separation energies. Changing to nuclear system, we define
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(A)] 
+  = \sum_{i=1}^A \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1}^A\langle ij|\hat{v}|ij\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+where \( \Phi^{\mathrm{HF}}(A) \) is the new Slater determinant defined by the new basis of Eq.&nbsp;<a href="#mjx-eqn-4">(4)</a>
+for \( A \) nucleons, where \( A=N+Z \), with \( N \) now being the number of neutrons and \( Z \) th enumber of protons.  If we assume again that the single-particle wave functions in the new basis do not change from a nucleus with \( A \) nucleons to a nucleus with \( A-1 \)  nucleons, we can then define the corresponding energy for the \( A-1 \) systems as 
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(A-1)] 
+  = \sum_{i=1; i\ne k}^A \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1;i,j\ne k}^A\langle ij|\hat{v}|ij\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+where we have removed a single-particle state \( k\le F \), that is a state below the Fermi level.
+
+<p>
+Calculating the difference 
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
+  = \langle k | \hat{h}_0 | k \rangle +
+  \frac{1}{2}\sum_{i=1;i\ne k}^A\langle ik|\hat{v}|ik\rangle_{AS} + \frac{1}{2}\sum_{j=1;j\ne k}^A\langle kj|\hat{v}|kj\rangle_{AS},
+$$
+<p>&nbsp;<br>
+
+which becomes 
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
+  = \langle k | \hat{h}_0 | k \rangle +\sum_{j=1}^A\langle kj|\hat{v}|kj\rangle_{AS}
+$$
+<p>&nbsp;<br>
+
+which is just our definition of the Hartree-Fock single-particle energy
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
+  = \epsilon_k^{\mathrm{HF}} 
+$$
+<p>&nbsp;<br>
+
+<p>
+Similarly, we can now compute the difference (recall that the single-particle states \( abcd > F \))
+<p>&nbsp;<br>
+$$
+  E[\Phi^{\mathrm{HF}}(A+1)]-   E[\Phi^{\mathrm{HF}}(A)]= \epsilon_a^{\mathrm{HF}}. 
+$$
+<p>&nbsp;<br>
+
+If we then recall that the binding energy differences 
+<p>&nbsp;<br>
+$$
+BE(A)-BE(A-1) \hspace{0.5cm} \mathrm{and} \hspace{0.5cm} BE(A+1)-BE(A), 
+$$
+<p>&nbsp;<br>
+
+define the separation energies, we see that the Hartree-Fock single-particle energies can be used to
+define separation energies. We have thus our first link between nuclear forces (included in the potential energy term) and an observable quantity defined by differences in binding energies.
+
+<p>
+We have thus the following interpretations (if the single-particle fields do not change)
+<p>&nbsp;<br>
+$$
+BE(A)-BE(A-1)\approx  E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
+  = \epsilon_k^{\mathrm{HF}}, 
+$$
+<p>&nbsp;<br>
+
+and
+<p>&nbsp;<br>
+$$
+BE(A+1)-BE(A)\approx  E[\Phi^{\mathrm{HF}}(A+1)]-   E[\Phi^{\mathrm{HF}}(A)] =  \epsilon_a^{\mathrm{HF}}. 
+$$
+<p>&nbsp;<br>
+
+If  we use \( {}^{16}\mbox{O} \) as our closed-shell nucleus, we could then interpret the separation energy
+<p>&nbsp;<br>
+$$
+BE(^{16}\mathrm{O})-BE(^{15}\mathrm{O})\approx \epsilon_{0p^{\nu}_{1/2}}^{\mathrm{HF}}, 
+$$
+<p>&nbsp;<br>
+
+and
+<p>&nbsp;<br>
+$$
+BE(^{16}\mathrm{O})-BE(^{15}\mathrm{N})\approx \epsilon_{0p^{\pi}_{1/2}}^{\mathrm{HF}}.
+$$
+<p>&nbsp;<br>
+
+<p>
+Similalry, we could interpret
+<p>&nbsp;<br>
+$$
+BE(^{17}\mathrm{O})-BE(^{16}\mathrm{O})\approx \epsilon_{0d^{\nu}_{5/2}}^{\mathrm{HF}}, 
+$$
+<p>&nbsp;<br>
+
+and 
+<p>&nbsp;<br>
+$$
+BE(^{17}\mathrm{F})-BE(^{16}\mathrm{O})\approx\epsilon_{0d^{\pi}_{5/2}}^{\mathrm{HF}}.
+$$
+<p>&nbsp;<br>
+
+We can continue like this for all \( A\pm 1 \) nuclei where \( A \) is a good closed-shell (or subshell closure)
+nucleus. Examples are \( {}^{22}\mbox{O} \), \( {}^{24}\mbox{O} \), \( {}^{40}\mbox{Ca} \), \( {}^{48}\mbox{Ca} \), \( {}^{52}\mbox{Ca} \), \( {}^{54}\mbox{Ca} \), \( {}^{56}\mbox{Ni} \), 
+\( {}^{68}\mbox{Ni} \), \( {}^{78}\mbox{Ni} \), \( {}^{90}\mbox{Zr} \), \( {}^{88}\mbox{Sr} \), \( {}^{100}\mbox{Sn} \), \( {}^{132}\mbox{Sn} \) and \( {}^{208}\mbox{Pb} \), to mention some possile cases.
+
+<p>
+We can thus make our first interpretation of the separation energies in terms of the simplest
+possible many-body theory. 
+If we also recall that the so-called energy gap for neutrons (or protons) is defined as
+<p>&nbsp;<br>
+$$
+\Delta S_n= 2BE(N,Z)-BE(N-1,Z)-BE(N+1,Z),
+$$
+<p>&nbsp;<br>
+
+for neutrons and the corresponding gap for protons
+<p>&nbsp;<br>
+$$
+\Delta S_p= 2BE(N,Z)-BE(N,Z-1)-BE(N,Z+1),
+$$
+<p>&nbsp;<br>
+
+we can define the neutron and proton energy gaps for \( {}^{16}\mbox{O} \) as
+<p>&nbsp;<br>
+$$
+\Delta S_{\nu}=\epsilon_{0d^{\nu}_{5/2}}^{\mathrm{HF}}-\epsilon_{0p^{\nu}_{1/2}}^{\mathrm{HF}}, 
+$$
+<p>&nbsp;<br>
+
+and 
+<p>&nbsp;<br>
+$$
+\Delta S_{\pi}=\epsilon_{0d^{\pi}_{5/2}}^{\mathrm{HF}}-\epsilon_{0p^{\pi}_{1/2}}^{\mathrm{HF}}. 
+$$
+<p>&nbsp;<br>
+
+<p>
+<!-- --- begin exercise --- -->
+
+<h2 id="___sec7">Exercise 1: Derivation of Hartree-Fock equations </h2>
+
+<p>
+Consider a Slater determinant built up of single-particle orbitals \( \psi_{\lambda} \), 
+with \( \lambda = 1,2,\dots,N \).
+
+<p>
+The unitary transformation
+<p>&nbsp;<br>
+$$
+\psi_a  = \sum_{\lambda} C_{a\lambda}\phi_{\lambda},
+$$
+<p>&nbsp;<br>
+
+brings us into the new basis.  
+The new basis has quantum numbers \( a=1,2,\dots,N \).
+
+<p>
+<b>a)</b>
+Show that the new basis is orthonormal.
+
+<p>
+<b>b)</b>
+Show that the new Slater determinant constructed from the new single-particle wave functions can be
+written as the determinant based on the previous basis and the determinant of the matrix \( C \).
+
+<p>
+<b>c)</b>
+Show that the old and the new Slater determinants are equal up to a complex constant with absolute value unity.
+
+<p>
+<!-- --- begin hint in exercise --- -->
+
+<p>
+<b>Hint.</b>
+Use the fact that \( C \) is a unitary matrix.
+
+<p>
+<!-- --- end hint in exercise --- -->
+
+<p>
+<!-- --- end exercise --- -->
+
+<p>
+<!-- --- begin exercise --- -->
+
+<h2 id="___sec8">Exercise 2: Derivation of Hartree-Fock equations </h2>
+
+<p>
+Consider the  Slater  determinant
+<p>&nbsp;<br>
+$$
+\Phi_{0}=\frac{1}{\sqrt{n!}}\sum_{p}(-)^{p}P
+\prod_{i=1}^{n}\psi_{\alpha_{i}}(x_{i}).
+$$
+<p>&nbsp;<br>
+
+A small variation in this function is given by
+<p>&nbsp;<br>
+$$
+\delta\Phi_{0}=\frac{1}{\sqrt{n!}}\sum_{p}(-)^{p}P
+\psi_{\alpha_{1}}(x_{1})\psi_{\alpha_{2}}(x_{2})\dots
+\psi_{\alpha_{i-1}}(x_{i-1})(\delta\psi_{\alpha_{i}}(x_{i}))
+\psi_{\alpha_{i+1}}(x_{i+1})\dots\psi_{\alpha_{n}}(x_{n}).
+$$
+<p>&nbsp;<br>
+
+<p>
+<b>a)</b>
+Show that
+<p>&nbsp;<br>
+$$
+\langle \delta\Phi_{0}|\sum_{i=1}^{n}\left\{t(x_{i})+u(x_{i})
+\right\}+\frac{1}{2}
+\sum_{i\neq j=1}^{n}v(x_{i},x_{j})|\Phi_{0}\rangle=\sum_{i=1}^{n}\langle \delta\psi_{\alpha_{i}}|\hat{t}+\hat{u}
+|\phi_{\alpha_{i}}\rangle
++\sum_{i\neq j=1}^{n}\left\{\langle\delta\psi_{\alpha_{i}}
+\psi_{\alpha_{j}}|\hat{v}|\psi_{\alpha_{i}}\psi_{\alpha_{j}}\rangle-
+\langle\delta\psi_{\alpha_{i}}\psi_{\alpha_{j}}|\hat{v}
+|\psi_{\alpha_{j}}\psi_{\alpha_{i}}\rangle\right\}
+$$
+<p>&nbsp;<br>
+
+<p>
+<!-- --- end exercise --- -->
+</section>
+
+
+<section>
+
+<p>
+<!-- --- begin exercise --- -->
+
+<h2 id="___sec9">Exercise 3: Developing a  Hartree-Fock program </h2>
+
+<p>
+Neutron drops are a powerful theoretical laboratory for testing,
+validating and improving nuclear structure models. Indeed, all
+approaches to nuclear structure, from ab initio theory to shell model
+to density functional theory are applicable in such systems. We will,
+therefore, use neutron drops as a test system for setting up a
+Hartree-Fock code.  This program can later be extended to studies of
+the binding energy of nuclei like $^{16}$O or $^{40}$Ca. The
+single-particle energies obtained by solving the Hartree-Fock
+equations can then be directly related to experimental separation
+energies. 
+Since Hartree-Fock theory is the starting point for
+several many-body techniques (density functional theory, random-phase
+approximation, shell-model etc), the aim here is to develop a computer
+program to solve the Hartree-Fock equations in a given single-particle basis,
+here the harmonic oscillator.
+
+<p>
+The Hamiltonian for a system of \( N \) neutron drops confined in a
+harmonic potential reads
+<p>&nbsp;<br>
+$$
+\hat{H} = \sum_{i=1}^{N} \frac{\hat{p}_{i}^{2}}{2m}+\sum_{i=1}^{N} \frac{1}{2} m\omega {r}_{i}^{2}+\sum_{i < j} \hat{V}_{ij},
+$$
+<p>&nbsp;<br>
+
+with \( \hbar^{2}/2m = 20.73 \) fm$^{2}$, \( mc^{2} = 938.90590 \) MeV, and 
+\( \hat{V}_{ij} \) is the two-body interaction potential whose 
+matrix elements are precalculated
+and to be read in by you.
+
+<p>
+The Hartree-Fock algorithm can be broken down as follows. We recall that  our Hartree-Fock matrix  is 
+<p>&nbsp;<br>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\langle \alpha \vert\hat{h}_0 \vert \beta \rangle+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+Normally we assume that the single-particle basis \( \vert\beta\rangle \)
+forms an eigenbasis for the operator \( \hat{h}_0 \) (this is our case), meaning that the
+Hartree-Fock matrix becomes
+<p>&nbsp;<br>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+The Hartree-Fock eigenvalue problem
+<p>&nbsp;<br>
+$$
+\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
+$$
+<p>&nbsp;<br>
+
+can be written out in a more compact form as
+<p>&nbsp;<br>
+$$
+\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
+$$
+<p>&nbsp;<br>
+
+<p>
+The equations are often rewritten in terms of a so-called density matrix,
+which is defined as 
+<p>&nbsp;<br>
+$$
+\begin{equation}
+\rho_{\gamma\delta}=\sum_{i=1}^{N}\langle\gamma|i\rangle\langle i|\delta\rangle = \sum_{i=1}^{N}C_{i\gamma}C^*_{i\delta}.
+\tag{9}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+It means that we can rewrite the Hartree-Fock Hamiltonian as
+<p>&nbsp;<br>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{\gamma\delta} \rho_{\gamma\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+$$
+<p>&nbsp;<br>
+
+It is convenient to use the density matrix since we can precalculate in every iteration the product of two eigenvector components \( C \).
+
+<p>
+Note that \( \langle \alpha\vert\hat{h}_0\vert\beta \rangle \) denotes the
+matrix elements of the one-body part of the starting hamiltonian. For
+self-bound nuclei \( \langle \alpha\vert\hat{h}_0\vert\beta \rangle \) is the
+kinetic energy, whereas for neutron drops, \( \langle \alpha \vert \hat{h}_0 \vert \beta \rangle \) represents the harmonic oscillator hamiltonian since
+the system is confined in a harmonic trap. If we are working in a
+harmonic oscillator basis with the same \( \omega \) as the trapping
+potential, then \( \langle \alpha\vert\hat{h}_0 \vert \beta \rangle \) is
+diagonal.
+
+<p>
+The python
+<a href="https://github.com/CompPhysics/ManyBodyMethods/tree/master/doc/src/hfock/Code" target="_blank">program</a>
+shows how one can, in a brute force way read in matrix elements in
+\( m \)-scheme and compute the Hartree-Fock single-particle energies for
+four major shells. The interaction which has been used is the
+so-called N3LO interaction of <a href="http://journals.aps.org/prc/abstract/10.1103/PhysRevC.68.041001" target="_blank">Machleidt and
+Entem</a>
+using the <a href="http://journals.aps.org/prc/abstract/10.1103/PhysRevC.75.061001" target="_blank">Similarity Renormalization
+Group</a>
+approach method to renormalize the interaction, using an oscillator
+energy \( \hbar\omega=10 \) MeV.
+
+<p>
+The nucleon-nucleon two-body matrix elements are in \( m \)-scheme and are fully anti-symmetrized. The Hartree-Fock programs uses the density matrix discussed above in order to compute the Hartree-Fock matrix.
+Here we display the Hartree-Fock part only, assuming that single-particle data and two-body matrix elements have already been read in. 
+<p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "perldoc" -->
+<div class="highlight" style="background: #eeeedd"><pre style="font-size: 80%; line-height: 125%"><span></span><span style="color: #8B008B; font-weight: bold">import</span> <span style="color: #008b45; text-decoration: underline">numpy</span> <span style="color: #8B008B; font-weight: bold">as</span> <span style="color: #008b45; text-decoration: underline">np</span> 
+<span style="color: #8B008B; font-weight: bold">from</span> <span style="color: #008b45; text-decoration: underline">decimal</span> <span style="color: #8B008B; font-weight: bold">import</span> Decimal
+<span style="color: #228B22"># expectation value for the one body part, Harmonic oscillator in three dimensions</span>
+<span style="color: #8B008B; font-weight: bold">def</span> <span style="color: #008b45">onebody</span>(i, n, l):
+        homega = <span style="color: #B452CD">10.0</span>
+        <span style="color: #8B008B; font-weight: bold">return</span> homega*(<span style="color: #B452CD">2</span>*n[i] + l[i] + <span style="color: #B452CD">1.5</span>)
+
+<span style="color: #8B008B; font-weight: bold">if</span> <span style="color: #00688B">__name__</span> == <span style="color: #CD5555">&#39;__main__&#39;</span>:
+        
+    Nparticles = <span style="color: #B452CD">16</span>
+    <span style="color: #CD5555">&quot;&quot;&quot; Read quantum numbers from file &quot;&quot;&quot;</span>
+    index = []
+    n = []
+    l = []
+    j = []
+    mj = []
+    tz = []
+    spOrbitals = <span style="color: #B452CD">0</span>
+    <span style="color: #8B008B; font-weight: bold">with</span> <span style="color: #658b00">open</span>(<span style="color: #CD5555">&quot;nucleispnumbers.dat&quot;</span>, <span style="color: #CD5555">&quot;r&quot;</span>) <span style="color: #8B008B; font-weight: bold">as</span> qnumfile:
+                <span style="color: #8B008B; font-weight: bold">for</span> line <span style="color: #8B008B">in</span> qnumfile:
+                        nums = line.split()
+                        <span style="color: #8B008B; font-weight: bold">if</span> <span style="color: #658b00">len</span>(nums) != <span style="color: #B452CD">0</span>:
+                                index.append(<span style="color: #658b00">int</span>(nums[<span style="color: #B452CD">0</span>]))
+                                n.append(<span style="color: #658b00">int</span>(nums[<span style="color: #B452CD">1</span>]))
+                                l.append(<span style="color: #658b00">int</span>(nums[<span style="color: #B452CD">2</span>]))
+                                j.append(<span style="color: #658b00">int</span>(nums[<span style="color: #B452CD">3</span>]))
+                                mj.append(<span style="color: #658b00">int</span>(nums[<span style="color: #B452CD">4</span>]))
+                                tz.append(<span style="color: #658b00">int</span>(nums[<span style="color: #B452CD">5</span>]))
+                                spOrbitals += <span style="color: #B452CD">1</span>
+
+
+    <span style="color: #CD5555">&quot;&quot;&quot; Read two-nucleon interaction elements (integrals) from file, brute force 4-dim array &quot;&quot;&quot;</span>
+    nninteraction = np.zeros([spOrbitals, spOrbitals, spOrbitals, spOrbitals])
+    <span style="color: #8B008B; font-weight: bold">with</span> <span style="color: #658b00">open</span>(<span style="color: #CD5555">&quot;nucleitwobody.dat&quot;</span>, <span style="color: #CD5555">&quot;r&quot;</span>) <span style="color: #8B008B; font-weight: bold">as</span> infile:
+        <span style="color: #8B008B; font-weight: bold">for</span> line <span style="color: #8B008B">in</span> infile:
+                number = line.split()
+                a = <span style="color: #658b00">int</span>(number[<span style="color: #B452CD">0</span>]) - <span style="color: #B452CD">1</span>
+                b = <span style="color: #658b00">int</span>(number[<span style="color: #B452CD">1</span>]) - <span style="color: #B452CD">1</span>
+                c = <span style="color: #658b00">int</span>(number[<span style="color: #B452CD">2</span>]) - <span style="color: #B452CD">1</span>
+                d = <span style="color: #658b00">int</span>(number[<span style="color: #B452CD">3</span>]) - <span style="color: #B452CD">1</span>
+                nninteraction[a][b][c][d] = Decimal(number[<span style="color: #B452CD">4</span>])
+        <span style="color: #CD5555">&quot;&quot;&quot; Set up single-particle integral &quot;&quot;&quot;</span>
+        singleparticleH = np.zeros(spOrbitals)
+        <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                singleparticleH[i] = Decimal(onebody(i, n, l))
+        
+        <span style="color: #CD5555">&quot;&quot;&quot; Star HF-iterations, preparing variables and density matrix &quot;&quot;&quot;</span>
+
+        <span style="color: #CD5555">&quot;&quot;&quot; Coefficients for setting up density matrix, assuming only one along the diagonals &quot;&quot;&quot;</span>
+        C = np.eye(spOrbitals) <span style="color: #228B22"># HF coefficients</span>
+        DensityMatrix = np.zeros([spOrbitals,spOrbitals])
+        <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+            <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                <span style="color: #658b00">sum</span> = <span style="color: #B452CD">0.0</span>
+                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(Nparticles):
+                    <span style="color: #658b00">sum</span> += C[gamma][i]*C[delta][i]
+                DensityMatrix[gamma][delta] = Decimal(<span style="color: #658b00">sum</span>)
+        maxHFiter = <span style="color: #B452CD">100</span>
+        epsilon =  <span style="color: #B452CD">1.0e-5</span> 
+        difference = <span style="color: #B452CD">1.0</span>
+        hf_count = <span style="color: #B452CD">0</span>
+        oldenergies = np.zeros(spOrbitals)
+        newenergies = np.zeros(spOrbitals)
+        <span style="color: #8B008B; font-weight: bold">while</span> hf_count &lt; maxHFiter <span style="color: #8B008B">and</span> difference &gt; epsilon:
+                <span style="color: #8B008B; font-weight: bold">print</span>(<span style="color: #CD5555">&quot;############### Iteration %i ###############&quot;</span> % hf_count)
+                HFmatrix = np.zeros([spOrbitals,spOrbitals])            
+                <span style="color: #8B008B; font-weight: bold">for</span> alpha <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                        <span style="color: #8B008B; font-weight: bold">for</span> beta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                            <span style="color: #CD5555">&quot;&quot;&quot;  If tests for three-dimensional systems, including isospin conservation &quot;&quot;&quot;</span>
+                            <span style="color: #8B008B; font-weight: bold">if</span> l[alpha] != l[beta] <span style="color: #8B008B">and</span> j[alpha] != j[beta] <span style="color: #8B008B">and</span> mj[alpha] != mj[beta] <span style="color: #8B008B">and</span> tz[alpha] != tz[beta]: <span style="color: #8B008B; font-weight: bold">continue</span>
+                            <span style="color: #CD5555">&quot;&quot;&quot;  Setting up the Fock matrix using the density matrix and antisymmetrized NN interaction in m-scheme &quot;&quot;&quot;</span>
+                            sumFockTerm = <span style="color: #B452CD">0.0</span>
+                            <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                                <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                                    <span style="color: #8B008B; font-weight: bold">if</span> (mj[alpha]+mj[gamma]) != (mj[beta]+mj[delta]) <span style="color: #8B008B">and</span> (tz[alpha]+tz[gamma]) != (tz[beta]+tz[delta]): <span style="color: #8B008B; font-weight: bold">continue</span>
+                                    sumFockTerm += DensityMatrix[gamma][delta]*nninteraction[alpha][gamma][beta][delta]
+                            HFmatrix[alpha][beta] = Decimal(sumFockTerm)
+                            <span style="color: #CD5555">&quot;&quot;&quot;  Adding the one-body term, here plain harmonic oscillator &quot;&quot;&quot;</span>
+                            <span style="color: #8B008B; font-weight: bold">if</span> beta == alpha:   HFmatrix[alpha][alpha] += singleparticleH[alpha]
+                spenergies, C = np.linalg.eigh(HFmatrix)
+                <span style="color: #CD5555">&quot;&quot;&quot; Setting up new density matrix in m-scheme &quot;&quot;&quot;</span>
+                DensityMatrix = np.zeros([spOrbitals,spOrbitals])
+                <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                    <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                        <span style="color: #658b00">sum</span> = <span style="color: #B452CD">0.0</span>
+                        <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(Nparticles):
+                            <span style="color: #658b00">sum</span> += C[gamma][i]*C[delta][i]
+                        DensityMatrix[gamma][delta] = Decimal(<span style="color: #658b00">sum</span>)
+                newenergies = spenergies
+                <span style="color: #CD5555">&quot;&quot;&quot; Brute force computation of difference between previous and new sp HF energies &quot;&quot;&quot;</span>
+                <span style="color: #658b00">sum</span> =<span style="color: #B452CD">0.0</span>
+                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                    <span style="color: #658b00">sum</span> += (<span style="color: #658b00">abs</span>(newenergies[i]-oldenergies[i]))/spOrbitals
+                difference = <span style="color: #658b00">sum</span>
+                oldenergies = newenergies
+                <span style="color: #8B008B; font-weight: bold">print</span> (<span style="color: #CD5555">&quot;Single-particle energies, ordering may have changed &quot;</span>)
+                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                    <span style="color: #8B008B; font-weight: bold">print</span>(<span style="color: #CD5555">&#39;{0:4d}  {1:.4f}&#39;</span>.format(i, Decimal(oldenergies[i])))
+                hf_count += <span style="color: #B452CD">1</span>
+</pre></div>
+<p>
+Running the program, one finds that the lowest-lying states for a nucleus like \( {}^{16}\mbox{O} \), we see that the nucleon-nucleon force brings a natural spin-orbit splitting for the \( 0p \) states (or other states except the \( s \)-states).
+Since we are using the \( m \)-scheme for our calculations, we observe that there are several states with the same
+eigenvalues. The number of eigenvalues corresponds to the degeneracy \( 2j+1 \) and is well respected in our calculations, as see from the table here.
+
+<p>
+The values of the lowest-lying states are (\( \pi \) for protons and \( \nu \) for neutrons)
+<table border="1">
+<thead>
+<tr><th align="center">  Quantum numbers   </th> <th align="center">Energy [MeV]</th> </tr>
+</thead>
+<tbody>
+<tr><td align="center">   \( 0s_{1/2}^{\pi} \)    </td> <td align="center">   -40.4602        </td> </tr>
+<tr><td align="center">   \( 0s_{1/2}^{\pi} \)    </td> <td align="center">   -40.4602        </td> </tr>
+<tr><td align="center">   \( 0s_{1/2}^{\nu} \)    </td> <td align="center">   -40.6426        </td> </tr>
+<tr><td align="center">   \( 0s_{1/2}^{\nu} \)    </td> <td align="center">   -40.6426        </td> </tr>
+<tr><td align="center">   \( 0p_{1/2}^{\pi} \)    </td> <td align="center">   -6.7133         </td> </tr>
+<tr><td align="center">   \( 0p_{1/2}^{\pi} \)    </td> <td align="center">   -6.7133         </td> </tr>
+<tr><td align="center">   \( 0p_{1/2}^{\nu} \)    </td> <td align="center">   -6.8403         </td> </tr>
+<tr><td align="center">   \( 0p_{1/2}^{\nu} \)    </td> <td align="center">   -6.8403         </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\pi} \)    </td> <td align="center">   -11.5886        </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\pi} \)    </td> <td align="center">   -11.5886        </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\pi} \)    </td> <td align="center">   -11.5886        </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\pi} \)    </td> <td align="center">   -11.5886        </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\nu} \)    </td> <td align="center">   -11.7201        </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\nu} \)    </td> <td align="center">   -11.7201        </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\nu} \)    </td> <td align="center">   -11.7201        </td> </tr>
+<tr><td align="center">   \( 0p_{3/2}^{\nu} \)    </td> <td align="center">   -11.7201        </td> </tr>
+<tr><td align="center">   \( 0d_{5/2}^{\pi} \)    </td> <td align="center">   18.7589         </td> </tr>
+<tr><td align="center">   \( 0d_{5/2}^{\nu} \)    </td> <td align="center">   18.8082         </td> </tr>
+</tbody>
+</table>
+<p>
+We can use these results to attempt our first link with experimental data, namely to compute the shell gap or the separation energies. The shell gap for neutrons is given by
+<p>&nbsp;<br>
+$$
+\Delta S_n= 2BE(N,Z)-BE(N-1,Z)-BE(N+1,Z).
+$$
+<p>&nbsp;<br>
+
+For \( {}^{16}\mbox{O} \)  we have an experimental value for the  shell gap of \( 11.51 \) MeV for neutrons, while our Hartree-Fock calculations result in \( 25.65 \) MeV. This means that correlations beyond a simple Hartree-Fock calculation with a two-body force play an important role in nuclear physics.
+The splitting between the \( 0p_{3/2}^{\nu} \) and the \( 0p_{1/2}^{\nu} \) state is 4.88 MeV, while the experimental value for the gap between the ground state \( 1/2^{-} \) and the first excited \( 3/2^{-} \) states is 6.08 MeV. The two-nucleon spin-orbit force plays a central role here. In our discussion of nuclear forces we will see how the spin-orbit force comes into play here.
+
+<p>
+<!-- --- end exercise --- -->
+
+<h1 id="___sec10">Hartree-Fock in second quantization and stability of HF solution </h1>
+
+<p>
+We wish now to derive the Hartree-Fock equations using our second-quantized formalism and study the stability of the equations. 
+Our ansatz for the ground state of the system is approximated as (this is our representation of a Slater determinant in second quantization)
+<p>&nbsp;<br>
+$$   
+|\Phi_0\rangle = |c\rangle = a^{\dagger}_i a^{\dagger}_j \dots a^{\dagger}_l|0\rangle.
+$$
+<p>&nbsp;<br>
+
+We wish to determine \( \hat{u}^{HF} \) so that 
+\( E_0^{HF}= \langle c|\hat{H}| c\rangle \) becomes a local minimum.
+
+<p>
+In our analysis here we will need Thouless' theorem, which states that
+an arbitrary Slater determinant \( |c'\rangle \) which is not orthogonal to a determinant
+\( | c\rangle ={\displaystyle\prod_{i=1}^{n}}
+a_{\alpha_{i}}^{\dagger}|0\rangle \), can be written as
+<p>&nbsp;<br>
+$$
+|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle 
+$$
+<p>&nbsp;<br>
+
+<p>
+Let us give a simple proof of Thouless' theorem. The theorem states that we can make a linear combination av particle-hole excitations  with respect to a given reference state \( \vert c\rangle \). With this linear combination, we can make a new Slater determinant \( \vert c'\rangle  \) which is not orthogonal to 
+\( \vert c\rangle \), that is
+<p>&nbsp;<br>
+$$
+\langle c|c'\rangle \ne 0.
+$$
+<p>&nbsp;<br>
+
+To show this we need some intermediate steps. The exponential product of two operators  \( \exp{\hat{A}}\times\exp{\hat{B}} \) is equal to \( \exp{(\hat{A}+\hat{B})} \) only if the two operators commute, that is
+<p>&nbsp;<br>
+$$
+[\hat{A},\hat{B}] = 0.
+$$
+<p>&nbsp;<br>
+
+<h2 id="___sec11">Thouless' theorem </h2>
+
+<p>
+If the operators do not commute, we need to resort to the <a href="http://www.encyclopediaofmath.org/index.php/Campbell%E2%80%93Hausdorff_formula" target="_blank">Baker-Campbell-Hauersdorf</a>. This relation states that
+<p>&nbsp;<br>
+$$
+\exp{\hat{C}}=\exp{\hat{A}}\exp{\hat{B}},
+$$
+<p>&nbsp;<br>
+
+with 
+<p>&nbsp;<br>
+$$
+\hat{C}=\hat{A}+\hat{B}+\frac{1}{2}[\hat{A},\hat{B}]+\frac{1}{12}[[\hat{A},\hat{B}],\hat{B}]-\frac{1}{12}[[\hat{A},\hat{B}],\hat{A}]+\dots
+$$
+<p>&nbsp;<br>
+
+From these relations, we note that 
+in our expression  for \( |c'\rangle \) we have commutators of the type
+<p>&nbsp;<br>
+$$
+[a_{a}^{\dagger}a_{i},a_{b}^{\dagger}a_{j}],
+$$
+<p>&nbsp;<br>
+
+and it is easy to convince oneself that these commutators, or higher powers thereof, are all zero. This means that we can write out our new representation of a Slater determinant as
+<p>&nbsp;<br>
+$$
+|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}+\left(\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right)^2+\dots\right\}| c\rangle
+$$
+<p>&nbsp;<br>
+
+<p>
+We note that
+<p>&nbsp;<br>
+$$
+\prod_{i}\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\sum_{b>F}C_{bi}a_{b}^{\dagger}a_{i}| c\rangle =0,
+$$
+<p>&nbsp;<br>
+
+and all higher-order powers of these combinations of creation and annihilation operators disappear 
+due to the fact that \( (a_i)^n| c\rangle =0 \) when \( n > 1 \). This allows us to rewrite the expression for \( |c'\rangle  \) as
+<p>&nbsp;<br>
+$$
+|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle,
+$$
+<p>&nbsp;<br>
+
+which we can rewrite as 
+<p>&nbsp;<br>
+$$
+|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle.
+$$
+<p>&nbsp;<br>
+
+The last equation can be written as
+<p>&nbsp;<br>
+$$
+\begin{align}
+|c'\rangle&=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle=\left(1+\sum_{a>F}C_{ai_1}a_{a}^{\dagger}a_{i_1}\right)a^{\dagger}_{i_1} 
+\tag{10}\\
+& \times\left(1+\sum_{a>F}C_{ai_2}a_{a}^{\dagger}a_{i_2}\right)a^{\dagger}_{i_2} \dots |0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle.
+\tag{11}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+<h2 id="___sec12">New operators </h2>
+
+<p>
+If we define a new creation operator 
+<p>&nbsp;<br>
+$$
+\begin{equation}
+b^{\dagger}_{i}=a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}, \tag{12}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+we have 
+<p>&nbsp;<br>
+$$
+|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle,
+$$
+<p>&nbsp;<br>
+
+meaning that the new representation of the Slater determinant in second quantization, \( |c'\rangle \), looks like our previous ones. However, this representation is not general enough since we have a restriction on the sum over single-particle states in Eq.&nbsp;<a href="#mjx-eqn-12">(12)</a>. The single-particle states have all to be above the Fermi level.
+The question then is whether we can construct a general representation of a Slater determinant with a creation operator 
+<p>&nbsp;<br>
+$$
+\tilde{b}^{\dagger}_{i}=\sum_{p}f_{ip}a_{p}^{\dagger},
+$$
+<p>&nbsp;<br>
+
+where \( f_{ip} \) is a matrix element of a unitary matrix which transforms our creation and annihilation operators
+\( a^{\dagger} \) and \( a \) to \( \tilde{b}^{\dagger} \) and \( \tilde{b} \). These new operators define a new representation of a Slater determinant as
+<p>&nbsp;<br>
+$$
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle.
+$$
+<p>&nbsp;<br>
+
+<h2 id="___sec13">Showing that \( |\tilde{c}\rangle= |c'\rangle \)  </h2>
+
+<p>
+We need to show that \( |\tilde{c}\rangle= |c'\rangle \). We need also to assume that the new state
+is not orthogonal to \( |c\rangle \), that is \( \langle c| \tilde{c}\rangle \ne 0 \). From this it follows that 
+<p>&nbsp;<br>
+$$
+\langle c| \tilde{c}\rangle=\langle 0| a_{i_n}\dots a_{i_1}\left(\sum_{p=i_1}^{i_n}f_{i_1p}a_{p}^{\dagger} \right)\left(\sum_{q=i_1}^{i_n}f_{i_2q}a_{q}^{\dagger} \right)\dots \left(\sum_{t=i_1}^{i_n}f_{i_nt}a_{t}^{\dagger} \right)|0\rangle,
+$$
+<p>&nbsp;<br>
+
+which is nothing but the determinant \( det(f_{ip}) \) which we can, using the intermediate normalization condition, 
+normalize to one, that is
+<p>&nbsp;<br>
+$$
+det(f_{ip})=1,
+$$
+<p>&nbsp;<br>
+
+meaning that \( f \) has an inverse defined as (since we are dealing with orthogonal, and in our case unitary as well, transformations)
+<p>&nbsp;<br>
+$$
+\sum_{k} f_{ik}f^{-1}_{kj} = \delta_{ij},
+$$
+<p>&nbsp;<br>
+
+and 
+<p>&nbsp;<br>
+$$
+\sum_{j} f^{-1}_{ij}f_{jk} = \delta_{ik}.
+$$
+<p>&nbsp;<br>
+
+<p>
+Using these relations we can then define the linear combination of creation (and annihilation as well) 
+operators as
+<p>&nbsp;<br>
+$$
+\sum_{i}f^{-1}_{ki}\tilde{b}^{\dagger}_{i}=\sum_{i}f^{-1}_{ki}\sum_{p=i_1}^{\infty}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}.
+$$
+<p>&nbsp;<br>
+
+Defining 
+<p>&nbsp;<br>
+$$
+c_{kp}=\sum_{i \le F}f^{-1}_{ki}f_{ip},
+$$
+<p>&nbsp;<br>
+
+we can redefine 
+<p>&nbsp;<br>
+$$
+a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}=b_k^{\dagger},
+$$
+<p>&nbsp;<br>
+
+our starting point. We have shown that our general representation of a Slater determinant 
+<p>&nbsp;<br>
+$$
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle=|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle,
+$$
+<p>&nbsp;<br>
+
+with 
+<p>&nbsp;<br>
+$$
+b_k^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}.
+$$
+<p>&nbsp;<br>
+
+<p>
+This means that we can actually write an ansatz for the ground state of the system as a linear combination of
+terms which contain the ansatz itself \( |c\rangle \) with  an admixture from an infinity of one-particle-one-hole states. The latter has important consequences when we wish to interpret the Hartree-Fock equations and their stability. We can rewrite the new representation as 
+<p>&nbsp;<br>
+$$
+|c'\rangle = |c\rangle+|\delta c\rangle,
+$$
+<p>&nbsp;<br>
+
+where \( |\delta c\rangle \) can now be interpreted as a small variation. If we approximate this term with 
+contributions from one-particle-one-hole (<em>1p-1h</em>) states only, we arrive at 
+<p>&nbsp;<br>
+$$
+|c'\rangle = \left(1+\sum_{ai}\delta C_{ai}a_{a}^{\dagger}a_i\right)|c\rangle.
+$$
+<p>&nbsp;<br>
+
+In our derivation of the Hartree-Fock equations we have shown that 
+<p>&nbsp;<br>
+$$
+\langle \delta c| \hat{H} | c\rangle =0,
+$$
+<p>&nbsp;<br>
+
+which means that we have to satisfy
+<p>&nbsp;<br>
+$$
+\langle c|\sum_{ai}\delta C_{ai}\left\{a_{a}^{\dagger}a_i\right\} \hat{H} | c\rangle =0.
+$$
+<p>&nbsp;<br>
+
+With this as a background, we are now ready to study the stability of the Hartree-Fock equations.
+
+<h2 id="___sec14">Hartree-Fock in second quantization and stability of HF solution </h2>
+
+<p>
+The variational condition for deriving the Hartree-Fock equations guarantees only that the expectation value \( \langle c | \hat{H} | c \rangle \) has an extreme value, not necessarily a minimum. To figure out whether the extreme value we have found  is a minimum, we can use second quantization to analyze our results and find a criterion 
+for the above expectation value to a local minimum. We will use Thouless' theorem and show that
+<p>&nbsp;<br>
+$$
+\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} \ge \langle c |\hat{H} | c\rangle= E_0,
+$$
+<p>&nbsp;<br>
+
+with
+<p>&nbsp;<br>
+$$
+ {|c'\rangle} = {|c\rangle + |\delta c\rangle}.
+$$
+<p>&nbsp;<br>
+
+Using Thouless' theorem we can write out \( |c'\rangle \) as
+<p>&nbsp;<br>
+$$
+\begin{align}
+ {|c'\rangle}&=\exp\left\{\sum_{a > F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle
+\tag{13}\\ 
+&=\left\{1+\sum_{a > F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}
+a_{i}+\frac{1}{2!}\sum_{ab > F}\sum_{ij \le F}\delta C_{ai}\delta C_{bj}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}+\dots\right\}
+\tag{14}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+where the amplitudes \( \delta C \) are small.
+
+<p>
+The norm of \( |c'\rangle \) is given by (using the intermediate normalization condition \( \langle c' |c\rangle=1 \)) 
+<p>&nbsp;<br>
+$$
+\langle c' | c'\rangle = 1+\sum_{a>F}
+\sum_{i\le F}|\delta C_{ai}|^2+O(\delta C_{ai}^3).
+$$
+<p>&nbsp;<br>
+
+The expectation value for the energy is now given by (using the Hartree-Fock condition)
+<p>&nbsp;<br>
+$$
+\langle c' |\hat{H} | c'\rangle=\langle c |\hat{H} | c\rangle +
+\sum_{ab>F}
+\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}\langle c |a_{i}^{\dagger}a_{a}\hat{H}a_{b}^{\dagger}a_{j}|c\rangle+
+$$
+<p>&nbsp;<br>
+
+<p>&nbsp;<br>
+$$
+\frac{1}{2!}\sum_{ab>F}
+\sum_{ij\le F}\delta C_{ai}\delta C_{bj}\langle c |\hat{H}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}|c\rangle+\frac{1}{2!}\sum_{ab>F}
+\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}^*\langle c|a_{j}^{\dagger}a_{b}a_{i}^{\dagger}a_{a}\hat{H}|c\rangle
++\dots
+$$
+<p>&nbsp;<br>
+
+<p>
+We have already calculated the second term on the right-hand side of the previous equation
+<p>&nbsp;<br>
+$$
+\begin{align}
+\langle c | \left(\{a^\dagger_i a_a\} \hat{H} \{a^\dagger_b a_j\} \right) | c\rangle&=\sum_{pq} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle p|\hat{h}_0 |q\rangle 
+            \langle c | \left(\{a^{\dagger}_i a_a\}\{a^{\dagger}_pa_q\} 
+             \{a^{\dagger}_b a_j\} \right)| c\rangle
+\tag{15}\\
+& +\frac{1}{4} \sum_{pqrs} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle pq| \hat{v}|rs\rangle 
+            \langle c | \left(\{a^\dagger_i a_a\}\{a^{\dagger}_p a^{\dagger}_q a_s  a_r\} \{a^{\dagger}_b a_j\} \right)| c\rangle ,
+\tag{16}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+resulting in
+<p>&nbsp;<br>
+$$
+E_0\sum_{ai}|\delta C_{ai}|^2+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a-\varepsilon_i)-\sum_{ijab} \langle aj|\hat{v}| bi\rangle \delta C_{ai}^*\delta C_{bj}.
+$$
+<p>&nbsp;<br>
+
+<p>&nbsp;<br>
+$$
+\frac{1}{2!}\langle c |\left(\{a^\dagger_j a_b\} \{a^\dagger_i a_a\} \hat{V}_N  \right) | c\rangle  = 
+\frac{1}{2!}\langle c |\left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right)^{\dagger} | c\rangle 
+$$
+<p>&nbsp;<br>
+
+which is nothing but
+<p>&nbsp;<br>
+$$
+\frac{1}{2!}\langle c |  \left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right) | c\rangle^*
+=\frac{1}{2} \sum_{ijab} (\langle ij|\hat{v}|ab\rangle)^*\delta C_{ai}^*\delta C_{bj}^*
+$$
+<p>&nbsp;<br>
+
+or 
+<p>&nbsp;<br>
+$$
+\frac{1}{2} \sum_{ijab} (\langle ab|\hat{v}|ij\rangle)\delta C_{ai}^*\delta C_{bj}^*
+$$
+<p>&nbsp;<br>
+
+where we have used the relation
+<p>&nbsp;<br>
+$$ 
+\langle a |\hat{A} | b\rangle =  (\langle b |\hat{A}^{\dagger} | a\rangle)^*
+$$
+<p>&nbsp;<br>
+
+due to the hermiticity of \( \hat{H} \) and \( \hat{V} \).
+
+<p>
+We define two matrix elements
+<p>&nbsp;<br>
+$$
+A_{ai,bj}=-\langle aj|\hat{v} bi\rangle
+$$
+<p>&nbsp;<br>
+
+and
+<p>&nbsp;<br>
+$$
+B_{ai,bj}=\langle ab|\hat{v}|ij\rangle
+$$
+<p>&nbsp;<br>
+
+both being anti-symmetrized.
+
+<p>
+With these definitions we write out the energy as
+<p>&nbsp;<br>
+$$
+\begin{align}
+\langle c'|H|c'\rangle& = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a^{HF}-\varepsilon_i^{HF})+\sum_{ijab}A_{ai,bj}\delta C_{ai}^*\delta C_{bj}+
+\tag{17}\\
+&\frac{1}{2} \sum_{ijab} B_{ai,bj}^*\delta C_{ai}\delta C_{bj}+\frac{1}{2} \sum_{ijab} B_{ai,bj}\delta C_{ai}^*\delta C_{bj}^*
++O(\delta C_{ai}^3),
+\tag{18}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+which can be rewritten as
+<p>&nbsp;<br>
+$$
+\langle c'|H|c'\rangle = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\Delta E+O(\delta C_{ai}^3),
+$$
+<p>&nbsp;<br>
+
+and skipping higher-order terms we arrived
+<p>&nbsp;<br>
+$$
+\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} =E_0+\frac{\Delta E}{\left(1+\sum_{ai}|\delta C_{ai}|^2\right)}.
+$$
+<p>&nbsp;<br>
+
+<p>
+We have defined 
+<p>&nbsp;<br>
+$$
+\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle
+$$
+<p>&nbsp;<br>
+
+with the vectors 
+<p>&nbsp;<br>
+$$ 
+\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
+$$
+<p>&nbsp;<br>
+
+and the matrix 
+<p>&nbsp;<br>
+$$
+\hat{M}=\left(\begin{array}{cc} \Delta + A & B \\ B^* & \Delta + A^*\end{array}\right),
+$$
+<p>&nbsp;<br>
+
+with \( \Delta_{ai,bj} = (\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij} \).
+
+<p>
+The condition
+<p>&nbsp;<br>
+$$
+\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle \ge 0
+$$
+<p>&nbsp;<br>
+
+for an arbitrary  vector 
+<p>&nbsp;<br>
+$$ 
+\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
+$$
+<p>&nbsp;<br>
+
+means that all eigenvalues of the matrix have to be larger than or equal zero. 
+A necessary (but no sufficient) condition is that the matrix elements (for all \( ai \) )
+<p>&nbsp;<br>
+$$
+(\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij}+A_{ai,bj} \ge 0.
+$$
+<p>&nbsp;<br>
+
+This equation can be used as a first test of the stability of the Hartree-Fock equation.
+</section>
+
+
+
+</div> <!-- class="slides" -->
+</div> <!-- class="reveal" -->
+
+<script src="reveal.js/lib/js/head.min.js"></script>
+<script src="reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+    // Display navigation controls in the bottom right corner
+    controls: true,
+
+    // Display progress bar (below the horiz. slider)
+    progress: true,
+
+    // Display the page number of the current slide
+    slideNumber: true,
+
+    // Push each slide change to the browser history
+    history: false,
+
+    // Enable keyboard shortcuts for navigation
+    keyboard: true,
+
+    // Enable the slide overview mode
+    overview: true,
+
+    // Vertical centering of slides
+    //center: true,
+    center: false,
+
+    // Enables touch navigation on devices with touch input
+    touch: true,
+
+    // Loop the presentation
+    loop: false,
+
+    // Change the presentation direction to be RTL
+    rtl: false,
+
+    // Turns fragments on and off globally
+    fragments: true,
+
+    // Flags if the presentation is running in an embedded mode,
+    // i.e. contained within a limited portion of the screen
+    embedded: false,
+
+    // Number of milliseconds between automatically proceeding to the
+    // next slide, disabled when set to 0, this value can be overwritten
+    // by using a data-autoslide attribute on your slides
+    autoSlide: 0,
+
+    // Stop auto-sliding after user input
+    autoSlideStoppable: true,
+
+    // Enable slide navigation via mouse wheel
+    mouseWheel: false,
+
+    // Hides the address bar on mobile devices
+    hideAddressBar: true,
+
+    // Opens links in an iframe preview overlay
+    previewLinks: false,
+
+    // Transition style
+    transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Transition speed
+    transitionSpeed: 'default', // default/fast/slow
+
+    // Transition style for full page slide backgrounds
+    backgroundTransition: 'default', // default/none/slide/concave/convex/zoom
+
+    // Number of slides away from the current that are visible
+    viewDistance: 3,
+
+    // Parallax background image
+    //parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+    // Parallax background size
+    //parallaxBackgroundSize: '' // CSS syntax, e.g. "2100px 900px"
+
+    theme: Reveal.getQueryHash().theme, // available themes are in reveal.js/css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+});
+
+Reveal.initialize({
+    dependencies: [
+        // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
+        { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+
+        // Interpret Markdown in <section> elements
+        { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+
+        // Syntax highlight for <code> elements
+        { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+
+        // Zoom in and out with Alt+click
+        { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Speaker notes
+        { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // Remote control your reveal.js presentation using a touch device
+        //{ src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } },
+
+        // MathJax
+        //{ src: 'reveal.js/plugin/math/math.js', async: true }
+    ]
+});
+
+Reveal.initialize({
+
+    // The "normal" size of the presentation, aspect ratio will be preserved
+    // when the presentation is scaled to fit different resolutions. Can be
+    // specified using percentage units.
+    width: 1170,  // original: 960,
+    height: 700,
+
+    // Factor of the display size that should remain empty around the content
+    margin: 0.1,
+
+    // Bounds for smallest/largest possible scale to apply to content
+    minScale: 0.2,
+    maxScale: 1.0
+
+});
+</script>
+
+<!-- begin footer logo
+<div style="position: absolute; bottom: 0px; left: 0; margin-left: 0px">
+<img src="somelogo.png">
+</div>
+     end footer logo -->
+
+
+
+</body>
+</html>

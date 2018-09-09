@@ -1,0 +1,1357 @@
+<!--
+Automatically generated HTML file from DocOnce source
+(https://github.com/hplgit/doconce/)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="description" content="Quantum Computing, getting started">
+
+<title>Quantum Computing, getting started</title>
+
+
+<style type="text/css">
+/* bloodish style */
+
+body {
+  font-family: Helvetica, Verdana, Arial, Sans-serif;
+  color: #404040;
+  background: #ffffff;
+}
+h1 { font-size: 1.8em;  color: #8A0808; }
+h2 { font-size: 1.6em;  color: #8A0808; }
+h3 { font-size: 1.4em;  color: #8A0808; }
+h4 { color: #8A0808; }
+a { color: #8A0808; text-decoration:none; }
+tt { font-family: "Courier New", Courier; }
+/* pre style removed because it will interfer with pygments */
+p { text-indent: 0px; }
+hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+p.caption { width: 80%; font-style: normal; text-align: left; }
+hr.figure { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+
+div { text-align: justify; text-justify: inter-word; }
+</style>
+
+
+</head>
+
+<!-- tocinfo
+{'highest level': 1,
+ 'sections': [('Historisk tilbakeblikk og Moores lov', 1, None, '___sec0'),
+              ('Superposisjon og qubits', 1, None, '___sec1'),
+              ('Superposisjonsprinsippet', 2, None, '___sec2'),
+              ('Qubits', 2, None, '___sec3'),
+              ('Operasjoner på en qubit', 1, None, '___sec4'),
+              ('Entanglement og to-qubit tilstander', 1, None, '___sec5'),
+              ('Kvantemekaniske kretser', 1, None, '___sec6'),
+              ('CNOT kretser', 2, None, '___sec7'),
+              ('Introduction', 1, None, '___sec8'),
+              ('Hamiltonians', 2, None, '___sec9'),
+              ('Basic quantum  gates', 2, None, '___sec10'),
+              ('Qubits, gates and circuits', 3, None, '___sec11'),
+              ('Number of work qubits versus number of simulation qubits',
+               2,
+               None,
+               '___sec12'),
+              ('Number of operations', 2, None, '___sec13')]}
+end of tocinfo -->
+
+<body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "AMS"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+    
+<!-- ------------------- main content ---------------------- -->
+
+
+
+<center><h1>Quantum Computing, getting started</h1></center>  <!-- document title -->
+
+<p>
+<!-- author(s): Morten Hjorth-Jensen -->
+
+<center>
+<b>Morten Hjorth-Jensen</b> [1, 2]
+</center>
+
+<p>
+<!-- institution(s) -->
+
+<center>[1] <b>Department of Physics, University of Oslo</b></center>
+<center>[2] <b>Department of Physics and Astronomy and National Superconducting Cyclotron Laboratory, Michigan State University</b></center>
+<br>
+<p>
+<center><h4>Sep 9, 2018</h4></center> <!-- date -->
+<br>
+
+<h1 id="___sec0">Historisk tilbakeblikk og Moores lov </h1>
+
+<p>
+I 1946 framsto
+ENIAC (Electronic Numerical Integrator And Computer), som kunne addere
+5000 tall per sekund, som det store teknologiske
+gjennombruddet. Dens reknekraft svarte alts&#229; til noen tusen flytende talls 
+operasjoner 
+per sekund (FLOPS). Idag har vi maskiner som kan utf&#248;re trillioner av FLOPS.
+ENIAC besto av 
+
+<ul>
+  <li> ca. 19000 vakuumr&#248;r</li>
+  <li> veide ca. 30 tonn</li>
+  <li> brukte ca 174 kW, eller 233 hk</li>
+  <li> trengte ca. 150 m$^2$ med plass (30 ft \( \times \) 50 ft)</li>
+</ul>
+
+Et ekspertpanel i 1949 uttrykte forh&#229;pningsfullt f&#248;lgende
+``.... {\em en eller annen dag kan vi utvikle en like kraftig datamaskin med
+bare 1500 vakuumr&#248;r, med vekt p&#229; kanskje 1500 kg og et forbruk p&#229;
+ca. 10 kW......}
+Resten er vel historie...? Transistoren som blei introdusert p&#229;
+begynnelsen av 50-tallet revolusjonerte fullstendig feltet, og innen f&#229;
+&#229;r var vakuumr&#248;r teknologien akterutseilt.
+
+<p>
+Idag representeres bit 0 og 1 vha. spenningsforksjeller.
+Med dagens teknologi brukes ca. 100000 elektroner for &#229;
+lagre en bit med informasjon og en chip har en utstrekning p&#229; noen
+f&#229; micrometer. Transistoren, som er arbeidshesten i enhver datamaskin,
+best&#229;r i dag av noen  f&#229; hundre elektroner. Skal miniatyriseringen
+av elektroniske kretser fortsette med uforminska styrke, vil vi,
+dersom vi ekstrapolerer trenden i forminskning fra 
+1960 til &#229;r 2010 
+knapt trenge et elektron for &#229; lagre en bit med informasjon.
+Det sier seg sj&#248;l at f&#248;r eller siden vil kvantemekaniske
+effekter begynne &#229; spille en viktig rolle, og dagens    
+teknologi vil m&#248;te veggen dersom ikke nye m&#229;ter &#229; bygge kretser
+utvikles. 
+Denne ekstrapolasjonen kalles ogs&#229; Moore sin lov, etter Gordon Moore
+ved Intel,
+kjent for sin observasjon i 1965, kun fire &#229;r etter at den f&#248;rst
+integrerte kretsen kom p&#229; markedet, at antall transistorer per 
+integrert krets ville doble hver 18 m&#229;ned. Tabellen her viser
+antall transistorer per krets fra 1971 til Pentium 4 prosessorern
+fra 2000.
+
+<p>
+<table border="1">
+<thead>
+<tr><th align="center">      Prosessor      </th> <th align="center">&#229;r</th> <th align="center">antall transistorer per krets</th> </tr>
+</thead>
+<tbody>
+<tr><td align="left">   4004                     </td> <td align="right">   1971       </td> <td align="right">   2250                             </td> </tr>
+<tr><td align="left">   8008                     </td> <td align="right">   1972       </td> <td align="right">   2500                             </td> </tr>
+<tr><td align="left">   8080                     </td> <td align="right">   1974       </td> <td align="right">   5000                             </td> </tr>
+<tr><td align="left">   8086                     </td> <td align="right">   1978       </td> <td align="right">   29000                            </td> </tr>
+<tr><td align="left">   286                      </td> <td align="right">   1982       </td> <td align="right">   120000                           </td> </tr>
+<tr><td align="left">   386[tm] processor        </td> <td align="right">   1985       </td> <td align="right">   275000                           </td> </tr>
+<tr><td align="left">   486[tm] DX processor     </td> <td align="right">   1989       </td> <td align="right">   1180000                          </td> </tr>
+<tr><td align="left">   Pentium 256 processor    </td> <td align="right">   1993       </td> <td align="right">   3100000                          </td> </tr>
+<tr><td align="left">   Pentium II  processor    </td> <td align="right">   1997       </td> <td align="right">   7500000                          </td> </tr>
+<tr><td align="left">   Pentium III processor    </td> <td align="right">   1999       </td> <td align="right">   24000000                         </td> </tr>
+<tr><td align="left">   Pentium 4   processor    </td> <td align="right">   2000       </td> <td align="right">   42000000                         </td> </tr>
+</tbody>
+</table>
+<p>
+Det er her kvantemekanikken kommer inn. 
+Kvantemekanikk tilbyr en enkel og naturlig representasjon av bits:
+      vi kan f.eks. tenke p&#229; tilstander i et atom, hvor
+bit 0 er gitt ved normaltilstanden (grunntilstanden) mens bit 1 er gitt
+ved en elller annen eksitert tilstand.
+
+<p>
+En enda enklere tiln&#230;rming  er &#229; se p&#229; enkeltelektroner. 
+Kan vi isolere
+et enkelt elektron, kan vi vha. et ytre p&#229;satt magnetfelt ha spinn
+egenverdier \( +1/2 \) eller \( -1/2 \). Den f&#248;rste kan da tilsvare bit 0 mens
+den andre spinnegenveriden svarer til bit 1.
+
+<p>
+En slik kvantemekanisk representasjon av en bit kalles <b>QUBIT</b> og det leder
+oss til neste avsnitt!
+
+<h1 id="___sec1">Superposisjon og qubits </h1>
+
+<h2 id="___sec2">Superposisjonsprinsippet </h2>
+
+<p>
+Det kvantemekaniske superposisjonsprinsippet spiller en sentral
+rolle i alle betraktninger om kvante informasjonsteori, de fleste 
+s&#229;kalla 'gedanken' eksperiment og paradokser i kvantemekanikk.
+
+<p>
+Vi har i kapittel 2 allerede stifta bekjentskap med dobbelspalt eksperimentene,
+som i f&#248;lge Feynman har i seg 'hjerte av kvantemekanikken'. 
+De viktigste bestandelene i dette eksperimentet er en partikkel kilde,
+en dobbeltspalt innretning og en skjerm hvor vi kan observere eventuelle
+interferens m&#248;nster. Interferens m&#248;nstrene kan kun forst&#229;s dersom
+vi antar at materien utviser en b&#248;lgenatur. Denne type eksperiment har blitt
+gjort med flere partikkel typer, fra fotoner, via elektroner, til
+n&#248;ytroner og atomer. 
+Kvantemekanisk er tilstanden vi observerer gitt ved en koherent
+superposisjon
+
+$$
+\begin{equation}
+   \Psi(x,t)=\Psi(x,t)_a+\Psi(x,t)_b,
+\label{_auto1}
+\end{equation}
+$$
+
+hvor indeks \( a \) svarer til en tilstand med bare spalt \( a \) mens 
+indeks \( b \) er den tilsvarende tilstanden for spalt \( b \).
+En slik <b>superposisjon</b> av kvantemekaniske tilstander kalles for koherente
+tilstander (kvante koherens) og f&#248;lger fra postulatet om materiens
+b&#248;lge og partikkel natur.
+Det finnes per dags ingen eksperiment som tillater oss &#229; si
+bestemt hvilken spalt f.eks. et enkelt elektron g&#229;r gjennom. 
+&#248;nsker vi &#229; gj&#248;re det, vil en eventuell m&#229;ling
+kreve at vi vekselvirker med partikkelen, noe som leder til
+<b>dekoherens</b>, dvs. tap av interferens.
+Kun n&#229;r vi ikke har noen kunnskap om hvilken spalt partikkelen
+passerte kan vi observe interferens! Det er klart at dette strider med
+v&#229;r oppfatning av en partikkel som en lokalisert st&#248;rrelse.
+
+<h2 id="___sec3">Qubits </h2>
+
+<p>
+I informasjonsteori er den fundamentale enheten en bit. 
+Den utgj&#248;r et system med to verdier, '0' eller '1'. 
+I sin klassiske realisering, kan vi tenke oss en bit som en mekanisk
+bryter, et system  med to forskjellige tilstander. Vi kunne tenke
+oss ogs&#229; at energi, eller potensialforksjellen mellom de to
+tilstandene er s&#229;pass stor at en ikke kan ha spontane overganger
+fra f.eks. bit '0' til bit '1'.
+
+<p>
+Den kvantemekaniske analog til den klassiske bit er den s&#229;kalla
+<em>qubit</em>, og p&#229; lik linje med sin klassiske partner, m&#229; den
+ha minst to tilstander, som vi heretter kaller for \( |0\rangle \) og
+\( |1\rangle \). I prinsippet kan ethvert kvantemekanisk system som har
+minst to tilstander tjene som en basis for en qubit, tenk bare p&#229; et 
+elektron i et magnetfelt. Avhengig av magnetfeltets retning, kan vi ha 
+kvantetallene \( m_s=\pm 1/2 \).  Disse to kvantetallene kan tjene som
+basis for en qubit.
+I slutten av dette kapitlet skal vi se p&#229; et eksperimentelt
+oppsett som manipulerer to qubits.
+
+<p>
+Alt dette h&#248;res kanskje ikke s&#229; banebrytende. Men kopler vi superposisjons
+prinsippet til en slik qubit, kan vi lage oss en generell qubit tilstand
+
+$$
+\begin{equation}
+    |q\rangle = \alpha |0\rangle + \beta |1\rangle,
+\label{_auto2}
+\end{equation}
+$$
+
+med den egenskap at \( |\alpha|^2+|\beta|^2=1 \). Det betyr ikke at qubiten 
+har en verdi et sted mellom '0' og '1', men heller at qubiten er i en
+kvantemekanisk superposisjon av begge tilstander, og dersom vi foretar
+en m&#229;ling p&#229; denne tilstanden, finner vi en sannsynlighet
+\( |\alpha|^2 \) for at den er i tilstand '0' og \( |\beta|^2 \)
+for at den er i tilstand '1'. Qubiten er i en koherent superposisjon
+av to kvantemekaniske basis tilstander.  
+Et enkelt eksempel er
+
+$$
+\begin{equation}
+    |q\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle),
+\label{_auto3}
+\end{equation}
+$$
+
+som betyr at vi har 50\% sannsynlighet for at qubiten er i tilstand
+'0' og 50\% sannsynlighet for at den er i tilstand '1'.
+
+<p>
+Hvorfor er anvendelsen av det kvantemekaniske superposisjonsprinsippet
+av interesse? Og hva er nytt i forhold til en klassisk representasjon?
+
+<p>
+La oss se p&#229; et tilfelle hvor vi har en kvantemekanisk
+tilstand med &#229;tte komponenter, dvs. vi har superposisjonen
+
+$$
+\begin{equation}
+    |\psi\rangle = a_0|\psi\rangle_0+a_1|\psi\rangle_1+a_2|\psi\rangle_2+a_3|\psi\rangle_3+a_4|\psi\rangle_4+a_5|\psi\rangle_5+a_6|\psi\rangle_6+a_7|\psi\rangle_7,
+\label{eq:dataord}
+\end{equation}
+$$
+
+hvor hver komponent \( |\psi\rangle_i \) er enten i en tilstand 
+'0' eller '1'. Vi kunne f.eks. tenke oss at hver \( |\psi\rangle_i \) 
+var et elektron med enten \( m_s=-1/2 \) eller \( m_s=+1/2 \). Koeffisientene
+\( a_i \) er imagin&#230;re.
+
+<p>
+Dersom vi &#248;nsker &#229; representere denne tilstanden i en klassisk datamaskin
+for en 
+eventuell kvantemekanisk beregning, m&#229; vi lagre hver av koeffisientene
+\( a_i \) et sted i minnet. 
+Vi trenger da et ord med 128 bits for 
+&#229; representere hver \( a_i \) som er imagin&#230;r i en konvensjonell datamaskin.
+Et alternativ er alltid &#229; skrive dataene ut p&#229;
+disk. Men dersom vi ender opp med  &#229; lese og skrive store datamengder  
+til og fra ei fil, 
+senker dette hastigheten p&#229; programmet v&#229;rt, da lesing 
+til/fra ei fil tar lengre tid enn &#229; aksessere data i internminnet
+til en datamaskin.
+I v&#229;rt tilfelle trenger vi &#229;tte adresser
+i minnet for &#229; lagre en bestemt kombinasjon
+av koeffisientene \( a_i \). Det burde ikke v&#230;re vanskelig &#229;
+overbevise seg sj&#248;l at dersom antall elektroner &#248;ker 
+(systemet v&#229;rt blir st&#248;rre), &#248;ker
+ogs&#229; v&#229;rt behov for minne.
+Med dagens teknologi, kan vi lagre informasjon som svarer til
+ca. \( \sim 2^{30}-2^{35} \) i minnet p&#229; de beste datamaskinene vi har
+tilgjengelig.  Det vil da svare til et sted mellom 30 og 35 elektroner
+som kan ha spinn opp eller ned. Generelt har vi et totalt antall
+tilstander gitt ved \( 2^n \), hvor \( n \) kan v&#230;re antall elektroner 
+i to tilstander, spinn opp eller ned.
+
+<p>
+Hvordan omg&#229; dette problemet?  
+Det kvantemekaniske superposisjonsprinsippet kommer oss her til
+unnsetting. En tilstand som den beskrevet i likning \eqref{eq:dataord},
+gitt ved en bestemt kombinasjon av koeffisientene \( a_i \), kan da tenkes
+lagret som et enkelt ord i et enkelt kvanteregister, 
+dvs. kun en adresse,
+i motsetning til de &#229;tte vi trenger for en klassisk datamaskin.
+Dersom vi f.eks. kan manipulere
+\( n=500 \) qubits,  har vi \( 2^{500} \) mulige tilstander, som er mye st&#248;rre
+enn det estimerte antallet atomer i verdensrommet.
+Kvantemekanikk gir oss dermed et potensiale for informasjonsbehandling 
+langt utover det en klassiske datamaskin kan  gj&#248;re.
+
+<p>
+Hvordan en skal lage slike kvanteregistre er dog ikke klart. 
+Det en har klart eksperimentelt hittil er &#229; lage 
+enkle kvantemekaniske kretser hvor en manipulerer noen f&#229;
+qubits.
+
+<h1 id="___sec4">Operasjoner p&#229; en qubit  </h1>
+
+<p>
+Innsikt i noen av de mer grunnleggende operasjonene som danner
+grunnlaget for en kvantedatamaskin og kvanteinformasjons teori, finnes
+ved &#229; studere et tenkt oppsett for en enkel str&#229;lesplitter,
+f.eks. gitt ved endringen av polarisasjonsretningen til en innkommende
+lysstr&#229;le.
+
+<p>
+Vi kan tenke oss at vi har en innkommende str&#229;le som kan v&#230;re
+i to tilstander, med lik sannsynlighet. I v&#229;rt tilfelle ser vi for
+oss en partikkel som enten kommer inn ovenifra (tilstand  \( |0\rangle \))
+eller nedenfra (tilstand  \( |1\rangle \)) mot str&#229;lesplitteren. 
+Str&#229;len p&#229;virkes deretter av en str&#229;le splitter. 
+Str&#229;len splittes i to, med lik sannsynlighet for at partikkelen
+kommer ut ovenfor eller nedenfor. En enkel matematisk beskrivelse av
+denne str&#229;lesplitteren er gitt ved den s&#229;kalte Hadamard
+transformasjonen \( \hat{H} \), hvis virkning p&#229; en tilstand
+\( |0\rangle \) eller \( |1\rangle \) er
+
+$$
+\begin{equation}
+    \hat{H}|0\rangle=
+    \frac{1}{\sqrt{2}}(|0\rangle +|1\rangle),
+\label{_auto4}
+\end{equation}
+$$
+
+og
+
+$$
+\begin{equation}
+    \hat{H}|1\rangle=
+    \frac{1}{\sqrt{2}}(|0\rangle -|1\rangle).
+\label{_auto5}
+\end{equation}
+$$
+
+Vi merker oss ogs&#229; at
+
+$$
+\begin{equation}
+    \hat{H}\hat{H}|0\rangle=
+    \hat{H}\frac{1}{\sqrt{2}}(|0\rangle +|1\rangle)
+    =|0\rangle,
+\label{_auto6}
+\end{equation}
+$$
+
+og
+
+$$
+\begin{equation}
+    \hat{H}\hat{H}|1\rangle=
+    \hat{H}\frac{1}{\sqrt{2}}(|0\rangle -|1\rangle)
+    =|1\rangle.
+\label{_auto7}
+\end{equation}
+$$
+
+<p>
+Virkningen av denne kvantemekaniske transformasjonen er alts&#229; 
+&#229; lage
+en midlertidig tilstand som best&#229;r av en superposisjon av
+bit '0' og bit '1'. Klassisk er ikke det mulig. 
+En alternativ beskrivelse er gitt ved en matriserepresentasjon
+av tilstandene \( |0\rangle \) og \( |1\rangle \) og transformasjonen
+\( \hat{H} \), gitt ved
+
+$$
+\begin{equation}
+   |0\rangle=\left(\begin{array}{c} 1 \\ 0\end{array}   \right),
+\label{_auto8}
+\end{equation}
+$$
+
+
+$$
+\begin{equation}
+   |1\rangle=\left(\begin{array}{c} 0 \\ 1\end{array}   \right),
+\label{_auto9}
+\end{equation}
+$$
+
+og
+
+$$
+\begin{equation}
+   \hat{H}=\frac{1}{\sqrt{2}}
+   \left(\begin{array}{cc} 1 & 1 \\ 1& -1\end{array}   \right).
+\label{_auto10}
+\end{equation}
+$$
+
+Overbevis deg selv om at dette stemmer!
+
+<p>
+Det finnes flere slike operasjoner p&#229; qubits. Den s&#229;kalte 
+NOT-kretsen, hvor bit '0' skifter til bit '1', eller omvendt,
+kan skrives som
+
+$$
+\begin{equation}
+   \hat{H}_{\mathrm{NOT}}=   
+   \left(\begin{array}{cc} 0 & 1 \\ 1& 0\end{array}   \right).
+\label{_auto11}
+\end{equation}
+$$
+
+Vi ser da at
+
+$$
+\begin{equation}
+   \hat{H}_{\mathrm{NOT}}|0\rangle=   
+   \left(\begin{array}{cc} 0 & 1 \\ 1& 0\end{array}\right)
+   \left(\begin{array}{c} 1 \\ 0\end{array}   \right)=
+   \left(\begin{array}{c} 0 \\ 1\end{array}   \right)=|1\rangle,
+\label{_auto12}
+\end{equation}
+$$
+
+og
+
+$$
+\begin{equation}
+   \hat{H}_{\mathrm{NOT}}|1\rangle=   
+   \left(\begin{array}{cc} 0 & 1 \\ 1& 0\end{array}\right)
+   \left(\begin{array}{c} 0 \\ 1\end{array}   \right)=
+   \left(\begin{array}{c} 1 \\ 0\end{array}   \right)=|0\rangle.
+\label{_auto13}
+\end{equation}
+$$
+
+Det siste er ikke noe annet enn en alternativ m&#229;te &#229;
+uttrykke virkningen av en standard NOT-krets i elektronikk.
+
+<p>
+En annen viktig operasjon er den s&#229;kalte faseskiftsoperasjonen, hvor vi 
+kan skifte fasen til en av amplitudene ved hjelp av f.eks. laserlys
+med en bestemt frekvens. Matematisk kan vi uttrykke denne operasjonen
+som
+
+$$
+\begin{equation}
+   \hat{H}_{\Phi}|0\rangle=e^{i\phi}|0\rangle,
+\label{_auto14}
+\end{equation}
+$$
+
+og
+
+$$
+\begin{equation}
+   \hat{H}_{\Phi}|1\rangle=|1\rangle,
+\label{_auto15}
+\end{equation}
+$$
+
+eller med operatoren p&#229; f&#248;lgende form
+
+$$
+\begin{equation}
+   \hat{H}_{\Phi}=   
+   \left(\begin{array}{cc} e^{i\phi} & 0 \\ 0& 1\end{array}   \right).
+\label{_auto16}
+\end{equation}
+$$
+
+<p>
+N&#229;r vi skal lage kvantemekaniske kretser, kan vi tenke oss
+at flere slike operasjoner p&#229; en qubit tilstander utgj&#248;r
+en bestemt endelig krets.
+
+<p>
+Hittil har vi sett p&#229; en begynnelsestilstand som bare best&#229;r av
+en tilstand. 
+Vi kan ogs&#229; lage en 
+begynnelsetilstand  gitt ved en superposisjon, f.eks.
+
+$$
+\begin{equation}
+    |q\rangle_{in} = \alpha |0\rangle_{in} + \beta |1\rangle_{in},
+\label{_auto17}
+\end{equation}
+$$
+
+hvor \( \alpha \) og \( \beta \) er to imagin&#230;re konstanter. 
+Virkningen av v&#229;r str&#229;lesplitter er gitt ved
+
+$$
+\begin{equation}
+    |q\rangle_{ut}=\hat{H}|q\rangle_{in} = 
+    \frac{1}{\sqrt{2}}((\alpha+\beta)|0\rangle_{ut} + 
+    (\alpha-\beta)|1\rangle_{ut}),
+\label{_auto18}
+\end{equation}
+$$
+
+hvor \( \alpha+\beta \) er sannsynlighetsamplituden for &#229; finne
+partikkelen i den &#248;vre utg&#229;ende str&#229;len mens \( \alpha-\beta \)
+er den tilsvarende amplituden for &#229; finne den i nedre utg&#229;ende
+str&#229;len. Velger vi enten \( \alpha=0 \) eller \( \beta=0 \), ser vi at
+partikkelen har like stor sannsynlighet for &#229; v&#230;re i den nedre
+utg&#229;ende str&#229;len som den &#248;vre. Velger vi \( \alpha=\beta \) vil partikkelen
+definitivt komme ut i den &#248;vre str&#229;len. 
+Virker vi en gang til p&#229; den resulterende tilstanden f&#229;r vi tilbake
+begynnelsestilstanden,
+
+$$
+\begin{equation} 
+   |q\rangle_{ut}=\hat{H}\hat{H}|q\rangle_{in}=|q\rangle_{in}.
+\label{_auto19}
+\end{equation}
+$$
+
+Som et siste eksempel kan vi tenke oss en krets representert vha. f&#248;lgende
+operasjoner
+
+$$
+\begin{equation} 
+   \hat{H}\hat{\Phi}\hat{H}|0\rangle,
+\label{_auto20}
+\end{equation}
+$$
+
+hvis resultat er
+
+$$
+\begin{equation}
+    \frac{1}{\sqrt{2}}((e^{i\phi}+1)|0\rangle + 
+    (e^{i\phi}-1)|1\rangle).
+\label{_auto21}
+\end{equation}
+$$
+
+Dersom \( \phi=0 \) f&#229;r vi bit '0' som resultat mens for \( \phi=\pi \)
+finner bit '1' som sluttresultat. Det betyr at faseskiftet \( \phi \) 
+gj&#248;r en i stand til &#229; veksle mellom bit '0' eller bit '1'.
+
+<h1 id="___sec5">Entanglement og to-qubit tilstander </h1>
+
+<p>
+Forestill deg n&#229; en partikkelkilde som sender ut et par med partikler,
+slik at en partikkel dukker opp til venstre mens den andre kommer ut til
+h&#248;yre for kilden. Vi kan tenke oss at kilden er slik innretta at
+partiklene som sendes ut kommer med motsatt retta bevegelsesmengder, eller
+spinn, eller polarisasjonsretning for &#229; nevne noen muligheter.
+Vi gir partikkelen til venstre merkelappen partikkel '1' mens partikkelen
+til h&#248;yre merkes som partikkel '2'. Dersom vi beholder eksemplet 
+med str&#229;lesplitteren, er det slik at dersom partikkel '1' kommer ut
+i den &#248;vre str&#229;len, vil alltid partikkel '2' komme ut i den
+nedre str&#229;len til h&#248;yre. I v&#229;r bit-sjargong, betyr det at dersom
+partikkel '1' kommer ut med bit '0', m&#229; partikkel '2' komme ut med
+bit '1', eller motsatt. Kvantemekanisk kan vi tenke oss denne tilstanden
+av to partikler, eller to qubits om vi vil, gitt ved
+to qubits kombinasjonen
+
+$$
+\begin{equation}
+   \frac{|0\rangle_1 |1\rangle_2 + |1\rangle_1|0\rangle_2}{\sqrt{2}},
+\label{eq:superent}
+\end{equation}
+$$
+
+hvor indeksene '1' og '2' henspeiler p&#229; henholdsvis partikkel 1 og 2. 
+Denne likningen beskriver det som kalles for en entangled tilstand (kryssa
+tilstand) med den interessante egenskap at ingen av de to qubiten har en bestemt verdi. Men det vi finner ut om denne kvantetilstanden ved m&#229;ling
+p&#229; en av qubitene (partiklene), en m&#229;ling hvis resultat ikke er kjent
+a priori, er at den andre qubiten har motsatt verdi av f.eks. spinn
+eller bevegelsesmengde.   
+Det ser ut som om det kan v&#230;re kvantekorrelasjoner, sj&#248;l om
+m&#229;lingen p&#229; partiklene foretas n&#229;r partiklene er langt
+borte. Denne kvantemekaniske ikke-lokaliteten ga opphav til
+den store disputten mellom Einstein og Bohr om paradokser
+i kvantemekanikken. Tiltsanden i siste likning kalles ogs&#229; for en 
+Bell tilstanden (etter den irske fysikeren John Bell), eller EPR par 
+(etter Einstein, Podolsky
+og Rosen) og 
+er en viktig byggestein i kvanteinformasjonsteori, teleportasjon og
+kryptering.
+Korrelasjonene som framkommer i slike tilstander
+ har v&#230;rt heftig debattert siden artikkelen til  
+Einstein, Podolsky
+og Rosen i 1935. 
+John Bell viste at m&#229;lingskorrelasjonene mellom slike kvantemekaniske
+tilstander er mye sterkere enn de som finnes blant klassiske
+systemer.
+
+<p>
+I v&#229;r diskusjon skal vi n&#248;ye oss med &#229; sl&#229; fast, p&#229; lik
+linje med dobbelspalt eksperiment hvor vi ikke kan fastsl&#229; hvorvidt
+partikkelen g&#229;r gjennom spalt 1 eller to, at den kvantemekaniske
+superposisjonen slik vi ser den i likning \eqref{eq:superent} ikke 
+tillater oss &#229; si hvilke av de to en-qubit mulighetene 
+g&#229;r inn i tilstanden. Vi kan ikke si om qubit '1', partikkel '1',
+er i  bit '0' eller '1', likes&#229; om qubit '2', partikkel '2', er i  
+bit '0' eller '1'. Men, dersom vi m&#229;ler p&#229; qubit '1' kan vi umiddelbart
+si noe om hva slags tilstand qubit '2' er i. Disse betraktningene leder oss
+til sp&#248;rsm&#229;let om hvordan vi kan lage og observere s&#229;kalte 'entangled'
+tilstander.
+
+<p>
+En mulighet er ved henfall av partikler med spinn 0 til to partikler
+med halvtallig spinn. Det totale spinnet m&#229; v&#230;re bevart,
+noe som betyr at de to utg&#229;ende partiklene m&#229; ha motsatt retta
+spinn. Et slikt eksempel er et n&#248;ytralt pion, et boson (meson) med
+masse 134 MeV/c$^2$, som kan henfalle til et elektron og et
+positron, en partikkel med elektronets masse men motsatt ladning, et
+s&#229;kalt antielektron. Dersom det kun er spinnets verdi som tillater
+oss &#229; skille mellom mulige utkommer ved kilden, vil den resulterende 
+to qubit kvantetilstanden se ut som f&#248;lger
+
+$$
+\begin{equation}
+   \frac{|+\rangle_1 |-\rangle_2 - |-\rangle_1|+\rangle_2}{\sqrt{2}},
+\label{eq:superent1}
+\end{equation}
+$$
+
+hvor \( + \) og \( - \) henspeiler til henholdsvis spinn opp og spinn ned, mens
+indeksene 1 og 2 refererer til partikkel '1' og '2'. 
+En m&#229;ling p&#229; partikkel '1' vil umiddelbart ogs&#229; fastlegge
+spinnet til partikkel '2'. Det er slik virkning 'uten vekselvirkning'
+samt det kvantemekaniske superposisjonsprinsippet som danner grunnlaget
+for det nye forskningsfeltet
+om kvantedatamaskiner og kvante informasjonsteori.
+
+<p>
+Vi avslutter dette avsnittet med en kort beskrivelse av to-qubit tilstander.
+I neste avsnitt skal vi se hvordan vi kan bruke slike to-qubit tilstander
+til &#229; simulere kvantemekaniske kretser.
+
+<p>
+En en-qubit tilstand er gitt ved
+
+$$
+\begin{equation}
+    |q\rangle_{1} = \alpha_1 |0\rangle_{1} + \beta_1 |1\rangle_{1},
+\label{_auto22}
+\end{equation}
+$$
+
+hvor indeksen '1' henviser til qubit '1'. Setter vi sammen en slik
+en-qubit tilstand sammen med en annen en-qubit tilstand har vi
+$$
+\begin{equation}
+     |q\rangle_{12}= |q\rangle_{1} |q\rangle_{2}
+\label{_auto23}
+\end{equation}
+$$
+
+eller
+
+$$
+\begin{equation}
+   |q\rangle_{12}=\alpha_1 \alpha_2|0\rangle_1|0\rangle_2 +
+                  \alpha_1 \beta_2|0\rangle_1|1\rangle_2 +
+                  \beta_1 \alpha_2|1\rangle_1|0\rangle_2 +
+                  \beta_1 \beta_2|1\rangle_1|1\rangle_2,
+\label{_auto24}
+\end{equation}
+$$
+
+slik at v&#229;re nye basistilstander blir
+\( |0\rangle_1|0\rangle_2 \), \( |0\rangle_1|1\rangle_2 \), \( |1\rangle_1|0\rangle_2 \) 
+og \( |1\rangle_1|1\rangle_2 \).
+
+<p>
+Dersom alle koeffisientene er forskjellige fra null, kan vi lage en 
+tilstand som n&#229; er en superposisjon av fire ulike tilstander.
+
+<p>
+Slik kan vi fortsette med flere qubits og lage superposisjoner 
+av flere og mer kompliserte basistilstander.
+
+<h1 id="___sec6">Kvantemekaniske kretser </h1>
+
+<p>
+I elektronikk er det slik at vi kan bygge alle mulige  type kretser vha. kun
+to basiskretser, en s&#229;kalt NOT krets og en AND krets. Disse kan sl&#229;s
+sammen til en NAND krets, slik at  i grunnen trenger vi kun en basis krets.
+
+<p>
+Enhver kvantekrets m&#229; kunne formuleres som virkningen
+av en eller annen kvantemekanisk operator \( \hat{H} \). Generelt har vi da at
+
+$$
+\begin{equation} 
+   |q\rangle_{ut}=\hat{H}|q\rangle_{in},
+\label{_auto25}
+\end{equation}
+$$
+
+men siden \( \hat{H} \) m&#229;  v&#230;re hermitesk, dvs.
+\( \hat{H}^{\dagger}=\hat{H} \) og \( \hat{H}^{\dagger}\hat{H}=1 \), har vi
+
+$$
+\begin{equation} 
+   \hat{H}^{\dagger}|q\rangle_{ut}=\hat{H}^{\dagger}\hat{H}|q\rangle_{in}=
+   |q\rangle_{in}.
+\label{_auto26}
+\end{equation}
+$$
+
+Vi ser av siste likning at vi kan f&#229; ut 
+begynnelsestilstanden utifra den 
+inverse transformasjonen \( \hat{H}^{\dagger}|q\rangle_{ut} \) p&#229; sluttilstanden.
+Det betyr igjen at vi m&#229; kunne dedusere fra utgangs-biten(e)
+hvilken verdi inngangs-biten(e) hadde. En slik krets kalles
+reversibel og skiller seg fra en klassisk irreversibel  
+AND krets.
+
+<p>
+Det er mulig &#229; vise innenfor informasjonsteori at en kan lage en
+reversibel Turingmaskin vha. kun to basis kretser, p&#229; lik linje med
+en klassisk irreversibel Turingmaskin basert p&#229; kun en NAND krets.
+Dvs. at vi kan lage oss alle mulige typer reversible kretser vha. kun
+to basis kretser. Disse er en NOT krets og en CNOT krets.
+
+<p>
+En CNOT krets, eller kontrollert NOT som den kalles, har blitt demonstrert
+vha. b&#229;de ionefelle teknikker, hvor enkeltioners kvantemekaniske
+tilstander representerer bit '0' og '1', og kjernemagnetisk resonans 
+teknikker.
+
+<p>
+Vi skal diskutere disse to kretsene i neste underavsnitt og avslutte
+med en faktisk realisering av en CNOT krets.
+
+<h2 id="___sec7">CNOT kretser </h2>
+
+<p>
+En CNOT krets beskriver vekselvirkningen mellom to qubits.
+Den ene qubiten kalles for kontroll-biten mens den andre kalles
+target-biten. Vi bruker indeks \( c \) for den f&#248;rste og indeks \( t \) for den
+siste. Dens virkning er slik at n&#229;r kontrollbiten har verdi bit '0',
+forblir targetbiten ogs&#229; uforandra. Dersom kontroll-biten har verdien
+bit '1', forandres target-biten fra f.eks. bit '0'  til bit '1', eller
+motsatt, dvs. virkningen p&#229; target-biten er som en NOT krets
+dersom kontroll-biten har verdi bit '1'. 
+Vi kan derfor tenke oss en kvantemekanisk begynnelsestilstand
+gitt ved en qubit for kontroll-biten og en qubit for target-biten.
+Virkningen kan da oppsummeres som f&#248;lgende
+
+$$
+\begin{equation}
+   |0\rangle_{c}  |0\rangle_{t}\rightarrow
+   |0\rangle_{c}  |0\rangle_{t},
+\label{_auto27}
+\end{equation}
+$$
+
+
+$$
+\begin{equation}
+   |0\rangle_{c}  |1\rangle_{t}\rightarrow
+   |0\rangle_{c}  |1\rangle_{t},
+\label{_auto28}
+\end{equation}
+$$
+
+
+$$
+\begin{equation}
+   |1\rangle_{c}  |0\rangle_{t}\rightarrow
+   |1\rangle_{c}  |1\rangle_{t},
+\label{_auto29}
+\end{equation}
+$$
+
+og
+
+$$
+\begin{equation}
+   |1\rangle_{c}  |1\rangle_{t}\rightarrow
+   |1\rangle_{c}  |0\rangle_{t}.
+\label{_auto30}
+\end{equation}
+$$
+
+Matematisk kan vi uttrykke en CNOT krets som en
+\( 4\times 4 \) matrise
+
+$$
+\begin{equation}
+   \hat{H}_{\mathrm{CNOT}}=
+    \left(\begin{array}{cccc} 1 & 0 & 0 &0  \\ 
+                              0 & 1 & 0 &0  \\
+                              0& 0 & 0 &1  \\
+                              0 & 0 & 1 &0\end{array}\right),
+\label{_auto31}
+\end{equation}
+$$
+
+som virker p&#229; basistilstandene
+\( |0\rangle_c|0\rangle_t \), \( |0\rangle_c|1\rangle_t \), \( |1\rangle_c|0\rangle_t \) 
+og \( |1\rangle_c|1\rangle_t \). Som vektorer kan vi skrive disse tilstandene
+p&#229; f&#248;lgende vis
+
+$$
+\begin{equation}
+   |0\rangle_c|0\rangle_t=\left(\begin{array}{c} 1  \\ 
+                                                 0  \\
+                                                 0  \\
+                                                 0  \end{array}\right),
+\label{_auto32}
+\end{equation}
+$$
+
+
+$$
+\begin{equation}
+   |0\rangle_c|1\rangle_t=\left(\begin{array}{c} 0  \\ 
+                                                 1  \\
+                                                 0  \\
+                                                 0  \end{array}\right),
+\label{_auto33}
+\end{equation}
+$$
+
+
+$$
+\begin{equation}
+   |1\rangle_c|0\rangle_t=\left(\begin{array}{c} 0  \\ 
+                                                 0  \\
+                                                 1  \\
+                                                 0  \end{array}\right),
+\label{_auto34}
+\end{equation}
+$$
+
+og
+
+$$
+\begin{equation}
+   |1\rangle_c|1\rangle_t=\left(\begin{array}{c} 0  \\ 
+                                                 0  \\
+                                                 0  \\
+                                                 1  \end{array}\right).
+\label{_auto35}
+\end{equation}
+$$
+
+<p>
+Som et eksempel kan vi rekne
+
+$$
+\begin{equation}
+   \hat{H}_{\mathrm{CNOT}}|1\rangle_c|1\rangle_t=
+    \left(\begin{array}{cccc} 1 & 0 & 0 &0  \\ 
+                              0 & 1 & 0 &0  \\
+                              0& 0 & 0 &1  \\
+                              0 & 0 & 1 &0\end{array}\right)
+                              \left(\begin{array}{c} 0  \\ 
+                                                 0  \\
+                                                 0  \\
+                                                 1  \end{array}\right)=
+\left(\begin{array}{c} 0  \\ 
+                                                 0  \\
+                                                 1  \\
+                                                 0  \end{array}\right),
+\label{_auto36}
+\end{equation}
+$$
+
+som er 
+\( |1\rangle_c|0\rangle_t \), dvs. target-biten forandrer verdi fra bit '1'
+til bit '0' n&#229;r kontroll-biten har verdi bit '1'.
+
+<h1 id="___sec8">Introduction </h1>
+
+<p>
+A theoretical understanding of the behavior of many-body systems is a
+great challenge and provides fundamental insights into quantum
+mechanical studies, as well as offering potential areas of
+applications.  However, apart from some few analytically solvable
+problems, the typical absence of an exactly solvable contribution to
+the many-particle Hamiltonian means that we need reliable numerical
+many-body methods.  These methods should allow for controlled
+approximations and provide a computational scheme which accounts for
+successive many-body corrections in a systematic way.  Typical
+examples of popular many-body methods are coupled cluster methods,
+various types of Monte Carlo methods, perturbative expansions, Green's
+function methods, the density-matrix renormalization group, ab initio
+density functional theory and large-scale diagonalization methods.
+
+<p>
+All these methods have to face in some form or the other the problem
+of an exponential growth in dimensionality. For a system of \( P \)
+fermions which can be placed into \( N \) levels, the total number of
+basis states are given by
+\( \left(\begin{array}{c}N\\P\end{array}\right) \).  The dimensional curse
+means that most quantum mechanical calculations on classical computers
+have exponential complexity and therefore are very hard to solve for
+larger systems. On the other hand, a so-called quantum computer, a
+particularly dedicated computer, can improve greatly on the size of
+systems that can be simulated, as foreseen by Feynman. A quantum computer does not need an
+exponential amount of memory to represent a quantum state.  The basic
+unit of information for a quantum computer is the so-called qubit or
+quantum bit. Any suitable two-level quantum system can be a qubit, but
+the standard model of quantum computation is a model where two-level
+quantum systems are located at different points in space, and are
+manipulated by a small universal set of operations.  These operations
+are called gates in the same fashion as operations on bits in
+classical computers are called gates.
+
+<p>
+For the example of \( P \) spin \( 1/2 \) particles, a classical computer
+needs \( 2^P \) bits to represent all possible states, while a quantum
+computer needs only \( P \) qubits. The complexity in number of qubits is
+thus linear.  Based on these ideas, several groups have proposed
+various algorithms for simulating quantal many-body systems on quantum
+computers.  Abrams and Lloyd introduced a quantum algorithm that uses
+the quantum fast Fourier transform to find eigenvalues and
+eigenvectors of a given Hamiltonian, illustrating how one could solve
+classically intractable problems with less than 100 qubits.  Achieving
+a polynomial complexity in the number of operations needed to simulate
+a quantum system is not that straightforward however.  To get
+efficient simulations in time one needs to transform the many-body
+Hamiltonian into a sum of operations on qubits, the building blocks of
+the quantum simulator and computer, so that the time evolution
+operator can be implemented in polynomial time.
+
+<p>
+The aim of this work is to develop an algorithm than allows one to
+perform a quantum computer simulation (or simply quantum simulation
+hereafter) of any many-body fermionic Hamiltonian. We show how to
+generate, via various Jordan-Wigner transformations, all qubit
+operations needed to simulate the time evolution operator of a given
+Hamiltonian.  We also show that for a given term in an \( m \)-body
+fermionic Hamiltonian, the number of operations needed to simulate it
+is linear in the number of qubits or energy-levels of the system. The
+number of terms in the Hamiltonian is of the order of \( m^2 \) for a
+general \( m \)-body interaction, making the simulation increasingly
+harder with higher order interactions. We specialize our examples to a
+two-body Hamiltonian, since this is also the most general type of
+Hamiltonian encountered in many-body physics.  Besides fields like
+nuclear physics, where three-body forces play a non-neglible role, a
+two-body Hamiltonian captures most of the relevant physics.
+
+<h2 id="___sec9">Hamiltonians </h2>
+
+<p>
+A general two-body Hamiltonian for fermionic system 
+can be written as
+
+$$
+\begin{equation}
+\label{eq:twobodyH}
+H = E_0 + \sum_{ij=1} E_{ij} a^\dag_i a_j
++\sum_{ijkl = 1} V_{ijkl} a^\dag_i a^\dag_j a_l a_k,
+\end{equation}
+$$
+
+where \( E_0 \) is a constant energy term, \( E_{ij} \) represent all the
+one-particle terms, allowing for non-diagonal terms as well. The
+one-body term can represent 
+a chosen single-particle potential, the kinetic energy or other more
+specialized terms such as  
+those discussed in connection with the Hubbard model or the pairing Hamiltonian  
+discussed below.
+The two-body interaction part is given by \( V_{ijkl} \) and can be any
+two-body interaction, from 
+Coulomb interaction to the interaction between nucleons.  
+The sums run over all possible single-particle levels \( N \). 
+Note that
+this model includes particle numbers from zero to the number of
+available quantum levels, \( n \). To simulate states with fixed numbers
+of fermions one would have to either rewrite the Hamiltonian or
+generate specialized input states in the simulation.
+
+<p>
+The algorithm which we will develop in this section and in
+However, 
+in our demonstrations of the quantum computing algorithm, we will limit ourselves to
+two simple models, which however capture much of the important physics
+in quantum mechanical 
+many-body systems. We will also limit ourselves to spin \( j=1/2 \)
+systems, although our algorithm 
+can also simulate  higher \( j \)-values, such as those which occur in nuclear, atomic and
+molecular physics, it simply uses one qubit for every available
+quantum state.   
+These simple models are the Hubbard model and a pairing
+Hamiltonian.
+We start with the spin \( 1/2 \) Hubbard model, described by the following Hamiltonian
+
+$$
+\begin{align}
+H_H &&= \epsilon \sum_{i, \sigma} a_{i\sigma}^\dag a_{i\sigma} 
+-t \sum_{i, \sigma} \left(a^\dag_{i+1, \sigma}a_{i, \sigma}
++a^\dag_{i, \sigma}a_{i+1, \sigma} \right) \notag 
+\label{_auto37}\\
+&& + U \sum_{i=1} a_{i+}^\dag a_{i-}^\dag a_{i-}a_{i+},
+\label{eq:hubbard}
+\end{align}
+$$
+
+where \( a^{\dagger} \) and \( a \) are fermion creation and annihilation operators, respectively.
+This is a chain of sites where each site has room for one spin up
+fermion and one spin down fermion. 
+The number of sites is \( N \), and the sums over \( \sigma \) are sums over
+spin up and down only.
+Each site has a single-particle
+energy \( \epsilon \). There is a repulsive term \( U \) if there is a pair
+of particles at the same site. It is energetically favourable to tunnel to
+neighbouring sites, described by 
+the hopping terms with coupling constant \( -t \).
+
+<p>
+The second model-Hamiltonian is the simple pairing Hamiltonian
+$$
+\begin{equation}
+   H_P=\sum_i \varepsilon_i a^{\dagger}_i a_i -\frac{1}{2} g\sum_{ij>0}
+           a^{\dagger}_{i}
+     a^{\dagger}_{\bar{\imath}}a_{\bar{\jmath}}a_{j},
+\label{eq:pairing}
+\end{equation}
+$$
+
+ The indices \( i \) and \( j \) run over the number of levels \( N \), and the label \( \bar{\imath} \) 
+stands for a time-reversed state. The parameter \( g \) is the strength of the pairing force 
+while \( \varepsilon_i \) is the single-particle energy of level \( i \). 
+In our case
+we assume that the single-particle levels are equidistant (or
+degenerate) with a fixed spacing \( d \). 
+Moreover, in our simple model, the degeneracy of the single-particle
+levels is set to \( 2j+1=2 \), with \( j=1/2 \)  
+being the spin of the particle. This gives a set of single-particle
+states with the same spin projections as 
+for the Hubbard model.  Whereas in the Hubbard model we operate with
+different sites with  
+spin up or spin down particles, our pairing models deals thus with
+levels  with double degeneracy. 
+Introducing the pair-creation operator 
+\( S^+_i=a^{\dagger}_{im}a^{\dagger}_{i-m} \),
+one can rewrite the Hamiltonian in 
+Eq.&nbsp;\eqref{eq:pairing} as
+
+$$
+\begin{equation*}
+   H_P=d\sum_iiN_i+
+     \frac{1}{2} G\sum_{ij>0}S^+_iS^-_j,
+\end{equation*}
+$$
+
+where  \( N_i=a^{\dagger}_i a_i \)
+is the number operator, and 
+\( \varepsilon_i = id \) so that the single-particle orbitals 
+are equally spaced at intervals \( d \). The latter commutes with the 
+Hamiltonian \( H \). In this model, quantum numbers like seniority 
+\( \cal{S} \) are good quantum numbers, and the eigenvalue problem 
+can be rewritten in terms of blocks with good seniority. 
+Loosely 
+speaking, the seniority quantum number \( \cal{S} \) is equal to 
+the number of unpaired particles.
+Furthermore, in  a series of papers, Richardson
+obtained the exact solution of the pairing Hamiltonian, with 
+semi-analytic (since there is still the need for a numerical solution) 
+expressions for the eigenvalues and eigenvectors. The exact solutions
+have had important consequences for several fields, from Bose condensates to
+nuclear superconductivity and is currently a very active field of studies, see for example
+Finally, for particle numbers up to \( P \sim 20 \), the above model can be 
+solved exactly through numerical diagonalization and one can obtain all eigenvalues.
+It serves therefore also as an excellent ground for comparison with our algorithm based
+on models from quantum computing.
+
+<h2 id="___sec10">Basic quantum  gates </h2>
+
+<p>
+Benioff showed that one could make a quantum mechanical Turing machine
+by using various  unitary operations on a quantum system.
+Benioff  demonstrated 
+that a quantum computer can calculate anything a
+classical computer can. To do this one needs a quantum system and
+basic operations that can approximate all unitary operations
+on the chosen many-body system. We describe in this subsection the basic ingredients entering 
+our algorithms.
+
+<h3 id="___sec11">Qubits, gates and circuits </h3>
+
+In this article we will use the standard model of quantum information,
+where
+the basic unit of information is the qubit, the quantum bit. 
+As mentioned in the introduction, any
+suitable 
+two-level quantum system can be a qubit, 
+it is the smallest system there is with the
+least complex dynamics.
+Qubits are both abstract measures of information and physical objects.
+Actual physical qubits can be ions trapped in magnetic fields where
+lasers can access only two energy levels or  the nuclear spins of some of
+the atoms in molecules accessed and manipulated by an NMR machine.
+Several other ideas have been proposed and some tested.
+
+<p>
+The computational basis for one qubit is \( {\ensuremath{|0\rangle}} \) (representing for example bit \( 0 \)) 
+for the first state
+and \( {\ensuremath{|1\rangle}} \) (representing bit \( 1 \)) for the second, and for a set of qubits  
+the tensor products of
+these basis states for each qubit form a product basis. Below we write out the different
+basis states for a system of \( n \) qubits.
+
+$$
+\begin{align}
+\label{eq:compBasis}
+&{\ensuremath{|0\rangle}} \equiv {\ensuremath{|00\cdots 0\rangle}} =
+      {\ensuremath{|0\rangle}} \otimes {\ensuremath{| 0\rangle}} \otimes
+          \cdots 
+\otimes {\ensuremath{|0\rangle}} 
+\notag \\
+&{\ensuremath{|1\rangle}} \equiv {\ensuremath{|00\cdots 1\rangle}} =
+    {\ensuremath{|0\rangle}} \otimes {\ensuremath{| 0\rangle}} \otimes
+        \cdots 
+\otimes {\ensuremath{|1\rangle}} 
+\notag 
+\label{_auto38}\\
+&\vdots \notag 
+\label{_auto39}\\
+&{\ensuremath{|2^n-1\rangle}} \equiv {\ensuremath{|11\cdots 1\rangle}} =
+    {\ensuremath{|1\rangle}} \otimes {\ensuremath{| 1\rangle}} \otimes 
+\cdots \otimes {\ensuremath{|1 \rangle}}.
+\notag 
+\label{_auto40}\\
+\label{_auto41}
+\end{align}
+$$
+
+This is a \( 2^n \)-dimensional system and we number the different basis
+states using binary numbers corresponding to the order in which they appear in the
+tensor product.
+
+<p>
+Quantum computing means to  manipulate and measure  qubits in such a
+way that the results from a measurement yield the solutions to  a given problem. 
+The quantum operations we need to be able to perform our simulations are 
+a small set of elementary single-qubit
+operations, or single-qubit gates, and one universal two-qubit gate,
+in our case the so-called CNOT gate defined below.
+
+<p>
+To represent quantum computer algorithms graphically we use circuit
+diagrams. In a circuit diagram each qubit is represented by a line,
+and operations on the different qubits are represented by boxes.
+
+<h2 id="___sec12">Number of work qubits versus number of simulation qubits </h2>
+
+<p>
+The largest possible amount of different eigenvalues is \( 2^s \), where
+\( s \) is the number of simulation qubits. The resolution in the energy
+spectrum we get from measuring upon the work qubits is \( 2^w \), with \( w \) the number of
+work qubits.
+Therefore the resolution per eigenvalue in a non-degenerate system is
+\( 2^{w-s} \). The higher the degeneracy the less work qubits are needed.
+
+<h2 id="___sec13">Number of operations </h2>
+
+<p>
+Counting the number of single-qubit and \( \sigma_z\sigma_z \) operations
+for different sizes of systems simulated gives us an indication of the
+decoherence time needed for different physical realizations of a
+quantum simulator or computer. The decoherence time is an average time
+in which the state of the qubits will be destroyed by noise, also called 
+decoherence, while the operation time is the average time an operation takes
+to perform on the given system. Their fraction is the number of
+operations possible to perform before decoherence destroys the
+computation. In table  we have listed the number of
+gates used for the pairing model, \( H_P \), and the Hubbard model, \( H_H \),
+for different number of simulation qubits.
+
+<p>
+<table border="1">
+<thead>
+<tr><th align="center">         </th> <td align="center">\( s=2 \)</td> <td align="center">\( s=4 \)</td> <td align="center">\( s=6 \)</td> <td align="center">\( s=8 \)</td> <td align="center">\( s=10 \)</td> <td align="center">\( s=12 \)</td> </tr>
+</thead>
+<tbody>
+<tr><td align="left">   \( H_P \)    </td> <td align="center">   9            </td> <td align="center">   119          </td> <td align="center">   333          </td> <td align="center">   651          </td> <td align="center">   1073          </td> <td align="center">   1598          </td> </tr>
+<tr><td align="left">   \( H_H \)    </td> <td align="center">   9            </td> <td align="center">   51           </td> <td align="center">   93           </td> <td align="center">   135          </td> <td align="center">   177           </td> <td align="center">   219           </td> </tr>
+</tbody>
+</table>
+<p>
+Number of two-qubit gates used in simulating the time
+  evolution operator of the pairing model, \( H_P \), and the Hubbard
+  model, \( H_H \), for different number of simulation qubits \( s \).
+
+<p>
+We list here some useful relations involving different \( \sigma \) matrices,
+
+$$
+\begin{equation}
+\sigma_x \sigma_z = -i\sigma_y, \quad
+\sigma_z \sigma_x = i\sigma_y, \quad [\sigma_x, \sigma_z]=-2i\sigma_y,
+\label{_auto42}
+\end{equation}
+$$
+
+
+$$
+\begin{equation}
+\sigma_x \sigma_y = i\sigma_z, \quad
+\sigma_y \sigma_x = -i\sigma_z, \quad [\sigma_x, \sigma_y]=2i\sigma_z,
+\label{_auto43}
+\end{equation}
+$$
+
+and
+
+$$
+\begin{equation}
+\sigma_y \sigma_z = i\sigma_x, \quad
+\sigma_z \sigma_y = -i\sigma_x, \quad [\sigma_y, \sigma_z]=2i\sigma_x.
+\label{_auto44}
+\end{equation}
+$$
+
+<p>
+For any two non-equal \( \sigma \)-matrices \( a \) and \( b \) we have
+
+$$
+\begin{equation}
+aba = -b.
+\label{_auto45}
+\end{equation}
+$$
+
+<p>
+The Hermitian \( \sigma \)-matrices \( \sigma_x \), \( \sigma_y \) and \( \sigma_z \)
+result in the identity matrix when squared
+
+$$
+\begin{equation}
+\sigma_x^2 = _1_,\quad 
+\sigma_y^2 = _1_,\quad 
+\sigma_z^2 = _1_,\quad 
+\label{_auto46}
+\end{equation}
+$$
+
+which can be used to obtain  simplified expressions for exponential functions involving \( \sigma \)-matrices
+
+$$
+\begin{equation}
+e^{\pm i\alpha \sigma}=\cos(\alpha) _1_ \pm i \sin(\alpha) \sigma. 
+\label{_auto47}
+\end{equation}
+$$
+
+<p>
+The equations we list below are necessary for the relation between  a general unitary
+transformation on a set of qubits with  a product of two-qubit unitary
+transformations. We have the general equation for \( a,b \in \{\sigma_x,\sigma_y, \sigma_z\} \), where \( a\neq b \).
+
+$$
+\begin{align}
+  e^{-i\pi/4a} b e^{i\pi/4a} &&= \frac{1}{2} (_1_ -ia) b ( _1_ + ia)
+  \notag
+\label{_auto48}\\ 
+  &&=  \frac{1}{2} (b + aba + i[b,a]) \notag
+\label{_auto49}\\
+  &&= \frac{i}{2}[b,a].
+\label{_auto50}
+\end{align}
+$$
+
+<p>
+The more specialized equations read
+$$
+\begin{align}
+\label{eq:rotations1}
+  &&e^{-i\pi/4 \sigma_x} \sigma_z e^{i\pi/4 \sigma_x} = -\sigma_y, \\
+\label{eq:rotations2}
+  &&e^{-i\pi/4 \sigma_y} \sigma_z e^{i\pi/4 \sigma_y} = \sigma_x, \\
+\label{eq:rotations3}
+  &&e^{-i\pi/4 \sigma_z} \sigma_x e^{i\pi/4 \sigma_z} = \sigma_y, \\
+\label{eq:rotations4}
+  &&e^{-i\pi/4 \sigma_z} \sigma_y e^{i\pi/4 \sigma_z} = -\sigma_x. 
+\end{align}
+$$
+
+<p>
+We need also different products of the operator$\sigma_z$  with the  raising and lowering operators
+
+$$
+\begin{align}
+\label{eq:pmzs}
+  &&\sigma_+ \sigma_z = -\sigma_+ \\
+  &&\sigma_z \sigma_+ = \sigma_+, 
+\label{_auto51}\\
+  &&\sigma_- \sigma_z = \sigma_-, 
+\label{_auto52}\\
+  &&\sigma_z \sigma_- = -\sigma_-. 
+\label{_auto53}\\
+\label{_auto54}
+\end{align}
+$$
+
+
+<!-- ------------------- end of main content --------------- -->
+
+
+<center style="font-size:80%">
+<!-- copyright --> &copy; 1999-2018, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
+</center>
+
+
+</body>
+</html>
+    
+
