@@ -4,7 +4,7 @@ DATE: today
 
 ===== Introduction =====
 
-The system is however that of electrons confined in two dimensions by a harmonic oscillator potential, normally called quantum dots.
+The system we will study using the Hartree-Fock method is that of electrons confined in two dimensions by a harmonic oscillator potential, normally called quantum dots.
 Strongly confined electrons offer a wide variety of complex and subtle phenomena which pose severe  challenges to existing many-body methods.
 Quantum dots in particular, that is, electrons confined in semiconducting heterostructures, exhibit, due to their small size, discrete quantum levels. 
 Small confined systems, such as quantum dots, have become very popular for experimental  study. 
@@ -94,11 +94,8 @@ assume that the many-particle states we construct have always a total projection
 This means that if we excite one or two particles from the ground state, the spins and projections of the orbital momenta of the various single-particle states should always sum up to zero. 
 
 
-  * [1a)] We start with the two-electron system and define our single-particle Hilbert space to consist of the single-particle orbits $(n=0, m_l=0)$, $(n=1, m_l=0)$, $(n=0, m_l=\pm 1)$ and $(n=0,m_l=\pm 2)$, with their corresponding spin degeneracies, see Figure ref{fig:fig1}. Without spin we have thus six single-particle states.
+  * [1a)] We start with the two-electron system and define our single-particle Hilbert space to consist of the single-particle orbits $(n=0, m_l=0)$, $(n=1, m_l=0)$, $(n=0, m_l=\pm 1)$ and $(n=0,m_l=\pm 2)$, with their corresponding spin degeneracies. Without spin we have thus six single-particle states.
 Adding the two spin degeneracies, we end up with 12 states.  
-# original latex figure with scale=1.2
-
-FIGURE: [spektrum.png, width=400 frac=1.0] Quantum spectrum for an electron in a two-dimensional oscillator well  using a so-called Darwin-Fock representation.  Here we show the states and their oscillator energies for three major shells. The oscillator energies are given by $e_{nm_l}=\hbar\omega(2n+|m_l|+1)$.  The single-particle states are ordered according to the quantum numbers $n$, $m_l=0,\pm 1, \pm 2$ and $m_s=\pm 1/2$. }  \end{center label{fig:fig1}
 
 Set up the ansatz for the ground state $|\Phi_0\rangle$ in second 
 quantization and define a table of single-particle states. Construct thereafter
@@ -221,7 +218,7 @@ of the midterm exam result in a stable procedure (consider the two- and six-elec
 The Hartree-Fock equations with a variation of the coefficients $C_{p\alpha}$
 lead to an eigenvalue problem whose eigenvectors are the coefficients
 $C_{p\alpha}$ and eigenvalues are the new single-particle energies. 
-Use the single-particle states of Figure ref{fig:fig1}  
+Use the single-particle states for the relevant shells
 and set up the Hartree-Fock matrix for both the two-electron and the six electron systems. 
 Find after the first diagonalization the new single-particle energies and the new ground state energy.
 Compare these results with  those you obtained by diagonalizing the Hamiltonian matrices in c) for the two-electron systems and e) for the six electron system.  Comment yur results.
@@ -263,67 +260,9 @@ for two particles with only three oscillator shells using the matrix elements in
 
 ===== Expressions for the Coulomb matrix elements =====
 
-The expression for the Coulomb matrix elements 
+The expression for the Coulomb matrix elements can be found 
  in the article of  E. Anisimovas and A. Matulis, J. Phys.: Condens. Matter _10_,  601
-(1998).
-
-
-At the webpage of the course (see under the midterm link) we provide a file called coulomb.cpp which computes
-the Coulomb matrix element $\langle 12 |V|34 \rangle$ where the $1, 2, 3$ and $4$ are four single-particle state indices.
-Each state $|p(=1,2,3, 4) \rangle$ can be rewritten in terms of its quantum numbers. In two dimensions, it reads $|p \rangle=|n_p m_p s_p \rangle$. For simplicity the angular momentum projection quantum number $m_l$ will just be written as $m$ in the following equations.
-The function `coulomb(n1,m1,n2,m2,n3,m3,n4,m4)` 
-computes thus the integral.
-Calling this function and paying attention to the spin values, the computation of the direct term is given by
-$`direct`  = \delta(ms1,ms3)\delta(ms2,ms4)\times `coulomb(n1,m1,n2,m2,n4,m4,n3,m3)`$.
-Pay attention to the explanation text in the file coulomb.cpp.
-The expression for the Coulomb integral can be written as
-
-!bt
-\begin{align}
-\begin{split}
-& V_{1234}= \delta_{m_1+m_2,m_3+m_4} \; \sqrt{ \left[ \prod_{i=1}^4 \frac{n_i !}{(n_i+|m_i|!)} \right] } \\
-&\times \sum_{j_1=0,\dots,j_4=0}^{n_1,\dots,n_4} \Bigg[ \frac{(-1)^{j_1+j_2+j_3+j_4}} {j_1!j_2!j_3!j_4!} \; \left[ \prod_{k=1}^4 \begin{pmatrix} n_k+|m_k|\\\n_k-j_k\end{pmatrix}  \right]  \; \frac{1}{2^{\frac{G+1}{2}}}   \\
-&\times  \sum_{l_1=0,\dots,l_4=0}^{\gamma_1=0,\dots,\gamma_4=0} \left( \delta_{l_1,l_2} \; \delta_{l_3,l_4} \; (-1)^{\gamma_2+\gamma_3-l_2-l_3} \left[ \prod_{t=1}^4 \begin{pmatrix} \gamma_t\\l_t\end{pmatrix} \right] \; \Gamma \left(1+\frac{\Lambda}{2} \right) \; \Gamma \left(\frac{G - \Lambda +1}{2}\right)    \right)  \Bigg]
-\end{split}
-\end{align}
-!et 
-where
-
-!bt
-\begin{align*}
-&\gamma_1=j_1+j_4+\frac{|m_1|+m_1}{2}+\frac{|m_4|-m_4}{2} \\
-&\gamma_2=j_2+j_3+\frac{|m_2|+m_2}{2}+\frac{|m_3|-m_3}{2} \\
-&\gamma_3=j_3+j_2+\frac{|m_3|+m_3}{2}+\frac{|m_2|-m_2}{2} \\
-&\gamma_4=j_4+j_1+\frac{|m_4|+m_4}{2}+\frac{|m_1|-m_1}{2} \\
-&G=\gamma_1+\gamma_2+\gamma_3+\gamma_4 \\
-&\Lambda = l_1 +l_2+l_3 +l_4,
-\end{align*}
-!et
-when the basis set is built upon the single harmonic oscillator orbitals.
-
-The implementation of the function `coulomb($\dots$)` includes the following subfunctions:
-
-  * `minusPower(int $k$)` which computes $(-1)^k$
-
-  * `LogFac(int $n$)` which computes $log_e(n!)$
-
-  * `LogRatio1(int $j_1$,int $j_2$,int $j_3$,int $j_4$)` which computes the  $log_e$ of $\frac{1}{j_1!j_2!j_3!j_4!}$
-
-  * `LogRatio2(int $G$)` which computes the $log_e$ of $\frac{1}{2^{\frac{G+1}{2}}}$
-
-  * `Product1 (int $n_1$,int $m_1$,int $n_2$,int $m_2$, int $n_3$,int $m_3$,int $n_4$,int $m_4$)` which computes the explicit (not the $log_e$) product $\sqrt{ \left[ \prod_{i=1}^4 \frac{n_i !}{(n_i+|m_i|!)} \right] }$
-
-  * `LogProduct2(int $n_1$,int $m_1$,int $n_2$,int $m_2$, int $n_3$,int $m_3$,int $n_4$,int $m_4$, int $j_1$,int $j_2$,int $j_3$,int $j_4$ )` which computes the  $log_e$ of $\prod_{k=1}^4 \begin{pmatrix} n_k+|m_k|\\n_k-j_k
-
-\end{pmatrix}$
-
-  * `LogProduct3(int $l_1$,int $l_2$,int $l_3$,int $l_4$, int $\gamma_1$,int $\gamma_2$,int $\gamma_3$,int $\gamma_4$)` which computes the  $log_e$ of $\prod_{t=1}^4 \begin{pmatrix} \gamma_t\\l_t
-
-\end{pmatrix}$
-
-  * `lgamma(double $x$)` which computes the  $log_e\left[ \Gamma(x) \right]$
-
-
+(1998). We provide here however explicit values for the matrix elements of interest.
 
 
 ===== Explicit values for the two-body matrix elements for $\hbar\omega=1$ a.u. ===== 
