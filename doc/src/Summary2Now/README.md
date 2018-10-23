@@ -8,17 +8,14 @@ if you spot errors or something is unclear.
 
 List of topics covered in the summary so far.
 
-#Introduction
 - [] [Particle statistics] 
 - [x] [Slater determinants]
 - [] [The variational principle] 
-#Second quantization
 - [x] [Creation and annihilation operators]
 - [x] [Representation of operators]
 - [x] [Wicks theorem and generalized Wick]
 - [x] [Particle-hole formalism]
 - [x] [Normal ordering relative to the new vacuum state]
-#Many-body methods
 - [] [Configuration Interaction theory]
 - [] [Hartree-Fock theory]
 - [] [Many-body perturbation theory]
