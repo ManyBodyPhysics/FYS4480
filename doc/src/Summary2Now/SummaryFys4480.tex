@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt]{report}
+\documentclass[a4paper,10pt]{article}
 \usepackage[utf8]{inputenc}
 
 \usepackage{hyperref}
@@ -39,16 +39,104 @@
 \begin{document}
 \maketitle
 
-\subsection*{Disclaimer}
+\section*{Disclaimer}
 The purpose of this note is to summarize what has been covered so far in the course and provide a general overview over 
 important results and methods. Statements are given without proof and one should consult the lecture notes for more in depth 
 discussion of the various topics.
 
-\subsection*{Introduction}
+\section{Introduction}
 
-\subsection*{Slater Determinants}
+\subsection{Particle statistics}
+\begin{definition}[Permutation]
+ Let $\mathcal{I}$ be the finite set $\mathcal{I} = \{ 1,2,3,\cdots,N \}$. A 
+ permutation is a function, $\sigma: \mathcal{I} \rightarrow \mathcal{I}$, that takes every number in 
+ $\mathcal{I}$ and maps it to another unique number in $\mathcal{I}$. 
+ Informally, a permutation is any reordering of $N$ indices.
+ 
+ The collection of all perumations of $\mathcal{I}$ is denoted $S_N$ and is called the symmetric group on $N$ 
+ letters. In particular $S_N$ has $N!$ elements, i.e there are $N!$ possible reorderings of $N$ indices. We write 
+ $\sigma \in S_N$ for an arbitrary permutation.
+\end{definition}
 
-\subsection*{Creation and annihilation operators}
+\begin{definition}[Transposition]
+ A transposition is a permutation $\sigma \in S_N$, where only a single pair of indices $(i,j)$ in 
+ $\{ 1, 2,\cdots, i, \dots, j,\dots, N \}$ are exchanged. 
+ That is to say, $\sigma(i) = j$ and $\sigma(j) = i$, while $\sigma(k) = k$ for all $k \neq i,j$.
+\end{definition}
+
+\begin{theorem}
+ Any permutation $\sigma \in S_N$ can be obtained by a series of transpositions. The sign of the permutation is 
+ given by $(-1)^{|\sigma|}$, where $|\sigma|$ is the number of transpositions needed to obtain the permutation. 
+\end{theorem}
+
+\begin{example}[A permutation]
+ Let $\mathcal{I} = \{1,2,3 \}$. Then $\sigma(1) = 3, \sigma(2) = 1, \sigma(3) = 2$ is 
+ a permutation. In other words, we have a reordering of three indices given by
+ $\{ \sigma(1), \sigma(2), \sigma(3) \} = \{ 3,1,2 \}$.
+ 
+ Note that in terms of tranpositions we could perform the reordering as follows 
+ \begin{align*}
+  \{ 1,2,3 \} \underbrace{\rightarrow}_\text{transpose $3$ and $2$} \{ 1,3,2 \} \underbrace{\rightarrow}_\text{transpose $1$ and $3$} \{ 3,1,2 \}.
+ \end{align*}
+ Here we needed two transpositions so $|\sigma| = 2$. 
+\end{example}
+
+\begin{definition}[The permutation operator]
+ The permutation operator $\hat{P}_\sigma$ is defined as the operator that evaluates a wavefunction 
+ at permuted coordinates
+ \begin{equation}
+  \hat{P}_\sigma \Phi(x_1,\cdots,x_N) = \Phi(x_{\sigma(1)},\cdots,x_{\sigma(N)}),
+ \end{equation}
+ where $|\sigma|$ is the number of transpositions in the permutation $\sigma$. 
+\end{definition}
+
+
+\subsection{Slater Determinants}
+\begin{definition}[Slater determinant]
+ Let $\psi_{\alpha_1},\psi_{\alpha_2},\cdots,\psi_{\alpha_N}$ be arbitrary single-particle functions 
+ (not necessarily orthonormal). The Slater determinant defined by these functions is denoted 
+ $\Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N)$, and is defined by the formula
+ \begin{equation*}
+  \Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N) = \frac{1}{\sqrt{N!}}
+  \begin{vmatrix}
+  \psi_{\alpha_1}(x_1) & \psi_{\alpha_1}(x_2) & \dots & \dots & \psi_{\alpha_1}(x_N) \\ 
+  \psi_{\alpha_2}(x_1) & \psi_{\alpha_2}(x_2) & \dots & \dots & \psi_{\alpha_2}(x_N) \\ 
+  \dots & \dots & \dots & \dots & \dots \\
+  \psi_{\alpha_N}(x_1) & \psi_{\alpha_N}(x_2) & \dots & \dots & \psi_{\alpha_N}(x_N) \\ 
+  \end{vmatrix}
+ \end{equation*}
+ where $x_i$ stand for the coordinates and spin values of a particle $i$ and $\alpha_1,\alpha_2,\dots,\alpha_N$
+ are quantum numbers needed to describe remaining quantum numbers. 
+ 
+ It is common to use the notation 
+ \begin{equation}
+  \Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N) = \ket{\alpha_1 \alpha_2 \dots \alpha_N}
+ \end{equation} 
+ for the Slater determinant.
+\end{definition}
+
+A useful way to express the Slater determinant is via the antisymmetrization operator $\hat{A}$.
+\begin{definition}[Antisymmetrization operator]
+ The antisymmetrization operator $\hat{A}$ is defined as 
+ \begin{equation}
+  \hat{A} = \frac{1}{N!} \sum_{\sigma \in S_N} (-1)^{|\sigma|} \hat{P}_\sigma
+ \end{equation}
+ where the notation 
+ $\sum_{\sigma \in S_N}$ means that we sum over all possible permutations of $N$ indices.
+ 
+The expression for the Slater determinant given above, can now be written in terms of the 
+antisymmetrization operator as follows
+\begin{align}
+  \Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N) &= \underbrace{\frac{1}{\sqrt{N!}} \sum_{\sigma \in S_N} (-1)^{|\sigma|} \hat{P}_\sigma}_\text{$= \hat{A}$} \left(\psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \dots \psi_{\alpha_N}(x_N) \right) \nonumber \\
+  &= \frac{1}{\sqrt{N!}} \sum_{\sigma \in S_N} (-1)^{|\sigma|}  \psi_{\alpha_1}(x_{\sigma(1)}) \psi_{\alpha_2}(x_{\sigma(2)}) \dots \psi_{\alpha_N}(x_{\sigma(N)}) \nonumber \\
+  &= \sqrt{N!} \hat{A} \Phi_H(x_1,\dots,x_N)
+\end{align}
+where $\Phi_H(x_1,\dots,x_N) \equiv \psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \dots \psi_{\alpha_N}(x_N)$.
+\end{definition}
+
+\section{Second quantization}
+
+\subsection{Creation and annihilation operators}
 \begin{definition}[Vacuum state]
  The state $\ket{0}$ represents the state containing no particles and is referred to as
  the vacuum state. Another common notation is to use $\ket{-}$. The vacuum state satisfies 
@@ -108,7 +196,7 @@ The creation and annihilation operators satisfy the so-called "fundamental antic
 \end{align}
 \end{theorem}
 
-\subsection*{Representation of operators}
+\subsection{Representation of operators}
 The matrix representation of a one-body operator, relative to a single particle basis $\{ \phi_i \}_{i=1}$, is given by 
 \begin{equation}
  \braket{\phi_p|\hat{h}|\phi_q} \equiv \int \phi^*_p(\mathbf{r}) \hat{h} \phi_q(\mathbf{r}) d\mathbf{r}.
@@ -138,7 +226,7 @@ Thus, the full Hamiltonian $\hat{H} = \hat{H}_0 + \hat{H}_I$, using anti-symmetr
  \hat{H} =  \sum_{pq}\braket{p|\hat{h}|q} a_p^\dagger a_q + \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_{AS} a_p^\dagger a_q^\dagger a_s a_r.
 \end{equation}
 
-\subsection*{Wicks theorem and related concepts}
+\subsection{Wicks theorem and related concepts}
 \begin{definition}[Operator string]
  A sequence of creation and annihilation operators is called an operator string. Generally an operator 
 string of $n$ creation and annihilation operators are on the form 
@@ -254,7 +342,7 @@ operators from different substrings. The vertical dots are only a bookkeeping de
 which operators belong to which substrings.
 \end{theorem}
 
-\subsection*{Particle-hole formalism}
+\subsection{Particle-hole formalism}
 Consider a $N$-particle system and the single-particle functions $\{ \phi_p \}_{p=1}^L$, with $L$ denoting 
 the number of single-particle functions. In particle-hole formalism we divide the single-particle functions 
 into two sets. The first $N$ single-particle functions, $\{ \phi \}_{i=1}^N$, are referred to as 
@@ -320,7 +408,7 @@ Notice that relative to the new vacuum state, there are now two non-zero contrac
  \wick{\c b_i \c b_j^\dagger} = \wick{\c a_i^\dagger \c a_j} &= \braket{c|a_i^\dagger a_j|c} = \delta_{ij}. \\
 \end{align}
 
-\subsection*{Normal ordering relative to the new vacuum state}
+\subsection{Normal ordering relative to the new vacuum state}
 If we normal order relative to the new vacuum $\ket{c}$ the one-body Hamiltonian can be written 
 \begin{equation}
  \hat{H}_0 = H_0^{(1\text{-body})} + H_0^{(0\text{-body})} 
@@ -384,12 +472,14 @@ with a positive sign since there are two line crossings. Thus,
 \end{align*}
 \end{example}
 
-\subsection*{Configuration Interaction Theory}
+\section{Many-body methods}
 
-\subsection*{Hartree-Fock theory}
+\subsection{Configuration Interaction Theory}
 
-\subsection*{Many-body Perturbation Theory}
+\subsection{Hartree-Fock theory}
 
-\subsection*{Coupled Cluster Theory}
+\subsection{Many-body Perturbation Theory}
+
+\subsection{Coupled Cluster Theory}
 
 \end{document}          
