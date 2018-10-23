@@ -1,0 +1,395 @@
+\documentclass[a4paper,10pt]{report}
+\usepackage[utf8]{inputenc}
+
+\usepackage{hyperref}
+
+\usepackage{amsmath,amsthm}
+\usepackage{ dsfont }
+
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{simpler-wick}
+%\usepackage[lf]{MinionPro}
+\usepackage[scr=rsfso,calscaled=.96]{mathalfa}
+
+
+\newcommand{\One}{\hat{\mathbf{1}}} \newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle} \newcommand{\element}[3]
+{\bra{#1}#2\ket{#3}}
+
+\usepackage{amsmath}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{fact}{Fact}
+\newtheorem{observation}{Observation}
+\newtheorem{example}{Example}
+
+% Title Page
+\title{Summary of lectures FYS4480 autumn 2018}
+%\author{Morten Hjorth-Jensen and Håkon Kristiansen}
+
+\begin{document}
+\maketitle
+
+\subsection*{Disclaimer}
+The purpose of this note is to summarize what has been covered so far in the course and provide a general overview over 
+important results and methods. Statements are given without proof and one should consult the lecture notes for more in depth 
+discussion of the various topics.
+
+\subsection*{Introduction}
+
+\subsection*{Slater Determinants}
+
+\subsection*{Creation and annihilation operators}
+\begin{definition}[Vacuum state]
+ The state $\ket{0}$ represents the state containing no particles and is referred to as
+ the vacuum state. Another common notation is to use $\ket{-}$. The vacuum state satisfies 
+ $\braket{0|0} = 1$. It should be noted that $\ket{0} \neq 0$.
+\end{definition}
+
+\begin{definition}[The creation operator]
+ We define the fermion creation operator $a_\alpha^\dagger$, creating a particle in the single-particle state $\phi_\alpha$, as
+ \begin{equation}
+  a_\alpha^\dagger \ket{0} \equiv \ket{\alpha}
+ \end{equation}
+ and 
+ \begin{equation}
+  a_\alpha^\dagger \ket{\alpha_1 \alpha_2 \cdots \alpha_n} = \ket{\alpha \alpha_1 \alpha_2 \cdots \alpha_n},
+ \end{equation}
+ if $\alpha \neq \alpha_i$ for all single-particle states in the determinant. 
+ Furthermore, insertion of $\alpha$ at position $j+1$ will induce a sign change $(-1)^j$
+ \begin{equation}
+  a_\alpha^\dagger \ket{\alpha_1 \alpha_2 \cdots \alpha_j \alpha_{j+1} \cdots \alpha_n} = (-1)^j\ket{\alpha_1 \alpha_2 \cdots \alpha_j \alpha \alpha_{j+1} \cdots \alpha_n}.
+ \end{equation}
+ If $\alpha = \alpha_i$ for some single-particle state, then 
+ \begin{equation}
+  a_\alpha^\dagger \ket{\alpha_1 \alpha_2 \cdots \alpha_n} = \ket{\alpha \alpha_1 \alpha_2 \cdots \alpha_n} = 0
+ \end{equation}
+\end{definition}
+
+\begin{definition}[The annihilation operator]
+The annihilation operator, $a_\alpha$, is the Hermitian adjoint of $a_\alpha^\dagger$, i.e 
+\begin{equation}
+a_\alpha \equiv (a_\alpha^\dagger)^\dagger. 
+\end{equation}
+The annihilation operator gives the zero result when acting on the vacuum state 
+\begin{equation}
+ a_\alpha \ket{0} = 0.
+\end{equation}
+If $\ket{\Phi} = \ket{\alpha_1 \alpha_2 \cdots \alpha_{i-1} \alpha_{i} \alpha_{i+1} \cdots \alpha_n}$ is an 
+arbitrary Slater determinant and $\alpha = \alpha_i$
+\begin{equation}
+ a_\alpha \ket{\alpha_1 \alpha_2 \cdots \alpha_{i-1} \alpha_{i} \alpha_{i+1} \cdots \alpha_n} = (-1)^{i-1}\ket{\alpha_1 \alpha_2 \cdots \alpha_{i-1}  \alpha_{i+1} \cdots \alpha_n},
+\end{equation}
+i.e it removes particle $i$ from the determinant. Otherwise $a_\alpha \ket{\Phi} = 0$, that is if 
+$\alpha \neq \alpha_i$ for all single-particle states in the determinant.
+\end{definition}
+
+\begin{definition}[Anticommutator of operators]
+The anticommutator of two operators $\hat{A}$ and $\hat{B}$ is defined as
+ \begin{equation}
+ \{\hat{A},\hat{B}\} \equiv \hat{A}\hat{B}+\hat{B}\hat{A}.                      
+\end{equation}
+\end{definition}
+\begin{theorem}[The fundamental anticommutator relations]
+The creation and annihilation operators satisfy the so-called "fundamental anticommutator" relations
+\begin{align}
+ \{a_p^\dagger,a_q^\dagger \} &= 0\\
+ \{a_p,a_q \} &= 0\\
+ \{a_p,a_q^\dagger \} &= \delta_{pq}.\\
+\end{align}
+\end{theorem}
+
+\subsection*{Representation of operators}
+The matrix representation of a one-body operator, relative to a single particle basis $\{ \phi_i \}_{i=1}$, is given by 
+\begin{equation}
+ \braket{\phi_p|\hat{h}|\phi_q} \equiv \int \phi^*_p(\mathbf{r}) \hat{h} \phi_q(\mathbf{r}) d\mathbf{r}.
+\end{equation}
+Common notations are $\braket{\phi_p|\hat{h}|\phi_q}=\braket{p|\hat{h}|q}=h^p_q$. The second quantized form a one-body operator 
+is given by
+\begin{equation}
+ \hat{H}_0 = \sum_{pq}\braket{p|\hat{h}|q} a_p^\dagger a_q.
+\end{equation}
+Likewise the matrix representation of a two-body operator, typically the coulomb interaction, is given by 
+\begin{equation}
+ \braket{\phi_p \phi_q|\hat{v}|\phi_r \phi_s} = \int \phi^*_p(\mathbf{r_1}) \phi^*_q(\mathbf{r_2}) \hat{v}(\mathbf{r}_1,\mathbf{r}_2) \phi_q(\mathbf{r_1}) \phi_s(\mathbf{r_2}) d \mathbf{r}_1 d \mathbf{r}_2.
+\end{equation}
+It is common to write $\braket{\phi_p \phi_q|\hat{v}|\phi_r \phi_s} = \braket{pq|\hat{v}|rs} = v^{pq}_{rs}$. Furthermore, it is customary 
+to introduce the \textit{anti-symmetric} matrix element
+\begin{equation}
+ \braket{pq|\hat{v}|rs}_{AS} \equiv \braket{pq|\hat{v}|rs} - \braket{pq|\hat{v}|sr}.
+\end{equation}
+Here it should be noted that many sources drop the AS subscript, which can be a source of confusion. The second quantized form a 
+two-body operator is given by
+\begin{align}
+ \hat{H}_I &= \frac{1}{2} \sum_{pqrs} \braket{pq|\hat{v}|rs} a_p^\dagger a_q^\dagger a_s a_r \\
+ &= \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_{AS} a_p^\dagger a_q^\dagger a_s a_r 
+\end{align}
+Thus, the full Hamiltonian $\hat{H} = \hat{H}_0 + \hat{H}_I$, using anti-symmetric matrix elements is given by 
+\begin{equation}
+ \hat{H} =  \sum_{pq}\braket{p|\hat{h}|q} a_p^\dagger a_q + \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_{AS} a_p^\dagger a_q^\dagger a_s a_r.
+\end{equation}
+
+\subsection*{Wicks theorem and related concepts}
+\begin{definition}[Operator string]
+ A sequence of creation and annihilation operators is called an operator string. Generally an operator 
+string of $n$ creation and annihilation operators are on the form 
+\begin{equation}
+ A_1 A_2 \cdots A_n, \ \ A_i \in \{a_p,a_p^\dagger\}.
+\end{equation}
+
+For example
+$$A_1A_2A_3A_4 = a_p a_q^\dagger a_r a_s^\dagger,$$
+where $A_1 = a_p, A_2 = a_q^\dagger, A_3 = a_r$ and $A_4 = a_s^\dagger$.
+\end{definition}
+\begin{definition}[Vacuum expecatation value]
+The number 
+\begin{equation}
+ \braket{-|A_1 A_2 \cdots A_n|-}
+\end{equation}
+is referred to as a vacuum expecatation value, where $A_1A_2 \cdots A_n$ is an operator string. 
+\end{definition}
+\begin{definition}[Normal ordered product]
+The normal-ordered product form of an operator 
+string $A_1A_2\cdots A_n$ is defined as a rearrangement,
+\begin{equation}
+ \{A_1A_2\cdots A_n \} \equiv (-1)^{|\sigma|}A_{\sigma(1)}A_{\sigma(2)}\cdots A_{\sigma(n)},
+\end{equation}
+where $\sigma$ is a permutation such that all the creation operators in the operator string is to the left of all the
+annihilation operators, i.e.,
+\begin{equation}
+ \{A_1A_2\cdots A_n \} \equiv (-1)^{|\sigma|}[\text{creation operators}]\cdot[\text{annihilation operators}].
+\end{equation}
+\end{definition}
+The permutation $\sigma$ is in general not unique, since we may permute the creation and annihilation
+operators separately without affecting the total expression. For example,
+\begin{equation}
+ \{a_p a_q^\dagger a_r^\dagger a_s \} = a_q^\dagger a_r^\dagger a_p a_s = -a_r^\dagger a_q^\dagger a_p a_s = a_r^\dagger a_q^\dagger a_s a_p = -a_q^\dagger a_r^\dagger a_s a_p
+\end{equation}
+To find the permutation $\sigma$ that normal-orders an operator product, it is usually simplest to count the
+number f of anticommutations necessary to achieve the rearrangement, and set $(-1)^{|\sigma |} = (-1)^f$.
+Note that the string $A_1\cdots A_n \neq \{ A_1 \cdots A_n \}$ in general, since by reordering creation and annihilation
+operators we neglect the extra terms arising from the Kronecker delta in the anti-commutator relation
+$\{ a_p , a_q^\dagger \} = \delta_{pq}$.
+
+\begin{definition}[Contraction]
+A contraction between two arbitrary creation and annihilation operators $X$
+and  $Y$, is the number defined by
+\begin{equation}
+ \wick{\c X \c Y} \equiv \braket{-|X Y|-}. 
+\end{equation}
+\end{definition}
+We list the possible contractions, relative to the vacuum state $\ket{-}$,
+\begin{align}
+ \wick{\c a_p^\dagger \c a_q^\dagger} &= \braket{-|a_p^\dagger a_q^\dagger|-} = 0 \\
+ \wick{\c a_p \c a_q} &= \braket{-|a_p a_q|-} = 0 \\
+ \wick{\c a_p^\dagger \c a_q} &= \braket{-|a_p^\dagger a_q|-} = 0 \\ 
+ \wick{\c a_p \c a_q^\dagger} &= \braket{-|a_p a_q^\dagger|-} = \delta_{pq}
+\end{align}
+
+Wick’s theorem states that every string of creation and annihilation operators can be written as a sum of
+normal-ordered products where we perform every possible contraction. 
+\begin{theorem}[Wicks theorem]
+Let $A_1 \cdots A_n$ 
+be an operator string of creation and annihilation operators. Then,
+\begin{align*}
+ A_1A_2\cdots A_n &= \{ A_1 A_2 \cdots A_n \} + \sum_{(1)} \{ A_1 \wick{ \c... \c... ... } A_n \}
+ &+ \sum_{(2)} \{ A_1 \wick{ .\c1.\c2. .\c1.\c2. ... } \} + \cdots \\
+ &+ \sum_{\left \lfloor \frac{n}{2} \right \rfloor } \underbrace{\{ A_1 \wick{ .\c1.\c3. \c5.\c2.\c4. \c4.\c3.\c5. \c1... .\c2.. ...} A_n \}}_\text{$\left \lfloor \frac{n}{2} \right \rfloor$ contractions}
+\end{align*}
+The notation $\sum_{(m)}$ signifies that we sum over all combinations of $m$ contractions.
+When n is even, the last sum signifies that we sum over $n/2$ contractions, i.e., all operators are
+contracted. If n is odd, there is one uncontracted operator left in each term of the last sum.
+\end{theorem}
+
+Evaluation of vacuum expecatation values are greatly simplified by Wicks theorem. First note that for any string with at least one factor 
+\begin{equation}
+ \braket{-|\{ A_1 \cdots A_n \}|-} = 0,
+\end{equation}
+because in the normal-order product, the annihilation operators are to the right, and the creation
+operators are on the left. 
+\begin{theorem}[Wicks theorem for vacuum expecatation values]
+For odd $n$, Wicks theorem gives
+\begin{equation}
+ \braket{-|A_1 \cdots A_n|-} = 0,
+\end{equation}
+while for even $n$,
+\begin{equation}
+ \braket{-|A_1 \cdots A_n|-} = \sum_{\left \lfloor \frac{n}{2} \right \rfloor } \underbrace{\{ A_1 \wick{ .\c1.\c3. \c5.\c2.\c4. \c4.\c3.\c5. \c1... .\c2.. ...} A_n \}}_\text{all contracted}.
+\end{equation}
+\end{theorem}
+
+\begin{fact}
+ A useful fact is that the sign of a fully contracted operator product is $(-1)^k$, where $k$ is the
+number of contraction line crossings.
+\end{fact}
+
+Consider an operator string on the form 
+\begin{equation}
+ \{ A_1 A_2 \cdots A_p \} \{B_1 B_2 \cdots B_q \} \cdots \{ Z_1 Z_2 \cdots Z_r \}
+\end{equation}
+where each substring is normal ordered.  Then the generalized Wicks theorem states that we only have 
+to consider contractions between different substrings. That is, contractions involving two operators from the same 
+substring -referred to as self contractions- do not contribute.
+\begin{theorem}[The generalized Wicks theorem]
+ Let $$\{ A_1 A_2 \cdots A_p \} \{B_1 B_2 \cdots B_q \} \cdots \{ Z_1 Z_2 \cdots Z_r \}$$
+be an operator string consisting of normal ordered substrings. Then,
+\begin{align*}
+ &\{ A_1 A_2 \cdots A_p \} \{B_1 B_2 \cdots B_q \} \cdots \{ Z_1 Z_2 \cdots Z_r \} = \{  A_1 A_2 \cdots A_p \vdots B_1 B_2 \cdots B_q \vdots \cdots \vdots Z_1 Z_2 \cdots Z_r  \} \\
+ &+ \sum_{(1)}^{'} \{  \wick{ A_1 \c A_2  \cdots A_p \vdots B_1 B_2 \cdots \c B_q } \vdots \cdots \vdots Z_1 Z_2 \cdots Z_r  \} \\
+ &+ \sum_{(2)}^{'}  \{  \wick{ A_1 \c1 A_2  \cdots A_p \vdots B_1 \c2 B_2 \cdots \c1 B_q  \vdots \cdots \vdots \c2 Z_1 Z_2 \cdots Z_r } \}  \\
+ &+ \cdots \\
+ &+ \sum_{\left \lfloor \frac{n}{2} \right \rfloor }^{'} \underbrace{ \{  \wick{ \c5 A_1 \c1 A_2  \c4 \cdots \c3 A_p \vdots \c4 B_1 \c2 B_2 \cdots \c1 B_q  \vdots \cdots \vdots \c2 Z_1 \c3 Z_2 \c5 \cdots Z_r } \}}_\text{$\left \lfloor \frac{n}{2} \right \rfloor$ contractions}
+\end{align*}
+The notation $\sum_{(m)}^{'}$ signifies that we sum over all combinations of $m$ contractions that each involve
+operators from different substrings. The vertical dots are only a bookkeeping device to remind ourselves
+which operators belong to which substrings.
+\end{theorem}
+
+\subsection*{Particle-hole formalism}
+Consider a $N$-particle system and the single-particle functions $\{ \phi_p \}_{p=1}^L$, with $L$ denoting 
+the number of single-particle functions. In particle-hole formalism we divide the single-particle functions 
+into two sets. The first $N$ single-particle functions, $\{ \phi \}_{i=1}^N$, are referred to as 
+particle/occupied-states/functions while the $N+1,\cdots,L$ states, $\{ \phi \}_{a=N+1}^L$, are referred to as 
+hole/unoccupied/virtual states. The indices $i,j,k,\cdots$ are reserved for particle states and indices $a,b,c,\cdots$
+are reserved for hole states. General states, particle or hole, are indexed by $p,q,r,\cdots$.
+
+\begin{definition}[The reference state]
+ We define the reference Slater determinant $\ket{c}$ to be the determinant constructed from the hole states, i.e 
+ \begin{equation}
+  \ket{c} = \prod_{i=1}^N a_i^\dagger \ket{0} = \ket{\phi_1 \phi_2 \cdots \phi_N}.
+ \end{equation}
+Other common notations for the reference state are $\ket{c} = \ket{\Phi_0} = \ket{\Phi}_\text{ref}$.
+\end{definition}
+
+\begin{definition}[Excited determinants]
+ From the reference determinant, we can construct excited determinants using the creation and annihilation operators,
+ substituting one or more particle states with hole states.
+ \begin{align*}
+  \ket{\Phi_i^a} &= a_a^\dagger a_i \ket{c}, \ \ \text{single excitation} \\
+  \ket{\Phi_{ij}^{ab}} &= a_b^\dagger a_j a_a^\dagger a_i \ket{c}, \ \ \text{ double excitation}, \\
+  &\vdots
+ \end{align*}
+\end{definition}
+
+\begin{definition}[Quasiparticle creation and annihilation operators]
+ Quasiparticle creation and annihilation operators $b_p,b_p^\dagger$ are defined as follows
+ \begin{align}
+  b_i &= a_i^\dagger, \ \ b_a = a_a \\
+  b_i^\dagger &= a_i, \ \ b_a^\dagger = a_a^\dagger.
+ \end{align}
+ Thus, for hole indices, quasiparticle creation operators are the ordinary creation operators, but for
+particle states, creating a quasiparticle is the same as destroying a particle in a particle state. One says
+that $b_i^\dagger$ creates a hole, while $b_a^\dagger$ creates a particle.
+
+Furthermore, the fundamental anticommutator relations are preserved for quasiparticle creation and annihilation operators
+\begin{align}
+ \{b_p^\dagger,b_q^\dagger \} &= 0, \\
+ \{b_p,b_q \} &= 0, \\
+ \{b_p,b_q^\dagger \} &= \delta_{pq}.
+\end{align}
+\end{definition}
+
+\begin{definition}[The new vacuum state]
+Making the observation that 
+\begin{equation}
+ b_p \ket{c} = 0 \text{ for all } p,
+\end{equation}
+we see that the reference acts for quasiparticle creation/annihilation as the vacuum 
+did for the ordinary creation/annihilation operators. Thus, we define the reference $\ket{c}$ to be
+vacuum state for the quasiparticle operators. We will often refer to $\ket{c}$ as the new vacuum state in 
+the following.
+\end{definition}
+\begin{fact}
+The definition of normal-ordering, contractions, and ultimately Wick's
+theorem, depended only on the anticommutator relations and the property $$a_p \ket{0} = .0$$ Thus, Wick's
+theorem is valid also for quasiparticles.
+\end{fact}
+
+Notice that relative to the new vacuum state, there are now two non-zero contractions
+\begin{align} 
+ \wick{\c b_a \c b_b^\dagger} = \wick{\c a_a \c a_b^\dagger} &= \braket{c|a_a a_b^\dagger|c} = \delta_{ab} \\
+ \wick{\c b_i \c b_j^\dagger} = \wick{\c a_i^\dagger \c a_j} &= \braket{c|a_i^\dagger a_j|c} = \delta_{ij}. \\
+\end{align}
+
+\subsection*{Normal ordering relative to the new vacuum state}
+If we normal order relative to the new vacuum $\ket{c}$ the one-body Hamiltonian can be written 
+\begin{equation}
+ \hat{H}_0 = H_0^{(1\text{-body})} + H_0^{(0\text{-body})} 
+\end{equation}
+where we have defined 
+\begin{align}
+ H_0^{(0\text{-body})} &\equiv \sum_i \braket{i|\hat{h}|i} \\
+ H_0^{(1\text{-body})} &\equiv \sum_{pq} \braket{p|\hat{h}|q} \{a_p^\dagger a_q \}.
+\end{align}
+The notation $H^{n\text{-body}}$ means that the operator acts as a $n$-body operator, with $0$-body being the same 
+as a constant.
+
+The two-body Hamiltonian can be written as 
+\begin{align}
+ \hat{H}_I &= \hat{H}_I^{(2\text{-body})} + \hat{H}_I^{(1\text{-body})} + \hat{H}_I^{(0\text{-body})} \\
+\end{align}
+where 
+\begin{align}
+ \hat{H}_I^{(2\text{-body})} &= \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_{\text{AS}}\{a_p^\dagger a_q^\dagger a_s a_r \}, \\
+ \hat{H}_I^{(1\text{-body})} &= \sum_{pqi} \braket{pi|\hat{v}|qi}_{\text{AS}} \{a_p^\dagger a_q \}, \\
+ \hat{H}_I^{(0\text{-body})} &= \frac{1}{2} \sum_{ij} \braket{ij|\hat{v}|ij}_{\text{AS}}
+\end{align}
+We now define 
+\begin{align*}
+ E_0^{\text{ref}} &\equiv H_0^{(0\text{-body})} + \hat{H}_I^{(0\text{-body})} = \sum_i \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{ij} \braket{ij|\hat{v}|ij}_{\text{AS}} \\
+ \{ \hat{F} \} &\equiv H_0^{(1\text{-body})} + \hat{H}_I^{(1\text{-body})} = \sum_{pq} \braket{p|\hat{f}|q} \{a_p^\dagger a_q\} \\
+ \{ \hat{H}_I \} &\equiv \hat{H}_I^{(2\text{-body})}
+\end{align*}
+where we defined the so-called fock matrix element 
+\begin{equation}
+ \braket{p|\hat{f}|q} = \braket{p|\hat{h}|q} + \sum_i \braket{pi|\hat{v}|qi}_{\text{AS}}
+\end{equation}
+$E_0^\text{ref}$ is referred to as the reference energy and $\{ \hat{F} \}$ is the Fock-operator.
+
+Thus, we can write the full Hamiltonian normal ordered relative to the new vacuum as 
+\begin{equation}
+ \hat{H} =  E_0^{\text{ref}} + \{ \hat{F} \} + \{ \hat{H}_I \}.
+\end{equation}
+
+When computing expectation values using the normal ordered Hamiltonian we can now use Wicks generalized theorem, considering 
+only contractions between normal ordered substrings. Recall carefully, that there are two possible non-zero contractions 
+relative to the new vacuum state.
+\begin{example}
+ Consider the computation of the matrix element $\braket{c|\{ \hat{F} \}| \Phi_i^a}$. By Wicks generalized theorem we have 
+ \begin{align*}
+  \braket{c|\{ \hat{F} \}| \Phi_i^a} = \sum_{\left \lfloor \frac{n}{2} \right \rfloor }^{'} \braket{c|\left( \sum_{pq}\braket{p|\hat{f}|q}\{a_p^\dagger a_q\}a_a^\dagger a_i \right)|c},
+ \end{align*}
+ With $\sum_{\left \lfloor \frac{n}{2} \right \rfloor }^{'}$ meaning that we sum over all possible contractions between 
+different normal ordered substrings. 
+
+Note that $a_a^\dagger a_i$ already is on normal order form. The computation is 
+also simplified by noting that there is only one possible way of contracting all operators and get a non-zero result, that is 
+\begin{equation}
+ \wick { \{ \c1 a_p^\dagger \c2 a_q \} \c2 a_a^\dagger \c1 a_i } = \delta_{pi}\delta_{qa}
+\end{equation}
+with a positive sign since there are two line crossings. Thus,
+\begin{align*}
+  \braket{c|\{ \hat{F} \}| \Phi_i^a} &= \braket{c|\left(\sum_{pq}\braket{p|\hat{f} |q}\delta_{pi}\delta_{qa} \right)|c} \\
+  &= \braket{i|\hat{f}|a} \braket{c|c} \\
+  &= \braket{i|\hat{f}|a}.
+\end{align*}
+\end{example}
+
+\subsection*{Configuration Interaction Theory}
+
+\subsection*{Hartree-Fock theory}
+
+\subsection*{Many-body Perturbation Theory}
+
+\subsection*{Coupled Cluster Theory}
+
+\end{document}          
