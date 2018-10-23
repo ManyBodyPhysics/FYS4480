@@ -1,0 +1,222 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Simpler Wick Contractions
+% Copyright (C) 2014  Joshua Ellis
+%
+% An simpler implementation of the Wick contractions.
+%
+%
+% This work may be distributed and/or modified under the conditions of the LaTeX
+% Project Public License, either version 1.3 of this license or (at your option)
+% any later version.
+%
+% This work has the LPPL maintenance status `maintained'.
+%
+% The Current Maintainer of this work is Joshua Ellis.
+%
+% This program is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+% FOR A PARTICULAR PURPOSE.  See the LaTeX Project Public License for more
+% details.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ProvidesPackage{simpler-wick}
+
+\RequirePackage{tikz}
+\RequirePackage{pgfopts}
+\usetikzlibrary{calc}
+\usetikzlibrary{external}
+
+\pgfkeys{
+  /simplerwick/.is family,
+  /simplerwick,
+  sep/.store in=\swick@sep,
+  sep=3pt,
+  offset/.store in=\swick@offset,
+  offset=1em}
+
+\ProcessPgfOptions{/simplerwick}
+
+% Works just like \@ifnextchar[, except for digits [1-9]
+\def\swick@ifnextdigit#1#2{
+    \@ifnextchar 1{#1}{
+      \@ifnextchar 2{#1}{
+        \@ifnextchar 3{#1}{
+          \@ifnextchar 4{#1}{
+            \@ifnextchar 5{#1}{
+              \@ifnextchar 6{#1}{
+                \@ifnextchar 7{#1}{
+                  \@ifnextchar 8{#1}{
+                    \@ifnextchar 9{#1}{#2}}}}}}}}}}
+
+% A count to keep track of how many contraction are currently open.
+\countdef\swick@count=0
+
+% Convert the digit to its representation as a word
+\def\swick@translate#1{%
+  \ifcase#1\or
+  one\or
+  two\or
+  three\or
+  four\or
+  five\or
+  six\or
+  seven\or
+  eight\or
+  nine\fi
+}
+
+% Keeping track of which contraction is open or closed.
+\newif\ifswick@if@one@
+\newif\ifswick@if@two@
+\newif\ifswick@if@three@
+\newif\ifswick@if@four@
+\newif\ifswick@if@five@
+\newif\ifswick@if@six@
+\newif\ifswick@if@seven@
+\newif\ifswick@if@eight@
+\newif\ifswick@if@nine@
+
+% Shortcut to the ith 'if' variable
+\def\swick@settrue@#1{
+  \csname swick@if@\swick@translate{#1}@true\endcsname}
+\def\swick@setfalse@#1{
+  \csname swick@if@\swick@translate{#1}@false\endcsname}
+
+% Returns true or false based on whether the ith.  Use as:
+%
+% \if\swick@cond@4
+%   <if true>
+% \else
+%   <if false
+% \fi
+\def\swick@cond@#1{
+  TT\fi
+  \csname ifswick@if@\swick@translate{#1}@\endcsname}
+
+% Check if *any* of the ifs is true.
+\def\swick@cond@any#1#2{
+  \if\swick@cond@1{#1}\else
+    \if\swick@cond@2{#1}\else
+      \if\swick@cond@3{#1}\else
+        \if\swick@cond@4{#1}\else
+          \if\swick@cond@5{#1}\else
+            \if\swick@cond@6{#1}\else
+              \if\swick@cond@7{#1}\else
+                \if\swick@cond@8{#1}\else
+                  \if\swick@cond@9{#1}\else
+                    {#2}
+  \fi\fi\fi\fi\fi\fi\fi\fi\fi}
+
+% Set all ifs back to false.
+\def\swick@cond@reset{
+  \swick@setfalse@1
+  \swick@setfalse@2
+  \swick@setfalse@3
+  \swick@setfalse@4
+  \swick@setfalse@5
+  \swick@setfalse@6
+  \swick@setfalse@7
+  \swick@setfalse@8
+  \swick@setfalse@9
+}
+
+% Do nothing
+\def\swick@ignore#1{}
+
+% Delegate to the appropriate subfunction based on the next char:
+% - 0: do nothing
+% - [1-9]: Open the given contraction
+% - anything else: Open contraction 1
+\def\swick@smart{
+  \@ifnextchar0{
+    \swick@ignore
+  }{
+    \swick@ifnextdigit{
+    \swick@smart@
+  }{
+    \swick@smart@1
+  }}}
+
+% Open or close the given contraction.
+\def\swick@smart@#1#2{
+  \if\swick@cond@#1
+    \swick@end#1{#2}
+  \else
+    \swick@begin#1{#2}
+  \fi}
+
+% Open a contraction
+\def\swick@begin#1#2{
+  % swick@max keeps track of the tallest contraction yet.
+  \ifnum\swick@max<#1
+    \def\swick@max{#1}
+  \fi
+  \swick@settrue@#1
+  \tikzexternaldisable
+  \begin{tikzpicture}[remember picture, baseline=(swick-open#1.base)]
+    \node[use as bounding box, inner sep=0pt, outer sep=0pt] (swick-open#1) {$\displaystyle #2$};
+  \end{tikzpicture}
+  \tikzexternalenable
+}
+
+\def\swick@end#1#2{
+  \swick@setfalse@#1
+  \tikzexternaldisable
+  \begin{tikzpicture}[remember picture, baseline=(swick-close#1.base)]
+    \node[use as bounding box, inner sep=0pt, outer sep=0pt] (swick-close#1) {$\displaystyle #2$};
+  \end{tikzpicture}
+  \tikz[remember picture, overlay]
+    \draw ($(swick-open#1.north) + (0, 3pt)$) 
+          -- ($(swick-open#1.base) + (0, \swick@offset) + #1*(0, \swick@sep)$) 
+          -- ($(swick-close#1.base) + (0, \swick@offset) + #1*(0, \swick@sep)$) 
+          -- ($(swick-close#1.north) + (0, 3pt)$);
+  \tikzexternalenable}
+
+% Start the \wick environment, checking optional arguments if needed.
+\def\wick{
+  \@ifnextchar[{
+    \wick@
+  }{
+    \wick@[]
+  }}
+
+\def\wick@[#1]#2{
+  \ifmmode
+    \begingroup
+    \pgfkeys{
+        simplerwick,
+        #1}
+    % Define the variables and commands
+    \swick@cond@reset
+    \swick@count=0
+    \def\swick@max{0}
+    \def\c{\swick@smart}
+    % Here is the text
+    #2
+    % Add a vbox equal to max height
+    \dimen0=\swick@sep
+    \multiply\dimen0 by \swick@max
+    \advance\dimen0 by \swick@offset
+    \vbox to \dimen0{}
+    % Check that every has been closed
+    \swick@cond@any{
+      \PackageWarning{simpler-wick}{%
+        I have reached the end of \protect\wick\space with some unclosed
+        contractions%
+      }{}
+    }{}
+    \endgroup
+  \else
+    \PackageWarning{simpler-wick}{%
+      \protect\wich\space has been called outside a math environment, this will
+      be ignore%
+    }
+  \fi
+}
+
+\endinput
+
+% Local Variables:
+% TeX-master: "simpler-wick"
+% End:
