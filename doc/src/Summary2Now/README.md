@@ -22,6 +22,7 @@ Second-quantization
 
 Many-body methods
 - [ ] Configuration Interaction theory
-- [ ] Hartree-Fock theory
+- [x] Hartree-Fock theory
+- [ ] Outline of how to write Hartree-Fock code
 - [ ] Many-body perturbation theory
 - [ ] Coupled Cluster theory
