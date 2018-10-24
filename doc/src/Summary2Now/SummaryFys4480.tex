@@ -508,6 +508,85 @@ with a positive sign since there are two line crossings. Thus,
 \subsection{Configuration Interaction Theory}
 
 \subsection{Hartree-Fock theory}
+\subsubsection{The Hartree-Fock equations}
+In Hartree-Fock theory the underlying idea is to approximate the true wavefunction of a $N$-particle system 
+$\ket{\Psi}$ by a \textbf{single} Slater determinant 
+\begin{equation}
+ \ket{\Phi} = \ket{\psi_1 \psi_2 \dots \psi_N}
+\end{equation}
+where the $\psi_i$'s are orthonormal single-particle functions. 
+
+In Hartree-Fock we know the form of the wavefunction 
+which by assumption is a single Slater determinant. The unknowns are the single-particle functions $\psi_i$.
+
+How do we go about finding these single-particle functions? The idea is to expand the $\psi_i$'s in a fixed 
+known (finite in practice) basis $\{ \phi_\lambda \}_{\lambda=1}^L$ which we take to be orthonormal for 
+simplicity ($\braket{\phi_p|\phi_q} = \delta_{pq}$)
+\begin{equation}
+ \psi_p = \sum_\lambda C_{p \lambda} \phi_\lambda.
+\end{equation}
+Typically the basis functions $\phi_\lambda$ are chosen as the eigenfunctions of the single-particle operator $\hat{h}_0$
+such that
+\begin{equation}
+ \hat{h}_0 \phi_\lambda = \epsilon_\lambda \phi_\lambda.
+\end{equation}
+
+Now, the unknowns are the expansion coefficients $\{ C_{p\lambda} \}$ which determines $\psi_i$ in terms of 
+the $\phi_\lambda$'s. The constraint that the $\psi_i$'s must be orthonormal gives that we must have 
+\begin{equation}
+ \braket{\psi_i|\psi_j} = \delta_{ij} = \sum_{\alpha} C^*_{i\alpha} C_{i \alpha}. 	
+\end{equation}
+
+The equation for the expansion coefficients is obtained by minimizing the energy of a single Slater determinant
+\begin{align*}
+ E[\Phi] &= \sum_i \braket{i|\hat{h}_0|i} + \frac{1}{2} \sum_{ij} \braket{ij|v|ij}_{AS} \\
+ &= \sum_i \sum_{\alpha \beta} C^*_{i \alpha}C_{i \beta} \braket{\phi_\alpha|\hat{h}_0|\phi_\beta} + \frac{1}{2} \sum_{ij} \sum_{\alpha \beta \gamma \delta} C^*_{i \alpha} C^*_{j \beta} C_{i \gamma} C_{j \delta} \braket{\phi_\alpha \phi_\beta|v|\phi_\gamma \phi_\delta}_{AS},
+\end{align*}
+with respect to the expansion coefficients subject to the constraint that the $\psi_i$'s must be orthonormal. Here the notation 
+$\braket{\phi_\alpha|\hat{h}_0|\phi_\beta}$ and $\braket{\phi_\alpha \phi_\beta|v|\phi_\gamma \phi_\delta}_{AS}$ are meant 
+as a reminder that matrix elements are with respect to the fixed basis functions $\phi_\lambda$.
+
+The constraint is incorporated via so-called Lagrange multipliers such that in order to minimize $E[\Phi]$ we have to solve 
+\begin{equation}
+ \frac{d}{d C^*_{i \alpha}} \left[ E[\Phi] - \underbrace{\sum_j \epsilon_j \sum_\alpha C^*_{j \alpha} C_{j \alpha}}_\text{The constraint} \right] = 0.
+\end{equation}
+Taking derivatives one obtains 
+\begin{equation}
+ \sum_\beta \left\{\braket{\alpha|\hat{h}|\beta} + \sum_j \sum_{\gamma \delta} C^*_{j \gamma} C_{j \delta} \braket{\alpha \gamma | \hat{v} | \beta \delta}_\text{AS} \right\}C_{i \beta} = \epsilon_i C_{i \alpha} \label{HfEquation}.
+\end{equation}
+Defining the so-called Fock matrix  
+\begin{equation}
+ h_{\alpha \beta}^{\text{HF}} \equiv \braket{\alpha|\hat{h}|\beta} + \sum_j \sum_{\gamma \delta} C^*_{j \gamma} C_{j \delta} \braket{\alpha \gamma | \hat{v} | \beta \delta}_\text{AS}
+\end{equation}
+we can rewrite \ref{HfEquation} as
+\begin{equation}
+ \sum_{\beta} h_{\alpha \beta}^{\text{HF}} C_{i \beta} = \epsilon_i^{\text{HF}} C_{i \alpha} \label{HfEquation2}.
+\end{equation}
+
+Now let $C$ be the matrix that consists of the $C_{i \beta}$'s. By definition $[C^\dagger]_{\beta i} = [C]_{i \beta}$, 
+i.e element $(\beta,i)$ of the \textbf{matrix} $C^\dagger$ is equal to the matrix element $C_{i \beta}$.
+Then \ref{HfEquation2} can be written as 
+\begin{align}
+ \sum_{\beta} h_{\alpha \beta}^{\text{HF}} [C^\dagger]_{\beta i} = [C^\dagger]_{\alpha i}\epsilon_i^{\text{HF}} \\
+\end{align}
+where we recognize the left-hand side as a matrix-matrix product $h^\text{HF} C^\dagger$ where $h^\text{HF}$ is the matrix 
+having $h_{\alpha \beta}^{\text{HF}}$ as its elements. If we define 
+$\mathcal{E} = \text{diag}(\epsilon_1,\epsilon_2,\dots,\epsilon_N)$ to be the diagonal matrix containing $\epsilon_i$ along its diagonal 
+the right-hand side is the matrix-matrix product $C^\dagger \mathcal{E}$. Thus, Eq. \ref{HfEquation2} can be expressed as the 
+non-linear eigenvalue problem 
+\begin{equation}
+ h^\text{HF}(C) C^\dagger = C^\dagger \mathcal{E}.
+\end{equation}
+
+The above equation is commonly referred to as the Roothan-Hall equations. Thus we can solve for $C$, which 
+are the unknowns we are interested in, by diagonalizing $h^\text{HF}$. However, the fact that the equation is non-linear
+due to the fact that $h^{\text{HF}}$ depends on $C$, means that we must solve the Roothan-Hall equations iteratively.
+We will give a outline of one common approach to solve the Roothan-Hall equations.
+
+\subsubsection{Outline of how to write a Hartree-Fock program}
+
+
+
 
 \subsection{Many-body Perturbation Theory}
 
