@@ -9,7 +9,7 @@ if you spot errors or something is unclear.
 List of topics covered in the summary so far.
 
 Introduction
-- [ ]  Particle statistics 
+- [x]  Particle statistics 
 - [x] Slater determinants
 - [ ]  The variational principle 
 
