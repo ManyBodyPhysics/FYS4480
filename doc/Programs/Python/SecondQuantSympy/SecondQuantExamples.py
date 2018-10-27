@@ -24,7 +24,9 @@ ap_dagger  = Fd(p)
 aq		   = F(q)
 #Perform a contraction
 contr      = evaluate_deltas(contraction(ap_dagger,aq))
-print(latex(contr))
+print("Example outputs")
+print()
+print("contraction(a_p^\dagger a_q): ", latex(contr))
 print()
 
 #Setup Hamiltonian, not on normal order form
@@ -49,8 +51,39 @@ Eref = evaluate_deltas(wicks(H, keep_only_fully_contracted=True))
 Eref = substitute_dummies(Eref, new_indices=True, pretty_indices=pretty_dummies_dict)
 
 print("Eref: ",latex(Eref))
+print()
 print("Normal ordered Hamiltonian") 
 print(latex(H_N))
+print()
 
+#Setup Hamiltonian on normal ordered form
 
+E0 = symbols('Eref', real = True, constant = True) #Reference energy
+
+f  = AntiSymmetricTensor('f', (p,), (q,))
+pq = NO(ap_dagger*aq)
+
+V    = AntiSymmetricTensor('V', (p, q), (r, s))
+pqsr = NO(Fd(p)*Fd(q)*F(s)*F(r)) 
+
+HI = Rational(1, 4)*V*pqsr
+Fock = f*pq #F is reserved by sympy
+
+HN = E0+Fock+HI
+
+#Compute <c|F|Phi_i^a> 
+
+#Define indices above and below Fermi level
+i, j, k, l = symbols('i,j,k,l', below_fermi=True)
+a, b, c, d = symbols('a,b,c,d', above_fermi=True)
+
+#Compute <c|HN|c>
+cHc = wicks(HN, simplify_kronecker_deltas=True, keep_only_fully_contracted=True)
+print("<c|Hnormal|c> = ", latex(cHc))
+
+#Compute <c|F|Phi_i^a>
+cFphi_ia = wicks((Fock)*NO(Fd(a)*F(i)), simplify_kronecker_deltas=True, keep_only_fully_contracted=True)
+cFphi_ia = substitute_dummies(cFphi_ia)
+
+print("<c|F|Phi_i^a> = ", latex(cFphi_ia))
 
