@@ -7,6 +7,9 @@ from sympy import (
     symbols, expand, pprint, Rational, latex, Dummy
 )
 
+#Link to Second quant documentation: https://docs.sympy.org/latest/modules/physics/secondquant.html
+
+
 pretty_dummies_dict = {
     'above': 'abcdefgh',
     'below': 'ijklmno',
