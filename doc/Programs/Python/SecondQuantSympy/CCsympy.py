@@ -47,7 +47,7 @@ pqsr = NO(Fd(p)*Fd(q)*F(s)*F(r))
 
 HI   = Rational(1, 4)*V*pqsr
 
-HN   = E0+Fock+HI
+HN   = E0+F+HI
 
 i, j, k, l = symbols('i,j,k,l', below_fermi=True)
 a, b, c, d = symbols('a,b,c,d', above_fermi=True)

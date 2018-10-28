@@ -57,7 +57,6 @@ print(latex(H_N))
 print()
 
 #Setup Hamiltonian on normal ordered form
-
 E0 = symbols('Eref', real = True, constant = True) #Reference energy
 
 f  = AntiSymmetricTensor('f', (p,), (q,))

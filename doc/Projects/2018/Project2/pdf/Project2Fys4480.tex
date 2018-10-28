@@ -1,0 +1,226 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{hyperref}
+
+\usepackage{amsmath,amsthm}
+\usepackage{ dsfont }
+\usepackage{lipsum}
+\usepackage{hyperref}
+
+\usepackage{tikz}
+\usepackage{verbatim}
+%\usepackage{simpler-wick}
+%\usepackage[lf]{MinionPro}
+\usepackage[scr=rsfso,calscaled=.96]{mathalfa}
+
+
+\newcommand{\One}{\hat{\mathbf{1}}} \newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle} \newcommand{\element}[3]
+{\bra{#1}#2\ket{#3}}
+
+\usepackage{amsmath}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{fact}{Fact}
+\newtheorem{observation}{Observation}
+\newtheorem{example}{Example}
+
+% Title Page
+\title{Project 2 Fyss4480, The CCD approximation}
+\author{}
+
+
+\begin{document}
+\maketitle
+
+\subsection*{Project 2 introduction}
+In this project we will study the Coupled Cluster method. In particular we will explore the Coupled Cluster Doubles (CCD)
+approximation. The first part of the project will be to derive the relevant energy and amplitude equations. The second part 
+will be to write a CCD program and apply it to the Helium and Beryllium atom as in Project1 and compare the resulting 
+energies with results from configuration interaction, Hartree-Fock and many-body perturbation theory.
+
+In the Coupled Cluster method the ansatz for the ground state is given by 
+\begin{equation}
+ \ket{\Psi_\text{CC}} = e^{\hat{T}}\ket{c},
+\end{equation}
+where $\hat{T}$ is the cluster operator
+\begin{align*}
+ \hat{T} &= \hat{T}_1 + \hat{T}_2 + \dots \\
+ \hat{T}_n &= \left( \frac{1}{n!} \right)^2 \sum_{abc \dots} \sum_{ijk \dots} t^{abc\dots}_{ijk\dots}a_a^\dagger a_b^\dagger a_c^\dagger \dots a_k a_j a_i. 
+\end{align*}
+The energy is given by 
+\begin{equation}
+ E_\text{CC} =  \braket{c|\bar{H}|c}
+\end{equation}
+where $\bar{H}$ is the \textit{similarity transformed} Hamiltonian
+\begin{equation}
+ \bar{H} = e^{-\hat{T}}\hat{H}e^{\hat{T}}.
+\end{equation}
+
+The amplitudes $t^{abc\dots}_{ijk\dots}$ are given by the solution of the non-linear amplitude equations 
+\begin{equation}
+ \braket{\Phi^{abc \dots}_{ijk \dots} | \bar{H} | c} = 0.
+\end{equation}
+In order to setup the above equations, the similarity transformed Hamiltonian is expanded using the Baker-Campbell-Hausdorff (BCH)
+expansion, 
+\begin{align}
+ \bar{H} = \hat{H} &+ [\hat{H},\hat{T}] \nonumber \\
+ &+ \frac{1}{2} [[\hat{H},\hat{T}],\hat{T}] \nonumber \\
+ &+ \frac{1}{6} [[[\hat{H},\hat{T}],\hat{T}],\hat{T}] \nonumber \\
+ &+ \frac{1}{24} [[[[\hat{H},\hat{T}],\hat{T}],\hat{T}],\hat{T}] \nonumber \\
+ &+ \dots.
+\end{align}
+When $\hat{H}$ is a two-body Hamiltonian this series truncates after the four nested commutators listed above.
+
+In this project we will consider the so-called Coupled Cluster Doubles approximation where we have 
+\begin{equation}
+\hat{T} = \hat{T}_2 = \frac{1}{4} \sum_{ab}\sum_{ij} t^{ab}_{ij} a_a^\dagger a_b^\dagger a_j a_i 
+\end{equation}
+
+\paragraph{Part a) The CCD energy}
+Let the Hamiltonian be given on normal ordered form as discussed in the lectures 
+\begin{align}
+ \hat{H} &= E_\text{ref} + \hat{F} + \hat{H}_I \\
+ &= E_\text{ref} + \sum_{pq} \braket{p|\hat{f}|q}\{a_p^\dagger a_q\} + \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_\text{AS} \{ a_p^\dagger a_q^\dagger a_s a_r \}.
+\end{align}
+The subscript AS will be dropped in the remainder of the text, but the matrix elements are still antisymmetrized.
+
+Using Wicks generalized theorem, show that 
+\begin{align}
+ \braket{c|\hat{H}|c} &= E_\text{ref} \\
+ \braket{c|[\hat{H},\hat{T}_2]|c} &= \frac{1}{4} \sum_{abij} \braket{ij|\hat{v}|ab} t^{ab}_{ij}
+\end{align}
+and argue that 
+\begin{equation}
+ \braket{c|[[\hat{H},\hat{T}_2],\hat{T}_2]|c} = 0.
+\end{equation}
+Thus, we have that the CCD energy is given by 
+\begin{equation}
+ E_\text{CCD} = E_\text{ref} + \frac{1}{4} \sum_{abij} \braket{ij|\hat{v}|ab} t^{ab}_{ij} \label{CCDenergy}
+\end{equation}
+
+\paragraph{Part b) Deriving the CCD amplitde equation}
+The next step is to obtain an algbraic expressions for the amplitude equation 
+\begin{equation}
+ \braket{\Phi^{ab}_{ij}|\bar{H}|c} = 0 \label{amplitudeEquation}.
+\end{equation}
+
+We will break this up into several steps. First, show that 
+\begin{align}
+ \braket{\Phi^{ab}_{ij}|\hat{F}|c} &= 0 \\
+ \braket{\Phi^{ab}_{ij}|\hat{H}_I|c} &= \braket{ab|\hat{v}|ij} 
+\end{align}
+
+Secondly, show that 
+\begin{align}
+ \braket{\Phi^{ab}_{ij}|[\hat{F},\hat{T}_2]|c} &= \hat{P} (ij) \sum_ k  f^{k}_{i} t^{ab}_{jk}  - \hat{P} (ab) \sum_c f^{a}_{c} t^{bc}_{ij} \\
+ \braket{\Phi^{ab}_{ij}|[\hat{H}_I,\hat{T}_2]|c} &= \frac{1}{2} \sum_{kl} \braket{kl|\hat{v}|ij} t^{ab}_{kl} + \hat{P}(ab) \hat{P}(ij) \sum_{kc} \braket{ak|\hat{v}|ic} t^{bc}_{jk}  \nonumber \\
+ &+ \frac{1}{2} \sum_{cd} \braket{ab|\hat{v}|cd} t^{cd}_{ij}
+\end{align}
+Here we have defined 
+\begin{align}
+ \hat{P}(ab) &= \left( 1 - \hat{P}_{ab} \right) \\
+ \hat{P}(ab) \hat{P}(ij) &= \left( 1 - \hat{P}_{ab} \right)\left( 1 - \hat{P}_{ij} \right)
+\end{align}
+where $\hat{P}_{ab}$ permutes the indices $a$ and $b$ (or $i$ and $j$). 
+
+Thirdly, argue that 
+\begin{equation}
+ \braket{\Phi^{ab}_{ij}|[[\hat{F},\hat{T}_2],\hat{T}_2]|c} = 0
+\end{equation}
+and show that 
+\begin{align}
+ \frac{1}{2} \braket{\Phi^{ab}_{ij}|[[\hat{H}_I,\hat{T}_2],\hat{T}_2]|c} =  &\frac{1}{4} \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ab}_{kl} t^{cd}_{ij} -  \frac{1}{2}\hat{P} (ij) \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ab}_{il} t^{cd}_{kj} \nonumber \\
+ - & \hat{P} (ab) \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ac}_{ik} t^{bd}_{lj}  - \frac{1}{2} \hat{P}(ab) \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ac}_{ij}t^{bd}_{kl} .
+\end{align}
+
+Finally, argue that 
+\begin{equation}
+ \braket{\Phi^{ab}_{ij}|[[[\hat{H},\hat{T}_2],\hat{T}_2],\hat{T}_2]|c} = 0.
+\end{equation}
+
+Collecting all terms we have that 
+\begin{align}
+ \braket{\Phi^{ab}_{ij}|\bar{H}|c} = &\braket{ab|\hat{v}|ij} + \hat{P} (ij) \sum_ k  f^{k}_{i} t^{ab}_{jk}  - \hat{P} (ab) \sum_c f^{a}_{c} t^{bc}_{ij} \nonumber \\
+ &+\frac{1}{2} \sum_{kl} \braket{kl|\hat{v}|ij} t^{ab}_{kl} + \hat{P}(ab) \hat{P}(ij) \sum_{kc} \braket{ak|\hat{v}|ic} t^{bc}_{jk}  \nonumber \\
+ &+ \frac{1}{2} \sum_{cd} \braket{ab|\hat{v}|cd} t^{cd}_{ij} + \frac{1}{4} \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ab}_{kl} t^{cd}_{ij} -  \frac{1}{2}\hat{P} (ij) \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ab}_{il} t^{cd}_{kj} \nonumber \\
+ - & \hat{P} (ab) \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ac}_{ik} t^{bd}_{lj}  - \frac{1}{2} \hat{P}(ab) \sum_{klcd} \braket{kl|\hat{v}|cd} t^{ac}_{ij}t^{bd}_{kl} \label{amplitudeExpression}.
+\end{align}
+
+\paragraph{Part c) Setting up an iterative scheme}
+We want to solve Eq. \ref{amplitudeEquation} with the left-hand side given by Eq. \ref{amplitudeExpression} 
+for the unknown amplitudes $t^{ab}_{ij}$. 
+
+Define $\epsilon_p = f^p_p$ and $D^{ij}_{ab} = \left( \epsilon_i+\epsilon_j-\epsilon_a-\epsilon_b \right) $ 
+and show that 
+\begin{equation}
+ t^{ab}_{ij}D^{ij}_{ab} = \braket{ab|\hat{v}|ij} + \hat{P} (ij) \sum_ {k\neq i}  f^{k}_{i} t^{ab}_{jk}  - \hat{P} (ab) \sum_ {c\neq a} f^{a}_{c} t^{bc}_{ij} + \left( \dots \right) \label{amplitudeExplicit}\\
+\end{equation}
+where $\left( \dots \right)$ refers to the rest of Eq. \ref{amplitudeExpression}. Furtheremore, argue that 
+\begin{equation}
+ \hat{P} (ij) \sum_ {k\neq i}  f^{k}_{i} t^{ab}_{jk}  - \hat{P} (ab) \sum_ {c\neq a} f^{a}_{c} t^{bc}_{ij} = 0
+\end{equation}
+if the single-particle functions are given by the Hartree-Fock solution.
+
+Equation \ref{amplitudeExplicit} is a non-linear equation in the amplitudes and must be solved iteratively. 
+The way we have rewritten the equation suggests that we define an iterative scheme as 
+\begin{equation}
+ (t^{ab}_{ij})^{(k+1)}  = \frac{g\left((t^{ab}_{ij})^{(k)}\right)}{D^{ij}_{ab}} \ \ k = 0,1,2,\dots \label{IterativeScheme}
+\end{equation}
+for some initial guess $(t^{ab}_{ij})^{(0)}$. Here we have defined
+\begin{align}
+ g\left((t^{ab}_{ij})^{(k)}\right) = &\braket{ab|\hat{v}|ij} + \hat{P} (ij) \sum_ {k\neq i}  f^{k}_{i} (t^{ab}_{jk})^{(k)}  - \hat{P} (ab) \sum_ {c\neq a} f^{a}_{c} (t^{bc}_{ij})^{(k)} \nonumber \\
+ &+\frac{1}{2} \sum_{kl} \braket{kl|\hat{v}|ij} (t^{ab}_{kl})^{(k)} + \hat{P}(ab) \hat{P}(ij) \sum_{kc} \braket{ak|\hat{v}|ic} (t^{bc}_{jk})^{(k)}  \nonumber \\
+ &+ \frac{1}{2} \sum_{cd} \braket{ab|\hat{v}|cd} (t^{cd}_{ij})^{(k)} + \frac{1}{4} \sum_{klcd} \braket{kl|\hat{v}|cd} (t^{ab}_{kl}))^{(k)} (t^{cd}_{ij}))^{(k)} \nonumber \\
+ &-  \frac{1}{2}\hat{P} (ij) \sum_{klcd} \braket{kl|\hat{v}|cd} (t^{ab}_{il}))^{(k)} (t^{cd}_{kj}))^{(k)} - \hat{P} (ab) \sum_{klcd} \braket{kl|\hat{v}|cd} (t^{ac}_{ik}))^{(k)} (t^{bd}_{lj})^{(k)} \nonumber \\
+ &- \frac{1}{2} \hat{P}(ab) \sum_{klcd} \braket{kl|\hat{v}|cd} (t^{ac}_{ij})^{(k)} (t^{bd}_{kl})^{(k)} \label{gFunction}.
+\end{align}
+
+\paragraph{Part d) The initial guess}
+Iterative solvers need a guess for the amplitudes. A good starting point is to use
+the correlated wave operator from perturbation theory to first order in the interaction.
+This means that we define the zeroth approximation to the amplitudes as
+\begin{equation}
+ (t^{ab}_{ij})^{(0)} = \frac{\braket{ab|\hat{v}|ij}}{D^{ij}_{ab}} \label{MBPTinit}. 
+\end{equation}
+Insert this expression into the CCD energy \ref{CCDenergy} and compare with the energy expression from second-order 
+perturbation theory.
+
+\paragraph{Part e) Writing a program that solves the amplitude equations}
+The final part of the program is write a program to solve the amplitude equations. That is, write 
+a program that computes the amplitudes according to the scheme \ref{IterativeScheme} with the initial 
+guess given by Eq. \ref{MBPTinit}. 
+
+One particular nice way of writing the program in Python is to use numpy's einsum 
+function \href{https://docs.scipy.org/doc/numpy-1.15.1/reference/generated/numpy.einsum.html}{np.einsum} to evaulate 
+the contributions to Eq. \ref{gFunction}. This is by no means mandatory and you can equally well write the program 
+as you want.
+
+Compute the CCD energy for Helium and Beryllium using the same basis functions as in Project1 and compare the resulting 
+energies with energies obtained with the Hartree-Fock and configuration interaction method. You can use the code template 
+found at the github page \href{https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/Projects/2018/Project1/code_template}{code template} as a starting point for 
+your program. 
+
+\paragraph{Part f) Computing in Hartree-Fock basis}
+Finally, using the program you wrote in Project1 you can do a basis transformation to the Hartree-Fock basis given 
+by 
+\begin{align*}
+ \braket{p|\hat{f}|q}   &= \epsilon_p \delta_{pq} \\
+ \braket{pq|\hat{v}|rs} &= \sum_{\alpha \beta \gamma \delta} C^*_{\alpha p} C^*_{\beta q} C_{\gamma r} C_{\delta s} \braket{\alpha \beta | \hat{v} | \gamma \delta }.
+\end{align*}
+Perform this transformation and repeat the calcultations in part e) and compare the resulting energies with those you already 
+have computed.
+
+
+
+
+\end{document}          
