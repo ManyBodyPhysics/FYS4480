@@ -3,4 +3,4 @@ This course gives an introduction to the quantum mechanics of many-body systems 
 
 The aim of this course is to present some of the most widely used many-body methods, starting with the underlying formalism of second quantization and with emphasis on non-relativistic theory. The topics covered are the Feynman diagram rules, microscopic mean-field theories (Hartree-Fock and Kohn-Sham theories), many-body perturbation theory, large-scale diagonalization methods, coupled-cluster theory, algorithms from quantum computing, quantum machine learning and Green's function approaches. Both fermionic and bosonic systems are discussed. Selected physical systems from various fields such as chemistry, solid-state physics and nuclear physics are studied, depending on the background and interests of the participants.
 Quantum computing algorithms may also be discussed.
-This course includes also some numerical projects.
+This course includes also some numerical projects as well as standard paper and pencil exercises.
