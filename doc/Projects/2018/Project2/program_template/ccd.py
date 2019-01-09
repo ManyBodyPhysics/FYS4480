@@ -9,6 +9,7 @@ states = np.array([[1,1],[1,0],[2,1],[2,0],[3,1],[3,0]])
 quantum.set_states(states)
 L = 2*quantum.u.shape[0] #Toal number of spin single particle functions
 
+## Add spin to h and anti-symmetrize u ##
 h   = np.zeros((L,L))
 uAS = np.zeros((L,L,L,L))
 
@@ -18,11 +19,13 @@ for p in range(L):
         for r in range(L):
             for s in range(L):
                 uAS[p,q,r,s] = quantum.ijvklAS(p,q,r,s)
-
+#########################################
 
 n_fermi = quantum.n_fermi
+#Make slice which is convient when working with einsum
 hole = slice(0,2)
 part = slice(n_fermi,L)
+######################################################
 
 Eref = np.einsum('ii->', h[hole, hole]) + 0.5 * np.einsum('ijij->', uAS[hole, hole, hole, hole])
 print("Eref: %g" % Eref)
