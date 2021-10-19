@@ -1,0 +1,608 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{hyperref}
+
+\usepackage{amsmath,amsthm}
+\usepackage{ dsfont }
+
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{simpler-wick}
+%\usepackage[lf]{MinionPro}
+\usepackage[scr=rsfso,calscaled=.96]{mathalfa}
+
+
+\newcommand{\One}{\hat{\mathbf{1}}} \newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle} \newcommand{\element}[3]
+{\bra{#1}#2\ket{#3}}
+
+\usepackage{amsmath}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{fact}{Fact}
+\newtheorem{observation}{Observation}
+\newtheorem{example}{Example}
+\newtheorem{warning}{Warning}
+% Title Page
+\title{Summary of lectures FYS4480 autumn 2018}
+%\author{Morten Hjorth-Jensen and Håkon Kristiansen}
+
+\begin{document}
+\maketitle
+
+\section*{Disclaimer}
+The purpose of this note is to summarize what has been covered so far in the course and provide a general overview over 
+important results and methods. Statements are given without proof and one should consult the lecture notes for more in depth 
+discussion of the various topics.
+
+\section{Introduction}
+
+\subsection{Particle statistics}
+The fact that elementary particles are identical, or indistinguishable is expressed by 
+demanding that the probability density $|\Psi(x_1,x_2,\dots,x_N)|^2$ must be permutation invariant. That is, 
+if we exchange any coordinates we must get the same probability
+\begin{equation}
+ |\Psi(x_1,x_2,\dots,x_N)|^2 = |\Psi(x_{\sigma(1)},x_{\sigma(2)},\dots,x_{\sigma(N)})|^2 .
+\end{equation}
+Here $\sigma$ is any permutation of coordinate indices. 
+
+To make this somewhat precise we write down the definition
+of permutations and define the so-called permutation operator.
+
+\begin{definition}[Permutation]
+ Let $\mathcal{I}$ be the finite set $\mathcal{I} = \{ 1,2,3,\cdots,N \}$. A 
+ permutation is a function, $\sigma: \mathcal{I} \rightarrow \mathcal{I}$, that takes every number in 
+ $\mathcal{I}$ and maps it to another unique number in $\mathcal{I}$. 
+ Informally, a permutation is any reordering of $N$ indices.
+ 
+ The collection of all perumations of $\mathcal{I}$ is denoted $S_N$ and is called the symmetric group on $N$ 
+ letters. In particular $S_N$ has $N!$ elements, i.e there are $N!$ possible reorderings of $N$ indices. We write 
+ $\sigma \in S_N$ for an arbitrary permutation.
+\end{definition}
+
+\begin{definition}[Transposition]
+ A transposition is a permutation $\sigma \in S_N$, where only a single pair of indices $(i,j)$ in 
+ $\{ 1, 2,\cdots, i, \dots, j,\dots, N \}$ are exchanged. 
+ That is to say, $\sigma(i) = j$ and $\sigma(j) = i$, while $\sigma(k) = k$ for all $k \neq i,j$.
+\end{definition}
+
+\begin{theorem}
+ Any permutation $\sigma \in S_N$ can be obtained by a series of transpositions. The sign of the permutation is 
+ given by $(-1)^{|\sigma|}$, where $|\sigma|$ is the number of transpositions needed to obtain the permutation. 
+\end{theorem}
+
+\begin{example}[A permutation]
+ Let $\mathcal{I} = \{1,2,3 \}$. Then $\sigma(1) = 3, \sigma(2) = 1, \sigma(3) = 2$ is 
+ a permutation. In other words, we have a reordering of three indices given by
+ $\{ \sigma(1), \sigma(2), \sigma(3) \} = \{ 3,1,2 \}$.
+ 
+ Note that in terms of tranpositions we could perform the reordering as follows 
+ \begin{align*}
+  \{ 1,2,3 \} \underbrace{\rightarrow}_\text{transpose $3$ and $2$} \{ 1,3,2 \} \underbrace{\rightarrow}_\text{transpose $1$ and $3$} \{ 3,1,2 \}.
+ \end{align*}
+ Here we needed two transpositions so $|\sigma| = 2$. 
+\end{example}
+
+\begin{definition}[The permutation operator]
+ The permutation operator $\hat{P}_\sigma$ is defined as the operator that evaluates a wavefunction 
+ at permuted coordinates
+ \begin{equation}
+  \hat{P}_\sigma \Psi(x_1,\cdots,x_N) = \Psi(x_{\sigma(1)},\cdots,x_{\sigma(N)}) \label{PermutationOperator}.
+ \end{equation}
+\end{definition}
+
+Now, the condition
+\begin{equation*}
+ |\Psi(x_1,x_2,\dots,x_N)|^2 = |\Psi(x_{\sigma(1)},x_{\sigma(2)},\dots,x_{\sigma(N)})|^2 
+\end{equation*}
+is equivalent to
+\begin{equation}
+ \Psi(x_1,x_2,\dots,x_N) = e^{i \alpha(\sigma)}\Psi(x_{\sigma(1)},x_{\sigma(2)},\dots,x_{\sigma(N)})
+\end{equation}
+which again is equivalent to saying that $\Psi(x_1,x_2,\cdots,x_N)$ must be an eigenfunction of 
+the permutation operator \ref{PermutationOperator} 
+\begin{equation}
+ \hat{P}_\sigma \Psi(x_1,x_2,\cdots,x_N) = e^{i \alpha(\sigma)} \Psi(x_{\sigma(1)},x_{\sigma(2)},\dots,x_{\sigma(N)}).
+\end{equation}
+One can show that either $\hat{P}_\sigma \Psi = \Psi$ for every $\sigma \in S_N$, or $\hat{P}_\sigma \Psi = (-1)^{|\sigma|} \Psi$
+for every $\sigma \in S_N$ and $|\sigma|$ is the number of transpositions. 
+In the former case, $\Psi$ is "totally symmetric with respect to permutations", and in the latter
+case, "totally anti-symmetric". Bosons have totally symmetric wavefunctions only, and fermions have totally
+anti-symmetric wavefunctions only.
+
+In this course, we will restrict our attention to fermions, i.e we must look for 
+anti-symmetric wavefunctions. 
+
+\subsection{Slater Determinants}
+\begin{definition}[Slater determinant]
+ Let $\psi_{\alpha_1},\psi_{\alpha_2},\cdots,\psi_{\alpha_N}$ be arbitrary single-particle functions 
+ (not necessarily orthonormal). The Slater determinant defined by these functions is denoted 
+ $\Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N)$, and is defined by the formula
+ \begin{equation*}
+  \Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N) = \frac{1}{\sqrt{N!}}
+  \begin{vmatrix}
+  \psi_{\alpha_1}(x_1) & \psi_{\alpha_1}(x_2) & \dots & \dots & \psi_{\alpha_1}(x_N) \\ 
+  \psi_{\alpha_2}(x_1) & \psi_{\alpha_2}(x_2) & \dots & \dots & \psi_{\alpha_2}(x_N) \\ 
+  \dots & \dots & \dots & \dots & \dots \\
+  \psi_{\alpha_N}(x_1) & \psi_{\alpha_N}(x_2) & \dots & \dots & \psi_{\alpha_N}(x_N) \\ 
+  \end{vmatrix}
+ \end{equation*}
+ where $x_i$ stand for the coordinates and spin values of a particle $i$ and $\alpha_1,\alpha_2,\dots,\alpha_N$
+ are quantum numbers needed to describe remaining quantum numbers. 
+ 
+ It is common to use the notation 
+ \begin{equation}
+  \Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N) = \ket{\alpha_1 \alpha_2 \dots \alpha_N}
+ \end{equation} 
+ for the Slater determinant.
+\end{definition}
+
+A useful way to express the Slater determinant is via the antisymmetrization operator $\hat{A}$.
+\begin{definition}[Antisymmetrization operator]
+ The antisymmetrization operator $\hat{A}$ is defined as 
+ \begin{equation}
+  \hat{A} = \frac{1}{N!} \sum_{\sigma \in S_N} (-1)^{|\sigma|} \hat{P}_\sigma
+ \end{equation}
+ where the notation 
+ $\sum_{\sigma \in S_N}$ means that we sum over all possible permutations of $N$ indices.
+ 
+The expression for the Slater determinant given above, can now be written in terms of the 
+antisymmetrization operator as follows
+\begin{align}
+  \Phi(x_1,\cdots,x_N; \alpha_1,\cdots,\alpha_N) &= \underbrace{\frac{1}{\sqrt{N!}} \sum_{\sigma \in S_N} (-1)^{|\sigma|} \hat{P}_\sigma}_\text{$= \hat{A}$} \left(\psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \dots \psi_{\alpha_N}(x_N) \right) \nonumber \\
+  &= \frac{1}{\sqrt{N!}} \sum_{\sigma \in S_N} (-1)^{|\sigma|}  \psi_{\alpha_1}(x_{\sigma(1)}) \psi_{\alpha_2}(x_{\sigma(2)}) \dots \psi_{\alpha_N}(x_{\sigma(N)}) \nonumber \\
+  &= \sqrt{N!} \hat{A} \Phi_H(x_1,\dots,x_N)
+\end{align}
+where $\Phi_H(x_1,\dots,x_N) \equiv \psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \dots \psi_{\alpha_N}(x_N)$.
+\end{definition}
+
+\section{Second quantization}
+
+\subsection{Creation and annihilation operators}
+\begin{definition}[Vacuum state]
+ The state $\ket{0}$ represents the state containing no particles and is referred to as
+ the vacuum state. Another common notation is to use $\ket{-}$. The vacuum state satisfies 
+ $\braket{0|0} = 1$. It should be noted that $\ket{0} \neq 0$.
+\end{definition}
+
+\begin{definition}[The creation operator]
+ We define the fermion creation operator $a_\alpha^\dagger$, creating a particle in the single-particle state $\phi_\alpha$, as
+ \begin{equation}
+  a_\alpha^\dagger \ket{0} \equiv \ket{\alpha}
+ \end{equation}
+ and 
+ \begin{equation}
+  a_\alpha^\dagger \ket{\alpha_1 \alpha_2 \cdots \alpha_n} = \ket{\alpha \alpha_1 \alpha_2 \cdots \alpha_n},
+ \end{equation}
+ if $\alpha \neq \alpha_i$ for all single-particle states in the determinant. 
+ Furthermore, insertion of $\alpha$ at position $j+1$ will induce a sign change $(-1)^j$
+ \begin{equation}
+  a_\alpha^\dagger \ket{\alpha_1 \alpha_2 \cdots \alpha_j \alpha_{j+1} \cdots \alpha_n} = (-1)^j\ket{\alpha_1 \alpha_2 \cdots \alpha_j \alpha \alpha_{j+1} \cdots \alpha_n}.
+ \end{equation}
+ If $\alpha = \alpha_i$ for some single-particle state, then 
+ \begin{equation}
+  a_\alpha^\dagger \ket{\alpha_1 \alpha_2 \cdots \alpha_n} = \ket{\alpha \alpha_1 \alpha_2 \cdots \alpha_n} = 0
+ \end{equation}
+\end{definition}
+
+\begin{definition}[The annihilation operator]
+The annihilation operator, $a_\alpha$, is the Hermitian adjoint of $a_\alpha^\dagger$, i.e 
+\begin{equation}
+a_\alpha \equiv (a_\alpha^\dagger)^\dagger. 
+\end{equation}
+The annihilation operator gives the zero result when acting on the vacuum state 
+\begin{equation}
+ a_\alpha \ket{0} = 0.
+\end{equation}
+If $\ket{\Phi} = \ket{\alpha_1 \alpha_2 \cdots \alpha_{i-1} \alpha_{i} \alpha_{i+1} \cdots \alpha_n}$ is an 
+arbitrary Slater determinant and $\alpha = \alpha_i$
+\begin{equation}
+ a_\alpha \ket{\alpha_1 \alpha_2 \cdots \alpha_{i-1} \alpha_{i} \alpha_{i+1} \cdots \alpha_n} = (-1)^{i-1}\ket{\alpha_1 \alpha_2 \cdots \alpha_{i-1}  \alpha_{i+1} \cdots \alpha_n},
+\end{equation}
+i.e it removes particle $i$ from the determinant. Otherwise $a_\alpha \ket{\Phi} = 0$, that is if 
+$\alpha \neq \alpha_i$ for all single-particle states in the determinant.
+\end{definition}
+
+\begin{definition}[Anticommutator of operators]
+The anticommutator of two operators $\hat{A}$ and $\hat{B}$ is defined as
+ \begin{equation}
+ \{\hat{A},\hat{B}\} \equiv \hat{A}\hat{B}+\hat{B}\hat{A}.                      
+\end{equation}
+\end{definition}
+\begin{theorem}[The fundamental anticommutator relations]
+The creation and annihilation operators satisfy the so-called "fundamental anticommutator" relations
+\begin{align}
+ \{a_p^\dagger,a_q^\dagger \} &= 0\\
+ \{a_p,a_q \} &= 0\\
+ \{a_p,a_q^\dagger \} &= \delta_{pq}.\\
+\end{align}
+\end{theorem}
+
+\subsection{Representation of operators}
+The matrix representation of a one-body operator, relative to a single particle basis $\{ \phi_i \}_{i=1}$, is given by 
+\begin{equation}
+ \braket{\phi_p|\hat{h}|\phi_q} \equiv \int \phi^*_p(\mathbf{r}) \hat{h} \phi_q(\mathbf{r}) d\mathbf{r}.
+\end{equation}
+Common notations are $\braket{\phi_p|\hat{h}|\phi_q}=\braket{p|\hat{h}|q}=h^p_q$. The second quantized form a one-body operator 
+is given by
+\begin{equation}
+ \hat{H}_0 = \sum_{pq}\braket{p|\hat{h}|q} a_p^\dagger a_q.
+\end{equation}
+Likewise the matrix representation of a two-body operator, typically the coulomb interaction, is given by 
+\begin{equation}
+ \braket{\phi_p \phi_q|\hat{v}|\phi_r \phi_s} = \int \phi^*_p(\mathbf{r_1}) \phi^*_q(\mathbf{r_2}) \hat{v}(\mathbf{r}_1,\mathbf{r}_2) \phi_q(\mathbf{r_1}) \phi_s(\mathbf{r_2}) d \mathbf{r}_1 d \mathbf{r}_2.
+\end{equation}
+It is common to write $\braket{\phi_p \phi_q|\hat{v}|\phi_r \phi_s} = \braket{pq|\hat{v}|rs} = v^{pq}_{rs}$. Furthermore, it is customary 
+to introduce the \textit{anti-symmetric} matrix element
+\begin{equation}
+ \braket{pq|\hat{v}|rs}_{AS} \equiv \braket{pq|\hat{v}|rs} - \braket{pq|\hat{v}|sr}.
+\end{equation}
+Here it should be noted that many sources drop the AS subscript, which can be a source of confusion. The second quantized form a 
+two-body operator is given by
+\begin{align}
+ \hat{H}_I &= \frac{1}{2} \sum_{pqrs} \braket{pq|\hat{v}|rs} a_p^\dagger a_q^\dagger a_s a_r \\
+ &= \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_{AS} a_p^\dagger a_q^\dagger a_s a_r 
+\end{align}
+Thus, the full Hamiltonian $\hat{H} = \hat{H}_0 + \hat{H}_I$, using anti-symmetric matrix elements is given by 
+\begin{equation}
+ \hat{H} =  \sum_{pq}\braket{p|\hat{h}|q} a_p^\dagger a_q + \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_{AS} a_p^\dagger a_q^\dagger a_s a_r.
+\end{equation}
+
+\subsection{Wicks theorem and related concepts}
+\begin{definition}[Operator string]
+ A sequence of creation and annihilation operators is called an operator string. Generally an operator 
+string of $n$ creation and annihilation operators are on the form 
+\begin{equation}
+ A_1 A_2 \cdots A_n, \ \ A_i \in \{a_p,a_p^\dagger\}.
+\end{equation}
+
+For example
+$$A_1A_2A_3A_4 = a_p a_q^\dagger a_r a_s^\dagger,$$
+where $A_1 = a_p, A_2 = a_q^\dagger, A_3 = a_r$ and $A_4 = a_s^\dagger$.
+\end{definition}
+\begin{definition}[Vacuum expecatation value]
+The number 
+\begin{equation}
+ \braket{-|A_1 A_2 \cdots A_n|-}
+\end{equation}
+is referred to as a vacuum expecatation value, where $A_1A_2 \cdots A_n$ is an operator string. 
+\end{definition}
+\begin{definition}[Normal ordered product]
+The normal-ordered product form of an operator 
+string $A_1A_2\cdots A_n$ is defined as a rearrangement,
+\begin{equation}
+ \{A_1A_2\cdots A_n \} \equiv (-1)^{|\sigma|}A_{\sigma(1)}A_{\sigma(2)}\cdots A_{\sigma(n)},
+\end{equation}
+where $\sigma$ is a permutation such that all the creation operators in the operator string is to the left of all the
+annihilation operators, i.e.,
+\begin{equation}
+ \{A_1A_2\cdots A_n \} \equiv (-1)^{|\sigma|}[\text{creation operators}]\cdot[\text{annihilation operators}].
+\end{equation}
+\end{definition}
+The permutation $\sigma$ is in general not unique, since we may permute the creation and annihilation
+operators separately without affecting the total expression. For example,
+\begin{equation}
+ \{a_p a_q^\dagger a_r^\dagger a_s \} = a_q^\dagger a_r^\dagger a_p a_s = -a_r^\dagger a_q^\dagger a_p a_s = a_r^\dagger a_q^\dagger a_s a_p = -a_q^\dagger a_r^\dagger a_s a_p
+\end{equation}
+To find the permutation $\sigma$ that normal-orders an operator product, it is usually simplest to count the
+number f of anticommutations necessary to achieve the rearrangement, and set $(-1)^{|\sigma |} = (-1)^f$.
+Note that the string $A_1\cdots A_n \neq \{ A_1 \cdots A_n \}$ in general, since by reordering creation and annihilation
+operators we neglect the extra terms arising from the Kronecker delta in the anti-commutator relation
+$\{ a_p , a_q^\dagger \} = \delta_{pq}$.
+
+\begin{definition}[Contraction]
+A contraction between two arbitrary creation and annihilation operators $X$
+and  $Y$, is the number defined by
+\begin{equation}
+ \wick{\c X \c Y} \equiv \braket{-|X Y|-}. 
+\end{equation}
+\end{definition}
+We list the possible contractions, relative to the vacuum state $\ket{-}$,
+\begin{align}
+ \wick{\c a_p^\dagger \c a_q^\dagger} &= \braket{-|a_p^\dagger a_q^\dagger|-} = 0 \\
+ \wick{\c a_p \c a_q} &= \braket{-|a_p a_q|-} = 0 \\
+ \wick{\c a_p^\dagger \c a_q} &= \braket{-|a_p^\dagger a_q|-} = 0 \\ 
+ \wick{\c a_p \c a_q^\dagger} &= \braket{-|a_p a_q^\dagger|-} = \delta_{pq}
+\end{align}
+
+Wick’s theorem states that every string of creation and annihilation operators can be written as a sum of
+normal-ordered products where we perform every possible contraction. 
+\begin{theorem}[Wicks theorem]
+Let $A_1 \cdots A_n$ 
+be an operator string of creation and annihilation operators. Then,
+\begin{align*}
+ A_1A_2\cdots A_n &= \{ A_1 A_2 \cdots A_n \} + \sum_{(1)} \{ A_1 \wick{ \c... \c... ... } A_n \}
+ &+ \sum_{(2)} \{ A_1 \wick{ .\c1.\c2. .\c1.\c2. ... } \} + \cdots \\
+ &+ \sum_{\left \lfloor \frac{n}{2} \right \rfloor } \underbrace{\{ A_1 \wick{ .\c1.\c3. \c5.\c2.\c4. \c4.\c3.\c5. \c1... .\c2.. ...} A_n \}}_\text{$\left \lfloor \frac{n}{2} \right \rfloor$ contractions}
+\end{align*}
+The notation $\sum_{(m)}$ signifies that we sum over all combinations of $m$ contractions.
+When n is even, the last sum signifies that we sum over $n/2$ contractions, i.e., all operators are
+contracted. If n is odd, there is one uncontracted operator left in each term of the last sum.
+\end{theorem}
+
+Evaluation of vacuum expecatation values are greatly simplified by Wicks theorem. First note that for any string with at least one factor 
+\begin{equation}
+ \braket{-|\{ A_1 \cdots A_n \}|-} = 0,
+\end{equation}
+because in the normal-order product, the annihilation operators are to the right, and the creation
+operators are on the left. 
+\begin{theorem}[Wicks theorem for vacuum expecatation values]
+For odd $n$, Wicks theorem gives
+\begin{equation}
+ \braket{-|A_1 \cdots A_n|-} = 0,
+\end{equation}
+while for even $n$,
+\begin{equation}
+ \braket{-|A_1 \cdots A_n|-} = \sum_{\left \lfloor \frac{n}{2} \right \rfloor } \underbrace{\{ A_1 \wick{ .\c1.\c3. \c5.\c2.\c4. \c4.\c3.\c5. \c1... .\c2.. ...} A_n \}}_\text{all contracted}.
+\end{equation}
+\end{theorem}
+
+\begin{fact}
+ A useful fact is that the sign of a fully contracted operator product is $(-1)^k$, where $k$ is the
+number of contraction line crossings.
+\end{fact}
+
+Consider an operator string on the form 
+\begin{equation}
+ \{ A_1 A_2 \cdots A_p \} \{B_1 B_2 \cdots B_q \} \cdots \{ Z_1 Z_2 \cdots Z_r \}
+\end{equation}
+where each substring is normal ordered.  Then the generalized Wicks theorem states that we only have 
+to consider contractions between different substrings. That is, contractions involving two operators from the same 
+substring -referred to as self contractions- do not contribute.
+\begin{theorem}[The generalized Wicks theorem]
+ Let $$\{ A_1 A_2 \cdots A_p \} \{B_1 B_2 \cdots B_q \} \cdots \{ Z_1 Z_2 \cdots Z_r \}$$
+be an operator string consisting of normal ordered substrings. Then,
+\begin{align*}
+ &\{ A_1 A_2 \cdots A_p \} \{B_1 B_2 \cdots B_q \} \cdots \{ Z_1 Z_2 \cdots Z_r \} = \{  A_1 A_2 \cdots A_p \vdots B_1 B_2 \cdots B_q \vdots \cdots \vdots Z_1 Z_2 \cdots Z_r  \} \\
+ &+ \sum_{(1)}^{'} \{  \wick{ A_1 \c A_2  \cdots A_p \vdots B_1 B_2 \cdots \c B_q } \vdots \cdots \vdots Z_1 Z_2 \cdots Z_r  \} \\
+ &+ \sum_{(2)}^{'}  \{  \wick{ A_1 \c1 A_2  \cdots A_p \vdots B_1 \c2 B_2 \cdots \c1 B_q  \vdots \cdots \vdots \c2 Z_1 Z_2 \cdots Z_r } \}  \\
+ &+ \cdots \\
+ &+ \sum_{\left \lfloor \frac{n}{2} \right \rfloor }^{'} \underbrace{ \{  \wick{ \c5 A_1 \c1 A_2  \c4 \cdots \c3 A_p \vdots \c4 B_1 \c2 B_2 \cdots \c1 B_q  \vdots \cdots \vdots \c2 Z_1 \c3 Z_2 \c5 \cdots Z_r } \}}_\text{$\left \lfloor \frac{n}{2} \right \rfloor$ contractions}
+\end{align*}
+The notation $\sum_{(m)}^{'}$ signifies that we sum over all combinations of $m$ contractions that each involve
+operators from different substrings. The vertical dots are only a bookkeeping device to remind ourselves
+which operators belong to which substrings.
+\end{theorem}
+
+\subsection{Particle-hole formalism}
+Consider a $N$-particle system and the single-particle functions $\{ \phi_p \}_{p=1}^L$, with $L$ denoting 
+the number of single-particle functions. In particle-hole formalism we divide the single-particle functions 
+into two sets. The first $N$ single-particle functions, $\{ \phi \}_{i=1}^N$, are referred to as 
+particle/occupied-states/functions while the $N+1,\cdots,L$ states, $\{ \phi \}_{a=N+1}^L$, are referred to as 
+hole/unoccupied/virtual states. The indices $i,j,k,\cdots$ are reserved for particle states and indices $a,b,c,\cdots$
+are reserved for hole states. General states, particle or hole, are indexed by $p,q,r,\cdots$.
+
+\begin{definition}[The reference state]
+ We define the reference Slater determinant $\ket{c}$ to be the determinant constructed from the particle states, i.e 
+ \begin{equation}
+  \ket{c} = \prod_{i=1}^N a_i^\dagger \ket{0} = \ket{\phi_1 \phi_2 \cdots \phi_N}.
+ \end{equation}
+Other common notations for the reference state are $\ket{c} = \ket{\Phi_0} = \ket{\Phi}_\text{ref}$.
+\end{definition}
+
+\begin{definition}[Excited determinants]
+ From the reference determinant, we can construct excited determinants using the creation and annihilation operators,
+ substituting one or more particle states with hole states.
+ \begin{align*}
+  \ket{\Phi_i^a} &= a_a^\dagger a_i \ket{c}, \ \ \text{single excitation} \\
+  \ket{\Phi_{ij}^{ab}} &= a_b^\dagger a_j a_a^\dagger a_i \ket{c}, \ \ \text{ double excitation}, \\
+  &\vdots
+ \end{align*}
+\end{definition}
+
+\begin{definition}[Quasiparticle creation and annihilation operators]
+ Quasiparticle creation and annihilation operators $b_p,b_p^\dagger$ are defined as follows
+ \begin{align}
+  b_i &= a_i^\dagger, \ \ b_a = a_a \\
+  b_i^\dagger &= a_i, \ \ b_a^\dagger = a_a^\dagger.
+ \end{align}
+ Thus, for hole indices, quasiparticle creation operators are the ordinary creation operators, but for
+particle states, creating a quasiparticle is the same as destroying a particle in a particle state. One says
+that $b_i^\dagger$ creates a hole, while $b_a^\dagger$ creates a particle.
+
+Furthermore, the fundamental anticommutator relations are preserved for quasiparticle creation and annihilation operators
+\begin{align}
+ \{b_p^\dagger,b_q^\dagger \} &= 0, \\
+ \{b_p,b_q \} &= 0, \\
+ \{b_p,b_q^\dagger \} &= \delta_{pq}.
+\end{align}
+\end{definition}
+
+\begin{definition}[The new vacuum state]
+Making the observation that 
+\begin{equation}
+ b_p \ket{c} = 0 \text{ for all } p,
+\end{equation}
+we see that the reference acts for quasiparticle creation/annihilation as the vacuum 
+did for the ordinary creation/annihilation operators. Thus, we define the reference $\ket{c}$ to be
+vacuum state for the quasiparticle operators. We will often refer to $\ket{c}$ as the new vacuum state in 
+the following.
+\end{definition}
+\begin{fact}
+The definition of normal-ordering, contractions, and ultimately Wick's
+theorem, depended only on the anticommutator relations and the property $$a_p \ket{0} = .0$$ Thus, Wick's
+theorem is valid also for quasiparticles.
+\end{fact}
+
+Notice that relative to the new vacuum state, there are now two non-zero contractions
+\begin{align} 
+ \wick{\c b_a \c b_b^\dagger} = \wick{\c a_a \c a_b^\dagger} &= \braket{c|a_a a_b^\dagger|c} = \delta_{ab} \\
+ \wick{\c b_i \c b_j^\dagger} = \wick{\c a_i^\dagger \c a_j} &= \braket{c|a_i^\dagger a_j|c} = \delta_{ij}. \\
+\end{align}
+
+\subsection{Normal ordering relative to the new vacuum state}
+If we normal order relative to the new vacuum $\ket{c}$ the one-body Hamiltonian can be written 
+\begin{equation}
+ \hat{H}_0 = H_0^{(1\text{-body})} + H_0^{(0\text{-body})} 
+\end{equation}
+where we have defined 
+\begin{align}
+ H_0^{(0\text{-body})} &\equiv \sum_i \braket{i|\hat{h}|i} \\
+ H_0^{(1\text{-body})} &\equiv \sum_{pq} \braket{p|\hat{h}|q} \{a_p^\dagger a_q \}.
+\end{align}
+The notation $H^{n\text{-body}}$ means that the operator acts as a $n$-body operator, with $0$-body being the same 
+as a constant.
+
+The two-body Hamiltonian can be written as 
+\begin{align}
+ \hat{H}_I &= \hat{H}_I^{(2\text{-body})} + \hat{H}_I^{(1\text{-body})} + \hat{H}_I^{(0\text{-body})} \\
+\end{align}
+where 
+\begin{align}
+ \hat{H}_I^{(2\text{-body})} &= \frac{1}{4}\sum_{pqrs} \braket{pq|\hat{v}|rs}_{\text{AS}}\{a_p^\dagger a_q^\dagger a_s a_r \}, \\
+ \hat{H}_I^{(1\text{-body})} &= \sum_{pqi} \braket{pi|\hat{v}|qi}_{\text{AS}} \{a_p^\dagger a_q \}, \\
+ \hat{H}_I^{(0\text{-body})} &= \frac{1}{2} \sum_{ij} \braket{ij|\hat{v}|ij}_{\text{AS}}
+\end{align}
+We now define 
+\begin{align*}
+ E_0^{\text{ref}} &\equiv H_0^{(0\text{-body})} + \hat{H}_I^{(0\text{-body})} = \sum_i \braket{i|\hat{h}|i} + \frac{1}{2} \sum_{ij} \braket{ij|\hat{v}|ij}_{\text{AS}} \\
+ \{ \hat{F} \} &\equiv H_0^{(1\text{-body})} + \hat{H}_I^{(1\text{-body})} = \sum_{pq} \braket{p|\hat{f}|q} \{a_p^\dagger a_q\} \\
+ \{ \hat{H}_I \} &\equiv \hat{H}_I^{(2\text{-body})}
+\end{align*}
+where we defined the so-called fock matrix element 
+\begin{equation}
+ \braket{p|\hat{f}|q} = \braket{p|\hat{h}|q} + \sum_i \braket{pi|\hat{v}|qi}_{\text{AS}}
+\end{equation}
+$E_0^\text{ref}$ is referred to as the reference energy and $\{ \hat{F} \}$ is the Fock-operator.
+
+Thus, we can write the full Hamiltonian normal ordered relative to the new vacuum as 
+\begin{equation}
+ \hat{H} =  E_0^{\text{ref}} + \{ \hat{F} \} + \{ \hat{H}_I \}.
+\end{equation}
+
+When computing expectation values using the normal ordered Hamiltonian we can now use Wicks generalized theorem, considering 
+only contractions between normal ordered substrings. Recall carefully, that there are two possible non-zero contractions 
+relative to the new vacuum state.
+\begin{example}
+ Consider the computation of the matrix element $\braket{c|\{ \hat{F} \}| \Phi_i^a}$. By Wicks generalized theorem we have 
+ \begin{align*}
+  \braket{c|\{ \hat{F} \}| \Phi_i^a} = \sum_{\left \lfloor \frac{n}{2} \right \rfloor }^{'} \braket{c|\left( \sum_{pq}\braket{p|\hat{f}|q}\{a_p^\dagger a_q\}a_a^\dagger a_i \right)|c},
+ \end{align*}
+ With $\sum_{\left \lfloor \frac{n}{2} \right \rfloor }^{'}$ meaning that we sum over all possible contractions between 
+different normal ordered substrings. 
+
+Note that $a_a^\dagger a_i$ already is on normal order form. The computation is 
+also simplified by noting that there is only one possible way of contracting all operators and get a non-zero result, that is 
+\begin{equation}
+ \wick { \{ \c1 a_p^\dagger \c2 a_q \} \c2 a_a^\dagger \c1 a_i } = \delta_{pi}\delta_{qa}
+\end{equation}
+with a positive sign since there are two line crossings. Thus,
+\begin{align*}
+  \braket{c|\{ \hat{F} \}| \Phi_i^a} &= \braket{c|\left(\sum_{pq}\braket{p|\hat{f} |q}\delta_{pi}\delta_{qa} \right)|c} \\
+  &= \braket{i|\hat{f}|a} \braket{c|c} \\
+  &= \braket{i|\hat{f}|a}.
+\end{align*}
+\end{example}
+
+\section{Many-body methods}
+
+\subsection{Configuration Interaction Theory}
+
+\subsection{Hartree-Fock theory}
+\subsubsection{The Hartree-Fock equations}
+In Hartree-Fock theory the underlying idea is to approximate the true wavefunction of a $N$-particle system 
+$\ket{\Psi}$ by a \textbf{single} Slater determinant 
+\begin{equation}
+ \ket{\Phi} = \ket{\psi_1 \psi_2 \dots \psi_N}
+\end{equation}
+where the $\psi_i$'s are orthonormal single-particle functions. 
+
+In Hartree-Fock we know the form of the wavefunction 
+which by assumption is a single Slater determinant. The unknowns are the single-particle functions $\psi_i$.
+
+How do we go about finding these single-particle functions? The idea is to expand the $\psi_i$'s in a fixed 
+known (finite in practice) basis $\{ \phi_\lambda \}_{\lambda=1}^L$ which we take to be orthonormal for 
+simplicity ($\braket{\phi_p|\phi_q} = \delta_{pq}$)
+\begin{equation}
+ \psi_p = \sum_\lambda C_{p \lambda} \phi_\lambda.
+\end{equation}
+Typically the basis functions $\phi_\lambda$ are chosen as the eigenfunctions of the single-particle operator $\hat{h}_0$
+such that
+\begin{equation}
+ \hat{h}_0 \phi_\lambda = \epsilon_\lambda \phi_\lambda.
+\end{equation}
+
+Now, the unknowns are the expansion coefficients $\{ C_{p\lambda} \}$ which determines $\psi_i$ in terms of 
+the $\phi_\lambda$'s. The constraint that the $\psi_i$'s must be orthonormal gives that we must have 
+\begin{equation}
+ \braket{\psi_i|\psi_j} = \delta_{ij} = \sum_{\alpha} C^*_{i\alpha} C_{i \alpha}. 	
+\end{equation}
+
+The equation for the expansion coefficients is obtained by minimizing the energy of a single Slater determinant
+\begin{align*}
+ E[\Phi] &= \sum_i \braket{i|\hat{h}_0|i} + \frac{1}{2} \sum_{ij} \braket{ij|v|ij}_{AS} \\
+ &= \sum_i \sum_{\alpha \beta} C^*_{i \alpha}C_{i \beta} \braket{\phi_\alpha|\hat{h}_0|\phi_\beta} + \frac{1}{2} \sum_{ij} \sum_{\alpha \beta \gamma \delta} C^*_{i \alpha} C^*_{j \beta} C_{i \gamma} C_{j \delta} \braket{\phi_\alpha \phi_\beta|v|\phi_\gamma \phi_\delta}_{AS},
+\end{align*}
+with respect to the expansion coefficients subject to the constraint that the $\psi_i$'s must be orthonormal. Here the notation 
+$\braket{\phi_\alpha|\hat{h}_0|\phi_\beta}$ and $\braket{\phi_\alpha \phi_\beta|v|\phi_\gamma \phi_\delta}_{AS}$ are meant 
+as a reminder that matrix elements are with respect to the fixed basis functions $\phi_\lambda$.
+
+The constraint is incorporated via so-called Lagrange multipliers such that in order to minimize $E[\Phi]$ we have to solve 
+\begin{equation}
+ \frac{d}{d C^*_{i \alpha}} \left[ E[\Phi] - \underbrace{\sum_j \epsilon_j \sum_\alpha C^*_{j \alpha} C_{j \alpha}}_\text{The constraint} \right] = 0.
+\end{equation}
+Taking derivatives one obtains 
+\begin{equation}
+ \sum_\beta \left\{\braket{\alpha|\hat{h}|\beta} + \sum_j \sum_{\gamma \delta} C^*_{j \gamma} C_{j \delta} \braket{\alpha \gamma | \hat{v} | \beta \delta}_\text{AS} \right\}C_{i \beta} = \epsilon_i C_{i \alpha} \label{HfEquation}.
+\end{equation}
+Defining the so-called Fock matrix  
+\begin{equation}
+ h_{\alpha \beta}^{\text{HF}} \equiv \braket{\alpha|\hat{h}|\beta} + \sum_j \sum_{\gamma \delta} C^*_{j \gamma} C_{j \delta} \braket{\alpha \gamma | \hat{v} | \beta \delta}_\text{AS}
+\end{equation}
+we can rewrite \ref{HfEquation} as
+\begin{equation}
+ \sum_{\beta} h_{\alpha \beta}^{\text{HF}} C_{i \beta} = \epsilon_i^{\text{HF}} C_{i \alpha} \label{HfEquation2}.
+\end{equation}
+
+Now let $C$ be the matrix that consists of the $C_{i \beta}$'s. By definition $[C^\dagger]_{\beta i} = [C]_{i \beta}$, 
+i.e element $(\beta,i)$ of the \textbf{matrix} $C^\dagger$ is equal to the matrix element $C_{i \beta}$.
+Then \ref{HfEquation2} can be written as 
+\begin{align}
+ \sum_{\beta} h_{\alpha \beta}^{\text{HF}} [C^\dagger]_{\beta i} = [C^\dagger]_{\alpha i}\epsilon_i^{\text{HF}} \\
+\end{align}
+where we recognize the left-hand side as a matrix-matrix product $h^\text{HF} C^\dagger$ where $h^\text{HF}$ is the matrix 
+having $h_{\alpha \beta}^{\text{HF}}$ as its elements. If we define 
+$\mathcal{E} = \text{diag}(\epsilon_1,\epsilon_2,\dots,\epsilon_N)$ to be the diagonal matrix containing $\epsilon_i$ along its diagonal 
+the right-hand side is the matrix-matrix product $C^\dagger \mathcal{E}$. Thus, Eq. \ref{HfEquation2} can be expressed as the 
+non-linear eigenvalue problem 
+\begin{equation}
+ h^\text{HF}(C) C^\dagger = C^\dagger \mathcal{E}.
+\end{equation}
+
+The above equation is commonly referred to as the Roothan-Hall equations. Thus we can solve for $C$, which 
+are the unknowns we are interested in, by diagonalizing $h^\text{HF}$. However, the fact that the equation is non-linear
+due to the fact that $h^{\text{HF}}$ depends on $C$, means that we must solve the Roothan-Hall equations iteratively.
+We will give a outline of one common approach to solve the Roothan-Hall equations.
+
+\begin{warning}
+ Please note that the eigenvalues, $\mathcal{E}$, you obtain by diagonalizing $h^\text{HF}$ is \textbf{not} 
+ the Hartree-Fock energy. However they are interpreted as ionization energies through what is called Koopmans theorem.
+ 
+ The Hartree-Fock energy on the other hand, is obtained by evaluating 
+ \begin{equation}
+  E[\Phi] = \sum_i \sum_{\alpha \beta} C^*_{i \alpha}C_{i \beta} \braket{\phi_\alpha|\hat{h}_0|\phi_\beta} + \frac{1}{2} \sum_{ij} \sum_{\alpha \beta \gamma \delta} C^*_{i \alpha} C^*_{j \beta} C_{i \gamma} C_{j \delta} \braket{\phi_\alpha \phi_\beta|v|\phi_\gamma \phi_\delta}_{AS}
+ \end{equation}
+  with the new coefficients you obtain by diagonalizing $h^\text{HF}$.
+\end{warning}
+
+
+
+\subsubsection{Outline of how to write a Hartree-Fock program}
+
+
+
+
+\subsection{Many-body Perturbation Theory}
+
+\subsection{Coupled Cluster Theory}
+
+\end{document}          

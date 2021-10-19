@@ -1,0 +1,383 @@
+TITLE: Project 1, deadline  October 19
+AUTHOR: "Many-body Physics FYS4480":"http://www.uio.no/studier/emner/matnat/fys/FYS4480/index-eng.html" {copyright, 1999-present|CC BY-NC} at Department of Physics, University of Oslo, Norway
+DATE: today
+
+===== Project 1 introduction =====
+
+In this project we will develop two simple models for studying the 
+helium atom (with two electrons) and the beryllium atom with four electrons.
+
+After having introduced the  Born-Oppenheimer approximation which effectively freezes out the nucleonic degrees
+of freedom, the Hamiltonian for $N$ electrons takes the following form
+
+!bt
+\begin{equation*}
+  \hat{H} = \sum_{i=1}^{N} t(x_i) 
+  - \sum_{i=1}^{N} k\frac{Ze^2}{r_i} + \sum_{i<j}^{N} \frac{ke^2}{r_{ij}},
+\end{equation*}
+!et
+with $k=1.44$ eVnm. Througout this work we will use atomic units, this means
+that $\hbar=c=e=m_e=1$. The constant $k$ becomes also equal 1. 
+The resulting energies have to be multiplied by $2\times 13.6$ eV
+in order to obtain energies in eletronvolts.
+
+We can rewrite our Hamiltonians as
+
+!bt
+\begin{equation}
+    \hat{H} = \hat{H_0} + \hat{H_I} 
+    = \sum_{i=1}^{N}\hat{h}_0(x_i) + \sum_{i<j}^{N}\frac{1}{r_{ij}},
+label{H1H2}
+\end{equation}
+!et
+where  we have defined $r_{ij}=| _r__i-_r__j|$ and
+$\hat{h}_0(x_i) =  \hat{t}(x_i) - \frac{Z}{r_i}$
+
+The variable $x$ contains both the spatial coordinates and the spin
+values.  The first term of Eq. (ref{H1H2}), $H_0$, is the sum of the
+$N$ *one-body* Hamiltonians $\hat{h}_0$. Each individual Hamiltonian
+$\hat{h}_0$ contains the kinetic energy operator of an electron and
+its potential energy due to the attraction of the nucleus. The second
+term, $H_I$, is the sum of the $N(N-1)/2$ two-body interactions
+between each pair of electrons. Note that the double sum carries a
+restriction $i<j$.
+
+As basis functions for our calculations we will use hydrogen-like
+single-particle functions.  This means the onebody operator is
+diagonal in this basis for states $i,j$ with quantum numbers
+$nlm_lsm_s$ with energies
+
+!bt
+\begin{equation*}\langle i|\hat{h}_0| j\rangle =  -Z^2/2n^2\delta_{i,j}.\end{equation*}
+!et
+ 
+The quantum number $n$ refers to the number of nodes of the wave
+function.  Observe that this expectation value is independent of spin.
+
+We will in all calculations here restrict ourselves to only so-called
+$s$ -waves, that is the orbital momentum $l$ is zero. We will also
+limit the quantum number $n$ to $n\le 3$.  It means that every $ns$
+state can accomodate two electrons due to the spin degeneracy.
+
+In the calculations you will need the Coulomb interaction with matrix
+elements involving single-particle wave functions with $l=0$ only, the
+so-called $s$-waves.  We need only the radial part since the spherical
+harmonics for the $s$-waves are rather simple. We omit single-particle
+states with $l> 0$.  Our radial wave functions are
+
+!bt
+\begin{equation*}
+R_{n0}(r)=\left(\frac{2Z}{n}\right)^{3/2}\sqrt{\frac{(n-1)!}{2n\times n!}}L_{n-1}^1(\frac{2Zr}{n})\exp{(-\frac{Zr}{n})},
+\end{equation*}
+!et
+
+where $L_{n-1}^1(r)$ are the so-called Laguerre polynomials.  These
+wave functions can then be used to compute the direct part of the
+Coulomb interaction
+
+!bt
+\begin{equation*}
+\langle \alpha\beta| V| \gamma\delta\rangle = \int r_1^2dr_1 \int r_2^2dr_2R_{n_{\alpha}0}^*(r_1) R_{n_{\beta}0}^*(r_2) 
+  \frac{1}{| _r__1-_r__2|}R_{n_{\gamma}0}(r_1)R_{n_{\delta}0}(r_2)
+\end{equation*}
+!et
+
+Observe that this is only the radial integral and that the labels
+$\alpha\beta\gamma\delta$ refer only to the quantum numbers $nlm_l$,
+with $m_l$ the projection of the orbital momentum $l$.  A similar
+expression can be found for the exchange part. Since we have
+restricted ourselves to only $s$-waves, these integrals are
+straightforward but tedious to calculate. As an addendum to this
+project we list all closed-form expressions for the relevant matrix
+elements. Note well that these matrix elements do not include
+spin. When setting up the final antisymmetrized matrix elements you
+need to consider the spin degrees of freedom as well. Please pay in
+particular special attention to the exchange part and the pertinent
+spin values of the single-particle states.
+
+
+We will also, for both helium and beryllium assume that the
+many-particle states we construct have always the same total spin
+projection $M_S=0$. This means that if we excite one or two particles
+from the ground state, the spins of the various single-particle states
+should always sum up to zero.
+
+
+===  Part a), setting up the basis  ===
+
+We start with the helium atom and define our single-particle Hilbert space to consist of the single-particle orbits $1s$, $2s$ and $3s$, with their corresponding spin degeneracies.
+
+Set up the ansatz for the ground state $|c\rangle = |\Phi_0\rangle$ in second 
+quantization and define a table of single-particle states. Construct thereafter
+all possible one-particle-one-hole excitations  $|\Phi_i^a\rangle$ where $i$ refer to levels below the Fermi level (define this level) and $a$ refers to particle states. Define particles and holes. The Slater determinants have to be written in terms of the respective creation and annihilation operators.
+The states you construct should all have total spin projection $M_S=0$. 
+Construct also all possible two-particle-two-hole states $|\Phi_{ij}^{ab}\rangle$  in a second quantization representation. 
+
+
+=== Part b) Second quantized Hamiltonian ===
+
+Define the Hamiltonian in a second-quantized form and use this to
+compute the expectation value of the ground state (defining the
+so-called reference energy and later our Hartree-Fock functional) of
+the helium atom.  Show that it is given by
+
+!bt
+\begin{equation*}
+  E[\Phi_0] = \langle c | \hat{H}| c \rangle 
+  = \sum_{i} \langle i | \hat{h}_0 | i\rangle+ \frac{1}{2}\sum_{ij}\left[\langle ij |\frac{1}{r}|ij\rangle-\langle ij |\frac{1}{r}|ji\rangle\right].
+\end{equation*}
+!et
+
+Define properly the sums keeping in mind that the states $ij$ refer to
+all quantum numbers $nlm_lsm_s$.  Use the values for the various
+matrix elements listed at the end of the project to find the value of
+$E$ as function of $Z$ and compute $E$ as function of $Z$.
+
+=== Part c) Limiting ourselves to one-particle-one excitations  ===
+
+Hereafter we will limit ourselves to a system which now contains only
+one-particle-one-hole excitations beyond the chosen state $|c\rangle$.
+Using the possible Slater determinants from exercise a) for the helium
+atom, find the expressions (without inserting the explicit values for
+the matrix elements first) for
+
+!bt
+\begin{equation*}
+\langle c | \hat{H}| \Phi_i^a \rangle,
+\end{equation*}
+!et 
+and
+
+!bt
+\begin{equation*}
+\langle \Phi_i^a | \hat{H}| \Phi_j^b \rangle.
+\end{equation*}
+!et
+
+Represent these expressions in a diagrammatic form, both for the
+onebody part and the two-body part of the Hamiltonian.
+ 
+Insert then the explicit values for the various matrix elements and
+set up the final Hamiltonian matrix and diagonalize it using for
+example Octave, Matlab, Python, C++ or Fortran as programming tools.
+
+Compare your results from those of exercise b) and comment your results. 
+The exact energy with our Hamiltonian is $-2.9037$ atomic units for helium. This value is also close to the experimental energy.
+
+=== Part d) Moving to the Beryllium atom ===
+
+We repeat parts b) and c) but now for the beryllium atom.
+
+Define the ansatz for $|c\rangle$ and limit yourself again to one-particle-one-hole excitations.   Compute the reference energy 
+$\langle c | \hat{H}| c \rangle $ as function of $Z$. Thereafter you will need to set up the appropriate Hamiltonian matrix
+which involves also one-particle-one-hole excitations. Diagonalize this matrix
+and compare your eigenvalues with  $\langle c | \hat{H}| c \rangle$ as function of $Z$ and comment your results. 
+The exact energy with our Hamiltonian is $-14.6674$ atomic units for beryllium. This value is again close to the experimental energy.
+With a given energy functional, we can perform at least two types of variational strategies.
+
+  * Vary the Slater determinant by changing the spatial part of the single-particle wave functions themselves.
+
+  * Expand the single-particle functions in a known basis  and vary the coefficients,  that is, the new function single-particle wave function $|p\rangle$ is written as a linear expansion in terms of a fixed basis $\phi$ (harmonic oscillator, Laguerre polynomials etc)  
+
+!bt 
+\begin{equation*} 
+\psi_p  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda},
+\end{equation*}
+!et
+
+Both cases lead to a new Slater determinant which is related to the previous via  a unitary transformation.
+Below we will set up the Hartree-Fock equations using the second option.  
+We assume that our basis is still formed by the hydrogen-like wave functions. 
+We consider a Slater determinant built up of single-particle orbitals $\phi_{\lambda}$ where the indices $\lambda$ refer to specific single-particle states.  As an example, you could think of the ground state ansatz for the Beryllium atom. 
+
+The unitary transformation
+
+!bt
+\begin{equation*}
+\psi_p  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda},
+\end{equation*}
+!et
+brings us into the new basis $\psi$.  The new basis is orthonormal and $C$ is a unitary matrix.
+
+
+=== Part e) Hartree-Fock ===
+
+Minimizing with respect to $C^*_{p\alpha}$, remembering that
+$C^*_{p\alpha}$ and $C_{p\alpha}$ (and that the indices contain all
+single-particle quantum numbers including spin) are independent and
+defining
+
+!bt
+\begin{equation*}
+h_{\alpha\gamma}^{HF}=\langle \alpha | h | \gamma \rangle+
+\sum_{p}\sum_{\beta\delta} C^*_{p\beta}C_{p\delta}\langle \alpha\beta|V|\gamma\delta\rangle_{AS},
+\end{equation*}
+!et
+show that you can write the Hartree-Fock  equations as
+
+!bt
+\begin{equation*}
+\sum_{\gamma}h_{\alpha\gamma}^{HF}C_{p\gamma}=\epsilon_p^{\mathrm{HF}}C_{p\alpha}.
+label{eq:newhf}
+\end{equation*}
+!et
+
+Explain the meaning of the different terms and define the Hartree-Fock 
+operator in second quantization. Write down its diagrammatic representation as well.  The greek letters refer to the wave functions in the original basis (in our case the hydrogen-like wave functions) while roman letters refer to the new basis. 
+
+=== Part f) The Hartree-Fock matrices ===
+
+The Hartree-Fock equations with a variation of the coefficients
+$C_{p\alpha}$ lead to an eigenvalue problem whose eigenvectors are the
+coefficients $C_{p\alpha}$ and eigenvalues are the new single-particle
+energies.  Use the single-particle orbits $1s-3s$ and set up the
+Hartree-Fock matrix for both the helium atom and the beryllium
+atom. Find after the first diagonalization the new single-particle
+energies and the new ground state energy.  Compare these results with
+those you obtained under the minimization of the ground states as
+functions of $Z$ and the full diagonalization. When setting up the
+Hartree-Fock matrix in the first iteration, our guess for the
+coefficients $C_{p\beta}$ etc. is $C_{p\beta}=1$ for $p=\beta$ and
+zero else.
+
+
+=== Part g) Writing a Hartree-Fock code ===
+
+The final stage is to set up an iterative scheme where you use the new
+wave functions determined via the coefficients $C_{p\alpha}$ to solve
+iteratively the Hartree-Fock equations till a given self-consistency
+is reached. A typical way of doing this is to compare the
+single-particle energies from the previous iteration with those
+obtained from the new diagonalization. If the total difference is
+smaller than a prefixed value, the iterative process is stopped.
+
+Compare these results with the those you obtained under the
+minimization of the ground states as functions of $Z$ and the full
+diagonalization. Discuss your results.
+
+
+
+
+We conclude by listing the matrix elements for the radial integrals to
+be used for the direct part and the exchange part. Note again that
+these integrals do not include spin. The nomenclature is $1=1s$,
+$2=2s$, and $3=3s$, with no spin degrees of freedom.
+
+!bc
+<11|V|11> = (5*Z)/8
+<11|V|12> = (4096*Sqrt[2]*Z)/64827
+<11|V|13> = (1269*Sqrt[3]*Z)/50000
+<11|V|21> = (4096*Sqrt[2]*Z)/64827
+<11|V|22> = (16*Z)/729
+<11|V|23> = (110592*Sqrt[6]*Z)/24137569
+<11|V|31> = (1269*Sqrt[3]*Z)/50000
+<11|V|32> = (110592*Sqrt[6]*Z)/24137569
+<11|V|33> = (189*Z)/32768
+<12|V|11> = (4096*Sqrt[2]*Z)/64827
+<12|V|12> = (17*Z)/81
+<12|V|13> = (1555918848*Sqrt[6]*Z)/75429903125
+<12|V|21> = (16*Z)/729
+<12|V|22> = (512*Sqrt[2]*Z)/84375
+<12|V|23> = (2160*Sqrt[3]*Z)/823543
+<12|V|31> = (110592*Sqrt[6]*Z)/24137569
+<12|V|32> = (29943*Sqrt[3]*Z)/13176688
+<12|V|33> = (1216512*Sqrt[2]*Z)/815730721
+<13|V|11> = (1269*Sqrt[3]*Z)/50000
+<13|V|12> = (1555918848*Sqrt[6]*Z)/75429903125
+<13|V|13> = (815*Z)/8192
+<13|V|21> = (110592*Sqrt[6]*Z)/24137569
+<13|V|22> = (2160*Sqrt[3]*Z)/823543
+<13|V|23> = (37826560*Sqrt[2]*Z)/22024729467
+<13|V|31> = (189*Z)/32768
+<13|V|32> = (1216512*Sqrt[2]*Z)/815730721
+<13|V|33> = (617*Z)/(314928*Sqrt[3])
+<21|V|11> = (4096*Sqrt[2]*Z)/64827
+<21|V|12> = (16*Z)/729
+<21|V|13> = (110592*Sqrt[6]*Z)/24137569
+<21|V|21> = (17*Z)/81
+<21|V|22> = (512*Sqrt[2]*Z)/84375
+<21|V|23> = (29943*Sqrt[3]*Z)/13176688
+<21|V|31> = (1555918848*Sqrt[6]*Z)/75429903125
+<21|V|32> = (2160*Sqrt[3]*Z)/823543
+<21|V|33> = (1216512*Sqrt[2]*Z)/815730721
+<22|V|11> = (16*Z)/729
+<22|V|12> = (512*Sqrt[2]*Z)/84375
+<22|V|13> = (2160*Sqrt[3]*Z)/823543
+<22|V|21> = (512*Sqrt[2]*Z)/84375
+<22|V|22> = (77*Z)/512
+<22|V|23> = (5870679552*Sqrt[6]*Z)/669871503125
+<22|V|31> = (2160*Sqrt[3]*Z)/823543
+<22|V|32> = (5870679552*Sqrt[6]*Z)/669871503125
+<22|V|33> = (73008*Z)/9765625
+<23|V|11> = (110592*Sqrt[6]*Z)/24137569
+<23|V|12> = (2160*Sqrt[3]*Z)/823543
+<23|V|13> = (37826560*Sqrt[2]*Z)/22024729467
+<23|V|21> = (29943*Sqrt[3]*Z)/13176688
+<23|V|22> = (5870679552*Sqrt[6]*Z)/669871503125
+<23|V|23> = (32857*Z)/390625
+<23|V|31> = (1216512*Sqrt[2]*Z)/815730721
+<23|V|32> = (73008*Z)/9765625
+<23|V|33> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<31|V|11> = (1269*Sqrt[3]*Z)/50000
+<31|V|12> = (110592*Sqrt[6]*Z)/24137569
+<31|V|13> = (189*Z)/32768
+<31|V|21> = (1555918848*Sqrt[6]*Z)/75429903125
+<31|V|22> = (2160*Sqrt[3]*Z)/823543
+<31|V|23> = (1216512*Sqrt[2]*Z)/815730721
+<31|V|31> = (815*Z)/8192
+<31|V|32> = (37826560*Sqrt[2]*Z)/22024729467
+<31|V|33> = (617*Z)/(314928*Sqrt[3])
+<32|V|11> = (110592*Sqrt[6]*Z)/24137569
+<32|V|12> = (29943*Sqrt[3]*Z)/13176688
+<32|V|13> = (1216512*Sqrt[2]*Z)/815730721
+<32|V|21> = (2160*Sqrt[3]*Z)/823543
+<32|V|22> = (5870679552*Sqrt[6]*Z)/669871503125
+<32|V|23> = (73008*Z)/9765625
+<32|V|31> = (37826560*Sqrt[2]*Z)/22024729467
+<32|V|32> = (32857*Z)/390625
+<32|V|33> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<33|V|11> = (189*Z)/32768
+<33|V|12> = (1216512*Sqrt[2]*Z)/815730721
+<33|V|13> = (617*Z)/(314928*Sqrt[3])
+<33|V|21> = (1216512*Sqrt[2]*Z)/815730721
+<33|V|22> = (73008*Z)/9765625
+<33|V|23> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<33|V|31> = (617*Z)/(314928*Sqrt[3])
+<33|V|32> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<33|V|33> = (17*Z)/256
+!ec
+
+
+
+
+
+===== Format for electronic delivery of report and programs =====
+
+The preferred format for the report is a PDF file. You can also use DOC or postscript formats or as an ipython notebook file.  As programming language we prefer that you choose between C/C++, Fortran2008 or Python. The following prescription should be followed when preparing the report:
+
+  * Use Devilry to hand in your projects, log in  at  URL:"http://devilry.ifi.uio.no" with your normal UiO username and password and choose either 'fys4480'. There you can load up the files within the deadline.
+
+  * Upload _only_ the report file!  For the source code file(s) you have developed please provide us with your link to your github domain.  The report file should include all of your discussions and a list of the codes you have developed.  Do not include library files which are available at the course homepage, unless you have made specific changes to them.
+
+  * In your git repository, please include a folder which contains selected results. These can be in the form of output from your code for a selected set of runs and input parameters.
+
+  * In this and all later projects, you should include tests (for example unit tests) of your code(s).
+
+  * Comments  from us on your projects, approval or not, corrections to be made  etc can be found under your Devilry domain and are only visible to you and the teachers of the course.
+
+
+
+Finally, 
+we encourage you to work two and two together. Optimal working groups consist of 
+2-3 students. You can then hand in a common report. 
+
+
+
+
+
+
+
+
+
+
+
