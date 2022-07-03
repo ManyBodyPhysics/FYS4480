@@ -12,7 +12,7 @@ simulations of such systems.
 
 The aim of this course is to present some of the most widely used
 many-body methods, starting with the underlying formalism of second
-quantization and with emphasis on non-relativistic theory. The topics
+quantization.The topics
 covered are the Feynman diagram rules, microscopic mean-field theories
 (Hartree-Fock and Kohn-Sham theories), many-body perturbation theory,
 large-scale diagonalization methods, coupled cluster theory,
