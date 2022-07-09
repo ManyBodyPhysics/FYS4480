@@ -18,7 +18,7 @@ covered are the Feynman diagram rules, microscopic mean-field theories
 large-scale diagonalization methods, coupled cluster theory,
 algorithms from quantum computing, and
 Green's function approaches. Both fermionic and bosonic systems are
-discussed. Selected physical systems from various fields such as
+discussed, depending on the interests of the participants. Selected physical systems from various fields such as
 chemistry, solid-state physics and nuclear physics are studied,
 depending on the background and interests of the participants.
 
