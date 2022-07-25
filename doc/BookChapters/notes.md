@@ -10,5 +10,17 @@
      - interaction, schroedinger and Heisenberg pictures, pros and cons
      - Gell-Man and Low's theorem
      - Adiabatic switching and more
-     - Derivation of expressions for 
-### FCI and diagrams     
+     - Derivation of expressions for different parts of Hamiltonians, 1b, 2b, 3b etc
+### FCI and diagrams and particle-hole representations
+     - Basics of FCI
+     - rewriting in terms of a PH picture
+     - Discuss slater determinants and similarity transformations
+     - Introduce a diagrammatic representation
+### Mean-field theories
+     - Hartree-Fock in coordinate space and 2nd quantization
+     - Thouless theorem
+     - Slater dets in HF theory
+     - DFT links
+     - The electron gas as example
+     - FCI and HF, diagrammatic representations and critical discussions
+###  Many-body perturbation theory
