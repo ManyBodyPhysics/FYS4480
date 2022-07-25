@@ -24,3 +24,9 @@
      - The electron gas as example
      - FCI and HF, diagrammatic representations and critical discussions
 ###  Many-body perturbation theory
+###  Coupled cluster theories, parquet theory
+###  Green's function theory
+###  SRG adnd IMSRG
+###  Monte Carlo methods
+###  Quantum computing
+###  time-dependent many-body theory
