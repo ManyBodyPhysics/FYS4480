@@ -1,6 +1,6 @@
 ## Notes about possible content revisions
 
-###  Intro chapter with basic definitions and simple examples
+###  Intro chapter with basic definitions and simple examples and mathematics of many-body functions
 ###  2nd quantization for bosons and fermions
      - Here we can include Wigner-Jordan transformation
      - Baker-Campbell-Hausdorf
@@ -24,10 +24,10 @@
      - The electron gas as example
      - FCI and HF, diagrammatic representations and critical discussions
 ###  Many-body perturbation theory
-###  Coupled cluster theories, parquet theory
-###  Green's function theory
+###  Coupled cluster theories, standard and unitary
+###  Green's function theory and parquet theory
 ###  SRG adnd IMSRG
 ###  Monte Carlo methods
 ###  Quantum computing
 ###  time-dependent many-body theory
-###  Applications
+###  Applications to different systems like the electron gass, infinite nuclear matter, and more
