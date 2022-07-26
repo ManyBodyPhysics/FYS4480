@@ -30,3 +30,4 @@
 ###  Monte Carlo methods
 ###  Quantum computing
 ###  time-dependent many-body theory
+###  Applications
