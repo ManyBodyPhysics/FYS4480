@@ -1,6 +1,7 @@
 ## Notes about possible content revisions
 
 ###  Intro chapter with basic definitions and simple examples and mathematics of many-body functions
+     Think of Hartree-Fock here, at least definitions of SDs etc
 ###  2nd quantization for bosons and fermions
      - Here we can include Wigner-Jordan transformation
      - Baker-Campbell-Hausdorf
