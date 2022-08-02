@@ -2,7 +2,7 @@
 
 ###  Intro chapter with basic definitions and simple examples and mathematics of many-body functions
      Think of Hartree-Fock here, at least definitions of SDs etc, permutation operators and more
-     add notes about notations, mtx algebra, tensor products, representations and more
+     add notes about notations, mtx algebra, tensor products, representations, unitary transformations and more
 ###  2nd quantization for bosons and fermions
      - Here we can include Wigner-Jordan transformation
      - Baker-Campbell-Hausdorf
