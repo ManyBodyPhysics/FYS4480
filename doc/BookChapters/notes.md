@@ -2,7 +2,7 @@
 
 ###  Intro chapter with basic definitions and simple examples and mathematics of many-body functions
      Think of Hartree-Fock here, at least definitions of SDs etc, permutation operators and more
-     add notes about notations, mtx algebra, tensor products, representations, unitary transformations, link to quantities like
+     add notes about notations, linear algebra, vector and mtx algebra, tensor products, representations, unitary transformations, link to quantities like
      one-body densities, rms radii etc. Discuss ansatze for wave functions and more. Include in this part math about determinants
      and basis sets. Discuss ansazte for wave functions
 ###  2nd quantization for bosons and fermions
