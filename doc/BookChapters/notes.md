@@ -15,6 +15,7 @@
      - Gell-Man and Low's theorem
      - Adiabatic switching and more
      - Derivation of expressions for different parts of Hamiltonians, 1b, 2b, 3b etc
+     - Add material on how to use sympy alternatively develop exercises where one writes codes for using Wick's theorem
 ### FCI and diagrams and particle-hole representations
      - Basics of FCI
      - rewriting in terms of a PH picture
