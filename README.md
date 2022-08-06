@@ -11,8 +11,8 @@ simulations of such systems.
 
 The aim of this course is to present some of the most widely used
 many-body methods, starting with the underlying formalism of second
-quantization.The topics
-covered are: second quantization with creation and annivilation operators, Wick's theorem, Feynman diagram rules, microscopic mean-field theories
+quantization. The topics
+covered include second quantization with creation and annivilation operators, Wick's theorem, Feynman diagram rules, microscopic mean-field theories
 (Hartree-Fock and Kohn-Sham theories), many-body perturbation theory,
 large-scale diagonalization methods, coupled cluster theory,
 algorithms from quantum computing, and
