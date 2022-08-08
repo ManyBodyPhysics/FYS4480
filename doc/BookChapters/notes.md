@@ -9,6 +9,7 @@
 ###  2nd quantization for bosons and fermions and more
      - Wigner-Jordan transformation
      - Baker-Campbell-Hausdorf
+     - Suzuki-Trotter
      - Wick's generalized theorem
      - Proof of wick's theorem
      - time dependent wick's theorem
