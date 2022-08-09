@@ -34,7 +34,7 @@
      - Time dependent and time-independent representation
      - Brillouin-Wigner and Rayleigh-Schrødinger pert theory
      - Diagrammatic representation
-     - Linked-diagram theorem
+     - Linked-diagram theorem based on time-dependent theory
 ###  Coupled cluster theories, standard and unitary
      - Derivation of equations for singles and doubles, reminder on unitary transformations
      - non-hermiticity
