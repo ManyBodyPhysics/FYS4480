@@ -7,7 +7,7 @@
      one-body and two-body densities, rms radii etc. Discuss ansatze for wave functions and more. Include in this part math on
      basis sets. Discuss ansazte for wave functions, discuss Dicke states
 ###  2nd quantization for bosons and fermions and more
-     - Wigner-Jordan transformation
+     - Wigner-Jordan transformation and 2nd quantization
      - Baker-Campbell-Hausdorf
      - Suzuki-Trotter
      - Wick's generalized theorem
