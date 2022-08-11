@@ -17,7 +17,8 @@ covered include second quantization with creation and annivilation operators, Wi
 large-scale diagonalization methods, coupled cluster theory,
 algorithms from quantum computing, and
 Green's function approaches. Both fermionic and bosonic systems are
-discussed, depending on the interests of the participants. Selected physical systems from various fields such as
+discussed, depending on the interests of the participants.
+Selected physical systems from various fields such as quantum
 chemistry, solid-state physics and nuclear physics are studied,
 depending on the background and interests of the participants.
 
