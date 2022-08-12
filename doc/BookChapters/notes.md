@@ -21,7 +21,8 @@
 ### FCI and diagrams and particle-hole representations
      - Basics of FCI
      - rewriting in terms of a PH picture
-     - Discuss slater determinants and similarity transformations
+     - Discuss slater determinants and similarity transformations and algorithms for solving eigenvalue problems
+     - May discuss eigenvector continuation
      - Introduce a diagrammatic representation
 ### Mean-field theories
      - Hartree-Fock in coordinate space and 2nd quantization
