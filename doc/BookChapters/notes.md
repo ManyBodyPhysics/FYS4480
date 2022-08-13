@@ -7,20 +7,21 @@
      one-body and two-body densities, rms radii etc. Discuss ansatze for wave functions and more. Include in this part math on
      basis sets. Discuss ansazte for wave functions, discuss Dicke states
 ###  2nd quantization for bosons and fermions and more
-     - Wick's generalized theorem
+     - Commutation rules
      - Proof of wick's theorem
-     - time dependent wick's theorem
+     - Discuss Wick's generalized theorem
      - interaction, Schroedinger and Heisenberg pictures, pros and cons
+     - time dependent wick's theorem
      - Gell-Man and Low's theorem
      - Adiabatic switching
      - Derivation of expressions for different parts of Hamiltonians, 1b, 2b, 3b etc
      - Add material on how to use sympy alternatively develop exercises where one writes codes for using Wick's theorem
      - Wigner-Jordan transformation and 2nd quantization
-     - Baker-Campbell-Hausdorf
-     - Suzuki-Trotter
+     - Baker-Campbell-Hausdorf (BCH)
+     - Suzuki-Trotter as an approximation to BCH
 ### FCI and diagrams and particle-hole representations
      - Basics of FCI
-     - rewriting in terms of a PH picture
+     - Rewriting in terms of a PH picture
      - Discuss slater determinants and similarity transformations and algorithms for solving eigenvalue problems
      - May discuss eigenvector continuation
      - Introduce a diagrammatic representation
