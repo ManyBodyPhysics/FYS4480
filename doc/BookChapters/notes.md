@@ -1,11 +1,11 @@
 ## Notes about possible content for many-body lecture notes (covers more than FYS4480)
 
 ###  Intro chapter with basic definitions and simple examples and mathematics of many-body functions
-     Definitions of SDs etc, permutation operators,linear algebra
-     reminder including reminder about determinats,
-     vector and mtx algebra, tensor products, representations, unitary transformations, link to quantities like
-     one-body and two-body densities, rms radii etc. Discuss ansatze for wave functions and more. Include in this part math on
-     basis sets. Discuss ansazte for wave functions, discuss Dicke states
+     - Definitions of SDs etc, permutation operators,linear algebra reminder including reminder about determinants,
+       vector and mtx algebra, tensor products, representations, unitary transformations, link to quantities like
+     - one-body and two-body densities, rms radii etc. Discuss ansatze for wave functions and more.
+     - Include in this part math on basis sets.
+     - Discuss ansazte for wave functions, discuss Dicke states
 ###  2nd quantization for bosons and fermions and more
      - Commutation rules
      - Proof of wick's theorem
