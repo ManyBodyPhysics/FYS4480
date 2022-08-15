@@ -7,7 +7,7 @@
      - Include in this part math on basis sets.
      - Discuss ansazte for wave functions, discuss Dicke states
 ###  2nd quantization for bosons and fermions and more
-     - Commutation rules
+     - Commutation rules and definition of creation and annihilation operators
      - Proof of wick's theorem
      - Discuss Wick's generalized theorem
      - interaction, Schroedinger and Heisenberg pictures, pros and cons
