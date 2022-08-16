@@ -51,5 +51,5 @@
      - VQE and unitary CC, notes ready
 ###  time-dependent many-body theory
      - Notes to be developed
-###  Applications to different systems like the electron gass, infinite nuclear matter, and more
+###  Applications to different systems like the electron gass, Lipkin model, Pairing model, infinite nuclear matter, and more
      - Notes ready, some exercises and projects to be developed.
