@@ -10,6 +10,7 @@
      - Commutation rules and definition of creation and annihilation operators
      - Proof of wick's theorem
      - Discuss Wick's generalized theorem
+     - particle-hole picture
      - interaction, Schroedinger and Heisenberg pictures, pros and cons
      - time dependent wick's theorem
      - Gell-Man and Low's theorem
@@ -21,7 +22,7 @@
      - Suzuki-Trotter as an approximation to BCH
 ### FCI and diagrams and particle-hole representations
      - Basics of FCI
-     - Rewriting in terms of a PH picture
+     - Rewriting in terms of a particle-hole picture
      - Discuss slater determinants and similarity transformations and algorithms for solving eigenvalue problems
      - May discuss eigenvector continuation
      - Introduce a diagrammatic representation
