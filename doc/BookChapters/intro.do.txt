@@ -42,6 +42,14 @@ includes kinetic energy and an eventual external field, and a twobody
 interaction
 
 
+
+Intro chapter with basic definitions and simple examples and mathematics of many-body functions
+     * Definitions of SDs etc, permutation operators,linear algebra reminder including reminder about determinants,
+       vector and mtx algebra, tensor products, representations, unitary transformations, link to quantities like
+     * one-body and two-body densities, rms radii etc. Discuss ansatze for wave functions and more.
+     * Include in this part math on basis sets.
+     * Discuss ansazte for wave functions, discuss Dicke states
+
 !bt
 \begin{equation}
     \hat{H} = \hat{H}_0 + \hat{H}_I 
@@ -2969,5 +2977,244 @@ H=\sum_{\alpha\beta}\langle\alpha|\hat{t}|\beta\rangle a_{\alpha}^{\dagger}a_{\b
 
 
 
+
+
+
+
+===== Important Matrix and vector handling packages =====
+
+There are several central software packages for linear algebra and eigenvalue problems. Several of the more
+popular ones have been wrapped into ofter software packages like those from the widely used text _Numerical Recipes_. The original source codes in many of the available packages are often taken from the widely used
+software package LAPACK, which follows two other popular packages
+developed in the 1970s, namely EISPACK and LINPACK.  We describe them shortly here.
+
+  * LINPACK: package for linear equations and least square problems.
+  * LAPACK:package for solving symmetric, unsymmetric and generalized eigenvalue problems. From LAPACK's website URL: "http://www.netlib.org" it is possible to download for free all source codes from this library. Both C/C++ and Fortran versions are available.
+  * BLAS (I, II and III): (Basic Linear Algebra Subprograms) are routines that provide standard building blocks for performing basic vector and matrix operations. Blas I is vector operations, II vector-matrix operations and III matrix-matrix operations. Highly parallelized and efficient codes, all available for download from URL: "http://www.netlib.org".
+
+When dealing with matrices and vectors a central issue is memory
+handling and allocation. If our code is written in Python the way we
+declare these objects and the way they are handled, interpreted and
+used by say a linear algebra library, requires codes that interface
+our Python program with such libraries. For Python programmers,
+_Numpy_ is by now the standard Python package for numerical arrays in
+Python as well as the source of functions which act on these
+arrays. These functions span from eigenvalue solvers to functions that
+compute the mean value, variance or the covariance matrix. If you are
+not familiar with how arrays are handled in say Python or compiled
+languages like C++ and Fortran, the sections in this chapter may be
+useful. For C++ programmer, _Armadillo_ is widely used library for
+linear algebra and eigenvalue problems. In addition it offers a
+convenient way to handle and organize arrays. We discuss this library
+as well.   Before we proceed we believe  it may be convenient to repeat some basic features of 
+ matrices and vectors.
+
+
+===== Basic Matrix Features =====
+
+Matrix properties reminder
+!bt
+\[
+ \mathbf{A} =
+      \begin{bmatrix} a_{11} & a_{12} & a_{13} & a_{14} \\
+                                 a_{21} & a_{22} & a_{23} & a_{24} \\
+                                   a_{31} & a_{32} & a_{33} & a_{34} \\
+                                  a_{41} & a_{42} & a_{43} & a_{44}
+             \end{bmatrix}\qquad
+\mathbf{I} =
+      \begin{bmatrix} 1 & 0 & 0 & 0 \\
+                                 0 & 1 & 0 & 0 \\
+                                 0 & 0 & 1 & 0 \\
+                                 0 & 0 & 0 & 1
+             \end{bmatrix}
+\]
+!et
+
+
+The inverse of a matrix is defined by
+
+!bt
+\[
+\mathbf{A}^{-1} \cdot \mathbf{A} = I
+\]
+!et
+
+|----------------------------------------------------------------------|
+|       Relations      |       Name      | matrix elements             |
+|----------------------------------------------------------------------|
+| $A = A^{T}$         | symmetric       | $a_{ij} = a_{ji}$            |
+| $A = \left (A^{T} \right )^{-1}$ | real orthogonal | $\sum_k a_{ik} a_{jk} = \sum_k a_{ki} a_{kj} = \delta_{ij}$ |
+| $A = A^{ * }$          | real matrix     | $a_{ij} = a_{ij}^{ * }$       |
+| $A = A^{\dagger}$     |  hermitian      | $a_{ij} = a_{ji}^{ * }$       |
+| $A = \left (A^{\dagger} \right )^{-1}$ | unitary | $\sum_k a_{ik} a_{jk}^{ * } = \sum_k a_{ki}^{ * } a_{kj} = \delta_{ij}$ |
+|----------------------------------------------------------------------|
+
+=== Some famous Matrices ===
+
+  * Diagonal if $a_{ij}=0$ for $i\ne j$
+  * Upper triangular if $a_{ij}=0$ for $i > j$
+  * Lower triangular if $a_{ij}=0$ for $i < j$
+  * Upper Hessenberg if $a_{ij}=0$ for $i > j+1$
+  * Lower Hessenberg if $a_{ij}=0$ for $i < j+1$
+  * Tridiagonal if $a_{ij}=0$ for $|i -j| > 1$
+  * Lower banded with bandwidth $p$: $a_{ij}=0$ for $i > j+p$
+  * Upper banded with bandwidth $p$: $a_{ij}=0$ for $i < j+p$
+  * Banded, block upper triangular, block lower triangular....
+
+Some Equivalent Statements. For an $N\times N$ matrix  $\mathbf{A}$ the following properties are all equivalent
+
+  * If the inverse of $\mathbf{A}$ exists, $\mathbf{A}$ is nonsingular.
+  * The equation $\mathbf{Ax}=0$ implies $\mathbf{x}=0$.
+  * The rows of $\mathbf{A}$ form a basis of $R^N$.
+  * The columns of $\mathbf{A}$ form a basis of $R^N$.
+  * $\mathbf{A}$ is a product of elementary matrices.
+  * $0$ is not eigenvalue of $\mathbf{A}$.
+
+===== Numpy and arrays =====
+"Numpy":"http://www.numpy.org/" provides an easy way to handle arrays in Python. The standard way to import this library is as
+!bc pycod
+import numpy as np
+n = 10
+x = np.random.normal(size=n)
+print(x)
+!ec
+Here we have defined a vector $x$ with $n=10$ elements with its values given by the Normal distribution $N(0,1)$.
+Another alternative is to declare a vector as follows
+!bc pycod
+import numpy as np
+x = np.array([1, 2, 3])
+print(x)
+!ec
+Here we have defined a vector with three elements, with $x_0=1$, $x_1=2$ and $x_2=3$. Note that both Python and C++
+start numbering array elements from $0$ and on. This means that a vector with $n$ elements has a sequence of entities $x_0, x_1, x_2, \dots, x_{n-1}$. We could also let (recommended) Numpy to compute the logarithms of a specific array as
+!bc pycod
+import numpy as np
+x = np.log(np.array([4, 7, 8]))
+print(x)
+!ec
+
+Here we have used Numpy's unary function $np.log$. This function is
+highly tuned to compute array elements since the code is vectorized
+and does not require looping. We normaly recommend that you use the
+Numpy intrinsic functions instead of the corresponding _log_ function
+from Python's _math_ module. The looping is done explicitely by the
+_np.log_ function. The alternative, and slower way to compute the
+logarithms of a vector would be to write
+
+!bc pycod
+import numpy as np
+from math import log
+x = np.array([4, 7, 8])
+for i in range(0, len(x)):
+    x[i] = log(x[i])
+print(x)
+!ec
+We note that our code is much longer already and we need to import the _log_ function from the _math_ module. 
+The attentive reader will also notice that the output is $[1, 1, 2]$. Python interprets automacally our numbers as integers (like the _automatic_ keyword in C++). To change this we could define our array elements to be double precision numbers as
+!bc pycod
+import numpy as np
+x = np.log(np.array([4, 7, 8], dtype = np.float64))
+print(x)
+!ec
+or simply write them as double precision numbers (Python uses 64 bits as default for floating point type variables), that is
+!bc pycod
+import numpy as np
+x = np.log(np.array([4.0, 7.0, 8.0])
+print(x)
+!ec
+To check the number of bytes (remember that one byte contains eight bits for double precision variables), you can use simple use the _itemsize_ functionality (the array $x$ is actually an object which inherits the functionalities defined in Numpy) as 
+!bc pycod
+import numpy as np
+x = np.log(np.array([4.0, 7.0, 8.0])
+print(x.itemsize)
+!ec
+
+
+Having defined vectors, we are now ready to try out matrices. We can define a $3 \times 3 $ real matrix $\hat{A}$
+as (recall that we user lowercase letters for vectors and uppercase letters for matrices)
+!bc pycod
+import numpy as np
+A = np.log(np.array([ [4.0, 7.0, 8.0], [3.0, 10.0, 11.0], [4.0, 5.0, 7.0] ]))
+print(A)
+!ec
+If we use the _shape_ function we would get $(3, 3)$ as output, that is verifying that our matrix is a $3\times 3$ matrix. We can slice the matrix and print for example the first column (Python organized matrix elements in a row-major order, see below) as
+!bc pycod
+import numpy as np
+A = np.log(np.array([ [4.0, 7.0, 8.0], [3.0, 10.0, 11.0], [4.0, 5.0, 7.0] ]))
+# print the first column, row-major order and elements start with 0
+print(A[:,0]) 
+!ec
+We can continue this was by printing out other columns or rows. The example here prints out the second column
+!bc pycod
+import numpy as np
+A = np.log(np.array([ [4.0, 7.0, 8.0], [3.0, 10.0, 11.0], [4.0, 5.0, 7.0] ]))
+# print the first column, row-major order and elements start with 0
+print(A[1,:]) 
+!ec 
+Numpy contains many other functionalities that allow us to slice, subdivide etc etc arrays. We strongly recommend that you look up the "Numpy website for more details":"http://www.numpy.org/". Useful functions when defining a matrix are the _np.zeros_ function which declares a matrix of a given dimension and sets all elements to zero
+!bc pycod
+import numpy as np
+n = 10
+# define a matrix of dimension 10 x 10 and set all elements to zero
+A = np.zeros( (n, n) )
+print(A) 
+!ec 
+or initializing all elements to 
+!bc pycod
+import numpy as np
+n = 10
+# define a matrix of dimension 10 x 10 and set all elements to one
+A = np.ones( (n, n) )
+print(A) 
+!ec 
+or as unitarily distributed random numbers (see the material on random number generators in the statistics part)
+!bc pycod
+import numpy as np
+n = 10
+# define a matrix of dimension 10 x 10 and set all elements to random numbers with x \in [0, 1]
+A = np.random.rand(n, n)
+print(A) 
+!ec 
+
+
+
+===== Other Matrix and Vector Operations =====
+
+The following examples show how to compute various quantities like the _mean_ value of a matrix or a vector and how to use functions like _reshape_ and _ravel_. These are all useful quantities when scaling the data and preparing the data for various machine learning algorithms and when calculating quantities like the mean squared error or the variance.
+!bc pycod
+"""
+Simple code that tests various numpy functions
+"""
+
+import numpy as np
+# Simple test-matrix of dim 3 x 4
+a = np.array([ [1, 2, 3], [4, 5, 6], [7, 8, 9],[10, 11, 12]],dtype=np.float64)
+print(f"The test matrix:{a}")
+# This is the total mean summed over all elements, which here has to be 6.5
+print(f"This is the total mean summed over all elements:{np.mean(a,dtype=np.float64)}")
+# This is the mean for each column, it returns an array with the mean values for each column. It returns a row-like vector
+print(f"This is the mean for each column:{np.mean(a, axis=0, keepdims=True,dtype=np.float64)}")
+# This is the mean value for each row, it returns an array via the keepdims option which is a column-like vector if
+# keepdims=True. Else it return a row-like vector
+# Try setting keepdims=False
+print(f"This is the mean value for each row:{np.mean(a, axis=1, keepdims=True,dtype=np.float64)}")
+# We print then the mean value for each row by  setting keepdims=False
+print(f"This is the mean value for each row with keepdims false:{np.mean(a, axis=1, keepdims=False,dtype=np.float64)}")
+
+# Ravel return a contiguous flattened array.
+print(f"Flatten  the matrix:{np.ravel(a)}")
+# It is the same as reshaping the matrix into a one-dimensional array
+print(f"Reshape the matrix to a one-dim array:{a.reshape(-1)}")
+#  ‘C’ means to index the elements in row-major, C-style order, with the last axis index changing fastest, back to the first axis index changing slowest.
+# ‘F’ means to index the elements in column-major, Fortran-style order, with the first index changing fastest, and the last index changing slowest 
+print(np.ravel(a, order='F'))
+# When order is ‘A’, it will preserve the array’s ‘C’ or ‘F’ ordering
+# ‘A’ means to read the elements in Fortran-like index order if a is Fortran contiguous in memory, C-like order otherwise.
+# ‘K’ means to read the elements in the order they occur in memory, except for reversing the data when strides are negative. By default, ‘C’ index order is used.
+# Transposing it
+print(np.ravel(a.T))
+print(np.ravel(a.T, order='A'))
+
+!ec
 
 
