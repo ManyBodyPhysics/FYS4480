@@ -2,11 +2,49 @@ TITLE: Many-body Hamiltonians, basic linear algebra and Second Quantization
 AUTHOR: "Morten Hjorth-Jensen":"http://mhjgit.github.io/info/doc/web/", National Superconducting Cyclotron Laboratory and Department of Physics and Astronomy, Michigan State University, East Lansing, MI 48824, USA & Department of Physics, University of Oslo, Oslo, Norway 
 DATE: today
 
+
+===== Introduction to the course =====
+
+
+These lecture notea aim at giving an introduction to the quantum
+mechanics of many-body systems and the methods relevant for many-body
+problems in such diverse areas as atomic, molecular, solid-state and
+nuclear physics, chemistry and materials science. A theoretical
+understanding of the behavior of quantum-mechanical many-body systems,
+that is, systems containing many interacting particles, is a
+considerable challenge in that, normally, no exact solution can be
+found.  Instead, reliable methods are needed for approximate but
+accurate simulations of such systems.
+
+These notes cover central many-body methods used in a variety of
+fields in physics. Starting with basic definitions and second
+quantization and Wick's theorems for systems of fermions and bosons,
+we move on to the introduction of Feynman diagrams and many-body
+methods like full configuration interaction theory and various mean
+field approaches like Hartree-Fock theory and density functional
+theory. Thereafter, approximative methods like many-body perturbation
+theory, coupled cluster theory (standard and unitary) and other
+methods will be discussed.  Finally, algorithms from quantum computing
+for solving quantum mechanical many-body problems will be
+discussed. The present set of notes contain more material than covered
+by a regular course and some of these notes can be used for
+self-studies or advanced many-body topics. Depending on the interest
+of the participants, selected methods can be emphasized over other
+ones.
+
+
+
+
 ===== Definitions and notations =====
 
-Before we proceed we need some definitions.
-We will assume that the interacting part of the Hamiltonian
-can be approximated by a two-body interaction.
+Before we proceed we need several definitions.  Throughout these
+lectures we will assume that the interacting part of the Hamiltonian
+can be approximated by a two-body interaction.  This means that our
+Hamiltonian can be written as the sum of a onebody part, which
+includes kinetic energy and an eventual external field, and a twobody
+interaction
+
+
 This means that our Hamiltonian is written as the sum of some onebody part and a twobody part
 !bt
 \begin{equation}
@@ -2681,7 +2719,7 @@ The last exercise can be solved using the symbolic Python package called *SymPy*
 package for general purpose symbolic algebra. There is a physics module with several interesting submodules.
 Among these, the submodule called *secondquant*, contains several  functionalities that allow us to test
 our algebraic manipulations using Wick's theorem and operators for second quantization.
-!bc  pyscpro
+!bc pycod
 from sympy import *
 from sympy.physics.secondquant import *
 
@@ -2701,7 +2739,7 @@ the creation and annihilation operators *Fd* and *F*, respectively. Using the si
 ===== Exercise: Using sympy to compute matrix elements  =====
  
 We can expand the above Python code by defining one-body and two-body operators using  the following SymPy code 
-!bc  pyscpro
+!bc pycod
 # This code sets up a two-body Hamiltonian for fermions
 from sympy import symbols, latex, WildFunction, collect, Rational
 from sympy.physics.secondquant import F, Fd, wicks, AntiSymmetricTensor, substitute_dummies, NO
@@ -2729,7 +2767,7 @@ f^{p}_{q} \left\{a^\dagger_{p} a_{q}\right\} - \frac{1}{4} v^{qp}_{sr} \left\{a^
 ===== Exercise: Using sympy to compute matrix elements  =====
  
 We can now use this code to compute the matrix elements between two two-body Slater determinants using Wick's theorem.
-!bc  pyscpro
+!bc pycod
 from sympy import symbols, latex, WildFunction, collect, Rational, simplify
 from sympy.physics.secondquant import F, Fd, wicks, AntiSymmetricTensor, substitute_dummies, NO, evaluate_deltas
 # setup hamiltonian
@@ -2762,7 +2800,7 @@ The result is as expected,
  
 We can continue along these lines and define a normal-ordered Hamiltonian with respect to a given reference state.
 In our first step we just define the Hamiltonian
-!bc  pyscpro
+!bc pycod
 from sympy import symbols, latex, WildFunction, collect, Rational, simplify
 from sympy.physics.secondquant import F, Fd, wicks, AntiSymmetricTensor, substitute_dummies, NO, evaluate_deltas
 # setup hamiltonian
@@ -2795,7 +2833,7 @@ f^{q}_{p} a^\dagger_{q} a_{p} + \frac{1}{4} v^{sr}_{qp} a^\dagger_{s} a^\dagger_
 ===== Exercise: Using sympy to compute matrix elements  =====
  
 In our next step we define the reference energy $E_0$ and redefine the Hamiltonian by subtracting the reference energy and collecting the coefficients for all normal-ordered products (given by the *NO* function).
-!bc pyscpro
+!bc pycod
 from sympy import symbols, latex, WildFunction, collect, Rational, simplify
 from sympy.physics.secondquant import F, Fd, wicks, AntiSymmetricTensor, substitute_dummies, NO, evaluate_deltas
 # setup hamiltonian
@@ -2834,7 +2872,7 @@ again as expected, with the reference energy to be subtracted.
 ===== Exercise: Using sympy to compute matrix elements  =====
  
 We can now go back to exercise 7 and define the Hamiltonian and the second-quantized representation of a  three-body Slater determinant. 
-!bc  pyscpro
+!bc pycod
 from sympy import symbols, latex, WildFunction, collect, Rational, simplify
 from sympy.physics.secondquant import F, Fd, wicks, AntiSymmetricTensor, substitute_dummies, NO, evaluate_deltas
 # setup hamiltonian
