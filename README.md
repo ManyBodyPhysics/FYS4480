@@ -34,10 +34,10 @@ depending on the background and interests of the participants.
 
 ## Practicalities
 
-1. Four lectures per week, Fall semester, 10 ECTS. The lectures will be recorded and linked to this site and the official University of Oslo website for the course;
-2. Two hours of exercise sessions for work on projects and exercises for each group;
-3. Three projects which are graded and count 1/3 each of the final grade;
-4. A selected number of weekly assignments;
+1. Four lectures per week, Fall semester, 10 ECTS. The lectures will be recorded and linked to this site;
+2. Two hours of exercise sessions for work on projects and exercises;
+3. Two projects which are graded and count 30% each of the final grade and a final oral exam that counts 40% of the final grade;
+4. Weekly assignments;
 5. The course is offered as a so-called _cloned_ course,  FYS4480 at the Master of Science level and FYS9480 as a PhD course;
 6. Weekly email with summary of activities will be mailed to all participants;
 
