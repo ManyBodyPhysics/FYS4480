@@ -28,7 +28,7 @@ depending on the background and interests of the participants.
 * _Email_: morten.hjorth-jensen@fys.uio.no
 * _Phone_: +47-48257387
 * _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ470 
-* _Name_: Øyvind Sigmundson Schøyen, 
+* _Name_: Øyvind Sigmundson Schøyen
 * _Email_: oyvinssc@student.matnat.uio.no
 * _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ452 
 
@@ -53,12 +53,12 @@ In particular we recommend the texts by
 
 ## Topics (not all will be discussed)
 
-o Intro chapter with basic definitions and simple examples and mathematics of many-body functions
+- Intro chapter with basic definitions and simple examples and mathematics of many-body functions
      - Definitions of SDs etc, permutation operators,linear algebra reminder including reminder about determinants,
        vector and mtx algebra, tensor products, representations, unitary transformations, link to quantities like
      - one-body and two-body densities, rms radii etc. Discuss ansatze for wave functions and more.
      - Ansaztes for wave functions
-o 2nd quantization for bosons and fermions and more
+- 2nd quantization for bosons and fermions and more
      - Commutation rules and definition of creation and annihilation operators
      - Proof of wick's theorem
      - Discuss Wick's generalized theorem
@@ -71,34 +71,34 @@ o 2nd quantization for bosons and fermions and more
      - Wigner-Jordan transformation and 2nd quantization
      - Baker-Campbell-Hausdorf (BCH)
      - Suzuki-Trotter as an approximation to BCH
-o FCI and diagrams and particle-hole representations
+- FCI and diagrams and particle-hole representations
      - Basics of FCI
      - Rewriting in terms of a particle-hole picture
      - Discuss slater determinants and similarity transformations and algorithms for solving eigenvalue problems
      - Eigenvector continuation
      - Introduce a diagrammatic representation
-o Mean-field theories
+- Mean-field theories
      - Hartree-Fock in coordinate space and 2nd quantization
      - Thouless theorem
      - Slater dets in HF theory
      - DFT links
      - The electron gas as example
      - FCI and HF, diagrammatic representations and critical discussions
-o Many-body perturbation theory
+- Many-body perturbation theory
      - Time dependent and time-independent representation
      - Brillouin-Wigner and Rayleigh-Schrødinger pert theory
      - Diagrammatic representation
      - Linked-diagram theorem based on time-dependent theory
-o Coupled cluster theories, standard and unitary
+- Coupled cluster theories, standard and unitary
      - Derivation of equations for singles and doubles, reminder on unitary transformations
      - non-hermiticity
      - Specialize to CCD case and compare with FCI and MBPT
-o Green's function theory and parquet theory
-o SRG and IMSRG
-o Monte Carlo methods
+- Green's function theory and parquet theory
+- SRG and IMSRG
+- Monte Carlo methods
      - Taught in FYS4411
-o Quantum computing
+- Quantum computing
      - VQE and unitary CC
-o Time-dependent many-body theory
-o Applications to different systems like the electron gass, Lipkin model, Pairing model, infinite nuclear matter, and more
+- Time-dependent many-body theory
+- Applications to different systems like the electron gass, Lipkin model, Pairing model, infinite nuclear matter, and more
 
