@@ -6,9 +6,7 @@
 
 # # The Coupled Cluster Method
 
-# # The Coupled-Cluster Method
-
-# # Introduction
+# ## Introduction
 # 
 # The coupled-cluster method is an efficient tool to compute atomic
 # nuclei with an effort that grows polynomial with system size. While
@@ -24,7 +22,7 @@
 # <img src="figslides/Explosion.png" width="400"><p style="font-size: 0.9em"><i>Figure 1: Realistic computations of atomic nuclei with interactions from chiral EFT. The slow increase prior to 2015 is based on quantum Monte Carlo and the no-core shell model. These methods are exponentially expensive (in mass number $A$) and meet with exponentially increasing computer power (Moore's law), thus leading to a progress that is linear in time. Methods such as coupled clusters and in-medium SRG carry a polynomial cost in mass number are transforming the field.</i></p>
 # <!-- end figure -->
 
-# # The normal-ordered Hamiltonian
+# ## The normal-ordered Hamiltonian
 # 
 # We start from the reference state
 
@@ -247,7 +245,7 @@
 # 
 # ===== =====
 
-# # The similarity transformed Hamiltonian
+# ## The similarity transformed Hamiltonian
 # 
 # There are several ways to view and understand the coupled-cluster
 # method. A first simple view of coupled-cluster theory is that the
@@ -527,7 +525,7 @@
 # 
 # ===== =====
 
-# # Computing the similarity-transformed Hamiltonian
+# ## Computing the similarity-transformed Hamiltonian
 # 
 # The solution of the CCSD equations, i.e. the second and third line of
 # Eq. ([20](#ccsd)), and the computation of the correlation energy
@@ -863,7 +861,7 @@
 # 
 # ===== =====
 
-# # CCD Approximation
+# ## CCD Approximation
 # 
 # In what follows, we will consider the coupled cluster doubles (CCD)
 # approximation. This approximation is valid in cases where the system
@@ -1142,7 +1140,7 @@
 # $t_{ij}^{ab}$ from the right-hand side of Eq. ([36](#iter)). We repeat
 # this process until the amplitudes (or the CCD energy) converge.
 
-# # CCD for the pairing Hamiltonian
+# ## CCD for the pairing Hamiltonian
 # 
 # You learned about the pairing Hamiltonian earlier in this
 # school. Convince yourself that this Hamiltonian does not induce any
@@ -1449,7 +1447,7 @@ print("Energy = ", erg)
 # 
 # ===== =====
 
-# # Basis states
+# ## Basis states
 # 
 # In what follows, we employ a basis made from discrete momentum states,
 # i.e. those states $\vert k_x, k_y, k_z\rangle$ in a cubic box of size $L$ that
@@ -1559,7 +1557,7 @@ print("Energy = ", erg)
 # <img src="figslides/fig-finite.png" width="600"><p style="font-size: 0.9em"><i>Figure 14: Relative finite-size corrections for the kinetic energy in pure neutron matter at the Fermi momentum $k_F = 1.6795 {\rm fm}^{-1}$ versus the neutron number A. TABC10 are twist-averaged boundary conditions with 10 Gauss-Legendre points in each spatial direction.</i></p>
 # <!-- end figure -->
 
-# # Channel structure of Hamiltonian and cluster amplitudes
+# ## Channel structure of Hamiltonian and cluster amplitudes
 # 
 # Good quantum numbers for the nuclear interaction (i.e. operators that
 # commute with the Hamiltonian and with each other) are total momentum,
@@ -2801,7 +2799,7 @@ print('total time in seconds', progend-progstart)
 # 
 # ===== =====
 
-# # Benchmarks with the Minnesota potential
+# ## Benchmarks with the Minnesota potential
 # 
 # For the benchmarks, let us use a nucleon mass $m=938.92$ MeV, $\hbar =
 # 197.33$ MeV fm, and $c=1$. For $N=14$ neutrons at a density $\rho=0.08
@@ -2818,7 +2816,7 @@ print('total time in seconds', progend-progstart)
 # of nuclear reactions, namely photo reactions and computations of
 # optical potentials. In what follows, we want to discuss these approaches.
 
-# # Electroweak reactions
+# ## Electroweak reactions
 # 
 # Let us assume we probe a nucleus with an electroweak probe (e.g. via
 # photon or $Z$-boson exchange). The corresponding operator
@@ -2963,7 +2961,7 @@ print('total time in seconds', progend-progstart)
 # in the CCSD approximation. For details, please see ["Giant and pigmy dipole resonances in 4He, 16,22O, and 40Ca from chiral nucleon-nucleon interactions," S. Bacca, N. Barnea, G. Hagen, M. Miorelli, G. Orlandini, and T. Papenbrock,
 # Phys. Rev. C 90, 064619 (2014)].
 
-# # Computing optical potentials from microscopic input
+# ## Computing optical potentials from microscopic input
 # 
 # The single-particle Green's function
 
