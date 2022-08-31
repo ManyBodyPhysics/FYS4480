@@ -11,12 +11,22 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 
 
 ## Teaching schedule with links to material
-###  Week 3
-- Introduction to the course and start variational Monte Carlo
-- Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/web/course.html
 
 ###  Week 34, August 22-26, 2022
 
-- Video of lecture at
+- Topics to be covered
+  - Thursday: Introduction to many-body physics, notations and definitions
+  - Video of lecture at https://www.youtube.com/watch?v=ScHgSRCmq-0
+  - Friday: Discussion of notations and important properties in many-body physics
+  - Video of lecture at https://www.youtube.com/watch?v=M14xN2BAULg
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 
+###  Week 35, August 29-September 2, 2022
+
+- Topics to be covered
+  - Thursday: Fermion state functions and computation of expectation values in first quantization
+  - Video of lecture at 
+  - Friday: Introduction of second quantization
+  - Video of lecture at 
+- Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
+- First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek35.pdf
