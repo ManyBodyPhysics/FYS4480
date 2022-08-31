@@ -100,18 +100,10 @@
 # \mathbf{A}^{-1} \cdot \mathbf{A} = I
 # $$
 
-# <table class="dotable" border="1">
-# <thead>
-# <tr><th align="center">            Relations             </th> <th align="center">      Name     </th> <th align="center">                        matrix elements                        </th> </tr>
-# </thead>
-# <tbody>
-# <tr><td align="center">   $A=A^{T}$                             </td> <td align="center">   symmetric          </td> <td align="center">   $a_{ij}=a_{ji}$                                                    </td> </tr>
-# <tr><td align="center">   $A=\left(A^{T}\right)^{-1}$           </td> <td align="center">   real orthogonal    </td> <td align="center">   $\sum_k a_{ik} a_{jk}=\sum_k a_{ki} a_{kj}=\delta_{ij}$            </td> </tr>
-# <tr><td align="center">   $A=A^{*}$                             </td> <td align="center">   real matrix        </td> <td align="center">   $a_{ij}=a_{ij}^{*}$                                                </td> </tr>
-# <tr><td align="center">   $A=A^{\dagger}$                       </td> <td align="center">   hermitian          </td> <td align="center">   $a_{ij}=a_{ji}^{*}$                                                </td> </tr>
-# <tr><td align="center">   $A=\left (A^{\dagger}\right)^{-1}$    </td> <td align="center">   unitary            </td> <td align="center">   $\sum_k a_{ik} a_{jk}^{*}=\sum_k a_{ki}^{*} a_{kj}=\delta_{ij}$    </td> </tr>
-# </tbody>
-# </table>
+# We have also that if the matrix is symmetric and quadratic $A=A^{T}$  and the elements are $a_{ij}=a_{ji}$
+# If the matrix is real orthogonal we have $A=\left(A^{T}\right)^{-1}$ and $\sum_k a_{ik} a_{jk}=\sum_k a_{ki} a_{kj}=\delta_{ij}$. Similarly, for a real matrix we have $A=A^{*}$  and $a_{ij}=a_{ij}^{*}$. For a hermitian matrix we have
+# $A=A^{\dagger}$   and $a_{ij}=a_{ji}^{*}$. Finally, for a unitary matrix we have $A=\left (A^{\dagger}\right)^{-1}$
+# and $\sum_k a_{ik} a_{jk}^{*}=\sum_k a_{ki}^{*} a_{kj}=\delta_{ij}$.
 
 # ### Some famous Matrices
 # 
@@ -217,7 +209,7 @@ print(x)
 
 
 import numpy as np
-x = np.log(np.array([4.0, 7.0, 8.0])
+x = np.log(np.array([4.0, 7.0, 8.0]))
 print(x)
 
 
@@ -227,7 +219,7 @@ print(x)
 
 
 import numpy as np
-x = np.log(np.array([4.0, 7.0, 8.0])
+x = np.log(np.array([4.0, 7.0, 8.0]))
 print(x.itemsize)
 
 
