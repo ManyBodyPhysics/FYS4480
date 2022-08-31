@@ -1736,7 +1736,7 @@ for i, eta in enumerate(eta_vals):
 
 # ### Visualization
 
-# In[10]:
+# In[ ]:
 
 
 # visual representation of grid search
@@ -1788,7 +1788,7 @@ plt.show()
 # optimization methods, etc. We would therefore expect a better
 # performance overall.
 
-# In[11]:
+# In[ ]:
 
 
 from sklearn.neural_network import MLPClassifier
@@ -1811,7 +1811,7 @@ for i, eta in enumerate(eta_vals):
 
 # ### Visualization
 
-# In[12]:
+# In[ ]:
 
 
 # optional
@@ -1885,7 +1885,7 @@ plt.show()
 # 
 # To install tensorflow on Unix/Linux systems, use pip as
 
-# In[13]:
+# In[ ]:
 
 
 pip3 install tensorflow
