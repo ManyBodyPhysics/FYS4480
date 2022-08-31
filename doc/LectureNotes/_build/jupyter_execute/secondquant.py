@@ -1798,6 +1798,366 @@
 
 # which results in $|0001000000000000\rangle$. Counting the number of $1-$bits gives the phase.  Here you need however an algorithm for bitcounting. Several efficient ones available.
 
+# ## Schr\"odinger picture
+# 
+# The time-dependent Schr\"odinger equation (or equation of motion) reads
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}|\Psi_S(t)\rangle = \hat{H}\Psi_S(t)\rangle,
+# $$
+
+# where the subscript $S$ stands for Schr\"odinger here.
+# A formal solution is given by
+
+# $$
+# |\Psi_S(t)\rangle = \exp{(-\imath\hat{H}(t-t_0)/\hbar)}|\Psi_S(t_0)\rangle.
+# $$
+
+# The Hamiltonian $\hat{H}$ is hermitian and the exponent represents a unitary 
+# operator with an operation carried ut on the wave function at a time $t_0$.
+
+# ## Interaction picture
+# Our Hamiltonian is normally written out as the sum of an unperturbed part $\hat{H}_0$ and an interaction part $\hat{H}_I$, that is
+
+# $$
+# \hat{H}=\hat{H}_0+\hat{H}_I.
+# $$
+
+# In general we have $[\hat{H}_0,\hat{H}_I]\ne 0$ since $[\hat{T},\hat{V}]\ne 0$.
+# We wish now to define a unitary transformation in terms of $\hat{H}_0$ by defining
+
+# $$
+# |\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}|\Psi_S(t)\rangle,
+# $$
+
+# which is again a unitary transformation carried out now at the time $t$ on the 
+# wave function in the Schr\"odinger picture. 
+# 
+# We can easily find the equation of motion by taking the time derivative
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle = -\hat{H}_0\exp{(\imath\hat{H}_0t/\hbar)}\Psi_S(t)\rangle+\exp{(\imath\hat{H}_0t/\hbar)}
+# \imath \hbar\frac{\partial }{\partial t}\Psi_S(t)\rangle.
+# $$
+
+# Using the definition of the Schr\"odinger equation, we can rewrite the last equation as
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}\left[-\hat{H}_0+\hat{H}_0+\hat{H}_I\right]\exp{(-\imath\hat{H}_0t/\hbar)}\Psi_I(t)\rangle,
+# $$
+
+# which gives us
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle = \hat{H}_I(t)\Psi_I(t)\rangle,
+# $$
+
+# with
+
+# $$
+# \hat{H}_I(t)=
+# \exp{(\imath\hat{H}_0t/\hbar)}\hat{H}_I\exp{(-\imath\hat{H}_0t/\hbar)}.
+# $$
+
+# The order of the operators is important since $\hat{H}_0$ and $\hat{H}_I$ do generally not commute.
+# The expectation value of
+# an arbitrary operator in the interaction picture can now be written as
+
+# $$
+# \langle \Psi'_S(t)|\hat{O}_S|\Psi_S(t)\rangle = 
+# \langle \Psi'_I(t) |\exp{(\imath\hat{H}_0t/\hbar)}\hat{O}_I
+# \exp{(-\imath\hat{H}_0t/\hbar)}|\Psi_I(t)\rangle,
+# $$
+
+# and using the definition
+
+# $$
+# \hat{O}_I(t)=
+# \exp{(\imath\hat{H}_0t/\hbar)}\hat{O}_I\exp{(-\imath\hat{H}_0t/\hbar)},
+# $$
+
+# we obtain
+
+# $$
+# \langle \Psi'_S(t)|\hat{O}_S|\Psi_S(t)\rangle = 
+# \langle \Psi'_I(t) |\hat{O}_I(t)|\Psi_I(t)\rangle,
+# $$
+
+# stating that a unitary transformation does not change expectation values!
+# 
+# If we take the time derivative of the operator in the interaction picture we arrive at the following equation of motion
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}\hat{O}_I(t) = \exp{(\imath\hat{H}_0t/\hbar)}\left[\hat{O}_S\hat{H}_0-\hat{H}_0\hat{O}_S\right]\exp{(-\imath\hat{H}_0t/\hbar)}=\left[\hat{O}_I(t),\hat{H}_0\right].
+# $$
+
+# Here we have used the time-independence of the Schr\"odinger equation
+# together with the observation that any function of an operator commutes with the operator itself. 
+# 
+# In order to solve the equation of motion equation in the interaction picture, we define a unitary operator
+# time-development operator $\hat{U}(t,t')$. Later we will derive its
+# connection with the linked-diagram theorem, which yields a
+# linked expression for the actual operator. 
+# The action of the operator on the wave function is
+
+# $$
+# |\Psi_I(t) \rangle = \hat{U}(t,t_0)|\Psi_I(t_0)\rangle,
+# $$
+
+# with the obvious value $\hat{U}(t_0,t_0)=1$.
+# 
+# The time-development operator $U$ has the
+# properties that
+
+# $$
+# \hat{U}^{\dagger}(t,t')\hat{U}(t,t')=\hat{U}(t,t')\hat{U}^{\dagger}(t,t')=1,
+# $$
+
+# which implies that $U$ is unitary
+
+# $$
+# \hat{U}^{\dagger}(t,t')=\hat{U}^{-1}(t,t').
+# $$
+
+# Further,
+
+# $$
+# \hat{U}(t,t')\hat{U}(t't'')=\hat{U}(t,t'')
+# $$
+
+# and
+
+# $$
+# \hat{U}(t,t')\hat{U}(t',t)=1,
+# $$
+
+# which leads to
+
+# $$
+# \hat{U}(t,t')=\hat{U}^{\dagger}(t',t).
+# $$
+
+# Using our definition of Schr\"odinger's equation in the interaction picture, we can then construct the operator $\hat{U}$. We have defined
+
+# $$
+# |\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}|\Psi_S(t)\rangle,
+# $$
+
+# which can be rewritten as
+
+# $$
+# |\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}(t-t_0)/\hbar)}|\Psi_S(t_0)\rangle,
+# $$
+
+# or
+
+# $$
+# |\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}(t-t_0)/\hbar)}\exp{(-\imath\hat{H}_0t_0/\hbar)}|\Psi_I(t_0)\rangle.
+# $$
+
+# From the last expression we can define
+
+# $$
+# \hat{U}(t,t_0)=\exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}(t-t_0)/\hbar)}\exp{(-\imath\hat{H}_0t_0/\hbar)}.
+# $$
+
+# It is then easy to convince oneself that the properties defined above are satisfied by the definition of $\hat{U}$. 
+# 
+# We derive the equation of motion for $\hat{U}$ using the above definition.
+# This results in
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}\hat{U}(t,t_0) = \hat{H}_I(t)\hat{U}(t,t_0),
+# $$
+
+# which we integrate from $t_0$ to a time $t$ resulting in
+
+# $$
+# \hat{U}(t,t_0)-\hat{U}(t_0,t_0)=\hat{U}(t,t_0)-1=-\frac{\imath}{\hbar}\int_{t_0}^t dt' \hat{H}_I(t')\hat{U}(t',t_0),
+# $$
+
+# which can be rewritten as
+
+# $$
+# \hat{U}(t,t_0)=1-\frac{\imath}{\hbar}\int_{t_0}^t dt' \hat{H}_I(t')\hat{U}(t',t_0).
+# $$
+
+# We can solve this equation iteratively keeping in mind the time-ordering of the of the operators
+
+# $$
+# \hat{U}(t,t_0)=1-\frac{\imath}{\hbar}\int_{t_0}^t dt' \hat{H}_I(t')+\left(\frac{-\imath}{\hbar}\right)^2\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')+\dots
+# $$
+
+# The third term can be written as
+
+# $$
+# \int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')=
+# \frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')
+# +\frac{1}{2}\int_{t_0}^t dt''\int_{t''}^{t} dt' \hat{H}_I(t')\hat{H}_I(t'').
+# $$
+
+# We obtain this expression by changing the integration order in the second term
+# via a change of the integration variables $t'$ and $t''$  in
+
+# $$
+# \frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'').
+# $$
+
+# We can rewrite the terms which contain the double integral as
+
+# $$
+# \int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')=
+# $$
+
+# $$
+# \frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt''\left[\hat{H}_I(t')\hat{H}_I(t'')\Theta(t'-t'')
+# +\hat{H}_I(t')\hat{H}_I(t'')\Theta(t''-t')\right],
+# $$
+
+# with $\Theta(t''-t')$ being the standard Heavyside or step function. The step function allows us to give a specific time-ordering to the above expression.
+# 
+# With the $\Theta$-function we can rewrite the last expression as
+
+# $$
+# \int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')=
+# \frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt''\hat{T}\left[\hat{H}_I(t')\hat{H}_I(t'')\right],
+# $$
+
+# where $\Hat{T}$ is the so-called time-ordering operator. 
+# 
+# With this definition, we can rewrite the expression for $\hat{U}$ as
+
+# $$
+# \hat{U}(t,t_0)=\sum_{n=0}^{\infty}\left(\frac{-\imath}{\hbar}\right)^n\frac{1}{n1}
+# \int_{t_0}^t dt_1\dots \int_{t_0}^t dt_N \hat{T}\left[\hat{H}_I(t_1)\dots\hat{H}_I(t_n)\right]=\hat{T}\exp{\left[\frac{-\imath}{\hbar}
+# \int_{t_0}^t dt' \hat{H}_I(t')\right]}.
+# $$
+
+# The above time-evolution operator in the interaction picture will be used
+# to derive various contributions to many-body perturbation theory.
+
+# ## Heisenberg picture
+# 
+# We wish now to define a unitary transformation in terms of $\hat{H}$ by defining
+
+# $$
+# |\Psi_H(t)\rangle = \exp{(\imath\hat{H}t/\hbar)}|\Psi_S(t)\rangle,
+# $$
+
+# which is again a unitary transformation carried out now at the time $t$ on the 
+# wave function in the Schr\"odinger picture. If we combine this equation with 
+# Schr\"odinger's equation we obtain the following equation of motion
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}|\Psi_H(t)\rangle = 0,
+# $$
+
+# meaning that $|\Psi_H(t)\rangle$ is time independent. An operator in this picture is defined as
+
+# $$
+# \hat{O}_H(t)=
+# \exp{(\imath\hat{H}t/\hbar)}\hat{O}_S\exp{(-\imath\hat{H}t/\hbar)}.
+# $$
+
+# The time dependence is then in the operator itself, and this yields in turn the
+# following equation of motion
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}\hat{O}_H(t) = \exp{(\imath\hat{H}t/\hbar)}\left[\hat{O}_H\hat{H}-\hat{H}\hat{O}_H\right]\exp{(-\imath\hat{H}t/\hbar)}=\left[\hat{O}_H(t),\hat{H}\right].
+# $$
+
+# We note that an operator in the Heisenberg picture can be related to the corresponding
+# operator in the interaction picture as
+
+# $$
+# \hat{O}_H(t)=
+# \exp{(\imath\hat{H}t/\hbar)}\hat{O}_S\exp{(-\imath\hat{H}t/\hbar)}=
+# 
+# \exp{(\imath\hat{H}_It/\hbar)}\exp{(-\imath\hat{H}_0t/\hbar)}\hat{O}_I\exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}_It/\hbar)}.
+# $$
+
+# With our definition of the time evolution operator we see that
+
+# $$
+# \hat{O}_H(t)=\hat{U}(0,t)\hat{O}_I\hat{U}(t,0),
+# $$
+
+# which in turn implies that $\hat{O}_S=\hat{O}_I(0)=\hat{O}_H(0)$, all operators are equal at $t=0$. The wave function in the Heisenberg formalism is 
+# related to the other pictures as
+
+# $$
+# |\Psi_H\rangle=|\Psi_S(0)\rangle=|\Psi_I(0)\rangle,
+# $$
+
+# since the wave function in the Heisenberg picture is time independent. 
+# We can relate this wave function to that a given time $t$ via the time evolution operator as
+
+# $$
+# |\Psi_H\rangle=\hat{U}(0,t)|\Psi_I(t)\rangle.
+# $$
+
+# ## Adiabatic hypothesis
+# 
+# We assume that the interaction term is switched on gradually. Our wave function at time $t=-\infty$ and $t=\infty$ is supposed to represent a non-interacting system
+# given by the solution to the unperturbed part of our Hamiltonian $\hat{H}_0$.
+# We assume the ground state is given by $|\Phi_0\rangle$, which could be a Slater determinant.
+# 
+# We define our Hamiltonian as
+
+# $$
+# \hat{H}=\hat{H}_0+\exp{(-\varepsilon t/\hbar)}\hat{H}_I,
+# $$
+
+# where $\varepsilon$ is a small number. The way we write the Hamiltonian 
+# and its interaction term is meant to simulate the switching of the interaction.
+# 
+# The time evolution of the wave function in the interaction picture is then
+
+# $$
+# |\Psi_I(t) \rangle = \hat{U}_{\varepsilon}(t,t_0)|\Psi_I(t_0)\rangle,
+# $$
+
+# with
+
+# $$
+# \hat{U}_{\varepsilon}(t,t_0)=\sum_{n=0}^{\infty}\left(\frac{-\imath}{\hbar}\right)^n\frac{1}{n!}
+# \int_{t_0}^t dt_1\dots \int_{t_0}^t dt_N \exp{(-\varepsilon(t_1+\dots+t_n)/\hbar)}\hat{T}\left[\hat{H}_I(t_1)\dots\hat{H}_I(t_n)\right]
+# $$
+
+# In the limit $t_0\rightarrow -\infty$, the solution ot Schr\"odinger's equation is
+# $|\Phi_0\rangle$, and the eigenenergies are given by
+
+# $$
+# \hat{H}_0|\Phi_0\rangle=W_0|\Phi_0\rangle,
+# $$
+
+# meaning that
+
+# $$
+# |\Psi_S(t_0)\rangle = \exp{(-\imath W_0t_0/\hbar)}|\Phi_0\rangle,
+# $$
+
+# with the corresponding interaction picture wave function given by
+
+# $$
+# |\Psi_I(t_0)\rangle = \exp{(\imath \hat{H}_0t_0/\hbar)}|\Psi_S(t_0)\rangle=|\Phi_0\rangle.
+# $$
+
+# The solution becomes time independent in the limit $t_0\rightarrow -\infty$.
+# The same conclusion can be reached by looking at
+
+# $$
+# \imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle =
+# \exp{(-\varepsilon |t|/\hbar)}\hat{H}_I|\Psi_I(t)\rangle
+# $$
+
+# and taking the limit $t\rightarrow \pm\infty$.
+# We can rewrite the equation for the wave function at a time $t=0$ as
+
+# $$
+# |\Psi_I(0) \rangle = \hat{U}_{\varepsilon}(0,-\infty)|\Phi_0\rangle.
+# $$
+
 # ## Wigner-Jordan transformation and second quantization
 
 # ## Baker-Campbell-Hausdorf
