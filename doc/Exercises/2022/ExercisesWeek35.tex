@@ -1,0 +1,153 @@
+\documentclass[prc]{revtex4}
+\usepackage[dvips]{graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+\usepackage{lscape}
+
+\usepackage{epic,eepic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[dvips]{epsfig}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{bezier}
+\usepackage{pstricks}
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+%\usepackage{braket}
+\usepackage[dvips]{graphicx}
+\usepackage{pst-plot}
+
+\newcommand{\One}{\hat{\mathbf{1}}}
+\newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle}
+\newcommand{\element}[3]
+    {\bra{#1}#2\ket{#3}}
+
+\newcommand{\normord}[1]{
+    \left\{#1\right\}
+}
+
+\usepackage{amsmath}
+\begin{document}
+
+\title{Exercises FYS4480, week 35, August 29-September 2, 2022}
+%\author{}
+\maketitle
+
+
+\subsection*{Exercise 1}
+Consider the fermion Slater determinant as ansatz for a quantum mechanical state function,
+\[
+\Phi_{\lambda}^{AS}(x_{1}x_{2}\dots x_{N};\alpha_{1}\alpha_{2}\dots\alpha_{N})
+=\frac{1}{\sqrt{N!}}\sum_{p}(-)^{p}P\prod_{i=1}^{N}\psi_{\alpha_{i}}(x_{i}).
+\]
+where $P$ is an operator which permutes the coordinates of two particles. We have assumed here that the 
+number of particles is the same as the number of available single-particle states, represented by the
+greek letters $\alpha_{1}\alpha_{2}\dots\alpha_{N}$.
+\begin{enumerate}
+\item[a)] Write  out $\Phi^{AS}$ for $N=3$.  
+\item[b)] Show that
+\[
+\int dx_{1}dx_{2}\dots dx_{N}\left\vert
+\Phi_{\lambda}^{AS}(x_{1}x_{2}\dots x_{N};\alpha_{1}\alpha_{2}\dots\alpha_{N})
+\right\vert^{2} = 1.
+\]
+\item[c)] Define a general onebody operator $\hat{F} = \sum_{i}^N\hat{f}(x_{i})$ and a general 
+twobody operator $\hat{G}=\sum_{i>j}^N\hat{g}(x_{i},x_{j})$
+with $g$ being invariant under the interchange of the coordinates of particles $i$ and $j$.
+Calculate the matrix elements for a two-particle Slater determinant
+\[
+\bra{\Phi_{\alpha_{1}\alpha_{2}}^{AS}}\hat{F}\ket{\Phi_{\alpha_{1}\alpha_{2}}^{AS}},
+\]
+and
+\[
+\bra{\Phi_{\alpha_{1}\alpha_{2}}^{AS}}\hat{G}\ket{\Phi_{\alpha_{1}\alpha_{2}}^{AS}}.
+\]
+Explain the short-hand notation for the Slater determinant.
+Which properties do you expect these operators to have in addition to an eventual permutation
+symmetry?
+\end{enumerate}
+
+\subsection*{Exercise 2}
+We will now consider a simple three-level problem, depicted in the figure below. This is our first and very simple model of a possible many-fermion problem and what we later will call full configuration interaction theory (dubbed FCI).
+We will assume the particles are fermions.
+The single-particle states are labelled by the quantum number $p$ and can accomodate up to two single particles, 
+viz., every single-particle state 
+is doubly degenerate (you could think of this as one state having spin up and the other spin down). 
+We let the spacing between the doubly degenerate single-particle states be constant, with value $d$.  The first state
+has energy $d$. There are only three available single-particle states, $p=1$, $p=2$ and $p=3$, as illustrated
+in the figure. 
+\begin{enumerate}
+\item[a)] How many two-particle Slater determinants can we construct in this space? 
+\item[b)] We limit ourselves to a system with only the two lowest single-particle orbits and two particles, $p=1$ and $p=2$.
+We assume that we can write the Hamiltonian as
+\[
+       \hat{H}=\hat{H}_0+\hat{H}_I,
+\]
+and that the onebody part of the Hamiltonian with single-particle operator $\hat{h}_0$ has the property
+\[
+\hat{h}_0\psi_{p\sigma} = p\times d \psi_{p\sigma},
+\]
+where we have added a spin quantum number $\sigma$. 
+We assume also that the only two-particle states that can exist are those where two particles are in the 
+same state $p$, as shown by the two possibilities to the left in the figure.
+The two-particle matrix elements of $\hat{H}_I$ have all a constant value, $-g$.
+\begin{figure}
+\vspace{1.0cm}
+ \setlength{\unitlength}{1cm}
+ \begin{picture}(15,5)
+ \thicklines
+\put(-0.6,1){\makebox(0,0){$p=1$}}
+\put(-0.6,2){\makebox(0,0){$p=2$}}
+\put(-0.6,3){\makebox(0,0){$p=3$}}
+% first 2-particle state
+\put(0.8,1){\circle*{0.3}}
+\put(1.7,1){\circle*{0.3}}
+% second 2-particle state
+\put(5.0,2){\circle*{0.3}}
+\put(5.9,2){\circle*{0.3}}
+% third 2-particle state
+\put(9.2,1){\circle*{0.3}}
+\put(10.1,3){\circle*{0.3}}
+% third 2-particle state
+\put(13.4,2){\circle*{0.3}}
+\put(14.3,3){\circle*{0.3}}
+\dashline[+1]{2.5}(0,1)(15,1)
+\dashline[+1]{2.5}(0,2)(15,2)
+\dashline[+1]{2.5}(0,3)(15,3)
+ \end{picture}
+\caption{Schematic plot of the possible single-particle levels with double degeneracy.
+The filled circles indicate occupied particle states.
+The spacing between each level $p$ is constant in this picture. We show some possible two-particle states.}
+\end{figure}
+Show then that the Hamiltonian matrix can be written as 
+\[
+\left(\begin{array}{cc}2d-g &-g \\
+-g &4d-g \end{array}\right),
+\]
+and find the eigenvalues and eigenvectors.  What is the mixing of the state with two particles in $p=2$ 
+to the wave function with two-particles in $p=1$? Discuss your results in terms of a linear combination
+of Slater determinants.  \\
+\item[c)] Add the possibility that the two particles can be in the state with $p=3$ as well and find the Hamiltonian
+matrix, the eigenvalues and the eigenvectors. We still insist that we only have two-particle states composed of two particles being in the same
+level $p$. You can diagonalize numerically your $3\times 3$ matrix.\newline\newline
+This simple model catches several birds with a stone. It demonstrates how we can build linear combinations
+of Slater determinants and interpret these as different admixtures to a given state. It represents also the way we are going to interpret these contributions.  The two-particle states above $p=1$ will be interpreted as 
+excitations from the ground state configuration, $p=1$ here.  The reliability of this ansatz for the ground state, 
+with two particles in $p=1$,
+depends on the strength of the interaction $g$ and the single-particle spacing $d$.
+Finally, this model is a simple schematic ansatz for studies of pairing correlations and thereby superfluidity/superconductivity  
+in fermionic systems. 
+\end{enumerate}
+
+\end{document}
+
+
