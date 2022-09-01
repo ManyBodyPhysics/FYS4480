@@ -114,7 +114,7 @@ In particular we recommend the texts by
   - Friday: Discussion of notations and important properties in many-body physics
   - Video of lecture at https://www.youtube.com/watch?v=M14xN2BAULg
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
-- Recommende reading: Szabo and Ostlund, chapters 1 and 2, see https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Literature/szaboostlund.pdf
+- Recommended reading: Szabo and Ostlund, chapters 1 and 2, see https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Literature/szaboostlund.pdf
 ###  Week 35, August 29-September 2, 2022
 
 - Topics to be covered
@@ -123,5 +123,5 @@ In particular we recommend the texts by
   - Friday: Introduction of second quantization
   - Video of lecture at 
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
-- Recommende reading: Szabo and Ostlund, chapters 1 and 2, see https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Literature/szaboostlund.pdf
+- Recommended reading: Szabo and Ostlund, chapters 1 and 2, see https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Literature/szaboostlund.pdf
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek35.pdf
