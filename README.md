@@ -119,7 +119,7 @@ In particular we recommend the texts by
 
 - Topics to be covered
   - Thursday: Fermion state functions and computation of expectation values in first quantization
-  - Video of lecture at 
+  - Video of lecture at https://youtu.be/-AkzRdrq3Qc
   - Friday: Introduction of second quantization
   - Video of lecture at 
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
