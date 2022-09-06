@@ -37,17 +37,23 @@ review of linear algebra, which lays the foundations for most of our
 mathematical formalism. It plays a central role in our studies and
 together with computational methods and various linear algebra
 libraries, it provides us with the tools to study complicated systems
-of many interacting particles. Our short reminder on linear algebra allows us to catch more than one bird with a stone, we take the liberty of introducing some basic notations and definitions used throughout these lectures.
+of many interacting particles. Our short reminder on linear algebra
+allows us to catch more than one bird with a stone, we take the
+liberty of introducing some basic notations and definitions used
+throughout these lectures.
 
 ===== Important Matrix and vector handling packages =====
 
-There are several central software packages for linear algebra and
-eigenvalue problems. Several of the more popular ones have been
-wrapped into ofter software packages like those from the widely used
-text _Numerical Recipes_. The original source codes in many of the
-available packages are often taken from the widely used software
-package LAPACK, which follows two other popular packages developed in
-the 1970s, namely EISPACK and LINPACK.  We describe them shortly here.
+Linear algebra plays a central role in many-body physics, as it does
+in many other mathematical descriptions of problems in physics and in
+Science in general.  There are several central software packages for
+linear algebra and eigenvalue problems. Several of the more popular
+ones have been wrapped into ofter software packages like those from
+the widely used text _Numerical Recipes_. The original source codes in
+many of the available packages are often taken from the widely used
+software package LAPACK, which follows two other popular packages
+developed in the 1970s, namely EISPACK and LINPACK.  We describe them
+shortly here.
 
   * LINPACK: package for linear equations and least square problems.
   * LAPACK:package for solving symmetric, unsymmetric and generalized eigenvalue problems. From LAPACK's website URL: "http://www.netlib.org" it is possible to download for free all source codes from this library. Both C/C++ and Fortran versions are available.
@@ -67,8 +73,12 @@ languages like C++ and Fortran, the sections in this chapter may be
 useful. For C++ programmer, _Armadillo_ is widely used library for
 linear algebra and eigenvalue problems. In addition it offers a
 convenient way to handle and organize arrays. We discuss this library
-as well.   Before we proceed we believe  it may be convenient to repeat some basic features of 
- matrices and vectors.
+as well.  Before we proceed we believe it may be convenient to repeat
+some basic features of vectors, matrices, tensors etc. For systems of
+fermions, our ansatz for encoding the needed antisymmetry of the wave
+function, is to assume that we can build a many-body state based on
+physically relevant single-particle states. This leads the so-called
+Salter determinant.
 
 
 ===== Basic Matrix Features =====
@@ -110,7 +120,7 @@ The inverse of a matrix is defined by
 | $A = \left (A^{\dagger} \right )^{-1}$ | unitary | $\sum_k a_{ik} a_{jk}^{ * } = \sum_k a_{ki}^{ * } a_{kj} = \delta_{ij}$ |
 |----------------------------------------------------------------------|
 
-=== Some famous Matrices ===
+Some famous Matrices we often encounter in many-body physics are
 
   * Diagonal if $a_{ij}=0$ for $i\ne j$
   * Upper triangular if $a_{ij}=0$ for $i > j$
@@ -122,7 +132,7 @@ The inverse of a matrix is defined by
   * Upper banded with bandwidth $p$: $a_{ij}=0$ for $i < j+p$
   * Banded, block upper triangular, block lower triangular....
 
-Some Equivalent Statements. For an $N\times N$ matrix  $\mathbf{A}$ the following properties are all equivalent
+Furthermore, for an $N\times N$ matrix  $\mathbf{A}$ the following properties are all equivalent
 
   * If the inverse of $\mathbf{A}$ exists, $\mathbf{A}$ is nonsingular.
   * The equation $\mathbf{Ax}=0$ implies $\mathbf{x}=0$.
@@ -132,6 +142,7 @@ Some Equivalent Statements. For an $N\times N$ matrix  $\mathbf{A}$ the followin
   * $0$ is not eigenvalue of $\mathbf{A}$.
 
 ===== Numpy and arrays =====
+
 "Numpy":"http://www.numpy.org/" provides an easy way to handle arrays in Python. The standard way to import this library is as
 !bc pycod
 import numpy as np
@@ -289,10 +300,16 @@ print(np.ravel(a.T, order='A'))
 
 ===== Definitions and vector and matrix operations =====
 
+We use this section to define some central quantities as well as
+presenting our notations for single-particle and many-states. We will
+normally tend to label vectors and states with the so-called Dirac
+_bra-ket_ notation.  In general we will use lower-case and boldfaced
+letters for vectors and upper-case boldfaced letters for matrices. These ways to represent vectors will however be replaced
+with the above-mentioned Dirac _bra-ket_ notation as for the vector $\bm{x}$ defined here
 
 !bt
 \[
-\vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix} 
+\bm{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix} 
 \]
 !et
 
