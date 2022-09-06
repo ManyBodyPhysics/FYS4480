@@ -1,0 +1,835 @@
+<!--
+HTML file automatically generated from DocOnce source
+(https://github.com/doconce/doconce/)
+doconce format html week40.do.txt --pygments_html_style=default --html_style=bloodish --html_links_in_new_window --html_output=week40 --no_mako
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/doconce/doconce/" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Week 40: FCI theory and mean-field theories">
+<title>Week 40: FCI theory and mean-field theories</title>
+<style type="text/css">
+/* bloodish style */
+body {
+  font-family: Helvetica, Verdana, Arial, Sans-serif;
+  color: #404040;
+  background: #ffffff;
+}
+h1 { font-size: 1.8em; color: #8A0808; }
+h2 { font-size: 1.6em; color: #8A0808; }
+h3 { font-size: 1.4em; color: #8A0808; }
+h4 { font-size: 1.2em; color: #8A0808; }
+a { color: #8A0808; text-decoration:none; }
+tt { font-family: "Courier New", Courier; }
+p { text-indent: 0px; }
+hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+p.caption { width: 80%; font-style: normal; text-align: left; }
+hr.figure { border: 0; width: 80%; border-bottom: 1px solid #aaa; }div.highlight {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    line-height: 1.21429em;
+}
+div.cell {
+    width: 100%;
+    padding: 5px 5px 5px 0;
+    margin: 0;
+    outline: none;
+}
+div.input {
+    page-break-inside: avoid;
+    box-orient: horizontal;
+    box-align: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+div.inner_cell {
+    box-orient: vertical;
+    box-align: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-flex: 1;
+    flex: 1;
+}
+div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 4px;
+    background: #f7f7f7;
+    line-height: 1.21429em;
+}
+div.input_area > div.highlight {
+    margin: .4em;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+div.output_wrapper {
+    position: relative;
+    box-orient: vertical;
+    box-align: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.output {
+    box-orient: vertical;
+    box-align: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+div.output_area {
+    padding: 0;
+    page-break-inside: avoid;
+    box-orient: horizontal;
+    box-align: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+div.output_subarea {
+    padding: .4em .4em 0 .4em;
+    box-flex: 1;
+    flex: 1;
+}
+div.output_text {
+    text-align: left;
+    color: #000;
+    line-height: 1.21429em;
+}
+div { text-align: justify; text-justify: inter-word; }
+.tab {
+  padding-left: 1.5em;
+}
+div.toc p,a {
+  line-height: 1.3;
+  margin-top: 1.1;
+  margin-bottom: 1.1;
+}
+</style>
+</head>
+
+<!-- tocinfo
+{'highest level': 2,
+ 'sections': [('Why Hartree-Fock? Derivation of Hartree-Fock equations in '
+               'coordinate space',
+               2,
+               None,
+               'why-hartree-fock-derivation-of-hartree-fock-equations-in-coordinate-space'),
+              ('Variational Calculus and Lagrangian Multipliers',
+               2,
+               None,
+               'variational-calculus-and-lagrangian-multipliers'),
+              ('Derivation of Hartree-Fock equations in coordinate space',
+               2,
+               None,
+               'derivation-of-hartree-fock-equations-in-coordinate-space'),
+              ('Analysis of Hartree-Fock equations in coordinate space',
+               2,
+               None,
+               'analysis-of-hartree-fock-equations-in-coordinate-space'),
+              ('Hartree-Fock by varying the coefficients of a wave function '
+               'expansion',
+               2,
+               None,
+               'hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion'),
+              ('Hartree-Fock algorithm', 2, None, 'hartree-fock-algorithm')]}
+end of tocinfo -->
+
+<body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "AMS"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- ------------------- main content ---------------------- -->
+<center>
+<h1>Week 40: FCI theory and mean-field theories</h1>
+</center>  <!-- document title -->
+
+<!-- author(s): Morten Hjorth-Jensen -->
+<center>
+<b>Morten Hjorth-Jensen</b> [1, 2]
+</center>
+<!-- institution(s) -->
+<center>
+[1] <b>Department of Physics and Center for Computing in Science Education, University of Oslo, Norway</b>
+</center>
+<center>
+[2] <b>Department of Physics and Astronomy and Facility for Rare Isotope Beams, Michigan State University, USA</b>
+</center>
+<br>
+<center>
+<h4>Week 40, October 3-7</h4>
+</center> <!-- date -->
+<br>
+<h2 id="why-hartree-fock-derivation-of-hartree-fock-equations-in-coordinate-space">Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space </h2>
+
+<p>Hartree-Fock (HF) theory is an algorithm for finding an approximative expression for the ground state of a given Hamiltonian. The basic ingredients are</p>
+<ul>
+  <li> Define a single-particle basis \( \{\psi_{\alpha}\} \) so that</li>
+</ul>
+$$ 
+\hat{h}^{\mathrm{HF}}\psi_{\alpha} = \varepsilon_{\alpha}\psi_{\alpha}
+$$
+
+<p>with the Hartree-Fock Hamiltonian defined as</p>
+$$
+\hat{h}^{\mathrm{HF}}=\hat{t}+\hat{u}_{\mathrm{ext}}+\hat{u}^{\mathrm{HF}}
+$$
+
+<ul>
+  <li> The term  \( \hat{u}^{\mathrm{HF}} \) is a single-particle potential to be determined by the HF algorithm.</li>
+  <li> The HF algorithm means to choose \( \hat{u}^{\mathrm{HF}} \) in order to have</li> 
+</ul>
+$$ \langle \hat{H} \rangle = E^{\mathrm{HF}}= \langle \Phi_0 | \hat{H}|\Phi_0 \rangle
+$$
+
+<p>that is to find a local minimum with a Slater determinant \( \Phi_0 \) being the ansatz for the ground state. </p>
+<ul>
+  <li> The variational principle ensures that \( E^{\mathrm{HF}} \ge E_0 \), with \( E_0 \) the exact ground state energy.</li>
+</ul>
+<p>We will show that the Hartree-Fock Hamiltonian \( \hat{h}^{\mathrm{HF}} \) equals our definition of the operator \( \hat{f} \) discussed in connection with the new definition of the normal-ordered Hamiltonian (see later lectures), that is we have, for a specific matrix element</p>
+$$
+\langle p |\hat{h}^{\mathrm{HF}}| q \rangle =\langle p |\hat{f}| q \rangle=\langle p|\hat{t}+\hat{u}_{\mathrm{ext}}|q \rangle +\sum_{i\le F} \langle pi | \hat{V} | qi\rangle_{AS},
+$$
+
+<p>meaning that</p>
+$$
+\langle p|\hat{u}^{\mathrm{HF}}|q\rangle = \sum_{i\le F} \langle pi | \hat{V} | qi\rangle_{AS}.
+$$
+
+<p>The so-called Hartree-Fock potential \( \hat{u}^{\mathrm{HF}} \) brings an explicit medium dependence due to the summation over all single-particle states below the Fermi level \( F \). It brings also in an explicit dependence on the two-body interaction (in nuclear physics we can also have complicated three- or higher-body forces). The two-body interaction, with its contribution from the other bystanding fermions, creates an effective mean field in which a given fermion moves, in addition to the external potential \( \hat{u}_{\mathrm{ext}} \) which confines the motion of the fermion. For systems like nuclei, there is no external confining potential. Nuclei are examples of self-bound systems, where the binding arises due to the intrinsic nature of the strong force. For nuclear systems thus, there would be no external one-body potential in the Hartree-Fock Hamiltonian. </p>
+<h2 id="variational-calculus-and-lagrangian-multipliers">Variational Calculus and Lagrangian Multipliers  </h2>
+
+<p>The calculus of variations involves 
+problems where the quantity to be minimized or maximized is an integral. 
+</p>
+
+<p>In the general case we have an integral of the type</p>
+$$ 
+E[\Phi]= \int_a^b f(\Phi(x),\frac{\partial \Phi}{\partial x},x)dx,
+$$
+
+<p>where \( E \) is the quantity which is sought minimized or maximized.
+The problem is that although \( f \) is a function of the variables \( \Phi \), \( \partial \Phi/\partial x \) and \( x \), the exact dependence of
+\( \Phi \) on \( x \) is not known.  This means again that even though the integral has fixed limits \( a \) and \( b \), the path of integration is
+not known. In our case the unknown quantities are the single-particle wave functions and we wish to choose an integration path which makes
+the functional \( E[\Phi] \) stationary. This means that we want to find minima, or maxima or saddle points. In physics we search normally for minima.
+Our task is therefore to find the minimum of \( E[\Phi] \) so that its variation \( \delta E \) is zero  subject to specific
+constraints. In our case the constraints appear as the integral which expresses the orthogonality of the  single-particle wave functions.
+The constraints can be treated via the technique of Lagrangian multipliers
+</p>
+
+<p>Let us specialize to the expectation value of the energy for one particle in three-dimensions.
+This expectation value reads
+</p>
+$$
+  E=\int dxdydz \psi^*(x,y,z) \hat{H} \psi(x,y,z),
+$$
+
+<p>with the constraint</p>
+$$
+ \int dxdydz \psi^*(x,y,z) \psi(x,y,z)=1,
+$$
+
+<p>and a Hamiltonian</p>
+$$
+\hat{H}=-\frac{1}{2}\nabla^2+V(x,y,z).
+$$
+
+<p>We will, for the sake of notational convenience,  skip the variables \( x,y,z \) below, and write for example \( V(x,y,z)=V \).</p>
+
+<p>The integral involving the kinetic energy can be written as, with the function \( \psi \) vanishing
+strongly for large values of \( x,y,z \) (given here by the limits \( a \) and \( b \)), 
+</p>
+$$
+  \int_a^b dxdydz \psi^* \left(-\frac{1}{2}\nabla^2\right) \psi dxdydz = \psi^*\nabla\psi|_a^b+\int_a^b dxdydz\frac{1}{2}\nabla\psi^*\nabla\psi.
+$$
+
+<p>We will drop the limits \( a \) and \( b \) in the remaining discussion. 
+Inserting this expression into the expectation value for the energy and taking the variational minimum  we obtain
+</p>
+$$
+\delta E = \delta \left\{\int dxdydz\left( \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi\right)\right\} = 0.
+$$
+
+<p>The constraint appears in integral form as </p>
+$$
+ \int dxdydz \psi^* \psi=\mathrm{constant},
+$$
+
+<p>and multiplying with a Lagrangian multiplier \( \lambda \) and taking the variational minimum we obtain the final variational equation</p>
+$$
+\delta \left\{\int dxdydz\left( \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi-\lambda\psi^*\psi\right)\right\} = 0.
+$$
+
+<p>We introduce the function  \( f \)</p>
+$$
+  f =  \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi-\lambda\psi^*\psi=
+\frac{1}{2}(\psi^*_x\psi_x+\psi^*_y\psi_y+\psi^*_z\psi_z)+V\psi^*\psi-\lambda\psi^*\psi,
+$$
+
+<p>where we have skipped the dependence on \( x,y,z \) and introduced the shorthand \( \psi_x \), \( \psi_y \) and \( \psi_z \)  for the various derivatives.</p>
+
+<p>For \( \psi^* \) the Euler-Lagrange  equations yield</p>
+$$
+\frac{\partial f}{\partial \psi^*}- \frac{\partial }{\partial x}\frac{\partial f}{\partial \psi^*_x}-\frac{\partial }{\partial y}\frac{\partial f}{\partial \psi^*_y}-\frac{\partial }{\partial z}\frac{\partial f}{\partial \psi^*_z}=0,
+$$
+
+<p>which results in </p>
+$$
+    -\frac{1}{2}(\psi_{xx}+\psi_{yy}+\psi_{zz})+V\psi=\lambda \psi.
+$$
+
+<p>We can then identify the  Lagrangian multiplier as the energy of the system. The last equation is 
+nothing but the standard 
+Schroedinger equation and the variational  approach discussed here provides 
+a powerful method for obtaining approximate solutions of the wave function.
+</p>
+<h2 id="derivation-of-hartree-fock-equations-in-coordinate-space">Derivation of Hartree-Fock equations in coordinate space </h2>
+
+<p>Let us denote the ground state energy by \( E_0 \). According to the
+variational principle we have
+</p>
+$$
+  E_0 \le E[\Phi] = \int \Phi^*\hat{H}\Phi d\mathbf{\tau}
+$$
+
+<p>where \( \Phi \) is a trial function which we assume to be normalized</p>
+$$
+  \int \Phi^*\Phi d\mathbf{\tau} = 1,
+$$
+
+<p>where we have used the shorthand \( d\mathbf{\tau}=dx_1dx_2\dots dx_A \).</p>
+
+<p>In the Hartree-Fock method the trial function is a Slater
+determinant which can be rewritten as 
+</p>
+$$
+  \Psi(x_1,x_2,\dots,x_A,\alpha,\beta,\dots,\nu) = \frac{1}{\sqrt{A!}}\sum_{P} (-)^PP\psi_{\alpha}(x_1)
+    \psi_{\beta}(x_2)\dots\psi_{\nu}(x_A)=\sqrt{A!}\hat{A}\Phi_H,
+$$
+
+<p>where we have introduced the anti-symmetrization operator \( \hat{A} \) defined by the 
+summation over all possible permutations <em>p</em> of two fermions.
+It is defined as
+</p>
+$$
+  \hat{A} = \frac{1}{A!}\sum_{p} (-)^p\hat{P},
+$$
+
+<p>with the the Hartree-function given by the simple product of all possible single-particle function</p>
+$$
+  \Phi_H(x_1,x_2,\dots,x_A,\alpha,\beta,\dots,\nu) =
+  \psi_{\alpha}(x_1)
+    \psi_{\beta}(x_2)\dots\psi_{\nu}(x_A).
+$$
+
+<p>Our functional is written as</p>
+$$
+  E[\Phi] = \sum_{\mu=1}^A \int \psi_{\mu}^*(x_i)\hat{h}_0(x_i)\psi_{\mu}(x_i) dx_i 
+  + \frac{1}{2}\sum_{\mu=1}^A\sum_{\nu=1}^A
+   \left[ \int \psi_{\mu}^*(x_i)\psi_{\nu}^*(x_j)\hat{v}(r_{ij})\psi_{\mu}(x_i)\psi_{\nu}(x_j)dx_idx_j- \int \psi_{\mu}^*(x_i)\psi_{\nu}^*(x_j)
+ \hat{v}(r_{ij})\psi_{\nu}(x_i)\psi_{\mu}(x_j)dx_idx_j\right]
+$$
+
+<p>The more compact version reads</p>
+$$
+  E[\Phi] 
+  = \sum_{\mu}^A \langle \mu | \hat{h}_0 | \mu\rangle+ \frac{1}{2}\sum_{\mu\nu}^A\left[\langle \mu\nu |\hat{v}|\mu\nu\rangle-\langle \nu\mu |\hat{v}|\mu\nu\rangle\right].
+$$
+
+<p>Since the interaction is invariant under the interchange of two particles it means for example that we have</p>
+$$
+\langle \mu\nu|\hat{v}|\mu\nu\rangle =  \langle \nu\mu|\hat{v}|\nu\mu\rangle,  
+$$
+
+<p>or in the more general case</p>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle =  \langle \nu\mu|\hat{v}|\tau\sigma\rangle.  
+$$
+
+<p>The direct and exchange matrix elements can be  brought together if we define the antisymmetrized matrix element</p>
+$$
+\langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS}= \langle \mu\nu|\hat{v}|\mu\nu\rangle-\langle \mu\nu|\hat{v}|\nu\mu\rangle,
+$$
+
+<p>or for a general matrix element  </p>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle_{AS}= \langle \mu\nu|\hat{v}|\sigma\tau\rangle-\langle \mu\nu|\hat{v}|\tau\sigma\rangle.
+$$
+
+<p>It has the symmetry property</p>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle_{AS}= -\langle \mu\nu|\hat{v}|\tau\sigma\rangle_{AS}=-\langle \nu\mu|\hat{v}|\sigma\tau\rangle_{AS}.
+$$
+
+<p>The antisymmetric matrix element is also hermitian, implying </p>
+$$
+\langle \mu\nu|\hat{v}|\sigma\tau\rangle_{AS}= \langle \sigma\tau|\hat{v}|\mu\nu\rangle_{AS}.
+$$
+
+<p>With these notations we rewrite the Hartree-Fock functional as</p>
+$$
+\begin{equation}
+  \int \Phi^*\hat{H_I}\Phi d\mathbf{\tau} 
+  = \frac{1}{2}\sum_{\mu=1}^A\sum_{\nu=1}^A \langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS}. \label{H2Expectation2}
+\end{equation}
+$$
+
+<p>Adding the contribution from the one-body operator \( \hat{H}_0 \) to
+\eqref{H2Expectation2} we obtain the energy functional 
+</p>
+$$
+\begin{equation}
+  E[\Phi] 
+  = \sum_{\mu=1}^A \langle \mu | h | \mu \rangle +
+  \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS}. \label{FunctionalEPhi}
+\end{equation}
+$$
+
+<p>In our coordinate space derivations below we will spell out the Hartree-Fock equations in terms of their integrals.</p>
+
+<p>If we generalize the Euler-Lagrange equations to more variables 
+and introduce \( N^2 \) Lagrange multipliers which we denote by 
+\( \epsilon_{\mu\nu} \), we can write the variational equation for the functional of \( E \)
+</p>
+$$
+  \delta E - \sum_{\mu\nu}^A \epsilon_{\mu\nu} \delta
+  \int \psi_{\mu}^* \psi_{\nu} = 0.
+$$
+
+<p>For the orthogonal wave functions \( \psi_{i} \) this reduces to</p>
+$$
+  \delta E - \sum_{\mu=1}^A \epsilon_{\mu} \delta
+  \int \psi_{\mu}^* \psi_{\mu} = 0.
+$$
+
+<p>Variation with respect to the single-particle wave functions \( \psi_{\mu} \) yields then</p>
+$$
+  \sum_{\mu=1}^A \int \delta\psi_{\mu}^*\hat{h_0}(x_i)\psi_{\mu}
+  dx_i  
+  + \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \left[ \int
+  \delta\psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\psi_{\mu}\psi_{\nu} dx_idx_j- \int
+  \delta\psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\psi_{\nu}\psi_{\mu}
+  dx_idx_j \right]+ 
+$$
+
+$$
+\sum_{\mu=1}^A \int \psi_{\mu}^*\hat{h_0}(x_i)\delta\psi_{\mu}
+  dx_i 
+  + \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \left[ \int
+  \psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\delta\psi_{\mu}\psi_{\nu} dx_idx_j- \int
+  \psi_{\mu}^*\psi_{\nu}^*\hat{v}(r_{ij})\psi_{\nu}\delta\psi_{\mu}
+  dx_idx_j \right]-  \sum_{{\mu}=1}^A E_{\mu} \int \delta\psi_{\mu}^*
+  \psi_{\mu}dx_i
+  -  \sum_{{\mu}=1}^A E_{\mu} \int \psi_{\mu}^*
+  \delta\psi_{\mu}dx_i = 0.
+$$
+
+<p>Although the variations \( \delta\psi \) and \( \delta\psi^* \) are not
+independent, they may in fact be treated as such, so that the 
+terms dependent on either \( \delta\psi \) and \( \delta\psi^* \) individually 
+may be set equal to zero. To see this, simply 
+replace the arbitrary variation \( \delta\psi \) by \( i\delta\psi \), so that
+\( \delta\psi^* \) is replaced by \( -i\delta\psi^* \), and combine the two
+equations. We thus arrive at the Hartree-Fock equations
+</p>
+$$
+\begin{equation}
+\left[ -\frac{1}{2}\nabla_i^2+ \sum_{\nu=1}^A\int \psi_{\nu}^*(x_j)\hat{v}(r_{ij})\psi_{\nu}(x_j)dx_j \right]\psi_{\mu}(x_i) - \left[ \sum_{{\nu}=1}^A \int\psi_{\nu}^*(x_j)\hat{v}(r_{ij})\psi_{\mu}(x_j) dx_j\right] \psi_{\nu}(x_i) = \epsilon_{\mu} \psi_{\mu}(x_i).  \label{eq:hartreefockcoordinatespace}
+\end{equation}
+$$
+
+<p>Notice that the integration \( \int dx_j \) implies an
+integration over the spatial coordinates \( \mathbf{r_j} \) and a summation
+over the spin-coordinate of fermion \( j \). We note that the factor of \( 1/2 \) in front of the sum involving the two-body interaction, has been removed. This is due to the fact that we need to vary both \( \delta\psi_{\mu}^* \) and
+\( \delta\psi_{\nu}^* \). Using the symmetry properties of the two-body interaction and interchanging \( \mu \) and \( \nu \)
+as summation indices, we obtain two identical terms. 
+</p>
+
+<p>The two first terms in the last equation are the one-body kinetic energy and the
+electron-nucleus potential. The third or <em>direct</em> term is the averaged electronic repulsion of the other
+electrons. As written, the
+term includes the <em>self-interaction</em> of 
+electrons when \( \mu=\nu \). The self-interaction is cancelled in the fourth
+term, or the <em>exchange</em> term. The exchange term results from our
+inclusion of the Pauli principle and the assumed determinantal form of
+the wave-function. Equation \eqref{eq:hartreefockcoordinatespace}, in addition to the kinetic energy and the attraction from the atomic nucleus that confines the motion of a single electron,   represents now the motion of a single-particle modified by the two-body interaction. The additional contribution to the Schroedinger equation due to the two-body interaction, represents a mean field set up by all the other bystanding electrons, the latter given by the sum over all single-particle states occupied by \( N \) electrons. 
+</p>
+
+<p>The Hartree-Fock equation is an example of an integro-differential equation. These equations involve repeated calculations of integrals, in addition to the solution of a set of coupled differential equations. 
+The Hartree-Fock equations can also be rewritten in terms of an eigenvalue problem. The solution of an eigenvalue problem represents often a more practical algorithm and the  solution of  coupled  integro-differential equations.
+This alternative derivation of the Hartree-Fock equations is given below.
+</p>
+<h2 id="analysis-of-hartree-fock-equations-in-coordinate-space">Analysis of Hartree-Fock equations in coordinate space </h2>
+
+<p>  A theoretically convenient form of the
+Hartree-Fock equation is to regard the direct and exchange operator
+defined through 
+</p>
+$$
+\begin{equation*}
+  V_{\mu}^{d}(x_i) = \int \psi_{\mu}^*(x_j) 
+ \hat{v}(r_{ij})\psi_{\mu}(x_j) dx_j
+\end{equation*}
+$$
+
+<p>and</p>
+$$
+\begin{equation*}
+  V_{\mu}^{ex}(x_i) g(x_i) 
+  = \left(\int \psi_{\mu}^*(x_j) 
+ \hat{v}(r_{ij})g(x_j) dx_j
+  \right)\psi_{\mu}(x_i),
+\end{equation*}
+$$
+
+<p>respectively. </p>
+
+<p>The function \( g(x_i) \) is an arbitrary function,
+and by the substitution \( g(x_i) = \psi_{\nu}(x_i) \)
+we get
+</p>
+$$
+\begin{equation*}
+  V_{\mu}^{ex}(x_i) \psi_{\nu}(x_i) 
+  = \left(\int \psi_{\mu}^*(x_j) 
+ \hat{v}(r_{ij})\psi_{\nu}(x_j)
+  dx_j\right)\psi_{\mu}(x_i).
+\end{equation*}
+$$
+
+<p>We may then rewrite the Hartree-Fock equations as</p>
+$$
+  \hat{h}^{HF}(x_i) \psi_{\nu}(x_i) = \epsilon_{\nu}\psi_{\nu}(x_i),
+$$
+
+<p>with</p>
+$$
+  \hat{h}^{HF}(x_i)= \hat{h}_0(x_i) + \sum_{\mu=1}^AV_{\mu}^{d}(x_i) -
+  \sum_{\mu=1}^AV_{\mu}^{ex}(x_i),
+$$
+
+<p>and where \( \hat{h}_0(i) \) is the one-body part. The latter is normally chosen as a part which yields solutions in closed form. The harmonic oscilltor is a classical problem thereof.
+We normally rewrite the last equation as
+</p>
+$$
+  \hat{h}^{HF}(x_i)= \hat{h}_0(x_i) + \hat{u}^{HF}(x_i). 
+$$
+<h2 id="hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion">Hartree-Fock by varying the coefficients of a wave function expansion </h2>
+
+<p>Another possibility is to expand the single-particle functions in a known basis  and vary the coefficients, 
+that is, the new single-particle wave function is written as a linear expansion
+in terms of a fixed chosen orthogonal basis (for example the well-known harmonic oscillator functions or the hydrogen-like functions etc).
+We define our new Hartree-Fock single-particle basis by performing a unitary transformation 
+on our previous basis (labelled with greek indices) as
+</p>
+$$
+\begin{equation}
+\psi_p^{HF}  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda}. \label{eq:newbasis}
+\end{equation}
+$$
+
+<p>In this case we vary the coefficients \( C_{p\lambda} \). If the basis has infinitely many solutions, we need
+to truncate the above sum.  We assume that the basis \( \phi_{\lambda} \) is orthogonal.
+</p>
+
+<p>It is normal to choose a single-particle basis defined as the eigenfunctions
+of parts of the full Hamiltonian. The typical situation consists of the solutions of the one-body part of the Hamiltonian, that is we have
+</p>
+$$
+\hat{h}_0\phi_{\lambda}=\epsilon_{\lambda}\phi_{\lambda}.
+$$
+
+<p>The single-particle wave functions \( \phi_{\lambda}(\mathbf{r}) \), defined by the quantum numbers \( \lambda \) and \( \mathbf{r} \)
+are defined as the overlap 
+</p>
+$$
+   \phi_{\lambda}(\mathbf{r})  = \langle \mathbf{r} | \lambda \rangle .
+$$
+
+<p>In deriving the Hartree-Fock equations, we  will expand the single-particle functions in a known basis  and vary the coefficients, 
+that is, the new single-particle wave function is written as a linear expansion
+in terms of a fixed chosen orthogonal basis (for example the well-known harmonic oscillator functions or the hydrogen-like functions etc).
+</p>
+
+<p>We stated that a unitary transformation keeps the orthogonality. To see this consider first a basis of vectors \( \mathbf{v}_i \),</p>
+$$
+\mathbf{v}_i = \begin{bmatrix} v_{i1} \\ \dots \\ \dots \\v_{in} \end{bmatrix}
+$$
+
+<p>We assume that the basis is orthogonal, that is </p>
+$$
+\mathbf{v}_j^T\mathbf{v}_i = \delta_{ij}.
+$$
+
+<p>An orthogonal or unitary transformation</p>
+$$
+\mathbf{w}_i=\mathbf{U}\mathbf{v}_i,
+$$
+
+<p>preserves the dot product and orthogonality since</p>
+$$
+\mathbf{w}_j^T\mathbf{w}_i=(\mathbf{U}\mathbf{v}_j)^T\mathbf{U}\mathbf{v}_i=\mathbf{v}_j^T\mathbf{U}^T\mathbf{U}\mathbf{v}_i= \mathbf{v}_j^T\mathbf{v}_i = \delta_{ij}.
+$$
+
+<p>This means that if the coefficients \( C_{p\lambda} \) belong to a unitary or orthogonal trasformation (using the Dirac bra-ket notation)</p>
+$$
+\vert p\rangle  = \sum_{\lambda} C_{p\lambda}\vert\lambda\rangle,
+$$
+
+<p>orthogonality is preserved, that is \( \langle \alpha \vert \beta\rangle = \delta_{\alpha\beta} \)
+and \( \langle p \vert q\rangle = \delta_{pq} \). 
+</p>
+
+<p>This propertry is extremely useful when we build up a basis of many-body Stater determinant based states. </p>
+
+<b>Note also that although a basis \( \vert \alpha\rangle \) contains an infinity of states, for practical calculations we have always to make some truncations.</b>
+
+<p>Before we develop the Hartree-Fock equations, there is another very useful property of determinants that we will use both in connection with Hartree-Fock calculations and later shell-model calculations.  </p>
+
+<p>Consider the following determinant</p>
+$$
+\left| \begin{array}{cc} \alpha_1b_{11}+\alpha_2sb_{12}& a_{12}\\
+                         \alpha_1b_{21}+\alpha_2b_{22}&a_{22}\end{array} \right|=\alpha_1\left|\begin{array}{cc} b_{11}& a_{12}\\
+                         b_{21}&a_{22}\end{array} \right|+\alpha_2\left| \begin{array}{cc} b_{12}& a_{12}\\b_{22}&a_{22}\end{array} \right|
+$$
+
+<p>We can generalize this to  an \( n\times n \) matrix and have </p>
+$$
+\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots & \sum_{k=1}^n c_k b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots & \sum_{k=1}^n c_k b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+a_{n1}& a_{n2} & \dots & \sum_{k=1}^n c_k b_{nk} &\dots & a_{nn}\end{array} \right|=
+\sum_{k=1}^n c_k\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots &  b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots &  b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+a_{n1}& a_{n2} & \dots &  b_{nk} &\dots & a_{nn}\end{array} \right| .
+$$
+
+<p>This is a property we will use in our Hartree-Fock discussions. </p>
+
+<p>We can generalize the previous results, now 
+with all elements \( a_{ij} \)  being given as functions of 
+linear combinations  of various coefficients \( c \) and elements \( b_{ij} \),
+</p>
+$$
+\left| \begin{array}{cccccc} \sum_{k=1}^n b_{1k}c_{k1}& \sum_{k=1}^n b_{1k}c_{k2} & \dots & \sum_{k=1}^n b_{1k}c_{kj}  &\dots & \sum_{k=1}^n b_{1k}c_{kn}\\
+\sum_{k=1}^n b_{2k}c_{k1}& \sum_{k=1}^n b_{2k}c_{k2} & \dots & \sum_{k=1}^n b_{2k}c_{kj} &\dots & \sum_{k=1}^n b_{2k}c_{kn}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots &\dots \\
+\sum_{k=1}^n b_{nk}c_{k1}& \sum_{k=1}^n b_{nk}c_{k2} & \dots & \sum_{k=1}^n b_{nk}c_{kj} &\dots & \sum_{k=1}^n b_{nk}c_{kn}\end{array} \right|=det(\mathbf{C})det(\mathbf{B}),
+$$
+
+<p>where \( det(\mathbf{C}) \) and \( det(\mathbf{B}) \) are the determinants of \( n\times n \) matrices
+with elements \( c_{ij} \) and \( b_{ij} \) respectively.  
+This is a property we will use in our Hartree-Fock discussions. Convince yourself about the correctness of the above expression by setting \( n=2 \). 
+</p>
+
+<p>With our definition of the new basis in terms of an orthogonal basis we have</p>
+$$
+\psi_p(x)  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x).
+$$
+
+<p>If the coefficients \( C_{p\lambda} \) belong to an orthogonal or unitary matrix, the new basis
+is also orthogonal. 
+Our Slater determinant in the new basis \( \psi_p(x) \) is written as
+</p>
+$$
+\frac{1}{\sqrt{A!}}
+\left| \begin{array}{ccccc} \psi_{p}(x_1)& \psi_{p}(x_2)& \dots & \dots & \psi_{p}(x_A)\\
+                            \psi_{q}(x_1)&\psi_{q}(x_2)& \dots & \dots & \psi_{q}(x_A)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \psi_{t}(x_1)&\psi_{t}(x_2)& \dots & \dots & \psi_{t}(x_A)\end{array} \right|=\frac{1}{\sqrt{A!}}
+\left| \begin{array}{ccccc} \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_1)& \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_A)\\
+                            \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_A)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_A)\end{array} \right|,
+$$
+
+<p>which is nothing but \( det(\mathbf{C})det(\Phi) \), with \( det(\Phi) \) being the determinant given by the basis functions \( \phi_{\lambda}(x) \). </p>
+
+<p>In our discussions hereafter we will use our definitions of single-particle states above and below the Fermi (\( F \)) level given by the labels
+\( ijkl\dots \le F \) for so-called single-hole states and \( abcd\dots > F \) for so-called particle states.
+For general single-particle states we employ the labels \( pqrs\dots \). 
+</p>
+
+<p>In Eq.&nbsp;\eqref{FunctionalEPhi}, restated here</p>
+$$
+  E[\Phi] 
+  = \sum_{\mu=1}^A \langle \mu | h | \mu \rangle +
+  \frac{1}{2}\sum_{{\mu}=1}^A\sum_{{\nu}=1}^A \langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS},
+$$
+
+<p>we found the expression for the energy functional in terms of the basis function \( \phi_{\lambda}(\mathbf{r}) \). We then  varied the above energy functional with respect to the basis functions \( |\mu \rangle \). 
+Now we are interested in defining a new basis defined in terms of
+a chosen basis as defined in Eq.&nbsp;\eqref{eq:newbasis}. We can then rewrite the energy functional as
+</p>
+$$
+\begin{equation}
+  E[\Phi^{HF}] 
+  = \sum_{i=1}^A \langle i | h | i \rangle +
+  \frac{1}{2}\sum_{ij=1}^A\langle ij|\hat{v}|ij\rangle_{AS}, \label{FunctionalEPhi2}
+\end{equation}
+$$
+
+<p>where \( \Phi^{HF} \) is the new Slater determinant defined by the new basis of Eq.&nbsp;\eqref{eq:newbasis}. </p>
+
+<p>Using Eq.&nbsp;\eqref{eq:newbasis} we can rewrite Eq.&nbsp;\eqref{FunctionalEPhi2} as </p>
+$$
+\begin{equation}
+  E[\Psi] 
+  = \sum_{i=1}^A \sum_{\alpha\beta} C^*_{i\alpha}C_{i\beta}\langle \alpha | h | \beta \rangle +
+  \frac{1}{2}\sum_{ij=1}^A\sum_{{\alpha\beta\gamma\delta}} C^*_{i\alpha}C^*_{j\beta}C_{i\gamma}C_{j\delta}\langle \alpha\beta|\hat{v}|\gamma\delta\rangle_{AS}. \label{FunctionalEPhi3}
+\end{equation}
+$$
+
+<p>We wish now to minimize the above functional. We introduce again a set of Lagrange multipliers, noting that
+since \( \langle i | j \rangle = \delta_{i,j} \) and \( \langle \alpha | \beta \rangle = \delta_{\alpha,\beta} \), 
+the coefficients \( C_{i\gamma} \) obey the relation
+</p>
+$$
+ \langle i | j \rangle=\delta_{i,j}=\sum_{\alpha\beta} C^*_{i\alpha}C_{i\beta}\langle \alpha | \beta \rangle=
+\sum_{\alpha} C^*_{i\alpha}C_{i\alpha},
+$$
+
+<p>which allows us to define a functional to be minimized that reads</p>
+$$
+\begin{equation}
+  F[\Phi^{HF}]=E[\Phi^{HF}] - \sum_{i=1}^A\epsilon_i\sum_{\alpha} C^*_{i\alpha}C_{i\alpha}.
+\label{_auto1}
+\end{equation}
+$$
+
+<p>Minimizing with respect to \( C^*_{i\alpha} \), remembering that the equations for \( C^*_{i\alpha} \) and \( C_{i\alpha} \)
+can be written as two  independent equations, we obtain
+</p>
+$$
+\frac{d}{dC^*_{i\alpha}}\left[  E[\Phi^{HF}] - \sum_{j}\epsilon_j\sum_{\alpha} C^*_{j\alpha}C_{j\alpha}\right]=0,
+$$
+
+<p>which yields for every single-particle state \( i \) and index \( \alpha \) (recalling that the coefficients \( C_{i\alpha} \) are matrix elements of a unitary (or orthogonal for a real symmetric matrix) matrix)
+the following Hartree-Fock equations
+</p>
+$$
+\sum_{\beta} C_{i\beta}\langle \alpha | h | \beta \rangle+
+\sum_{j=1}^A\sum_{\beta\gamma\delta} C^*_{j\beta}C_{j\delta}C_{i\gamma}\langle \alpha\beta|\hat{v}|\gamma\delta\rangle_{AS}=\epsilon_i^{HF}C_{i\alpha}.
+$$
+
+<p>We can rewrite this equation as (changing dummy variables)</p>
+$$
+\sum_{\beta} \left\{\langle \alpha | h | \beta \rangle+
+\sum_{j}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}\right\}C_{i\beta}=\epsilon_i^{HF}C_{i\alpha}.
+$$
+
+<p>Note that the sums over greek indices run over the number of basis set functions (in principle an infinite number).</p>
+
+<p>Defining </p>
+$$
+h_{\alpha\beta}^{HF}=\langle \alpha | h | \beta \rangle+
+\sum_{j=1}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS},
+$$
+
+<p>we can rewrite the new equations as </p>
+$$
+\begin{equation}
+\sum_{\beta}h_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{HF}C_{i\alpha}. \label{eq:newhf}
+\end{equation}
+$$
+
+<p>The latter is nothing but a standard eigenvalue problem. Compared with Eq.&nbsp;\eqref{eq:hartreefockcoordinatespace},
+we see that we do not need to compute any integrals in an iterative procedure for solving the equations.
+It suffices to tabulate the matrix elements \( \langle \alpha | h | \beta \rangle \) and \( \langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS} \) once and for all. Successive iterations require thus only a look-up in tables over one-body and two-body matrix elements. These details will be discussed below when we solve the Hartree-Fock equations numerical. 
+</p>
+<h2 id="hartree-fock-algorithm">Hartree-Fock algorithm </h2>
+
+<p>Our Hartree-Fock matrix  is thus</p>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\langle \alpha | \hat{h}_0 | \beta \rangle+
+\sum_{j=1}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+
+<p>The Hartree-Fock equations are solved in an iterative waym starting with a guess for the coefficients \( C_{j\gamma}=\delta_{j,\gamma} \) and solving the equations by diagonalization till the new single-particle energies
+\( \epsilon_i^{\mathrm{HF}} \) do not change anymore by a prefixed quantity. 
+</p>
+
+<p>Normally we assume that the single-particle basis \( |\beta\rangle \) forms an eigenbasis for the operator
+\( \hat{h}_0 \), meaning that the Hartree-Fock matrix becomes  
+</p>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j=1}^A\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+
+<p>The Hartree-Fock eigenvalue problem</p>
+$$
+\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
+$$
+
+<p>can be written out in a more compact form as</p>
+$$
+\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
+$$
+
+<p>The Hartree-Fock equations are, in their simplest form, solved in an iterative way, starting with a guess for the
+coefficients \( C_{i\alpha} \). We label the coefficients as \( C_{i\alpha}^{(n)} \), where the subscript \( n \) stands for iteration \( n \).
+To set up the algorithm we can proceed as follows:
+</p>
+
+<ul>
+ <li> We start with a guess \( C_{i\alpha}^{(0)}=\delta_{i,\alpha} \). Alternatively, we could have used random starting values as long as the vectors are normalized. Another possibility is to give states below the Fermi level a larger weight.</li>
+ <li> The Hartree-Fock matrix simplifies then to (assuming that the coefficients \( C_{i\alpha}  \)  are real)</li>
+</ul>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j = 1}^A\sum_{\gamma\delta} C_{j\gamma}^{(0)}C_{j\delta}^{(0)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+
+<p>Solving the Hartree-Fock eigenvalue problem yields then new eigenvectors \( C_{i\alpha}^{(1)} \) and eigenvalues
+\( \epsilon_i^{HF(1)} \). 
+</p>
+<ul>
+ <li> With the new eigenvalues we can set up a new Hartree-Fock potential</li> 
+</ul>
+$$
+\sum_{j = 1}^A\sum_{\gamma\delta} C_{j\gamma}^{(1)}C_{j\delta}^{(1)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+
+<p>The diagonalization with the new Hartree-Fock potential yields new eigenvectors and eigenvalues.
+This process is continued till for example
+</p>
+$$
+\frac{\sum_{p} |\epsilon_i^{(n)}-\epsilon_i^{(n-1)}|}{m} \le \lambda,  
+$$
+
+<p>where \( \lambda \) is a user prefixed quantity (\( \lambda \sim 10^{-8} \) or smaller) and \( p \) runs over all calculated single-particle
+energies and \( m \) is the number of single-particle states.
+</p>
+
+<!-- ------------------- end of main content --------------- -->
+<center style="font-size:80%">
+<!-- copyright --> &copy; 1999-2022, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
+</center>
+</body>
+</html>
+
