@@ -12,7 +12,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 
 ## Teaching schedule with links to material
 
-###  Week 34, August 22-26, 2022
+###  Week 34, August 22-26
 
 - Topics to be covered
   - Thursday: Introduction to many-body physics, notations and definitions
@@ -21,7 +21,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Video of lecture at https://www.youtube.com/watch?v=M14xN2BAULg
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 
-###  Week 35, August 29-September 2, 2022
+###  Week 35, August 29-September 2
 
 - Topics to be covered
   - Thursday: Fermion state functions and computation of expectation values in first quantization
@@ -30,3 +30,14 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Video of lecture at https://youtu.be/Nbzp3wr0vyA
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek35.pdf
+
+### Week 36, September 5-9
+
+- Topics to be covered
+  - Thursday: Second quantization, operators in second quantization and diagrammatic representation
+  - Video of lecture at
+  - Friday: Second quantization and Wick's theorem
+  - Video of lecture at
+- Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4. Sections 3.1-3.3 of Shavitt and Bartlett covers most of the material discussed this week.
+- Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek36.pdf
+
