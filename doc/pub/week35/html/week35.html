@@ -8,8 +8,8 @@ doconce format html week35.do.txt --pygments_html_style=default --html_style=blo
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="DocOnce: https://github.com/doconce/doconce/" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Week 35: State function ansatzes for fermions and bosons and introduction to second quantization">
-<title>Week 35: State function ansatzes for fermions and bosons and introduction to second quantization</title>
+<meta name="description" content="Week 35: State function ansatzes for fermions and bosons and second quantization">
+<title>Week 35: State function ansatzes for fermions and bosons and second quantization</title>
 <style type="text/css">
 /* bloodish style */
 body {
@@ -113,13 +113,41 @@ div.toc p,a {
 </head>
 
 <!-- tocinfo
-{'highest level': 4, 'sections': []}
+{'highest level': 2,
+ 'sections': [('Definitions and Second quantization',
+               2,
+               None,
+               'definitions-and-second-quantization'),
+              ('Exercise 1: Expectation values and wave function Ansatzes',
+               2,
+               None,
+               'exercise-1-expectation-values-and-wave-function-ansatzes'),
+              ('Exercise 2: first many-body example',
+               2,
+               None,
+               'exercise-2-first-many-body-example')]}
 end of tocinfo -->
 
 <body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "AMS"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
 <!-- ------------------- main content ---------------------- -->
 <center>
-<h1>Week 35: State function ansatzes for fermions and bosons and introduction to second quantization</h1>
+<h1>Week 35: State function ansatzes for fermions and bosons and second quantization</h1>
 </center>  <!-- document title -->
 
 <!-- author(s): Morten Hjorth-Jensen -->
@@ -138,7 +166,466 @@ end of tocinfo -->
 <h4>Week 35</h4>
 </center> <!-- date -->
 <br>
+<h2 id="definitions-and-second-quantization">Definitions and Second quantization </h2>
 
+<p>We introduce the time-independent  operators
+\( a_\alpha^{\dagger} \) and \( a_\alpha \)   which create and annihilate, respectively, a particle 
+in the single-particle state 
+\( \varphi_\alpha \). 
+We define the fermion creation operator
+\( a_\alpha^{\dagger} \) 
+</p>
+$$
+\begin{equation}
+	a_\alpha^{\dagger}|0\rangle \equiv  |\alpha\rangle  \label{eq:2-1a},
+\end{equation}
+$$
+
+<p>and</p>
+$$
+\begin{equation}
+	a_\alpha^{\dagger}|\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}} \equiv  |\alpha\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}} \label{eq:2-1b}
+\end{equation}
+$$
+
+<p>In Eq.&nbsp;\eqref{eq:2-1a} 
+the operator  \( a_\alpha^{\dagger} \)  acts on the vacuum state 
+\( |0\rangle \), which does not contain any particles. Alternatively, we could define  a closed-shell nucleus or atom as our new vacuum, but then
+we need to introduce the particle-hole  formalism, see the discussion to come. 
+</p>
+
+<p>In Eq.&nbsp;\eqref{eq:2-1b} \( a_\alpha^{\dagger} \) acts on an antisymmetric \( n \)-particle state and 
+creates an antisymmetric \( (n+1) \)-particle state, where the one-body state 
+\( \varphi_\alpha \) is occupied, under the condition that
+\( \alpha \ne \alpha_1, \alpha_2, \dots, \alpha_n \). 
+It follows that we can express an antisymmetric state as the product of the creation
+operators acting on the vacuum state.  
+</p>
+$$
+\begin{equation}
+	|\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}} = a_{\alpha_1}^{\dagger} a_{\alpha_2}^{\dagger} \dots a_{\alpha_n}^{\dagger} |0\rangle \label{eq:2-2}
+\end{equation}
+$$
+
+<p>It is easy to derive the commutation and anticommutation rules  for the fermionic creation operators 
+\( a_\alpha^{\dagger} \). Using the antisymmetry of the states 
+\eqref{eq:2-2}
+</p>
+$$
+\begin{equation}
+	|\alpha_1\dots \alpha_i\dots \alpha_k\dots \alpha_n\rangle_{\mathrm{AS}} = 
+		- |\alpha_1\dots \alpha_k\dots \alpha_i\dots \alpha_n\rangle_{\mathrm{AS}} \label{eq:2-3a}
+\end{equation}
+$$
+
+<p>we obtain</p>
+$$
+\begin{equation}
+	 a_{\alpha_i}^{\dagger}  a_{\alpha_k}^{\dagger} = - a_{\alpha_k}^{\dagger} a_{\alpha_i}^{\dagger} \label{eq:2-3b}
+\end{equation}
+$$
+
+<p>Using the Pauli principle</p>
+$$
+\begin{equation}
+	|\alpha_1\dots \alpha_i\dots \alpha_i\dots \alpha_n\rangle_{\mathrm{AS}} = 0 \label{eq:2-4a}
+\end{equation}
+$$
+
+<p>it follows that</p>
+$$
+\begin{equation}
+	a_{\alpha_i}^{\dagger}  a_{\alpha_i}^{\dagger} = 0. \label{eq:2-4b}
+\end{equation}
+$$
+
+<p>If we combine Eqs.&nbsp;\eqref{eq:2-3b} and \eqref{eq:2-4b}, we obtain the well-known anti-commutation rule</p>
+$$
+\begin{equation}
+	a_{\alpha}^{\dagger}  a_{\beta}^{\dagger} + a_{\beta}^{\dagger}  a_{\alpha}^{\dagger} \equiv 
+		\{a_{\alpha}^{\dagger},a_{\beta}^{\dagger}\} = 0 \label{eq:2-5}
+\end{equation}
+$$
+
+<p>The hermitian conjugate  of \( a_\alpha^{\dagger} \) is</p>
+$$
+\begin{equation}
+	a_{\alpha} = ( a_{\alpha}^{\dagger} )^{\dagger} \label{eq:2-6}
+\end{equation}
+$$
+
+<p>If we take the hermitian conjugate of Eq.&nbsp;\eqref{eq:2-5}, we arrive at </p>
+$$
+\begin{equation}
+	\{a_{\alpha},a_{\beta}\} = 0 \label{eq:2-7}
+\end{equation}
+$$
+
+<p>What is the physical interpretation of the operator \( a_\alpha \) and what is the effect of 
+\( a_\alpha \) on a given state \( |\alpha_1\alpha_2\dots\alpha_n\rangle_{\mathrm{AS}} \)? 
+Consider the following matrix element
+</p>
+$$
+\begin{equation}
+	\langle\alpha_1\alpha_2 \dots \alpha_n|a_\alpha|\alpha_1'\alpha_2' \dots \alpha_m'\rangle \label{eq:2-8}
+\end{equation}
+$$
+
+<p>where both sides are antisymmetric. We  distinguish between two cases. The first (1) is when
+\( \alpha \in \{\alpha_i\} \). Using the Pauli principle of Eq.&nbsp;\eqref{eq:2-4a} it follows
+</p>
+$$
+\begin{equation}
+		\langle\alpha_1\alpha_2 \dots \alpha_n|a_\alpha = 0 \label{eq:2-9a}
+\end{equation}
+$$
+
+<p>The second (2) case is when \( \alpha \notin \{\alpha_i\} \). It follows that an hermitian conjugation</p>
+$$
+\begin{equation}
+		\langle \alpha_1\alpha_2 \dots \alpha_n|a_\alpha = \langle\alpha\alpha_1\alpha_2 \dots \alpha_n|  \label{eq:2-9b}
+\end{equation}
+$$
+
+<p>Eq.&nbsp;\eqref{eq:2-9b} holds for case (1) since the lefthand side is zero due to the Pauli principle. We write
+Eq.&nbsp;\eqref{eq:2-8} as
+</p>
+$$
+\begin{equation}
+	\langle\alpha_1\alpha_2 \dots \alpha_n|a_\alpha|\alpha_1'\alpha_2' \dots \alpha_m'\rangle = 
+	\langle \alpha_1\alpha_2 \dots \alpha_n|\alpha\alpha_1'\alpha_2' \dots \alpha_m'\rangle \label{eq:2-10}
+\end{equation}
+$$
+
+<p>Here we must have \( m = n+1 \) if Eq.&nbsp;\eqref{eq:2-10} has to be trivially different from zero.</p>
+
+<p>For the last case, the minus and plus signs apply when the sequence 
+\( \alpha ,\alpha_1, \alpha_2, \dots, \alpha_n \) and 
+\( \alpha_1', \alpha_2', \dots, \alpha_{n+1}' \) are related to each other via even and odd permutations.
+If we assume that  \( \alpha \notin \{\alpha_i\} \) we obtain 
+</p>
+$$
+\begin{equation}
+	\langle\alpha_1\alpha_2 \dots \alpha_n|a_\alpha|\alpha_1'\alpha_2' \dots \alpha_{n+1}'\rangle = 0 \label{eq:2-12}
+\end{equation}
+$$
+
+<p>when \( \alpha \in \{\alpha_i'\} \). If \( \alpha \notin \{\alpha_i'\} \), we obtain</p>
+$$
+\begin{equation}
+	a_\alpha\underbrace{|\alpha_1'\alpha_2' \dots \alpha_{n+1}'}\rangle_{\neq \alpha} = 0 \label{eq:2-13a}
+\end{equation}
+$$
+
+<p>and in particular</p>
+$$
+\begin{equation}
+	a_\alpha |0\rangle = 0 \label{eq:2-13b}
+\end{equation}
+$$
+
+<p>If \( \{\alpha\alpha_i\} = \{\alpha_i'\} \), performing the right permutations, the sequence
+\( \alpha ,\alpha_1, \alpha_2, \dots, \alpha_n \) is identical with the sequence
+\( \alpha_1', \alpha_2', \dots, \alpha_{n+1}' \). This results in
+</p>
+$$
+\begin{equation}
+	\langle\alpha_1\alpha_2 \dots \alpha_n|a_\alpha|\alpha\alpha_1\alpha_2 \dots \alpha_{n}\rangle = 1 \label{eq:2-14}
+\end{equation}
+$$
+
+<p>and thus</p>
+$$
+\begin{equation}
+	a_\alpha |\alpha\alpha_1\alpha_2 \dots \alpha_{n}\rangle = |\alpha_1\alpha_2 \dots \alpha_{n}\rangle \label{eq:2-15}
+\end{equation}
+$$
+
+<p>The action of the operator 
+\( a_\alpha \) from the left on a state vector  is to to remove  one particle in the state
+\( \alpha \). 
+If the state vector does not contain the single-particle state \( \alpha \), the outcome of the operation is zero.
+The operator  \( a_\alpha \) is normally called for a destruction or annihilation operator.
+</p>
+
+<p>The next step is to establish the  commutator algebra of \( a_\alpha^{\dagger} \) and
+\( a_\beta \). 
+</p>
+
+<p>The action of the anti-commutator 
+\( \{a_\alpha^{\dagger} \),$a_\alpha\}$ on a given \( n \)-particle state is
+</p>
+$$
+\begin{align}
+	a_\alpha^{\dagger} a_\alpha \underbrace{|\alpha_1\alpha_2 \dots \alpha_{n}\rangle}_{\neq \alpha} &= 0 \nonumber \\
+	a_\alpha a_\alpha^{\dagger} \underbrace{|\alpha_1\alpha_2 \dots \alpha_{n}\rangle}_{\neq \alpha} &=
+	a_\alpha \underbrace{|\alpha \alpha_1\alpha_2 \dots \alpha_{n}\rangle}_{\neq \alpha} = 
+	\underbrace{|\alpha_1\alpha_2 \dots \alpha_{n}\rangle}_{\neq \alpha} \label{eq:2-16a}
+\end{align}
+$$
+
+<p>if the single-particle state \( \alpha \) is not contained in the state.</p>
+
+<p> If it is present
+we arrive at
+</p>
+$$
+\begin{align}
+	a_\alpha^{\dagger} a_\alpha |\alpha_1\alpha_2 \dots \alpha_{k}\alpha \alpha_{k+1} \dots \alpha_{n-1}\rangle &=
+	a_\alpha^{\dagger} a_\alpha (-1)^k |\alpha \alpha_1\alpha_2 \dots \alpha_{n-1}\rangle \nonumber \\
+	= (-1)^k |\alpha \alpha_1\alpha_2 \dots \alpha_{n-1}\rangle &=
+	|\alpha_1\alpha_2 \dots \alpha_{k}\alpha \alpha_{k+1} \dots \alpha_{n-1}\rangle \nonumber \\
+	a_\alpha a_\alpha^{\dagger}|\alpha_1\alpha_2 \dots \alpha_{k}\alpha \alpha_{k+1} \dots \alpha_{n-1}\rangle &= 0 \label{eq:2-16b}
+\end{align}
+$$
+
+<p>From Eqs.&nbsp;\eqref{eq:2-16a} and  \eqref{eq:2-16b} we arrive at </p>
+$$
+\begin{equation}
+	\{a_\alpha^{\dagger} , a_\alpha \} = a_\alpha^{\dagger} a_\alpha + a_\alpha a_\alpha^{\dagger} = 1 \label{eq:2-17}
+\end{equation}
+$$
+
+<p>The action of \( \left\{a_\alpha^{\dagger}, a_\beta\right\} \), with 
+\( \alpha \ne \beta \) on a given state yields three possibilities. 
+The first case is a state vector which contains both \( \alpha \) and \( \beta \), then either 
+\( \alpha \) or \( \beta \) and finally none of them.
+</p>
+
+<p>The first case results in</p>
+$$
+\begin{align}
+	a_\alpha^{\dagger} a_\beta |\alpha\beta\alpha_1\alpha_2 \dots \alpha_{n-2}\rangle = 0 \nonumber \\
+	a_\beta a_\alpha^{\dagger} |\alpha\beta\alpha_1\alpha_2 \dots \alpha_{n-2}\rangle = 0 \label{eq:2-18a}
+\end{align}
+$$
+
+<p>while the second case gives</p>
+$$
+\begin{align}
+	 a_\alpha^{\dagger} a_\beta |\beta \underbrace{\alpha_1\alpha_2 \dots \alpha_{n-1}}_{\neq \alpha}\rangle =& 
+	 	|\alpha \underbrace{\alpha_1\alpha_2 \dots \alpha_{n-1}}_{\neq  \alpha}\rangle \nonumber \\
+	a_\beta a_\alpha^{\dagger} |\beta \underbrace{\alpha_1\alpha_2 \dots \alpha_{n-1}}_{\neq \alpha}\rangle =&
+		a_\beta |\alpha\beta\underbrace{\beta \alpha_1\alpha_2 \dots \alpha_{n-1}}_{\neq \alpha}\rangle \nonumber \\
+	=& - |\alpha\underbrace{\alpha_1\alpha_2 \dots \alpha_{n-1}}_{\neq \alpha}\rangle \label{eq:2-18b}
+\end{align}
+$$
+
+<p>Finally if the state vector does not contain \( \alpha \) and \( \beta \)</p>
+$$
+\begin{align}
+	a_\alpha^{\dagger} a_\beta |\underbrace{\alpha_1\alpha_2 \dots \alpha_{n}}_{\neq \alpha,\beta}\rangle &=& 0 \nonumber \\
+	a_\beta a_\alpha^{\dagger} |\underbrace{\alpha_1\alpha_2 \dots \alpha_{n}}_{\neq \alpha,\beta}\rangle &=& 
+		a_\beta |\alpha \underbrace{\alpha_1\alpha_2 \dots \alpha_{n}}_{\neq \alpha,\beta}\rangle = 0 \label{eq:2-18c}
+\end{align}
+$$
+
+<p>For all three cases we have</p>
+$$
+\begin{equation}
+	\{a_\alpha^{\dagger},a_\beta \} = a_\alpha^{\dagger} a_\beta + a_\beta a_\alpha^{\dagger} = 0, \quad \alpha \neq \beta \label{eq:2-19}
+\end{equation}
+$$
+
+<p>We can summarize  our findings in Eqs.&nbsp;\eqref{eq:2-17} and \eqref{eq:2-19} as </p>
+$$
+\begin{equation}
+	\{a_\alpha^{\dagger},a_\beta \} = \delta_{\alpha\beta} \label{eq:2-20}
+\end{equation}
+$$
+
+<p>with  \( \delta_{\alpha\beta} \) is the Kroenecker \( \delta \)-symbol.</p>
+
+<p>The properties of the creation and annihilation operators can be summarized as (for fermions)</p>
+$$
+	a_\alpha^{\dagger}|0\rangle \equiv  |\alpha\rangle,
+$$
+
+<p>and</p>
+$$
+	a_\alpha^{\dagger}|\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}} \equiv  |\alpha\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}}. 
+$$
+
+<p>from which follows</p>
+$$
+        |\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}} = a_{\alpha_1}^{\dagger} a_{\alpha_2}^{\dagger} \dots a_{\alpha_n}^{\dagger} |0\rangle.
+$$
+
+<p>The hermitian conjugate has the folowing properties</p>
+$$
+        a_{\alpha} = ( a_{\alpha}^{\dagger} )^{\dagger}.
+$$
+
+<p>Finally we found </p>
+$$
+	a_\alpha\underbrace{|\alpha_1'\alpha_2' \dots \alpha_{n+1}'}\rangle_{\neq \alpha} = 0, \quad
+		\textrm{in particular } a_\alpha |0\rangle = 0,
+$$
+
+<p>and</p>
+$$
+ a_\alpha |\alpha\alpha_1\alpha_2 \dots \alpha_{n}\rangle = |\alpha_1\alpha_2 \dots \alpha_{n}\rangle,
+$$
+
+<p>and the corresponding commutator algebra</p>
+$$
+	\{a_{\alpha}^{\dagger},a_{\beta}^{\dagger}\} = \{a_{\alpha},a_{\beta}\} = 0 \hspace{0.5cm} 
+\{a_\alpha^{\dagger},a_\beta \} = \delta_{\alpha\beta}.
+$$
+
+
+<!-- --- begin exercise --- -->
+<h2 id="exercise-1-expectation-values-and-wave-function-ansatzes">Exercise 1: Expectation values and wave function Ansatzes </h2>
+
+<p>Consider the fermion Slater determinant as ansatz for a quantum mechanical state function,</p>
+
+$$
+\Phi_{\lambda}^{AS}(x_{1}x_{2}\dots x_{N};\alpha_{1}\alpha_{2}\dots\alpha_{N})=\frac{1}{\sqrt{N!}}\sum_{p}(-)^{p}P\prod_{i=1}^{N}\psi_{\alpha_{i}}(x_{i}).
+$$
+
+<p>where \( P \) is an operator which permutes the coordinates of two
+particles. It acts on pairs of particles. We have assumed here that
+the number of particles is the same as the number of available
+single-particle states, represented by the greek letters
+\( \alpha_{1}\alpha_{2}\dots\alpha_{N} \).  We assume that the
+single-particle basis \( \psi_{\alpha_{i}}(x_{i}) \) is a so-called
+orthonormal basis.
+</p>
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>a)</b>
+Write  out \( \Phi^{AS} \) for \( N=3 \).
+</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>b)</b>
+Show that
+</p>
+
+$$
+\int dx_{1}dx_{2}\dots dx_{N}\left\vert
+\Phi_{\lambda}^{AS}(x_{1}x_{2}\dots x_{N};\alpha_{1}\alpha_{2}\dots\alpha_{N})\right\vert^{2} = 1.
+$$
+
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>c)</b>
+Define a general onebody operator \( \hat{F} = \sum_{i}^N\hat{f}(x_{i}) \) and a general 
+twobody operator \( \hat{G}=\sum_{i>j}^N\hat{g}(x_{i},x_{j}) \)
+with \( g \) being invariant under the interchange of the coordinates of particles \( i \) and \( j \).
+Calculate the matrix elements for a two-particle Slater determinant
+</p>
+$$
+\bra{\Phi_{\alpha_{1}\alpha_{2}}^{AS}}\hat{F}\ket{\Phi_{\alpha_{1}\alpha_{2}}^{AS}},
+$$
+
+<p>and</p>
+$$
+\bra{\Phi_{\alpha_{1}\alpha_{2}}^{AS}}\hat{G}\ket{\Phi_{\alpha_{1}\alpha_{2}}^{AS}}.
+$$
+
+<p>Which properties do you expect these operators to have in addition to an eventual permutation
+symmetry?
+</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- end exercise --- -->
+
+<!-- --- begin exercise --- -->
+<h2 id="exercise-2-first-many-body-example">Exercise 2: first many-body example </h2>
+
+<p>We will now consider a simple three-level problem, depicted in the
+figure below. This is our first and very simple model of a possible
+many-fermion problem and what we later will call full configuration
+interaction theory (dubbed FCI).  We will assume the particles are
+fermions.  The single-particle states are labelled by the quantum
+number \( p \) and can accomodate up to two single particles, viz., every
+single-particle state is doubly degenerate (you could think of this as
+one state having spin up and the other spin down).  We let the spacing
+between the doubly degenerate single-particle states be constant, with
+value \( d \).  The first state has energy \( d \). There are only three
+available single-particle states, \( p=1 \), \( p=2 \) and \( p=3 \), as
+illustrated in the figure.
+</p>
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>a)</b>
+How many two-particle Slater determinants can we construct in this space?
+</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>b)</b>
+We limit ourselves to a system with only the two lowest single-particle orbits and two particles, \( p=1 \) and \( p=2 \).
+</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>c)</b>
+We assume that we can write the Hamiltonian as
+</p>
+$$
+       \hat{H}=\hat{H}_0+\hat{H}_I,
+$$
+
+<p>and that the onebody part of the Hamiltonian with single-particle operator \( \hat{h}_0 \) has the property</p>
+$$
+\hat{h}_0\psi_{p\sigma} = p\times d \psi_{p\sigma},
+$$
+
+<p>where we have added a spin quantum number \( \sigma \). 
+We assume also that the only two-particle states that can exist are those where two particles are in the 
+same state \( p \), as shown by the two possibilities to the left in the figure.
+The two-particle matrix elements of \( \hat{H}_I \) have all a constant value, \( -g \).
+Show then that the Hamiltonian matrix can be written as 
+</p>
+$$
+\left(\begin{array}{cc}2d-g &-g \\
+-g &4d-g \end{array}\right),
+$$
+
+<p>and find the eigenvalues and eigenvectors.  What is the mixing of the state with two particles in \( p=2 \) 
+to the wave function with two-particles in \( p=1 \)? Discuss your results in terms of a linear combination
+of Slater determinants.
+</p>
+
+<p>Add the possibility that the two particles can be in the state with
+\( p=3 \) as well and find the Hamiltonian matrix, the eigenvalues and the
+eigenvectors. We still insist that we only have two-particle states
+composed of two particles being in the same level \( p \). You can
+diagonalize numerically your \( 3\times 3 \) matrix.
+</p>
+
+<p>This
+simple model catches several birds with a stone. It demonstrates how
+we can build linear combinations of Slater determinants and interpret
+these as different admixtures to a given state. It represents also the
+way we are going to interpret these contributions.  The two-particle
+states above \( p=1 \) will be interpreted as excitations from the ground
+state configuration, \( p=1 \) here.  The reliability of this ansatz for
+the ground state, with two particles in \( p=1 \), depends on the strength
+of the interaction \( g \) and the single-particle spacing \( d \).  Finally,
+this model is a simple schematic ansatz for studies of pairing
+correlations and thereby superfluidity/superconductivity in fermionic
+systems.
+</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- end exercise --- -->
 <!-- ------------------- end of main content --------------- -->
 <center style="font-size:80%">
 <!-- copyright --> &copy; 1999-2022, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
