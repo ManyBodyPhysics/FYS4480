@@ -113,10 +113,39 @@ div.toc p,a {
 </head>
 
 <!-- tocinfo
-{'highest level': 4, 'sections': []}
+{'highest level': 2,
+ 'sections': [('Second quantization, brief summary from week 35',
+               2,
+               None,
+               'second-quantization-brief-summary-from-week-35'),
+              ('One-body operators in second quantization',
+               2,
+               None,
+               'one-body-operators-in-second-quantization'),
+              ('Two-body operators in second quantization',
+               2,
+               None,
+               'two-body-operators-in-second-quantization'),
+              ("Wick's theorem", 2, None, 'wick-s-theorem')]}
 end of tocinfo -->
 
 <body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "AMS"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
 <!-- ------------------- main content ---------------------- -->
 <center>
 <h1>Week 36: Operators in second quantization, computation of expectation values and Wick's theorem</h1>
@@ -138,6 +167,483 @@ end of tocinfo -->
 <h4>Week 36, September 5-9</h4>
 </center> <!-- date -->
 <br>
+<h2 id="second-quantization-brief-summary-from-week-35">Second quantization, brief summary from week 35 </h2>
+
+<p>We can summarize  our findings from last week as </p>
+$$
+\begin{equation}
+	\{a_\alpha^{\dagger},a_\beta \} = \delta_{\alpha\beta} \label{eq:2-20}
+\end{equation}
+$$
+
+<p>with  \( \delta_{\alpha\beta} \) is the Kroenecker \( \delta \)-symbol.</p>
+
+<p>The properties of the creation and annihilation operators can be summarized as (for fermions)</p>
+$$
+	a_\alpha^{\dagger}|0\rangle \equiv  |\alpha\rangle,
+$$
+
+<p>and</p>
+$$
+	a_\alpha^{\dagger}|\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}} \equiv  |\alpha\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}}. 
+$$
+
+<p>from which follows</p>
+$$
+        |\alpha_1\dots \alpha_n\rangle_{\mathrm{AS}} = a_{\alpha_1}^{\dagger} a_{\alpha_2}^{\dagger} \dots a_{\alpha_n}^{\dagger} |0\rangle.
+$$
+
+<p>The hermitian conjugate has the folowing properties</p>
+$$
+        a_{\alpha} = ( a_{\alpha}^{\dagger} )^{\dagger}.
+$$
+
+<p>Finally we found </p>
+$$
+	a_\alpha\underbrace{|\alpha_1'\alpha_2' \dots \alpha_{n+1}'}\rangle_{\neq \alpha} = 0, \quad
+		\textrm{in particular } a_\alpha |0\rangle = 0,
+$$
+
+<p>and</p>
+$$
+ a_\alpha |\alpha\alpha_1\alpha_2 \dots \alpha_{n}\rangle = |\alpha_1\alpha_2 \dots \alpha_{n}\rangle,
+$$
+
+<p>and the corresponding commutator algebra</p>
+$$
+	\{a_{\alpha}^{\dagger},a_{\beta}^{\dagger}\} = \{a_{\alpha},a_{\beta}\} = 0 \hspace{0.5cm} 
+\{a_\alpha^{\dagger},a_\beta \} = \delta_{\alpha\beta}.
+$$
+<h2 id="one-body-operators-in-second-quantization">One-body operators in second quantization </h2>
+
+<p>A very useful operator is the so-called number-operator.  Most physics
+cases we will study in this text conserve the total number of
+particles.  The number operator is therefore a useful quantity which
+allows us to test that our many-body formalism conserves the number of
+particles.  In for example \( (d,p) \) or \( (p,d) \) reactions it is
+important to be able to describe quantum mechanical states where
+particles get added or removed.  A creation operator
+\( a_\alpha^{\dagger} \) adds one particle to the single-particle state
+\( \alpha \) of a give many-body state vector, while an annihilation
+operator \( a_\alpha \) removes a particle from a single-particle state
+\( \alpha \).
+</p>
+
+<p>Let us consider an operator proportional with \( a_\alpha^{\dagger} a_\beta \) and 
+\( \alpha=\beta \). It acts on an \( n \)-particle state 
+resulting in
+</p>
+$$
+\begin{equation}
+	a_\alpha^{\dagger} a_\alpha |\alpha_1\alpha_2 \dots \alpha_{n}\rangle = 
+	\begin{cases}
+		0  &\alpha \notin \{\alpha_i\} \\
+		\\
+		|\alpha_1\alpha_2 \dots \alpha_{n}\rangle & \alpha \in \{\alpha_i\}
+	\end{cases}
+\label{_auto1}
+\end{equation}
+$$
+
+<p>Summing over all possible one-particle states we arrive at</p>
+$$
+\begin{equation}
+	\left( \sum_\alpha a_\alpha^{\dagger} a_\alpha \right) |\alpha_1\alpha_2 \dots \alpha_{n}\rangle = 
+	n |\alpha_1\alpha_2 \dots \alpha_{n}\rangle \label{eq:2-21}
+\end{equation}
+$$
+
+<p>The operator </p>
+$$
+\begin{equation}
+	\hat{N} = \sum_\alpha a_\alpha^{\dagger} a_\alpha \label{eq:2-22}
+\end{equation}
+$$
+
+<p>is called the number operator since it counts the number of particles in a give state vector when it acts 
+on the different single-particle states.  It acts on one single-particle state at the time and falls 
+therefore under category one-body operators.
+Next we look at another important one-body operator, namely \( \hat{H}_0 \) and study its operator form in the 
+occupation number representation.
+</p>
+
+<p>We want to obtain an expression for a one-body operator which conserves the number of particles.
+Here we study the one-body operator for the kinetic energy plus an eventual external one-body potential.
+The action of this operator on a particular \( n \)-body state with its pertinent expectation value has already
+been studied in coordinate  space.
+In coordinate space the operator reads
+</p>
+$$
+\begin{equation}
+	\hat{H}_0 = \sum_i \hat{h}_0(x_i) \label{eq:2-23}
+\end{equation}
+$$
+
+<p>and the anti-symmetric \( n \)-particle Slater determinant is defined as </p>
+$$
+\Phi(x_1, x_2,\dots ,x_n,\alpha_1,\alpha_2,\dots, \alpha_n)= \frac{1}{\sqrt{n!}} \sum_p (-1)^p\hat{P}\psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2) \dots \psi_{\alpha_n}(x_n).
+$$
+
+<p>Defining</p>
+$$
+\begin{equation}
+	\hat{h}_0(x_i) \psi_{\alpha_i}(x_i) = \sum_{\alpha_k'} \psi_{\alpha_k'}(x_i) \langle\alpha_k'|\hat{h}_0|\alpha_k\rangle \label{eq:2-25}
+\end{equation}
+$$
+
+<p>we can easily  evaluate the action of \( \hat{H}_0 \) on each product of one-particle functions in Slater determinant.
+From Eq.&nbsp;\eqref{eq:2-25}  we obtain the following result without  permuting any particle pair 
+</p>
+$$
+\begin{align}
+	&& \left( \sum_i \hat{h}_0(x_i) \right) \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2) \dots \psi_{\alpha_n}(x_n) \nonumber \\
+	& =&\sum_{\alpha_1'} \langle \alpha_1'|\hat{h}_0|\alpha_1\rangle 
+		\psi_{\alpha_1'}(x_1)\psi_{\alpha_2}(x_2) \dots \psi_{\alpha_n}(x_n) \nonumber \\
+	&+&\sum_{\alpha_2'} \langle \alpha_2'|\hat{h}_0|\alpha_2\rangle
+		\psi_{\alpha_1}(x_1)\psi_{\alpha_2'}(x_2) \dots \psi_{\alpha_n}(x_n) \nonumber \\
+	&+& \dots \nonumber \\
+	&+&\sum_{\alpha_n'} \langle \alpha_n'|\hat{h}_0|\alpha_n\rangle
+		\psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2) \dots \psi_{\alpha_n'}(x_n) \label{eq:2-26}
+\end{align}
+$$
+
+<p>If we interchange particles \( 1 \) and \( 2 \)  we obtain</p>
+$$
+\begin{align}
+	&& \left( \sum_i \hat{h}_0(x_i) \right) \psi_{\alpha_1}(x_2)\psi_{\alpha_1}(x_2) \dots \psi_{\alpha_n}(x_n) \nonumber \\
+	& =&\sum_{\alpha_2'} \langle \alpha_2'|\hat{h}_0|\alpha_2\rangle 
+		\psi_{\alpha_1}(x_2)\psi_{\alpha_2'}(x_1) \dots \psi_{\alpha_n}(x_n) \nonumber \\
+	&+&\sum_{\alpha_1'} \langle \alpha_1'|\hat{h}_0|\alpha_1\rangle
+		\psi_{\alpha_1'}(x_2)\psi_{\alpha_2}(x_1) \dots \psi_{\alpha_n}(x_n) \nonumber \\
+	&+& \dots \nonumber \\
+	&+&\sum_{\alpha_n'} \langle \alpha_n'|\hat{h}_0|\alpha_n\rangle
+		\psi_{\alpha_1}(x_2)\psi_{\alpha_1}(x_2) \dots \psi_{\alpha_n'}(x_n) \label{eq:2-27}
+\end{align}
+$$
+
+<p>We can continue by computing all possible permutations. 
+We rewrite also our Slater determinant in its second quantized form and skip the dependence on the quantum numbers \( x_i. \)
+Summing up all contributions and taking care of all phases
+\( (-1)^p \) we arrive at 
+</p>
+$$
+\begin{align}
+	\hat{H}_0|\alpha_1,\alpha_2,\dots, \alpha_n\rangle &=& \sum_{\alpha_1'}\langle \alpha_1'|\hat{h}_0|\alpha_1\rangle
+		|\alpha_1'\alpha_2 \dots \alpha_{n}\rangle \nonumber \\
+	&+& \sum_{\alpha_2'} \langle \alpha_2'|\hat{h}_0|\alpha_2\rangle
+		|\alpha_1\alpha_2' \dots \alpha_{n}\rangle \nonumber \\
+	&+& \dots \nonumber \\
+	&+& \sum_{\alpha_n'} \langle \alpha_n'|\hat{h}_0|\alpha_n\rangle
+		|\alpha_1\alpha_2 \dots \alpha_{n}'\rangle \label{eq:2-28}
+\end{align}
+$$
+
+<p>In Eq.&nbsp;\eqref{eq:2-28} 
+we have expressed the action of the one-body operator
+of Eq.&nbsp;\eqref{eq:2-23} on the  \( n \)-body state in its second quantized form.
+This equation can be further manipulated if we use the properties of the creation and annihilation operator
+on each primed quantum number, that is
+</p>
+$$
+\begin{equation}
+	|\alpha_1\alpha_2 \dots \alpha_k' \dots \alpha_{n}\rangle = 
+		a_{\alpha_k'}^{\dagger}  a_{\alpha_k} |\alpha_1\alpha_2 \dots \alpha_k \dots \alpha_{n}\rangle \label{eq:2-29}
+\end{equation}
+$$
+
+<p>Inserting this in the right-hand side of Eq.&nbsp;\eqref{eq:2-28} results in</p>
+$$
+\begin{align}
+	\hat{H}_0|\alpha_1\alpha_2 \dots \alpha_{n}\rangle &=& \sum_{\alpha_1'}\langle \alpha_1'|\hat{h}_0|\alpha_1\rangle
+		a_{\alpha_1'}^{\dagger}  a_{\alpha_1} |\alpha_1\alpha_2 \dots \alpha_{n}\rangle \nonumber \\
+	&+& \sum_{\alpha_2'} \langle \alpha_2'|\hat{h}_0|\alpha_2\rangle
+		a_{\alpha_2'}^{\dagger}  a_{\alpha_2} |\alpha_1\alpha_2 \dots \alpha_{n}\rangle \nonumber \\
+	&+& \dots \nonumber \\
+	&+& \sum_{\alpha_n'} \langle \alpha_n'|\hat{h}_0|\alpha_n\rangle
+		a_{\alpha_n'}^{\dagger}  a_{\alpha_n} |\alpha_1\alpha_2 \dots \alpha_{n}\rangle \nonumber \\
+	&=& \sum_{\alpha, \beta} \langle \alpha|\hat{h}_0|\beta\rangle a_\alpha^{\dagger} a_\beta 
+		|\alpha_1\alpha_2 \dots \alpha_{n}\rangle \label{eq:2-30a}
+\end{align}
+$$
+
+<p>In the number occupation representation or second quantization we get the following expression for a one-body 
+operator which conserves the number of particles
+</p>
+$$
+\begin{equation}
+	\hat{H}_0 = \sum_{\alpha\beta} \langle \alpha|\hat{h}_0|\beta\rangle a_\alpha^{\dagger} a_\beta \label{eq:2-30b}
+\end{equation}
+$$
+
+<p>Obviously, \( \hat{H}_0 \) can be replaced by any other one-body  operator which preserved the number
+of particles. The stucture of the operator is therefore not limited to say the kinetic or single-particle energy only.
+</p>
+
+<p>The opearator \( \hat{H}_0 \) takes a particle from the single-particle state \( \beta \)  to the single-particle state \( \alpha \) 
+with a probability for the transition given by the expectation value \( \langle \alpha|\hat{h}_0|\beta\rangle \).
+</p>
+
+<p>It is instructive to verify Eq.&nbsp;\eqref{eq:2-30b} by computing the expectation value of \( \hat{H}_0 \) 
+between two single-particle states
+</p>
+$$
+\begin{equation}
+	\langle \alpha_1|\hat{h}_0|\alpha_2\rangle = \sum_{\alpha\beta} \langle \alpha|\hat{h}_0|\beta\rangle
+		\langle 0|a_{\alpha_1}a_\alpha^{\dagger} a_\beta a_{\alpha_2}^{\dagger}|0\rangle \label{eq:2-30c}
+\end{equation}
+$$
+
+<p>Using the commutation relations for the creation and annihilation operators we have </p>
+$$
+\begin{equation}
+a_{\alpha_1}a_\alpha^{\dagger} a_\beta a_{\alpha_2}^{\dagger} = (\delta_{\alpha \alpha_1} - a_\alpha^{\dagger} a_{\alpha_1} )(\delta_{\beta \alpha_2} - a_{\alpha_2}^{\dagger} a_{\beta} ), \label{eq:2-30d}
+\end{equation}
+$$
+
+<p>which results in</p>
+$$
+\begin{equation}
+\langle 0|a_{\alpha_1}a_\alpha^{\dagger} a_\beta a_{\alpha_2}^{\dagger}|0\rangle = \delta_{\alpha \alpha_1} \delta_{\beta \alpha_2} \label{eq:2-30e}
+\end{equation}
+$$
+
+<p>and</p>
+$$
+\begin{equation}
+\langle \alpha_1|\hat{h}_0|\alpha_2\rangle = \sum_{\alpha\beta} \langle \alpha|\hat{h}_0|\beta\rangle\delta_{\alpha \alpha_1} \delta_{\beta \alpha_2} = \langle \alpha_1|\hat{h}_0|\alpha_2\rangle \label{eq:2-30f}
+\end{equation}
+$$
+<h2 id="two-body-operators-in-second-quantization">Two-body operators in second quantization </h2>
+
+<p>Let us now derive the expression for our two-body interaction part, which also conserves the number of particles.
+We can proceed in exactly the same way as for the one-body operator. In the coordinate representation our
+two-body interaction part takes the following expression
+</p>
+$$
+\begin{equation}
+	\hat{H}_I = \sum_{i < j} V(x_i,x_j) \label{eq:2-31}
+\end{equation}
+$$
+
+<p>where the summation runs over distinct pairs. The term \( V \) can be an interaction model for the nucleon-nucleon interaction
+or the interaction between two electrons. It can also include additional two-body interaction terms. 
+</p>
+
+<p>The action of this operator on a product of 
+two single-particle functions is defined as 
+</p>
+$$
+\begin{equation}
+	V(x_i,x_j) \psi_{\alpha_k}(x_i) \psi_{\alpha_l}(x_j) = \sum_{\alpha_k'\alpha_l'} 
+		\psi_{\alpha_k}'(x_i)\psi_{\alpha_l}'(x_j) 
+		\langle \alpha_k'\alpha_l'|\hat{v}|\alpha_k\alpha_l\rangle \label{eq:2-32}
+\end{equation}
+$$
+
+<p>We can now let \( \hat{H}_I \) act on all terms in the linear combination for \( |\alpha_1\alpha_2\dots\alpha_n\rangle \). Without any permutations we have</p>
+$$
+\begin{align}
+	&& \left( \sum_{i < j} V(x_i,x_j) \right) \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2)\dots \psi_{\alpha_n}(x_n) \nonumber \\
+	&=& \sum_{\alpha_1'\alpha_2'} \langle \alpha_1'\alpha_2'|\hat{v}|\alpha_1\alpha_2\rangle
+		\psi_{\alpha_1}'(x_1)\psi_{\alpha_2}'(x_2)\dots \psi_{\alpha_n}(x_n) \nonumber \\
+	& +& \dots \nonumber \\
+	&+& \sum_{\alpha_1'\alpha_n'} \langle \alpha_1'\alpha_n'|\hat{v}|\alpha_1\alpha_n\rangle
+		\psi_{\alpha_1}'(x_1)\psi_{\alpha_2}(x_2)\dots \psi_{\alpha_n}'(x_n) \nonumber \\
+	& +& \dots \nonumber \\
+	&+& \sum_{\alpha_2'\alpha_n'} \langle \alpha_2'\alpha_n'|\hat{v}|\alpha_2\alpha_n\rangle
+		\psi_{\alpha_1}(x_1)\psi_{\alpha_2}'(x_2)\dots \psi_{\alpha_n}'(x_n) \nonumber \\
+	 & +& \dots \label{eq:2-33}
+\end{align}
+$$
+
+<p>where on the rhs we have a term for each distinct pairs. </p>
+
+<p>For the other terms on the rhs we obtain similar expressions  and summing over all terms we obtain</p>
+$$
+\begin{align}
+	H_I |\alpha_1\alpha_2\dots\alpha_n\rangle &=& \sum_{\alpha_1', \alpha_2'} \langle \alpha_1'\alpha_2'|\hat{v}|\alpha_1\alpha_2\rangle
+		|\alpha_1'\alpha_2'\dots\alpha_n\rangle \nonumber \\
+	&+& \dots \nonumber \\
+	&+& \sum_{\alpha_1', \alpha_n'} \langle \alpha_1'\alpha_n'|\hat{v}|\alpha_1\alpha_n\rangle
+		|\alpha_1'\alpha_2\dots\alpha_n'\rangle \nonumber \\
+	&+& \dots \nonumber \\
+	&+& \sum_{\alpha_2', \alpha_n'} \langle \alpha_2'\alpha_n'|\hat{v}|\alpha_2\alpha_n\rangle
+		|\alpha_1\alpha_2'\dots\alpha_n'\rangle \nonumber \\
+	 &+& \dots \label{eq:2-34}
+\end{align}
+$$
+
+<p>We introduce second quantization via the relation</p>
+$$
+\begin{align}
+	&& a_{\alpha_k'}^{\dagger} a_{\alpha_l'}^{\dagger} a_{\alpha_l} a_{\alpha_k} 
+		|\alpha_1\alpha_2\dots\alpha_k\dots\alpha_l\dots\alpha_n\rangle \nonumber \\
+	&=& (-1)^{k-1} (-1)^{l-2} a_{\alpha_k'}^{\dagger} a_{\alpha_l'}^{\dagger} a_{\alpha_l} a_{\alpha_k}
+		|\alpha_k\alpha_l \underbrace{\alpha_1\alpha_2\dots\alpha_n}_{\neq \alpha_k,\alpha_l}\rangle \nonumber \\
+	&=& (-1)^{k-1} (-1)^{l-2} 
+	|\alpha_k'\alpha_l' \underbrace{\alpha_1\alpha_2\dots\alpha_n}_{\neq \alpha_k',\alpha_l'}\rangle \nonumber \\
+	&=& |\alpha_1\alpha_2\dots\alpha_k'\dots\alpha_l'\dots\alpha_n\rangle \label{eq:2-35}
+\end{align}
+$$
+
+<p>Inserting this in \eqref{eq:2-34} gives</p>
+$$
+\begin{align}
+	H_I |\alpha_1\alpha_2\dots\alpha_n\rangle
+	&=& \sum_{\alpha_1', \alpha_2'} \langle \alpha_1'\alpha_2'|\hat{v}|\alpha_1\alpha_2\rangle
+		a_{\alpha_1'}^{\dagger} a_{\alpha_2'}^{\dagger} a_{\alpha_2} a_{\alpha_1}
+		|\alpha_1\alpha_2\dots\alpha_n\rangle \nonumber \\
+	&+& \dots \nonumber \\
+	&=& \sum_{\alpha_1', \alpha_n'} \langle \alpha_1'\alpha_n'|\hat{v}|\alpha_1\alpha_n\rangle
+		a_{\alpha_1'}^{\dagger} a_{\alpha_n'}^{\dagger} a_{\alpha_n} a_{\alpha_1}
+		|\alpha_1\alpha_2\dots\alpha_n\rangle \nonumber \\
+	&+& \dots \nonumber \\
+	&=& \sum_{\alpha_2', \alpha_n'} \langle \alpha_2'\alpha_n'|\hat{v}|\alpha_2\alpha_n\rangle
+		a_{\alpha_2'}^{\dagger} a_{\alpha_n'}^{\dagger} a_{\alpha_n} a_{\alpha_2}
+		|\alpha_1\alpha_2\dots\alpha_n\rangle \nonumber \\
+	&+& \dots \nonumber \\
+	&=& \sum_{\alpha, \beta, \gamma, \delta} ' \langle \alpha\beta|\hat{v}|\gamma\delta\rangle
+		a^{\dagger}_\alpha a^{\dagger}_\beta a_\delta a_\gamma
+		|\alpha_1\alpha_2\dots\alpha_n\rangle \label{eq:2-36}
+\end{align}
+$$
+
+<p>Here we let \( \sum' \) indicate that the sums running over \( \alpha \) and \( \beta \) run over all
+single-particle states, while the summations  \( \gamma \) and \( \delta \) 
+run over all pairs of single-particle states. We wish to remove this restriction and since
+</p>
+$$
+\begin{equation}
+	\langle \alpha\beta|\hat{v}|\gamma\delta\rangle = \langle \beta\alpha|\hat{v}|\delta\gamma\rangle \label{eq:2-37}
+\end{equation}
+$$
+
+<p>we get</p>
+$$
+\begin{align}
+	\sum_{\alpha\beta} \langle \alpha\beta|\hat{v}|\gamma\delta\rangle a^{\dagger}_\alpha a^{\dagger}_\beta a_\delta a_\gamma &=& 
+		\sum_{\alpha\beta} \langle \beta\alpha|\hat{v}|\delta\gamma\rangle 
+		a^{\dagger}_\alpha a^{\dagger}_\beta a_\delta a_\gamma \label{eq:2-38a} \\
+	&=& \sum_{\alpha\beta}\langle \beta\alpha|\hat{v}|\delta\gamma\rangle
+		a^{\dagger}_\beta a^{\dagger}_\alpha a_\gamma a_\delta \label{eq:2-38b}
+\end{align}
+$$
+
+<p>where we  have used the anti-commutation rules.</p>
+
+<p>Changing the summation indices 
+\( \alpha \) and \( \beta \) in \eqref{eq:2-38b} we obtain
+</p>
+$$
+\begin{equation}
+	\sum_{\alpha\beta} \langle \alpha\beta|\hat{v}|\gamma\delta\rangle a^{\dagger}_\alpha a^{\dagger}_\beta a_\delta a_\gamma =
+		 \sum_{\alpha\beta} \langle \alpha\beta|\hat{v}|\delta\gamma\rangle 
+		  a^{\dagger}_\alpha a^{\dagger}_\beta  a_\gamma a_\delta \label{eq:2-38c}
+\end{equation}
+$$
+
+<p>From this it follows that the restriction on the summation over \( \gamma \) and \( \delta \) can be removed if we multiply with a factor \( \frac{1}{2} \), resulting in </p>
+$$
+\begin{equation}
+	\hat{H}_I = \frac{1}{2} \sum_{\alpha\beta\gamma\delta} \langle \alpha\beta|\hat{v}|\gamma\delta\rangle
+		a^{\dagger}_\alpha a^{\dagger}_\beta a_\delta a_\gamma \label{eq:2-39}
+\end{equation}
+$$
+
+<p>where we sum freely over all single-particle states \( \alpha \), 
+\( \beta \), \( \gamma \) og \( \delta \).
+</p>
+
+<p>With this expression we can now verify that the second quantization form of \( \hat{H}_I \) in Eq.&nbsp;\eqref{eq:2-39} 
+results in the same matrix between two anti-symmetrized two-particle states as its corresponding coordinate
+space representation. We have  
+</p>
+$$
+\begin{equation}
+	\langle \alpha_1 \alpha_2|\hat{H}_I|\beta_1 \beta_2\rangle =
+		\frac{1}{2} \sum_{\alpha\beta\gamma\delta}
+			\langle \alpha\beta|\hat{v}|\gamma\delta\rangle \langle 0|a_{\alpha_2} a_{\alpha_1} 
+			 a^{\dagger}_\alpha a^{\dagger}_\beta a_\delta a_\gamma 
+			 a_{\beta_1}^{\dagger} a_{\beta_2}^{\dagger}|0\rangle. \label{eq:2-40}
+\end{equation}
+$$
+
+<p>Using the commutation relations we get </p>
+$$
+\begin{align}
+	&& a_{\alpha_2} a_{\alpha_1}a^{\dagger}_\alpha a^{\dagger}_\beta 
+		a_\delta a_\gamma a_{\beta_1}^{\dagger} a_{\beta_2}^{\dagger} \nonumber \\
+	&=& a_{\alpha_2} a_{\alpha_1}a^{\dagger}_\alpha a^{\dagger}_\beta 
+		( a_\delta \delta_{\gamma \beta_1} a_{\beta_2}^{\dagger} - 
+		a_\delta  a_{\beta_1}^{\dagger} a_\gamma a_{\beta_2}^{\dagger} ) \nonumber \\
+	&=& a_{\alpha_2} a_{\alpha_1}a^{\dagger}_\alpha a^{\dagger}_\beta 
+		(\delta_{\gamma \beta_1} \delta_{\delta \beta_2} - \delta_{\gamma \beta_1} a_{\beta_2}^{\dagger} a_\delta -
+		a_\delta a_{\beta_1}^{\dagger}\delta_{\gamma \beta_2} +
+		a_\delta a_{\beta_1}^{\dagger} a_{\beta_2}^{\dagger} a_\gamma ) \nonumber \\
+	&=& a_{\alpha_2} a_{\alpha_1}a^{\dagger}_\alpha a^{\dagger}_\beta 
+		(\delta_{\gamma \beta_1} \delta_{\delta \beta_2} - \delta_{\gamma \beta_1} a_{\beta_2}^{\dagger} a_\delta \nonumber \\
+		&& \qquad - \delta_{\delta \beta_1} \delta_{\gamma \beta_2} + \delta_{\gamma \beta_2} a_{\beta_1}^{\dagger} a_\delta
+		+ a_\delta a_{\beta_1}^{\dagger} a_{\beta_2}^{\dagger} a_\gamma ) \label{eq:2-41}
+\end{align}
+$$
+
+<p>The vacuum expectation value of this product of operators becomes</p>
+$$
+\begin{align}
+	&& \langle 0|a_{\alpha_2} a_{\alpha_1} a^{\dagger}_\alpha a^{\dagger}_\beta a_\delta a_\gamma 
+		a_{\beta_1}^{\dagger} a_{\beta_2}^{\dagger}|0\rangle \nonumber \\
+	&=& (\delta_{\gamma \beta_1} \delta_{\delta \beta_2} -
+		\delta_{\delta \beta_1} \delta_{\gamma \beta_2} ) 
+		\langle 0|a_{\alpha_2} a_{\alpha_1}a^{\dagger}_\alpha a^{\dagger}_\beta|0\rangle \nonumber \\
+	&=& (\delta_{\gamma \beta_1} \delta_{\delta \beta_2} -\delta_{\delta \beta_1} \delta_{\gamma \beta_2} )
+	(\delta_{\alpha \alpha_1} \delta_{\beta \alpha_2} -\delta_{\beta \alpha_1} \delta_{\alpha \alpha_2} ) \label{eq:2-42b}
+\end{align}
+$$
+
+<p>Insertion of 
+Eq.&nbsp;\eqref{eq:2-42b} in Eq.&nbsp;\eqref{eq:2-40} results in
+</p>
+$$
+\begin{align}
+	\langle \alpha_1\alpha_2|\hat{H}_I|\beta_1\beta_2\rangle &=& \frac{1}{2} \big[ 
+		\langle \alpha_1\alpha_2|\hat{v}|\beta_1\beta_2\rangle- \langle \alpha_1\alpha_2|\hat{v}|\beta_2\beta_1\rangle \nonumber \\
+		&& - \langle \alpha_2\alpha_1|\hat{v}|\beta_1\beta_2\rangle + \langle \alpha_2\alpha_1|\hat{v}|\beta_2\beta_1\rangle \big] \nonumber \\
+	&=& \langle \alpha_1\alpha_2|\hat{v}|\beta_1\beta_2\rangle - \langle \alpha_1\alpha_2|\hat{v}|\beta_2\beta_1\rangle \nonumber \\
+	&=& \langle \alpha_1\alpha_2|\hat{v}|\beta_1\beta_2\rangle_{\mathrm{AS}}. \label{eq:2-43b}
+\end{align}
+$$
+
+<p>The two-body operator can also be expressed in terms of the anti-symmetrized matrix elements we discussed previously as</p>
+$$
+\begin{align}
+	\hat{H}_I &=& \frac{1}{2} \sum_{\alpha\beta\gamma\delta}  \langle \alpha \beta|\hat{v}|\gamma \delta\rangle
+		a_\alpha^{\dagger} a_\beta^{\dagger} a_\delta a_\gamma \nonumber \\
+	&=& \frac{1}{4} \sum_{\alpha\beta\gamma\delta} \left[ \langle \alpha \beta|\hat{v}|\gamma \delta\rangle -
+		\langle \alpha \beta|\hat{v}|\delta\gamma \rangle \right] 
+		a_\alpha^{\dagger} a_\beta^{\dagger} a_\delta a_\gamma \nonumber \\
+	&=& \frac{1}{4} \sum_{\alpha\beta\gamma\delta} \langle \alpha \beta|\hat{v}|\gamma \delta\rangle_{\mathrm{AS}}
+		a_\alpha^{\dagger} a_\beta^{\dagger} a_\delta a_\gamma \label{eq:2-45}
+\end{align}
+$$
+
+<p>The factors in front of the operator, either  \( \frac{1}{4} \) or 
+\( \frac{1}{2} \) tells whether we use antisymmetrized matrix elements or not. 
+</p>
+
+<p>We can now express the Hamiltonian operator for a many-fermion system  in the occupation basis representation
+as  
+</p>
+$$
+\begin{equation}
+	H = \sum_{\alpha, \beta} \langle \alpha|\hat{t}+\hat{u}_{\mathrm{ext}}|\beta\rangle a_\alpha^{\dagger} a_\beta + \frac{1}{4} \sum_{\alpha\beta\gamma\delta}
+		\langle \alpha \beta|\hat{v}|\gamma \delta\rangle a_\alpha^{\dagger} a_\beta^{\dagger} a_\delta a_\gamma. \label{eq:2-46b}
+\end{equation}
+$$
+
+<p>This is the form we will use in the rest of these lectures, assuming that we work with anti-symmetrized two-body matrix elements.</p>
+<h2 id="wick-s-theorem">Wick's theorem </h2>
+
+<a href="https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/HandwrittenNotes/2022" target="_blank">See handwritten notes for week 36</a>
 
 <!-- ------------------- end of main content --------------- -->
 <center style="font-size:80%">
