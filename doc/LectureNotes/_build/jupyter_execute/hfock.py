@@ -4,7 +4,9 @@
 # <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
 # doconce format html hfock.do.txt  -->
 
-# # Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
+# # Hartree-Fock theory
+
+# ## Introduction
 # 
 # Hartree-Fock (HF) theory is an algorithm for finding an approximative expression for the ground state of a given Hamiltonian. The basic ingredients are
 #   * Define a single-particle basis $\{\psi_{\alpha}\}$ so that
