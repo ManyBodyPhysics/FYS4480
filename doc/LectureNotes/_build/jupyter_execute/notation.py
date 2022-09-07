@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
-# doconce format html intro.do.txt  -->
+# doconce format html notation.do.txt  -->
 
 # # Introduction to many-body physics
 
@@ -228,7 +228,7 @@ print(x)
 
 
 import numpy as np
-x = np.log(np.array([4.0, 7.0, 8.0])
+x = np.log(np.array([4.0, 7.0, 8.0]))
 print(x)
 
 
@@ -238,7 +238,7 @@ print(x)
 
 
 import numpy as np
-x = np.log(np.array([4.0, 7.0, 8.0])
+x = np.log(np.array([4.0, 7.0, 8.0]))
 print(x.itemsize)
 
 
@@ -367,7 +367,7 @@ print(np.ravel(a.T, order='A'))
 # with the above-mentioned Dirac **bra-ket** notation.  As example, consider the vector $\boldsymbol{x}$ defined here
 
 # $$
-# \boldsymbol{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix}}\in \mathbb{C}^{n} ,
+# \boldsymbol{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix} \in \mathbb{C}^{n} ,
 # $$
 
 # and its hermitian conjugate
@@ -391,7 +391,7 @@ print(np.ravel(a.T, order='A'))
 # We can also use this orthonormal basis to define the completeness relation as
 
 # $$
-# \boldsymbol{I}=\sum__{i=0}^{\infty}\vert x_i \rangle \langle _i \vert,
+# \boldsymbol{I}=\sum_{i=0}^{\infty}\vert x_i \rangle \langle _i \vert,
 # $$
 
 # where we have defined the outer product
@@ -418,7 +418,10 @@ print(np.ravel(a.T, order='A'))
 # \vert \phi_i \rangle \sum_j C_{ij} \vert x_j\rangle,
 # $$
 
-# where the coefficients $C_{ij}=\langle \phi_i\vert x_j\rangle$ are the matrix elements of a transformation from a basis set $\vert \boldsymbol{x} \rangle$ to a new basis set $\vert \boldsymbol{\phi}\rangle$. The matrix $\boldsymbol{C}$ is normally a unitary matrix.
+# where the coefficients $C_{ij}=\langle \phi_i\vert x_j\rangle$ are the
+# matrix elements of a transformation from a basis set $\vert \boldsymbol{x}
+# \rangle$ to a new basis set $\vert \boldsymbol{\phi}\rangle$. The matrix
+# $\boldsymbol{C}$ is normally a unitary matrix.
 # 
 # With the outer product we can define projection operators $\hat{P}$ and $\hat{Q}$.
 # Consider for example the two orthonormal states

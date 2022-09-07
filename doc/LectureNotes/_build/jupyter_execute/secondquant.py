@@ -4,7 +4,7 @@
 # <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
 # doconce format html secondquant.do.txt  -->
 
-# # Definitions and Second quantization
+# # Introduction to  second quantization
 # 
 # We introduce the time-independent  operators
 # $a_\alpha^{\dagger}$ and $a_\alpha$   which create and annihilate, respectively, a particle 

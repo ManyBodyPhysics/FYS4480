@@ -52,7 +52,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2. Definitions and Second quantization" href="secondquant.html" />
+    <link rel="next" title="2. Introduction to second quantization" href="secondquant.html" />
     <link rel="prev" title="Textbooks" href="textbooks.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -132,7 +132,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="secondquant.html">
-   2. Definitions and Second quantization
+   2. Introduction to  second quantization
   </a>
  </li>
  <li class="toctree-l1">
@@ -141,13 +141,18 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="hfock.html">
+   4. Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="mbpt.html">
-   4. Many-body perturbation theory
+   6. Many-body perturbation theory
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="cc.html">
-   5. The Coupled Cluster Method
+   7. The Coupled Cluster Method
   </a>
  </li>
 </ul>
@@ -159,22 +164,22 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="vmcdmc.html">
-   8. Variational Monte Carlo methods
+   10. Variational Monte Carlo methods
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="gradientmethods.html">
-   9. Gradient Methods
+   11. Gradient Methods
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="resamplingmethods.html">
-   10. Resampling Techniques, Bootstrap and Blocking
+   12. Resampling Techniques, Bootstrap and Blocking
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="boltzmannmachines.html">
-   11. Boltzmann Machines
+   13. Boltzmann Machines
   </a>
  </li>
 </ul>
@@ -186,12 +191,12 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="vectorization.html">
-   12. Optimization and Vectorization
+   14. Optimization and Vectorization
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="parallelization.html">
-   13. Parallelization with MPI and OpenMPI
+   15. Parallelization with MPI and OpenMPI
   </a>
  </li>
 </ul>
@@ -389,7 +394,7 @@ const thebe_selector_output = ".output, .cell_output"
               <div>
                 
   <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
-doconce format html intro.do.txt  --><div class="tex2jax_ignore mathjax_ignore section" id="introduction-to-many-body-physics">
+doconce format html notation.do.txt  --><div class="tex2jax_ignore mathjax_ignore section" id="introduction-to-many-body-physics">
 <h1><span class="section-number">1. </span>Introduction to many-body physics<a class="headerlink" href="#introduction-to-many-body-physics" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction-to-the-course">
 <h2><span class="section-number">1.1. </span>Introduction to the course<a class="headerlink" href="#introduction-to-the-course" title="Permalink to this headline">¶</a></h2>
@@ -536,8 +541,8 @@ Salter determinant.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-0.43567615 -0.71487926  1.23143611 -1.35250593 -0.6267467  -0.20561199
-  0.93254533  0.86714687  0.42405015  2.9080875 ]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[ 1.10191168 -0.75583411 -0.21030824  0.98485749 -0.82828585  0.73123395
+  0.25171029 -0.59645822 -0.29833894 -0.69055219]
 </pre></div>
 </div>
 </div>
@@ -618,16 +623,13 @@ The attentive reader will also notice that the output is <span class="math notra
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">]))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">  File</span><span class="nn"> &quot;&lt;ipython-input-6-f6d7a289d493&gt;&quot;</span><span class="gt">, line </span><span class="mi">3</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="o">^</span>
-<span class="ne">SyntaxError</span>: invalid syntax
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.38629436 1.94591015 2.07944154]
 </pre></div>
 </div>
 </div>
@@ -636,8 +638,13 @@ The attentive reader will also notice that the output is <span class="math notra
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">]))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8
 </pre></div>
 </div>
 </div>
@@ -652,6 +659,13 @@ as (recall that we user lowercase letters for vectors and uppercase letters for 
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[1.38629436 1.94591015 2.07944154]
+ [1.09861229 2.30258509 2.39789527]
+ [1.38629436 1.60943791 1.94591015]]
+</pre></div>
+</div>
+</div>
 </div>
 <p>If we use the <strong>shape</strong> function we would get <span class="math notranslate nohighlight">\((3, 3)\)</span> as output, that is verifying that our matrix is a <span class="math notranslate nohighlight">\(3\times 3\)</span> matrix. We can slice the matrix and print for example the first column (Python organized matrix elements in a row-major order, see below) as</p>
 <div class="cell docutils container">
@@ -663,6 +677,11 @@ as (recall that we user lowercase letters for vectors and uppercase letters for 
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.38629436 1.09861229 1.38629436]
+</pre></div>
+</div>
+</div>
 </div>
 <p>We can continue this was by printing out other columns or rows. The example here prints out the second column</p>
 <div class="cell docutils container">
@@ -671,6 +690,11 @@ as (recall that we user lowercase letters for vectors and uppercase letters for 
 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">11.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">]</span> <span class="p">]))</span>
 <span class="c1"># print the first column, row-major order and elements start with 0</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,:])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.09861229 2.30258509 2.39789527]
 </pre></div>
 </div>
 </div>
@@ -686,6 +710,20 @@ as (recall that we user lowercase letters for vectors and uppercase letters for 
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]]
+</pre></div>
+</div>
+</div>
 </div>
 <p>or initializing all elements to</p>
 <div class="cell docutils container">
@@ -698,6 +736,20 @@ as (recall that we user lowercase letters for vectors and uppercase letters for 
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+ [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]]
+</pre></div>
+</div>
+</div>
 </div>
 <p>or as unitarily distributed random numbers (see the material on random number generators in the statistics part)</p>
 <div class="cell docutils container">
@@ -707,6 +759,30 @@ as (recall that we user lowercase letters for vectors and uppercase letters for 
 <span class="c1"># define a matrix of dimension 10 x 10 and set all elements to random numbers with x \in [0, 1]</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.02699497 0.12137522 0.46135677 0.25995257 0.01155969 0.6781078
+  0.83502415 0.79651726 0.12105549 0.64567504]
+ [0.48030087 0.58073657 0.15101489 0.11808451 0.15401401 0.03246849
+  0.62972826 0.18781166 0.48037317 0.12221995]
+ [0.09467605 0.37659448 0.63496463 0.73389668 0.37072602 0.40726847
+  0.78384824 0.80425149 0.67347366 0.29025499]
+ [0.93221123 0.04862848 0.81485368 0.46969371 0.97075321 0.2923592
+  0.63682096 0.14280416 0.52692726 0.54962681]
+ [0.17688646 0.67211961 0.41233198 0.70627175 0.23549522 0.10146165
+  0.73367135 0.24823306 0.60902437 0.10659996]
+ [0.74054623 0.46608135 0.31490596 0.98164281 0.65491917 0.16966918
+  0.54262066 0.02848545 0.37929392 0.25747734]
+ [0.49720322 0.26825052 0.90073321 0.9258928  0.28078488 0.15627891
+  0.28893134 0.75169393 0.29655304 0.65194138]
+ [0.68956741 0.55592995 0.63220762 0.17429421 0.59821108 0.26696252
+  0.34926256 0.45611727 0.6225783  0.26790636]
+ [0.18737719 0.79106177 0.53689329 0.02396383 0.49194562 0.97831699
+  0.15297016 0.56965045 0.19224713 0.30214673]
+ [0.09437511 0.30318668 0.18638153 0.12380483 0.7135386  0.78242973
+  0.38805621 0.29548068 0.77424353 0.94922378]]
 </pre></div>
 </div>
 </div>
@@ -757,6 +833,26 @@ or the variance.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The test matrix:[[ 1.  2.  3.]
+ [ 4.  5.  6.]
+ [ 7.  8.  9.]
+ [10. 11. 12.]]
+This is the total mean summed over all elements:6.5
+This is the mean for each column:[[5.5 6.5 7.5]]
+This is the mean value for each row:[[ 2.]
+ [ 5.]
+ [ 8.]
+ [11.]]
+This is the mean value for each row with keepdims false:[ 2.  5.  8. 11.]
+Flatten  the matrix:[ 1.  2.  3.  4.  5.  6.  7.  8.  9. 10. 11. 12.]
+Reshape the matrix to a one-dim array:[ 1.  2.  3.  4.  5.  6.  7.  8.  9. 10. 11. 12.]
+[ 1.  4.  7. 10.  2.  5.  8. 11.  3.  6.  9. 12.]
+[ 1.  4.  7. 10.  2.  5.  8. 11.  3.  6.  9. 12.]
+[ 1.  2.  3.  4.  5.  6.  7.  8.  9. 10. 11. 12.]
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="definitions-and-vector-and-matrix-operations">
@@ -769,7 +865,7 @@ letters for vectors and upper-case boldfaced letters for matrices. These ways to
 with the above-mentioned Dirac <strong>bra-ket</strong> notation.  As example, consider the vector <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span> defined here</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\boldsymbol{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix}}\in \mathbb{C}^{n} ,
+\boldsymbol{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix} \in \mathbb{C}^{n} ,
 \end{split}\]</div>
 <p>and its hermitian conjugate</p>
 <div class="math notranslate nohighlight">
@@ -789,7 +885,7 @@ with the above-mentioned Dirac <strong>bra-ket</strong> notation.  As example, c
 <p>We can also use this orthonormal basis to define the completeness relation as</p>
 <div class="math notranslate nohighlight">
 \[
-\boldsymbol{I}=\sum__{i=0}^{\infty}\vert x_i \rangle \langle _i \vert,
+\boldsymbol{I}=\sum_{i=0}^{\infty}\vert x_i \rangle \langle _i \vert,
 \]</div>
 <p>where we have defined the outer product</p>
 <div class="math notranslate nohighlight">
@@ -812,7 +908,10 @@ quantum mechanical problem, the above sum needs to be truncated.</p>
 \[
 \vert \phi_i \rangle \sum_j C_{ij} \vert x_j\rangle,
 \]</div>
-<p>where the coefficients <span class="math notranslate nohighlight">\(C_{ij}=\langle \phi_i\vert x_j\rangle\)</span> are the matrix elements of a transformation from a basis set <span class="math notranslate nohighlight">\(\vert \boldsymbol{x} \rangle\)</span> to a new basis set <span class="math notranslate nohighlight">\(\vert \boldsymbol{\phi}\rangle\)</span>. The matrix <span class="math notranslate nohighlight">\(\boldsymbol{C}\)</span> is normally a unitary matrix.</p>
+<p>where the coefficients <span class="math notranslate nohighlight">\(C_{ij}=\langle \phi_i\vert x_j\rangle\)</span> are the
+matrix elements of a transformation from a basis set <span class="math notranslate nohighlight">\(\vert \boldsymbol{x}
+\rangle\)</span> to a new basis set <span class="math notranslate nohighlight">\(\vert \boldsymbol{\phi}\rangle\)</span>. The matrix
+<span class="math notranslate nohighlight">\(\boldsymbol{C}\)</span> is normally a unitary matrix.</p>
 <p>With the outer product we can define projection operators <span class="math notranslate nohighlight">\(\hat{P}\)</span> and <span class="math notranslate nohighlight">\(\hat{Q}\)</span>.
 Consider for example the two orthonormal states</p>
 <div class="math notranslate nohighlight">
@@ -1350,7 +1449,7 @@ a chosen basis as defined in Eq. (<a class="reference external" href="#eq:newbas
     <a class='right-next' id="next-link" href="secondquant.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">2. </span>Definitions and Second quantization</p>
+        <p class="prev-next-title"><span class="section-number">2. </span>Introduction to  second quantization</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
