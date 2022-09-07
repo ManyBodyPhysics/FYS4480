@@ -301,33 +301,44 @@ print(np.ravel(a.T, order='A'))
 ===== Definitions and vector and matrix operations =====
 
 We use this section to define some central quantities as well as
-presenting our notations for single-particle and many-states. We will
+presenting our notations for single-particle and many-body states. We will
 normally tend to label vectors and states with the so-called Dirac
 _bra-ket_ notation.  In general we will use lower-case and boldfaced
 letters for vectors and upper-case boldfaced letters for matrices. These ways to represent vectors will however be replaced
-with the above-mentioned Dirac _bra-ket_ notation as for the vector $\bm{x}$ defined here
+with the above-mentioned Dirac _bra-ket_ notation.  As example, consider the vector $\bm{x}$ defined here
 
 !bt
 \[
-\bm{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix} 
+\bm{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix}}\in \mathbb{C}^{n} , 
 \]
 !et
-
+and its hermitian conjugate
 
 !bt
 \[
-\langle x \vert = \vert x \rangle^{\dagger}=\begin{bmatrix} x_0 & x_1 &  x_2 & \dots & x_{n-2} & x_{n-1} \end{bmatrix} 
+\langle x \vert = \vert x \rangle^{\dagger}=\begin{bmatrix} x_0^* & x_1^* &  x_2^* & \dots & x_{n-2}^* & x_{n-1}^* \end{bmatrix}. 
 \]
 !et
-
+The norm of two vectors is defined as (assuming they are not orthogonal
 
 !bt
 \[
-\langle x \vert y \rangle =
+\langle x \vert y \rangle =\sum_ix_i^*y_i,
 \]
 !et
-
-=== The outer product ===
+and for an orthonormal (normalized and orthogonal) basis we have
+!bt
+\[
+\langle x_j \vert x_i \rangle =\delta_{ij}.
+\]
+!et
+We can also use this orthonormal basis to define the completeness relation as
+!bt
+\[
+\bm{I}=\sum__{i=0}^{\infty}\vert x_i \rangle \langle _i \vert,
+\]
+!et
+where we have defined the outer product
 !bt
 \[
 \vert x \rangle \langle y \vert  = \begin{bmatrix} x_0y_0^* & x_0y_1^* &  x_0y_2^* & \dots & x_0y_{n-2}^* & x_0y_{n-1}^* \\
@@ -335,7 +346,44 @@ with the above-mentioned Dirac _bra-ket_ notation as for the vector $\bm{x}$ def
 						   \dots    & \dots    & \dots     & \dots & \dots        & \dots \\                                           						         \dots    & \dots    & \dots     & \dots & \dots        & \dots \\
 						   x_{n-2}y_0^* & x_{n-2}y_1^* &  x_{n-2}y_2^* & \dots & x_{n-2}y_{n-2}^* & x_{n-2}y_{n-1}^* \\
 						   x_{n-1}y_0^* & x_{n-1}y_1^* &  x_{n-1}y_2^* & \dots & x_{n-1}y_{n-2}^* & x_{n-1}y_{n-1}^* \\
-\end{bmatrix} 
+\end{bmatrix}.
+\]
+!et
+
+The outer product defined here is going to play an important role in
+these studies as it can be used to define important projection
+operators. Since the basis of orthonormal states is, normally,
+infinite, the above sum runs over an infinite basis. However, for all
+practical reasons, unless we can find analytical solutions to a
+quantum mechanical problem, the above sum needs to be truncated.
+
+An orthonormal basis can in turn be used to define a new basis set $\vert \phi_i \rangle$
+!bt
+\[
+\vert \phi_i \rangle \sum_j C_{ij} \vert x_j\rangle,
+\]
+!et
+
+where the coefficients $C_{ij}=\langle \phi_i\vert x_j\rangle$ are the matrix elements of a transformation from a basis set $\vert \bm{x} \rangle$ to a new basis set $\vert \bm{\phi}\rangle$. The matrix $\bm{C}$ is normally a unitary matrix.
+
+
+With the outer product we can define projection operators $\hat{P}$ and $\hat{Q}$.
+Consider for example the two orthonormal states
+!bt
+\[
+\vert x_0 \rangle = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, 
+\]
+!et
+and
+!bt
+\[
+\vert x_1 \rangle = \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
+\]
+!et
+We can easily define a new basis which is a linear combination of the two
+!bt
+\[
+\vert \phi \rangle = \alpha \vert x_0 \rangle +\beta \vert x_1 \rangle 
 \]
 !et
 
@@ -366,535 +414,6 @@ The tensor product of two matrices is defined as
 
 
 
-\section{Qubits}
-
-\quad The bit is the basic unit of information in classical computing. It represents a  binary logical state. One denotes the two possible states as 0 and 1. So a bit $c$ is
-\begin{align}
-c = 0 \ \text{OR} \ 1
-.\end{align}
-A bit can be realized physically by a classical binary event. That is, a classical event that has exactly two distinct outcomes. Examples include the toss of a coin, the presence or absence of a hole in a paper card, or (as used in modern computers) two levels of electric charge stored in a capacitor. Multiple bits (say $n$) are written together in a bit-string
-\begin{align}
-c = c_0c_2\ldots c_{n-1}
-,\end{align}
-where $c_i=0,1$ for $i=0,1,\ldots ,n-1$. Thus, $n$ qubits can represent $2^n$ distinct logical states.
-
-The qubit is the basic unit of information in quantum computing. It is the abstraction of a quantum binary event. Examples include an electron being spin-up or spin-down or a quantum state being in one of two energy states. The state of a qubit is spanned by the computational basis which consists of the following two quantum states
-\begin{align}
-\ket{0}
-&=
-\begin{pmatrix}
-1 \\ 0
-\end{pmatrix},
-\\
-\ket{1}
-&=
-\begin{pmatrix}
-0 \\ 1
-\end{pmatrix}.
-\end{align}
-Thus, a qubit is a two-level quantum state which can be written as a superposition of the computational base state $\ket{0}$ and $\ket{1}$. That is, a qubit $\ket{q}$ can be written as
-\begin{align}
-\ket{q}=a\ket{0}+b\ket{1},
-\end{align}
-where $a,b\in\mathbb{C}$, under the restrictions that
-\begin{align}
-\abs{a}^2+\abs{b}^2=1.
-\end{align}
-One convenient way to represent the state of a single qubit $\ket{q}$ is on the Bloch sphere \cite{ref:bloch_sphere}. To do so, one parameterizes the state's coefficients with two angles $\theta$ and $\phi$ as
-\begin{align}
-\ket{\psi}=\cos\frac{\theta}{2}\ket{0}+\sin\frac{\theta}{2}e^{i\phi}\ket{1}
-.\end{align}
-The qubit $\ket{\psi}$ is represented within the Bloch sphere as a vector with polar angle $\theta$ and azimuthal angle $\phi$ as depicted in Figure \ref{fig:bloch_sphere}.
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.2]{bloch_sphere_image.png}   
-    \caption{Depiction of a qubit $\ket{\psi}$ on the Bloch sphere \cite{ref:bloch_pic}.}
-    \label{fig:bloch_sphere}
-\end{figure}
-
-As $2x1$ complex-valued vectors, qubits can be ``multiplied" in several important ways. To explain them, we must first introduce the adjoint of a qubit. Given a qubit
-\begin{align}
-\ket{q}
-=
-\begin{pmatrix}
-a \\ b
-\end{pmatrix}
-,\end{align}
-its adjoint $\bra{q}$ is given by its Hermitian  conjugate 
-\begin{align}
-\bra{q}
-=
-\ket{q}^\dagger
-=
-\begin{pmatrix}
-a^* & b^*
-\end{pmatrix}
-,\end{align}
-where taking the Hermitian conjugate of an operator $A$ takes each of its elements from $a_{ij}$ to $a^*_{ji}$.
-
-The inner-product of two qubits $\ket{q_1}$ and $\ket{q_2}$ is defined as
-\begin{align}
-\bra{q_1}\ket{q_2}
-=
-\begin{pmatrix} 
-a^*_1 & b^*_1
-\end{pmatrix}
-\begin{pmatrix}
-a_2 \\ b_2
-\end{pmatrix}
-=
-a^*_1a_2+b^*_1b_2
-.\end{align}
-The outer-product of two qubits $\ket{q_1}$ and $\ket{q_2}$ is defined as
-\begin{align}
-\ket{q_1}\bra{q_2}
-=
-\begin{pmatrix} 
-a_1 \\ b_1
-\end{pmatrix}
-\begin{pmatrix}
-a^*_2 & b^*_2
-\end{pmatrix}
-=
-\begin{pmatrix}
-a_1a^*_2 & a_1b^*_2
-\\
-b_1a^*_2 & b_1b^*_2
-\end{pmatrix}
-.\end{align}
-Finally, the tensor-product of two-qubits is defined as
-\begin{align}
-\ket{q_1q_2}
-=
-\ket{q_1}\otimes\ket{q_2}
-=
-\ket{00}&=\begin{pmatrix}
-a_1 \\ b_1
-\end{pmatrix}
-\otimes
-\begin{pmatrix}
-a_2 \\ b_2
-\end{pmatrix}
-=\begin{pmatrix}
-a_1\begin{pmatrix}
-a_2 \\ b_2
-\end{pmatrix}
-\\
-b_1\begin{pmatrix}
-a_2 \\ b_2
-\end{pmatrix}
-\end{pmatrix}
-=\begin{pmatrix}
-a_1a_2 \\ a_1b_2 \\ b_1a_2 \\ b_1b_2
-\end{pmatrix}
-.\end{align}
-
-
-
-A single-qubit gate is a physical action that is applied to one qubit. It can be represented by a matrix $U$ from the group SU(2). Any single-qubit gate can be parameterized by three angles: $\theta$, $\phi$, and $\lambda$ as follows
-\begin{align}
-\label{U}
-U(\theta,\phi,\lambda)
-=
-\begin{pmatrix}
-\cos\frac{\theta}{2} & -e^{i\lambda}\sin\frac{\theta}{2}
-\\
-e^{i\phi}\sin\frac{\theta}{2} & e^{i(\phi+\lambda)}\cos\frac{\theta}{2}
-\end{pmatrix}
-.\end{align}
-There are several widely used quantum gates, include the following:
-The Pauli gates correspond to the Pauli matrices
-\begin{align}
-I
-&=
-\begin{pmatrix}
-1 & 0 \\
-0 & 1
-\end{pmatrix}
-\\
-X
-&=
-\begin{pmatrix}
-0 & 1 \\
-1 & 0
-\end{pmatrix}
-\\
-Y
-&=
-\begin{pmatrix}
-0 & -i \\
-i & 0
-\end{pmatrix}
-\\
-Z
-&=
-\begin{pmatrix}
-1 & 0 \\
-0 & -1
-\end{pmatrix}
-,\end{align}
-which satisfy the relation
-\begin{align}
-\comm{\sigma}{\tau}=i\epsilon_{\sigma\tau\upsilon}\upsilon
-,\end{align}
-for $\sigma,\tau,\upsilon\in\{X,Y,Z\}$. These gates form a basis for the algebra $\mathfrak{su}(2)$. Exponentiating them will thus give us a basis for SU(2), the group within which all single-qubit gates live. These exponentiated Pauli gates are called rotation gates $R_{\sigma}(\theta)$ because they rotate the quantum state around the axis $\sigma=X,Y,Z$ of the Bloch sphere (Figure \ref{fig:bloch_sphere}) by an angle $\theta$. They are defined as
-\begin{align}
-R_X(\theta)
-&=
-e^{-i\frac{\theta}{2}X}
-=
-\begin{pmatrix}
-\cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\
--i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} 
-\end{pmatrix},
-\\
-R_Y(\theta)
-&=
-e^{-i\frac{\theta}{2}Y}
-=
-\begin{pmatrix}
-\cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\
-\sin\frac{\theta}{2} & \cos\frac{\theta}{2} 
-\end{pmatrix},
-\\
-R_Z(\theta)
-&=
-e^{-i\frac{\theta}{2}Z}
-=
-\begin{pmatrix}
-e^{-i\theta/2} & 0 \\
-0 & e^{i\theta/2}
-\end{pmatrix}
-.\end{align}
-Because they form a basis for $\text{SU}(2)$, any single-qubit gate can be decomposed into three rotation gates. Indeed
-\begin{align}
-R_z(\phi)R_y(\theta)R_z(\lambda)
-&=
-\begin{pmatrix}
-e^{-i\phi/2} & 0 \\
-0 & e^{i\phi/2}
-\end{pmatrix}
-\begin{pmatrix}
-\cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\
-\sin\frac{\theta}{2} & \cos\frac{\theta}{2} 
-\end{pmatrix}
-\begin{pmatrix}
-e^{-i\lambda/2} & 0 \\
-0 & e^{i\lambda/2}
-\end{pmatrix}
-\\
-&=
-e^{-i(\phi+\lambda)/2}
-\begin{pmatrix}
-\cos\frac{\theta}{2} & -e^{i\lambda}\sin\frac{\theta}{2}
-\\
-e^{i\phi}\sin\frac{\theta}{2} & e^{i(\phi+\lambda)}\cos\frac{\theta}{2}
-\end{pmatrix}
-,\end{align}
-which is, up to a global phase, equal to the expression for an arbitrary single-qubit gate (\ref{U}).
-
-\subsection{Two-Qubit Gates}
-
-A two-qubit gate is a physical action that is applied to two qubits. It can be represented by a matrix $U$ from the group SU(4). One important type of two-qubit gates are controlled gates, which work as follows: Suppose $U$ is a single-qubit gate. A controlled-$U$ gate ($CU$) acts on two qubits: a control qubit $\ket{x}$ and a target qubit $\ket{y}$. The controlled-$U$ gate applies the identity $I$ or the single-qubit gate $U$ to the target qubit if the control gate is in the zero state $\ket{0}$ or the one state $\ket{1}$, respectively. The control qubit is not acted upon. This can be represented as follows:
-\begin{align}
-CU\ket{xy}=
-\begin{cases}
-\ket{xy} & \text{if} \ \ket{x}=\ket{0}
-\\
-\ket{x}U\ket{y} & \text{if} \ \ket{x}=\ket{1}
-\end{cases}
-.\end{align}
-The action of a controlled-$U$ gate $CU$ can be represented in a quantum circuit as follows
-\begin{align}
-\Qcircuit @C=1em @R=3em 
-{
-\lstick{\ket{x}} & \ctrl{1} & \rstick{\ket{x}} \qw
-\\
-\lstick{\ket{y}} & \gate{U} & \rstick{\begin{cases}\ket{y}, & \ket{x}=\ket{0} \\ U\ket{y}, & \ket{a}=\ket{x}\end{cases}} \qw
-}
-\\
-\nonumber
-\end{align}
-It can be written in matrix form by writing it as a superposition of the two possible cases, each written as a simple tensor product
-\begin{align}
-CU 
-&= \ket{0}\bra{0}\otimes I + \ket{1}\bra{1}\otimes U
-\\
-&=\begin{pmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 \\
-0 & 0 & u_{00} & u_{01} \\
-0 & 0 & u_{10} & u_{11}
-\end{pmatrix}
-.\end{align}
-One of the most fundamental controlled gates is the CNOT gate. It is defined as the controlled-$X$ gate $CX$ and thus flips the state of the target qubit if the control qubit is in the zero state $\ket{0}$. It can be written in matrix form as follows:
-\begin{align}
-\text{CNOT}
-=\begin{pmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 \\
-0 & 0 & 0 & 1 \\
-0 & 0 & 1 & 0
-\end{pmatrix}
-.\end{align}
-A widely used two-qubit gate that goes beyond the simple controlled function is the SWAP gate. It swaps the states of the two qubits it acts upon
-\begin{align}
-\text{SWAP}\ket{xy}=\ket{yx}
-,\end{align}
-as depicted in the quantum circuit below
-\begin{align}
-\label{swap_def}
-\Qcircuit
-{
-\lstick{\ket{x}} & \qswap      & \rstick{\ket{y}} \qw
-\\
-\lstick{\ket{y}} & \qswap \qwx & \rstick{\ket{x}} \qw
-}
-,\end{align}
-and has the following matrix form
-\begin{align}
-\label{swap_def}
-\text{SWAP}
-=\begin{pmatrix}
-1 & 0 & 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 1 & 0 & 0 \\
-0 & 0 & 0 & 1
-\end{pmatrix}
-.\end{align}
-It can be decomposed into a series of three CNOTs, each of which has its directionality flipped from the previous
-\begin{align}
-\Qcircuit
-{
-\lstick{\ket{x}} & \ctrl{1} & \targ     & \ctrl{1} & \rstick{\ket{y}} \qw
-\\
-\lstick{\ket{y}} & \targ    & \ctrl{-1} & \targ    & \rstick{\ket{x}} \qw
-}
-\end{align}
-As for arbitrary two-qubit gates $U\in\text{SU(4)}$, they can be optimally decomposed (up to a global phase) into the following sequence \cite{ref:kak} involving three parameters, fifteen elementary one-qubit gates and three CNOT gates
-\begin{align}
-\Qcircuit
-{
-\qw & \gate{U_1} & \ctrl{1} & \gate{R_y(\theta_1)} & \targ      & \gate{R_y(\theta_2)} & \ctrl{1} & \gate{U_3} & \qw
-\\
-\qw & \gate{U_2} & \targ    & \gate{R_z(\theta_3)} & \ctrl{-1} & \qw                  & \targ     & \gate{U_4} & \qw
-}
-\end{align}
-where $U_1,U_2,U_3,U_4$ are single-qubit gates, each of which can be decomposed into three elementary one-qubit gates (rotation gates). Additionally, $\theta_1,\theta_2,\theta_3$ are parameters to be determined by the arbitrary two-qubit gate to be decomposed. Two-qubit gates that are restricted to $U\in\text{SO(4)}$ can be decomposed into a shorter depth circuit consisting of just twelve elementary single-qubit gates and two CNOT gates
-\begin{align}
-\Qcircuit
-{
-\qw & \gate{R_z(\pi/2)} & \gate{R_y(\pi/2)} & \ctrl{1} & \gate{U_1} & \ctrl{1} & \gate{R^*_y(\pi/2)} & \gate{R^*_z(\pi/2)} & \qw
-\\
-\qw & \gate{R_z(\pi/2)} & \qw               & \targ    & \gate{U_2} & \targ    & \qw                 & \gate{R^*_z(\pi/2)} & \qw
-}
-\end{align}
-
-
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
-
-
-!bt
-\[
-
-\]
-!et
 
 === Representation of states ===
 
@@ -1013,7 +532,6 @@ A simple $2\times 2$ determinant illustrates this. We have
 where in the last term we have interchanged the column indices $1$ and $2$. The natural ordering we have chosen is $a_{11}a_{22}$. 
 
 
-=== Back to the derivation of the energy ===
 
 
 The single-particle function $\psi_{\alpha}(x_i)$  are eigenfunctions of the onebody

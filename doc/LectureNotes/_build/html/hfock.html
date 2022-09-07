@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space &#8212; Quantum Mechanics for Many-Particle Systems</title>
+    <title>4. Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space &#8212; Quantum Mechanics for Many-Particle Systems</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -52,6 +52,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6. Many-body perturbation theory" href="mbpt.html" />
+    <link rel="prev" title="3. Full configuration interaction theory" href="fci.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -122,7 +124,7 @@ const thebe_selector_output = ".output, .cell_output"
   Basic Many-Body Physics
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="notation.html">
    1. Introduction to many-body physics
@@ -130,22 +132,27 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="secondquant.html">
-   9. Definitions and Second quantization
+   2. Definitions and Second quantization
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="fci.html">
-   16. Full configuration interaction theory
+   3. Full configuration interaction theory
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   4. Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mbpt.html">
-   17. Many-body perturbation theory
+   6. Many-body perturbation theory
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="cc.html">
-   18. The Coupled Cluster Method
+   7. The Coupled Cluster Method
   </a>
  </li>
 </ul>
@@ -157,22 +164,22 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="vmcdmc.html">
-   33. Variational Monte Carlo methods
+   10. Variational Monte Carlo methods
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="gradientmethods.html">
-   34. Gradient Methods
+   11. Gradient Methods
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="resamplingmethods.html">
-   35. Resampling Techniques, Bootstrap and Blocking
+   12. Resampling Techniques, Bootstrap and Blocking
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="boltzmannmachines.html">
-   36. Boltzmann Machines
+   13. Boltzmann Machines
   </a>
  </li>
 </ul>
@@ -184,12 +191,12 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="vectorization.html">
-   37. Optimization and Vectorization
+   14. Optimization and Vectorization
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="parallelization.html">
-   38. Parallelization with MPI and OpenMPI
+   15. Parallelization with MPI and OpenMPI
   </a>
  </li>
 </ul>
@@ -265,74 +272,59 @@ const thebe_selector_output = ".output, .cell_output"
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
+   4. Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#variational-calculus-and-lagrangian-multipliers">
-     Variational Calculus and Lagrangian Multipliers
+     4.1. Variational Calculus and Lagrangian Multipliers
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#derivation-of-hartree-fock-equations-in-coordinate-space">
-     Derivation of Hartree-Fock equations in coordinate space
+     4.2. Derivation of Hartree-Fock equations in coordinate space
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#analysis-of-hartree-fock-equations-in-coordinate-space">
-     Analysis of Hartree-Fock equations in coordinate space
+     4.3. Analysis of Hartree-Fock equations in coordinate space
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion">
-     Hartree-Fock by varying the coefficients of a wave function expansion
+     4.4. Hartree-Fock by varying the coefficients of a wave function expansion
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#hartree-fock-algorithm">
-     Hartree-Fock algorithm
+     4.5. Hartree-Fock algorithm
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#analysis-of-hartree-fock-equations-and-koopman-s-theorem">
-     Analysis of Hartree-Fock equations and Koopman’s theorem
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1-derivation-of-hartree-fock-equations">
-     Exercise 1: Derivation of Hartree-Fock equations
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2-derivation-of-hartree-fock-equations">
-     Exercise 2: Derivation of Hartree-Fock equations
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-3-developing-a-hartree-fock-program">
-     Exercise 3: Developing a  Hartree-Fock program
+     4.6. Analysis of Hartree-Fock equations and Koopman’s theorem
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#hartree-fock-in-second-quantization-and-stability-of-hf-solution">
-   Hartree-Fock in second quantization and stability of HF solution
+   5. Hartree-Fock in second quantization and stability of HF solution
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#thouless-theorem">
-     Thouless’ theorem
+     5.1. Thouless’ theorem
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#new-operators">
-     New operators
+     5.2. New operators
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#showing-that-tilde-c-rangle-c-rangle">
-     Showing that
+     5.3. Showing that
      <span class="math notranslate nohighlight">
       \(|\tilde{c}\rangle= |c'\rangle\)
      </span>
@@ -340,7 +332,22 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id1">
-     Hartree-Fock in second quantization and stability of HF solution
+     5.4. Hartree-Fock in second quantization and stability of HF solution
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1-derivation-of-hartree-fock-equations">
+     5.5. Exercise 1: Derivation of Hartree-Fock equations
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2-derivation-of-hartree-fock-equations">
+     5.6. Exercise 2: Derivation of Hartree-Fock equations
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-3-developing-a-hartree-fock-program">
+     5.7. Exercise 3: Developing a  Hartree-Fock program
     </a>
    </li>
   </ul>
@@ -367,74 +374,59 @@ const thebe_selector_output = ".output, .cell_output"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
+   4. Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#variational-calculus-and-lagrangian-multipliers">
-     Variational Calculus and Lagrangian Multipliers
+     4.1. Variational Calculus and Lagrangian Multipliers
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#derivation-of-hartree-fock-equations-in-coordinate-space">
-     Derivation of Hartree-Fock equations in coordinate space
+     4.2. Derivation of Hartree-Fock equations in coordinate space
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#analysis-of-hartree-fock-equations-in-coordinate-space">
-     Analysis of Hartree-Fock equations in coordinate space
+     4.3. Analysis of Hartree-Fock equations in coordinate space
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion">
-     Hartree-Fock by varying the coefficients of a wave function expansion
+     4.4. Hartree-Fock by varying the coefficients of a wave function expansion
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#hartree-fock-algorithm">
-     Hartree-Fock algorithm
+     4.5. Hartree-Fock algorithm
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#analysis-of-hartree-fock-equations-and-koopman-s-theorem">
-     Analysis of Hartree-Fock equations and Koopman’s theorem
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1-derivation-of-hartree-fock-equations">
-     Exercise 1: Derivation of Hartree-Fock equations
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2-derivation-of-hartree-fock-equations">
-     Exercise 2: Derivation of Hartree-Fock equations
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-3-developing-a-hartree-fock-program">
-     Exercise 3: Developing a  Hartree-Fock program
+     4.6. Analysis of Hartree-Fock equations and Koopman’s theorem
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#hartree-fock-in-second-quantization-and-stability-of-hf-solution">
-   Hartree-Fock in second quantization and stability of HF solution
+   5. Hartree-Fock in second quantization and stability of HF solution
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#thouless-theorem">
-     Thouless’ theorem
+     5.1. Thouless’ theorem
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#new-operators">
-     New operators
+     5.2. New operators
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#showing-that-tilde-c-rangle-c-rangle">
-     Showing that
+     5.3. Showing that
      <span class="math notranslate nohighlight">
       \(|\tilde{c}\rangle= |c'\rangle\)
      </span>
@@ -442,7 +434,22 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
    <li class="toc-h2 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id1">
-     Hartree-Fock in second quantization and stability of HF solution
+     5.4. Hartree-Fock in second quantization and stability of HF solution
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1-derivation-of-hartree-fock-equations">
+     5.5. Exercise 1: Derivation of Hartree-Fock equations
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2-derivation-of-hartree-fock-equations">
+     5.6. Exercise 2: Derivation of Hartree-Fock equations
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-3-developing-a-hartree-fock-program">
+     5.7. Exercise 3: Developing a  Hartree-Fock program
     </a>
    </li>
   </ul>
@@ -458,7 +465,7 @@ const thebe_selector_output = ".output, .cell_output"
                 
   <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
 doconce format html hfock.do.txt  --><div class="tex2jax_ignore mathjax_ignore section" id="why-hartree-fock-derivation-of-hartree-fock-equations-in-coordinate-space">
-<h1>Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space<a class="headerlink" href="#why-hartree-fock-derivation-of-hartree-fock-equations-in-coordinate-space" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">4. </span>Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space<a class="headerlink" href="#why-hartree-fock-derivation-of-hartree-fock-equations-in-coordinate-space" title="Permalink to this headline">¶</a></h1>
 <p>Hartree-Fock (HF) theory is an algorithm for finding an approximative expression for the ground state of a given Hamiltonian. The basic ingredients are</p>
 <ul class="simple">
 <li><p>Define a single-particle basis <span class="math notranslate nohighlight">\(\{\psi_{\alpha}\}\)</span> so that</p></li>
@@ -499,7 +506,7 @@ doconce format html hfock.do.txt  --><div class="tex2jax_ignore mathjax_ignore s
 \]</div>
 <p>The so-called Hartree-Fock potential <span class="math notranslate nohighlight">\(\hat{u}^{\mathrm{HF}}\)</span> brings an explicit medium dependence due to the summation over all single-particle states below the Fermi level <span class="math notranslate nohighlight">\(F\)</span>. It brings also in an explicit dependence on the two-body interaction (in nuclear physics we can also have complicated three- or higher-body forces). The two-body interaction, with its contribution from the other bystanding fermions, creates an effective mean field in which a given fermion moves, in addition to the external potential <span class="math notranslate nohighlight">\(\hat{u}_{\mathrm{ext}}\)</span> which confines the motion of the fermion. For systems like nuclei, there is no external confining potential. Nuclei are examples of self-bound systems, where the binding arises due to the intrinsic nature of the strong force. For nuclear systems thus, there would be no external one-body potential in the Hartree-Fock Hamiltonian.</p>
 <div class="section" id="variational-calculus-and-lagrangian-multipliers">
-<h2>Variational Calculus and Lagrangian Multipliers<a class="headerlink" href="#variational-calculus-and-lagrangian-multipliers" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.1. </span>Variational Calculus and Lagrangian Multipliers<a class="headerlink" href="#variational-calculus-and-lagrangian-multipliers" title="Permalink to this headline">¶</a></h2>
 <p>The calculus of variations involves
 problems where the quantity to be minimized or maximized is an integral.</p>
 <p>In the general case we have an integral of the type</p>
@@ -577,7 +584,7 @@ Schroedinger equation and the variational  approach discussed here provides
 a powerful method for obtaining approximate solutions of the wave function.</p>
 </div>
 <div class="section" id="derivation-of-hartree-fock-equations-in-coordinate-space">
-<h2>Derivation of Hartree-Fock equations in coordinate space<a class="headerlink" href="#derivation-of-hartree-fock-equations-in-coordinate-space" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.2. </span>Derivation of Hartree-Fock equations in coordinate space<a class="headerlink" href="#derivation-of-hartree-fock-equations-in-coordinate-space" title="Permalink to this headline">¶</a></h2>
 <p>Let us denote the ground state energy by <span class="math notranslate nohighlight">\(E_0\)</span>. According to the
 variational principle we have</p>
 <div class="math notranslate nohighlight">
@@ -747,7 +754,7 @@ The Hartree-Fock equations can also be rewritten in terms of an eigenvalue probl
 This alternative derivation of the Hartree-Fock equations is given below.</p>
 </div>
 <div class="section" id="analysis-of-hartree-fock-equations-in-coordinate-space">
-<h2>Analysis of Hartree-Fock equations in coordinate space<a class="headerlink" href="#analysis-of-hartree-fock-equations-in-coordinate-space" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3. </span>Analysis of Hartree-Fock equations in coordinate space<a class="headerlink" href="#analysis-of-hartree-fock-equations-in-coordinate-space" title="Permalink to this headline">¶</a></h2>
 <p>A theoretically convenient form of the
 Hartree-Fock equation is to regard the direct and exchange operator
 defined through</p>
@@ -794,7 +801,7 @@ We normally rewrite the last equation as</p>
 \]</div>
 </div>
 <div class="section" id="hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion">
-<h2>Hartree-Fock by varying the coefficients of a wave function expansion<a class="headerlink" href="#hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.4. </span>Hartree-Fock by varying the coefficients of a wave function expansion<a class="headerlink" href="#hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion" title="Permalink to this headline">¶</a></h2>
 <p>Another possibility is to expand the single-particle functions in a known basis  and vary the coefficients,
 that is, the new single-particle wave function is written as a linear expansion
 in terms of a fixed chosen orthogonal basis (for example the well-known harmonic oscillator functions or the hydrogen-like functions etc).
@@ -1007,7 +1014,7 @@ we see that we do not need to compute any integrals in an iterative procedure fo
 It suffices to tabulate the matrix elements <span class="math notranslate nohighlight">\(\langle \alpha | h | \beta \rangle\)</span> and <span class="math notranslate nohighlight">\(\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}\)</span> once and for all. Successive iterations require thus only a look-up in tables over one-body and two-body matrix elements. These details will be discussed below when we solve the Hartree-Fock equations numerical.</p>
 </div>
 <div class="section" id="hartree-fock-algorithm">
-<h2>Hartree-Fock algorithm<a class="headerlink" href="#hartree-fock-algorithm" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.5. </span>Hartree-Fock algorithm<a class="headerlink" href="#hartree-fock-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>Our Hartree-Fock matrix  is thus</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1064,7 +1071,7 @@ This process is continued till for example</p>
 energies and <span class="math notranslate nohighlight">\(m\)</span> is the number of single-particle states.</p>
 </div>
 <div class="section" id="analysis-of-hartree-fock-equations-and-koopman-s-theorem">
-<h2>Analysis of Hartree-Fock equations and Koopman’s theorem<a class="headerlink" href="#analysis-of-hartree-fock-equations-and-koopman-s-theorem" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.6. </span>Analysis of Hartree-Fock equations and Koopman’s theorem<a class="headerlink" href="#analysis-of-hartree-fock-equations-and-koopman-s-theorem" title="Permalink to this headline">¶</a></h2>
 <p>We can rewrite the ground state energy by adding and subtracting <span class="math notranslate nohighlight">\(\hat{u}^{HF}(x_i)\)</span></p>
 <div class="math notranslate nohighlight">
 \[
@@ -1237,8 +1244,378 @@ If we also recall that the so-called energy gap for neutrons (or protons) is def
 \Delta S_{\pi}=\epsilon_{0d^{\pi}_{5/2}}^{\mathrm{HF}}-\epsilon_{0p^{\pi}_{1/2}}^{\mathrm{HF}}.
 \]</div>
 </div>
+</div>
+<div class="tex2jax_ignore mathjax_ignore section" id="hartree-fock-in-second-quantization-and-stability-of-hf-solution">
+<h1><span class="section-number">5. </span>Hartree-Fock in second quantization and stability of HF solution<a class="headerlink" href="#hartree-fock-in-second-quantization-and-stability-of-hf-solution" title="Permalink to this headline">¶</a></h1>
+<p>We wish now to derive the Hartree-Fock equations using our second-quantized formalism and study the stability of the equations.
+Our ansatz for the ground state of the system is approximated as (this is our representation of a Slater determinant in second quantization)</p>
+<div class="math notranslate nohighlight">
+\[
+|\Phi_0\rangle = |c\rangle = a^{\dagger}_i a^{\dagger}_j \dots a^{\dagger}_l|0\rangle.
+\]</div>
+<p>We wish to determine <span class="math notranslate nohighlight">\(\hat{u}^{HF}\)</span> so that
+<span class="math notranslate nohighlight">\(E_0^{HF}= \langle c|\hat{H}| c\rangle\)</span> becomes a local minimum.</p>
+<p>In our analysis here we will need Thouless’ theorem, which states that
+an arbitrary Slater determinant <span class="math notranslate nohighlight">\(|c'\rangle\)</span> which is not orthogonal to a determinant
+<span class="math notranslate nohighlight">\(| c\rangle ={\displaystyle\prod_{i=1}^{n}}
+a_{\alpha_{i}}^{\dagger}|0\rangle\)</span>, can be written as</p>
+<div class="math notranslate nohighlight">
+\[
+|c'\rangle=exp\left\{\sum_{a&gt;F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle
+\]</div>
+<p>Let us give a simple proof of Thouless’ theorem. The theorem states that we can make a linear combination av particle-hole excitations  with respect to a given reference state <span class="math notranslate nohighlight">\(\vert c\rangle\)</span>. With this linear combination, we can make a new Slater determinant <span class="math notranslate nohighlight">\(\vert c'\rangle \)</span> which is not orthogonal to
+<span class="math notranslate nohighlight">\(\vert c\rangle\)</span>, that is</p>
+<div class="math notranslate nohighlight">
+\[
+\langle c|c'\rangle \ne 0.
+\]</div>
+<p>To show this we need some intermediate steps. The exponential product of two operators  <span class="math notranslate nohighlight">\(\exp{\hat{A}}\times\exp{\hat{B}}\)</span> is equal to <span class="math notranslate nohighlight">\(\exp{(\hat{A}+\hat{B})}\)</span> only if the two operators commute, that is</p>
+<div class="math notranslate nohighlight">
+\[
+[\hat{A},\hat{B}] = 0.
+\]</div>
+<div class="section" id="thouless-theorem">
+<h2><span class="section-number">5.1. </span>Thouless’ theorem<a class="headerlink" href="#thouless-theorem" title="Permalink to this headline">¶</a></h2>
+<p>If the operators do not commute, we need to resort to the <a class="reference external" href="http://www.encyclopediaofmath.org/index.php/Campbell%E2%80%93Hausdorff_formula">Baker-Campbell-Hauersdorf</a>. This relation states that</p>
+<div class="math notranslate nohighlight">
+\[
+\exp{\hat{C}}=\exp{\hat{A}}\exp{\hat{B}},
+\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{C}=\hat{A}+\hat{B}+\frac{1}{2}[\hat{A},\hat{B}]+\frac{1}{12}[[\hat{A},\hat{B}],\hat{B}]-\frac{1}{12}[[\hat{A},\hat{B}],\hat{A}]+\dots
+\]</div>
+<p>From these relations, we note that
+in our expression  for <span class="math notranslate nohighlight">\(|c'\rangle\)</span> we have commutators of the type</p>
+<div class="math notranslate nohighlight">
+\[
+[a_{a}^{\dagger}a_{i},a_{b}^{\dagger}a_{j}],
+\]</div>
+<p>and it is easy to convince oneself that these commutators, or higher powers thereof, are all zero. This means that we can write out our new representation of a Slater determinant as</p>
+<div class="math notranslate nohighlight">
+\[
+|c'\rangle=exp\left\{\sum_{a&gt;F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}+\left(\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right)^2+\dots\right\}| c\rangle
+\]</div>
+<p>We note that</p>
+<div class="math notranslate nohighlight">
+\[
+\prod_{i}\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\sum_{b&gt;F}C_{bi}a_{b}^{\dagger}a_{i}| c\rangle =0,
+\]</div>
+<p>and all higher-order powers of these combinations of creation and annihilation operators disappear
+due to the fact that <span class="math notranslate nohighlight">\((a_i)^n| c\rangle =0\)</span> when <span class="math notranslate nohighlight">\(n &gt; 1\)</span>. This allows us to rewrite the expression for <span class="math notranslate nohighlight">\(|c'\rangle \)</span> as</p>
+<div class="math notranslate nohighlight">
+\[
+|c'\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle,
+\]</div>
+<p>which we can rewrite as</p>
+<div class="math notranslate nohighlight">
+\[
+|c'\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle.
+\]</div>
+<p>The last equation can be written as</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto2"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+|c'\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle=\left(1+\sum_{a&gt;F}C_{ai_1}a_{a}^{\dagger}a_{i_1}\right)a^{\dagger}_{i_1} 
+\label{_auto2} \tag{9}
+\end{equation}
+\]</div>
+<!-- Equation labels as ordinary links -->
+<div id="_auto3"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation} 
+ \times\left(1+\sum_{a&gt;F}C_{ai_2}a_{a}^{\dagger}a_{i_2}\right)a^{\dagger}_{i_2} \dots |0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}\right)|0\rangle.
+\label{_auto3} \tag{10}
+\end{equation}
+\]</div>
+</div>
+<div class="section" id="new-operators">
+<h2><span class="section-number">5.2. </span>New operators<a class="headerlink" href="#new-operators" title="Permalink to this headline">¶</a></h2>
+<p>If we define a new creation operator</p>
+<!-- Equation labels as ordinary links -->
+<div id="eq:newb"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+b^{\dagger}_{i}=a^{\dagger}_{i}+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}, \label{eq:newb} \tag{11}
+\end{equation}
+\]</div>
+<p>we have</p>
+<div class="math notranslate nohighlight">
+\[
+|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}\right)|0\rangle,
+\]</div>
+<p>meaning that the new representation of the Slater determinant in second quantization, <span class="math notranslate nohighlight">\(|c'\rangle\)</span>, looks like our previous ones. However, this representation is not general enough since we have a restriction on the sum over single-particle states in Eq. (<a class="reference external" href="#eq:newb">11</a>). The single-particle states have all to be above the Fermi level.
+The question then is whether we can construct a general representation of a Slater determinant with a creation operator</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{b}^{\dagger}_{i}=\sum_{p}f_{ip}a_{p}^{\dagger},
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_{ip}\)</span> is a matrix element of a unitary matrix which transforms our creation and annihilation operators
+<span class="math notranslate nohighlight">\(a^{\dagger}\)</span> and <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(\tilde{b}^{\dagger}\)</span> and <span class="math notranslate nohighlight">\(\tilde{b}\)</span>. These new operators define a new representation of a Slater determinant as</p>
+<div class="math notranslate nohighlight">
+\[
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle.
+\]</div>
+</div>
+<div class="section" id="showing-that-tilde-c-rangle-c-rangle">
+<h2><span class="section-number">5.3. </span>Showing that <span class="math notranslate nohighlight">\(|\tilde{c}\rangle= |c'\rangle\)</span><a class="headerlink" href="#showing-that-tilde-c-rangle-c-rangle" title="Permalink to this headline">¶</a></h2>
+<p>We need to show that <span class="math notranslate nohighlight">\(|\tilde{c}\rangle= |c'\rangle\)</span>. We need also to assume that the new state
+is not orthogonal to <span class="math notranslate nohighlight">\(|c\rangle\)</span>, that is <span class="math notranslate nohighlight">\(\langle c| \tilde{c}\rangle \ne 0\)</span>. From this it follows that</p>
+<div class="math notranslate nohighlight">
+\[
+\langle c| \tilde{c}\rangle=\langle 0| a_{i_n}\dots a_{i_1}\left(\sum_{p=i_1}^{i_n}f_{i_1p}a_{p}^{\dagger} \right)\left(\sum_{q=i_1}^{i_n}f_{i_2q}a_{q}^{\dagger} \right)\dots \left(\sum_{t=i_1}^{i_n}f_{i_nt}a_{t}^{\dagger} \right)|0\rangle,
+\]</div>
+<p>which is nothing but the determinant <span class="math notranslate nohighlight">\(det(f_{ip})\)</span> which we can, using the intermediate normalization condition,
+normalize to one, that is</p>
+<div class="math notranslate nohighlight">
+\[
+det(f_{ip})=1,
+\]</div>
+<p>meaning that <span class="math notranslate nohighlight">\(f\)</span> has an inverse defined as (since we are dealing with orthogonal, and in our case unitary as well, transformations)</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{k} f_{ik}f^{-1}_{kj} = \delta_{ij},
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{j} f^{-1}_{ij}f_{jk} = \delta_{ik}.
+\]</div>
+<p>Using these relations we can then define the linear combination of creation (and annihilation as well)
+operators as</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{i}f^{-1}_{ki}\tilde{b}^{\dagger}_{i}=\sum_{i}f^{-1}_{ki}\sum_{p=i_1}^{\infty}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}.
+\]</div>
+<p>Defining</p>
+<div class="math notranslate nohighlight">
+\[
+c_{kp}=\sum_{i \le F}f^{-1}_{ki}f_{ip},
+\]</div>
+<p>we can redefine</p>
+<div class="math notranslate nohighlight">
+\[
+a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}=b_k^{\dagger},
+\]</div>
+<p>our starting point. We have shown that our general representation of a Slater determinant</p>
+<div class="math notranslate nohighlight">
+\[
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle=|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle,
+\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[
+b_k^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}.
+\]</div>
+<p>This means that we can actually write an ansatz for the ground state of the system as a linear combination of
+terms which contain the ansatz itself <span class="math notranslate nohighlight">\(|c\rangle\)</span> with  an admixture from an infinity of one-particle-one-hole states. The latter has important consequences when we wish to interpret the Hartree-Fock equations and their stability. We can rewrite the new representation as</p>
+<div class="math notranslate nohighlight">
+\[
+|c'\rangle = |c\rangle+|\delta c\rangle,
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(|\delta c\rangle\)</span> can now be interpreted as a small variation. If we approximate this term with
+contributions from one-particle-one-hole (<em>1p-1h</em>) states only, we arrive at</p>
+<div class="math notranslate nohighlight">
+\[
+|c'\rangle = \left(1+\sum_{ai}\delta C_{ai}a_{a}^{\dagger}a_i\right)|c\rangle.
+\]</div>
+<p>In our derivation of the Hartree-Fock equations we have shown that</p>
+<div class="math notranslate nohighlight">
+\[
+\langle \delta c| \hat{H} | c\rangle =0,
+\]</div>
+<p>which means that we have to satisfy</p>
+<div class="math notranslate nohighlight">
+\[
+\langle c|\sum_{ai}\delta C_{ai}\left\{a_{a}^{\dagger}a_i\right\} \hat{H} | c\rangle =0.
+\]</div>
+<p>With this as a background, we are now ready to study the stability of the Hartree-Fock equations.</p>
+</div>
+<div class="section" id="id1">
+<h2><span class="section-number">5.4. </span>Hartree-Fock in second quantization and stability of HF solution<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>The variational condition for deriving the Hartree-Fock equations guarantees only that the expectation value <span class="math notranslate nohighlight">\(\langle c | \hat{H} | c \rangle\)</span> has an extreme value, not necessarily a minimum. To figure out whether the extreme value we have found  is a minimum, we can use second quantization to analyze our results and find a criterion
+for the above expectation value to a local minimum. We will use Thouless’ theorem and show that</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} \ge \langle c |\hat{H} | c\rangle= E_0,
+\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[
+{|c'\rangle} = {|c\rangle + |\delta c\rangle}.
+\]</div>
+<p>Using Thouless’ theorem we can write out <span class="math notranslate nohighlight">\(|c'\rangle\)</span> as</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto4"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ {|c'\rangle}=\exp\left\{\sum_{a &gt; F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle
+\label{_auto4} \tag{12}
+\end{equation}
+\]</div>
+<!-- Equation labels as ordinary links -->
+<div id="_auto5"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}  
+=\left\{1+\sum_{a &gt; F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}
+a_{i}+\frac{1}{2!}\sum_{ab &gt; F}\sum_{ij \le F}\delta C_{ai}\delta C_{bj}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}+\dots\right\}
+\label{_auto5} \tag{13}
+\end{equation}
+\]</div>
+<p>where the amplitudes <span class="math notranslate nohighlight">\(\delta C\)</span> are small.</p>
+<p>The norm of <span class="math notranslate nohighlight">\(|c'\rangle\)</span> is given by (using the intermediate normalization condition <span class="math notranslate nohighlight">\(\langle c' |c\rangle=1\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[
+\langle c' | c'\rangle = 1+\sum_{a&gt;F}
+\sum_{i\le F}|\delta C_{ai}|^2+O(\delta C_{ai}^3).
+\]</div>
+<p>The expectation value for the energy is now given by (using the Hartree-Fock condition)</p>
+<div class="math notranslate nohighlight">
+\[
+\langle c' |\hat{H} | c'\rangle=\langle c |\hat{H} | c\rangle +
+\sum_{ab&gt;F}
+\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}\langle c |a_{i}^{\dagger}a_{a}\hat{H}a_{b}^{\dagger}a_{j}|c\rangle+
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2!}\sum_{ab&gt;F}
+\sum_{ij\le F}\delta C_{ai}\delta C_{bj}\langle c |\hat{H}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}|c\rangle+\frac{1}{2!}\sum_{ab&gt;F}
+\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}^*\langle c|a_{j}^{\dagger}a_{b}a_{i}^{\dagger}a_{a}\hat{H}|c\rangle
++\dots
+\]</div>
+<p>We have already calculated the second term on the right-hand side of the previous equation</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto6"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+\langle c | \left(\{a^\dagger_i a_a\} \hat{H} \{a^\dagger_b a_j\} \right) | c\rangle=\sum_{pq} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle p|\hat{h}_0 |q\rangle 
+            \langle c | \left(\{a^{\dagger}_i a_a\}\{a^{\dagger}_pa_q\} 
+             \{a^{\dagger}_b a_j\} \right)| c\rangle
+\label{_auto6} \tag{14}
+\end{equation}
+\]</div>
+<!-- Equation labels as ordinary links -->
+<div id="_auto7"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation} 
+ +\frac{1}{4} \sum_{pqrs} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle pq| \hat{v}|rs\rangle 
+            \langle c | \left(\{a^\dagger_i a_a\}\{a^{\dagger}_p a^{\dagger}_q a_s  a_r\} \{a^{\dagger}_b a_j\} \right)| c\rangle ,
+\label{_auto7} \tag{15}
+\end{equation}
+\]</div>
+<p>resulting in</p>
+<div class="math notranslate nohighlight">
+\[
+E_0\sum_{ai}|\delta C_{ai}|^2+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a-\varepsilon_i)-\sum_{ijab} \langle aj|\hat{v}| bi\rangle \delta C_{ai}^*\delta C_{bj}.
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2!}\langle c |\left(\{a^\dagger_j a_b\} \{a^\dagger_i a_a\} \hat{V}_N  \right) | c\rangle  = 
+\frac{1}{2!}\langle c |\left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right)^{\dagger} | c\rangle
+\]</div>
+<p>which is nothing but</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2!}\langle c |  \left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right) | c\rangle^*
+=\frac{1}{2} \sum_{ijab} (\langle ij|\hat{v}|ab\rangle)^*\delta C_{ai}^*\delta C_{bj}^*
+\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2} \sum_{ijab} (\langle ab|\hat{v}|ij\rangle)\delta C_{ai}^*\delta C_{bj}^*
+\]</div>
+<p>where we have used the relation</p>
+<div class="math notranslate nohighlight">
+\[
+\langle a |\hat{A} | b\rangle =  (\langle b |\hat{A}^{\dagger} | a\rangle)^*
+\]</div>
+<p>due to the hermiticity of <span class="math notranslate nohighlight">\(\hat{H}\)</span> and <span class="math notranslate nohighlight">\(\hat{V}\)</span>.</p>
+<p>We define two matrix elements</p>
+<div class="math notranslate nohighlight">
+\[
+A_{ai,bj}=-\langle aj|\hat{v} bi\rangle
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+B_{ai,bj}=\langle ab|\hat{v}|ij\rangle
+\]</div>
+<p>both being anti-symmetrized.</p>
+<p>With these definitions we write out the energy as</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto8"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+\langle c'|H|c'\rangle = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a^{HF}-\varepsilon_i^{HF})+\sum_{ijab}A_{ai,bj}\delta C_{ai}^*\delta C_{bj}+
+\label{_auto8} \tag{16}
+\end{equation}
+\]</div>
+<!-- Equation labels as ordinary links -->
+<div id="_auto9"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation} 
+\frac{1}{2} \sum_{ijab} B_{ai,bj}^*\delta C_{ai}\delta C_{bj}+\frac{1}{2} \sum_{ijab} B_{ai,bj}\delta C_{ai}^*\delta C_{bj}^*
++O(\delta C_{ai}^3),
+\label{_auto9} \tag{17}
+\end{equation}
+\]</div>
+<p>which can be rewritten as</p>
+<div class="math notranslate nohighlight">
+\[
+\langle c'|H|c'\rangle = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\Delta E+O(\delta C_{ai}^3),
+\]</div>
+<p>and skipping higher-order terms we arrived</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} =E_0+\frac{\Delta E}{\left(1+\sum_{ai}|\delta C_{ai}|^2\right)}.
+\]</div>
+<p>We have defined</p>
+<div class="math notranslate nohighlight">
+\[
+\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle
+\]</div>
+<p>with the vectors</p>
+<div class="math notranslate nohighlight">
+\[
+\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
+\]</div>
+<p>and the matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{M}=\left(\begin{array}{cc} \Delta + A &amp; B \\ B^* &amp; \Delta + A^*\end{array}\right),
+\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\Delta_{ai,bj} = (\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij}\)</span>.</p>
+<p>The condition</p>
+<div class="math notranslate nohighlight">
+\[
+\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle \ge 0
+\]</div>
+<p>for an arbitrary  vector</p>
+<div class="math notranslate nohighlight">
+\[
+\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
+\]</div>
+<p>means that all eigenvalues of the matrix have to be larger than or equal zero.
+A necessary (but no sufficient) condition is that the matrix elements (for all <span class="math notranslate nohighlight">\(ai\)</span> )</p>
+<div class="math notranslate nohighlight">
+\[
+(\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij}+A_{ai,bj} \ge 0.
+\]</div>
+<p>This equation can be used as a first test of the stability of the Hartree-Fock equation.</p>
+</div>
 <div class="section" id="exercise-1-derivation-of-hartree-fock-equations">
-<h2>Exercise 1: Derivation of Hartree-Fock equations<a class="headerlink" href="#exercise-1-derivation-of-hartree-fock-equations" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.5. </span>Exercise 1: Derivation of Hartree-Fock equations<a class="headerlink" href="#exercise-1-derivation-of-hartree-fock-equations" title="Permalink to this headline">¶</a></h2>
 <p>Consider a Slater determinant built up of single-particle orbitals <span class="math notranslate nohighlight">\(\psi_{\lambda}\)</span>,
 with <span class="math notranslate nohighlight">\(\lambda = 1,2,\dots,N\)</span>.</p>
 <p>The unitary transformation</p>
@@ -1260,7 +1637,7 @@ Show that the old and the new Slater determinants are equal up to a complex cons
 Use the fact that <span class="math notranslate nohighlight">\(C\)</span> is a unitary matrix.</p>
 <!-- --- end hint in exercise --- --></div>
 <div class="section" id="exercise-2-derivation-of-hartree-fock-equations">
-<h2>Exercise 2: Derivation of Hartree-Fock equations<a class="headerlink" href="#exercise-2-derivation-of-hartree-fock-equations" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.6. </span>Exercise 2: Derivation of Hartree-Fock equations<a class="headerlink" href="#exercise-2-derivation-of-hartree-fock-equations" title="Permalink to this headline">¶</a></h2>
 <p>Consider the  Slater  determinant</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1290,7 +1667,7 @@ Show that</p>
 \]</div>
 </div>
 <div class="section" id="exercise-3-developing-a-hartree-fock-program">
-<h2>Exercise 3: Developing a  Hartree-Fock program<a class="headerlink" href="#exercise-3-developing-a-hartree-fock-program" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.7. </span>Exercise 3: Developing a  Hartree-Fock program<a class="headerlink" href="#exercise-3-developing-a-hartree-fock-program" title="Permalink to this headline">¶</a></h2>
 <p>Neutron drops are a powerful theoretical laboratory for testing,
 validating and improving nuclear structure models. Indeed, all
 approaches to nuclear structure, from ab initio theory to shell model
@@ -1343,12 +1720,12 @@ Hartree-Fock matrix becomes</p>
 <p>The equations are often rewritten in terms of a so-called density matrix,
 which is defined as</p>
 <!-- Equation labels as ordinary links -->
-<div id="_auto2"></div>
+<div id="_auto10"></div>
 <div class="math notranslate nohighlight">
 \[
 \begin{equation}
 \rho_{\gamma\delta}=\sum_{i=1}^{N}\langle\gamma|i\rangle\langle i|\delta\rangle = \sum_{i=1}^{N}C_{i\gamma}C^*_{i\delta}.
-\label{_auto2} \tag{9}
+\label{_auto10} \tag{18}
 \end{equation}
 \]</div>
 <p>It means that we can rewrite the Hartree-Fock Hamiltonian as</p>
@@ -1498,412 +1875,6 @@ Here we display the Hartree-Fock part only, assuming that single-particle data a
 </div>
 </div>
 </div>
-<p>Running the program, one finds that the lowest-lying states for a nucleus like <span class="math notranslate nohighlight">\(^{16}\mbox{O}\)</span>, we see that the nucleon-nucleon force brings a natural spin-orbit splitting for the <span class="math notranslate nohighlight">\(0p\)</span> states (or other states except the <span class="math notranslate nohighlight">\(s\)</span>-states).
-Since we are using the <span class="math notranslate nohighlight">\(m\)</span>-scheme for our calculations, we observe that there are several states with the same
-eigenvalues. The number of eigenvalues corresponds to the degeneracy <span class="math notranslate nohighlight">\(2j+1\)</span> and is well respected in our calculations, as see from the table here.</p>
-<p>The values of the lowest-lying states are (<span class="math notranslate nohighlight">\(\pi\)</span> for protons and <span class="math notranslate nohighlight">\(\nu\)</span> for neutrons)</p>
-<table class="dotable" border="1">
-<thead>
-<tr><th align="center">Quantum numbers </th> <th align="center">Energy [MeV]</th> </tr>
-</thead>
-<tbody>
-<tr><td align="center">   $0s_{1/2}^{\pi}$    </td> <td align="center">   -40.4602        </td> </tr>
-<tr><td align="center">   $0s_{1/2}^{\pi}$    </td> <td align="center">   -40.4602        </td> </tr>
-<tr><td align="center">   $0s_{1/2}^{\nu}$    </td> <td align="center">   -40.6426        </td> </tr>
-<tr><td align="center">   $0s_{1/2}^{\nu}$    </td> <td align="center">   -40.6426        </td> </tr>
-<tr><td align="center">   $0p_{1/2}^{\pi}$    </td> <td align="center">   -6.7133         </td> </tr>
-<tr><td align="center">   $0p_{1/2}^{\pi}$    </td> <td align="center">   -6.7133         </td> </tr>
-<tr><td align="center">   $0p_{1/2}^{\nu}$    </td> <td align="center">   -6.8403         </td> </tr>
-<tr><td align="center">   $0p_{1/2}^{\nu}$    </td> <td align="center">   -6.8403         </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\pi}$    </td> <td align="center">   -11.5886        </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\pi}$    </td> <td align="center">   -11.5886        </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\pi}$    </td> <td align="center">   -11.5886        </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\pi}$    </td> <td align="center">   -11.5886        </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\nu}$    </td> <td align="center">   -11.7201        </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\nu}$    </td> <td align="center">   -11.7201        </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\nu}$    </td> <td align="center">   -11.7201        </td> </tr>
-<tr><td align="center">   $0p_{3/2}^{\nu}$    </td> <td align="center">   -11.7201        </td> </tr>
-<tr><td align="center">   $0d_{5/2}^{\pi}$    </td> <td align="center">   18.7589         </td> </tr>
-<tr><td align="center">   $0d_{5/2}^{\nu}$    </td> <td align="center">   18.8082         </td> </tr>
-</tbody>
-</table>
-<p>We can use these results to attempt our first link with experimental data, namely to compute the shell gap or the separation energies. The shell gap for neutrons is given by</p>
-<div class="math notranslate nohighlight">
-\[
-\Delta S_n= 2BE(N,Z)-BE(N-1,Z)-BE(N+1,Z).
-\]</div>
-<p>For <span class="math notranslate nohighlight">\(^{16}\mbox{O}\)</span>  we have an experimental value for the  shell gap of <span class="math notranslate nohighlight">\(11.51\)</span> MeV for neutrons, while our Hartree-Fock calculations result in <span class="math notranslate nohighlight">\(25.65\)</span> MeV. This means that correlations beyond a simple Hartree-Fock calculation with a two-body force play an important role in nuclear physics.
-The splitting between the <span class="math notranslate nohighlight">\(0p_{3/2}^{\nu}\)</span> and the <span class="math notranslate nohighlight">\(0p_{1/2}^{\nu}\)</span> state is 4.88 MeV, while the experimental value for the gap between the ground state <span class="math notranslate nohighlight">\(1/2^{-}\)</span> and the first excited <span class="math notranslate nohighlight">\(3/2^{-}\)</span> states is 6.08 MeV. The two-nucleon spin-orbit force plays a central role here. In our discussion of nuclear forces we will see how the spin-orbit force comes into play here.</p>
-</div>
-</div>
-<div class="tex2jax_ignore mathjax_ignore section" id="hartree-fock-in-second-quantization-and-stability-of-hf-solution">
-<h1>Hartree-Fock in second quantization and stability of HF solution<a class="headerlink" href="#hartree-fock-in-second-quantization-and-stability-of-hf-solution" title="Permalink to this headline">¶</a></h1>
-<p>We wish now to derive the Hartree-Fock equations using our second-quantized formalism and study the stability of the equations.
-Our ansatz for the ground state of the system is approximated as (this is our representation of a Slater determinant in second quantization)</p>
-<div class="math notranslate nohighlight">
-\[
-|\Phi_0\rangle = |c\rangle = a^{\dagger}_i a^{\dagger}_j \dots a^{\dagger}_l|0\rangle.
-\]</div>
-<p>We wish to determine <span class="math notranslate nohighlight">\(\hat{u}^{HF}\)</span> so that
-<span class="math notranslate nohighlight">\(E_0^{HF}= \langle c|\hat{H}| c\rangle\)</span> becomes a local minimum.</p>
-<p>In our analysis here we will need Thouless’ theorem, which states that
-an arbitrary Slater determinant <span class="math notranslate nohighlight">\(|c'\rangle\)</span> which is not orthogonal to a determinant
-<span class="math notranslate nohighlight">\(| c\rangle ={\displaystyle\prod_{i=1}^{n}}
-a_{\alpha_{i}}^{\dagger}|0\rangle\)</span>, can be written as</p>
-<div class="math notranslate nohighlight">
-\[
-|c'\rangle=exp\left\{\sum_{a&gt;F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle
-\]</div>
-<p>Let us give a simple proof of Thouless’ theorem. The theorem states that we can make a linear combination av particle-hole excitations  with respect to a given reference state <span class="math notranslate nohighlight">\(\vert c\rangle\)</span>. With this linear combination, we can make a new Slater determinant <span class="math notranslate nohighlight">\(\vert c'\rangle \)</span> which is not orthogonal to
-<span class="math notranslate nohighlight">\(\vert c\rangle\)</span>, that is</p>
-<div class="math notranslate nohighlight">
-\[
-\langle c|c'\rangle \ne 0.
-\]</div>
-<p>To show this we need some intermediate steps. The exponential product of two operators  <span class="math notranslate nohighlight">\(\exp{\hat{A}}\times\exp{\hat{B}}\)</span> is equal to <span class="math notranslate nohighlight">\(\exp{(\hat{A}+\hat{B})}\)</span> only if the two operators commute, that is</p>
-<div class="math notranslate nohighlight">
-\[
-[\hat{A},\hat{B}] = 0.
-\]</div>
-<div class="section" id="thouless-theorem">
-<h2>Thouless’ theorem<a class="headerlink" href="#thouless-theorem" title="Permalink to this headline">¶</a></h2>
-<p>If the operators do not commute, we need to resort to the <a class="reference external" href="http://www.encyclopediaofmath.org/index.php/Campbell%E2%80%93Hausdorff_formula">Baker-Campbell-Hauersdorf</a>. This relation states that</p>
-<div class="math notranslate nohighlight">
-\[
-\exp{\hat{C}}=\exp{\hat{A}}\exp{\hat{B}},
-\]</div>
-<p>with</p>
-<div class="math notranslate nohighlight">
-\[
-\hat{C}=\hat{A}+\hat{B}+\frac{1}{2}[\hat{A},\hat{B}]+\frac{1}{12}[[\hat{A},\hat{B}],\hat{B}]-\frac{1}{12}[[\hat{A},\hat{B}],\hat{A}]+\dots
-\]</div>
-<p>From these relations, we note that
-in our expression  for <span class="math notranslate nohighlight">\(|c'\rangle\)</span> we have commutators of the type</p>
-<div class="math notranslate nohighlight">
-\[
-[a_{a}^{\dagger}a_{i},a_{b}^{\dagger}a_{j}],
-\]</div>
-<p>and it is easy to convince oneself that these commutators, or higher powers thereof, are all zero. This means that we can write out our new representation of a Slater determinant as</p>
-<div class="math notranslate nohighlight">
-\[
-|c'\rangle=exp\left\{\sum_{a&gt;F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}+\left(\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right)^2+\dots\right\}| c\rangle
-\]</div>
-<p>We note that</p>
-<div class="math notranslate nohighlight">
-\[
-\prod_{i}\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\sum_{b&gt;F}C_{bi}a_{b}^{\dagger}a_{i}| c\rangle =0,
-\]</div>
-<p>and all higher-order powers of these combinations of creation and annihilation operators disappear
-due to the fact that <span class="math notranslate nohighlight">\((a_i)^n| c\rangle =0\)</span> when <span class="math notranslate nohighlight">\(n &gt; 1\)</span>. This allows us to rewrite the expression for <span class="math notranslate nohighlight">\(|c'\rangle \)</span> as</p>
-<div class="math notranslate nohighlight">
-\[
-|c'\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle,
-\]</div>
-<p>which we can rewrite as</p>
-<div class="math notranslate nohighlight">
-\[
-|c'\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle.
-\]</div>
-<p>The last equation can be written as</p>
-<!-- Equation labels as ordinary links -->
-<div id="_auto3"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation}
-|c'\rangle=\prod_{i}\left\{1+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle=\left(1+\sum_{a&gt;F}C_{ai_1}a_{a}^{\dagger}a_{i_1}\right)a^{\dagger}_{i_1} 
-\label{_auto3} \tag{10}
-\end{equation}
-\]</div>
-<!-- Equation labels as ordinary links -->
-<div id="_auto4"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation} 
- \times\left(1+\sum_{a&gt;F}C_{ai_2}a_{a}^{\dagger}a_{i_2}\right)a^{\dagger}_{i_2} \dots |0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}\right)|0\rangle.
-\label{_auto4} \tag{11}
-\end{equation}
-\]</div>
-</div>
-<div class="section" id="new-operators">
-<h2>New operators<a class="headerlink" href="#new-operators" title="Permalink to this headline">¶</a></h2>
-<p>If we define a new creation operator</p>
-<!-- Equation labels as ordinary links -->
-<div id="eq:newb"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation}
-b^{\dagger}_{i}=a^{\dagger}_{i}+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}, \label{eq:newb} \tag{12}
-\end{equation}
-\]</div>
-<p>we have</p>
-<div class="math notranslate nohighlight">
-\[
-|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a&gt;F}C_{ai}a_{a}^{\dagger}\right)|0\rangle,
-\]</div>
-<p>meaning that the new representation of the Slater determinant in second quantization, <span class="math notranslate nohighlight">\(|c'\rangle\)</span>, looks like our previous ones. However, this representation is not general enough since we have a restriction on the sum over single-particle states in Eq. (<a class="reference external" href="#eq:newb">12</a>). The single-particle states have all to be above the Fermi level.
-The question then is whether we can construct a general representation of a Slater determinant with a creation operator</p>
-<div class="math notranslate nohighlight">
-\[
-\tilde{b}^{\dagger}_{i}=\sum_{p}f_{ip}a_{p}^{\dagger},
-\]</div>
-<p>where <span class="math notranslate nohighlight">\(f_{ip}\)</span> is a matrix element of a unitary matrix which transforms our creation and annihilation operators
-<span class="math notranslate nohighlight">\(a^{\dagger}\)</span> and <span class="math notranslate nohighlight">\(a\)</span> to <span class="math notranslate nohighlight">\(\tilde{b}^{\dagger}\)</span> and <span class="math notranslate nohighlight">\(\tilde{b}\)</span>. These new operators define a new representation of a Slater determinant as</p>
-<div class="math notranslate nohighlight">
-\[
-|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle.
-\]</div>
-</div>
-<div class="section" id="showing-that-tilde-c-rangle-c-rangle">
-<h2>Showing that <span class="math notranslate nohighlight">\(|\tilde{c}\rangle= |c'\rangle\)</span><a class="headerlink" href="#showing-that-tilde-c-rangle-c-rangle" title="Permalink to this headline">¶</a></h2>
-<p>We need to show that <span class="math notranslate nohighlight">\(|\tilde{c}\rangle= |c'\rangle\)</span>. We need also to assume that the new state
-is not orthogonal to <span class="math notranslate nohighlight">\(|c\rangle\)</span>, that is <span class="math notranslate nohighlight">\(\langle c| \tilde{c}\rangle \ne 0\)</span>. From this it follows that</p>
-<div class="math notranslate nohighlight">
-\[
-\langle c| \tilde{c}\rangle=\langle 0| a_{i_n}\dots a_{i_1}\left(\sum_{p=i_1}^{i_n}f_{i_1p}a_{p}^{\dagger} \right)\left(\sum_{q=i_1}^{i_n}f_{i_2q}a_{q}^{\dagger} \right)\dots \left(\sum_{t=i_1}^{i_n}f_{i_nt}a_{t}^{\dagger} \right)|0\rangle,
-\]</div>
-<p>which is nothing but the determinant <span class="math notranslate nohighlight">\(det(f_{ip})\)</span> which we can, using the intermediate normalization condition,
-normalize to one, that is</p>
-<div class="math notranslate nohighlight">
-\[
-det(f_{ip})=1,
-\]</div>
-<p>meaning that <span class="math notranslate nohighlight">\(f\)</span> has an inverse defined as (since we are dealing with orthogonal, and in our case unitary as well, transformations)</p>
-<div class="math notranslate nohighlight">
-\[
-\sum_{k} f_{ik}f^{-1}_{kj} = \delta_{ij},
-\]</div>
-<p>and</p>
-<div class="math notranslate nohighlight">
-\[
-\sum_{j} f^{-1}_{ij}f_{jk} = \delta_{ik}.
-\]</div>
-<p>Using these relations we can then define the linear combination of creation (and annihilation as well)
-operators as</p>
-<div class="math notranslate nohighlight">
-\[
-\sum_{i}f^{-1}_{ki}\tilde{b}^{\dagger}_{i}=\sum_{i}f^{-1}_{ki}\sum_{p=i_1}^{\infty}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}.
-\]</div>
-<p>Defining</p>
-<div class="math notranslate nohighlight">
-\[
-c_{kp}=\sum_{i \le F}f^{-1}_{ki}f_{ip},
-\]</div>
-<p>we can redefine</p>
-<div class="math notranslate nohighlight">
-\[
-a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}=b_k^{\dagger},
-\]</div>
-<p>our starting point. We have shown that our general representation of a Slater determinant</p>
-<div class="math notranslate nohighlight">
-\[
-|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle=|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle,
-\]</div>
-<p>with</p>
-<div class="math notranslate nohighlight">
-\[
-b_k^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}.
-\]</div>
-<p>This means that we can actually write an ansatz for the ground state of the system as a linear combination of
-terms which contain the ansatz itself <span class="math notranslate nohighlight">\(|c\rangle\)</span> with  an admixture from an infinity of one-particle-one-hole states. The latter has important consequences when we wish to interpret the Hartree-Fock equations and their stability. We can rewrite the new representation as</p>
-<div class="math notranslate nohighlight">
-\[
-|c'\rangle = |c\rangle+|\delta c\rangle,
-\]</div>
-<p>where <span class="math notranslate nohighlight">\(|\delta c\rangle\)</span> can now be interpreted as a small variation. If we approximate this term with
-contributions from one-particle-one-hole (<em>1p-1h</em>) states only, we arrive at</p>
-<div class="math notranslate nohighlight">
-\[
-|c'\rangle = \left(1+\sum_{ai}\delta C_{ai}a_{a}^{\dagger}a_i\right)|c\rangle.
-\]</div>
-<p>In our derivation of the Hartree-Fock equations we have shown that</p>
-<div class="math notranslate nohighlight">
-\[
-\langle \delta c| \hat{H} | c\rangle =0,
-\]</div>
-<p>which means that we have to satisfy</p>
-<div class="math notranslate nohighlight">
-\[
-\langle c|\sum_{ai}\delta C_{ai}\left\{a_{a}^{\dagger}a_i\right\} \hat{H} | c\rangle =0.
-\]</div>
-<p>With this as a background, we are now ready to study the stability of the Hartree-Fock equations.</p>
-</div>
-<div class="section" id="id1">
-<h2>Hartree-Fock in second quantization and stability of HF solution<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<p>The variational condition for deriving the Hartree-Fock equations guarantees only that the expectation value <span class="math notranslate nohighlight">\(\langle c | \hat{H} | c \rangle\)</span> has an extreme value, not necessarily a minimum. To figure out whether the extreme value we have found  is a minimum, we can use second quantization to analyze our results and find a criterion
-for the above expectation value to a local minimum. We will use Thouless’ theorem and show that</p>
-<div class="math notranslate nohighlight">
-\[
-\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} \ge \langle c |\hat{H} | c\rangle= E_0,
-\]</div>
-<p>with</p>
-<div class="math notranslate nohighlight">
-\[
-{|c'\rangle} = {|c\rangle + |\delta c\rangle}.
-\]</div>
-<p>Using Thouless’ theorem we can write out <span class="math notranslate nohighlight">\(|c'\rangle\)</span> as</p>
-<!-- Equation labels as ordinary links -->
-<div id="_auto5"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation}
- {|c'\rangle}=\exp\left\{\sum_{a &gt; F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle
-\label{_auto5} \tag{13}
-\end{equation}
-\]</div>
-<!-- Equation labels as ordinary links -->
-<div id="_auto6"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation}  
-=\left\{1+\sum_{a &gt; F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}
-a_{i}+\frac{1}{2!}\sum_{ab &gt; F}\sum_{ij \le F}\delta C_{ai}\delta C_{bj}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}+\dots\right\}
-\label{_auto6} \tag{14}
-\end{equation}
-\]</div>
-<p>where the amplitudes <span class="math notranslate nohighlight">\(\delta C\)</span> are small.</p>
-<p>The norm of <span class="math notranslate nohighlight">\(|c'\rangle\)</span> is given by (using the intermediate normalization condition <span class="math notranslate nohighlight">\(\langle c' |c\rangle=1\)</span>)</p>
-<div class="math notranslate nohighlight">
-\[
-\langle c' | c'\rangle = 1+\sum_{a&gt;F}
-\sum_{i\le F}|\delta C_{ai}|^2+O(\delta C_{ai}^3).
-\]</div>
-<p>The expectation value for the energy is now given by (using the Hartree-Fock condition)</p>
-<div class="math notranslate nohighlight">
-\[
-\langle c' |\hat{H} | c'\rangle=\langle c |\hat{H} | c\rangle +
-\sum_{ab&gt;F}
-\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}\langle c |a_{i}^{\dagger}a_{a}\hat{H}a_{b}^{\dagger}a_{j}|c\rangle+
-\]</div>
-<div class="math notranslate nohighlight">
-\[
-\frac{1}{2!}\sum_{ab&gt;F}
-\sum_{ij\le F}\delta C_{ai}\delta C_{bj}\langle c |\hat{H}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}|c\rangle+\frac{1}{2!}\sum_{ab&gt;F}
-\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}^*\langle c|a_{j}^{\dagger}a_{b}a_{i}^{\dagger}a_{a}\hat{H}|c\rangle
-+\dots
-\]</div>
-<p>We have already calculated the second term on the right-hand side of the previous equation</p>
-<!-- Equation labels as ordinary links -->
-<div id="_auto7"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation}
-\langle c | \left(\{a^\dagger_i a_a\} \hat{H} \{a^\dagger_b a_j\} \right) | c\rangle=\sum_{pq} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle p|\hat{h}_0 |q\rangle 
-            \langle c | \left(\{a^{\dagger}_i a_a\}\{a^{\dagger}_pa_q\} 
-             \{a^{\dagger}_b a_j\} \right)| c\rangle
-\label{_auto7} \tag{15}
-\end{equation}
-\]</div>
-<!-- Equation labels as ordinary links -->
-<div id="_auto8"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation} 
- +\frac{1}{4} \sum_{pqrs} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle pq| \hat{v}|rs\rangle 
-            \langle c | \left(\{a^\dagger_i a_a\}\{a^{\dagger}_p a^{\dagger}_q a_s  a_r\} \{a^{\dagger}_b a_j\} \right)| c\rangle ,
-\label{_auto8} \tag{16}
-\end{equation}
-\]</div>
-<p>resulting in</p>
-<div class="math notranslate nohighlight">
-\[
-E_0\sum_{ai}|\delta C_{ai}|^2+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a-\varepsilon_i)-\sum_{ijab} \langle aj|\hat{v}| bi\rangle \delta C_{ai}^*\delta C_{bj}.
-\]</div>
-<div class="math notranslate nohighlight">
-\[
-\frac{1}{2!}\langle c |\left(\{a^\dagger_j a_b\} \{a^\dagger_i a_a\} \hat{V}_N  \right) | c\rangle  = 
-\frac{1}{2!}\langle c |\left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right)^{\dagger} | c\rangle
-\]</div>
-<p>which is nothing but</p>
-<div class="math notranslate nohighlight">
-\[
-\frac{1}{2!}\langle c |  \left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right) | c\rangle^*
-=\frac{1}{2} \sum_{ijab} (\langle ij|\hat{v}|ab\rangle)^*\delta C_{ai}^*\delta C_{bj}^*
-\]</div>
-<p>or</p>
-<div class="math notranslate nohighlight">
-\[
-\frac{1}{2} \sum_{ijab} (\langle ab|\hat{v}|ij\rangle)\delta C_{ai}^*\delta C_{bj}^*
-\]</div>
-<p>where we have used the relation</p>
-<div class="math notranslate nohighlight">
-\[
-\langle a |\hat{A} | b\rangle =  (\langle b |\hat{A}^{\dagger} | a\rangle)^*
-\]</div>
-<p>due to the hermiticity of <span class="math notranslate nohighlight">\(\hat{H}\)</span> and <span class="math notranslate nohighlight">\(\hat{V}\)</span>.</p>
-<p>We define two matrix elements</p>
-<div class="math notranslate nohighlight">
-\[
-A_{ai,bj}=-\langle aj|\hat{v} bi\rangle
-\]</div>
-<p>and</p>
-<div class="math notranslate nohighlight">
-\[
-B_{ai,bj}=\langle ab|\hat{v}|ij\rangle
-\]</div>
-<p>both being anti-symmetrized.</p>
-<p>With these definitions we write out the energy as</p>
-<!-- Equation labels as ordinary links -->
-<div id="_auto9"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation}
-\langle c'|H|c'\rangle = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a^{HF}-\varepsilon_i^{HF})+\sum_{ijab}A_{ai,bj}\delta C_{ai}^*\delta C_{bj}+
-\label{_auto9} \tag{17}
-\end{equation}
-\]</div>
-<!-- Equation labels as ordinary links -->
-<div id="_auto10"></div>
-<div class="math notranslate nohighlight">
-\[
-\begin{equation} 
-\frac{1}{2} \sum_{ijab} B_{ai,bj}^*\delta C_{ai}\delta C_{bj}+\frac{1}{2} \sum_{ijab} B_{ai,bj}\delta C_{ai}^*\delta C_{bj}^*
-+O(\delta C_{ai}^3),
-\label{_auto10} \tag{18}
-\end{equation}
-\]</div>
-<p>which can be rewritten as</p>
-<div class="math notranslate nohighlight">
-\[
-\langle c'|H|c'\rangle = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\Delta E+O(\delta C_{ai}^3),
-\]</div>
-<p>and skipping higher-order terms we arrived</p>
-<div class="math notranslate nohighlight">
-\[
-\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} =E_0+\frac{\Delta E}{\left(1+\sum_{ai}|\delta C_{ai}|^2\right)}.
-\]</div>
-<p>We have defined</p>
-<div class="math notranslate nohighlight">
-\[
-\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle
-\]</div>
-<p>with the vectors</p>
-<div class="math notranslate nohighlight">
-\[
-\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
-\]</div>
-<p>and the matrix</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\hat{M}=\left(\begin{array}{cc} \Delta + A &amp; B \\ B^* &amp; \Delta + A^*\end{array}\right),
-\end{split}\]</div>
-<p>with <span class="math notranslate nohighlight">\(\Delta_{ai,bj} = (\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij}\)</span>.</p>
-<p>The condition</p>
-<div class="math notranslate nohighlight">
-\[
-\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle \ge 0
-\]</div>
-<p>for an arbitrary  vector</p>
-<div class="math notranslate nohighlight">
-\[
-\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
-\]</div>
-<p>means that all eigenvalues of the matrix have to be larger than or equal zero.
-A necessary (but no sufficient) condition is that the matrix elements (for all <span class="math notranslate nohighlight">\(ai\)</span> )</p>
-<div class="math notranslate nohighlight">
-\[
-(\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij}+A_{ai,bj} \ge 0.
-\]</div>
-<p>This equation can be used as a first test of the stability of the Hartree-Fock equation.</p>
 </div>
 </div>
 
@@ -1931,7 +1902,21 @@ A necessary (but no sufficient) condition is that the matrix elements (for all <
               
             
                 <!-- Previous / next buttons -->
-<div class='prev-next-area'>
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="fci.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title"><span class="section-number">3. </span>Full configuration interaction theory</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="mbpt.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">6. </span>Many-body perturbation theory</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
             
         </div>

@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
-# doconce format html notation.do.txt  -->
+# doconce format html intro.do.txt  -->
 
 # # Introduction to many-body physics
 
@@ -40,17 +40,23 @@
 # mathematical formalism. It plays a central role in our studies and
 # together with computational methods and various linear algebra
 # libraries, it provides us with the tools to study complicated systems
-# of many interacting particles. Our short reminder on linear algebra allows us to catch more than one bird with a stone, we take the liberty of introducing some basic notations and definitions used throughout these lectures.
+# of many interacting particles. Our short reminder on linear algebra
+# allows us to catch more than one bird with a stone, we take the
+# liberty of introducing some basic notations and definitions used
+# throughout these lectures.
 
 # ## Important Matrix and vector handling packages
 # 
-# There are several central software packages for linear algebra and
-# eigenvalue problems. Several of the more popular ones have been
-# wrapped into ofter software packages like those from the widely used
-# text **Numerical Recipes**. The original source codes in many of the
-# available packages are often taken from the widely used software
-# package LAPACK, which follows two other popular packages developed in
-# the 1970s, namely EISPACK and LINPACK.  We describe them shortly here.
+# Linear algebra plays a central role in many-body physics, as it does
+# in many other mathematical descriptions of problems in physics and in
+# Science in general.  There are several central software packages for
+# linear algebra and eigenvalue problems. Several of the more popular
+# ones have been wrapped into ofter software packages like those from
+# the widely used text **Numerical Recipes**. The original source codes in
+# many of the available packages are often taken from the widely used
+# software package LAPACK, which follows two other popular packages
+# developed in the 1970s, namely EISPACK and LINPACK.  We describe them
+# shortly here.
 # 
 #   * LINPACK: package for linear equations and least square problems.
 # 
@@ -72,8 +78,12 @@
 # useful. For C++ programmer, **Armadillo** is widely used library for
 # linear algebra and eigenvalue problems. In addition it offers a
 # convenient way to handle and organize arrays. We discuss this library
-# as well.   Before we proceed we believe  it may be convenient to repeat some basic features of 
-#  matrices and vectors.
+# as well.  Before we proceed we believe it may be convenient to repeat
+# some basic features of vectors, matrices, tensors etc. For systems of
+# fermions, our ansatz for encoding the needed antisymmetry of the wave
+# function, is to assume that we can build a many-body state based on
+# physically relevant single-particle states. This leads the so-called
+# Salter determinant.
 
 # ## Basic Matrix Features
 # 
@@ -100,12 +110,20 @@
 # \mathbf{A}^{-1} \cdot \mathbf{A} = I
 # $$
 
-# We have also that if the matrix is symmetric and quadratic $A=A^{T}$  and the elements are $a_{ij}=a_{ji}$
-# If the matrix is real orthogonal we have $A=\left(A^{T}\right)^{-1}$ and $\sum_k a_{ik} a_{jk}=\sum_k a_{ki} a_{kj}=\delta_{ij}$. Similarly, for a real matrix we have $A=A^{*}$  and $a_{ij}=a_{ij}^{*}$. For a hermitian matrix we have
-# $A=A^{\dagger}$   and $a_{ij}=a_{ji}^{*}$. Finally, for a unitary matrix we have $A=\left (A^{\dagger}\right)^{-1}$
-# and $\sum_k a_{ik} a_{jk}^{*}=\sum_k a_{ki}^{*} a_{kj}=\delta_{ij}$.
-
-# ### Some famous Matrices
+# <table class="dotable" border="1">
+# <thead>
+# <tr><th align="center">              Relations               </th> <th align="center">      Name     </th> <th align="center">                            matrix elements                            </th> </tr>
+# </thead>
+# <tbody>
+# <tr><td align="center">   $A = A^{T}$                               </td> <td align="center">   symmetric          </td> <td align="center">   $a_{ij} = a_{ji}$                                                          </td> </tr>
+# <tr><td align="center">   $A = \left (A^{T} \right )^{-1}$          </td> <td align="center">   real orthogonal    </td> <td align="center">   $\sum_k a_{ik} a_{jk} = \sum_k a_{ki} a_{kj} = \delta_{ij}$                </td> </tr>
+# <tr><td align="center">   $A = A^{ * }$                             </td> <td align="center">   real matrix        </td> <td align="center">   $a_{ij} = a_{ij}^{ * }$                                                    </td> </tr>
+# <tr><td align="center">   $A = A^{\dagger}$                         </td> <td align="center">   hermitian          </td> <td align="center">   $a_{ij} = a_{ji}^{ * }$                                                    </td> </tr>
+# <tr><td align="center">   $A = \left (A^{\dagger} \right )^{-1}$    </td> <td align="center">   unitary            </td> <td align="center">   $\sum_k a_{ik} a_{jk}^{ * } = \sum_k a_{ki}^{ * } a_{kj} = \delta_{ij}$    </td> </tr>
+# </tbody>
+# </table>
+# 
+# Some famous Matrices we often encounter in many-body physics are
 # 
 #   * Diagonal if $a_{ij}=0$ for $i\ne j$
 # 
@@ -125,7 +143,7 @@
 # 
 #   * Banded, block upper triangular, block lower triangular....
 # 
-# Some Equivalent Statements. For an $N\times N$ matrix  $\mathbf{A}$ the following properties are all equivalent
+# Furthermore, for an $N\times N$ matrix  $\mathbf{A}$ the following properties are all equivalent
 # 
 #   * If the inverse of $\mathbf{A}$ exists, $\mathbf{A}$ is nonsingular.
 # 
@@ -140,6 +158,7 @@
 #   * $0$ is not eigenvalue of $\mathbf{A}$.
 
 # ## Numpy and arrays
+# 
 # [Numpy](http://www.numpy.org/) provides an easy way to handle arrays in Python. The standard way to import this library is as
 
 # In[1]:
@@ -209,7 +228,7 @@ print(x)
 
 
 import numpy as np
-x = np.log(np.array([4.0, 7.0, 8.0]))
+x = np.log(np.array([4.0, 7.0, 8.0])
 print(x)
 
 
@@ -219,7 +238,7 @@ print(x)
 
 
 import numpy as np
-x = np.log(np.array([4.0, 7.0, 8.0]))
+x = np.log(np.array([4.0, 7.0, 8.0])
 print(x.itemsize)
 
 
@@ -292,21 +311,90 @@ A = np.random.rand(n, n)
 print(A)
 
 
+# ## Other Matrix and Vector Operations
+# 
+# The following examples show how to compute various quantities like the
+# **mean** value of a matrix or a vector and how to use functions like
+# **reshape** and **ravel**. These are all useful quantities when scaling
+# the data and preparing the data for various machine learning
+# algorithms and when calculating quantities like the mean squared error
+# or the variance.
+
+# In[14]:
+
+
+"""
+Simple code that tests various numpy functions
+"""
+
+import numpy as np
+# Simple test-matrix of dim 3 x 4
+a = np.array([ [1, 2, 3], [4, 5, 6], [7, 8, 9],[10, 11, 12]],dtype=np.float64)
+print(f"The test matrix:{a}")
+# This is the total mean summed over all elements, which here has to be 6.5
+print(f"This is the total mean summed over all elements:{np.mean(a,dtype=np.float64)}")
+# This is the mean for each column, it returns an array with the mean values for each column. It returns a row-like vector
+print(f"This is the mean for each column:{np.mean(a, axis=0, keepdims=True,dtype=np.float64)}")
+# This is the mean value for each row, it returns an array via the keepdims option which is a column-like vector if
+# keepdims=True. Else it return a row-like vector
+# Try setting keepdims=False
+print(f"This is the mean value for each row:{np.mean(a, axis=1, keepdims=True,dtype=np.float64)}")
+# We print then the mean value for each row by  setting keepdims=False
+print(f"This is the mean value for each row with keepdims false:{np.mean(a, axis=1, keepdims=False,dtype=np.float64)}")
+
+# Ravel return a contiguous flattened array.
+print(f"Flatten  the matrix:{np.ravel(a)}")
+# It is the same as reshaping the matrix into a one-dimensional array
+print(f"Reshape the matrix to a one-dim array:{a.reshape(-1)}")
+#  ‘C’ means to index the elements in row-major, C-style order, with the last axis index changing fastest, back to the first axis index changing slowest.
+# ‘F’ means to index the elements in column-major, Fortran-style order, with the first index changing fastest, and the last index changing slowest 
+print(np.ravel(a, order='F'))
+# When order is ‘A’, it will preserve the array’s ‘C’ or ‘F’ ordering
+# ‘A’ means to read the elements in Fortran-like index order if a is Fortran contiguous in memory, C-like order otherwise.
+# ‘K’ means to read the elements in the order they occur in memory, except for reversing the data when strides are negative. By default, ‘C’ index order is used.
+# Transposing it
+print(np.ravel(a.T))
+print(np.ravel(a.T, order='A'))
+
+
 # ## Definitions and vector and matrix operations
+# 
+# We use this section to define some central quantities as well as
+# presenting our notations for single-particle and many-body states. We will
+# normally tend to label vectors and states with the so-called Dirac
+# **bra-ket** notation.  In general we will use lower-case and boldfaced
+# letters for vectors and upper-case boldfaced letters for matrices. These ways to represent vectors will however be replaced
+# with the above-mentioned Dirac **bra-ket** notation.  As example, consider the vector $\boldsymbol{x}$ defined here
 
 # $$
-# \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix}
+# \boldsymbol{x} = \vert x \rangle = \begin{bmatrix} x_0 \\ x_1 \\ x_2 \\ \dots \\ x_{n-2} \\ x_{n-1} \end{bmatrix}}\in \mathbb{C}^{n} ,
 # $$
 
-# $$
-# \langle x \vert = \vert x \rangle^{\dagger}=\begin{bmatrix} x_0 & x_1 &  x_2 & \dots & x_{n-2} & x_{n-1} \end{bmatrix}
-# $$
+# and its hermitian conjugate
 
 # $$
-# \langle x \vert y \rangle =
+# \langle x \vert = \vert x \rangle^{\dagger}=\begin{bmatrix} x_0^* & x_1^* &  x_2^* & \dots & x_{n-2}^* & x_{n-1}^* \end{bmatrix}.
 # $$
 
-# ### The outer product
+# The norm of two vectors is defined as (assuming they are not orthogonal
+
+# $$
+# \langle x \vert y \rangle =\sum_ix_i^*y_i,
+# $$
+
+# and for an orthonormal (normalized and orthogonal) basis we have
+
+# $$
+# \langle x_j \vert x_i \rangle =\delta_{ij}.
+# $$
+
+# We can also use this orthonormal basis to define the completeness relation as
+
+# $$
+# \boldsymbol{I}=\sum__{i=0}^{\infty}\vert x_i \rangle \langle _i \vert,
+# $$
+
+# where we have defined the outer product
 
 # $$
 # \vert x \rangle \langle y \vert  = \begin{bmatrix} x_0y_0^* & x_0y_1^* &  x_0y_2^* & \dots & x_0y_{n-2}^* & x_0y_{n-1}^* \\
@@ -314,7 +402,41 @@ print(A)
 # 						   \dots    & \dots    & \dots     & \dots & \dots        & \dots \\                                           						         \dots    & \dots    & \dots     & \dots & \dots        & \dots \\
 # 						   x_{n-2}y_0^* & x_{n-2}y_1^* &  x_{n-2}y_2^* & \dots & x_{n-2}y_{n-2}^* & x_{n-2}y_{n-1}^* \\
 # 						   x_{n-1}y_0^* & x_{n-1}y_1^* &  x_{n-1}y_2^* & \dots & x_{n-1}y_{n-2}^* & x_{n-1}y_{n-1}^* \\
-# \end{bmatrix}
+# \end{bmatrix}.
+# $$
+
+# The outer product defined here is going to play an important role in
+# these studies as it can be used to define important projection
+# operators. Since the basis of orthonormal states is, normally,
+# infinite, the above sum runs over an infinite basis. However, for all
+# practical reasons, unless we can find analytical solutions to a
+# quantum mechanical problem, the above sum needs to be truncated.
+# 
+# An orthonormal basis can in turn be used to define a new basis set $\vert \phi_i \rangle$
+
+# $$
+# \vert \phi_i \rangle \sum_j C_{ij} \vert x_j\rangle,
+# $$
+
+# where the coefficients $C_{ij}=\langle \phi_i\vert x_j\rangle$ are the matrix elements of a transformation from a basis set $\vert \boldsymbol{x} \rangle$ to a new basis set $\vert \boldsymbol{\phi}\rangle$. The matrix $\boldsymbol{C}$ is normally a unitary matrix.
+# 
+# With the outer product we can define projection operators $\hat{P}$ and $\hat{Q}$.
+# Consider for example the two orthonormal states
+
+# $$
+# \vert x_0 \rangle = \begin{bmatrix} 1 \\ 0 \end{bmatrix},
+# $$
+
+# and
+
+# $$
+# \vert x_1 \rangle = \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
+# $$
+
+# We can easily define a new basis which is a linear combination of the two
+
+# $$
+# \vert \phi \rangle = \alpha \vert x_0 \rangle +\beta \vert x_1 \rangle
 # $$
 
 # ### Tensor products
@@ -449,9 +571,7 @@ print(A)
 #                             a_{21}&a_{22}\end{array} \right|= (-1)^0a_{11}a_{22}+(-1)^1a_{12}a_{21},
 # $$
 
-# where in the last term we have interchanged the column indices $1$ and $2$. The natural ordering we have chosen is $a_{11}a_{22}$.
-
-# ### Back to the derivation of the energy
+# where in the last term we have interchanged the column indices $1$ and $2$. The natural ordering we have chosen is $a_{11}a_{22}$. 
 # 
 # The single-particle function $\psi_{\alpha}(x_i)$  are eigenfunctions of the onebody
 # Hamiltonian $h_i$, that is
@@ -485,7 +605,7 @@ print(A)
 
 # where we have used the shorthand $d\mathbf{\tau}=dx_1dr_2\dots dr_A$.
 # 
-# In the Hartree-Fock method which will discuss in more detail later, the trial function is the Slater
+# In the Hartree-Fock method the trial function is the Slater
 # determinant of Eq. ([3](#eq:HartreeFockDet)) which can be rewritten as
 
 # $$

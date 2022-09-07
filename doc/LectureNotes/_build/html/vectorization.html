@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>12. Optimization and Vectorization &#8212; Quantum Mechanics for Many-Particle Systems</title>
+    <title>14. Optimization and Vectorization &#8212; Quantum Mechanics for Many-Particle Systems</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -52,8 +52,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="13. Parallelization with MPI and OpenMPI" href="parallelization.html" />
-    <link rel="prev" title="11. Boltzmann Machines" href="boltzmannmachines.html" />
+    <link rel="next" title="15. Parallelization with MPI and OpenMPI" href="parallelization.html" />
+    <link rel="prev" title="13. Boltzmann Machines" href="boltzmannmachines.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -141,13 +141,18 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
  <li class="toctree-l1">
+  <a class="reference internal" href="hfock.html">
+   4. Why Hartree-Fock? Derivation of Hartree-Fock equations in coordinate space
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="mbpt.html">
-   4. Many-body perturbation theory
+   6. Many-body perturbation theory
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="cc.html">
-   5. The Coupled Cluster Method
+   7. The Coupled Cluster Method
   </a>
  </li>
 </ul>
@@ -159,22 +164,22 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="vmcdmc.html">
-   8. Variational Monte Carlo methods
+   10. Variational Monte Carlo methods
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="gradientmethods.html">
-   9. Gradient Methods
+   11. Gradient Methods
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="resamplingmethods.html">
-   10. Resampling Techniques, Bootstrap and Blocking
+   12. Resampling Techniques, Bootstrap and Blocking
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="boltzmannmachines.html">
-   11. Boltzmann Machines
+   13. Boltzmann Machines
   </a>
  </li>
 </ul>
@@ -186,12 +191,12 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="current nav bd-sidenav">
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
-   12. Optimization and Vectorization
+   14. Optimization and Vectorization
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="parallelization.html">
-   13. Parallelization with MPI and OpenMPI
+   15. Parallelization with MPI and OpenMPI
   </a>
  </li>
 </ul>
@@ -267,237 +272,237 @@ const thebe_selector_output = ".output, .cell_output"
                 <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#optimization-and-profiling">
-   12.1. Optimization and profiling
+   14.1. Optimization and profiling
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#more-on-optimization">
-   12.2. More on optimization
+   14.2. More on optimization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id1">
-   12.3. Optimization and profiling
+   14.3. Optimization and profiling
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#optimization-and-debugging">
-   12.4. Optimization and debugging
+   14.4. Optimization and debugging
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#other-hints">
-   12.5. Other hints
+   14.5. Other hints
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#vectorization-and-the-basic-idea-behind-parallel-computing">
-   12.6. Vectorization and the basic idea behind parallel computing
+   14.6. Vectorization and the basic idea behind parallel computing
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#a-rough-classification-of-hardware-models">
-   12.7. A rough classification of hardware models
+   14.7. A rough classification of hardware models
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#shared-memory-and-distributed-memory">
-   12.8. Shared memory and distributed memory
+   14.8. Shared memory and distributed memory
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#different-parallel-programming-paradigms">
-   12.9. Different parallel programming paradigms
+   14.9. Different parallel programming paradigms
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
-   12.10. Different parallel programming paradigms
+   14.10. Different parallel programming paradigms
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#what-is-vectorization">
-   12.11. What is vectorization?
+   14.11. What is vectorization?
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#number-of-elements-that-can-acted-upon">
-   12.12. Number of elements that can acted upon
+   14.12. Number of elements that can acted upon
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#number-of-elements-that-can-acted-upon-examples">
-   12.13. Number of elements that can acted upon, examples
+   14.13. Number of elements that can acted upon, examples
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#operation-counts-for-scalar-operation">
-   12.14. Operation counts for scalar operation
+   14.14. Operation counts for scalar operation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id3">
-   12.15. Number of elements that can acted upon, examples
+   14.15. Number of elements that can acted upon, examples
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#number-of-operations-when-vectorized">
-   12.16. Number of operations when vectorized
+   14.16. Number of operations when vectorized
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#a-simple-test-case-with-and-without-vectorization">
-   12.17. A simple test case with and without vectorization
+   14.17. A simple test case with and without vectorization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#compiling-with-and-without-vectorization">
-   12.18. Compiling with and without vectorization
+   14.18. Compiling with and without vectorization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#compiling-with-and-without-vectorization-using-clang">
-   12.19. Compiling with and without vectorization using clang
+   14.19. Compiling with and without vectorization using clang
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-criteria">
-   12.20. Automatic vectorization and vectorization inhibitors, criteria
+   14.20. Automatic vectorization and vectorization inhibitors, criteria
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-exit-criteria">
-   12.21. Automatic vectorization and vectorization inhibitors, exit criteria
+   14.21. Automatic vectorization and vectorization inhibitors, exit criteria
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-straight-line-code">
-   12.22. Automatic vectorization and vectorization inhibitors, straight-line code
+   14.22. Automatic vectorization and vectorization inhibitors, straight-line code
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-nested-loops">
-   12.23. Automatic vectorization and vectorization inhibitors, nested loops
+   14.23. Automatic vectorization and vectorization inhibitors, nested loops
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-function-calls">
-   12.24. Automatic vectorization and vectorization inhibitors, function calls
+   14.24. Automatic vectorization and vectorization inhibitors, function calls
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-data-dependencies">
-   12.25. Automatic vectorization and vectorization inhibitors, data dependencies
+   14.25. Automatic vectorization and vectorization inhibitors, data dependencies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-more-data-dependencies">
-   12.26. Automatic vectorization and vectorization inhibitors, more data dependencies
+   14.26. Automatic vectorization and vectorization inhibitors, more data dependencies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-memory-stride">
-   12.27. Automatic vectorization and vectorization inhibitors, memory stride
+   14.27. Automatic vectorization and vectorization inhibitors, memory stride
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#memory-management">
-   12.28. Memory management
+   14.28. Memory management
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#memory-and-communication">
-   12.29. Memory and communication
+   14.29. Memory and communication
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#measuring-performance">
-   12.30. Measuring performance
+   14.30. Measuring performance
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-measuring-time">
-   12.31. Problems with measuring time
+   14.31. Problems with measuring time
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-cold-start">
-   12.32. Problems with cold start
+   14.32. Problems with cold start
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-smart-compilers">
-   12.33. Problems with smart compilers
+   14.33. Problems with smart compilers
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-interference">
-   12.34. Problems with interference
+   14.34. Problems with interference
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-measuring-performance">
-   12.35. Problems with measuring performance
+   14.35. Problems with measuring performance
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-for-tridiagonal-linear-algebra-equations">
-   12.36. Thomas algorithm for tridiagonal linear algebra equations
+   14.36. Thomas algorithm for tridiagonal linear algebra equations
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-forward-substitution">
-   12.37. Thomas algorithm, forward substitution
+   14.37. Thomas algorithm, forward substitution
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-backward-substitution">
-   12.38. Thomas algorithm, backward substitution
+   14.38. Thomas algorithm, backward substitution
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-and-counting-of-operations-floating-point-and-memory">
-   12.39. Thomas algorithm and counting of operations (floating point and memory)
+   14.39. Thomas algorithm and counting of operations (floating point and memory)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#example-transpose-of-a-matrix">
-   12.40. Example: Transpose of a matrix
+   14.40. Example: Transpose of a matrix
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#matrix-matrix-multiplication">
-   12.41. Matrix-matrix multiplication
+   14.41. Matrix-matrix multiplication
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#how-do-we-define-speedup-simplest-form">
-   12.42. How do we define speedup? Simplest form
+   14.42. How do we define speedup? Simplest form
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#how-do-we-define-speedup-correct-baseline">
-   12.43. How do we define speedup? Correct baseline
+   14.43. How do we define speedup? Correct baseline
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#parallel-speedup">
-   12.44. Parallel  speedup
+   14.44. Parallel  speedup
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#speedup-and-memory">
-   12.45. Speedup and memory
+   14.45. Speedup and memory
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#upper-bounds-on-speedup">
-   12.46. Upper bounds on speedup
+   14.46. Upper bounds on speedup
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#amdahl-s-law">
-   12.47. Amdahl’s law
+   14.47. Amdahl’s law
   </a>
  </li>
 </ul>
@@ -522,237 +527,237 @@ const thebe_selector_output = ".output, .cell_output"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#optimization-and-profiling">
-   12.1. Optimization and profiling
+   14.1. Optimization and profiling
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#more-on-optimization">
-   12.2. More on optimization
+   14.2. More on optimization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id1">
-   12.3. Optimization and profiling
+   14.3. Optimization and profiling
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#optimization-and-debugging">
-   12.4. Optimization and debugging
+   14.4. Optimization and debugging
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#other-hints">
-   12.5. Other hints
+   14.5. Other hints
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#vectorization-and-the-basic-idea-behind-parallel-computing">
-   12.6. Vectorization and the basic idea behind parallel computing
+   14.6. Vectorization and the basic idea behind parallel computing
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#a-rough-classification-of-hardware-models">
-   12.7. A rough classification of hardware models
+   14.7. A rough classification of hardware models
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#shared-memory-and-distributed-memory">
-   12.8. Shared memory and distributed memory
+   14.8. Shared memory and distributed memory
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#different-parallel-programming-paradigms">
-   12.9. Different parallel programming paradigms
+   14.9. Different parallel programming paradigms
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id2">
-   12.10. Different parallel programming paradigms
+   14.10. Different parallel programming paradigms
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#what-is-vectorization">
-   12.11. What is vectorization?
+   14.11. What is vectorization?
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#number-of-elements-that-can-acted-upon">
-   12.12. Number of elements that can acted upon
+   14.12. Number of elements that can acted upon
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#number-of-elements-that-can-acted-upon-examples">
-   12.13. Number of elements that can acted upon, examples
+   14.13. Number of elements that can acted upon, examples
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#operation-counts-for-scalar-operation">
-   12.14. Operation counts for scalar operation
+   14.14. Operation counts for scalar operation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id3">
-   12.15. Number of elements that can acted upon, examples
+   14.15. Number of elements that can acted upon, examples
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#number-of-operations-when-vectorized">
-   12.16. Number of operations when vectorized
+   14.16. Number of operations when vectorized
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#a-simple-test-case-with-and-without-vectorization">
-   12.17. A simple test case with and without vectorization
+   14.17. A simple test case with and without vectorization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#compiling-with-and-without-vectorization">
-   12.18. Compiling with and without vectorization
+   14.18. Compiling with and without vectorization
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#compiling-with-and-without-vectorization-using-clang">
-   12.19. Compiling with and without vectorization using clang
+   14.19. Compiling with and without vectorization using clang
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-criteria">
-   12.20. Automatic vectorization and vectorization inhibitors, criteria
+   14.20. Automatic vectorization and vectorization inhibitors, criteria
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-exit-criteria">
-   12.21. Automatic vectorization and vectorization inhibitors, exit criteria
+   14.21. Automatic vectorization and vectorization inhibitors, exit criteria
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-straight-line-code">
-   12.22. Automatic vectorization and vectorization inhibitors, straight-line code
+   14.22. Automatic vectorization and vectorization inhibitors, straight-line code
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-nested-loops">
-   12.23. Automatic vectorization and vectorization inhibitors, nested loops
+   14.23. Automatic vectorization and vectorization inhibitors, nested loops
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-function-calls">
-   12.24. Automatic vectorization and vectorization inhibitors, function calls
+   14.24. Automatic vectorization and vectorization inhibitors, function calls
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-data-dependencies">
-   12.25. Automatic vectorization and vectorization inhibitors, data dependencies
+   14.25. Automatic vectorization and vectorization inhibitors, data dependencies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-more-data-dependencies">
-   12.26. Automatic vectorization and vectorization inhibitors, more data dependencies
+   14.26. Automatic vectorization and vectorization inhibitors, more data dependencies
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#automatic-vectorization-and-vectorization-inhibitors-memory-stride">
-   12.27. Automatic vectorization and vectorization inhibitors, memory stride
+   14.27. Automatic vectorization and vectorization inhibitors, memory stride
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#memory-management">
-   12.28. Memory management
+   14.28. Memory management
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#memory-and-communication">
-   12.29. Memory and communication
+   14.29. Memory and communication
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#measuring-performance">
-   12.30. Measuring performance
+   14.30. Measuring performance
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-measuring-time">
-   12.31. Problems with measuring time
+   14.31. Problems with measuring time
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-cold-start">
-   12.32. Problems with cold start
+   14.32. Problems with cold start
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-smart-compilers">
-   12.33. Problems with smart compilers
+   14.33. Problems with smart compilers
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-interference">
-   12.34. Problems with interference
+   14.34. Problems with interference
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#problems-with-measuring-performance">
-   12.35. Problems with measuring performance
+   14.35. Problems with measuring performance
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-for-tridiagonal-linear-algebra-equations">
-   12.36. Thomas algorithm for tridiagonal linear algebra equations
+   14.36. Thomas algorithm for tridiagonal linear algebra equations
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-forward-substitution">
-   12.37. Thomas algorithm, forward substitution
+   14.37. Thomas algorithm, forward substitution
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-backward-substitution">
-   12.38. Thomas algorithm, backward substitution
+   14.38. Thomas algorithm, backward substitution
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#thomas-algorithm-and-counting-of-operations-floating-point-and-memory">
-   12.39. Thomas algorithm and counting of operations (floating point and memory)
+   14.39. Thomas algorithm and counting of operations (floating point and memory)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#example-transpose-of-a-matrix">
-   12.40. Example: Transpose of a matrix
+   14.40. Example: Transpose of a matrix
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#matrix-matrix-multiplication">
-   12.41. Matrix-matrix multiplication
+   14.41. Matrix-matrix multiplication
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#how-do-we-define-speedup-simplest-form">
-   12.42. How do we define speedup? Simplest form
+   14.42. How do we define speedup? Simplest form
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#how-do-we-define-speedup-correct-baseline">
-   12.43. How do we define speedup? Correct baseline
+   14.43. How do we define speedup? Correct baseline
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#parallel-speedup">
-   12.44. Parallel  speedup
+   14.44. Parallel  speedup
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#speedup-and-memory">
-   12.45. Speedup and memory
+   14.45. Speedup and memory
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#upper-bounds-on-speedup">
-   12.46. Upper bounds on speedup
+   14.46. Upper bounds on speedup
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#amdahl-s-law">
-   12.47. Amdahl’s law
+   14.47. Amdahl’s law
   </a>
  </li>
 </ul>
@@ -765,9 +770,9 @@ const thebe_selector_output = ".output, .cell_output"
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="optimization-and-vectorization">
-<h1><span class="section-number">12. </span>Optimization and Vectorization<a class="headerlink" href="#optimization-and-vectorization" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">14. </span>Optimization and Vectorization<a class="headerlink" href="#optimization-and-vectorization" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="optimization-and-profiling">
-<h2><span class="section-number">12.1. </span>Optimization and profiling<a class="headerlink" href="#optimization-and-profiling" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.1. </span>Optimization and profiling<a class="headerlink" href="#optimization-and-profiling" title="Permalink to this headline">¶</a></h2>
 <p>Till now we have not paid much attention to speed and possible optimization possibilities
 inherent in the various compilers. We have compiled and linked as</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    c++  -c  mycode.cpp
@@ -785,7 +790,7 @@ every operation is done precisely as the user specified it.</p>
 </div>
 </div>
 <div class="section" id="more-on-optimization">
-<h2><span class="section-number">12.2. </span>More on optimization<a class="headerlink" href="#more-on-optimization" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.2. </span>More on optimization<a class="headerlink" href="#more-on-optimization" title="Permalink to this headline">¶</a></h2>
 <p>We have additional compiler options for optimization. These may include procedure inlining where
 performance may be improved, moving constants inside loops outside the loop,
 identify potential parallelism, include automatic vectorization or replace a division with a reciprocal
@@ -797,7 +802,7 @@ and a multiplication if this speeds up the code.</p>
 <p>This (other options are -O2 or -Ofast) is the recommended option.</p>
 </div>
 <div class="section" id="id1">
-<h2><span class="section-number">12.3. </span>Optimization and profiling<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.3. </span>Optimization and profiling<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>It is also useful to profile your program under the development stage.
 You would then compile with</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    c++  -pg -O3 -c  mycode.cpp
@@ -813,7 +818,7 @@ slows down performance.
 For memory tests use <a class="reference external" href="http://www.valgrind.org">valgrind</a>. An excellent environment for all these aspects, and much  more, is  Qt creator.</p>
 </div>
 <div class="section" id="optimization-and-debugging">
-<h2><span class="section-number">12.4. </span>Optimization and debugging<a class="headerlink" href="#optimization-and-debugging" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.4. </span>Optimization and debugging<a class="headerlink" href="#optimization-and-debugging" title="Permalink to this headline">¶</a></h2>
 <p>Adding debugging options is a very useful alternative under the development stage of a program.
 You would then compile with</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    c++  -g -O0 -c  mycode.cpp
@@ -826,7 +831,7 @@ You would then compile with</p>
 The flag <strong>-ftrapv</strong> does this for the CLANG compiler on OS X operating systems.</p>
 </div>
 <div class="section" id="other-hints">
-<h2><span class="section-number">12.5. </span>Other hints<a class="headerlink" href="#other-hints" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.5. </span>Other hints<a class="headerlink" href="#other-hints" title="Permalink to this headline">¶</a></h2>
 <p>In general, irrespective of compiler options, it is useful to</p>
 <ul class="simple">
 <li><p>avoid if tests or call to functions inside loops, if possible.</p></li>
@@ -852,7 +857,7 @@ The flag <strong>-ftrapv</strong> does this for the CLANG compiler on OS X opera
 Most compilers, depending on compiler flags, identify and optimize such bottlenecks on their own, without requiring any particular action by the programmer. However, it is always useful to single out and avoid code examples like the first one discussed here.</p>
 </div>
 <div class="section" id="vectorization-and-the-basic-idea-behind-parallel-computing">
-<h2><span class="section-number">12.6. </span>Vectorization and the basic idea behind parallel computing<a class="headerlink" href="#vectorization-and-the-basic-idea-behind-parallel-computing" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.6. </span>Vectorization and the basic idea behind parallel computing<a class="headerlink" href="#vectorization-and-the-basic-idea-behind-parallel-computing" title="Permalink to this headline">¶</a></h2>
 <p>Present CPUs are highly parallel processors with varying levels of parallelism. The typical situation can be described via the following three statements.</p>
 <ul class="simple">
 <li><p>Pursuit of shorter computation time and larger simulation size gives rise to parallel computing.</p></li>
@@ -862,7 +867,7 @@ Most compilers, depending on compiler flags, identify and optimize such bottlene
 <p>Before we proceed with a more detailed discussion of topics like vectorization and parallelization, we need to remind ourselves about some basic features of different hardware models.</p>
 </div>
 <div class="section" id="a-rough-classification-of-hardware-models">
-<h2><span class="section-number">12.7. </span>A rough classification of hardware models<a class="headerlink" href="#a-rough-classification-of-hardware-models" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.7. </span>A rough classification of hardware models<a class="headerlink" href="#a-rough-classification-of-hardware-models" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Conventional single-processor computers are named SISD (single-instruction-single-data) machines.</p></li>
 <li><p>SIMD (single-instruction-multiple-data) machines incorporate the idea of parallel processing, using a large number of processing units to execute the same instruction on different data.</p></li>
@@ -870,7 +875,7 @@ Most compilers, depending on compiler flags, identify and optimize such bottlene
 </ul>
 </div>
 <div class="section" id="shared-memory-and-distributed-memory">
-<h2><span class="section-number">12.8. </span>Shared memory and distributed memory<a class="headerlink" href="#shared-memory-and-distributed-memory" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.8. </span>Shared memory and distributed memory<a class="headerlink" href="#shared-memory-and-distributed-memory" title="Permalink to this headline">¶</a></h2>
 <p>One way of categorizing modern parallel computers is to look at the memory configuration.</p>
 <ul class="simple">
 <li><p>In shared memory systems the CPUs share the same address space. Any CPU can access any data in the global memory.</p></li>
@@ -879,21 +884,21 @@ Most compilers, depending on compiler flags, identify and optimize such bottlene
 <p>The CPUs are connected by some network and may exchange messages.</p>
 </div>
 <div class="section" id="different-parallel-programming-paradigms">
-<h2><span class="section-number">12.9. </span>Different parallel programming paradigms<a class="headerlink" href="#different-parallel-programming-paradigms" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.9. </span>Different parallel programming paradigms<a class="headerlink" href="#different-parallel-programming-paradigms" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Task parallelism</strong>:  the work of a global problem can be divided into a number of independent tasks, which rarely need to synchronize.  Monte Carlo simulations represent a typical situation. Integration is another. However this paradigm is of limited use.</p></li>
 <li><p><strong>Data parallelism</strong>:  use of multiple threads (e.g. one or more threads per processor) to dissect loops over arrays etc.  Communication and synchronization between processors are often hidden, thus easy to program. However, the user surrenders much control to a specialized compiler. Examples of data parallelism are compiler-based parallelization and OpenMP directives.</p></li>
 </ul>
 </div>
 <div class="section" id="id2">
-<h2><span class="section-number">12.10. </span>Different parallel programming paradigms<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.10. </span>Different parallel programming paradigms<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Message passing</strong>:  all involved processors have an independent memory address space. The user is responsible for  partitioning the data/work of a global problem and distributing the  subproblems to the processors. Collaboration between processors is achieved by explicit message passing, which is used for data transfer plus synchronization.</p></li>
 <li><p>This paradigm is the most general one where the user has full control. Better parallel efficiency is usually achieved by explicit message passing. However, message-passing programming is more difficult.</p></li>
 </ul>
 </div>
 <div class="section" id="what-is-vectorization">
-<h2><span class="section-number">12.11. </span>What is vectorization?<a class="headerlink" href="#what-is-vectorization" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.11. </span>What is vectorization?<a class="headerlink" href="#what-is-vectorization" title="Permalink to this headline">¶</a></h2>
 <p>Vectorization is a special
 case of <strong>Single Instructions Multiple Data</strong> (SIMD) to denote a single
 instruction stream capable of operating on multiple data elements in
@@ -911,7 +916,7 @@ Consider the following example</p>
 then perform subsequent additions operating on one address in memory at the time.</p>
 </div>
 <div class="section" id="number-of-elements-that-can-acted-upon">
-<h2><span class="section-number">12.12. </span>Number of elements that can acted upon<a class="headerlink" href="#number-of-elements-that-can-acted-upon" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.12. </span>Number of elements that can acted upon<a class="headerlink" href="#number-of-elements-that-can-acted-upon" title="Permalink to this headline">¶</a></h2>
 <p>A SIMD instruction can operate  on multiple data elements in one single instruction.
 It uses the so-called 128-bit SIMD floating-point register.
 In this sense, vectorization adds some form of parallelism since one instruction is applied<br />
@@ -931,7 +936,7 @@ on the data type.</p>
 </ul>
 </div>
 <div class="section" id="number-of-elements-that-can-acted-upon-examples">
-<h2><span class="section-number">12.13. </span>Number of elements that can acted upon, examples<a class="headerlink" href="#number-of-elements-that-can-acted-upon-examples" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.13. </span>Number of elements that can acted upon, examples<a class="headerlink" href="#number-of-elements-that-can-acted-upon-examples" title="Permalink to this headline">¶</a></h2>
 <p>We start with the simple scalar operations given by</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    for (i = 0; i &lt; n; i++){
         a[i] = b[i] + c[i];
@@ -953,7 +958,7 @@ it means that we have <span class="math notranslate nohighlight">\(3\times 32\)<
 We have thus unused space in our SIMD registers. These registers could hold three additional integers.
 </div>
 <div class="section" id="operation-counts-for-scalar-operation">
-<h2><span class="section-number">12.14. </span>Operation counts for scalar operation<a class="headerlink" href="#operation-counts-for-scalar-operation" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.14. </span>Operation counts for scalar operation<a class="headerlink" href="#operation-counts-for-scalar-operation" title="Permalink to this headline">¶</a></h2>
 <p>The code</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    for (i = 0; i &lt; n; i++){
         a[i] = b[i] + c[i];
@@ -969,7 +974,7 @@ We have thus unused space in our SIMD registers. These registers could hold thre
 </ol>
 </div>
 <div class="section" id="id3">
-<h2><span class="section-number">12.15. </span>Number of elements that can acted upon, examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.15. </span>Number of elements that can acted upon, examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>If we vectorize the code, we can perform, with a 128-bit register four simultaneous operations, that is
 we have</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    for (i = 0; i &lt; n; i+=4){
@@ -994,7 +999,7 @@ we have</p>
 Four additions are now done in a single step.
 </div>
 <div class="section" id="number-of-operations-when-vectorized">
-<h2><span class="section-number">12.16. </span>Number of operations when vectorized<a class="headerlink" href="#number-of-operations-when-vectorized" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.16. </span>Number of operations when vectorized<a class="headerlink" href="#number-of-operations-when-vectorized" title="Permalink to this headline">¶</a></h2>
 <p>For <span class="math notranslate nohighlight">\(n/4\)</span> repeats assuming floats or integers</p>
 <ol class="simple">
 <li><p>one vector load for <span class="math notranslate nohighlight">\(c[i]\)</span> in address 1</p></li>
@@ -1004,7 +1009,7 @@ Four additions are now done in a single step.
 </ol>
 </div>
 <div class="section" id="a-simple-test-case-with-and-without-vectorization">
-<h2><span class="section-number">12.17. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/LecturePrograms/programs/Classes/cpp/program7.cpp">A simple test case with and without vectorization</a><a class="headerlink" href="#a-simple-test-case-with-and-without-vectorization" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.17. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/LecturePrograms/programs/Classes/cpp/program7.cpp">A simple test case with and without vectorization</a><a class="headerlink" href="#a-simple-test-case-with-and-without-vectorization" title="Permalink to this headline">¶</a></h2>
 <p>We implement these operations in a simple c++ program that computes at the end the norm of a vector.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;cstdlib&gt;
     #include &lt;iostream&gt;
@@ -1056,7 +1061,7 @@ Four additions are now done in a single step.
 </div>
 </div>
 <div class="section" id="compiling-with-and-without-vectorization">
-<h2><span class="section-number">12.18. </span>Compiling with and without vectorization<a class="headerlink" href="#compiling-with-and-without-vectorization" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.18. </span>Compiling with and without vectorization<a class="headerlink" href="#compiling-with-and-without-vectorization" title="Permalink to this headline">¶</a></h2>
 <p>We can compile and link without vectorization using the clang c++ compiler</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    clang -o novec.x vecexample.cpp
 </pre></div>
@@ -1084,7 +1089,7 @@ Performing the same operations for <span class="math notranslate nohighlight">\(
 <p>We will discuss these issues further in the next slides.</p>
 </div>
 <div class="section" id="compiling-with-and-without-vectorization-using-clang">
-<h2><span class="section-number">12.19. </span>Compiling with and without vectorization using clang<a class="headerlink" href="#compiling-with-and-without-vectorization-using-clang" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.19. </span>Compiling with and without vectorization using clang<a class="headerlink" href="#compiling-with-and-without-vectorization-using-clang" title="Permalink to this headline">¶</a></h2>
 <p>We can compile and link without vectorization with clang compiler</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    clang++ -o -fno-vectorize novec.x vecexample.cpp
 </pre></div>
@@ -1103,7 +1108,7 @@ Performing the same operations for <span class="math notranslate nohighlight">\(
 </div>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-criteria">
-<h2><span class="section-number">12.20. </span>Automatic vectorization and vectorization inhibitors, criteria<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-criteria" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.20. </span>Automatic vectorization and vectorization inhibitors, criteria<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-criteria" title="Permalink to this headline">¶</a></h2>
 <p>Not all loops can be vectorized, as discussed in <a class="reference external" href="https://software.intel.com/en-us/articles/a-guide-to-auto-vectorization-with-intel-c-compilers">Intel’s guide to vectorization</a></p>
 <p>An important criteria is that the loop counter <span class="math notranslate nohighlight">\(n\)</span> is known at the entry of the loop.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      for (int j = 0; j &lt; n; j++) {
@@ -1114,7 +1119,7 @@ Performing the same operations for <span class="math notranslate nohighlight">\(
 <p>The variable <span class="math notranslate nohighlight">\(n\)</span> does need to be known at compile time. However, this variable must stay the same for the entire duration of the loop. It implies that an exit statement inside the loop cannot be data dependent.</p>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-exit-criteria">
-<h2><span class="section-number">12.21. </span>Automatic vectorization and vectorization inhibitors, exit criteria<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-exit-criteria" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.21. </span>Automatic vectorization and vectorization inhibitors, exit criteria<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-exit-criteria" title="Permalink to this headline">¶</a></h2>
 <p>An exit statement should in general be avoided.
 If the exit statement contains data-dependent conditions, the loop cannot be vectorized.
 The following is an example of a non-vectorizable loop</p>
@@ -1127,7 +1132,7 @@ The following is an example of a non-vectorizable loop</p>
 <p>Avoid loop termination conditions and opt for a single entry loop variable <span class="math notranslate nohighlight">\(n\)</span>. The lower and upper bounds have to be kept fixed within the loop.</p>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-straight-line-code">
-<h2><span class="section-number">12.22. </span>Automatic vectorization and vectorization inhibitors, straight-line code<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-straight-line-code" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.22. </span>Automatic vectorization and vectorization inhibitors, straight-line code<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-straight-line-code" title="Permalink to this headline">¶</a></h2>
 <p>SIMD instructions perform the same type of operations multiple times.
 A <strong>switch</strong> statement leads thus to a non-vectorizable loop since different statemens cannot branch.
 The following code can however be vectorized since the <strong>if</strong> statement is implemented as a masked assignment.</p>
@@ -1145,7 +1150,7 @@ The following code can however be vectorized since the <strong>if</strong> state
 <p>These operations can be performed for all data elements but only those elements which the mask evaluates as true are stored. In general, one should avoid branches such as <strong>switch</strong>, <strong>go to</strong>, or <strong>return</strong> statements or <strong>if</strong> constructs that cannot be treated as masked assignments.</p>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-nested-loops">
-<h2><span class="section-number">12.23. </span>Automatic vectorization and vectorization inhibitors, nested loops<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-nested-loops" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.23. </span>Automatic vectorization and vectorization inhibitors, nested loops<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-nested-loops" title="Permalink to this headline">¶</a></h2>
 <p>Only the innermost loop of the following example is vectorized</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      for (int i = 0; i &lt; n; i++) {
           for (int j = 0; j &lt; n; j++) {
@@ -1157,7 +1162,7 @@ The following code can however be vectorized since the <strong>if</strong> state
 <p>The exception is if an original outer loop is transformed into an inner loop as the result of compiler optimizations.</p>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-function-calls">
-<h2><span class="section-number">12.24. </span>Automatic vectorization and vectorization inhibitors, function calls<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-function-calls" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.24. </span>Automatic vectorization and vectorization inhibitors, function calls<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-function-calls" title="Permalink to this headline">¶</a></h2>
 <p>Calls to programmer defined functions ruin vectorization. However, calls to intrinsic functions like
 <span class="math notranslate nohighlight">\(\sin{x}\)</span>, <span class="math notranslate nohighlight">\(\cos{x}\)</span>, <span class="math notranslate nohighlight">\(\exp{x}\)</span> etc are allowed since they are normally efficiently vectorized.
 The following example is fully vectorizable</p>
@@ -1169,7 +1174,7 @@ The following example is fully vectorizable</p>
 <p>Similarly, <strong>inline</strong> functions defined by the programmer, allow for vectorization since the function statements are glued into the actual place where the function is called.</p>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-data-dependencies">
-<h2><span class="section-number">12.25. </span>Automatic vectorization and vectorization inhibitors, data dependencies<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-data-dependencies" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.25. </span>Automatic vectorization and vectorization inhibitors, data dependencies<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-data-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>One has to keep in mind that vectorization changes the order of operations inside a loop. A so-called
 read-after-write statement with an explicit flow dependency cannot be vectorized. The following code</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      double b = 15.;
@@ -1188,7 +1193,7 @@ read-after-write statement with an explicit flow dependency cannot be vectorized
 <p>and if the two first iterations are  executed at the same by the SIMD instruction, the value of say <span class="math notranslate nohighlight">\(a[1]\)</span> could be used by the second iteration before it has been calculated by the first iteration, leading thereby to wrong results.</p>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-more-data-dependencies">
-<h2><span class="section-number">12.26. </span>Automatic vectorization and vectorization inhibitors, more data dependencies<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-more-data-dependencies" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.26. </span>Automatic vectorization and vectorization inhibitors, more data dependencies<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-more-data-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>On the other hand,  a so-called
 write-after-read statement can be vectorized. The following code</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      double b = 15.;
@@ -1201,7 +1206,7 @@ write-after-read statement can be vectorized. The following code</p>
 can complete before an iteration with a lower value of <span class="math notranslate nohighlight">\(i\)</span>. However, such code leads to problems with parallelization.</p>
 </div>
 <div class="section" id="automatic-vectorization-and-vectorization-inhibitors-memory-stride">
-<h2><span class="section-number">12.27. </span>Automatic vectorization and vectorization inhibitors, memory stride<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-memory-stride" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.27. </span>Automatic vectorization and vectorization inhibitors, memory stride<a class="headerlink" href="#automatic-vectorization-and-vectorization-inhibitors-memory-stride" title="Permalink to this headline">¶</a></h2>
 <p>For C++ programmers  it is also worth keeping in mind that an array notation is preferred to the more compact use of pointers to access array elements. The compiler can often not tell if it is safe to vectorize the code.</p>
 <p>When dealing with arrays, you should also avoid memory stride, since this slows down considerably vectorization. When you access array element, write for example the inner loop to vectorize using unit stride, that is, access successively the next array element in memory, as shown here</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      for (int i = 0; i &lt; n; i++) {
@@ -1213,7 +1218,7 @@ can complete before an iteration with a lower value of <span class="math notrans
 </div>
 </div>
 <div class="section" id="memory-management">
-<h2><span class="section-number">12.28. </span>Memory management<a class="headerlink" href="#memory-management" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.28. </span>Memory management<a class="headerlink" href="#memory-management" title="Permalink to this headline">¶</a></h2>
 <p>The main memory contains the program data</p>
 <ol class="simple">
 <li><p>Cache memory contains a copy of the main memory data</p></li>
@@ -1234,7 +1239,7 @@ can complete before an iteration with a lower value of <span class="math notrans
 <p>Loads and stores to memory can be as important as floating point operations when we measure performance.</p>
 </div>
 <div class="section" id="memory-and-communication">
-<h2><span class="section-number">12.29. </span>Memory and communication<a class="headerlink" href="#memory-and-communication" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.29. </span>Memory and communication<a class="headerlink" href="#memory-and-communication" title="Permalink to this headline">¶</a></h2>
 <ol class="simple">
 <li><p>Most communication in a computer is carried out in chunks, blocks of bytes of data that move together</p></li>
 <li><p>In the memory hierarchy, data moves between memory and cache, and between different levels of cache, in groups called lines</p></li>
@@ -1246,7 +1251,7 @@ can complete before an iteration with a lower value of <span class="math notrans
 <p>Many of these  performance features are not captured in most programming languages.</p>
 </div>
 <div class="section" id="measuring-performance">
-<h2><span class="section-number">12.30. </span>Measuring performance<a class="headerlink" href="#measuring-performance" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.30. </span>Measuring performance<a class="headerlink" href="#measuring-performance" title="Permalink to this headline">¶</a></h2>
 <p>How do we measure performance? What is wrong with this code to time a loop?</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      clock_t start, finish;
       start = clock();
@@ -1259,7 +1264,7 @@ can complete before an iteration with a lower value of <span class="math notrans
 </div>
 </div>
 <div class="section" id="problems-with-measuring-time">
-<h2><span class="section-number">12.31. </span>Problems with measuring time<a class="headerlink" href="#problems-with-measuring-time" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.31. </span>Problems with measuring time<a class="headerlink" href="#problems-with-measuring-time" title="Permalink to this headline">¶</a></h2>
 <ol class="simple">
 <li><p>Timers are not infinitely accurate</p></li>
 <li><p>All clocks have a granularity, the minimum time that they can measure</p></li>
@@ -1269,7 +1274,7 @@ can complete before an iteration with a lower value of <span class="math notrans
 </ol>
 </div>
 <div class="section" id="problems-with-cold-start">
-<h2><span class="section-number">12.32. </span>Problems with cold start<a class="headerlink" href="#problems-with-cold-start" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.32. </span>Problems with cold start<a class="headerlink" href="#problems-with-cold-start" title="Permalink to this headline">¶</a></h2>
 <p>What happens when the code is executed? The assumption is that the code is ready to
 execute. But</p>
 <ol class="simple">
@@ -1280,7 +1285,7 @@ execute. But</p>
 </ol>
 </div>
 <div class="section" id="problems-with-smart-compilers">
-<h2><span class="section-number">12.33. </span>Problems with smart compilers<a class="headerlink" href="#problems-with-smart-compilers" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.33. </span>Problems with smart compilers<a class="headerlink" href="#problems-with-smart-compilers" title="Permalink to this headline">¶</a></h2>
 <ol class="simple">
 <li><p>If the result of the computation is not used, the compiler may eliminate the code</p></li>
 <li><p>Performance will look impossibly fantastic</p></li>
@@ -1289,7 +1294,7 @@ execute. But</p>
 </ol>
 </div>
 <div class="section" id="problems-with-interference">
-<h2><span class="section-number">12.34. </span>Problems with interference<a class="headerlink" href="#problems-with-interference" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.34. </span>Problems with interference<a class="headerlink" href="#problems-with-interference" title="Permalink to this headline">¶</a></h2>
 <ol class="simple">
 <li><p>Other activities are sharing your processor</p></li>
 </ol>
@@ -1306,7 +1311,7 @@ execute. But</p>
 </ul>
 </div>
 <div class="section" id="problems-with-measuring-performance">
-<h2><span class="section-number">12.35. </span>Problems with measuring performance<a class="headerlink" href="#problems-with-measuring-performance" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.35. </span>Problems with measuring performance<a class="headerlink" href="#problems-with-measuring-performance" title="Permalink to this headline">¶</a></h2>
 <ol class="simple">
 <li><p>Accurate, reproducible performance measurement is hard</p></li>
 <li><p>Think carefully about your experiment:</p></li>
@@ -1315,7 +1320,7 @@ execute. But</p>
 </ol>
 </div>
 <div class="section" id="thomas-algorithm-for-tridiagonal-linear-algebra-equations">
-<h2><span class="section-number">12.36. </span>Thomas algorithm for tridiagonal linear algebra equations<a class="headerlink" href="#thomas-algorithm-for-tridiagonal-linear-algebra-equations" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.36. </span>Thomas algorithm for tridiagonal linear algebra equations<a class="headerlink" href="#thomas-algorithm-for-tridiagonal-linear-algebra-equations" title="Permalink to this headline">¶</a></h2>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \left( \begin{array}{ccccc}
@@ -1341,7 +1346,7 @@ execute. But</p>
 \end{split}\]</div>
 </div>
 <div class="section" id="thomas-algorithm-forward-substitution">
-<h2><span class="section-number">12.37. </span>Thomas algorithm, forward substitution<a class="headerlink" href="#thomas-algorithm-forward-substitution" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.37. </span>Thomas algorithm, forward substitution<a class="headerlink" href="#thomas-algorithm-forward-substitution" title="Permalink to this headline">¶</a></h2>
 <p>The first step is to multiply the first row by <span class="math notranslate nohighlight">\(a_0/b_0\)</span> and subtract it from the second row.  This is known as the forward substitution step. We obtain then</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1381,7 +1386,7 @@ f_i = f_i - \frac{a_{i-1}}{b_{i-1}}f_{i-1}.
 \end{split}\]</div>
 </div>
 <div class="section" id="thomas-algorithm-backward-substitution">
-<h2><span class="section-number">12.38. </span>Thomas algorithm, backward substitution<a class="headerlink" href="#thomas-algorithm-backward-substitution" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.38. </span>Thomas algorithm, backward substitution<a class="headerlink" href="#thomas-algorithm-backward-substitution" title="Permalink to this headline">¶</a></h2>
 <p>The next step is  the backward substitution step.  The last row is multiplied by <span class="math notranslate nohighlight">\(c_{N-3}/b_{N-2}\)</span> and subtracted from the second to last row, thus eliminating <span class="math notranslate nohighlight">\(c_{N-3}\)</span> from the last row.  The general backward substitution procedure is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1399,7 +1404,7 @@ x_i = \frac{f_i}{b_i}
 \]</div>
 </div>
 <div class="section" id="thomas-algorithm-and-counting-of-operations-floating-point-and-memory">
-<h2><span class="section-number">12.39. </span>Thomas algorithm and counting of operations (floating point and memory)<a class="headerlink" href="#thomas-algorithm-and-counting-of-operations-floating-point-and-memory" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.39. </span>Thomas algorithm and counting of operations (floating point and memory)<a class="headerlink" href="#thomas-algorithm-and-counting-of-operations-floating-point-and-memory" title="Permalink to this headline">¶</a></h2>
 <table border="1">
 <thead>
 <tr><th align="center">   Operation   </th> <th align="center">Floating Point</th> </tr>
@@ -1427,7 +1432,7 @@ x_i = \frac{f_i}{b_i}
 </div>
 </div>
 <div class="section" id="example-transpose-of-a-matrix">
-<h2><span class="section-number">12.40. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/LecturePrograms/programs/Classes/cpp/program8.cpp">Example: Transpose of a matrix</a><a class="headerlink" href="#example-transpose-of-a-matrix" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.40. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/LecturePrograms/programs/Classes/cpp/program8.cpp">Example: Transpose of a matrix</a><a class="headerlink" href="#example-transpose-of-a-matrix" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;cstdlib&gt;
     #include &lt;iostream&gt;
     #include &lt;cmath&gt;
@@ -1479,7 +1484,7 @@ x_i = \frac{f_i}{b_i}
 </div>
 </div>
 <div class="section" id="matrix-matrix-multiplication">
-<h2><span class="section-number">12.41. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/LecturePrograms/programs/Classes/cpp/program9.cpp">Matrix-matrix multiplication</a><a class="headerlink" href="#matrix-matrix-multiplication" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.41. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/LecturePrograms/programs/Classes/cpp/program9.cpp">Matrix-matrix multiplication</a><a class="headerlink" href="#matrix-matrix-multiplication" title="Permalink to this headline">¶</a></h2>
 <p>This the matrix-matrix multiplication code with plain c++ memory allocation. It computes at the end the Frobenius norm.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;cstdlib&gt;
     #include &lt;iostream&gt;
@@ -1550,7 +1555,7 @@ x_i = \frac{f_i}{b_i}
 </div>
 </div>
 <div class="section" id="how-do-we-define-speedup-simplest-form">
-<h2><span class="section-number">12.42. </span>How do we define speedup? Simplest form<a class="headerlink" href="#how-do-we-define-speedup-simplest-form" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.42. </span>How do we define speedup? Simplest form<a class="headerlink" href="#how-do-we-define-speedup-simplest-form" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Speedup measures the ratio of performance between two objects</p></li>
 <li><p>Versions of same code, with different number of processors</p></li>
@@ -1560,7 +1565,7 @@ x_i = \frac{f_i}{b_i}
 </ul>
 </div>
 <div class="section" id="how-do-we-define-speedup-correct-baseline">
-<h2><span class="section-number">12.43. </span>How do we define speedup? Correct baseline<a class="headerlink" href="#how-do-we-define-speedup-correct-baseline" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.43. </span>How do we define speedup? Correct baseline<a class="headerlink" href="#how-do-we-define-speedup-correct-baseline" title="Permalink to this headline">¶</a></h2>
 <p>The key is choosing the correct baseline for comparison</p>
 <ul class="simple">
 <li><p>For our serial vs. vectorization examples, using compiler-provided vectorization, the baseline is simple; the same code, with vectorization turned off</p></li>
@@ -1569,7 +1574,7 @@ x_i = \frac{f_i}{b_i}
 </ul>
 </div>
 <div class="section" id="parallel-speedup">
-<h2><span class="section-number">12.44. </span>Parallel  speedup<a class="headerlink" href="#parallel-speedup" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.44. </span>Parallel  speedup<a class="headerlink" href="#parallel-speedup" title="Permalink to this headline">¶</a></h2>
 <p>For parallel applications, speedup  is typically defined as</p>
 <ul class="simple">
 <li><p>Speedup <span class="math notranslate nohighlight">\(=T_1/T_p\)</span></p></li>
@@ -1580,7 +1585,7 @@ x_i = \frac{f_i}{b_i}
 </ul>
 </div>
 <div class="section" id="speedup-and-memory">
-<h2><span class="section-number">12.45. </span>Speedup and memory<a class="headerlink" href="#speedup-and-memory" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.45. </span>Speedup and memory<a class="headerlink" href="#speedup-and-memory" title="Permalink to this headline">¶</a></h2>
 <p>The speedup on <span class="math notranslate nohighlight">\(p\)</span> processors can
 be greater than <span class="math notranslate nohighlight">\(p\)</span> if memory usage is optimal!
 Consider the case of a memorybound computation with <span class="math notranslate nohighlight">\(M\)</span> words of memory</p>
@@ -1591,7 +1596,7 @@ Consider the case of a memorybound computation with <span class="math notranslat
 </ul>
 </div>
 <div class="section" id="upper-bounds-on-speedup">
-<h2><span class="section-number">12.46. </span>Upper bounds on speedup<a class="headerlink" href="#upper-bounds-on-speedup" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.46. </span>Upper bounds on speedup<a class="headerlink" href="#upper-bounds-on-speedup" title="Permalink to this headline">¶</a></h2>
 <p>Assume that almost all parts of a code are perfectly
 parallelizable (fraction <span class="math notranslate nohighlight">\(f\)</span>). The remainder,
 fraction <span class="math notranslate nohighlight">\((1-f)\)</span> cannot be parallelized at all.</p>
@@ -1602,7 +1607,7 @@ time <span class="math notranslate nohighlight">\(Wf/p\)</span> on <span class="
 </ul>
 </div>
 <div class="section" id="amdahl-s-law">
-<h2><span class="section-number">12.47. </span>Amdahl’s law<a class="headerlink" href="#amdahl-s-law" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">14.47. </span>Amdahl’s law<a class="headerlink" href="#amdahl-s-law" title="Permalink to this headline">¶</a></h2>
 <p>On one processor we have</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1658,13 +1663,13 @@ is <span class="math notranslate nohighlight">\(1/(1-.99)=100\)</span>!</p>
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">11. </span>Boltzmann Machines</p>
+            <p class="prev-next-title"><span class="section-number">13. </span>Boltzmann Machines</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="parallelization.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">13. </span>Parallelization with MPI and OpenMPI</p>
+        <p class="prev-next-title"><span class="section-number">15. </span>Parallelization with MPI and OpenMPI</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
