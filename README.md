@@ -125,3 +125,14 @@ In particular we recommend the texts by
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 - Recommended reading: Szabo and Ostlund, chapters 1 and 2, see https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Literature/szaboostlund.pdf
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek35.pdf
+
+### Week 36, September 5-9
+
+- Topics to be covered
+  - Thursday: Second quantization, operators in second quantization and diagrammatic representation
+  - Video of lecture at https://youtu.be/ofow8wjvP6U
+  - Friday: Second quantization and Wick's theorem
+  - Video of lecture at
+- Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4. Sections 3.1-3.3 of Shavitt and Bartlett covers most of the material discussed this week.
+- Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek36.pdf
+
