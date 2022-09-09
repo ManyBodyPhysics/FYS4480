@@ -37,7 +37,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Thursday: Second quantization, operators in second quantization and diagrammatic representation
   - Video of lecture at https://youtu.be/ofow8wjvP6U
   - Friday: Second quantization and Wick's theorem
-  - Video of lecture at
+  - Video of lecture at https://youtu.be/qylybY6N5rQ
 - Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4. Sections 3.1-3.3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek36.pdf
 
