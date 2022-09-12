@@ -1,0 +1,274 @@
+\documentclass[a4paper, 11pt, notitlepage, english]{article}
+
+\usepackage{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc, url}
+\usepackage{textcomp}
+\usepackage{amsmath, amssymb}
+\usepackage{amsbsy, amsfonts}
+\usepackage{graphicx, color}
+\usepackage{parskip}
+\usepackage{framed}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{flafter}
+
+
+\usepackage{geometry}
+\geometry{headheight=0.01mm}
+\geometry{top=24mm, bottom=29mm, left=39mm, right=39mm}
+
+\renewcommand{\arraystretch}{2}
+\setlength{\tabcolsep}{10pt}
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+%
+% Parametere for inkludering av kode fra fil
+%
+\usepackage{listings}
+\lstset{language=python}
+\lstset{basicstyle=\ttfamily\small}
+\lstset{frame=single}
+\lstset{keywordstyle=\color{red}\bfseries}
+\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+
+%
+% Definering av egne kommandoer og miljøer
+%
+\newcommand{\dd}[1]{\ \text{d}#1}
+\newcommand{\f}[2]{\frac{#1}{#2}} 
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bra}[1]{\langle #1|}
+\newcommand{\ket}[1]{|#1 \rangle}
+\newcommand{\braket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\braup}[1]{\langle #1 \left|\uparrow\rangle\right.}
+\newcommand{\bradown}[1]{\langle #1 \left|\downarrow\rangle\right.}
+\newcommand{\av}[1]{\left| #1 \right|}
+\newcommand{\op}[1]{\hat{#1}}
+\newcommand{\braopket}[3]{\langle #1 | {#2} | #3 \rangle}
+\newcommand{\ketbra}[2]{\ket{#1}\bra{#2}}
+\newcommand{\pp}[1]{\frac{\partial}{\partial #1}}
+\newcommand{\ppn}[1]{\frac{\partial^2}{\partial #1^2}}
+\newcommand{\up}{\left|\uparrow\rangle\right.}
+\newcommand{\upup}{\left|\uparrow\uparrow\rangle\right.}
+\newcommand{\down}{\left|\downarrow\rangle\right.}
+\newcommand{\downdown}{\left|\downarrow\downarrow\rangle\right.}
+\newcommand{\updown}{\left|\uparrow\downarrow\rangle\right.}
+\newcommand{\downup}{\left|\downarrow\uparrow\rangle\right.}
+\newcommand{\bupup}{\left.\langle\uparrow\uparrow\right|}
+\newcommand{\bdowndown}{\left.\langle\downarrow\downarrow\right|}
+\newcommand{\bupdown}{\left.\langle\uparrow\downarrow\right|}
+\newcommand{\bdownup}{\left.\langle\downarrow\uparrow\right|}
+\renewcommand{\d}{{\rm d}}
+\newcommand{\Res}[2]{{\rm Res}(#1;#2)}
+\newcommand{\To}{\quad\Rightarrow\quad}
+\newcommand{\eps}{\epsilon}
+\newcommand{\inner}[2]{\langle #1 , #2 \rangle}
+
+
+\newcommand{\bt}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\textsf{\textbf{#1}}}
+\newcommand{\I}{\boldsymbol{\mathcal{I}}}
+\newcommand{\p}{\partial}
+%
+% Navn og tittel
+%
+\title{Exercises week 36, September 5-9}
+\author{FYS4480, Fall semester 2022}
+\begin{document}
+\maketitle
+
+\section*{Exercise 1}
+In this exercise, we are looking at a general $N$-particle Slater determinant, which we will denote $\ket{SD}$. We also look at three other $N$-particle SDs, that have one, two and three non\-coincidence with the first SD, meaning they have certain single-particle states replaced by others. The notation we use to denote this is as follows, the state $\ket{SD}_i^j$ has had the single-particle state $\phi_i$ replaced by $\phi_j$---this of course assumes that $\phi_j$ was not a part of the original SD. Throughout these exercises, we will use the fact that these SDs form an orthonormal set, in the sense that
+\begin{align*}
+\braket{SD}{SD} &= 1, \\
+\braket{SD}{SD_i^j} &= 0, \\
+\braket{SD_i^j}{SD_i^j} &= 1,
+\end{align*}
+and so on.
+
+We will look at the matrix elements of general onebody and twobody operators represented in the basis of these SDs. The operators are as usual
+$$\op{F} = \sum_i \op{f}(x_i), \qquad \op{G}=\sum_{i<j}\op{g}(x_i,x_j).$$
+which in second quantization can be written as
+\begin{align*}
+\op{F} &= \sum_{\alpha, \beta} \braopket{\alpha}{\op{f}}{\beta}a_\alpha^\dag a_\beta, \\
+\op{G} &= \frac{1}{2}\sum_{\alpha, \beta, \gamma, \delta} \braopket{\alpha\beta}{\op{g}}{\gamma\delta}a_\alpha^\dag a_\beta^\dag a_\delta a_\gamma.
+\end{align*}
+
+\clearpage
+
+\subsection*{a)}
+We start by simply looking at the expectation values of $\ket{SD}$ for the onebody and twobody operators.
+
+\subsubsection*{Onebody operator}
+When we insert the onebody operator, we see that only the terms where $\alpha=\beta$ survive and we are left with $N$ contributions to the expectation value
+\begin{align*}
+\braopket{SD}{\op{F}}{SD} 
+&= \sum_{\alpha, \beta} \braopket{\alpha}{\op{f}}{\beta}\braopket{SD}{a_\alpha^\dag a_\beta}{SD} \\&= \sum_\alpha \braopket{\alpha}{\op{f}}{\alpha}.		
+\end{align*}
+
+\subsubsection*{Twobody operator}
+When inserting the twobody operator, we have
+\begin{align*}
+\braopket{SD}{\op{F}}{SD}
+&= \frac{1}{2}\sum_{\alpha, \beta, \gamma, \delta} \braopket{\alpha\beta}{\op{g}}{\gamma\delta}\braopket{SD}{a_\alpha^\dag a_\beta^\dag a_\delta  a_\gamma}{SD}.\\
+\end{align*}
+We can firste note that any term where $\alpha=\beta$ or $\gamma=\delta$ vanish, because
+$$\op{a}_\alpha^\dag \op{a}_\alpha^\dag \ket{SD} = 0 \quad \mbox{and} \quad \op{a}_\alpha \op{a}_\alpha \ket{SD} = 0.$$
+Next we note that to get any contribution, we must add the same states back that we annihilate, meaning either $\alpha = \gamma$ and $\beta = \delta$ or vice versa. We then have
+\begin{align*}
+\braopket{SD}{\op{F}}{SD}
+= \frac{1}{2}\sum_{\alpha, \beta}\bigg(
+&\braopket{\alpha\beta}{\op{g}}{\alpha\beta}\braopket{SD}{a_\alpha^\dag a_\beta^\dag a_\delta  a_\alpha}{SD} \\[-0.33cm]
+&\quad+ \braopket{\alpha\beta}{\op{g}}{\beta\alpha}\braopket{SD}{a_\alpha^\dag a_\beta^\dag a_\alpha  a_\beta}{SD}\bigg).
+\end{align*}
+To simplify further, we use the anticommutation relations:
+$$\op{a}_\alpha^\dag \op{a}_\beta^\dag = -\op{a}_\beta^\dag \op{a}_\alpha^\dag, \quad \op{a}_\alpha \op{a}_\beta = -\op{a}_\beta \op{a}_\alpha, \qquad \op{a}_\alpha^\dag \op{a}_\beta = \delta_{\alpha\beta} - \op{a}_\beta \op{a}_\alpha^\dag,$$
+and also the number operator
+$$\op{a}_\alpha^\dag \op{a}_\alpha = \op{n}_\alpha,$$
+we find that
+\begin{align*}
+\braopket{SD}{a_\alpha^\dag a_\beta^\dag a_\beta a_\alpha}{SD} &= \braopket{SD}{a_\alpha^\dag a_\alpha a_\beta^\dag a_\beta}{SD} = \braopket{SD}{\op{n}_\alpha \op{n}_\beta}{SD} = 1\\
+\braopket{SD}{a_\alpha^\dag a_\beta^\dag a_\alpha  a_\beta}{SD} &= -\braopket{SD}{a_\alpha^\dag  a_\alpha  a_\beta^\dag a_\beta}{SD} = -\braopket{SD}{\op{n}_\alpha \op{n}_\beta}{SD} = -1.
+\end{align*}
+
+Combining these results gives
+\begin{align*}
+\braopket{SD}{\op{G}}{SD}
+=  \frac{1}{2}\sum_{\alpha,\beta} \bigg(\braopket{\alpha\beta}{\op{g}}{\alpha\beta} - \braopket{\alpha\beta}{\op{g}}{\beta\alpha}\bigg).
+\end{align*}
+We recognize the \emph{Hartree} and \emph{Fock} terms respectively. Note that all terms where $\alpha=\beta$ will vanish, as expected.
+
+\subsection*{b)}
+We now look at the cross terms where there is one noncoincidence between the SDs, i.e., $\ket{SD}$ and $\ket{SD_i^j}$. 
+
+\subsubsection*{Onebody operator}
+When we insert the onebody operator, we get
+\begin{align*}
+\braopket{SD}{\op{F}}{SD_i^j} 
+&= \sum_{\alpha, \beta} \braopket{\alpha}{\op{f}}{\beta}\braopket{SD}{a_\alpha^\dag a_\beta}{SD_i^j}.
+\end{align*}
+As $\ket{SD_i^j}$ has had its $\phi_i$ state replaced with $\phi_j$, we know that
+$$\op{a}_i^\dag \op{a}_j\ket{SD_i^j} = \ket{SD}.$$
+For all other combinations of $\alpha$ and $\beta$, the noncoincidence makes the integral vanish, so we are left with only one contribution
+\begin{align*}
+\braopket{SD}{\op{F}}{SD_i^j} 
+&= \braopket{i}{\op{f}}{j}.
+\end{align*}
+
+\subsubsection*{Twobody operator}
+For the twobody operator, we have the expression
+\begin{align*}
+\braopket{SD}{\op{G}}{SD_i^j}
+&= \frac{1}{2}\sum_{\alpha, \beta, \gamma, \delta} \braopket{\alpha\beta}{\op{g}}{\gamma\delta}\braopket{SD}{a_\alpha^\dag a_\beta^\dag a_\delta a_\gamma}{SD_i^j}.
+\end{align*}
+For any term to contribute to the final sum the noncoincidence must be removed, this means we can reduce the sum over all four indices to a single sum as follows
+\begin{align*}
+\braopket{SD}{\op{G}}{SD_i^j}
+= \frac{1}{2}\sum_{\alpha} \big[
+&\braopket{\alpha i}{\op{g}}{\alpha j}\braopket{SD}{a_\alpha^\dag a_i^\dag a_j a_\alpha}{SD_i^j} \\[-0.3cm]
+&\quad+ \braopket{\alpha i}{\op{g}}{j \alpha}\braopket{SD}{a_\alpha^\dag a_i^\dag a_\alpha a_j}{SD_i^j} \\
+&\qquad+ \braopket{i \alpha}{\op{g}}{\alpha j}\braopket{SD}{a_i^\dag a_\alpha^\dag a_j a_\alpha}{SD_i^j} \\
+&\qquad\quad+ \braopket{i \alpha}{\op{g}}{j \alpha}\braopket{SD}{a_i^\dag a_\alpha^\dag a_\alpha a_j}{SD_i^j}\big].
+\end{align*}
+Unlike the previous exercise, where there were only two terms, we now have four terms. However, we can simplify these by using the fact that generally $\braopket{\alpha\beta}{\op{q}}{\gamma\delta} = \braopket{\beta\alpha}{\op{q}}{\delta\gamma}$. Combining this with the anticommutation relations, we find that 
+\begin{align*}
+\braopket{SD}{\op{G}}{SD_i^j}
+= \sum_{\alpha} \bigg(\braopket{\alpha i}{\op{g}}{\alpha j} - \braopket{\alpha i}{\op{g}}{j \alpha}\bigg).
+\end{align*}
+
+\clearpage
+
+\subsection*{c)}
+We now look at the cross term where there are two noncoincidences between the SDs, i.e., $\ket{SD}$ and $\ket{SD_{ij}^{kl}}$.
+
+\subsection*{Onebody operator}
+Again we start with the definition of the onebody operator
+\begin{align*}
+\braopket{SD}{\op{F}}{SD_{ij}^{kl}} 
+&= \sum_{\alpha, \beta} \braopket{\alpha}{\op{f}}{\beta}\braopket{SD}{a_\alpha^\dag a_\beta}{SD_{ij}^{kl}}.
+\end{align*}
+We see that for all $\alpha$ and $\beta$, there will always be at least one noncoincidence between the SDs, and all terms vanish. We simply end up with
+\begin{align*}
+\braopket{SD}{\op{F}}{SD_{ij}^{kl}} 
+&= 0.
+\end{align*}
+
+\subsection*{Twobody operator}
+From the definition of the twobody operator we have
+\begin{align*}
+\braopket{SD}{\op{G}}{SD_{ij}^{kl}}
+&= \frac{1}{2}\sum_{\alpha, \beta, \gamma, \delta} \braopket{\alpha\beta}{\op{g}}{\gamma\delta}\braopket{SD}{a_\alpha^\dag a_\beta^\dag a_\delta a_\gamma}{SD_{ij}^{kl}}.
+\end{align*}
+We see that only the terms where the $\phi_k$ and $\phi_l$ states are annhilated and the states $\phi_i \phi_j$ are constructed contribute, so we have
+\begin{align*}
+\braopket{SD}{\op{G}}{SD_{ij}^{kl}}
+= \frac{1}{2}\big[
+&\braopket{i j}{\op{g}}{k l}\braopket{SD}{a_i^\dag a_j^\dag a_k a_l}{SD_{ij}^{kl}} \\[-0.1cm]
+&\quad+ \braopket{i j}{\op{g}}{l k}\braopket{SD}{a_i^\dag a_j^\dag a_k a_l}{SD_{ij}^{kl}} \\
+&\qquad+ \braopket{j i}{\op{g}}{k l}\braopket{SD}{a_j^\dag a_i^\dag a_l a_k}{SD_{ij}^{kl}} \\
+&\qquad\quad+ \braopket{j i}{\op{g}}{l k}\braopket{SD}{a_j^\dag a_i^\dag a_k a_l}{SD_{ij}^{kl}}\big].
+\end{align*}
+And we see that again we get four terms. Using the same simplifications we used in the previous exercise, we find
+$$\braopket{SD}{\op{G}}{SD_{ij}^{kl}} = \braopket{ij}{\op{g}}{kl} - \braopket{ij}{\op{g}}{lk}$$
+
+
+\subsubsection*{More than two noncoincidences}
+We can now ask ourselves what the matrix elements would be if there were three or more noncoincidences between the SDs, e.g., $\braopket{SD}{\op{G}}{SD_{ijk}^{lmn}}$.
+
+Let us look closer at our results so far. When there were no noncoincidences, the onebody operator had $N$ terms, one for each particle, and the twobody operator had $N^2/2$ terms\footnote{Technically, there are $(N-1)^2$ terms in the sum, as each pair of particles actually contribute twice, once with their direct term, and one for their exchange term. Yet no particle forms a pair with themselves. However, in this discussion let us lump the exchange and direct terms together as one.}, one for each pair of particles. When we introduced one noncoincidence, the onbody operator matrix elements reduced to having only one term, the one for the differing single-particle state. Similarily, the twobody operator reducing to having only $N$ terms, one for each particle-pair including the differening states as one of the particles. When we looked at two noncoincidence, the onebody operator vanished completely and the twodbody operator was left with only a single term---the interaction between the two non-matching states. 
+
+From this development, it is apparent that the matrix elements for both operators vanish when there are three or more noncoincidences. Likewise we would expect the matrix elements of a three-body operator to consist of a single term\footnote{Again we are lumping all exchange terms that might arise into one.} for a three noncoincidence case and vanish for four or more noncoincidences.
+
+\section*{Excercise 2}
+The density of particles with coordinates $\bt{x}$ is given by
+$$n(\bt x) = N \int \big|\Psi_{\rm AS}(\bt{x}, \bt{x}_2, \ldots, \bt{x}_N)\big|^2 \ \d \bt{x}_2\d \bt{x}_3\cdots\bt{x}_N.$$
+Writing out the SD for $N=2$ we have
+\begin{align*}
+n(\bt{x}) &= 2 \int \bigg[\frac{1}{\sqrt{2}}\psi_1(\bt{x}_1)\psi_2(\bt{x}_2) - \psi_1(\bt{x}_2)\psi_2(\bt{x}_1)\bigg]^* \\
+&\qquad\qquad\qquad \bigg[\frac{1}{\sqrt{2}}\psi_1(\bt{x}_1)\psi_2(\bt{x}_2) - \psi_1(\bt{x}_2)\psi_2(\bt{x}_1)\bigg] \ \d \bt{x}_2 \\
+&= \psi_1^*\psi_1 +  \psi_2^*\psi_2 = |\psi_1|^2 + |\psi_2|^2.
+\end{align*}
+So we see that the cross terms vanish due to the orthonormality of the single-particle states. We see that when we scale to a larger $N$ this will always be the case. We then have the general result
+$$n(\bt x) = N \int \big|\Psi_{\rm AS}(\bt{x}, \bt{x}_2, \ldots, \bt{x}_N)\big|^2 \ \d \bt{x}_2\d \bt{x}_3\cdots\bt{x}_N = \sum_k |\psi_k|^2.$$
+Which is what we wanted to show. However, when writing this out with the antisymmetrizer operator, the result is different. See the end of this document for a better explanation of this problem.
+
+
+\subsection*{b)}
+We now want to calculate the matrix elements
+$$\braopket{\alpha_1 \alpha_2}{\op{F}}{\alpha_1 \alpha_2} \quad \mbox{and} \quad \braopket{\alpha_1 \alpha_2}{\op{G}}{\alpha_1 \alpha_2}.$$
+Where $\ket{\alpha_1\alpha_2} = a_{\alpha_1}^\dag a_{\alpha_2}^\dag\ket{0}$. We will do this in second quantization, and use our general results from previous exercises.
+
+\subsection*{Onebody operator}
+For the onebody operator, we found that
+$$\braopket{SD}{\op{F}}{SD} = \sum_\alpha \braopket{\alpha}{\op{f}}{\alpha},$$
+so inserting our Slater determinant gives
+$$\braopket{\alpha_1 \alpha_2}{\op{F}}{\alpha_1 \alpha_2} = \braopket{\alpha_1}{\op{f}}{\alpha_1} + \braopket{\alpha_2}{\op{f}}{\alpha_2}.$$
+
+\subsection*{Twobody operator}
+For the twobody operator, we found the general result
+\begin{align*}
+\braopket{SD}{\op{G}}{SD}
+=  \frac{1}{2}\sum_{\alpha,\beta} \bigg(\braopket{\alpha\beta}{\op{g}}{\alpha\beta} - \braopket{\alpha\beta}{\op{g}}{\beta\alpha}\bigg).
+\end{align*}
+So in this case, we have
+\begin{align*}	
+\braopket{\alpha_1 \alpha_2}{\op{G}}{\alpha_1 \alpha_2} = \frac{1}{2}\bigg(
+&\braopket{\alpha_1\alpha_2}{\op{g}}{\alpha_1\alpha_2} -\braopket{\alpha_1\alpha_2}{\op{g}}{\alpha_2\alpha_1} \\
+&\qquad+ \braopket{\alpha_2\alpha_1}{\op{g}}{\alpha_2\alpha_1} - \braopket{\alpha_2\alpha_1}{\op{g}}{\alpha_1\alpha_2} \bigg).
+\end{align*}
+Using the fact that generally $\braopket{\alpha\beta}{\op{q}}{\gamma\delta} = \braopket{\beta\alpha}{\op{q}}{\delta\gamma}$, we can rewrite this to 
+$$\braopket{\alpha_1 \alpha_2}{\op{G}}{\alpha_1 \alpha_2} = 
+\braopket{\alpha_1\alpha_2}{\op{g}}{\alpha_1\alpha_2} -\braopket{\alpha_1\alpha_2}{\op{g}}{\alpha_2\alpha_1} = \braopket{\alpha_1\alpha_2}{\op{g}}{\alpha_1\alpha_2}_{\rm AS}.$$
+
+
