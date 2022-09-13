@@ -63,95 +63,95 @@ The single-particle states span an orthonormal basis.
 The Hamiltonian of the system is given by
 \[
 \begin{array}{ll}
-H=&H_{0}+H_{1}+H_{2}\\
+\hat{H}=&\hat{H}_{0}+\hat{H}_{1}+\hat{H}_{2}\\
 &\\
-H_{0}=&\frac{1}{2}\varepsilon\sum_{\sigma ,p}\sigma
+\hat{H}_{0}=&\frac{1}{2}\varepsilon\sum_{\sigma ,p}\sigma
 a_{\sigma,p}^{\dagger}a_{\sigma ,p}\\
 &\\
-H_{1}=&\frac{1}{2}V\sum_{\sigma ,p,p'}
+\hat{H}_{1}=&\frac{1}{2}V\sum_{\sigma ,p,p'}
 a_{\sigma,p}^{\dagger}a_{\sigma ,p'}^{\dagger}
 a_{-\sigma ,p'}a_{-\sigma ,p}\\
 &\\
-H_{2}=&\frac{1}{2}W\sum_{\sigma ,p,p'}
+\hat{H}_{2}=&\frac{1}{2}W\sum_{\sigma ,p,p'}
 a_{\sigma,p}^{\dagger}a_{-\sigma ,p'}^{\dagger}
 a_{\sigma ,p'}a_{-\sigma ,p}\\
 &\\
 \end{array}
 \]
 where $V$ and $W$ are constants. The operator 
-$H_{1}$ can move pairs of fermions as shown in Fig.~(a)
+$H_{1}$ can move pairs of fermions as shown in the left part of the fugure (a).
 while $H_{2}$ is a spin-exchange term.
-As shown in Fig.~(b),
+As shown in (b),
 $H_{2}$ moves a pair of fermions from a state $(p\sigma ,p' -\sigma)$ to a state
 $(p-\sigma ,p'\sigma)$.
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.4\textwidth]{lipkin.png}
+\includegraphics[width=.6\textwidth]{lipkin.png}
 \end{figure}
 
-We will encounter this model again in our analysis of the Hartree-fock method. 
+We will encounter this model again in our analysis of mean field methods like
+the Hartree-fock method and full configuration interaction theory. It is a model which has been used widely in many-body physics and recently also in quantum computing, see for example \url{https://journals.aps.org/prc/abstract/10.1103/PhysRevC.104.024305}.
 
 
-\paragraph{Part a)}
+\paragraph{Quasispin operators}
 Introduce the quasispin operators
 \[
 \begin{array}{ll}
-J_{+}=&\sum_{p}
+\hat{J}_{+}=&\sum_{p}
 a_{p+}^{\dagger}a_{p-}\\
 &\\
-J_{-}=&\sum_{p}
+\hat{J}_{-}=&\sum_{p}
 a_{p-}^{\dagger}a_{p+}\\
 &\\
-J_{z}=&\frac{1}{2}\sum_{p\sigma}\sigma
+\hat{J}_{z}=&\frac{1}{2}\sum_{p\sigma}\sigma
 a_{p\sigma}^{\dagger}a_{p\sigma}\\
 &\\
-J^{2}=&J_{+}J_{-}+J_{z}^{2}-J_{z}\\
+\hat{J}^{2}=&J_{+}J_{-}+J_{z}^{2}-J_{z}\\
 &\\
 \end{array}
 \]
 Show that these operators obey the commutation relations for angular momentum.
-\paragraph{Part b)}
-Express $H$ in terms of the above quasispin operators and the number operator
+\paragraph{Number operator}
+Express $\hat{H}$ in terms of the above quasispin operators and the number operator
 \[
-N=\sum_{p\sigma}
+\hat{N}=\sum_{p\sigma}
 a_{p\sigma}^{\dagger}a_{p\sigma}.
 \]
-\paragraph{Part c)}
-Show that $H$ commutes with $J^{2}$, viz., $J$ is a good quantum number.
-\paragraph{Part d)}
+\paragraph{Commutation relations}
+Show that $\hat{H}$ commutes with $J^{2}$, viz., $J$ is a good quantum number. Does it commute with $J_z$?
+\paragraph{Wick's theorem}
 Consider thereafter a state with all four fermions in the lowest level (see the above figure).
 We can write this state as
 \[
-\ket{\Phi_{J_z=-2}} =a_{1-}^{\dagger}a_{2-}^{\dagger}
+\ket{\Phi_0}=\ket{\Phi_{J_z=-2}} =a_{1-}^{\dagger}a_{2-}^{\dagger}
 a_{3-}^{\dagger}a_{4-}^{\dagger}\ket{0}.
 \]
-This state has $J_{z}=-2$ and belongs to the set of possible projections of 
-$J=2$. We introduce the shorthand notation
-$\ket{J,J_z}$ for states with different values of
-spin $J$ and its projection $J_z$.
 
-The other possible values are  $J_{z}=-1$, $J_{z}=0$, $J_{z}=1$
-and $J_{z}=2$. 
-Use the ladder operators
-$J_{+}$ and $J_{-}$  to set up the states 
-with spin $J_{z}=-1$ $J_{z}=0$, $J_{z}=1$
-and $J_{z}=2$.  
-The action of these operators on a state with given spin 
-$J$ and $J_z$ is  (with $\hbar = 1$) 
-$J_+\ket{J,J_z}=\sqrt{J(J+1)-J_z(J_z+1)}\ket{J,J_z+1}$ and
-$J_-\ket{J,J_z}=\sqrt{J(J+1)-J_z(J_z-1)}\ket{J,J_z-1}$, respectively.
+This state has $J_{z}=-2$ (convince yourself about this) and belongs
+to the set of possible projections of $J=2$.  We introduce the
+shorthand notation $\ket{J,J_z}$ for states with different values of
+spin $J$ and its projection $J_z$.  We can think of this as our
+computational basis for $J=2$ and all five projections $J_z$.  We will
+also assume that the state $\Phi_0$ can be considered as an ansatz for
+the ground state of the system.
 
-\paragraph{Part e)}
-Use thereafter the quasispin operators to construct the Hamiltonian matrix 
-$H$ for this five-dimensional space.  Find thereafter the eigenvalues
-(numerically using for example Octave or Matlab or python)  for the following parameter sets:
-sett av verdier:
+
+Use Wick's theorem to calculate the expectation values of
 \[
-\begin{array}{cccc}
-(1)&\varepsilon=2,&V=-1/3,&W=-1/4\\
-(2)&\varepsilon=2,&V=-4/3,&W=-1
-\end{array}
+\bra{\Phi_0}\hat{N}\ket{\Phi_0},
 \]
-Which state is the ground state? Comment your results.
+and
+\[
+\bra{\Phi_0}\hat{H}\ket{\Phi_0}.
+\]
+Comment your results.
+\paragraph{Using quasispin operators}
+Show that you can obtain the same result for
+\[
+\bra{\Phi_0}\hat{H}\ket{\Phi_0}.
+\]
+using the quasispin representation of the Hamiltonian (plus the number operator). 
+Comment your results.
+
 \end{document}
 
