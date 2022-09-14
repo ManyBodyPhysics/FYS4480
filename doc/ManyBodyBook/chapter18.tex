@@ -1,0 +1,1154 @@
+\chapter{Time-dependent Schr\"odinger Equation}\label{chap:setimedep} 
+\abstract{The aim of this chapter is to present several popular methods for solving the time-dependent 
+Schr\"odinger equation. the methods are however limited to systems with few particles and low dimensions. For many-particle systems methods from many-body theories are needed. These are not covered by this text.}
+
+\section{Introduction}
+Time-dependent problems have in quantum mechanics traditionally been treated by perturbation methods. 
+Such methods have limitations however, and in complex systems the only way to investigate the time 
+evolution of the system might be to solve the Schr\"odinger equation directly. 
+Since this is in most cases quite impossible to do by analytical means, numerical methods 
+must be used. Due to the requirement of conservation of probability of the wave function, solving the 
+time-dependent Schr\"dinger equation numerically poses additional  difficulties. 
+
+
+For all but the most simple time-dependent systems, we cannot find a closed-form solution for Schr\"odinger's equation. 
+We will for the time being however ignore the exact form of the Hamiltonian and 
+investigate a formal expression for the solution of the Schrödinger equation.
+
+We introduce an operator $U$ which carries our initial state $\Psi(t_0)$ into the final state $\Psi(t)$,
+\begin{equation}
+	\Psi(t) = U(t,t_0) \Psi(t_0), \qquad U(t_0,t_0)=I .
+	\label{eq:TimeEvolOp}
+\end{equation}
+Conservation of probability requires 
+that $\left\langle \Psi (t) | \Psi (t) \right\rangle = \left\langle \Psi (t_0) | \Psi (t_0) \right\rangle$. 
+Substituting Eq.~\eqref{eq:TimeEvolOp} into this equation gives us
+\[
+	\left\langle \Psi (t) | \Psi (t) \right\rangle = \left\langle \Psi (t_0) | U^{\dagger} (t,t_0) U(t,t_0) | \Psi (t_0) \right\rangle
+\]
+from which follows that $U^{\dagger} (t,t_0) U(t,t_0) = I$. 
+Similarly we can show that $U (t,t_0) U^{\dagger} (t,t_0) = I$. 
+From these equations we conclude that $U(t,t_0)$ is a unitary operator, that is, an operator which satisfies $U^{-1}=U^{\dagger}$. We now substitute Eq.~\eqref{eq:TimeEvolOp} into the Schrödinger equation and get
+\[
+	i \frac{\partial}{\partial t} U\left( t,t_0 \right) \Psi (t_0) = H U \left( t,t_0 \right)\Psi (t_0).
+\]
+This holds for all $\Psi(t_0)$ and we have
+\[
+	i \frac{\partial U}{\partial t} = H(t)U.
+\]
+Integrating the latter equation  we get an implicit expression for the time evolution operator
+\begin{equation}
+	U(t,t_0) = I -i\int^{t}_{t_0}H(t_1)U(t_1) \dd t_1.
+	\label{eq:itIsLate}
+\end{equation}
+This equation is normally solved by iteration. The first iteration results in
+\[
+	\begin{align}
+	U(t,t_0) &=I-i\int^{t}_{t_0}H(t_1) \left[ I-i\int^{t_1}_{t_0}H(t_2)U(t_2)\dd t_2 \right] \dd t_1 \\
+	&= I -i\int^{t}_{t_0}H(t_1)\dd t_1 + (-i)^2 \int^{t}_{t_0}\int^{t_1}_{t_0}H(t_1)H(t_2)U(t_2)\dd t_1 \dd t_2.
+	\end{align}
+\]
+Successive iterations are given by replacing $U(t_n)$ with Eq.~\eqref{eq:itIsLate}.  To get rid of the 
+integral over the solution itself we will have to perform infinitely many iterations
+\[
+	U(t,t_0) = \sum^{\infty}_{n=0}(-i)^n\int^{t}_{t_0}\dd t_1\int^{t_1}_{t_0}\dd t_2 \ldots \int^{t_{n-1}}_{t_0} \dd t_n H(t_1)H(t_2)\ldots H(t_n).
+	\label{eq:DysonSeries}
+\]
+If the Hamiltonian at different times commutes, we can write this as
+\[
+	U(t,t_0) = \sum^{\infty}_{n=0}\frac{(-i)^n}{n!}\int^{t}_{t_0}\dd t_1\int^{t}_{t_0}\dd t_2 \ldots \int^{t}_{t_0} \dd t_n H(t_1)H(t_2)\ldots H(t_n).
+\]
+This is not always the case. We introduce therefore the so-called  time ordering 
+operator $\mathcal{T}$. For the Hamiltonian at two different times $H(t_1)$ and $H(t_2)$ it is defined as
+\[
+	\mathcal{T}[H(t_1)H(t_2)] = H(\mathrm{max}{\{ t_1,t_2 \}})H(\mathrm{min}{\{ t_1,t_2 \}})
+\]
+For $n$ different times $t_1,t_2,\ldots ,t_n$ this generalizes in the obvious way by recursion. 
+This gives us a formal expression for the time evolution operator
+\[
+\begin{align}
+	U(t,t_0) &= \sum^{\infty}_{n=0}\frac{(-i)^n}{n!} \mathcal{T} \int^{t}_{t_0}\dd t_1\int^{t}_{t_0}\dd t_2 \ldots \int^{t}_{t_0} \dd t_n H(t_1)H(t_2)\ldots H(t_n) \\
+	&=\mathcal{T}  \exp\left(-i\int^{t}_{t_0}H(t)\dd t\right).
+	\end{align}
+	\label{eq:exactTimeEvOp}
+\]
+In the interaction picture this is the Dyson series. If the Hamiltonian is time-independent, it reduces to
+\[
+	U(t,t_0) = \exp \left[-i\left(t-t_0\right)H\right].
+\]
+
+\section{Numerical Solution to the Schr\"dinger Equation}
+
+We are given an initial state $\Psi(x,0)$ and asked to find the future state $\Psi(x,t)$. How do we solve this problem on a computer? The problem is that the spatial domain of the wave function extends to infinity, 
+and that the wave function lives on a continuum. To implement this on a computer we need 
+to discretize time and space. 
+
+In our way of attacking the problem we separate between time and space. This is connected with our physical way of thinking. We represent the wave function by its values on a finite number of points $x_j, \quad j=1,2,\ldots,N$, which we set to be equidistant. We also need to find a representation of the Hamiltonian on this finite grid. Thinking of it, we can see that this spatial discretization leads to an $N$-dimensional matrix formulation of the original Schrödinger equation. It is an approximation to the complete system, but is in itself a case of a completely general $N$-dimensional quantum system.
+
+Defining a vector $\mathbf{c}(t)$ of the function values of $\Psi(x,t)$ at the grid points, $\left(\mathbf{c}(t)\right)_j=\Psi(x_j,t)$, we get a semi-discrete Schrödinger equation of the form
+
+\begin{equation}
+	\frac{\dd}{\dd t} \mathbf{c}(t) = \mathbf{H} \mathbf{c}(t)
+	\label{eq:semiDiscrete}
+\end{equation}
+
+where $\mathbf{H}$ now is an $N\times N$ Hermitian matrix. 
+
+This is now a system of $N$ first order differential equations, for which many solution methods have been devised. One of the standard methods of attacking this problem would be to use for example a fourth-order Runge-Kutta method. So why not apply this to solving the Schrödinger equation? Unfortunately most such methods are ill-suited for the Schrödinger equation, as most of them fail to preserve unitarity. We will discuss better time propagation schemes at length in the following sections. First, however, we need to resolve the issue of how to represent the Hamiltonian in our discretized version of the Schrödinger equation.
+
+A word on notation: The different time-propagation schemes are not directly connected to the spatial discretization of the wave function. They will therefore be discussed in the context of the continuous wave function $\Psi(x,t)$. When a point needs to be made on the spatially discretized wavefunction, a boldface type will be used to denote the vector $\mathbf{\Psi}$ of the function values of the wave function on the grid points $\left(\mathbf{\Psi}\right)_j=\Psi(x_j)$. This applies to the semi-discrete as well as the time-discretized wave function.
+
+\subsection{The Finite Difference Approximation}
+
+The conceptually simplest way of approximating differential operators is by using finite differences. The effect of an operator on the wave function at a given grid point is typically given by expressions involving the value of the wave function at the grid point and on the neighbouring grid points. Partial derivatives are approximated with difference expressions derived from considerations of Taylor expansions of the original function.
+
+Let us define the grid as 
+
+\begin{equation}
+x_m = x_0 + \frac{mL}{N+1} \equiv x_0+m\Delta x, \quad m=1,2,...,N, 
+\label{eq:daGrid}
+\end{equation}
+
+where $L$ is the length of the discretization interval. It might be confusing that we are dividing by $N+1$ and not by $N-1$, but this will all be clear in a moment. We will approximate the differential operator $\frac{\partial^2}{\partial x^2}$ in the finite difference approximation at a grid point $x_m$ by
+
+\begin{equation}
+	\frac{\partial^2}{\partial x^2} \Psi (x_m) = \frac{1}{\Delta x^2} \left[ \Psi(x_{m+1})-2\Psi(x_{m}) + \Psi(x_{m-1}) \right]
+	+ O(\Delta x^2).
+	\label{eq:sadihksjdfhk}
+\end{equation}
+
+The error in using this approximation is of second order in $\Delta x$. It is possible to improve upon this by using two additional points to get a fourth-order approximation (a so-called five-point stencil)
+
+\begin{equation}
+	\frac{\partial^2}{\partial x^2} \Psi (x_m) = \frac{1}{12\Delta x^2} \left[ -\Psi\left(x_{m+2}\right) +16
+	\Psi\left(x_{m+1}\right) -30\Psi\left(x_{m}\right) +16 \Psi\left(x_{m-1}\right)  -\Psi\left(x_{m-2}\right)\right]
+	+ O(\Delta x^4).
+\end{equation}
+
+While offering increased accuracy this does however slow down the numerical methods in most cases. In the simpler case of using the three-point stencil of Eq.~\eqref{eq:sadihksjdfhk}, the Hamiltonian matrix becomes tri-diagonal, which in many cases offers computational advantages. 
+
+Physically, limiting our wave function to a finite region sets the potential to $\infty$ outside this region since the particle is not allowed to be there (it is thus the same as the particle in a box). So even though we only defined the wave function at $N$ points, we really specified its values at $N+2$ points, the values at the end points being $\Psi\left(x_0\right)=\Psi\left(x_{N+1}\right)=0$. This is also the reason why we divided by $N+1$ and not by $N-1$ in Eq.~\eqref{eq:daGrid}.
+
+The potential energy operator $V(x)$ is of course trivial to compute in the finite difference approximation, being simply $V(x_m)$. In matrix formulation, the action of the discrete Hamiltonian on $\mathbf{\Psi}$ becomes
+
+\begin{equation}
+\begin{align}
+\left( \mathbf{H}\mathbf{\Psi} \right)_m &= \left[ \left( \mathbf{T}+\mathbf{V} \right) \mathbf{\Psi} \right] _m \\
+	&= \frac{1}{\Delta x^2} \left[ \Psi\left( x_{m+1} \right)-2\Psi(x_{m}) + \Psi \left( x_{m-1} \right) \right]
+	+ V\left( x_m\right) \Psi_m + \mathcal{O} \left( \Delta x^2 \right), \quad 1\leq m \leq N,
+\end{align}
+\end{equation}
+
+where it is easily seen that $\mathbf{H}$ is tridiagonal. 
+
+The semi-discrete Schrödinger equation is thus
+
+\begin{equation}
+	i \frac{\dd}{\dd t} \mathbf{\Psi} \left( t \right) = \mathbf{H} \left(t\right) \mathbf{\Psi} \left(t\right),
+	\qquad + \; \mathrm{boundary}\;\mathrm{condition}.
+\end{equation}
+
+As mentioned before this is a set of coupled ordinary differential equations.
+
+\subsection{The Spectral Method}
+\label{sec:TheSpectralMethod}
+
+The finite difference approximation given in the previous section is very simple, but suffers from a large error of order $\mathcal{O}(\Delta x^2)\,$, for the kinetic energy term. Based on the discrete Fourier transform (DFT) we may reduce this error to $\mathcal{O}(\Delta x^N)$, where $N$ is the number of grid points on the spatial domain~\cite{Boyd}. If we increase $N$ inside our chosen boundary, this will cause the error to rapidly decrease, even in the case of using the finite difference method. But for the spectral method, the order of the method also increases when we increase the number of grid points! The error is actually decreasing exponentially with $N$. Using the spectral method has other virtues as well. When high resolution is needed in simulations we cannot simply increase the number of grid points indefinitely, otherwise we will run out of main memory. By the help of spectral methods we can reduce the number of grid points needed to meet the required accuracy.
+
+The idea behind the spectral method is that differentiation is a diagonal operator in the frequency domain. The Fourier transform of $\psi(x)$ is given by
+
+\begin{equation}
+	\phi(k) = \mathcal{F}\left[\psi(x)\right]\left(k\right) = \int^{\infty}_{-\infty} \psi(x) \mathrm{e}^{-ikx}\dd x
+\end{equation}
+
+and the inverse Fourier transform is
+
+\begin{equation}
+	\psi(x) = \mathcal{F}^{-1}\left[\phi(k)\right]\left(x\right) = \frac{1}{2\pi}\int^{\infty}_{-\infty} \phi(k) \mathrm{e}^{ikx}\dd k.
+\end{equation}
+
+What we have done here is of course really nothing else than representing the wave function in momentum space, $p=k$ being the momentum. For the Fourier transform one should be aware of that there are several conventions in use (see Appendix~\ref{sec:TheDiscreteFourierTransform}). 
+
+Differentiating $\psi\left(x\right)$ we get
+
+\begin{equation}
+	\frac{\dd}{\dd x}\psi (x) = \frac{1}{2\pi} \int^{\infty}_{-\infty} ik\phi(k) \mathrm{e}^{ikx} \dd k.
+\end{equation}
+
+The Fourier transform of the differentiated function is
+
+\begin{equation}
+\mathcal{F}\left[ \psi '(x) \right] (k) = ik \mathcal{F}\left[\psi \right] = ik \phi(k).
+\end{equation}
+
+Thus, differentiation becomes multiplication (with $ik$) in the frequency domain. The effect of $\frac{\dd^2}{\dd x^2}$ is easily seen to be multiplication by $-k^2$. Differentiation, and thus the kinetic energy term, is a diagonal operator.
+
+To make use of this idea we represent our wave function on a finite grid as before, but use the discrete Fourier transform to transform to the frequency domain before computing the action of the kinetic energy operator. The spatial discretization must be modified somewhat, to incorporate periodic boundary conditions, as DFT is only valid for periodic functions. We will unfortunately get a somewhat artificial behaviour, as the one-dimensional particle suddenly lives on a circle. The solution to this problem is to extend the domain so the wave function never reaches the edges in the course of the simulation.
+
+The expression for the grid points in the spectral method becomes
+
+\begin{equation}
+	x_m = x_0+ \frac{mL}{N} = x_0 + m\Delta x, \quad 0 \leq m \leq N-1.
+\end{equation}
+
+Note that because the discrete Fourier transform enforces periodic boundary conditions on the wave function $\Psi_0 = \Psi_N$.
+
+\section{Time Integration Methods}
+\label{sec:TimeIntegrationMethods}
+
+\subsection{The Forward Euler Method}
+\label{sec:TheForwardEulerMethod}
+
+Perhaps the simplest possible numerical scheme for propagating the Schrödinger equation in time follows from approximating the time derivative by a forward difference. That is, the time derivative at time $t_n$ is approximated as
+
+\begin{equation}
+	\frac{\dd}{\dd t} \Psi \left( t_n \right) \approx \frac{\Psi\left(t_{n+1}\right)-\Psi\left(t_{n}\right)}{\Delta t}
+	\equiv \frac{\Psi^{n+1}-\Psi^{n}}{\Delta t}.
+	\label{eq:forwardDifference}
+\end{equation}
+
+Here time is discretized by an evenly spaced grid in the same vein as for the spatial discretization, $t_n = n\Delta t+ t_0, \; n=0,1,2, \ldots$.  Inserting Eq.~\eqref{eq:forwardDifference} into the Schrödinger equation we get an explicit expression for the wave function at the next time step
+
+\begin{equation}
+	\Psi^{n+1}= \Psi^n -i\Delta t H^n \Psi^n.
+\end{equation}
+
+This is known as the forward Euler method, or simply, the Euler method.
+
+Is this a good method of solving the Schrödinger equation numerically? First of all, what defines a good method? Factors we need to take into consideration when discussing this includes accuracy, stability and computational cost. Clearly, when the time step $\Delta t$ becomes smaller then our scheme should behave more and more like the solution of the continuous equation. But since a computer can only do a certain number of operations per second, we have to compromise on some smallest $\Delta t$. 
+
+How large is then the error in taking just one time step $\Delta t$? We find this error by inserting the solution of the continuous Schrödinger equation into our discretized version. The residual $\tau$ we are left with, is the error of the time-stepping scheme.
+
+Inserting a solution $\Psi_{\mathrm{Ex}}$ of the continuous problem into the discretized equation and Taylor expanding $\Psi^{n+1}_{\mathrm{Ex}}$ around $\Psi^n_{\mathrm{Ex}}$ gives us
+
+\begin{equation}
+\begin{align}
+	\tau & =	 \Psi^{n+1}_{\mathrm{Ex}}-\Psi^n_{\mathrm{Ex}}  +i\Delta tH^n \Psi^n_{\mathrm{Ex}} \\
+	& = \sum^{\infty}_{j=0} \frac{\Delta t ^j}{j!}	\frac{\partial^j \Psi^{n}_{\mathrm{Ex}}}{\partial t ^j} - \Psi^{n}_{\mathrm{Ex}}  +i\Delta t H^n \Psi^n_{\mathrm{Ex}} \\
+	& = \Delta t\frac{\partial \Psi^{n}_{\mathrm{Ex}}}{\partial t}+
+	\frac{\Delta t^2}{2}\frac{\partial^2 \Psi^{n}_{\mathrm{Ex}}}{\partial t^2} + O(\Delta t^3) +i\Delta tH^n \Psi^n_{\mathrm{Ex}}
+\end{align}
+\end{equation}
+
+Since $-iH^n \Psi^n_{\mathrm{Ex}}=\frac{\partial \Psi^n_{\mathrm{Ex}}}{\partial t}$, the error for the forward Euler scheme is 
+
+\begin{equation}
+\tau = \frac{\Delta t^2}{2}\frac{\partial ^2 \Psi^n_{\mathrm{Ex}}}{\partial t^2}+ O(\Delta t^3).
+\end{equation}
+
+This method is therefore a first order method\footnote{A method is said to be of $n$th order if the error is of order $n+1$.}. While this is hardly impressive (we will explore methods of second and fourth order in the following sections), the error in each time step can of course be made arbitrarily small by decreasing $\Delta t$. Unfortunately, the forward Euler method is a lost cause for our purposes. The scheme is unstable, meaning that small errors build up over time. 
+
+As an example of this, see Figure~\ref{fig:FE1}. Here we have the familiar example of a particle in a box, in the finite difference approximation. The initial state is chosen as the ground state. We see that small instabilities around the edges of the box quickly build up, soon making the norm grow exponentially. 
+
+\begin{figure}
+  \hfill
+  \begin{minipage}[h]{.45\textwidth}
+    \begin{center}  
+%      \includegraphics[width=8cm]{ForwardEuler1.pdf}
+      \caption{\textit{\small{$N=100$ inner grid points. $\Delta t = 0.001$.}}}
+      \label{fig:FE1}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[h]{.45\textwidth}
+    \begin{center}  
+%      \includegraphics[width=8cm]{ForwardEuler2.pdf}
+      \caption{\textit{\small{$N=100$ inner grid points. $\Delta t = 0.001$.}}}
+      \label{FE2}
+    \end{center}
+  \end{minipage}
+  \hfill
+\end{figure}
+
+I have included this method to illustrate, especially for the physics student with little prior knowledge of numerical methods, that solving the Schrödinger equation requires more sophistication than simply finding an algorithm and starting the number crunching. The challenge is on to find stable, norm-conserving methods of higher order!
+
+We finally note that all the numerical time-stepping schemes presented here can be seen as approximations to the exact time-evolution operator of Eq.~\eqref{eq:exactTimeEvOp}. In the case of the forward Euler method we can see this by ignoring the time-ordering operator, approximating the exponential by the two first terms of its Taylor expansion, and by approximating the remaining integral by the rectangle rule:
+
+\begin{equation}
+\begin{align}
+	\Psi^{n+1} &= \mathcal{T} \exp \left( -i\int ^{t+\Delta t}_t H(s) \dd s \right) \Psi^n \\
+	& \approx	\left[ 1-i\int ^{t+\Delta t}_t H(s) \dd s \right] \Psi^n\\
+	& \approx (1-i\Delta t H^n)\Psi^n.
+	\end{align}
+\end{equation}
+
+\subsection{The Crank-Nicolson Method}
+\label{sec:TheCrankNicolsonMethod}
+
+We seek to find a method for solving the time-dependent Schrödinger equation that is stable. By only a minor modification of the method above this can be achieved. By approximating the time derivative by a backward difference,
+
+\begin{equation}
+	i\left( \frac{\Psi^{n+1}-\Psi^n}{\Delta t} \right) = H^{n+1} \Psi^{n+1},
+\end{equation}
+
+we get a method that is stable. This method is called the backward Euler method. Unfortunately this method has the undesirable property that the wave function is dampened, and the scheme is thus non-unitary. As we see, $\Psi^{n+1}$ is now defined implicitly, which means that we will have to solve a system of linear equations for every time step. 
+
+It turns out that we can do much better than this. Recognizing that $U\left(t_n-\Delta t,t_n \right)$ is an operator that propagates the state a step backwards in time, we get by using the approximation to the time evolution operator $U(t_n+\Delta t,t_n) \approx 1 -i\Delta t H(t_n)$ that
+
+\begin{equation}
+\begin{align}
+		U\left( t_{n+1}-\Delta t, t_n \right)\Psi^{n+1} &=& U\left( t_n+\Delta t,t_n \right) \Psi^n \\
+		\left[ 1+\frac{i}{2}\Delta t H^{n+1} \right] \Psi^{n+1} &=& \left[ 1-\frac{i}{2} \Delta t H^n \right]\Psi^n.
+\end{align}
+\label{eq:CN}
+\end{equation}
+
+By solving for $\Psi^{n+1}$ we get a scheme that is stable and conserves unitarity to a high degree. The resulting scheme is called the Crank-Nicolson method\footnote{After John Crank and Phyllis Nicolson.}. We can think of this as being midway between the forward Euler and the backward Euler methods. Thinking about it, since the forward Euler scheme makes the solution unstable in the sence that the norm is growing and the backward Euler scheme behaves in the opposite way, it is not unnatural to expect that these effects are balanced out. 
+
+The system is implicit however, and for each time step a system of linear equations has to be solved. In the finite difference approximation the matrix is tridiagonal and can be solved efficiently~\cite{MortenHJ}.
+
+How accurate is this scheme? As before this is given by the residue we are left with when substituting a solution to the continuous equation into our discretized version. Rewriting Eqn.~\eqref{eq:CN}
+
+\begin{equation}
+	\left( \Psi^{n+1}-\Psi^n \right) +\frac{i}{2} \Delta t\left( H^n\Psi^n+H^{n+1}\Psi^{n+1}\right) = 0,
+	\label{eq:CNrewritten}
+\end{equation}
+
+we insert the exact solution $\Psi_{\mathrm{Ex}}$ and Taylor expand the $n+1$ terms around $n$.
+
+The first term in the equation becomes\footnote{When using that $-iH^n\Psi^n_{\mathrm{Ex}}=\frac{\partial \Psi^n_{\mathrm{Ex}}}{\partial t}$}
+
+\begin{equation}
+\begin{align}
+\left( \Psi^{n+1}_{\mathrm{Ex}}-\Psi^n_{\mathrm{Ex}} \right) &=  \left( \sum^{\infty}_{j=0} \frac{\Delta t ^j}{j!} \frac{\partial^j \Psi^{n}_{\mathrm{Ex}}}{\partial t ^j} - \Psi^{n}_{\mathrm{Ex}} \right) \\ 
+&= \Delta t \frac{\partial \Psi^n_{\mathrm{Ex}}}{\partial t} + \frac{\Delta t^2}{2}\frac{\partial ^2 \Psi ^n_{\mathrm{Ex}}}{\partial t^2}+\frac{\Delta t^3}{6}\frac{\partial ^3 \Psi ^n_{\mathrm{Ex}}}{\partial t^3} + \mathcal{O} \left( \Delta t^4 \right).
+\end{align}
+\end{equation}
+
+The second term becomes
+
+\begin{equation}
+\begin{align}
+	\frac{i}{2}\Delta t\left(H^n\Psi^n_{\mathrm{Ex}}+H^{n+1}\Psi^{n+1}_{\mathrm{Ex}}\right) &=	\frac{i}{2}\Delta t H^n\Psi^n_{\mathrm{Ex}} +\frac{i}{2}\Delta t \left( H^n\Psi^n_{\mathrm{Ex}} +\Delta t \frac{\partial}{\partial t} \left( H^n\Psi^n_{\mathrm{Ex}} \right) \\
+ &\qquad\qquad\qquad	+\frac{\Delta t^2}{2} \frac{\partial ^2}{\partial t^2}\left( H^n\Psi^n_{\mathrm{Ex}} \right)+ \ldots  \bigg) \\ 
+	&= -	\Delta t\frac{\partial \Psi^n_{\mathrm{Ex}}}{\partial t} - \frac{\Delta t^2}{2}\frac{\partial^2 \Psi^n_{\mathrm{Ex}}}{\partial t^2} - 
+	\frac{\Delta t^3}{4}\frac{\partial^3 \Psi^n_{\mathrm{Ex}}}{\partial t^3} + \mathcal{O} \left(\Delta t^4\right)
+\end{align}
+\end{equation}
+
+Inserting these results in Eq.~\eqref{eq:CNrewritten} we get for the error of a time step $\Delta t$
+
+\begin{equation}
+	\tau = -\frac{\Delta t^3}{12} \frac{\partial^3 \Psi^n_{\mathrm{Ex}}}{\partial t ^3} + \mathcal{O} \left( \Delta t^4 \right)
+\end{equation}
+
+So we see that this scheme is in fact of second order. But does the error accumulate over time as in the case of the forward Euler method? Here we need to investigate the stability of the method. 
+
+The unitarity of the time evolution operator should be reflected in the numerical solution of our discretized Schrödinger equation, i.e. in the numerical time evolution operator. The updating rules for the various schemes are in reality approximations to the time evolution operator $U$. In particular, for the Crank Nicolson rule we have that
+
+\begin{equation}
+	U^n_{\mathrm{CN}} = \left( 1+\frac{i}{2}\Delta t H^{n+1} \right)^{-1} \left( 1-\frac{i}{2}\Delta t H^n \right).
+\end{equation}
+
+If the scheme is to be perfectly unitary and thus norm-conserving, then $(U^n_{\mathrm{CN}})^{\dagger} U^n_{\mathrm{CN}}$ must be the identity operator. In the case of the time-dependent Hamiltonian the analysis of whether this is true is laborious to carry out, but is simplified in the case of a constant Hamiltonian: We note that if $\epsilon_n$ are the discrete eigenvalues of $H$, then the eigenvalues of $U_{\mathrm{CN}$ are\cite{SimenMaster}
+
+\begin{equation}
+	\lambda _n = \frac{1+\frac{i}{2}\Delta t \epsilon_n}{1-\frac{i}{2}\Delta t \epsilon_n},
+\end{equation}
+
+and the eigenvectors coincide with those of $H$. Furthermore, the norm of the eigenvalues are
+
+\begin{equation}
+	\left|\lambda _n\right|  = 
+	\left[\frac{1+\frac{1}{4}\Delta t^2 \epsilon^2_n}{1+\frac{1}{4}\Delta t^2 \epsilon^2_n}\right]^{1/2} = 1.
+\end{equation}
+
+This means that this scheme is unconditionally stable in the time-independent case. For the time-dependent case the analysis is more complicated, so I will simply state the result. For a full derivation see Ref.~\cite{SimenMaster}. 
+
+In the time-dependent case the result is\cite{SimenMaster}
+
+\begin{equation}
+	(U^n_{\mathrm{CN}})^{\dagger} U^n_{\mathrm{CN}} = 1 - \frac{\Delta t^3}{4} \left[ H^n \frac{\partial H^n}{\partial t}
+	+ \frac{\partial H^n}{\partial t}H^n \right] + \mathcal{O} \left( \Delta t^4 \right),
+\end{equation}
+
+which means that we have secured unitarity to second order in the general case, and to at least third order in the time-independent case.
+
+\subsection{The Leap-Frog Method}
+\label{sec:TheLeapFrogMethod}
+
+Is it possible to find a simple explicit scheme that is also norm-conserving? In the early days of numerical computation of the Schrödinger equation the method typically used was the (implicit) Crank-Nicolson method. In 1978 Askar and Cakmak published a paper proving that by only a simple modification of the methods I have been discussing so far you will get a method that is explicit, stable and easy to implement~\cite{AskarCakmak}. 
+
+We recognize that the problem with our previous explicit method, the forward Euler method, is that the approximation to the time derivative is not centered. It is this non-centered aspect that causes the instability of the numerical scheme.
+
+The Leap-Frog scheme itself is very simple. We simply use a centered difference for the time derivative and evaluate the right hand side in-between
+
+\begin{equation}
+	\frac{1}{2\Delta t} \left( \Psi^{n+1}-\Psi^{n-1} \right) = -i H^n \Psi^n,
+\end{equation}
+
+giving an explicit scheme as promised
+
+\begin{equation}
+	\Psi^{n+1}= \Psi^{n-1} - 2i\Delta t H^n \Psi^n.
+	\label{eq:LeapFrog}
+\end{equation}
+
+Note that we need two earlier wave functions $\Psi^n$ and $\Psi^{n-1}$ to find the new wave function $\Psi^{n+1}$, i.e. twice the information needed in the previous schemes\footnote{When implementing this method the question arises of what to do with the first time step. Given the initial wave function $\Psi^0$ we need both this and $\Psi^1$ to calculate $\Psi^2$. The answer of course, is to use some other method to propagate the fist time step. We will make use of the Crank Nicolson method.}. In reality we do not need this double information. If we separate the real and imaginary parts of the wave function
+
+\begin{equation}
+	\Psi^n = R^n + iI^n,
+\end{equation}
+
+substitute this into Eqn.~\eqref{eq:LeapFrog} and collect real and imaginary terms, we obtain
+
+\begin{equation}
+\begin{align}
+	R^{n+1} &= R^{n-1} + 2\Delta t H^n I^n \\
+	I^{n+1} &= I^{n-1} - 2\Delta t H^n R^n.
+\end{align}
+\label{eq:LeapaFrogga}
+\end{equation}
+
+If $H^n$ applied to a real vector is a real vector we have created an algorithm to update $R$ and $I$ separately. As we see when looking closely at the scheme, it is only necessary to know each component at every second grid point. We say that we are using a staggered grid. This implementation has the advantage that we do not have to work directly with complex numbers.
+
+Let us find the accuracy of this scheme. We insert the exact solution $\Psi_{\mathrm{Ex}}$ to the continuous problem and Taylor expand $\Psi^{n\pm 1}_{\mathrm{Ex}}$ around $t_n$. This gives us the truncation error
+
+\begin{equation}
+\begin{align}
+\tau &= \frac{1}{2} \left( \Psi^{n+1}_{\mathrm{Ex}}-\Psi^{n-1}_{\mathrm{Ex}} \right)+2i\Delta t^2 H^n \Psi^n_{\mathrm{Ex}} \\
+	&= \frac{1}{2} \left[ \sum^{\infty}_{m=0} \frac{\Delta t^{2m+1}}{(2m+1)!} \frac{\partial^{2m+1} \Psi^n_{\mathrm{Ex}}}{\partial t^{2m+1}}  \right] + 2i\Delta t^2 \frac{\partial \Psi^n_{\mathrm{Ex}}}{\partial t}\\ &= 
+	 \frac{\Delta t^3}{6}\frac{\partial^3 \Psi^n_{\mathrm{Ex}}}{\partial t^3} + \mathcal{O} \left( \Delta t ^4 \right).
+\end{align}
+\end{equation}
+
+The Leap-Frog scheme is thus also a second order method. Regarding the norm-conserving properties of the scheme, the result is that for the discretized time evolution operator we get\cite{SimenMaster}
+
+\begin{equation}
+	\left(U^n_{\mathrm{LF}}\right)^{\dagger} \left(U^n_{\mathrm{LF}}\right) =
+	1 + \Delta t^3 \left( H^n \frac{\partial H^n}{\partial t} + \frac{\partial H^n}{\partial t}H^n	\right)
+	+\mathcal{O} \left( \Delta t ^4 \right).
+\end{equation}
+
+We have secured unitarity to second order in the general case and for time independent problems to at least third order. 
+
+The Leap-Frog method is stable, but not unconditionally so. It can be shown that for the method to be stable, we must choose the time step $\Delta t$ smaller than the inverse of the largest eigenvalue $\epsilon_{\mathrm{max}}$ of the discretized Hamiltonian,
+
+\begin{equation}
+	\Delta t \leq \frac{1}{\epsilon_{\mathrm{max}}}.
+\end{equation}
+
+I will not prove this here, so the interested reader should look at Ref.~\cite{SimenMaster}. In the finite difference approximation, for a particle living on our discretized domain, the higher the energy of the particle (i.e. the larger the energy eigenvalue) the more the problem will resemble that of the square well. The energy eigenvalues of the infinite square well (of unit length) are given by $\epsilon_n = \frac{4}{\Delta x^2}\sin^2\left(n\pi \Delta x /2\right)\;$ in the finite difference approximation. From this we get a stability criterion for the Leap-Frog scheme in the finite difference approximation
+
+\begin{equation}
+	\Delta t \leq \frac{1}{\epsilon_{\mathrm{max}}} = \frac{\Delta x^2}{4\sin^2\left(N\pi \Delta x /2\right)} = \frac{\Delta x^2}{4}.
+	\label{stabilityleeeeep}
+\end{equation}
+
+\subsection{The Pseudospectral Method}
+\label{sec:ThePseudospectralMethod}
+
+Is it possible to use the formal expression for the time evolution operator Eqn.~\eqref{eq:exactTimeEvOp} directly in a numerical method, that is, without using some form of Taylor expansion of this expression? Assume for now that the Hamiltonian is independent of time. The time-evolution operator is then given exactly as $U(t,t_0)=\exp \left[ -i\left(t-t_0\right)H \right]$. So given our discretized Hamiltonian $\mathbf{H}$ and initial state $\mathbf{\Psi}\left(t_0\right)$, if we can find some way of calculating the exponential of a matrix we could in principle go directly from the initial state to the final state
+
+\begin{equation}
+	\mathbf{\Psi}\left(t\right)= \exp \left[ -i\left(t-t_0\right)\mathbf{H} \right] \mathbf{\Psi} \left( t_0 \right).
+\end{equation}
+
+That this should replace all our complicated time stepping schemes seems too good to be true, and in most cases this is indeed so. For a Hermitian matrix $\mathbf{A}$ and a number $s\,$, $\;\exp(is\mathbf{A})$ is in general only possible to calculate accurately for small $s\,$. Keeping the time step $\Delta t$ small, it is still possible to use the direct calculation of matrix exponentials in a workable scheme as follows
+
+\begin{equation}
+	\mathbf{\Psi}^{n+1} = \exp \left(-i\Delta t \mathbf{H} \right) \mathbf{\Psi}^{n}.
+	\label{eq:omega1almost}
+\end{equation}
+
+For a time-independent Hamiltonian, this method is in principle exact. We will encounter a method that makes use of this ``brute force'' computation of matrix exponentials in the next section. For the time being we note that evaluating matrix exponentials this way involves much more computational effort than for the methods in the previous sections. The time needed for computing matrix exponentials depends strongly on the size of the matrix, on the size of its elements and if it is sparse. For the case of spectral discretization, $\mathbf{H}$ is dense, so that $\exp \left( -i\Delta t \mathbf{H} \right)$ is only practical to compute for relatively small matrices.
+
+We can find a much quicker way of calculating the exponential by splitting up the Hamiltonian into the kinetic and potential term, $H = T + V$. The idea is to split up the matrix exponential in a similar fashion. But unfortunately, in general
+
+\begin{equation}
+	U \left( \Delta t \right) = \exp \left[ -i\Delta t \left(T+V\right) \right] =
+	\exp \left( -i\Delta tT \right) \exp \left( -i\Delta tV \right) \quad \implies \quad \left[T,V\right]=0.
+\end{equation}
+
+The converse is also true. Since $T$ and $V$ are known not to commute, the splitting introduces an error. Just how large is this error? Expanding the exact time propagator and our split version
+
+\begin{equation}
+\begin{align}
+	U \left( \Delta t \right) &= \exp \left[-i\Delta t \left(T+V\right) \right] \\
+	&= 1-i\Delta t \left(T+V\right) -\frac{\Delta t^2}{2} \left( T^2+V^2+TV+VT \right) +\mathcal{O} \left(\Delta t^3\right) \\
+	U_{\mathrm{split}} \left( \Delta t \right) &=  \exp \left(-i\Delta t T\right) \exp \left( -i\Delta t V\right) \\
+	&= \left( 1-i\Delta t T-\frac{\Delta t^2}{2}T^2 +\mathcal{O}\left(\Delta t^3\right) \right)
+	\left( 1-i\Delta t V-\frac{\Delta t^2}{2}V^2 +\mathcal{O}\left(\Delta t^3\right) \right) \\
+	&= 1-i\Delta t \left(T+V\right) -\frac{\Delta t^2}{2} \left( T^2+V^2+2TV \right) +\mathcal{O}\left(\Delta t^3\right) 
+	\label{eq:HvaSkalJegKalleDegDa}
+\end{align}
+\end{equation}
+
+the difference becomes
+
+\begin{equation}
+U \left( \Delta t \right)-U_{\mathrm{split}} \left( \Delta t \right) = \Delta t^2 \left[T,V\right] + \mathcal{O}\left(\Delta t^3\right).
+\end{equation} 
+
+Clearly, this method is of first order in the time step. By the following trick, the error introduced by the splitting can be reduced to $\mathcal{O} \left(\Delta t^3 \right)$
+
+\begin{equation}
+	U \left( \Delta t \right) = \exp \left( -i\Delta tV/2 \right) \exp \left( -i\Delta tT \right) \exp \left( -i\Delta tV/2 \right) + \mathcal{O} \left( \Delta t^3 \right).
+\label{eq:StrangSplitting}
+\end{equation}
+
+
+This can easily be shown by expanding the expression as in Eq.~\eqref{eq:HvaSkalJegKalleDegDa}. The splittings introduced here\footnote{Note that $T$ and $V$ can switch places while still keeping the error term to third order.} of course also carry over to the discretized problem. This method offers no improvement over what we had in Eq.~\eqref{eq:omega1almost}, actually, quite the contrary. So why bother splitting up the exponential? We first note that the exponential $\exp\left( -i\Delta t  \mathbf{V} /2 \right)$ is trivial to compute because $\mathbf{V}$ is diagonal. In the frequency representation however, we know that $\mathbf{T}$ is diagonal. So if we Fourier transform the wave function before computing the action of $\exp \left( -i\Delta t\mathbf{T} \right)$, computing the matrix exponentials would be trivial! With $\mathcal{F}$ being the discrete Fourier transform and $\mathcal{F}^{-1}$ the inverse, we have
+
+\begin{equation}
+	\mathbf{\Psi}^{n+1} = \exp \left( -i \Delta t \mathbf{V} / 2 \right) \mathcal{F}^{-1} 
+	\left\{ \exp \left( -i \Delta t \mathbf{T} \right) \mathcal{F} \left[ \exp \left( -i\Delta t \mathbf{V} / 2 \right) \mathbf{\Psi}^n \right] \right\}.
+\end{equation}
+
+This particular combination of Eq.~\eqref{eq:StrangSplitting} and the discrete Fourier transform is often called the \emph{pseudospectral method}, or split-step FFT, the latter referring to the fact that the discrete Fourier transform is almost invariably implemented by FFT. Since the FFT requires only $\mathcal{O} \left( N \log N \right)$ operations it scales favourably with the number of grid points compared with our previous methods. The pseudo-spectral method has excellent stability properties, and is in fact the first of our methods that conserves the norm exactly. We can show this as follows:
+
+It is the unitarity of the time evolution operator $U$ that secures the norm conservation of the wave function. Given $\mathbf{\Psi}^{n+1}=\mathbf{U}\mathbf{\Psi}^n$ where $\mathbf{U}$ is unitary, we see that
+
+\begin{equation}
+\left\| \mathbf{\Psi}^{n+1} \right\|^2 = \left( \mathbf{\Psi}^n \mathbf{U} \right)^{\dagger} \left( \mathbf{\Psi}^n \mathbf{U} \right)
+= {\mathbf{\Psi}^n }^{\dagger} \mathbf{U}^{\dagger} \mathbf{U} \mathbf{\Psi}^n =
+{\mathbf{\Psi}^n }^{\dagger} \mathbf{\Psi}^n = \left\| \mathbf{\Psi}^{n} \right\|^2.
+\end{equation}
+
+The converse, that norm conservation implies unitarity, is also true. The adjoint matrix of $\mathbf{U} = \exp \left( -i\Delta t\mathbf{V}/2 \right) \exp \left( -i\Delta t\mathbf{T} \right) \exp \left( -i\Delta t\mathbf{V}/2 \right)\;$, is
+
+\begin{equation}
+\mathbf{U}^{\dagger} = \exp \left( i\Delta t\mathbf{V}/2 \right) \exp \left( i\Delta t\mathbf{T} \right) \exp \left( i\Delta t\mathbf{V}/2 \right).
+\end{equation}
+
+Here we have used that for a general matrix $\mathbf{A}$ we have $\exp\left(\mathbf{A}\right)^{\dagger} =\exp\left(\mathbf{A}^{\dagger}\right)$ and that $\mathbf{T}$ and $\mathbf{V}$ are Hermitian. Using that the inverse of $\exp \left(  \mathbf{A} \right)$ is $\exp \left(  -\mathbf{A} \right)$, we can easily see that we get $\mathbf{U}^{\dagger}\mathbf{U} = \mathbf{I}$. The split propagator is unitary and thus norm conserving.
+
+But what about the case where $H$ is time-dependent? Can we be sure that Eq.~\eqref{eq:StrangSplitting} is still of second order in the time step? And where should $V \left( t \right)$ be evaluated? We will first prove that $U_1\left( t_n+\Delta t, t_n \right) = \exp ( -i \int^{t_n+\Delta t}_{t_n} H\left(s\right)\dd s )$ gives us a second order approximation,
+
+\begin{equation}
+U\left( t_n+\Delta t, t_n \right) = \exp \left( -i \int^{t_n+\Delta t}_{t_n} H\left(s\right)\dd s \right) + \mathcal{O} \left( \Delta t^3 \right).
+\label{asdhfkjasdhfjkuert}
+\end{equation}
+
+We do this by expanding $U_1$ and the exact time evolution operator $U$, and computing the difference. Expanding to second order in the time step we get
+\begin{equation}
+\begin{align}
+U_1\left(t_n+\Delta t,t_n\right) &= I + \int^{t_n+\Delta t}_{t_n} H \left(s\right) \dd s
++ \frac{1}{2} \int^{t_n+\Delta t}_{t_n}\int^{t_n+\Delta t}_{t_n}H \left(s_1\right)H \left(s_2\right) \dd s_1 \dd s_2 + \mathcal{O} \left(\Delta t^3\right) \\
+U\left(t_n+\Delta t,t_n\right) &= I + \int^{t_n+\Delta t}_{t_n} H \left(s\right) \dd s
++ \frac{1}{2} \int^{t_n+\Delta t}_{t_n}\int^{t_n+\Delta t}_{t_n} \mathcal{T} \left[ H \left(s_1\right)H \left(s_2\right) \right] \dd s_1 \dd s_2 + \mathcal{O} \left(\Delta t^3\right),
+\end{align}
+\end{equation}
+
+which gives us the difference
+
+\begin{equation}
+U_1-U &=  \frac{1}{2} \int^{t_n+\Delta t}_{t_n} \int^{s_2}_{t_n} \left[ H \left(s_1\right),H \left(s_2\right) \right] \dd s_1 \dd s_2 + \mathcal{O} \left(\Delta t^3\right).
+\label{eq:wow}
+\end{equation}
+
+Now, the commutator $\left[ H \left(s_1\right),H \left(s_2\right) \right]$ is of order $\mathcal{O} \left(s_1-s_2\right)$, as we can see from Taylor expanding $H\left(s_2\right)$ around $s_1$
+
+\begin{equation}
+\begin{align}
+\left[ H \left(s_1\right),H \left(s_2\right) \right]
+&= \left[ H \left(s_1\right),H \left(s_1\right) + \left(s_2-s_1\right)H' \left(s_1\right) + \ldots  \right]\\
+&= \left(s_2-s_1\right)\left[ H \left(s_1\right),H' \left(s_1\right) \right] + \mathcal{O} \left(\left(s_2-s_1\right)^2\right)\\
+&= \mathcal{O} \left(s_2-s_1\right).
+\end{align}
+\end{equation}
+
+The integral of the commutator on the domain of area $\frac{1}{2}\Delta t^2$ in Eq.~\eqref{eq:wow} must therefore have an error of order $\mathcal{O} \left(\Delta t^3\right)$. 
+
+Now, as we have seen, in order to implement this effectively we have to use splitting methods. Then we note, since the method is only of second order, there is no need to evaluate the integrals to more than second order either. We evaluate the integrals with midpoint and trapezoidal quadratures
+
+\begin{equation}
+\begin{align}
+	\int^{t_n+\Delta t}_{t_n}H\left( s\right) \dd s &=  \int^{t_n+\Delta t}_{t_n}T\left( s\right) \dd s +
+	\int^{t_n+\Delta t}_{t_n}V\left( s\right) \dd s  \\ &=
+	\Delta t T^{n+1/2} + \frac{\Delta t}{2} \left( V^n + V^{n+1} \right) + \mathcal{O} \left( \Delta t ^3 \right).
+\end{align}	
+\end{equation}
+
+Using the same reasoning as for the splitting in Eq.~\ref{q:StrangSplitting} we see that we get a third order method
+
+\begin{equation}
+	U \left( t_n + \Delta t, t_n \right) = \exp \left( -\frac{i}{2}V^{n+1} \right) 
+	\exp \left( -iT^{n+1/2} \right) \exp \left( -\frac{i}{2}V^{n} \right) + \mathcal{O} \left( \Delta t^3 \right).
+	\label{eq:oasiudfgoaisudfg}
+\end{equation}
+
+This answers the question of where to evaluate $V\left(t\right)$ in the case of a time-dependent potential, and proves that this method is still of second order. For a Hermitian matrix $H(t)$ integrals of the form $\int H(t) \dd s$ are still Hermitian, so $\exp \left( \int H(t) \dd s \right)$ is still unitary and the method is norm-conserving.
+
+\subsection{A Fourth-Order Method}
+\label{sec:AFourthOrderMethod}
+
+The methods investigated in the previous sections are easy to implement, have low computational cost and, especially in the case of the splitting method, have good stability properties. If there is something left to be desired it is greater accuracy in the time step. We will now look into a relatively new scheme first proposed by S. Blanes and P.C. Moan in 1999, giving a fourth order method in the time step. For the original article see Ref.~\cite{Blanes200035}.
+
+Derivation of the method is unfortunately, due to the use of mathematical tools such as graph theory and the theory of free Lie algebras, beyond the scope of this thesis. A short overview of the basis for the method will be given, along with the results.
+
+The method is based on the so-called Magnus expansion of the time evolution operator. It was introduced by W. Magnus in 1954 \cite{MagnusOriginal} in the context of quantum field theory and provided a way of approximating the time evolution operator by an exponential
+
+\begin{equation}
+	U(t,t_0) = \exp \left( \Omega \left(t,t_0\right)\right), \qquad \Omega\left( t_0\right) = 0,
+\end{equation}
+
+of a series of multiple integrals of nested commutators,
+
+\begin{equation}
+	\Omega \left( t,t_0 \right) = \sum^{\infty}_{k=1} \Omega_k \left(t,t_0\right).
+\end{equation}
+
+A very important feature of the Magnus expansion is that, no matter where the series is truncated, the scheme remains unitary~\cite{ImprovedHighOrderMagnusExpansion,FromTimeOrderedToMagnus}. This is a property not shared by the expansion of the time evolution operator in Eqn.~\eqref{eq:DysonSeries}. 
+
+It can be shown~\cite{ImprovedHighOrderMagnusExpansion} that the terms in the Magnus expansion satisfy\footnote{The $B_j$'s are the Bernoulli numbers.}
+
+\begin{equation}
+	\Omega_k \left(t,t_0\right) = \sum^{n-1}_{j=0}\frac{B_j}{j!} \int^{t}_{t_0} S^{j}_{k}\left(\tau\right) \dd \tau, \quad k\geq 1,
+\end{equation}
+
+with $S^{j}_{k}$ being given by the recurrence relation
+
+\begin{equation}
+\begin{align}
+	S^{0}_{1} &= -iH, \quad S^{0}_{k}=0, \quad k \geq 1, \\
+	S^{j}_{k} &= \sum^{k-j}_{m=1} \left[ \Omega_m, S \right], \quad 1 \leq j \leq k-1.
+\end{align}
+\end{equation}
+
+The first three terms in the Magnus series are then
+
+\begin{equation}
+\begin{align}
+	\Omega_1 (t,t_0) &= -i\int^{t}_{t_0} H(t_1) \dd t_1 \\
+	\Omega_2 (t,t_0) &= -\frac{1}{2} \int^{t}_{t_0} \dd t_1 \int^{t_1}_{t_0} \dd t_2 \left[ H(t_1), H(t_2) \right] \\
+	\Omega_3 (t,t_0) &= \frac{i}{6} \int^{t}_{t_0} \dd t_1 \int^{t_1}_{t_0} \dd t_2 \int^{t_2}_{t_0} \dd t_3
+								\left( \left[H(t_1),\left[H(t_2),H(t_3)\right]\right]+ \left[H(t_3),\left[H(t_2),H(t_1)\right]\right] \right).
+\end{align}
+\label{eq:ThreeFirstTerms}
+\end{equation}
+
+In general, $\Omega_k$ is a $k$-dimensional integral of nested commutators of $H$ evaluated at different times, and quickly becomes prohibitively expensive to evaluate with increasing~$k$.
+
+Used as a basis for a time integration scheme for our discretized Schrödinger equation, truncating the Magnus expansion after the first term gives a second order method, truncating after the second term a fourth order method, and so on:
+
+\begin{equation}
+	\Psi^{n+1}= U\left( \Delta t + t_n, t_n \right) \Psi^n \approx \exp \left( \sum^{j}_{k=1} \Omega_k \right) \Psi^n + \mathcal{O}\left( \Delta t ^{2j+1} \right).
+\end{equation}
+
+Indeed, keeping only the first term in the Magnus expansion gives us Eqn.~\eqref{asdhfkjasdhfjkuert} exactly, a method we proved to be of second order. The multidimensional integrals in Eqn.~\eqref{eq:ThreeFirstTerms} remain a major hurdle for implementing the higher order methods efficiently. In a paper by Blanes, Cacas and Ros~\cite{ImprovedHighOrderMagnusExpansion} it is shown how to reduce these integrals to single-dimensional integrals and how to reduce the number of commutators involved. Blanes and Moan then applies this to the Schrödinger equation, see Ref.~\cite{Blanes200035}. When restricting ourselves to the fourth-order case the conclusion is that the first two terms in the Magnus expansion can be written as
+
+\begin{equation}
+\begin{align}
+	\Omega_1 &= M_1 \\
+	\Omega_2 &= \left[ M_1, M_2 \right],
+\end{align}
+\label{eq:muchUsedRelation}
+\end{equation}
+
+where $M_1$ and $M_2$ are given as
+
+\begin{equation}
+\begin{align}
+	M_1 &= -i \int ^{t_n+\Delta t}_{t_n} H \left( s \right) \dd s \\
+	M_2 &= \frac{i}{\Delta t} \int^{t_n+\Delta t}_{t_n} \left( s-\left(\frac{\Delta t}{2} -t_n \right)H \left( s \right) \dd s
+	= \frac{i}{\Delta t} \left[ \int^{t_n+\Delta t}_{t_n} sH\left(s\right) \dd s \right] +\left(  \frac{\Delta t}{2}-t_n \right)M_1.
+\end{align}	
+\label{eq:muchUsedRelationPart2}
+\end{equation}
+
+We observe that if the Hamiltonian is independent of time $M_2$ vanishes identically. Our time stepping scheme becomes
+
+\begin{equation}
+	\Psi^{n+1} = \mathrm{e}^{\Omega_1+\Omega_2} \Psi^n + \mathcal{O}(\Delta t ^5) =
+	\mathrm{e}^{M_1+[M_1,M_2]}\Psi^n + \mathcal{O}(\Delta t ^5).
+	\label{eq:theFourthjfjfj}
+\end{equation}
+
+If the integrals of the form $\int H(s) \dd s$ and $\int s H(s) \dd s$ cannot be evaluated analytically, we must resort to numerical integration with a sufficient accuracy. I will use gaussian quadrature when implementing this method later in this chapter.
+
+It is possible to get rid of the commutators using splitting methods for the exponential, while the method remains of fourth order. By using the Baker-Cambell-Hausdorff formula it can be shown that
+
+\begin{equation}
+\begin{align}
+U(t_n + \Delta t,t_n) & = \mathrm{e}^{\Omega_1+\Omega_2 +O(\Delta t ^5)} \\
+	&= \mathrm{e}^{\frac{M_1}{2} - 2M_2} \mathrm{e}^{\frac{M_1}{2}+2M_2} +O(\Delta t ^5) \\
+	&= \mathrm{e}^{-M_2}\mathrm{e}^{M_1}\mathrm{e}^{M_2}+\mathcal{O}(\Delta t ^5).
+\end{align}	
+\label{eq:fourthOrderSplitting}
+\end{equation}
+
+In the current form there is no ``clever'' way to evalute the matrix exponentials with the discrete Fourier transform as in the case of the pseudospectral method, and the matrix exponentials will have to be calculated by brute force. In the following sections I will investigate if we in some way can make up for this extra computational effort by increasing the time-step $\Delta t$. 
+
+\section{Numerical Experiments}
+\label{sec:NumericalExperiments}
+
+I will now conduct a short series of experiments to test the numerical methods described above. To gauge the accuracy of the methods the exact solutions to the time-dependent Schrödinger equation are needed. Of course this limits the choice of a test system somewhat. Since some of the methods are better suited to time-dependent problems than others, I will include tests with both time-dependent and time-independent Hamiltonians.
+
+\subsection{An Analytically Solvable Time-Dependent System}
+\label{sec:AnExactlySolvableTimeDependentModel}
+
+For the case of a time-dependent Hamiltonian there are precious few systems that can be solved exactly. In real-world applications such systems have traditionally been treated with perturbation theory or by numerical methods. But it so happens that for the following Hamiltonian,
+
+\begin{equation}
+	H(t) = -\frac{1}{2}\frac{\mathrm{d}^2}{\mathrm{d}x^2}+E(t)x,
+	\label{eq:feltet}
+\end{equation}
+
+an exact solution can be found\footnote{This solution is due to Simen Kvaal.}. Inserting this into the Schrödinger equation we get
+
+\begin{equation}
+	\frac{\partial}{\partial t} \Psi (x,t) = \frac{i}{2}\frac{\mathrm{d}^2}{\mathrm{d}x^2} \Psi (x,t) -iE(t) \Psi (x,t).
+\label{eq:theTimedepSystemSchrodinger}
+\end{equation}
+
+By considering the same problem in momentum space, it turns out that it is possible to find a closed form solution to this equation  (for a discussion on momentum space see for example~\cite{Bransden}). Here the Hamiltonian becomes
+
+\begin{equation}
+	H\left( t\right) = \frac{1}{2}p^2+iE\left( t \right)\frac{\mathrm{d}}{\mathrm{d}p},
+\end{equation}
+
+and the Schrödinger equation in momentum space is
+
+\begin{equation}
+	\frac{\partial}{\partial t}\Phi (p,t) - E(t) \frac{\partial}{\partial p}\Phi (p,t) = -i\frac{p^2}{2} \Phi (p,t).
+	\label{eq:schMomSpEx}
+\end{equation}
+
+The position and momentum representations of the wave function, $\Psi(x,t)$ and $\Phi(p,t)$, are related via a Fourier transform
+
+\begin{equation}
+\begin{align}
+	\Psi (x,t) & = & \frac{1}{2\pi} \int^{\infty}_{-\infty} \mathrm{e}^{ipx} \Phi(p,t)\mathrm{d}p \\
+	\Phi(p,t) & = & \int^{\infty}_{-\infty}\mathrm{e}^{-ipx}\Psi(x,t)\mathrm{d}x.
+	\end{align}
+	\label{eq:momFourSpat}
+\end{equation}
+
+We note that this is not the convention normally used in most quantum mechanics texts, where there is a factor of $1/\sqrt{2\pi}$ in front of each of the integrals. Our convention is chosen to conform with the way the fast Fourier transform most often is implemented (in fact, we will have to make even a few more changes before transforming between the two representations). In this convention the wave function in position space $\Psi(x,t)$ is normalized to $1$ whereas the momentum space wave function $\Phi(p,t)$ is normalized to $2\pi$, that is, $\int^{\infty}_{-\infty} |\Phi(p,t)|^2\mathrm{d}p=2\pi$. These factors are not of physical significance since the Schrödinger equation is linear.%, and they cancel out in the end.
+
+Our problem is to solve Eq.~\eqref{eq:schMomSpEx} given an initial state $\Phi(p,0)$. We will use the method of characteristics. For a first-order partial differential equation, the method of characteristics discovers trajectories (the so-called characteristic curves) along which the partial differential equation becomes an ordinary differential equation . This can be solved using standard techniques and then transformed into a solution of the original equation. 
+
+We will thus follow a ``particle'' along a curve $\Gamma(t)$ in the $pt$-plane. Let $\Gamma(t)$ have the inital condition $\Gamma(0)=p_0$ and assume that $\Phi(p,t)$ is a solution to the Schrödinger equation~\eqref{eq:schMomSpEx} with the correct initial state. Define the function $z(t)\equiv\Phi(\Gamma(t),t)$, where we evaluate $\Phi(p,t)$ along the curve $\Gamma(t)$. Differentiation with respect to $t$ gives
+
+\begin{equation}
+\begin{align}
+	\frac{\mathrm{d}}{\mathrm{d}t}z(t) & = & \frac{\partial}{\partial t}\Phi(\Gamma,t)+\frac{\mathrm{d}}{\mathrm{d}t}\Gamma(t)\frac{\partial}{\partial \Gamma}\Phi(\Gamma,t) \\
+	& = & 
+	\frac{\partial}{\partial t}\Phi(p,t)+\frac{\mathrm{d}}{\mathrm{d}t}\Gamma(t)\frac{\partial}{\partial p}\Phi(p,t).
+	\end{align}
+\end{equation}
+
+We see that if $\Gamma(t)$ satisfies the differential equation $\Gamma ' (t)=-E(t)$, we get
+
+\begin{equation}
+	\frac{\mathrm{d}}{\mathrm{d}t}z(t)=\frac{\partial}{\partial t}\Phi(p,t)-E(t) \frac{\partial}{\partial p}\Phi(p,t)=-\frac{i}{2}{\Gamma(t)}^2 z(t).
+\end{equation}
+
+The expression for $\Gamma(t)$ then becomes
+
+\begin{equation}
+	\Gamma(t)=\Gamma(0)+F(t)=p_0+F(t),\qquad F(t)\equiv -\int^t_0 E(s) \mathrm{d}s.
+\end{equation}
+
+We can now solve the differential equation for $z(t)$. The result is $z(t)=z(0)\mathrm{e}^{-\frac{i}{2}\int^t_0 {\Gamma(s)}^2\mathrm{d}s}$, which is the same as writing
+
+\begin{equation}
+	\Phi(p_0 + F(t),t)=\Phi(p_0,0) \, \mathrm{e}^{-\frac{i}{2} \int^{t}_{0}( p_0 +F(s))^2 \mathrm{d}s}.
+\label{eq:solutione}
+\end{equation}
+
+Since we are free to choose $p_0$ to our liking, we set $p_0 = p - F(t)$, where $p$ is arbitrary. This gives the exact solution in terms of the momentum wave function
+
+\begin{equation}
+	\Phi(p,t)=\Phi(p-F(t),0) \mathrm{e}^{-\frac{i}{2}f(p,t)}.
+	\label{eq:FinalGoal}
+\end{equation}
+
+Here we have defined the phase function $f(p,t)$ as
+
+\begin{equation}
+	f(p,t) \equiv \int^t_0 \left(p-F(t)+F(s) \right)^2 \mathrm{d}s.
+\end{equation}
+
+When using this result it can be useful to rewrite this function slightly. One possible way is
+
+\begin{equation}
+\begin{align}
+	f(p,t) &= \int^t_0 (p-F(t))^2 \mathrm{d}s +2\int^t_0 (p-F(t)) F(s) \mathrm{d}s + \int^t_0 F(s)^2 \mathrm{d}s \\
+	& = (p-F(t))^2t + 2(p-F(t))\int^t_0 F(s) \mathrm{d}s + \int^t_0 F(s)^2 \mathrm{d}s \\
+	& =	(p-F(t))^2t+ 2(p-F(t))G(t)+J(t),
+\end{align} 
+\label{eq:jfjfjfj}
+\end{equation}
+
+with the definitions
+
+\begin{equation}
+G(t) =\int^t_0 F(s) \dd s , \qquad\qquad J(t)=\int^t_0 F(s)^2 \dd s.
+\label{eq:mapleFood}
+\end{equation}
+
+\subsubsection{The Initial State $\Phi\left(p,0\right)$}
+\label{sec:InitialStateAnSolv}
+
+We choose a gaussian wave packet centered around $p=0$ as our initial state
+
+\begin{equation}
+	\Phi(p,0)=\sqrt{\frac{2}{\sigma}}\pi^{1/4}\mathrm{e}^{-\frac{p^2}{2\sigma^2}}.
+\end{equation}
+
+In position space the initial state is given as
+
+\begin{equation}
+	\Psi(x,0) = \frac{1}{2\pi}\int^{\infty}_{-\infty}\Phi(p,0)\mathrm{e}^{ipx}\mathrm{d}p = \frac{\sqrt{\sigma}}{\pi^{1/4}} \mathrm{e}^{-\frac{1}{2} \sigma^2 x^2}.
+\end{equation}
+
+Incidentally, for the case where $E\left(t\right)\equiv 0$, i.e. the free particle, the analytical solution is trivial to obtain~\cite{Bransden} and is given explicitly as
+
+\begin{equation}
+	\Psi \left( x,t \right) = \frac{1}{\pi^{1/4}} \sqrt{\frac{\sigma}{1+i\sigma^2 t}} 
+	\exp \left( -\frac{\sigma^2 x^2/2}{1 + i\sigma^2 t} \right).
+\end{equation}
+
+\subsubsection{The Time-Dependent Term $E\left(t\right)$}
+\label{sec:TimeDepTermAnSolv}
+
+For the time-dependent part of the Hamiltonian I will use a modulated sinusoidal pulse of the form
+
+\begin{equation}
+	E\left(t\right)= E_{\mathrm{max}} \sin ^2 \left(\frac{\pi t}{T}\right) \sin\left(\omega t\right).
+	\label{eq:LaserPulselulse}
+\end{equation}
+
+This choice is motivated by the fact that it serves as a good model for a short laser pulse~\cite{PhysRevA.65.053417}. Sometimes it will be an advantage to use a slightly simpler time-dependence, so I will also use a function of the form 
+
+\begin{equation}
+	E\left(t\right)= E_{\mathrm{max}} \cos\left[\omega \left(t+\delta \right)\right].
+	\label{eq:htyfdhgkcnvkjfd}
+\end{equation}
+
+Computing the integrals in Eq.~\eqref{eq:mapleFood} with the function in Eq.~\eqref{eq:LaserPulselulse} by hand would be a gargantuan task, so we will use Maple to do the integrals for us. We are not finished here however, as our solution given by Eq.~\eqref{eq:FinalGoal} is still given in momentum space. Using the exact definition in Eq.~\eqref{eq:momFourSpat} to transform to position space is impractical, if not impossible, and when comparing the results of our numerical experiments with the exact solution we will use FFT to transform between the two representations.
+
+\subsubsection{Using Ehrenfest's Theorem to Verify the Correctness of the Solution}
+\label{sec:TheUseOfEhrenfestsTheorem}
+
+An important gauge of the accuracy of our numerical methods is how well they reproduce the expectation values of properties such as position, momentum and energy. This we can check quickly against our analytical solutions by using Ehrenfest's theorem.
+
+For a general operator $A$ it can be proven from the basic axioms of quantum mechanics that~\cite{Hemmeren}
+
+\begin{equation}
+	\frac{\mathrm{d}}{\mathrm{d}t}\left\langle A\right\rangle=\frac{1}{i\hbar}\left\langle \left[A,H\right]\right\rangle + \left\langle \frac{\partial A}{\partial t}\right\rangle.
+	\label{sdhfksjdfkasdsdf}
+\end{equation}
+
+Applying this to a Hamiltonian of the form
+
+\begin{equation}
+	H(x,p,t) = \frac{p^2}{2m}+V(x,t),
+\end{equation}
+
+we get the relations
+
+\begin{equation}
+\begin{align}
+	\frac{\mathrm{d}}{\mathrm{d}t}\left\langle x\right\rangle &= \left\langle p\right\rangle \\
+	\frac{\mathrm{d}}{\mathrm{d}t}\left\langle p\right\rangle &= \left\langle -\nabla V \right\rangle.
+\end{align}
+\end{equation}
+
+These relations are known as \emph{Ehrenfests theorem}\footnote{Sometimes in the literature, the more general relation of Equation~\eqref{sdhfksjdfkasdsdf} is referred to as Ehrenfests theorem.}. These important relations justifies our sometimes classical mental image of a quantum-mechanical wave packet: The wave packet obeys the equations of motion of the corresponding classical particle when the position, momentum, and force acting on the particle are replaced by the expectation values of these quantities. Applied to our system Ehrenfest's theorem gives us
+
+\begin{equation}
+	\left\langle p\left(t\right)\right\rangle =p_0 - \int^{t}_{0}E(s)\mathrm{d}s=F(t)
+\end{equation}
+
+\begin{equation}
+	\left\langle x\left(t\right)\right\rangle =x_0+\int^{t}_{0}F(s)\mathrm{d}s= G(t) 
+\end{equation}
+
+\begin{equation}
+	\left\langle  T \left(t\right)\right\rangle &= \frac{\left\langle p\right\rangle^2}{2} = \frac{1}{2}\left( \left\langle p^2\right\rangle + \left\langle \left(p-\left\langle p\right\rangle\right)^2\right\rangle \right) =
+	\frac{1}{2} \left\langle p^2\right\rangle - \frac{\sigma^2}{4}
+\end{equation}
+
+The last equation follows from the fact that for the gaussian wave packet the variance is $\frac{1}{2}\left\langle \left(p-\left\langle p\right\rangle\right)^2\right\rangle$.
+
+\subsection{An Analytically Solvable Time-Independent Model}
+\label{sec:AnAnalyticallySolvableTimeIndependentModel}
+
+It is interesting to compare the time stepping methods in the case of a time-independent Hamiltonian as well. When the time-dependent part of the system described in the previous section is turned off the system reduces to that of the free particle. This is not a very interesting system as nothing much happens, except for the spreading of the wave packet. Another problem is that if we want to extend the time frame of our simulation the dispersion of the wave packet will eventually give rise to unphysical effects due to the periodic boundary conditions defined in the Fourier transformation.
+
+Our solution is to place the wave packet in a confining potential, where we choose that of the harmonic oscillator, so that our Hamiltonian becomes
+
+\begin{equation}
+	H = -\frac{1}{2m}\frac{\dd^2}{\dd x^2}+\frac{1}{2}m\omega ^2_0 x^2.
+\end{equation}
+
+The stationary solutions to this Hamiltonian are well known and are given as
+
+\begin{equation}
+	\psi(x)_n = \left( \, \frac{\omega_0 }{\pi} \, \right)^{1/4} \frac{1}{\sqrt{2^n n!}} H_n \left( \sqrt{\omega_0 } x \right) \mathrm{e}^{-\omega_0  x ^2/2},
+\end{equation}
+
+where $H_n$ are the Hermite polynomials. To create interesting time dependencies (other than just a complex phase) we can form linear combinations of these eigenstates. But it turns out also that for an initial state of the form
+
+\begin{equation}
+	\Psi (x,0) = \left(\,\frac{\omega_0 }{\pi}\, \right)^{1/4} \mathrm{e}^{-\frac{\omega_0 }{2}(x-x_0)^2}
+\end{equation}
+
+an analytical solution can be found~\cite{Hemmer2}:
+
+\begin{equation}
+	\Psi (x,t) = \left( \,\frac{\omega_0 }{\pi}\, \right) ^{1/4} \exp \left[-\frac{1}{2}i\omega_0  t \right]
+	\exp \left[ -\frac{1}{4}\omega_0  x^2_0 \left( 1 - \mathrm{e}^{-2i\omega_0  t} \right) \right]
+	\exp \left[ -\frac{1}{2}\omega_0   \left( x - x_0 \mathrm{e}^{-i\omega_0  t} \right)^2  \right].
+\end{equation}
+
+This particular solution is known as the \emph{coherent state}. It is the system whose behaviour most closely resembles that of a classical harmonic oscillator system. At all times, the wave packet retains its initial shape. The motion of the expectation value of $x$ follows that of a classical oscillator
+
+\begin{equation}
+	\left\langle x \right\rangle = x_0 \cos \left(\omega_0  t\right).
+\end{equation}
+
+\subsection{The Implementation}
+\label{sec:TheImplementation}
+
+All the numerics in this thesis has been done using MATLAB. Some of the scripts written can be found in Appendix~\ref{sec:ProgramListings}. The programs have quite probably not been implemented in the most efficient way, but since most of the simulations have been of a relatively small scale this is not critical.
+
+The time propagation schemes are implemented as function M-files: \verb+LeapFrog.m+$\,$, \verb+CrankNicolson.m+$\,$, \verb+PseudoSpectral.m+ and \verb+FourthOrderMethod.m+$\,$. They are called from a main script file: \verb+CompareMethods.m+$\,$. In the main script the form of $E(t)$, $\Psi(x,0)$ and $V(x)$ is specified. They are given as function handles which are then passed on to the time propagation functions. Thus we can simulate just about any one-dimensional system. Other important parameters such as the number of grid points $N$, the length of the simulation $t_{\mathrm{final}}$ and the number of time steps $t_{\mathrm{steps}}$, are specified in the main script file as well. The time propagation functions compute the mean energy, mean $x$-position and norm of the wave packet at regular intervals. These quantities are computed using the Simpson quadrature, implemented as a function M-file. The wave function itself is recorded at a number of time steps specified in the main script file.
+
+To compare with the analytical solution a similar function M-file has been written: \verb+ExactSolution.m+$\,$. This gives much of the same data as the time propagation schemes, but with the important difference that here the exact solution is known. In the case of the time-dependent Hamiltonian discussed in Section~\ref{sec:AnExactlySolvableTimeDependentModel} the closed-form solution is given in momentum space, so the fast Fourier transform is used to transform this to position space.
+
+All of the methods are implemented using the spectral method of representing the operators. It is possible to use finite differences of second or fourth order instead, by changing the parameter \verb+'fourier'+ to \verb+'second+ or \verb+'fourth'+ in the main file \verb+CompareMethods.m+$\,$. Details on the implementations specific to the different methods are given below.
+
+\paragraph{The Leap-Frog Scheme}
+\label{sec:TheLeapFrogScheme}
+
+The Leap-Frog scheme does not tell us how to compute the first time step. I have implemented it using the Crank-Nicolson method. MATLAB is quite capable of handling complex arithmetic, so there is no need to separate the scheme into real and imaginary parts as in Eq.~\eqref{eq:LeapaFrogga}.
+%If we write 
+
+%\begin{verbatim}H=ifft(T*fft(eye(N)+V\end{verbatim}
+
+%\begin{equation}
+% \Psi^{n+1}=\left(I+\right)
+%\end{equation}
+
+%this is equivalent to using
+
+% \begin{verbatim}ifft(T*fft(psi))+V*psi\end{verbatim}.
+
+%This makes the matrix that must be inverted in the Crank-Nicolson method dense as opposed to tridiagonal.
+
+\paragraph{The Pseudospectral Method}
+\label{sec:ThePseudospectralMethod}
+
+The splitting used is the one given by Eq.~\eqref{eq:oasiudfgoaisudfg}.
+
+\paragraph{The Fourth-Order Method}
+\label{sec:TheFourthOrderMethod}
+
+I have not made use of splitting methods for the exponential as in Eq.~\eqref{eq:fourthOrderSplitting}, that is, the commutators in the exponential of Eq.~\eqref{eq:theFourthjfjfj} are computed directly. The integrals Eq.~\eqref{eq:muchUsedRelationPart2} over the discretized Hamiltonian I have implemented with gaussian quadratures, as this gives us the maximum accuracy with the least effort. When computing the matrix exponentials, I do not make use of MATLAB's built-in function \verb+expm+$\,$. These have instead been implemented using the Expokit package~\cite{expokit}, as it is significantly more efficient for the type of problems we are encountering. The name of the Expokit function is \verb+expv+.
+
+\subsection{Some Considerations Before Beginning the Simulations}
+\label{sec:SomeConsiderationsBeforeStartingTheSimulations}
+
+Before comparing the accuracy of the different time stepping schemes it is interesting to investigate how the computation time depends on the number of spatial grid points $N$. The total simulation time for a system of the form given in Section~\ref{sec:AnExactlySolvableTimeDependentModel} is shown in Figure~\ref{fig:tidssammenlikning}. The parameters used are:
+
+\begin{center}
+  \begin{tabular}{ l l l l l l l}
+  \\
+  	$E_{\mathrm{max}}=1$ & $\omega = 1$ & $\delta = 0$ & $\sigma = \frac{1}{4}$ & $L=100$ & $t_{\mathrm{final}}=0.5$ & $N_{\mathrm{tSteps}}=100$
+\\ 
+\\
+  \end{tabular}    
+\end{center}
+\begin{figure}[h]
+  \centering
+%  	\includegraphics[width=0.8\textwidth]{Tidssammenlikning.pdf}}                
+  \caption{Total computation time for 100 time steps with a grid size of $N=64$, $N=128$, $N=256$, $N=512$ and $N=1024$ points.}
+  \label{fig:tidssammenlikning}
+\end{figure}
+Here, $L$ is the length of the discretization domain which is always taken to be centered around $x=0\,$. The number of time steps is denoted by $N_{\mathrm{tSteps}}$. As expected, the fourth-order method and the Crank-Nicolson method use vastly more time than the other methods as they involve calculating matrix exponentials and solving systems of linear equations, respectively. As we increase the number of grid points the differences become quite pronounced. For the $N=1024$ case, the Fourth-Order method has a total simulation time of $t_{\mathrm{sim}}=1.512\cdot10^{3}}$ (in seconds), which should be contrasted to that of the Leap-Frog method of $t_{\mathrm{sim}}=0.028$. The fourth-order method here requires $\sim 5\cdot 10^5$ times the computational effort of the leap-frog method\footnote{All simulations in this thesis are performed on my slightly aged laptop powered by a Pentium M 1.86GHz CPU.}. %The interesting question though, is if the benefits of increased accuracy is able to make up for this. 
+
+Performing a simple regression analysis on this data set it is found that the simulation time for the leap-frog and pseudospectral methods scale with the number of grid points $N$ as $\mathcal{O}\left(N^{0.7}\right)$. The Crank-Nicolson shows the dependency $\mathcal{O}\left(N^{2.6}\right)$ and the forth-order method, when removing the $N=64$ point which for some inexplicable reason takes longer than the $N=128$ case, shows the dependency $\mathcal{O}\left(N^{2.8}\right)$. The simulation time for the latter methods thus scale almost with the cube of the number of grid points. To illustrate the fallacy of relying blindly on computational power when performing simulations with such methods: Say we are simulating a three-dimensional quantum system and need to double the number of grid points in each direction to obtain sufficient accuracy. If the original simulation took one hour, the new simulation will take $\left(2^3\right)^{2.8}\cdot 1\mathrm{h} = 337.79\mathrm{h}\,$, which is the equivalent of two weeks.
+
+The Crank-Nicolson method with the spectral discretization is a rather unfortunate combination, since we are no longer able to utilize the $\mathcal{O}(N \log N)$ behaviour of the FFT algorithm, and instead must live with the $\mathcal{O}(N^2)$ complexity of solving linear systems. Similarly, the fourth-order method requires exponentiating dense matrices. Ideally, the matrix-vector products utilized in Expokit should be implemented using the FFT directly and not dense representations of these.
+
+I have done a small study see how the \verb+expv+$\,$ function depends on the size of the time step $\Delta t$. The result is shown in Figure~\ref{fig:tidexpv}. The system is essentially the same as in the previous simulation, but with $N=256$ grid points. From this we see that the computation time increases only weakly until a step size of $\Delta t = 0.1$, by which time we would no longer expect \verb+expv+$\,$ to yield accurate results anyway. So for our purposes, \verb+expv+$\,$ does not depend on the step size $\Delta t$ in a significant manner.
+\begin{figure}[h]
+  \centering 
+%  	\includegraphics[width=0.8\textwidth]{TidExpvdt.pdf}}           
+  \caption{Computation time for \textbf{expv} as a function of step length $\Delta t\,$.}
+  \label{fig:tidexpv}
+\end{figure}
+
+\subsection{The Free Particle}
+\label{sec:TheDiffusingWavePacket}
+
+For completeness, I include a simulation of one of the simplest systems imaginable: the free particle. The initial state is chosen as a gaussian wave packet, given on the form
+
+\begin{equation}
+	\Psi(x,0) = \frac{\sqrt{\sigma}}{\pi^{1/4}} \mathrm{e}^{-\frac{1}{2} \sigma^2 x^2}.
+\end{equation}
+
+In Section~\ref{sec:AnExactlySolvableTimeDependentModel} a closed form solution of the time development of this state is stated. The parameters used in the simulation are:
+
+\begin{center}
+  \begin{tabular}{ l l l l l l}
+  	$\sigma = 1$ & $L=30$ & $N=512$ & $t_{\mathrm{final}}=1$
+  	& $N_{\mathrm{tSteps}}=1500$ & $\Delta t = 0.00067$ \\ 
+  \end{tabular}    
+\end{center}
+
+Before starting any simulation it is of interest to see if we have satisfied the stability criterion of the Leap-Frog scheme given by Eq.~\eqref{stabilityleeeeep}. This criterion tells us that in order for the Leap-Frog scheme to be stable, we must have
+
+\begin{equation}
+	\frac{4 \Delta t}{\Delta x^2} \leq 1.
+\end{equation}
+
+For the chosen simulation parameters, we get $ 4\Delta t / \Delta x^2 = 0.78\,$, so we should be one the safe side. A plot of the probability density of the wave function at different times is seen in Figure~\ref{fig:SnapshotsDiffpdf}, where we see the spreading of the wave packet as dictated by Heisenberg's uncertainty principle. A plot of the devation of the simulated wave functions from the exact solution is shown in Figure~\ref{fig:sakhgalksjdnl}. This shows a behaviour we will see a lot more of: the fourth-order method wins hands down, followed by the pseudospectral method, the Crank-Nicolson method, and the leap-frog method. In that order. 
+
+In Figure~\ref{fig:larwehltknamst} a plot of the deviation from the expectation value of $x$ against time is shown. Perhaps surprisingly, it is the Leap-Frog method that gives the most accurate results. The deviation is very low for all the methods, below $10^{-14}$. We clearly need to look at a more complicated system. 
+\begin{figure}[h]
+  \centering
+  \subfloat[Snapshots of the wave packet.]{\label{fig:SnapshotsDiffpdf}%\includegraphics[width=0.5\textwidth]{SnapshotsDiff.pdf}}                
+  \subfloat[Deviation from the exact wave function.]{\label{fig:DevFromWaveDiff12pdf}%\includegraphics[width=0.6\textwidth]{DevFromWaveDiff12.pdf}}
+  \caption{The free particle: Probability density at three different times (left). Accuracy in reproducing the wave function (right).}
+  \label{fig:sakhgalksjdnl}
+\end{figure}
+\begin{figure}[h]
+  \centering 
+%  	\includegraphics[width=0.7\textwidth]{DevFromMeanDiff12.pdf}}           
+  \caption{The free particle: deviation from the mean value of position.}
+  \label{fig:larwehltknamst}
+\end{figure}
+
+\subsection{The Coherent State}
+\label{sec:TheCoherentState}
+
+As discussed in Section~\ref{sec:AnAnalyticallySolvableTimeIndependentModel} the coherent state is a system for which an exact solution for the time-dependency can be found. We place a gaussian wave packet in a harmonic potential. For a specific width of this wave packet, it its initial shape and rocks back and forth with the classical oscillator frequency. The parameters used in the simulation are:
+
+\begin{center}
+  \begin{tabular}{ l l l l l l}
+  	$\omega_0  = 0.5$ & $L=40$ & $N=256$ & $t_{\mathrm{final}}=14$ & $N_{\mathrm{tSteps}}=5000$
+  	& $\Delta t = 0.0028$\\ 
+  \end{tabular}    
+\end{center}
+
+Here we have that $ 4\Delta t / \Delta x^2 = 0.47\,$, so the stability of the Leap-Frog scheme is secured. The total time for the simulation was $t_{\mathrm{sim}}=477.2$. A plot of the expectation value of $x$ is shown in Figure~\ref{fig:gullsddfs}. We have simulated for little over a period of the classical period of the harmonic oscillator. 
+
+A plot of the deviation from the expectation value of $x$ (Figure~\ref{fig:tigeasdfasdfr}) reveals that the fourth-order method is about eight orders of magnitude more accurate than the next best method. The devation from the exact wave function (Figure~\ref{iasdhfiuaherjk}) shows much of the same behaviour as for the free particle, but with the difference in accuracy between the pseudospectral method and the fourth-order method now becoming apparent. The plot of the deviation from unitarity (Figure~\ref{dsakhfhdgfkajsdhf}) shows that the fourth-order method conserves unitarity to machine precision, while the leap-frog method is showing rather large fluctuations. 
+
+\begin{figure}[h]
+  \centering
+  \subfloat[Expectation value of position.]{\label{fig:gullsddfs}\includegraphics[width=0.5\textwidth]{MeanXCoherent.pdf}}                
+  \subfloat[Deviation from the expectation value of position.]{\label{fig:tigeasdfasdfr}\includegraphics[width=0.5\textwidth]{DevFraMeanKoherent12.pdf}}
+  \caption{The coherent state: The mean value of position (left). Deviation from mean value of position (right).}
+  \label{fig:acngswr}
+\end{figure}
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{DevFraNormKoherent.pdf}
+    \caption{The coherent state: deviation from unitarity.}
+    \label{dsakhfhdgfkajsdhf}
+\end{figure}
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{DevFraPsiKoherent.pdf}
+    \caption{The coherent state: deviation from the exact solution.}
+    \label{iasdhfiuaherjk}
+\end{figure}
+
+\subsection{The Time Dependent External Field}
+\label{sec:TheTimeDependentField}
+
+Numerical methods for solving the time-dependent Schrödinger equation are typically intended to be used to solve problems involving time-dependent perturbations. The simulation of a system with a time-dependent potential will thus reveal more about under which conditions the methods are accurate enough for real-world applications. As discussed in Section~\ref{sec:AnExactlySolvableTimeDependentModel}, for the Hamiltonian 
+
+\begin{equation}
+H\left(t\right) = - \frac{1}{2} \frac{\dd ^2}{\dd x ^2} + E\left(t\right) x,
+\end{equation}
+
+an exact solution can be found. For the time-dependent term $E\left(t\right)$ we will use a modulated sinusoidal pulse of the form
+
+\begin{equation}
+E\left(t\right) = E_{\mathrm{max}} \sin^2 \left( \frac{\pi t}{T} \right) \sin \left(\omega t\right),
+\end{equation}
+
+and use a gaussian initial state of the form
+\begin{equation}
+	\Psi(x,0) = \frac{\sqrt{\sigma}}{\pi^{1/4}} \mathrm{e}^{-\frac{1}{2} \sigma^2 x^2}.
+\end{equation}
+
+The parameters used in the simulation are:
+
+\begin{center}
+  \begin{tabular}{ l l l l l }
+  	$E_{\mathrm{max}}=3$ & $\omega=2$ & $T=10$ & $\sigma = \frac{1}{4}$ & $L=100$ 
+  \end{tabular}    
+\end{center}
+\begin{center}
+  \begin{tabular}{ l l l l }
+    $N=512$ & $t_{\mathrm{final}}=10$ & $N_{\mathrm{tSteps}}=2500$
+  	& $\Delta t = 0.004$ \\
+  \end{tabular}    
+\end{center}
+
+\\
+We have here that $4\Delta t / \Delta x^2 = 0.42\,$, so the stability of the Leap-Frog scheme should be secured. The total run time for the simulation was $t_{\mathrm{sim}}=5.77\cdot 10^3$. In Figure~\ref{fig:hjlkh058ht50} some of the quantities that characterizes the system are shown, such as the form of the external pulse and the mean energy of the wave packet. In Figure~\ref{fig:DevFromMeanXMainPLot12widthpdf} the deviation from the mean value of $x$ is shown. The fourth-order seems capable of simulating this quantity almost to machine precision. In Section~\ref{sec:TheLeapFrogMethod} and \ref{sec:TheCrankNicolsonMethod} we saw that for time-dependent systems the unitarity was conserved only to second order, and that the leading term in the error contained the derivative of the Hamiltonian. We can clearly see the consequences of this in Figure~\ref{DevUnitarityMainPlotpdf}, where the deviation from unitarity is seen to fluctuate with the frequency of $E\left(t\right)$. 
+
+\begin{figure}[h]
+  \centering
+  \subfloat[$E(t)$.]{\label{fig:ElFieldMainpdf}\includegraphics[width=0.5\textwidth]{ElectricField.pdf}}           
+  \subfloat[Mean energy of the wave packet]{\label{fig:MeanEnergyMainPLotpdf}\includegraphics[width=0.5\textwidth]{MeanEnergyMainPLot.pdf}}\\
+  \subfloat[The expectation value of position.]{\label{fig:MeanXMainPLotpdf}\includegraphics[width=0.5\textwidth]{MeanXMainPLot.pdf}}                
+  \subfloat[Deviation from the expectation value of position.]{\label{fig:DevFromMeanXMainPLot12widthpdf}\includegraphics[width=0.6\textwidth]{DevFromMeanXMainPLot12width.pdf}}
+  \caption{The time dependent external field: various simulation data.}
+  \label{fig:hjlkh058ht50}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{AccuracyMethodsMainPlot.pdf}
+    \caption{The time dependent external field: deviation from the exact wave function.}
+    \label{AccuracyMethodsMainPlotpdf}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[width=0.8\textwidth]{DevUnitarityMainPlot.pdf}
+    \caption{The time dependent external field: deviation from unitarity.}
+    \label{DevUnitarityMainPlotpdf}
+\end{figure}
+
+\subsubsection{Fourth-Order Method versus Pseudospectral}
+\label{sec:FourthOrderMethodVersusPseudospectral}
+
+In the course of the simulation in the previous sections, we have clearly established that fourth-order method is superior to the other methods in terms of accuracy. We have also seen that for the three other methods, in every test the pseudospectral method has come out on top. In Section~\ref{sec:SomeConsiderationsBeforeStartingTheSimulations} it was shown that the fourth-order method uses vastly computation resources than the pseudospectral method. It is therefore interesting to compare if we in the pseudospectral method can make up for the lack of accuracy (as compared to the fourth order method) by taking smaller time steps. If we allow the two methods to use the same total simulation time, who will win? 
+
+We will simulate a time-dependent system similar to that in the previous secion. The simulation parameters used are
+
+\begin{center}
+  \begin{tabular}{ l l l l l l l}
+  	$E_{\mathrm{max}}=3$ & $\omega=2$ & $T=10$ & $\sigma = \frac{1}{4}$ & $L=100$ & $N=512$ & $t_{\mathrm{final}}=10$ \\ 
+  \end{tabular}    
+\end{center}
+
+The parameters specific to the fourth-order method are
+
+\begin{center}
+  \begin{tabular}{ l l}
+  	$N_{\mathrm{tSteps}}=10^3$ & $\Delta t = 0.01$ \\ 
+  \end{tabular}    
+\end{center}
+
+and those specific to the pseudospectral method are
+
+\begin{center}
+  \begin{tabular}{ l l}
+  	$N_{\mathrm{tSteps}}=7000\cdot 10^3$ & $\Delta t = 1.43\cdot 10^{-6}$ \\ 
+  \end{tabular}    
+\end{center}
+
+The length of the time step for the fourth-order method is 7000 that of the pseudospectral method. But amazingly, they use just about the same total simulation time. The pseudospectral method has a total run time of $t_{\mathrm{sim}}=2.176\cdot 10^3$ while the fourth-order method has a total run time of $t_{\mathrm{sim}}=2.041\cdot 10^3$.
+
+For the expectation value of $x$, where the deviation from this is plotted in Figure~\ref{fig:halshdlgkhasui}, by now taking $\sim 10^3$ times the number of time steps than in the simulation in the previous section, the pseudospectral fares slightly better with the error now reduced by three orders of magnitude. But still it is no match for the fourth-order method, which calculates this quantity, again, almost to machine precision. The deviation from the exact wave function is shown in Figure~\ref{fig:xlcjhvluishdrtker}. The pseudospectral method does actually reproduce the wave function slightly better than the fourth-order method, after a simulation time of $t=2.5$.
+
+\begin{figure}[h]
+  \centering
+  \subfloat[Devation from the expectation value of x.]{\label{fig:halshdlgkhasui}\includegraphics[width=0.53\textwidth]{DevFromMeanBMvsSS.pdf}}                
+  \subfloat[Deviation from the exact solution.]{\label{fig:xlcjhvluishdrtker}\includegraphics[width=0.53\textwidth]{DevFromWaveBMvsSS.pdf}}
+  \caption{Testing the performance of the fourth-order method against that of the pseudospectral method, on the premise that the two methods are allowed the same total computation time. Devation from the expectation value of position (left). Deviation from the exact wave function (right).}
+  \label{fig:sadhulgihsadlh}
+\end{figure}
+

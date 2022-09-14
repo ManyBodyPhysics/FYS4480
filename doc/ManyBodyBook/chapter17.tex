@@ -1,0 +1,839 @@
+\chapter{Bose-Einstein condensation and Diffusion Monte Carlo}\label{chap:advancedqmc}
+\abstract{We discuss how to perform diffusion Monte Carlo calculations for systems of bosons}
+
+\section{Diffusion Monte Carlo}
+
+The DMC method belongs to a larger class of methods often called
+\emph{projector} Monte Carlo. As the name indicates, this is a general
+class of methods based on taking projections in Hilbert space.
+
+%From a given superposition $\Psi$ of eigenfunctions of $\op H$, we
+%will project out the desired one:
+%\bdm
+%\Psi = \sum_i c_i \phi_i \to \phi_k
+%\edm
+
+Consider a system governed by a Hamiltonian $\op H$. Its stationary
+eigenfunctions are then given by
+\bdm
+\op H\phi_i = \epsilon_i\phi_i
+\edm
+DMC is a method of projecting out the $\phi_i$ from $\Psi$ with the
+lowest energy. Most often, and in our case particularly, we are
+interested in the ground state. But just as with the variational
+principle used by VMC, if we let $\Psi$ fulfill a certain mathematical
+symmetry, the projected $\phi_k$ will be the state of lowest energy
+with that given symmetry.
+
+In contrast to VMC, which relies on the variational principle, DMC does not directly depend on any a
+priori choice of wave function that ultimately restricts the quality
+of the result. Thus, DMC can in principle produce the exact ground
+state of our system, at least within the statistical limits of the
+algorithm.
+
+The procedure of projecting out the component state of $\Psi$ with the
+lowest energy is based on operating on $\Psi$ with the special
+evolution operator $\exp(-\op Ht)$
+\bdm
+e^{(-\op Ht)}\Psi(\vec x) = \sum_i c_i
+\exp(-\epsilon_it)\phi_i(\vec x)
+\edm
+This is just the formal solution of the special equation:
+\be
+-\frac{\partial}{\partial t}\Psi(\vec x, t) =
+\op H \Psi(\vec x, t)
+\label{eq:SE_imaginary_time}
+\ee
+which resembles the time dependent Schr\"odinger equation as if it
+were transformed to imaginary time $it\to t$. Recall that the formal
+solution of the time dependent Schr\"odinger equation is just
+\bdm
+\Psi(\vec x, t) = e^{-\frac{i}{\hbar}\op Ht}\,\Psi(\vec x) =
+\sum_i c_i e^{-\frac{i}{\hbar}\epsilon_it}\,\phi_i(\vec x)
+\edm
+As we let $t\to\infty$, the exponential makes all the eigenstates with
+negative energy blow up while the ones with positive energy vanish. To
+control this effect we introduce a constant energy shift 
+$E_{\mathrm{T}}$, called a \emph{trial energy}, to the potential term
+of $\op H$. This shift does, of course, not change any relevant physical
+properties of our system since it is generally independent of the
+choice of the zero point of the energy. The effect on the projection
+operation becomes
+\be
+\Psi(\vec x, t) =
+e^{-(\op H - E_{\mathrm{T}})t}\Psi(\vec x) = \sum_i c_i
+e^{-(\epsilon_i-E_{\mathrm{T}})t}\phi_i(\vec x)
+\label{eq:projector_on_Psi}
+\ee
+Consider the ideal situation of letting $E_{\mathrm{T}}$ equal exactly
+$\epsilon_0$, resulting in
+\bdm
+\Psi(\vec x, t) =
+e^{-(\op H - E_{\mathrm{T}})t}\Psi(\vec x) =
+c_0\phi_0 + \sum_{i>0}c_i\phi_i(\vec x)e^{-(\epsilon_i-\epsilon_0)t}
+\edm
+Since $\epsilon_i > \epsilon_0$ for $i \neq 0$, all the remaining
+exponents become negative. In the limit $t\to\infty$, the
+contributions from excited states must obviously vanish, so that
+propagating $\Psi$ according to Eq.~(\ref{eq:SE_imaginary_time})
+gives
+\bdm
+\lim_{t\to\infty} e^{-(\op H - \epsilon_0)t}\Psi(\vec x) =
+c_0\phi_0
+\edm
+thus projecting out the ground state.
+
+Without even considering how to do the time propagation in practice,
+the formulas already indicate to us that approaching the problem first
+with VMC can help produce an initial $\Psi$ close to $\phi_0$ and,
+more importantly, a trial energy $E_{\mathrm{T}}$ being an upper bound
+to the true ground state energy $\epsilon_0$. Hopefully
+$E_{\mathrm{T}}$ is close enough to $\epsilon_0$ to be smaller than the
+first excited energy. Inserting such a $E_{\mathrm{T}}$ into
+Eq.~(\ref{eq:projector_on_Psi}) while letting $t\to\infty$ will make all
+the excited states collapse while the ground state blows up and
+dominates because of the positive exponent in the coefficient.
+
+From this consideration we also see that the evolution operator is not
+unitary. The norm of $\Psi$ is not necessarily conserved with time.
+Depending on the value of $E_{\mathrm{T}}$ it may grow without limit
+or go to zero. Only in the case of $E_{\mathrm{T}}=\epsilon_0$ the
+state tends to a constant. This proposes a method of determining the
+ground state energy by adjusting $E_{\mathrm{T}}$ dynamically during
+time propagation so that the state stays constant.
+
+Writing out the imaginary time Schr\"odinger equation,
+Eq.~(\ref{eq:SE_imaginary_time}), including the energy offset 
+$E_\mathrm{T}$, we get
+\bea
+\frac{\partial}{\partial t}\Psi(\vec x, t) &=&
+-\op K \Psi(\vec x, t) -
+(\op V(\vec x) - E_\mathrm{T})\Psi(\vec x, t)\nonumber\\
+&=&
+\frac{\hbar^2}{2m}\nabla^2 \Psi(\vec x, t) -
+(\op V(\vec x) - E_\mathrm{T})\Psi(\vec x, t)
+\label{eq:SE_imaginary_time_expanded}
+\eea
+where $\op K$ and $\op V$ is the kinetic and potential energy
+operator, respectively. We see that this is of the form of an extended
+diffusion equation. We can therefore consider the wave function $\Psi$
+as a probability distribution evolving according to this equation.
+This greatly contrasts the usual quantum mechanical interpretation of
+$|\Psi|^2$ being the actual probability density function (PDF). We
+will see that the approach poses some potentially serious problems
+when the wave function $\Psi$ we seek has nodes and is partially
+negative and possibly complex. But to illustrate the main mechanisms
+of the method we will at the moment focus on the simple cases of
+bosonic ground states which usually are strictly positive and real.
+
+In simple terms, the job consists of representing the initial state
+$\Psi$ by a collection of walkers, much the same way as in VMC, and
+letting them evolve in time as a controlled diffusion process governed
+by Eq.~(\ref{eq:SE_imaginary_time_expanded}). Interpreting the
+rhs.~terms of Eq.~(\ref{eq:SE_imaginary_time_expanded}), we see that
+the first term is a standard diffusion term with a diffusion constant
+of
+\be
+D\equiv\frac{\hbar^2}{2m}
+\label{eq:diffusion_constant}
+\ee
+The second term is called a \emph{branching term}. When positive, it
+induces a growth of the number of walkers and a decay if it is negative.
+
+Before we expand on how to carry out DMC in practice, it may be
+helpful to consider an analytically exact approach by focusing on the
+Green's function corresponding to the time evolution of the wave function. 
+The approach is called
+\emph{Green's function Monte Carlo} (GFMC) and shares its main ideas
+with the DMC method. Using Dirac's bracket notation, we start over by
+substituting the initial wave function $\Psi(\vec x)$ with its
+corresponding state ket $|\Psi\rangle$ and let the special evolution
+operator work on $|\Psi\rangle$
+\bdm
+|\Psi\rangle_t = e^{-(\op H - E_{\mathrm{T}})t}|\Psi\rangle,
+\edm
+Now we switch to position representation:
+\bdm
+\Psi(\vec x, t) =
+\overlap{\vec x}{\Psi}_t =
+\bracket{\vec x}{e^{-(\op H - E_{\mathrm{T}})t}}{\Psi} =
+\int\bracket{\vec x}{e^{-(\op H - E_{\mathrm{T}})t}}{\vec x^\prime}
+\overlap{\vec x^\prime}{\Psi}d\vec x^\prime
+\edm
+where we have just inserted a completeness relation,
+$1=\int\projection{\vec x^\prime}{\vec x^\prime}\,d\vec x^\prime$.
+Defining the Green's function for this case
+\bdm
+G(\vec x,\vec x^\prime,t) \equiv
+\bracket{\vec x}{e^{-(\op H - E_{\mathrm{T}})t}}{\vec x^\prime} =
+\bracket{\vec x}{e^{-(\op K + \op V - E_{\mathrm{T}})t}}
+{\vec x^\prime}
+\edm
+we get:
+\be
+\Psi(\vec x, t) =
+\int G(\vec x,\vec x^\prime,t)\Psi(\vec x^\prime)d\vec x^\prime
+\label{eq:greens_function_propag}
+\ee
+Calculating the Green's function $G$ would be greatly simplified if we
+could split it into separate factors for each of the terms $\op K$ and
+$(\op V- E_\mathrm{T})$ of the Hamiltonian $\op H$, as with the
+following factorization
+\bdm
+e^{\op A + \op B} = e^{\op A}\,e^{\op B}
+\edm
+However, such a factorization requires that the operators $\op A$ and
+$\op B$ commute, $[A,B]=0$. Unfortunately, this is not the case for
+the terms $\op K$ and $\op V$ of the Hamiltonian. But, by expanding
+the exponential of each part, using a descendent of the so called
+Baker-Campbell-Hausdorff formula
+\bdm
+e^{\op A}e^{\op B}=e^{\op A+\op B}e^{\frac{1}{2}[\op A,\op B]}
+\edm
+we get that:
+\bdm
+e^{-(\op H-E_{\mathrm{T}})t} = e^{-(\op K+\op V-E_{\mathrm{T}})t} =
+e^{-\op K t}e^{-(\op V-E_{\mathrm{T}}) t} + \bigO(t^2)
+\edm
+It is also possible to make approximations to higher orders of $t$, but
+we will here keep to the simple first order case. As $t\to 0$, the error
+term disappears and the simple factorized form becomes exact. Thus, an
+approximation of the form
+\bdm
+e^{-(\op H-E_{\mathrm{T}})t}\approx
+e^{-\op K t}e^{-(\op V-E_{\mathrm{T}}) t}
+\edm
+is only good for small $t$ and is readily called a \emph{short time
+  approximation}. The Green's function can by this be approximated as
+follows
+\beaN
+G(\vec x,\vec x^\prime,t) &=&
+\bracket{\vec x}{e^{-(\op H-E_{\mathrm{T}})t}}{\vec x^\prime}\\
+&=&
+\bracket{\vec x}{e^{-\op K t}\,e^{-(\op V-E_{\mathrm{T}}) t}}
+{\vec x^\prime} + \bigO(t^2)\\
+&=&
+\int\bracket{\vec x}{e^{-\op K t}}{\vec x^{\prime\prime}}\,
+\bracket{\vec x^{\prime\prime}}{e^{-(\op V-E_{\mathrm{T}}) t}}
+{\vec x^\prime}\,d\vec x^{\prime\prime} + \bigO(t^2)\\
+&=&
+\int G_K(\vec x,\vec x^{\prime\prime},t)\,
+G_V(\vec x^{\prime\prime},\vec x^\prime,t)
+\,d\vec x^{\prime\prime} + \bigO(t^2)
+\eeaN
+For the kinetic energy part, $G_K$, we get
+\beaN
+G_K(\vec x,\vec x^{\prime\prime},t) &=&
+\bracket{\vec x}{e^{-\op K t}}{\vec x^{\prime\prime}}\\
+&=&
+\frac{1}{(2\pi)^{3N}}\int
+\overlap{\vec x}{\vec k}e^{-Dk^2t}
+\overlap{\vec k}{\vec x^{\prime\prime}}\,d\vec k\\
+&=&
+\frac{1}{(2\pi)^{3N}}\int
+e^{-i\vec k\vec x}e^{-Dk^2t}
+e^{i\vec k\vec x^{\prime\prime}}\,d\vec k\\
+&=&
+\frac{1}{(4\pi Dt)^{3N/2}}\,
+e^{-(\vec x^{\prime\prime}-\vec x)^2/4Dt}
+\eeaN
+The constant $D$ is still the same diffusion constant in
+Eq.~(\ref{eq:diffusion_constant}). The part related to the potential,
+$G_V$, is simpler, since it contains a local operator only dependent
+on $\vec x$
+\bdm
+G_V(\vec x^{\prime\prime},\vec x^\prime,t) =
+e^{-(V(\vec x^\prime)-E_{\mathrm{T}})t}
+\delta(\vec x^\prime-\vec x^{\prime\prime})
+\edm
+Putting these two parts together and carrying out the integral over
+$\vec x^{\prime\prime}$ is simplified by the delta function of
+$G_V$. Ignoring the normalization constant of $G_K$ we get
+\be
+G(\vec x,\vec x^\prime,t) =
+e^{-(\vec x^\prime-\vec x)^2/4Dt}\,
+e^{(E_\mathrm{T}-V(\vec x^\prime))t}+\bigO(t^2)
+\label{eq:greens_func_short_time}
+\ee
+
+At this point, the GFMC method would pursue the problem by explicitly
+evaluating the Green's function integral of
+Eq.~(\ref{eq:greens_function_propag}) with a suitable
+approximation. We, on the other hand, are now ready to interpret the
+diffusion process controlled by
+Eq.~(\ref{eq:SE_imaginary_time_expanded}) in terms of the short time
+approximated Green's function. Our wave function $\Psi(\vec x)$ is
+represented by a set of random walkers, so the integral over $G(\vec
+x,\vec x^\prime,t)\Psi(\vec x^\prime)$ expresses the probability of a
+walker ending up at $\vec x$ given the initial configuration of
+walkers $\Psi(\vec x^\prime)$.  Calculating the integral corresponds
+to one iteration of the DMC algorithm (to be described in detail later
+on). Operationally this has a different effect for each of the two
+exponential factors of $G$.
+
+The first factor expresses the probability for a walker to move from
+position $\vec x$ to $\vec x^\prime$. Since this clearly is just a
+Gaussian of $\vec x$ around $\vec x^\prime$, we can simply generate
+new positions as a simple diffusion process
+\bdm
+\vec x = \vec x^\prime + \chi
+\edm
+where $\chi$ is a Gaussian pseudo-random number with mean equal zero
+and variance equal $2Dt$. The second factor, the branching term, is
+only dependent on $\vec x^\prime$ and can be interpreted as the rate
+of growth of random walkers at each position $\vec x^\prime$. The
+short time approximation permits us to conduct the two processes,
+diffusion and branching separately, as long as the time step $t$ is
+kept small.
+
+Even though this approach, after a large enough number of iterations,
+should yield a distribution of walkers corresponding to the exact
+ground state of $\op H$, the method is not efficient. In particular, a
+serious problem arises when our system is governed by an unbounded
+potential, like a Coulomb potential typical for interactions between
+electrons or a parametrized nucleon-nucleon central potential 
+with a hard central core. The branching
+exponential may diverge giving a huge production of new random walkers
+that may be difficult to handle numerically. Also the fluctuations
+become very large making statistical estimates of physical quantities
+inaccurate.
+
+Another problem is that there is actually no simple way of calculating
+a mean energy estimate from the set of walkers alone. The mean energy
+is not only the most essential result of the algorithm, we also need
+it to be able to adjust the trial energy $E_\mathrm{T}$ dynamically
+throughout the DMC calculation.
+
+For these reasons, and others that will become apparent, we introduce
+so called importance sampling by biasing the combined
+branching-diffusion process with a trial wave function
+$\Psi_\mathrm{T}$ which hopefully imitates the exact solution well.
+The technical contents of this will be made clear shortly.
+
+
+\subsection{Importance Sampling}
+
+Let us
+introduce a time independent trial wave function $\Psi_\mathrm{T}(\vec
+x)$. We define the new quantity
+\bdm
+f(\vec x, t) \equiv \Psi_\mathrm{T}(\vec x)\,\Psi(\vec x, t)
+\edm
+Now by inserting $\Psi=f/\Psi_\mathrm{T}$ into
+Eq.~(\ref{eq:SE_imaginary_time_expanded}) we get a slightly more
+complicated equation in terms of $f(\vec x,t)$
+\be
+\frac{\partial f(\vec x, t)}{\partial t} =
+D\nabla^2 f(\vec x, t)-D\vec\nabla(\vec F(\vec x)f(\vec x, t))-
+(E_{\mathrm{L}}(\vec x)-E_{\mathrm{T}})f(\vec x, t)
+\label{eq:SE_imaginary_time_expanded_imp}
+\ee
+with the constant $D$ defined as in
+Eq.~(\ref{eq:diffusion_constant}). Notice that the
+rhs.~consists of three terms. By the same line of thought as before
+we now recognize the first term as the familiar diffusion term, acting
+on $f$ instead of $\Psi$. The last term, similar in form to the
+potential term, is our new branching term, also acting on $f$. The
+quantity $E_\mathrm{L}(\vec x)$ is just the local energy with respect
+to $\Psi_{\mathrm{T}}$, defined in the same manner as in the variational Monte Carlo procedure
+\bdm
+E_{\mathrm{L}} \equiv
+\frac{1}{\Psi_\mathrm{T}}\op H\Psi_\mathrm{T}
+\edm
+The vector quantity $\vec F(\vec x)$ in the unfamiliar middle term is
+the drift velocity as we know it from the Fokker-Planck formalism we
+used to improve the Metropolis algorithm
+\be
+\vec F(\vec x)\equiv
+\frac{2}{\Psi_\mathrm{T}}\vec\nabla\Psi_\mathrm{T}
+\label{eq:drift_velocity_DMC}
+\ee
+Actually, the two first terms on the rhs.~of
+Eq.~(\ref{eq:SE_imaginary_time_expanded_imp}) can equivalently be
+expressed as the familiar Fokker-Planck drift-diffusion on the rhs.~of
+Eq.~(\ref{eq:fokker-planck}).
+
+Eq.~(\ref{eq:SE_imaginary_time_expanded_imp}) motivates us to let the
+set of random walkers represent $f$ instead of $\Psi$. A typical first
+order short time approximation of the corresponding Green's function
+is
+\bea
+G(\vec x,\vec x^\prime,t) &=&
+\frac{1}{(4\pi Dt)^{3N/2}}\,
+e^{-(\vec x-\vec x^\prime-Dt\vec F(\vec x^\prime))^2/4Dt}\,\,
+e^{-((E_\mathrm{L}(\vec x)+E_\mathrm{L}(\vec
+  x^\prime))/2-E_\mathrm{T})t}\nonumber\\&+&
+\vphantom{\frac{1}{1}}\bigO(t^2)
+\label{eq:greens_func_short_time_imp}
+\eea
+We see that the Green's function above
+consists of two factors. The first one is similar to the Gaussian in
+Eq.~(\ref{eq:greens_func_short_time}). But now we have in addition a
+drift term displacing the mean of the Gaussian by $Dt\vec F(\vec
+x^\prime)$. Notice that this factor of the Green's function is
+practically identical to the transition proposition rule introduced by
+the Fokker-Planck formalism to improve the Metropolis algorithm
+(see Eq.~(\ref{eq:omega_drift_diffusion})). We can therefore use the same
+drift-diffusion formalism for the first factor in the above Green's
+function. Recall that if a walker is initially at position $\vec
+x^\prime$, the new position $\vec x$ is calculated as follows (see
+Eq.~(\ref{eq:drift_diffusion_proposition}))
+\be
+\vec x = \vec x^\prime + \chi +
+D\vec F(\vec x^\prime) t
+\label{eq:drift_diffusion_prop_DMC}
+\ee
+where $\chi$ is again a Gaussian pseudo-random number with mean equal
+zero and variance equal $2Dt$ while $D\vec F(\vec x^\prime) t$ gives a
+drift in the direction that $\Psi_\mathrm{T}$ increases. The size of the time step
+$t$ biased the final outcome of the Fokker-Planck algorithm of the
+drifted diffusion. A desirable diffusion was reached only as $t\to 0$
+for each iteration. Also in the present application to DMC, this bias
+must be taken into account. In the Metropolis algorithm, the
+rejection mechanism took care of it. So we may use the same approach
+here. After calculating a new position with
+Eq.~(\ref{eq:drift_diffusion_prop_DMC}), we accept it according to the
+acceptance matrix
+\be
+  A(\vec x ,\, \vec x^\prime,\, t) = 
+  \textrm{min}\left[1\textrm{, }
+  \frac{G_K(\vec x^\prime, \vec x)}
+  {G_K(\vec x, \vec x^\prime)}
+  \frac{|\Psi_\mathrm{T}(\vec x)|^2}
+       {|\Psi_\mathrm{T}(\vec x^\prime)|^2}\right]
+  \label{eq:acceptance_DMC}
+\ee
+where $G_K$ is the kinetic part of the Green's function, the part
+related to the diffusion process. If we do not wish to do such a
+Metropolis test, we may alternatively conduct separate calculations
+for a set of different time steps $t$ and extrapolate the results to
+$t=0$.
+
+The second factor of Eq.~(\ref{eq:greens_func_short_time_imp}) plays
+the same role as the branching term of
+Eq.~(\ref{eq:greens_func_short_time}). But the potential $V$ is
+replaced by an expression dependent on the local energy,
+\bdm
+\frac{E_\mathrm{L}(\vec x)+E_\mathrm{L}(\vec x^\prime)}{2}-
+E_\mathrm{T}
+\edm
+
+The new branching term gives a greatly reduced branching effect
+compared to the one in Eq.~(\ref{eq:greens_func_short_time}).
+Particularly, in the limit of $\Psi_\mathrm{T} = \phi_0$ and
+$E_\mathrm{T}=\epsilon_0$ (exactly equal the ground state of $\op H$),
+the local energy is constant, giving equal branching everywhere, or in
+effect, no branching at all. Thus we can in general expect the number
+of walkers to fluctuate less and we certainly avoid uncontrollable
+growth. In addition, the branching favors the areas of the
+configuration space that give the lowest local energy, i.e.~the local
+energy closest to the true ground state energy. Furthermore, the drifted
+diffusion pushes the walkers towards the desirable areas. Thus the
+whole DMC process is conducted more efficiently.
+
+Finally, the introduction of the trial wave function $\Psi_\mathrm{T}$
+makes it possible to evaluate an estimate of the mean energy given the
+distribution of the walkers. Instead of calculating the typical mean
+energy
+\bdm
+\frac{\int\Psi^\ast\op H\Psi d\vec x}
+{\int\Psi^\ast\Psi d\vec x}
+\edm
+we calculate the so called \emph{mixed estimator}
+\be
+\mean{E}_\mathrm{mixed} = 
+\frac{\int\Psi_\mathrm{T}\op H\Psi d\vec x}
+{\int\Psi_\mathrm{T}\Psi d\vec x}
+\label{eq:mixed_estim}
+\ee
+As the DMC method approaches the exact result $\Psi=\phi_0$, the mixed
+estimator becomes
+\bdm
+\mean{E}_\mathrm{mixed} =
+\frac{\int\Psi_\mathrm{T}\,\epsilon_0\,\Psi d\vec x}
+{\int\Psi_\mathrm{T}\Psi d\vec x} =
+\frac{\epsilon_0\int\Psi_\mathrm{T}\Psi d\vec x}
+{\int\Psi_\mathrm{T}\Psi d\vec x} =
+\epsilon_0
+\edm
+so that the estimate indeed becomes correct.  Because of the
+hermiticity of $\op H$ we can rewrite the mixed estimator of
+Eq.~(\ref{eq:mixed_estim}) as follows
+\be
+\mean{E}_\mathrm{mixed} = 
+\frac{\int\Psi\op H\Psi_\mathrm{T} d\vec x}
+{\int\Psi_\mathrm{T}\Psi d\vec x} =
+\frac{\int\Psi_\mathrm{T}\Psi\,\frac{1}{\Psi_\mathrm{T}}
+\op H\Psi_\mathrm{T}\,d\vec x}
+{\int\Psi_\mathrm{T}\Psi d\vec x}=
+\frac{\int E_\mathrm{L}f(\vec x) d\vec x}
+{\int f(\vec x) d\vec x}
+\label{eq:mixed_estim_Elocal}
+\ee
+Since the walkers represent $f$ we just need to average the local
+energy $E_\mathrm{L}$ over the set of walkers.
+
+This energy estimator allows us to calculate relatively easily the mean
+energy on the distribution of walkers so that we can update the trial
+energy $E_{\mathrm{T}}$ dynamically as the algorithm proceeds. As
+the trial energy gets better and better, the algorithm will hopefully
+stabilize on the exact result within the limits of statistical
+fluctuations imposed by the local energy and our choice of
+$\Psi_\mathrm{T}$.
+
+As we know, a good choice of $\Psi_\mathrm{T}$ reduces the
+fluctuations of the local energy $E_\mathrm{L}$. Now we see that this
+also makes the estimation of the mean energy
+in Eq.~(\ref{eq:mixed_estim_Elocal}) more efficient since the same
+number of points (walkers) gives a smaller variance, thus pinpointing
+the energy more exactly.
+
+Importance sampling makes it also to some extent easier to deal with
+wave functions that are not positive definite, like fermionic states
+whose wave function have nodes. What happens is that the nodes of the
+function $f$ are tied by the nodes of the trial wave function
+$\Psi_\mathrm{T}$. Therefore it is necessary for $\Psi_\mathrm{T}$ to
+have a node configuration that best reproduces the physical properties
+of the exact wave function. Operationally, the node surfaces of
+$\Psi_\mathrm{T}$ become impenetrable walls to the walkers in the
+sense that the drift velocity $\vec F$ in the vicinity of such a
+surface increases in a direction away from it pushing any walker away,
+preventing it from crossing the nodal surfaces of $\Psi_\mathrm{T}$.
+The approach is called a \emph{fixed node approximation}.
+
+From all these deliberations on importance sampling we should by now
+understand the importance of the trial wave function being as close to
+the exact solution as possible. We therefore rely heavily on simpler
+methods like VMC that do not necessarily solve the problem exactly,
+but are easier to handle computationally and are much less sensitive
+to initial conditions.
+
+
+%\subsection{A Summary of the Algorithm}
+%In preparation for spring 2010.
+
+\section{Bose-Einstein Condensation in Atoms}
+
+ 
+
+
+ The spectacular demonstration of Bose-Einstein condensation (BEC) in gases of
+ alkali atoms $^{87}$Rb, $^{23}$Na, $^7$Li confined in magnetic
+ traps \cite{anderson95,davis95,bradley95} has led to an explosion of interest in
+ confined Bose systems. Of interest is the fraction of condensed atoms, the
+ nature of the condensate, the excitations above the condensate, the atomic
+ density in the trap as a function of Temperature and the critical temperature of BEC,
+ $T_c$. The extensive progress made up to early 1999 is reviewed by Dalfovo et
+ al.\cite{dalfovo1999}.
+
+ A key feature of the trapped alkali and atomic hydrogen systems is that they are
+ dilute. The characteristic dimensions of a typical trap for $^{87}$Rb is
+ $a_{h0}=\left( {\hbar}/{m\omega_\perp}\right)^\frac{1}{2}=1-2 \times 10^4$
+ \AA\ (Ref.~\cite{anderson95}). The interaction between $^{87}$Rb atoms can be well represented
+ by its s-wave scattering length, $a_{Rb}$. This scattering length lies in the
+ range $85 < a_{Rb} < 140 a_0$ where $a_0 = 0.5292$ \AA\ is the Bohr radius.
+ The definite value $a_{Rb} = 100 a_0$ is usually selected and
+ for calculations the definite ratio of atom size to trap size 
+ $a_{Rb}/a_{h0} = 4.33 \times 10^{-3}$ 
+ is usually chosen \cite{dalfovo1999}. A typical $^{87}$Rb atom
+ density in the trap is $n \simeq 10^{12}- 10^{14}$ atoms/cm$^3$ giving an
+ inter-atom spacing $\ell \simeq 10^4$ \AA. Thus the effective atom size is small
+ compared to both the trap size and the inter-atom spacing, the condition
+ for diluteness ($na^3_{Rb} \simeq 10^{-6}$ where $n = N/V$ is the number
+ density). In this limit,
+ although the interaction is important, dilute gas approximations such as the
+ Bogoliubov theory \cite{bogo1958}, valid for small $na^3$ and large
+ condensate fraction $n_0 = N_0/N$, describe the system well. Also, since most
+ of the atoms are in the condensate (except near $T_c$), the Gross-Pitaevskii
+ equation \cite{gross1961,pita1961} 
+for the condensate describes the whole gas
+ well. Effects of atoms excited above the condensate have been incorporated
+ within the Popov approximation \cite{hutchinson97}. 
+
+
+
+Most theoretical studies of Bose-Einstein condensates (BEC)
+in gases of alkali atoms confined in magnetic or optical traps 
+have been conducted in the framework of the 
+Gross-Pitaevskii (GP) equation \cite{gross1961,pita1961}. 
+The key point for the validity of this description is the
+dilute condition of these systems, i.e., the average distance between
+the atoms is much larger than the range of the inter-atomic interaction. In
+this situation the physics is dominated by two-body collisions,
+well described in terms of the $s$-wave scattering length
+$a$.  The crucial parameter defining the condition for diluteness is the
+gas parameter $x({\bf r})= n({\bf r}) a^3$, where $n({\bf r})$ is the
+local density of the system. For low values of the average gas
+parameter $x_{av}\le 10^{-3}$, the mean field Gross-Pitaevskii
+equation does an excellent job (see for example 
+Ref.~\cite{dalfovo1999} for a review). 
+However, in recent
+experiments, the local gas parameter may well exceed this value due to
+the possibility of tuning the scattering length in the presence of a  
+Feshbach resonance \cite{cornish00}. 
+
+Under such circumstances it is unavoidable to test the accuracy of
+the GP equation by performing microscopic calculations. If we consider cases
+where the gas parameter has been driven to a region were one
+can still have a universal regime, i.e., that the specific shape of
+the potential is unimportant, we may attempt to describe the system as dilute
+hard spheres whose diameter coincides with the scattering length.
+However, the value of $x$ is such that the
+calculation of the energy of the uniform hard-sphere Bose gas would
+require to take into account the second term in the low-density
+expansion \cite{fetter} of the energy density
+\begin{equation}
+  \frac {E}{V} = \frac {2 \pi n^2 a \hbar^2}{m}
+  \left [ 1 + \frac {128}{15} \left ( \frac {n a^3}{\pi} \right)^{1/2}
+          + \cdots \right ],
+\label{low-ex}
+\end{equation}
+where $m$ is the mass of the atoms treated as hard spheres.
+For the case of uniform systems, the validity of this expansion has been 
+carefully studied using Diffusion Monte Carlo \cite{boro99} and
+Hyper-Netted-Chain techniques \cite{mazz03}.
+
+The energy functional associated with the GP theory is obtained
+within the framework of  the local-density approximation (LDA) 
+by keeping only the first
+term in the low-density expansion of Eq.~(\ref{low-ex})
+
+\begin{equation}
+  E_{\mathrm{GP}} [\Psi] = \int d{\bf r} \left [ \frac {\hbar^2 }{2m} \mid \nabla
+  \Psi({\bf r}) \mid^2 + V_{\mathrm{trap}}({\bf r})\mid \Psi \mid ^2+ \frac {2 \pi
+  \hbar^2 a }{m}\mid \Psi \mid ^4 \right ],
+\label{func1}
+\end{equation}
+
+where 
+\begin{equation}
+  V_{\mathrm{trap}}({\bf r}) = \frac {1}{2} m (\omega_{\bot}^2 x^2 
+  + \omega_{\bot}^2 y^2 +\omega_{z}^2 z^2 ) 
+\label{trap}
+\end{equation}
+is the confining potential defined by the two angular frequencies
+$\omega_{\bot}$ and $\omega_{z}$.
+The condensate 
+wave function $\Psi$ is
+normalized to the total number of particles. 
+
+By performing a functional variation of $E_{\mathrm{GP}}[\Psi]$ with respect
+to $\Psi^*$ one finds the corresponding Euler-Lagrange equation, 
+known as the Gross-Pitaevskii (GP) equation
+\begin{equation}
+  \left [ - \frac {\hbar^2}{2m} \nabla^2 + V_{\mathrm{trap}}({\bf r}) + 
+   \frac{4\pi\hbar^2 a}{m} \mid \Psi \mid^2 \right ]\Psi=\mu\Psi , 
+\label{gp1} 
+\end{equation}
+where $\mu$ is the chemical potential, which accounts for the conservation
+of the number of particles. Within the 
+LDA framework, the next step 
+is to include into the energy functional of Eq.~(\ref{func1})
+the next term of the low density expansion of Eq.~(\ref{low-ex}). 
+The functional variation gives then rise to the so-called 
+modified GP equation (MGP) \cite{fabro99} 
+
+\begin{equation}
+  \left [ - \frac {\hbar^2}{2m} \nabla^2 + V_{\mathrm{trap}}({\bf r})+\frac {4 \pi \hbar^2 a}{m} \mid \Psi \mid^2 
+    \left (1 + \frac {32 a^{3/2}}{3 \pi^{1/2}} \mid \Psi\mid \right)
+    \right ] \Psi =  \mu \Psi .
+\label{gp2}
+\end{equation}
+
+The MGP corrections have been estimated in  Ref.~\cite{fabro99} in a cylindrical 
+condensate in the range of the scattering lengths and trap parameters
+from the first JILA experiments with Feshbach resonances. These experiments took 
+advantage of the  presence of a Feshbach resonance in the collision of two
+$^{85}$Rb atoms to tune their scattering length \cite{cornish00}.
+Fully microscopic calculations using  a hard-spheres interaction have
+also been performed in the framework of Variational and Diffusion Monte
+Carlo methods \cite{dubois2001,glyde2002,glyde2003,blume1}. 
+
+
+\section{Exercises}
+\begin{prob}
+%\subsection*{Project 17.1: Bose-Einstein condensation of atoms}
+
+
+
+
+ The aim of this project is to use the Variational Monte
+ Carlo (VMC) method and evaluate 
+ the ground state energy of
+ a trapped, hard sphere Bose gas for different numbers of particles
+ with a specific
+ trial wave function. See Ref.~\cite{abinitio} for a discussion of VMC.
+
+ This wave function is used 
+ to study the sensitivity of condensate and 
+ non-condensate properties to the hard sphere radius and the number 
+ of particles.
+ The trap we will use is  a spherical (S) or 
+ an elliptical (E) harmonic trap in three dimensions given by 
+  \begin{equation}
+ V_{ext}({\bf r}) = 
+ \Bigg\{
+ \begin{array}{ll}
+	 \frac{1}{2}m\omega_{ho}^2r^2 & (S)\\
+ \strut
+	 \frac{1}{2}m[\omega_{ho}^2(x^2+y^2) + \omega_z^2z^2] & (E)
+ \label{trap_eqn}
+ \end{array}
+ \end{equation}
+ where (S) stands for symmetric and 
+ \begin{equation}
+     H = \sum_i^N \left(
+	 \frac{-\hbar^2}{2m}
+	 { \bigtriangledown }_{i}^2 +
+	 V_{ext}({\bf{r}}_i)\right)  +
+	 \sum_{i<j}^{N} V_{int}({\bf{r}}_i,{\bf{r}}_j),
+ \end{equation}
+ as the two-body Hamiltonian of the system.
+ Here $\omega_{ho}^2$ defines the trap potential strength.  In the case of the
+ elliptical trap, $V_{ext}(x,y,z)$, $\omega_{ho}=\omega_{\perp}$ is the trap frequency
+ in the perpendicular or $xy$ plane and $\omega_z$ the frequency in the $z$
+ direction.
+ The mean square vibrational amplitude of a single boson at $T=0K$ in the 
+ trap (\ref{trap_eqn}) is $<x^2>=(\hbar/2m\omega_{ho})$ so that 
+ $a_{ho} \equiv (\hbar/m\omega_{ho})^{\frac{1}{2}}$ defines the 
+ characteristic length
+ of the trap.  The ratio of the frequencies is denoted 
+ $\lambda=\omega_z/\omega_{\perp}$ leading to a ratio of the
+ trap lengths
+ $(a_{\perp}/a_z)=(\omega_z/\omega_{\perp})^{\frac{1}{2}} = \sqrt{\lambda}$.
+
+ We represent the inter boson interaction by a pairwise, hard core potential
+ \begin{equation}
+ V_{int}(|{\bf r}_i-{\bf r}_j|) =  \Bigg\{
+ \begin{array}{ll}
+	 \infty & {|{\bf r}_i-{\bf r}_j|} \leq {a}\\
+	 0 & {|{\bf r}_i-{\bf r}_j|} > {a}
+ \end{array}
+ \end{equation}
+ where ${a}$ is the hard core diameter of the bosons.  Clearly, $V_{int}(|{\bf r}_i-{\bf r}_j|)$
+ is zero if the bosons are separated by a distance $|{\bf r}_i-{\bf r}_j|$ greater than $a$ but
+ infinite if they attempt to come within a distance $|{\bf r}_i-{\bf r}_j| \leq a$.
+
+ Our trial wave function for the ground state with $N$ atoms is given by
+ \be
+ \Psi_T({\bf R})=\Psi_T({\bf r}_1, {\bf r}_2, \dots {\bf r}_N,\alpha,\beta)=\prod_i g(\alpha,\beta,{\bf r}_i)\prod_{i<j}f(a,|{\bf r}_i-{\bf r}_j|),
+ \label{eq:trialwf}
+ \ee
+ where $\alpha$ and $\beta$ are variational parameters. The single-particle wave function is proportional
+ to the harmonic oscillator function for the ground state, i.e.,
+ \be
+    g(\alpha,\beta,{\bf r}_i)= \exp{[-\alpha(x_i^2+y_i^2+\beta z_i^2)]}.
+ \ee
+ For spherical traps we have $\beta = 1$ and for non-interacting bosons ($a=0$) we have
+ $\alpha = 1/2a_{ho}^2$.
+ The correlation wave function is 
+ \be
+    f(a,|{\bf r}_i-{\bf r}_j|)=\Bigg\{
+ \begin{array}{ll}
+	 0 & {|{\bf r}_i-{\bf r}_j|} \leq {a}\\
+	 (1-\frac{a}{|{\bf r}_i-{\bf r}_j|}) & {|{\bf r}_i-{\bf r}_j|} > {a}.
+ \end{array}
+ \ee  
+
+ \begin{enumerate}
+ \item[a)] Find analytic expressions for the local energy 
+ \be
+    E_L({\bf R})=\frac{1}{\Psi_T({\bf R})}H\Psi_T({\bf R}),
+    \label{eq:locale}
+ \ee
+ for the above 
+ trial wave function of Eq.~(\ref{eq:trialwf}).
+ Compute also the analytic expression for the drift force to be used in importance sampling
+ \be
+   F = \frac{2\nabla \Psi_T}{\Psi_T}.
+ \ee
+
+The tricky part is to find an analytic expressions for the derivative of the trial wave function 
+\[
+   \frac{1}{\Psi_T({\bf R})}\sum_i^{N}\nabla_i^2\Psi_T({\bf R}),
+\]
+for the above 
+trial wave function of Eq.~(\ref{eq:trialwf}).
+We rewrite 
+\[
+\Psi_T({\bf R})=\Psi_T({\bf r}_1, {\bf r}_2, \dots {\bf r}_N,\alpha,\beta)=\prod_i g(\alpha,\beta,{\bf r}_i)\prod_{i<j}f(a,|{\bf r}_i-{\bf r}_j|),
+\]
+as
+\[
+\Psi_T({\bf R})=\prod_i g(\alpha,\beta,{\bf r}_i)e^{\sum_{i<j}u(r_{ij})}
+\]
+where we have defined $r_{ij}=|{\bf r}_i-{\bf r}_j|$
+and 
+\[
+   f(r_{ij})= e^{\sum_{i<j}u(r_{ij})},
+\]
+and in our case 
+\[
+    g(\alpha,\beta,{\bf r}_i) = e^{-\alpha(x_i^2+y_i^2+z_i^2)}= \phi({\bf r}_i).
+\]
+
+The first derivative becomes
+\[
+  \nabla_k\Psi_T({\bf R}) = \nabla_k\phi({\bf r}_k)\left[\prod_{i\ne k}\phi({\bf r}_i)\right]e^{\sum_{i<j}u(r_{ij})}+ 
+\prod_i\phi({\bf r}_i)e^{\sum_{i<j}u(r_{ij})}\sum_{j\ne k}\nabla_k u(r_{ij})
+\]
+We leave it as an exercise for the reader to find the expression for the sceond derivative.
+The final expression is
+\[
+   \frac{1}{\Psi_T({\bf R})}\nabla_k^2\Psi_T({\bf R})=
+   \frac{\nabla_k^2\phi({\bf r}_k)}{\phi({\bf r}_k)}+
+\frac{\nabla_k\phi({\bf r}_k)}{\phi({\bf r}_k)}\left(\sum_{j\ne k}\frac{{\bf r}_k}{r_k}u'(r_{ij})\right)+
+\] 
+\[
+\sum_{ij\ne k}\frac{({\bf r}_k-{\bf r}_i)({\bf r}_k-{\bf r}_j)}{r_{ki}r_{kj}}u'(r_{ki})u'(r_{kj})+
+\sum_{j\ne k}\left( u''(r_{kj})+\frac{2}{r_{kj}}u'(r_{kj})\right)
+\]
+You need to get the analytic expression for this expression using the harmonic oscillator wave functions
+and the correlation term defined in the project.
+
+
+
+ \item[b)] Write a Variational Monte Carlo program which uses standard Metropolis sampling 
+ and compute the ground state energy 
+ of a spherical harmonic oscillator ($\beta = 1$) with no interaction.     
+ Use natural units and make an analysis of your calculations using both the analytic expression for the 
+ local energy and a numerical calculation of the kinetic energy using numerical derivation.
+ Compare the CPU time difference.  You should also  parallelize your code.
+ The only variational parameter is $\alpha$. Perform these calculations for $N=10$, 
+ $100$ and $500$ atoms. Compare your results with the exact answer. 
+
+ \item[c)] We turn now to the elliptic trap with a hard core interaction. 
+ We fix, as in Refs.~\cite{dubois2001,nilsen2005} $a/a_{ho}=0.0043$. Introduce lengths in units 
+ of $a_{ho}$, $r\rightarrow r/a_{ho}$ and energy in units of $\hbar\omega_{ho}$.
+ Show then that the original Hamiltonian can be rewritten as 
+ \be 
+    H=\sum_{i=1}^N\frac{1}{2}\left(-\nabla^2_i+x_i^2+y_i^2+\gamma^2z_i^2\right)+\sum_{i<j}V_{int}(|{\bf r}_i-{\bf r}_j|).
+ \ee
+ What is the expression for $\gamma$?
+ Choose the initial value for $\beta=\gamma = 2.82843$ and set up a VMC program
+ which computes the ground state energy using the trial wave function of Eq.~(\ref{eq:trialwf}). 
+ using only $\alpha$ as variational parameter.
+ Use standard Metropolis sampling and vary the parameter $\alpha$ in order to find a 
+ minimum. Perform the calculations for $N=10,50$ and $N=100$ and compare your results to those from the ideal case in the previous exercise. 
+In actual calculations employing e.g., the Metropolis algorithm,
+all moves are recast into the chosen simulation cell with 
+periodic boundary conditions. To carry out consistently the Metropolis moves,
+it has to be assumed that the correlation function has a range shorter than
+$L/2$. Then, to decide if a move of a single particle is accepted or not,
+only the set of particles contained in a sphere of radius $L/2$ centered at the
+referred particle have to be considered. 
+
+\item[d)] We repeat exercise c), but now we replace the brute force Metropolis algorithm with 
+importance sampling based on the Fokker-Planck and the Langevin equations. 
+Discuss your results and comment on eventual differences between importance sampling and brute force sampling.
+
+Your code should reproduce the results of Refs.~\cite{dubois2001,nilsen2005}.
+
+\end{enumerate}
+
+\end{prob}
+
+
+
+
+ 

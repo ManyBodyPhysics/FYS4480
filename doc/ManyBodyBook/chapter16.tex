@@ -1,0 +1,918 @@
+\chapter{Improved Monte Carlo Approaches to Systems of Fermions}\label{chap:improvedvmc}
+\abstract{This chapter develops the equations and formalism that are necessary to
+study many-particle systems of fermions.  
+The crucial part of any variational or diffusion Monte Carlo code for many particles is the Metropolis evaluation
+of the ratios between wave functions and the computation of the local energy. In particular, we develop efficient ways of computing the ratios between Slater determinants}
+
+\section{Introduction} 
+For fermions we need to pay particular attention to the way we treat the Slater determinant. 
+The trial wave function, as discussed in chapter \ref{chap:mcvar}, 
+consists of separate factors that
+incorporate different mathematical properties of the total
+wave function. There are three types that will be of concern to us:
+The Slater determinant, the product state, and the correlation
+factor. The two first are direct functions of the spatial coordinates
+of the particles, while the last one typically depends on the relative distance
+between particles.
+
+
+The trial wave function plays a central role in quantum variational Monte Carlo simulations. Its importance lies in the fact that all the observables are computed with respect to the probability distribution function defined from the trial wave function. Moreover, it is needed in the Metropolis algorithm and in the evaluation of the quantum force term when importance sampling is applied. Computing a determinant of an $N \times N$ matrix by standard Gaussian elimination is of the order of ${\cal O}(N^3)$ calculations. As there are $N\cdot d$ independent coordinates we need to evaluate $Nd$ Slater determinants for the gradient (quantum force) and $N\cdot d$ for the Laplacian (kinetic energy). Therefore, it is imperative 
+to find alternative ways of computating quantities related to the trial wave function such that the computational perfomance can be improved.
+
+\section{Splitting the Slater Determinant}
+Following for example Ref.~\cite{needs1996}, assume that we wish to compute the expectation value of a spin-independent quantum mechanical operator $\OP{O}({\bf r})$ using the spin-dependent state $\Psi({\bf x})$, where ${\bf x} = ({\bf r}, {\bf \sigma})$ represents the space-spin coordinate par. Then,
+$$
+\Obs{O} = \frac{\langle\Psi({\bf x})|\OP{O}({\bf r})|\Psi({\bf x})\rangle}{\langle\Psi({\bf x})|\Psi({\bf x})\rangle}.
+$$
+If for each spin configuration ${\bf \sigma} = ({\bf \sigma_1}, \ldots, {\bf \sigma_N})$ we replace the total antisymmetric wave function by a version with permuted arguments arranged such that the first $N_{\uparrow}$ arguments are spin up and the rest $N_{\downarrow} = N - N_{\uparrow}$ are spin down we get
+\begin{eqnarray*}
+ \Psi({\bf x_1},\ldots,{\bf x_N}) & \rightarrow & \Psi({\bf x_{i1}},\ldots,{\bf x_{iN}})\\
+				  &    =        & \Psi(\{{\bf r_{i1}},\uparrow\},\ldots,\{{\bf r_{iN_{\uparrow}}}, \uparrow\},              		\{{\bf r_{iN_{\uparrow\!+1}}},\downarrow\},\ldots,\{{\bf r_{iN}}, \downarrow\})\\
+				  &    =        & \Psi(\{{\bf r_{1}},\uparrow\},\ldots,\{{\bf r_{N_{\uparrow}}}, \uparrow\},              		\{{\bf r_{1N_{\uparrow\!+ 1}}},\downarrow\},\ldots,\{{\bf r_{N}}, \downarrow\}).
+\end{eqnarray*}
+Because the operator $\OP{O}$ is symmetric with respect to the exchange of labels in a pair of particles, each spin configuration gives an identical contribution to the expectation value. Hence, 
+$$
+\Obs{O} = \frac{\langle\Psi({\bf r})|\OP{O}({\bf r})|\Psi({\bf r})\rangle}{\langle\Psi({\bf r})|\Psi({\bf r})\rangle}
+$$
+The new state is antisymmetric with respect to exchange of spatial coordinates of pairs of spin-up or spin-down electrons. Therefore, for spin-independent Hamiltonians, the Slater determinant can be splitted in a product of Slater determinants obtained from single particle orbitals with different spins. For electronic systems we get then
+$$
+\Psi_D = D_\uparrow D_\downarrow,
+$$
+where 
+\begin{equation}
+D_\uparrow = |{\bf D}({\bf r_1}, {\bf r_2},\ldots,{\bf r_{N/2}})|_{\uparrow} = 
+ \begin{vmatrix}
+ \phi_1({\bf r_1}) & \phi_2({\bf r_1}) & \cdots & \phi_{N/2}({\bf r_1})\\
+\phi_1({\bf r_2}) & \phi_2({\bf r_2}) & \cdots & \phi_{N/2}({\bf r_2})\\
+\vdots  & \vdots & \ddots & \vdots  \\
+\phi_1({\bf r_{N/2}}) & \phi_2({\bf r_{N/2}}) & \cdots & \phi_{N/2}({\bf r_{N/2}})  
+ \end{vmatrix}_{\uparrow}.
+\end{equation}
+In a similar way, $D_\downarrow = |{\bf D}({\bf r_{N/2+1}}, {\bf r_{N/2+2}},\ldots,{\bf r_{N}})|_{\downarrow}$. The normalization factor has been removed, since it cancels in the ratios needed by the variational Monte Carlo algorithm, as shown later. The new state $\Psi_D({\bf r})$ gives in this case the same expectation value as $\Psi({\bf x})$, but is more convenient in terms of computational cost.The Slater determinant  can now be factorized as
+
+\begin{equation}\label{detDetJas}
+ \boxed{\Psi_T({\bf x})  = D_\uparrow D_\downarrow \Psi_C.}
+\end{equation}
+
+
+\section{Computational Optimization of the Metropolis/Hasting Ratio}\label{psi_psi_ratio}
+
+In the Metropolis/Hasting algorithm, the \emph{acceptance ratio} determines the probability for a particle to be accepted at a new position. The ratio of the trial wave functions evaluated at the new and current positions is given by
+
+\begin{equation}\label{acceptanceRatio}
+\boxed{R \equiv \frac{\Psi_{T}^{new}}{\Psi_{T}^{cur}} = \underbrace{\frac{\Det{D}_{\uparrow}^{new}}{\Det{D}_{\uparrow}^{cur}} \frac{\Det{D}_{\downarrow}^{new}}{\Det{D}_{\downarrow}^{cur}}}_{R_{SD}}\, \underbrace{\frac{\Psi_{C}^{new}}{\Psi_{C}^{cur}}}_{R_{C}}.}
+\end{equation}
+
+
+\subsection{Evaluating the Determinant-determinant Ratio}
+
+Evaluating the determinant of an $N \times N$ matrix by Gaussian elimination takes of the order of $\mathcal{O}(N^3)$ operations, which is rather expensive for a many-particle quantum system. An alternative algorithm not 
+requiring the separated evaluation of the determinants will be derived in the following. We start by defining a Slater matrix ${\bf D} $ with its corresponding $(i,j)-$entries given by 
+\begin{equation}\label{indexform_SM}
+ D_{ij} \equiv \phi_j({\bf r_i}),
+\end{equation}
+where $\phi_j({\bf r_i})$ is the $j^{th}$ single particle wave function evaluated for the particle at position ${\bf r_i}$.\\
+\\
+\noindent
+The inverse of a (Slater) matrix is related to its adjoint (transpose matrix of cofactors) and its determinant by
+\begin{equation}\label{inverseDef}
+{\bf D^{-1}} = \frac{adj{{\bf D}}}{\Det{D}} \Rightarrow \Det{D} = \frac{adj{{\bf D}}}{{\bf D^{-1}}}, 
+\end{equation}
+or
+\begin{equation}\label{det_def}
+ \Det{D} = \sum_{j=1}^{N}\frac{C_{ji}}{D^{-1}_{ij}} = \sum_{j=1}^{N}D_{ij} C_{ji},
+\end{equation}
+i.e., the determinant of a matrix equals the scalar product of any column(row) of the matrix with the same column(row) of the matrix of cofactors.\\
+\\
+\noindent
+In the particular case when only one particle is moved at the time (say particle at position ${\bf r_i}$), this changes only one row (or column)\footnote{Some authors prefer to express the Slater matrix by placing the orbitals in a row wise order and the position of the particles in a column wise one.} of the Slater matrix. An efficient way of evaluating that ratio is as follows \cite{ceperley1977,abinitio}.\\
+\\
+\noindent
+We define the ratio of the new to the old determinants in terms of Eq.~(\ref{det_def}) such that
+$$R_{SD} \equiv \frac{|{\bf D}({\bf x^{new}})|}{|{\bf D}({\bf x^{cur}})|} = \frac{\sum_{j=1}^{N}D_{ij}({\bf x^{new}}) C_{ji}({\bf x^{new}})}{\sum_{j=1}^{N}D_{ij}({\bf x^{cur}}) C_{ji}({\bf x^{cur}})}.
+$$
+When the particle at position ${\bf r_i}$ is moved, the $i^{th}-$row of the matrix of cofactors remains unchanged, i.e., the row number $i$ of the cofactor matrix are independent of the entries in the rows of its corresponding matrix ${\bf D}$. Therefore, 
+$$C_{ij}({\bf x^{new}}) = C_{ij}({\bf x^{cur}}),$$
+and 
+\begin{equation}\label{Rratio}
+R_{SD} = \frac{\sum_{j=1}^{N}D_{ij}({\bf x^{new}}) C_{ji}({\bf x^{cur}})}{\sum_{j=1}^{N}D_{ij}({\bf x^{cur}}) C_{ji}({\bf x^{cur}})} =  \frac{\sum_{j=1}^{N}D_{ij}({\bf x^{new}}) D_{ji}^{-1}({\bf x^{cur}}) \Det{D}({\bf x^{cur}})}{\sum_{j=1}^{N}D_{ij}({\bf x^{cur}}) D_{ji}^{-1}({\bf x^{cur}}) \Det{D}({\bf x^{cur}})}.\end{equation}
+The invertibility of $\bfv D$ implies that 
+\begin{equation}\label{inverseSlaterMatrix}
+ \sum_{k}^{N} D_{ik} D^{-1}_{kj} = \delta_{ij}.
+\end{equation}
+Hence, the denominator in Eq.~(\ref{Rratio}) is equal to unity. Then, $$
+R_{SD} = \sum_{j=1}^{N}D_{ij}({\bf x^{new}}) D_{ji}^{-1}({\bf x^{cur}}).
+$$
+Substituting Eq.~(\ref{indexform_SM}) we arrive at
+\begin{equation}\label{RSD}
+ \boxed{R_{SD} = \sum_{j=1}^{N} \phi_j({\bf x^{new}_i}) D_{ji}^{-1}({\bf x^{cur}})}
+\end{equation}
+which means that determining $R_{SD}$ when only particle $i$ has been moved, requires only the evaluation of the dot product between a vector containing orbitals (evaluated at the new position) and all the entries in the $i^{th}$ column of the inverse Slater matrix (evaluated at the current position). This requires approximately $\mathcal{O}(N)$ operations.\\
+\\
+\noindent
+Further optimizations can be done by noting that when only one particle is moved at the time, one of the two determinants in the numerator and denominator of 
+Eq.~(\ref{acceptanceRatio}) is unaffected, cancelling each other. This allows us to 
+carry out calculations with only half of the total number of particles every time a move occurs, requiring only $(N/2)^d$ o\-pe\-ra\-tions, where $d$ is the number of spatial components of the problem, in systems with equal number of electrons with spin up and down. The total number of operations for a problem in three dimensions becomes $(N/2)^3 = N^3/8$, i.e., the total calculations are reduced up to by a factor of eight.
+
+
+\section{Optimizing the $\nabla \Psi_T / \Psi_T$ Ratio}\label{gradToDetRatio}
+%Equation (\ref{quantumForceEQ}) defines the quantum force required by the Metropolis algorithm with importance sampling. 
+Setting $\Psi_D = \Det{D}_{\uparrow} \Det{D}_{\downarrow}$ in Eq.~(\ref{detDetJas}) we get,
+\begin{eqnarray}
+\frac{\Grad \Psi}{\Psi} & = &\frac{\Grad (\Psi_{D} \, \Psi_{C})}{\Psi_{D} \, \Psi_{C}}  =  \frac{ \Psi_C \Grad \Psi_{D} + \Psi_{D} \Grad \Psi_{C}}{\Psi_{D} \Psi_{C}} = \frac{\Grad \Psi_{D}}{\Psi_{D}} + \frac{\Grad  \Psi_C}{ \Psi_C}\nonumber\\ & = & \frac{\Grad (\Det{D}_{\uparrow} \Det{D}_{\downarrow})}{\Det{D}_{\uparrow} \Det{D}_{\downarrow}} + \frac{\Grad  \Psi_C}{ \Psi_C}\nonumber,
+\end{eqnarray}
+or 
+\begin{equation}\label{grad_det_ratio_gen}
+\boxed{\frac{\Grad \Psi}{\Psi} =  \frac{\Grad (\Det{D}_{\uparrow}) }{\Det{D}_{\uparrow}} + \frac{\Grad (\Det{D}_{\downarrow})}{\Det{D}_{\downarrow}} + \frac{\Grad  \Psi_C}{ \Psi_C}.}
+\end{equation}
+
+
+\subsection{Evaluating the Gradient-determinant-to-determinant Ratio}
+The evaluation of Eq.~(\ref{grad_det_ratio_gen}) requires differentiating the $N$ entries of the Slater matrix with respect to all the $d$ spatial components. Since the evaluation of the Slater determinant scales as $\mathcal{O}(N^3)$ this would involve of the order of $N \cdot d \cdot \mathcal{O}(N^3) \approx \mathcal{O}(N^4)$ floating point operations. A cheaper algorithm can be derived by noting that when only one particle is moved at the time, 
+only one row in the Slater matrix needs to be evaluated again. Thus, only the derivatives of that row with respect to the coordinates of the particle moved need to be updated. Obtaining the gradient-determinant ratio required in Eq.~(\ref{grad_det_ratio_gen}) becomes straigforward. It is analogous to the procedure used in deriving Eq.~(\ref{acceptanceRatio}). From Eq.~(\ref{RSD}) and Eq.~(\ref{acceptanceRatio}) we see that
+\begin{equation}\label{gradDetRatioO}
+\boxed{\frac{{\bf \nabla_i}|{\bf D}({\bf x})|}{|{\bf D}({\bf x})|} = \sum_{j=1}^{N} {\bf \nabla_i} D_{ij}({\bf x}) D_{ji}^{-1}({\bf x}) = \sum_{j=1}^{N} {\bf \nabla_i}\phi_j({\bf x_i}) D_{ji}^{-1}({\bf x}),}
+\end{equation}
+which means that when one particle is moved at the time, the gradient-determinant ratio is given by the dot product between the gradient of the single-particle wave functions evaluated for the particle at position ${\bf r_i}$ and the inverse Slater matrix.
+A small modification has to be done when computing the gradient to determinant ratio after a move has been accepted. Denoting by ${\bf y}$ the vector containing the new spatial coordinates, by definition we get,
+$$
+\frac{{\bf \nabla_i}|{\bf D}({\bf y})|}{|{\bf D}({\bf y})|} = \sum_{j=1}^{N} {\bf \nabla_i} D_{ij}({\bf y}) D_{ji}^{-1}({\bf y}) = \sum_{j=1}^{N} {\bf \nabla_i}\phi_j({\bf y_i}) D_{ji}^{-1}({\bf y}),
+$$
+which can be expressed in terms of the transpose and inverse of the Slater matrix evaluated at the old positions\cite{abinitio} to get
+\begin{equation}\label{gradDetRatioN}
+\boxed{\frac{{\bf \nabla_i}|{\bf D}({\bf y})|}{|{\bf D}({\bf y})|} = \frac{1}{R} \sum_{j=1}^{N} {\bf \nabla_i}\phi_j({\bf y_i}) D_{ji}^{-1}({\bf x}).}
+\end{equation}
+Computing a single derivative is an $\mathcal{O}(N)$ operation. Since there are $dN$ derivatives, the total time scaling becomes $\mathcal{O}(dN^2)$.
+
+
+\section{Optimizing the $\nabla^2 \Psi_T/\Psi_T$ Ratio}\label{kineticEnergyTerm}
+From the single-particle kinetic energy operator, the expectation value of the kinetic energy expressed in atomic units for electron $i$ is 
+\begin{equation}
+ \langle \OP{K}_i \rangle = -\frac{1}{2}\frac{\langle\Psi|\nabla_{i}^2|\Psi \rangle}{\langle\Psi|\Psi \rangle},
+\end{equation}
+which is obtained by using Monte Carlo integration. The energy of each space con\-fi\-gu\-ra\-tion is cummulated after each Monte Carlo cycle. For each electron we evaluate
+\begin{equation}\label{kineticE}
+K_i = -\frac{1}{2}\frac{\nabla_{i}^{2} \Psi}{\Psi}.
+\end{equation}
+Following a procedure similar to that of section \ref{gradToDetRatio}, the term for the kinetic energy is obtained by
+\begin{eqnarray}
+\frac{\nabla^2 \Psi}{\Psi} & = & \frac{\nabla^2 ({\Psi_{D} \,  \Psi_C})}{\Psi_{D} \,  \Psi_C} = \frac{\Grad \cdot [\Grad {(\Psi_{D} \,  \Psi_C)}]}{\Psi_{D} \,  \Psi_C} = \frac{\Grad \cdot [ \Psi_C \Grad \Psi_{D} + \Psi_{D} \Grad  \Psi_C]}{\Psi_{D} \,  \Psi_C}\nonumber\\
+&  = & \frac{\Grad  \Psi_C \cdot \Grad \Psi_{D} +  \Psi_C \nabla^2 \Psi_{D} + \Grad \Psi_{D} \cdot \Grad  \Psi_C + \Psi_{D} \nabla^2  \Psi_C}{\Psi_{D} \,  \Psi_C}\nonumber\\
+\end{eqnarray}
+\begin{eqnarray}
+\frac{\nabla^2 \Psi}{\Psi}
+& = & \frac{\nabla^2 \Psi_{D}}{\Psi_{D}} + \frac{\nabla^2  \Psi_C}{ \Psi_C} + 2 \frac{\Grad \Psi_{D}}{\Psi_{D}}\cdot\frac{\Grad  \Psi_C}{ \Psi_C}\nonumber\\
+& = & \frac{\nabla^2 (\Det{D}_{\uparrow} \Det{D}_{\downarrow})}{(\Det{D}_{\uparrow} \Det{D}_{\downarrow})} + \frac{\nabla^2 \Psi_C}{\Psi_C} + 2 \frac{\Grad (\Det{D}_{\uparrow} \Det{D}_{\downarrow})}{(\Det{D}_{\uparrow} \Det{D}_{\downarrow})}\cdot\frac{\Grad \Psi_C}{\Psi_C},\nonumber
+\end{eqnarray}
+or 
+\begin{equation}\label{laplacian_psi_psi_ratio}
+\boxed{\frac{\nabla^2 \Psi}{\Psi} = \frac{\nabla^2 \Det{D}_{\uparrow}}{\Det{D}_{\uparrow}} + \frac{\nabla^2 \Det{D}_{\downarrow}}{\Det{D}_{\downarrow}} + \frac{\nabla^2 \Psi_C}{\Psi_C} + 2 \left[\frac{\Grad{\Det{D}_{\uparrow}}}{\Det{D}_{\uparrow}} +  \frac{\Grad{\Det{D}_{\downarrow}}}{\Det{D}_{\downarrow}}\right]\cdot \frac{\Grad{\Psi_C}}{\Psi_C},}
+\end{equation}
+where the \emph{laplace-determinant-to-determinant ratio} is given by 
+\begin{equation}\label{lapDetRatio}
+ \boxed{\frac{\nabla_{i}^{2}|{\bf D}({\bf x})|}{|{\bf D}({\bf x})|} = \sum_{j=1}^{N} \nabla_{i}^{2} D_{ij}({\bf x}) D_{ji}^{-1}({\bf x}) = \sum_{j=1}^{N} \nabla_{i}^{2}\phi_j({\bf x_i}) D_{ji}^{-1}({\bf x})}
+\end{equation}
+for particle at ${\bf x_i}$ as deduced from Eq.~(\ref{RSD}) and Eq.~(\ref{acceptanceRatio}). The comments given in section \ref{gradToDetRatio} on performance yields applies also to this case. Moreover, Eq.~(\ref{lapDetRatio}) is computed with the trial move only if it is accepted.
+
+
+\section{Updating the Inverse of the Slater Matrix}
+Computing the ratios in Eqs.~(\ref{RSD}), (\ref{gradDetRatioO}), (\ref{gradDetRatioN}) and (\ref{lapDetRatio}) requires that we maintain the inverse of the Slater matrix evaluated at the current position. Each time a trial position is accepted, the row number $i$ of the Slater matrix changes and updating its inverse has to be carried out. Getting the inverse of an $N \times N$ matrix by Gaussian elimination has a complexity of order of $\mathcal{O}(N^3)$ operations, a luxury that we 
+cannot afford for each time a particle move is accepted. An alternative way of updating the inverse of a matrix when only a row/column is changed was suggested by Sherman and Morris. %add ref here
+It has a time scaling of the order of  $\mathcal{O}(N^2)$ \cite{abinitio, needs1996, ceperley1977} and is given by
+\begin{eqnarray}\label{updatingInverse}
+\boxed{D^{-1}_{kj}({\bf x^{new}})  = \left\{ 
+\begin{array}{l l}
+  D^{-1}_{kj}({\bf x^{cur}}) - \frac{D^{-1}_{ki}({\bf x^{cur}})}{R} \sum_{l=1}^{N} D_{il}({\bf x^{new}})  D^{-1}_{lj}({\bf x^{cur}}) & \mbox{if $j \neq i$}\nonumber \\ \\
+ \frac{D^{-1}_{ki}({\bf x^{cur}})}{R} \sum_{l=1}^{N} D_{il}({\bf x^{cur}}) D^{-1}_{lj}({\bf x^{cur}}) & \mbox{if $j=i$}
+\end{array} \right.}\\
+\end{eqnarray}
+
+% % % % % % % % % % % % % % % % \begin{program}
+% % % % % % % % % % % % % % % % \caption{. \emph{Updating the inverse of the Slater matrix.}}
+% % % % % % % % % % % % % % % % \begin{algorithmic}%[1]
+% % % % % % % % % % % % % % % % \medskip
+% % % % % % % % % % % % % % % % 
+% % % % % % % % % % % % % % % % \REQUIRE $R_{SD}$, ${\bf D^{-1}}({\bf x^{cur}})$, ${\bf D}({\bf x^{new}})$
+% % % % % % % % % % % % % % % % \ENSURE ${\bf D^{-1}}({\bf x^{new}})$
+% % % % % % % % % % % % % % % % 
+% % % % % % % % % % % % % % % % \medskip
+% % % % % % % % % % % % % % % % 
+% % % % % % % % % % % % % % % %  \FOR{$j = 0$ to $N-1$}
+% % % % % % % % % % % % % % % %    \STATE{\COMMENT{\emph{Update all but the $i^{th}-$column of ${\bf D}^{-1}$.}}}
+% % % % % % % % % % % % % % % %    \IF{$j \neq i$}
+% % % % % % % % % % % % % % % %      \FOR{$l=0$ to $N-1$} 
+% % % % % % % % % % % % % % % %       \STATE{\COMMENT{For each column $j \neq i$ calculate the intermediate quantity $S_j$}}
+% % % % % % % % % % % % % % % %       \STATE{$S_j  \,+=\,  D_{il}({\bf x^{new}}) D_{lj}^{-1}({\bf x^{cur}})$}
+% % % % % % % % % % % % % % % %      \ENDFOR
+% % % % % % % % % % % % % % % %      
+% % % % % % % % % % % % % % % %      \FOR{$k=0$ to $N-1$}
+% % % % % % % % % % % % % % % %          \STATE{$D_{kj}^{-1}({\bf x^{new}}) = D_{kj}^{-1}({\bf x^{cur}}) - \frac{S_j}{R_{SD}} D_{ki}^{-1}({\bf x^{cur}})$}
+% % % % % % % % % % % % % % % %      \ENDFOR
+% % % % % % % % % % % % % % % %    \ENDIF
+% % % % % % % % % % % % % % % %    \IF{$j == i$}
+% % % % % % % % % % % % % % % %      \FOR{$k=0$ to $N-1$}
+% % % % % % % % % % % % % % % %        \STATE{$D_{ki}^{-1}({\bf x^{new}}) = \frac{1}{R_{SD}} D_{ki}^{-1}({\bf x^{cur}})$}
+% % % % % % % % % % % % % % % %      \ENDFOR
+% % % % % % % % % % % % % % % %    \ENDIF
+% % % % % % % % % % % % % % % % \ENDFOR
+% % % % % % % % % % % % % % % % \\
+% % % % % % % % % % % % % % % % \medskip
+% % % % % % % % % % % % % % % % ${\bf D^{-1}}{\bf x^{cur}} = {\bf D}({\bf x^{new}})$
+% % % % % % % % % % % % % % % % \end{algorithmic}\label{updatingMatrixAlgo}
+% % % % % % % % % % % % % % % % \end{program}
+The evaluation of the determinant of an $N \times N$ matrix by standard Gaussian elimination requires ${\cal O}(N^3)$
+calculations. As there are $Nd$ independent coordinates we need to evaluate $Nd$ Slater determinants for the gradient (quantum force) and $Nd$ for the Laplacian (kinetic energy). With the updating algorithm we need only to invert the Slater determinant matrix once. This can be done by the LU decomposition discussed in chapter \ref{chap:linalgebra}.\\
+\\
+\noindent
+Table \ref{performance} summarizes the computational cost associated with the Slater determinant part of the trial wave function.
+
+\begin{table}
+\centering
+\begin{tabular}{l*{6}{l}l}
+\hline
+Operation       & No optimization & With optimization\\
+\hline
+Evaluation of $R$    & $\mathcal{O}(N^2)$ & $\mathcal{O}\left(\frac{N^2}{2}\right)$\\
+Updating inverse& $\mathcal{O}(N^3)$ & $\mathcal{O}\left(\frac{N^3}{4}\right)$  \\
+Transition of one particle & $\mathcal{O}(N^2) +  \mathcal{O}(N^3)$ & $\mathcal{O}\left(\frac{N^2}{2}\right) + \mathcal{O}\left(\frac{N^3}{4}\right)$\\
+\hline
+\end{tabular}
+\caption{Comparison of the computational cost involved in the computation of  
+the Slater determinant with and without optimization.}
+\label{performance}
+\end{table}
+
+
+\section{Reducing the Computational Cost of the Correlation Form}\label{optimizingCorrelation}
+The total number of different relative distances $r_{ij}$ is $N(N-1)/2$. In a matrix storage format, the set forms a strictly upper triangular matrix\footnote{In the implementation, however, we do not store the entries lying on the diagonal.}
+\begin{equation}\label{utrij}
+ {\bf r} \equiv \begin{pmatrix}
+  0 & r_{1,2} & r_{1,3} & \cdots & r_{1,N} \\
+  \vdots & 0       & r_{2,3} & \cdots & r_{2,N} \\
+  \vdots & \vdots  & 0  & \ddots & \vdots  \\
+  \vdots & \vdots  & \vdots  & \ddots  & r_{N-1,N} \\
+  0 & 0  & 0  & \cdots  & 0
+ \end{pmatrix}.
+\end{equation}
+This applies to  ${\bf g} = {\bf g}(r_{ij})$ as well. 
+% % % % % % Hence, 
+% % % % % % \begin{equation}
+% % % % % %  g_{ij} \equiv g(r_{i,j}) = 
+% % % % % %  \begin{pmatrix}
+% % % % % %   0 & g(r_{1,2}) & g(r_{1,3}) & \cdots & g(r_{1,N}) \\
+% % % % % %   \vdots & 0       & g(r_{2,3}) & \cdots & g(r_{2,N}) \\
+% % % % % %   \vdots & \vdots  & 0  & \ddots & \vdots  \\
+% % % % % %   \vdots & \vdots  & \vdots  & \ddots  & g(r_{N-1,N}) \\
+% % % % % %   0 & 0  & 0  & \cdots  & 0 
+% % % % % %  \end{pmatrix}
+% % % % % % \end{equation}
+\section{Computing the Correlation-to-correlation Ratio}\label{jastrowJastrowDer}
+For the case where all particles are moved simlutaneously, all the $g_{ij}$ have to be reevaluated. The number of operations for getting $R_{C}$ scales as $\mathcal{O}(N^2)$. When moving only one particle at a time, say the $k$th, only $N-1$ of the distances $r_{ij}$ having $k$ as one of their indices are changed. It means that the rest of the factors in the numerator of the Jastrow ratio has a similar counterpart in the denominator and cancel each other. Therefore, only $N-1$ factors of $\Psi_{C}^\mathrm{new}$ and $\Psi_{C}^\mathrm{cur}$ avoid cancellation and 
+\begin{equation}\label{RjfRatio}
+ \boxed{R_{C} = \frac{\Psi_{C}^\mathrm{new}}{\Psi_{C}^\mathrm{cur}} =
+\prod_{i=1}^{k-1}\frac{g_{ik}^\mathrm{new}}{g_{ik}^\mathrm{cur}}\;
+\prod_{i=k+1}^{N}\frac{g_{ki}^\mathrm{new}}{g_{ki}^\mathrm{cur}}}.
+\end{equation}\label{padepadeRatio}
+For the Pad\'e-Jastrow form
+\begin{equation}
+ \boxed{R_{C} = \frac{\Psi_{C}^\mathrm{new}}{\Psi_{C}^\mathrm{cur}} = \frac{e^{U_{new}}}{e^{U_{cur}}} = e^{\Delta U},}
+\end{equation}
+where
+\begin{equation}
+\Delta U =
+\sum_{i=1}^{k-1}\big(f_{ik}^\mathrm{new}-f_{ik}^\mathrm{cur}\big)
++
+\sum_{i=k+1}^{N}\big(f_{ki}^\mathrm{new}-f_{ki}^\mathrm{cur}\big)
+\end{equation}
+
+One needs to develop a special algorithm 
+that iterates only through the elements of the upper triangular
+matrix ${\bf g}$ that have $k$ as an index. 
+
+\section{Evaluating the ${\bf \nabla} \Psi_C/\Psi_C$ Ratio}\label{gradJastrow}
+The expression to be derived in the following is of interest when computing the quantum force and the kinetic energy. It has the form
+$$
+\frac{{\bf {\nabla_i}}\Psi_C}{\Psi_C} = \frac{1}{\Psi_C}\frac{\partial \Psi_C}{\partial x_i},
+$$
+for all dimensions and with $i$ running over all particles.
+From the discussion in section \ref{jastrowJastrowDer}, for the first derivative only $N-1$ terms survive the ratio because the $g$-terms that are not differentiated cancel with their corresponding ones in the denominator. Then,
+\begin{equation}\label{1jgradG}
+\frac{1}{\Psi_C}\frac{\partial \Psi_C}{\partial x_k} =
+\sum_{i=1}^{k-1}\frac{1}{g_{ik}}\frac{\partial g_{ik}}{\partial x_k}
++
+\sum_{i=k+1}^{N}\frac{1}{g_{ki}}\frac{\partial g_{ki}}{\partial x_k}.
+\end{equation}
+An equivalent equation is obtained for the exponential form after replacing $g_{ij}$ by $\exp(g_{ij})$, yielding:
+\begin{equation}\label{1jgradEG}
+\frac{1}{\Psi_C}\frac{\partial \Psi_C}{\partial x_k} =
+\sum_{i=1}^{k-1}\frac{\partial g_{ik}}{\partial x_k}
++
+\sum_{i=k+1}^{N}\frac{\partial g_{ki}}{\partial x_k},
+\end{equation}
+with both expressions scaling as $\mathcal{O}(N)$.\\
+\\
+\noindent
+Later, using the identity 
+\begin{equation}\label{firstDerIdentity}
+\frac{\partial}{\partial x_i}g_{ij} = -\frac{\partial}{\partial x_j}g_{ij} 
+\end{equation}
+on the right hand side terms of Eq.~(\ref{1jgradG}) and Eq.~(\ref{1jgradEG}), we get expressions where all the derivatives act on the particle are represented by the
+\emph{second} index of $g$:
+\begin{equation}\label{gradJasGen}
+\boxed{
+\frac{1}{\Psi_C}\frac{\partial \Psi_C}{\partial x_k} =
+\sum_{i=1}^{k-1}\frac{1}{g_{ik}}\frac{\partial g_{ik}}{\partial x_k}
+-
+\sum_{i=k+1}^{N}\frac{1}{g_{ki}}\frac{\partial g_{ki}}{\partial x_i},
+}
+\end{equation}
+and for the exponential case:
+\begin{equation}\label{gradJasGenExp}
+\boxed{
+\frac{1}{\Psi_C}\frac{\partial \Psi_C}{\partial x_k} =
+\sum_{i=1}^{k-1}\frac{\partial g_{ik}}{\partial x_k}
+-
+\sum_{i=k+1}^{N}\frac{\partial g_{ki}}{\partial x_i}.
+}
+\end{equation}
+
+
+\subsection{Special Case: Correlation Functions Depending on the Relative Distance}
+For correlation forms depending only on the scalar distances $r_{ij}$, we note that
+\begin{equation}\label{chainRule}
+\frac{\partial g_{ij}}{\partial x_j} = \frac{\partial g_{ij}}{\partial r_{ij}} \frac{\partial r_{ij}}{\partial x_j} = \frac{x_j - x_i}{r_{ij}} \frac{\partial g_{ij}}{\partial r_{ij}},
+\end{equation}
+after substitution in Eq.~(\ref{gradJasGen}) and Eq.~(\ref{gradJasGenExp}) we arrive at
+\begin{equation}\label{generalCorrelation}
+\boxed{
+\frac{1}{\Psi_C}\frac{\partial \Psi_C}{\partial x_k} = 
+\sum_{i=1}^{k-1}\frac{1}{g_{ik}} \frac{{\bf r_{ik}}}{r_{ik}} \frac{\partial g_{ik}}{\partial r_{ik}}
+-
+\sum_{i=k+1}^{N}\frac{1}{g_{ki}}\frac{{\bf r_{ki}}}{r_{ki}}\frac{\partial g_{ki}}{\partial r_{ki}}.
+}
+\end{equation}
+Note that for the Pad\'e-Jastrow form we can set $g_{ij} \equiv g(r_{ij}) = e^{f(r_{ij})} = e^{f_{ij}}$ and 
+\begin{equation}
+\frac{\partial g_{ij}}{\partial r_{ij}} = g_{ij} \frac{\partial f_{ij}}{\partial r_{ij}}.
+\end{equation}
+Therefore, 
+\begin{equation}\label{padeJastrowGradJasRatio}
+\boxed{
+\frac{1}{\Psi_{PJ}}\frac{\partial \Psi_{PJ}}{\partial x_k} =
+\sum_{i=1}^{k-1}\frac{{\bf r_{ik}}}{r_{ik}}\frac{\partial f_{ik}}{\partial r_{ik}}
+-
+\sum_{i=k+1}^{N}\frac{{\bf r_{ki}}}{r_{ki}}\frac{\partial f_{ki}}{\partial r_{ki}},
+}
+\end{equation}
+where 
+\begin{equation}\label{distanceVector}
+ {\bf r}_{ij} = |{\bf r}_j - {\bf r}_i| = (x_j - x_i)\uvec{e}_1 + (y_j - y_i)\uvec{e}_2 + (z_j - z_i)\uvec{e}_3
+\end{equation}
+is the vectorial distance. When the correlation function is the \emph{linear Pad\'e-Jastrow}, we set \begin{equation}
+f_{ij} = \frac{a_{ij} r_{ij}}{(1 + \beta_{ij} r_{ij})},
+\end{equation}
+which yields the closed-form expression
+\begin{equation}\label{analyticalPJGrad}
+ \boxed{\frac{\partial f_{ij}}{\partial r_{ij}} = \frac{a_{ij}}{(1 + \beta_{ij} r_{ij})^2}}.
+\end{equation}
+
+
+
+\section{Computing the $\nabla^2 \Psi_C/\Psi_C$ Ratio}\label{lapCorOpt}
+
+For deriving this expression we note first that Eq.~(\ref{generalCorrelation}) can be written as 
+
+$${\bf \nabla}_k \Psi_C = 
+\sum_{i=1}^{k-1}\frac{1}{g_{ik}} {\bf \nabla}_k g_{ik}
++
+\sum_{i=k+1}^{N}\frac{1}{g_{ki}}{\bf \nabla}_k g_{ki}.$$
+After multiplying by $\Psi_C$ and taking the gradient on both sides we get,
+\begin{align}\label{gradLap}
+\nabla_{k}^2 \Psi_C & = {\bf \nabla}_k \Psi_C \cdot 
+\left(\sum_{i=1}^{k-1}\frac{1}{g_{ik}} {\bf \nabla}_k g_{ik}
++
+\sum_{i=k+1}^{N}\frac{1}{g_{ki}}{\bf \nabla}_k g_{ki}\right)\nonumber\\
+&+
+\Psi_C \nabla_k \cdot \left(\sum_{i=k+1}^{N}\frac{1}{g_{ki}}{\bf \nabla}_k g_{ki}
++
+\sum_{i=k+1}^{N}\frac{1}{g_{ki}}{\bf \nabla}_k g_{ki}\right)\nonumber\\
+& = \Psi_C \left(\frac{{\bf \nabla}_k \Psi_C}{\Psi_C}\right)^2 +
+\Psi_C \nabla_k \cdot \left(\sum_{i=k+1}^{N}\frac{1}{g_{ki}}{\bf \nabla}_k g_{ki}
++
+\sum_{i=k+1}^{N}\frac{1}{g_{ki}}{\bf \nabla}_k g_{ki}\right).
+\end{align}
+Now,
+\begin{align}
+ {\bf \nabla}_k \cdot \left(\frac{1}{g_{ik}}{\bf \nabla}_k g_{ik}\right) &= {\bf \nabla}_k \left(\frac{1}{g_{ik}}\right)\cdot {\bf \nabla}_k g_{ik} + \frac{1}{g_{ik}}{\bf \nabla}_k \cdot {\bf \nabla}_k g_{ik}\nonumber\\
+ & = -\frac{1}{g_{ik}^2} {\bf \nabla}_k g_{ik} \cdot {\bf \nabla}_k g_{ik} + \frac{1}{g_{ik}} {\bf \nabla}_k \cdot \left(\frac{{\bf r}_{ik}}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right)\nonumber\\
+ & = -\frac{1}{g_{ik}^2} ({\bf \nabla}_k g_{ik})^2 \nonumber\\&+ \frac{1}{g_{ik}}\left[{\bf \nabla}_k \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right)\cdot {\bf r}_{ik} + \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right) {\bf \nabla}_k \cdot {\bf r}_{ik}  \right] \nonumber\\
+ &= -\frac{1}{g_{ik}^2} \left(\frac{{\bf r}_{ik}}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right)^2\nonumber\\ &+ \frac{1}{g_{ik}}\left[{\bf \nabla}_k \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right)\cdot {\bf r}_{ik} + \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right) d  \right]\nonumber\\
+ &= -\frac{1}{g_{ik}^2} \left(\frac{\partial g_{ik}}{\partial r_{ik}}\right)^2\nonumber\\ &+ \frac{1}{g_{ik}}\left[{\bf \nabla}_k \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right)\cdot {\bf r}_{ik} + \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right) d  \right], \label{subs0}
+ \end{align}
+with $d$ being the number of spatial dimensions.
+
+Moreover, 
+\begin{align*}
+{\bf \nabla}_k \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right) &= \frac{{\bf r}_{ik}}{r_{ik}} \frac{\partial }{\partial r_{ik}} \left(\frac{1}{r_{ik}}\frac{\partial g_{ik}}{\partial r_{ik}}\right)\nonumber\\
+&=\frac{{\bf r}_{ik}}{r_{ik}}\left(-\frac{1}{r_{ik}^2}\frac{\partial g_{ik}}{\partial r_{ik}} + \frac{1}{r_{ik}}\frac{\partial^2 g_{ik}}{\partial r_{ik}^2}\right).\label{subs1}
+\end{align*}
+
+The substitution of the last result in Eq.~(\ref{subs0}) gives
+
+\begin{align*}
+  {\bf \nabla}_k \cdot \left(\frac{1}{g_{ik}}{\bf \nabla}_k g_{ik}\right) &= -\frac{1}{g_{ik}^2}\left(\frac{\partial g_{ik}}{\partial r_{ik}}\right)^2 + \frac{1}{g_{ik}}\left[\left(\frac{d-1}{r_{ik}}\right)\frac{\partial g_{ik}}{\partial r_{ik}} + \frac{\partial^2 g_{ik}}{\partial r_{ik}^2} \right].
+\end{align*}
+
+Inserting the last expression in Eq.~(\ref{gradLap}) and after division by $\Psi_C$ we get,
+
+\begin{align}
+ \frac{\nabla_{k}^2 \Psi_C}{\Psi_C} & =  \left(\frac{{\bf \nabla}_k \Psi_C}{\Psi_C}\right)^2 \nonumber\\
+ & + \sum_{i=1}^{k-1} -\frac{1}{g_{ik}^2}\left(\frac{\partial g_{ik}}{\partial r_{ik}}\right)^2 + \frac{1}{g_{ik}}\left[\left(\frac{d-1}{r_{ik}}\right)\frac{\partial g_{ik}}{\partial r_{ik}} + \frac{\partial^2 g_{ik}}{\partial r_{ik}^2} \right]\nonumber\\
+ & + \sum_{i=k+1}^{N} -\frac{1}{g_{ki}^2}\left(\frac{\partial g_{ki}}{\partial r_{ki}}\right)^2 + \frac{1}{g_{ki}}\left[\left(\frac{d-1}{r_{ki}}\right)\frac{\partial g_{ki}}{\partial r_{ki}} + \frac{\partial^2 g_{ki}}{\partial r_{ki}^2} \right].
+\end{align}
+For the exponential case we have
+\begin{align*}
+ \frac{\nabla_{k}^2 \Psi_{PJ}}{\Psi_{PJ}} & =  \left(\frac{{\bf \nabla}_k \Psi_{PJ}}{\Psi_{PJ}}\right)^2 \nonumber\\
+ & + \sum_{i=1}^{k-1} -\frac{1}{g_{ik}^2}\left(g_{ik}\frac{\partial f_{ik}}{\partial r_{ik}}\right)^2 + \frac{1}{g_{ik}}\left[\left(\frac{d-1}{r_{ik}}\right)g_{ik}\frac{\partial f_{ik}}{\partial r_{ik}} + \frac{\partial }{\partial r_{ik}}\left(g_{ik}\frac{\partial f_{ik}}{\partial r_{ik}}\right) \right]\nonumber\\
+ & + \sum_{i=k+1}^{N} -\frac{1}{g_{ki}^2}\left(g_{ik}\frac{\partial f_{ki}}{\partial r_{ki}}\right)^2 + \frac{1}{g_{ki}}\left[\left(\frac{d-1}{r_{ki}}\right)g_{ki}\frac{\partial f_{ki}}{\partial r_{ki}} + \frac{\partial }{\partial r_{ki}}\left(g_{ki}\frac{\partial f_{ki}}{\partial r_{ki}}\right) \right].
+ \end{align*}
+Using
+\begin{align*}
+ \frac{\partial }{\partial r_{ik}}\left(g_{ik}\frac{\partial f_{ik}}{\partial r_{ik}}\right) & = \frac{\partial g_{ik}}{\partial r_{ik}}\frac{\partial f_{ik}}{\partial r_{ik}} + g_{ik}\frac{\partial^2 f_{ik}}{\partial r_{ik}^2}\\
+ & = g_{ik}\frac{\partial f_{ik}}{\partial r_{ik}}\frac{\partial f_{ik}}{\partial r_{ik}} + g_{ik}\frac{\partial^2 f_{ik}}{\partial r_{ik}^2}\\
+ & = g_{ik}\left(\frac{\partial f_{ik}}{\partial r_{ik}}\right)^2 + g_{ik}\frac{\partial^2 f_{ik}}{\partial r_{ik}^2}
+\end{align*}
+and substituting this result into the equation above gives rise to the final expression,
+\begin{align}\label{lapJasRatio}
+\frac{\nabla_{k}^2 \Psi_{PJ}}{\Psi_{PJ}}  &=  \left(\frac{{\bf \nabla}_k \Psi_{PJ}}{\Psi_{PJ}}\right)^2\nonumber\\
+  &+ \sum_{i=1}^{k-1} \left[\left(\frac{d-1}{r_{ik}}\right)\frac{\partial f_{ik}}{\partial r_{ik}} + \frac{\partial^2  f_{ik}}{\partial r_{ik}^2} \right]
+  + \sum_{i=k+1}^{N} \left[\left(\frac{d-1}{r_{ki}}\right)\frac{\partial f_{ki}}{\partial r_{ki}} + \frac{\partial^2 f_{ki}}{\partial r_{ki}^2} \right].
+ \end{align}
+
+Again, for the \emph{linear Pad\'e-Jastrow}, we get in this case the closed-form result
+\begin{equation}\label{analyticalLinearPJLap}
+\boxed{\frac{\partial^2 f_{ij}}{\partial r_{ij}^2} = - \frac{2 a_{ij} \beta_{ij} }{(1 + \beta_{ij} r_{ij})^3}}.
+\end{equation}
+
+
+\section{Efficient Optimization of the Trial Wave Function}\label{effParamDer}
+
+Energy minimization requires the evaluation of the derivative of the trial wave function with respect to the variational parameters. The computational cost of this operation depends, of course, on the algorithm selected. In practice, evaluating the derivatives of the trial wave function with respect to the variational parameters analitically is possible only for small systems (two to four electrons). On the other hand, the numerical solution needs the repetead evaluation of the trial wave function (the product of a Slater determinant by a Jastrow function) with respect to each variational parameter. As an example, consider using a central difference scheme to evaluate the derivative of the Slater determinant part with respect to a parameter $\alpha$, 
+$$\frac{d \Psi_{SD}}{d \alpha} = \frac{\Psi_{SD}(\alpha + \Delta \alpha) - \Psi_{SD}(\alpha - \Delta \alpha)}{2\Delta \alpha} + \mathcal{O}(\Delta \alpha^2).$$
+The reader should note that for the Slater determinant part we need to compute the expression above two times per Monte Carlo cycle per variational parameter. Computing a determinant is a highly costly operation. Moreover, the numerical accuracy in the solution will depend on the choice of the step size $\Delta \alpha$.\\
+\\
+\noindent
+In the following we suggest a method to efficiently compute the derivative of the energy with respect to the variational parameters. It derives from the fact that the energy derivative is equivalent to
+$$
+ \frac{\partial E}{\partial c_m} = 2\left[\left\langle E_L \frac{\partial \ln \Psi_{T_{c_m}}}{\partial c_m}\right\rangle - E \left\langle \frac{\partial \ln \Psi_{T_{c_m}}}{\partial c_m}\right\rangle \right],
+$$
+or more precisicely,
+\begin{equation}
+\boxed{\frac{\partial E}{\partial c_m}\! =\! 2\left\{\!\frac{1}{N} \sum_{i=1}^{N} \left[(E_L[c_m])_i \left(\frac{\partial \ln \Psi_{T_{c}}}{\partial c_m}\right)_i\right]\! -\! \frac{1}{N^2} \sum_{i=1}^{N} (E_L[c_m])_i \sum_{j=1}^{N} \left(\frac{\partial \ln \Psi_{T_{c}}}{\partial c_m}\right)_j\right\}\!},
+\end{equation}
+and because $\Psi_{T_{c_m}} = \Psi_{{SD}_{c_m}} \Psi_{{J}_{c_m}}$, we get that 
+\begin{align*}
+ \ln \Psi_{T_{c_m}} & = \ln(\Psi_{{SD}_{c_m}} \Psi_{J_{c_m}}) = \ln(\Psi_{{SD}_{c_m}}) + \ln(\Psi_{J_{c_m}}) \\
+                          & = \ln(\Psi_{{{SD}_{c_m}\uparrow}} \Psi_{{{SD}_{c_m}\downarrow}}) + \ln(\Psi_{J_{c_m}}) \\ 
+                          & = \ln(\Psi_{{{SD}_{c_m}}\uparrow}) + \ln({\Psi_{{SD}_{c_m}\downarrow}}) + \ln(\Psi_{J_{c_m}}).
+\end{align*}
+Then,
+\begin{equation}\label{derLnPsi}
+ \boxed{
+ \frac{\partial \ln \Psi_{T_{c_m}}}{\partial c_m} = \frac{\partial \ln(\Psi_{{SD_{c_m}}\uparrow})}{\partial c_m} + \frac{\partial \ln(\Psi_{{SD}_{c_m}\downarrow})}{\partial c_m}  + \frac{\partial \ln(\Psi_{J_{c_m}})}{\partial c_m}
+ },
+\end{equation}
+which is a convenient expression in terms of implementation in an object oriented fa\-shion because we can compute the contribution to the expression above in two separated classes independently, namely the Slater determinant and Jastrow  classes.\\
+\\
+\noindent
+Note also that for each of the derivatives of concerning the determinants above we have, in general, that
+$$\frac{\partial \ln(\Psi_{{SD_{c_m}}})}{\partial c_m} = \frac{\frac{\partial \Psi_{{SD_{c_m}}}}{\partial c_m}}{\Psi_{{SD_{c_m}}\uparrow}}$$
+
+% % % % % % % % % % % % % % % % % The problem we face now is how to compute the derivative of a determinant, in general. This issue has been treated in \cite{Hanche-Olsen1997} and it will be addressed in the following in relation with each of the Slater determinants appearing in the trial wave function. 
+% % % % % % % % % % % % % % % % % 
+% % % % % % % % % % % % % % % % % Let $\Phi(t) \in \mathbb{R}^{N\times N}$ be a matrix depending on the parameter $t$. If $\Phi(t)$ is differenciable with respect to $t$ so is its determinant $\det \Phi(t) = \d(\varphi_1, \varphi_2,\ldots,\varphi_N)$, because it is a polynomial in the components of $\Phi(t)$. In other words, the $d$ function is linear in each of its arguments (the rows of $\Phi(t)$) as long as we keep each of the remaining rows constant. Then,
+% % % % % % % % % % % % % % % % % \begin{equation}\label{derivativeNDeterminants}
+% % % % % % % % % % % % % % % % % \frac{d}{d t} \det \Phi(t)= d(\dot{\varphi}_1, \varphi_2,\ldots,\varphi_N) + d(\varphi_1, \dot{\varphi}_2,\ldots,\varphi_N) + \ldots + d(\varphi_1, \varphi_2,\ldots,\dot{\varphi}_N) 
+% % % % % % % % % % % % % % % % % \end{equation}
+% % % % % % % % % % % % % % % % % Doing this, however, could not be convenient in terms of computational cost and execution time because of the need of computing $N$ determinants for getting a single derivative. There is, however, a way of do it better.
+% % % % % % % % % % % % % % % % % 
+% % % % % % % % % % % % % % % % % Letting $\Phi(t)$ be the identity matrix, we note that the right hand side of Eq.~(\ref{derivativeNDeterminants}) is the trace of $\dot{\Phi}(t)$, where the first terms is given by  
+% % % % % % % % % % % % % % % % % $$
+% % % % % % % % % % % % % % % % % \begin{bmatrix}
+% % % % % % % % % % % % % % % % % \dot{\varphi}_{11} & \dot{\varphi}_{12} & \cdots & \dot{\phi}_{1N}\\
+% % % % % % % % % % % % % % % % % 0               &         1       & \cdots &          0    \\
+% % % % % % % % % % % % % % % % % \vdots          &         \ddots       & \ddots &        \vdots \\
+% % % % % % % % % % % % % % % % % 0               &         0  & \cdots &           1   
+% % % % % % % % % % % % % % % % % \end{bmatrix} = \dot{\varphi}_{11},
+% % % % % % % % % % % % % % % % % $$
+% % % % % % % % % % % % % % % % % and so on. Then, what we have on the right hand side of Eq.~(\ref{derivativeNDeterminants}) is that 
+% % % % % % % % % % % % % % % % % $$
+% % % % % % % % % % % % % % % % % \dot{\varphi}_{11} + \dot{\varphi}_{22} +  \cdots + \dot{\varphi}_{NN} = \sum_{i=1}^{N} \dot{\varphi}_{ii} = \mathrm{tr} \dot{\Phi}(t),
+% % % % % % % % % % % % % % % % % $$ 
+% % % % % % % % % % % % % % % % % or 
+For the derivative of the Slater determinant yields that if $\mathbf A$ is an invertible matrix which depends on a real parameter $t$, and if $\frac{\mathrm d\mathbf A}{\mathrm dt}$ exists, then 
+$$
+\frac{\mathrm d}{\mathrm dt}(\det\mathbf A)=(\det\mathbf A)\mathop{\textrm{tr}}\biggl(\mathbf A^{-1}\frac{\mathrm d\mathbf A}{\mathrm dt}\biggr).
+$$
+
+
+
+% % % % % % % 
+% % % % % % % $$
+% % % % % % % \frac{d}{d t} \det \Phi(t) = \sum_{i=1}^{N} \dot{\varphi}_{ii} = \mathrm{tr} \dot{\Phi}(t) \quad \text{when} \quad \dot{\Phi}(t) = I.
+% % % % % % % $$
+% % % % % % % Now, letting $A \in \mathbb{R}^{N\times N}$ be an invertible matrix we get that when $(A \dot{\Phi}(t)) = I$,
+% % % % % % % $$\det (A \Phi(t)) = \det A \det \Phi(t) = \det A \frac{d}{d t} \det \Phi(t) = \mathrm{tr}(A \dot{\Phi}(t)), 
+% % % % % % % $$
+% % % % % % % which is valid whenever $\Phi(t)$ is invertible. Setting $A = \Phi(t)^{-1}$ and rearranging we get
+% % % % % % % $$
+% % % % % % % \frac{\frac{d}{d t}\det \Phi(t)}{\det \Phi(t)} =  \mathrm{tr} [\Phi(t)^{-1} \dot{\Phi}(t)],
+% % % % % % % $$
+% % % % % % % or even better
+\begin{equation}\label{derivativeSD}
+ \boxed{\frac{d}{dt}\ln\det \mathbf A(t) = \mathrm{tr} \left(\mathbf A^{-1} \frac{d \mathbf{A}}{dt}\right) = \sum_{i=1}^{N} \sum_{j=1}^{N} A^{-1}_{ij} \dot{A}_{ji}},
+\end{equation}
+where $N$ is the number of entries in a row. What we have here is the expression for computing the derivative of each of the determinants appearing in Eq.~(\ref{derLnPsi}).  Furthemore, note that the specialization of this expression to the current problem implies that the term $\mathbf{A}^{-1}$ appearing on the right hand side is the inverse of the Slater matrix, already available after finishing each Monte Carlo cycle as deduced from the algorithms discussed in the previous sections. It means that the only thing we have to do is to take the derivative of each single wave function in the Slater matrix with respect to its variational parameter and taking the trace of $\Psi_{SD}(\alpha)^{-1} \dot{\Psi_{SD}}(\alpha)$. The implementation of this expression and its computation using analytical derivatives for the single state wave functions is straighforward. The flow chart for the Quantum Variational Monte Carlo method with optimization of the trial wave function is shown in figure \ref{chartFlowOptim}.
+
+\begin{figure}
+\begin{tikzpicture}[scale=1., node distance = 2.2cm, auto]
+%%%%%\usebodyfont       [sansserif, 10pt]
+
+  \footnotesize
+    % Place nodes
+    \node [block] (init) {Initialize ${\bf R}$,\\
+    set $\alpha$ and $\Psi_{T-\alpha}({\bf R})$};
+    \node [block, below of=init, node distance=2.0cm] (suggestMove) {Suggest a move};
+    \node [block, below of=suggestMove, node distance=1.8cm] (evaluateAcceptance) {Compute acceptance ratio};
+    \node [block, left of=evaluateAcceptance, node distance=4.5cm] (randomGenerator) {Generate a uniformly distributed variable $r$};
+    \node [decision, below of=evaluateAcceptance, node distance=2.2cm] (decide) {Is\\ $R \geq r$?};
+    \node [block, right of=decide, node distance=3.5 cm] (rejectMove) {Reject move: \\ ${\bf x}^{new}_{i} = {\bf x}^{old}_{i}$};
+    \node [block, below of=decide, node distance=2.0cm] (acceptMove) {Accept move:\\${\bf x}^{old}_{i} = {\bf x}^{new}_{i}$};
+    \node [decision, below of=acceptMove, node distance=2.2cm] (lastMove) {Last move?};
+    \node [block, below of=lastMove, node distance=2.1cm] (getLocalEnergy) {Get local\\ energy $E_L$};
+    \node [decision, below of=getLocalEnergy, node distance=2.2cm] (decideMC) {Last MC step?};
+    \node [block, below of=decideMC, node distance=2.2cm] (collectSamples) {Collect samples};
+    \node [decision, right of=collectSamples, node distance=6.0cm] (minEnergy) {Is\\ $\langle E \rangle_{min}$?};
+    \node [block, below of=minEnergy] (ending) {End};
+    
+%     % Draw edges
+    \path [line] (init) -- (suggestMove);
+    \path [line] (suggestMove) -- (evaluateAcceptance);
+    \path [line] (evaluateAcceptance) -- (decide);
+    \path [line] (randomGenerator) |- (decide);
+    \path [line] (decide) -- node [, color=black] {yes}(acceptMove);
+    \path [line] (decide) -- node [, color=black] {no}(rejectMove);
+    \path [line] (acceptMove) -- (lastMove); 
+    \path [line] (lastMove) -- node [, color=black] {yes}(getLocalEnergy);
+    \path [line] (rejectMove) |- (lastMove);
+    \path [line] (getLocalEnergy) -- (decideMC);
+    \path [line] (decideMC) -- node [, color=black, node distance=5.5] {yes}(collectSamples);
+   
+
+    % Define a style for shifting a coordinate upwards
+    % Note the curly brackets around the coordinate.
+    \tikzstyle{s}=[shift={(0mm,\radius)}]
+    \path[line] (lastMove.west) -- +(-1.0,0)  -- +(-1.0, 4.15) 
+% % % %     % Draw semicircle junction to indicate that the lines are
+% % % %     % not connected. Since we want the semicircle to have its center 
+% % % %     % where the lines intersect, we have to shift the intersection 
+% % % %     % coordinate using the 's' style to account for this.
+    arc(-90:90:\radius) -- +(0.0, 3.9) -- (suggestMove.west);
+    
+    \path [line] (decideMC.west) -- node [, color=black]{no} +(-1.7,0) --+(-1.7,8.45) 
+    arc(-90:90:\radius) --+(0.0,4.8) -- +(2.8,4.8);
+         
+    \path [line,dashed] (collectSamples) -- (minEnergy);
+    \path [line] (minEnergy) -- node [, color=black] {yes}(ending);
+   \path [line,dashed] (minEnergy) |- node [, color=black] {no}(init);
+
+\end{tikzpicture}\caption{Optimization of the trial wave function $\Psi_{trial}({\bf \alpha})$ and minimization of the energy with respect to the variational parameters.}\label{chartFlowOptim}
+\end{figure}
+
+
+\section{Exercises}
+
+%\subsection*{Project 16.1: Hartree-Fock and variational Monte Carlo}
+
+\begin{prob}
+The aim of this project is to use the Variational Monte
+Carlo (VMC) method and evaluate 
+the ground state energy of  the atoms 
+helium, beryllium and neon.
+
+We label $r_1$ the distance from electron 1 to the nucleus and similarly 
+$r_2$ the distance between electron 2 and the nucleus.
+The contribution to the potential energy from the interactions between the 
+electrons and the nucleus is
+\be
+   -\frac{2}{r_1}-\frac{2}{r_2},
+\ee 
+and if we add the electron-electron repulsion with
+$r_{12}=|{\bf r}_1-{\bf r}_2|$, the total potential energy 
+$V(r_1, r_2)$ is
+\be
+ V(r_1, r_2)=-\frac{2}{r_1}-\frac{2}{r_2}+
+               \frac{1}{r_{12}},
+\ee
+yielding the total Hamiltonian
+\be
+   \OP{H}=-\frac{\nabla_1^2}{2}-\frac{\nabla_2^2}{2}
+          -\frac{2}{r_1}-\frac{2}{r_2}+
+               \frac{1}{r_{12}},
+\ee
+and Schr\"odinger's equation reads
+\be
+   \OP{H}\psi=E\psi.
+\ee
+All equations are in so-called atomic units. The distances
+$r_i$ and $r_{12}$ are dimensionless. To have energies in electronvolt
+you need to multiply all results with 
+$2\times E_0$,
+where $E_0=13.6$ eV.
+The experimental binding energy for helium in atomic units a.u. is $E_{\mathrm{He}}=-2.9037$ a.u..
+
+
+\begin{enumerate}
+\item Set up the Hartree-Fock equations for the ground state of the helium atom with two electrons occupying
+the hydrogen-like orbitals with quantum numbers $n=1$, $s=1/2$ and $l=0$.  There is no spin-orbit part in the two-body Hamiltonian.
+{\bf Make sure to write these equations using atomic units}.  
+
+\item  Write a program which solves the Hartree-Fock equations  for the helium atom.  Use as input for the first 
+iteration the hydrogen-like single-particle wave function, with analytical shape  $\sim \exp{\left(-\alpha r_i\right)}$
+where $r_i$ represents the coordinates of electron $i$. The details of all equations which you need to program will be discussed
+during the lectures. Compare the results with those obtained using the hydrogen-like wave functions only.
+
+\item   Our next step is to perform  a Variational Monte Carlo calculation of the ground state of the helium atom.
+In our first attempt we will use a brute force Metropolis sampling with a trial wave function which has the following form
+\begin{equation}
+   \psi_{T}({\bf r_1},{\bf r_2}, {\bf r_{12}}) = 
+   \exp{\left(-\alpha(r_1+r_2)\right)}
+   \exp{\left(\frac{r_{12}}{2(1+\beta r_{12})}\right)}, 
+\label{eq:trialxx}
+\end{equation}
+with $\alpha$ and $\beta$ as variational parameters.
+
+Your task is to perform a Variational Monte Carlo calculation
+using the Metropolis algorithm to compute the integral
+\begin{equation}
+   \langle E \rangle =
+   \frac{\int d{\bf r_1}d{\bf r_2}\psi^{\ast}_T({\bf r_1},{\bf r_2}, {\bf r_{12}})\OP{H}({\bf r_1},{\bf r_2}, {\bf r_{12}})\psi_T({\bf r_1},{\bf r_2}, {\bf r_{12}})}
+        {\int d{\bf r_1}d{\bf r_2}\psi^{\ast}_T({\bf r_1},{\bf r_2}, {\bf r_{12}})\psi_T({\bf r_1},{\bf r_2}, {\bf r_{12}})}.
+\end{equation}
+In performing the Monte Carlo analysis you should use blocking as a technique  to make the statistical analysis of the numerical data.
+The code has to run in parallel. A code for doing a VMC calculation for the helium atom can be 
+found on the webpage of the course, see under programs.
+
+
+\item   Repeat the last step but use now  importance sampling.   Study the dependence of the results as function of the time step
+$\delta t$.
+
+
+
+\item Our final step is to replace the hydrogen-like orbits  in Eq.~(\ref{eq:trialxx}) with those obtained
+from b)  by solving the Hartree-Fock equations.   This leads us to only one variational parameter, $\beta$. 
+The calculations should include  parallelization, blocking and importance sampling.  There is no need to do brute
+force Metropolis sampling. 
+
+Compare the results with those from c) and the Hartree-Fock
+results from b).  How important is the correlation part? 
+
+
+Here we will focus on the neon and beryllium atoms.
+It is convenient to make modules or classes of trial wave functions, both many-body wave functions
+and single-particle wave functions  and the quantum numbers  involved,such as spin, orbital momentum and principal
+quantum numbers.
+
+The new item you need to pay attention to is the calculation of the Slater Determinant. This is an additional complication
+to your VMC calculations.
+If we stick to hydrogen-like wave functions,
+the trial wave function for beryllium can be written as 
+\begin{equation}
+   \psi_{T}({\bf r_1},{\bf r_2}, {\bf r_3}, {\bf r_4}) = 
+   Det\left(\phi_{1}({\bf r_1}),\phi_{2}({\bf r_2}),
+   \phi_{3}({\bf r_3}),\phi_{4}({\bf r_4})\right)
+   \prod_{i<j}^{4}\exp{\left(\frac{r_{ij}}{2(1+\beta r_{ij})}\right)}, 
+\end{equation}
+where the $Det$ is a Slater determinant and the single-particle wave functions
+are the hydrogen wave functions for the $1s$ and $2s$ orbitals. Their form
+within the variational ansatz are given by
+\begin{equation}
+\phi_{1s}({\bf r_i}) = e^{-\alpha r_i},
+\end{equation}
+and 
+\begin{equation}
+\phi_{2s}({\bf r_i}) = \left(1-\alpha r_i/2\right)e^{-\alpha r_i/2}.
+\end{equation}
+For neon , the trial wave function can take the form
+\begin{equation}
+   \psi_{T}({\bf r_1},{\bf r_2}, \dots,{\bf r_{10}}) = 
+   Det\left(\phi_{1}({\bf r_1}),\phi_{2}({\bf r_2}),
+   \dots,\phi_{10}({\bf r_{10}})\right)
+   \prod_{i<j}^{10}\exp{\left(\frac{r_{ij}}{2(1+\beta r_{ij})}\right)}, 
+\end{equation}
+In this case you need to include the $2p$ wave function as well.
+It is given as
+\begin{equation} 
+\phi_{2p}({\bf r_i}) = \alpha {\bf r_i}e^{-\alpha r_i/2}.
+\end{equation}
+Observe that $r_i = \sqrt{r_{i_x}^2+r_{i_y}^2+r_{i_z}^2}$.
+
+
+\item Set up the Hartree-Fock equations for the ground state of the beryllium and neon atoms with four and ten  electrons, respectively,
+ occupying
+the respective hydrogen-like orbitals.  There is no spin-orbit part in the two-body Hamiltonian.
+Find also the experimental ground state energies using atomic units.
+
+\item Solve the Hartree-Fock equations  for the beryllium and neon atoms.  
+Use again as input for the first 
+iteration the hydrogen-like single-particle wave function.
+Compare the results with those obtained using the hydrogen-like wave functions only (first iteration).
+
+
+\item   Write a function which sets up the Slater determinant for beryllium and neon. 
+Use the Hartree-Fock single-particle wave functions to set up the Slater determinant.
+You have only one variational parameter, $\beta$.
+Compute the ground state energies of neon  and beryllium. 
+The calculations should include  parallelization, blocking and importance sampling.  Compare the results with the Hartree-Fock
+results.  How important is the correlation part?  Is there a difference compared with helium?   
+Comment your results.
+
+\end{enumerate}
+
+\end{prob}
+
+\begin{prob}
+
+The aim of this project is to use the Variational Monte
+Carlo (VMC) method to evaluate 
+the ground state energy, onebody densities, expectation values of the kinetic and potential energies  and single-particle energies of 
+quantum dots with $N=2$, $N=6$ and $N=12$ electrons, so-called closed shell systems.
+
+
+We consider a system of electrons confined in a pure two-dimensional 
+isotropic harmonic oscillator potential, with an idealized  total Hamiltonian given by 
+\begin{equation}
+\label{eq:finalH}
+\OP{H}=\sum_{i=1}^{N} \left(  -\frac{1}{2} \nabla_i^2 + \frac{1}{2} \omega^2r_i^2  \right)+\sum_{i<j}\frac{1}{r_{ij}},
+\end{equation}
+where natural units ($\hbar=c=e=m_e=1$) are used and all energies are in so-called atomic units a.u. We will study systems of many electrons $N$ as functions of the oscillator frequency  $\omega$ using the above Hamiltonian.  The Hamiltonian includes a standard harmonic oscillator part
+\[
+\OP{H}_0=\sum_{i=1}^{N} \left(  -\frac{1}{2} \nabla_i^2 + \frac{1}{2} \omega^2r_i^2  \right),
+\]
+and the repulsive interaction between two electrons given by 
+\[
+\OP{H}_1=\sum_{i<j}\frac{1}{r_{ij}},
+\]
+with the distance between electrons given by $r_{ij}=\sqrt{{\bf r}_1-{\bf r}_2}$. We define the 
+modulus of the positions of the electrons (for a given electron $i$) as $r_i = \sqrt{r_{i_x}^2+r_{i_y}^2}$.
+
+
+\begin{enumerate}
+
+\item[1a)]  In exercises 1a-1e we will deal only with a system of 
+two electrons in a quantum dot with a frequency of $\hbar\omega = 1$. 
+The reason for this is that we have exact closed form expressions 
+for the ground state energy from Taut's work for selected values of $\omega$, 
+see M.~Taut, Phys. Rev. A {\bf 48}, 3561 (1993).
+The energy is given by $3$ a.u.  (atomic units) when the interaction between the electrons is included.
+If only the harmonic oscillator part of the Hamiltonian,
+the so-called unperturbed part,
+\[ \OP{H}_0=\sum_{i=1}^{N} \left(  -\frac{1}{2} \nabla_i^2 + \frac{1}{2} \omega^2r_i^2  \right),\]
+the energy is $2$ a.u.
+The wave function for one electron in an oscillator potential in two dimensions is
+\[
+\phi_{n_x,n_y}(x,y) = A H_{n_x}(\sqrt{\omega}x)H_{n_y}(\sqrt{\omega}y)\exp{(-\omega(x^2+y^2)/2}.
+\]
+The functions $H_{n_x}(\sqrt{\omega}x)$ are so-called Hermite polynomials, discussed in appendix while $A$ is a normalization constant. 
+For the lowest-lying state we have $n_x=n_y=0$ and an energy $\epsilon_{n_x,n_y}=\omega(n_x+n_y+1) = \omega$.
+Convince yourself that the lowest-lying energy for the two-electron system  is simply $2\omega$.
+
+The unperturbed wave function for the ground state of the two-electron system is given by 
+\[
+\Phi({\bf r_1},{\bf r_2}) = C\exp{\left(-\omega(r_1^2+r_2^2)/2\right)},
+\]
+with $C$ being a normalization constant and $r_i = \sqrt{r_{i_x}^2+r_{i_y}^2}$. Note that the vector ${\bf r_i}$ 
+refers to the $x$ and $y$ position for a given particle.
+What is the total spin of this wave function? Find arguments for why the ground state should have
+this specific total spin. 
+
+\item[1b)] We want to perform  a Variational Monte Carlo calculation of the ground state of two electrons in a quantum dot well with different oscillator energies, assuming total spin $S=0$ using the Hamiltonian of 
+Eq.~(\ref{eq:finalH}). 
+In our first attempt we will use a brute force Metropolis sampling with a trial wave function which has the following form
+\begin{equation}
+   \psi_{T}({\bf r_1},{\bf r_2}) = 
+   C\exp{\left(-\alpha\omega(r_1^2+r_2^2)/2\right)}
+   \exp{\left(\frac{ar_{12}}{(1+\beta r_{12})}\right)}, 
+\label{eq:trial}
+\end{equation}
+where $a$ is equal to one when the two electrons have anti-parallel spins and $1/3$ when the spins are parallel. Finally, $\alpha$ and $\beta$ are our variational parameters.
+
+Your task is to perform a Variational Monte Carlo calculation
+using the Metropolis algorithm to compute the integral
+\begin{equation}
+   \langle E \rangle =
+   \frac{\int d{\bf r_1}d{\bf r_2}\psi^{\ast}_T({\bf r_1},{\bf r_2})\OP{H}({\bf r_1},{\bf r_2})\psi_T({\bf r_1},{\bf r_2})}
+        {\int d{\bf r_1}d{\bf r_2}\psi^{\ast}_T({\bf r_1},{\bf r_2})\psi_T({\bf r_1},{\bf r_2})}.
+\end{equation}
+You should parallelize your program. As an optional possibility, to program GPUs can be used 
+instead of standard parallelization with MPI throughout the project.
+
+Find the  energy minimum and compute also the mean distance
+$r_{12}=\sqrt{{\bf r}_1-{\bf r}_2}$ (with $r_i = \sqrt{r_{i_x}^2+r_{i_y}^2}$) between the two electrons for the optimal set of the variational parameters.
+A code for doing a VMC calculation for a two-electron system (the three-dimensional helium atom) can be 
+found on the webpage of the course, see under programs.
+
+You should also find a closed-form expression for the local energy. Compare the results of this calculation (in terms of CPU time) compared with a calculation which performs a brute force numerical derivation.
+\item[1c)] Introduce now importance sampling and study the dependence of the results as a function of the time step $\delta t$.  
+Compare the results with those obtained under 1a) and comment eventual differences.
+In performing the Monte Carlo analysis you should use blocking as a technique  to make the statistical analysis of the numerical data.
+The code has to run in parallel. 
+\item[1d)]  With the optimal parameters for the ground state wave function, compute the onebody density. Discuss your results and compare the results with those obtained with a pure harmonic oscillator wave functions. Run a Monte Carlo calculations without the Jastrow factor as well
+and compute the same quantities. How important are the correlations induced by the Jastrow factor?
+Compute also the expectation value of the kinetic energy and potential energy using $\omega=0.01$,
+$\omega=0.28$ and $\omega=1.0$. Comment your results.
+\item[1e)]  Repeat step 1c) by varying the energy using the 
+conjugate gradient method to obtain the best possible set of parameters
+$\alpha$ and $\beta$. Discuss the results.
+\end{enumerate}
+The previous exercises have prepared you for extending your calculational machinery  to other systems.
+Here we will focus on quantum dots with $N=6$ and $N=12$ electrons.
+It is convenient to make modules or classes of trial wave functions, both many-body wave functions
+and single-particle wave functions  and the quantum numbers  involved, such as spin, value of $n_x$ and $n_y$
+quantum numbers.
+
+The new item you need to pay attention to is the calculation of the Slater Determinant. This is an additional complication
+to your VMC calculations.
+If we stick to harmonic oscillator like wave functions,
+the trial wave function for say an $N=6$ electron quantum dot can be written as 
+\begin{equation}
+   \psi_{T}({\bf r_1},{\bf r_2},\dots, {\bf r_6}) = 
+   Det\left(\phi_{1}({\bf r_1}),\phi_{2}({\bf r_2}),
+   \dots,\phi_{6}({\bf r_6})\right)
+   \prod_{i<j}^{6}\exp{\left(\frac{a r_{ij}}{(1+\beta r_{ij})}\right)}, 
+\end{equation}
+where $Det$ is a Slater determinant and the single-particle wave functions
+are the harmonic oscillator wave functions for the $n_x=0,1$ and $n_y=0,1$ orbitals. 
+For the $N=12$ quantum dot, the trial wave function can take the form
+\begin{equation}
+   \psi_{T}({\bf r_1},{\bf r_2}, \dots,{\bf r_{12}}) = 
+   Det\left(\phi_{1}({\bf r_1}),\phi_{2}({\bf r_2}),
+   \dots,\phi_{12}({\bf r_{12}})\right)
+   \prod_{i<j}^{12}\exp{\left(\frac{ar_{ij}}{2(1+\beta r_{ij})}\right)}, 
+\end{equation}
+In this case you need to include the $n_x=2$ and $n_y=2$ wave functions as well.
+Observe that $r_i = \sqrt{r_{i_x}^2+r_{i_y}^2}$.  Use the Hermite polynomials defined in the appendix.
+
+
+\begin{enumerate}
+\item[(1f)]   Write a function which sets up the Slater determinant 
+handle larger systems as well. Find the Hermite polynomials which are needed for $n_x=0,1,2$ and obviously $n_y$ as well.
+Compute the ground state energies of quantum dots for $N=6$ and $N=12$ electrons, following the same set up as in exercise 1e) for $\omega=0.01$,
+$\omega=0.28$ and $\omega=1.0$.
+The calculations should include  parallelization, blocking, importance sampling and energy minimization using the conjugate gradient approach.
+To test your Slater determinant code, you should reproduce the unperturbed single-particle energies
+when the electron-electron repulsion is switched off. Convince yourself that the unperturbed ground state energies for $N=6$ is $10\omega$ and for $N=12$ we obtain $28\omega$.  What is the expected total 
+spin of the ground states?
+  
+\item[1g)]  With the optimal parameters for the ground state wave function, compute again the onebody density. Discuss your results and compare the results with those obtained with a pure harmonic oscillator  
+wave functions. Run a Monte Carlo calculations without the Jastrow factor as well
+and compute the same quantities. How important are the correlations induced by the Jastrow factor?
+Compute also the expectation value of the kinetic energy and potential energy using $\omega=0.01$,
+$\omega=0.28$ and $\omega=1.0$. Comment your results.
+\end{enumerate}
+
+\section*{Additional material on Hermite polynomials}
+
+The Hermite polynomials are the solutions of the following differential
+equation
+\be
+   \frac{d^2H(x)}{dx^2}-2x\frac{dH(x)}{dx}+
+       (\lambda-1)H(x)=0.
+   \label{eq:hermite}
+\ee
+The first few polynomials are
+\[
+   H_0(x)=1,
+\]
+\[
+    H_1(x)=2x,
+\]
+\[
+    H_2(x)=4x^2-2,
+\]
+\[
+    H_3(x)=8x^3-12x,
+\]
+and
+\[
+    H_4(x)=16x^4-48x^2+12.
+\]
+They fulfil the orthogonality relation
+\[
+  \int_{-\infty}^{\infty}e^{-x^2}H_n(x)^2dx=2^nn!\sqrt{\pi},
+\]
+and the recursion relation
+\[
+  H_{n+1}(x)=2xH_{n}(x)-2nH_{n-1}(x).
+\]
+\end{prob}

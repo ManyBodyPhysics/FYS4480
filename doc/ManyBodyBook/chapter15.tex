@@ -1,0 +1,1647 @@
+\chapter{Many-body approaches to studies of electronic systems: Hartree-Fock theory and Density Functional Theory}\label{chap:advancedatoms}
+
+\abstract{This chapter presents the Hartree-Fock method with an emphasis on computing
+the energies of selected closed-shell atoms.}
+\section{Introduction}
+A theoretical understanding of the behavior of quantum mechanical systems  
+with many interacting particles, normally called
+many-body systems,  
+is a  great challenge and provides fundamental insights into systems governed by quantum mechanics, as well 
+as offering potential areas of industrial applications, from semi-conductor physics  to the construction of quantum 
+gates.  
+The capability to simulate quantum mechanical systems with many interacting particles is crucial for advances
+in such rapidly developing fields like materials science.
+
+However, 
+most  quantum mechanical systems of interest in  physics consist of a large number of
+interacting particles.
+The total number of particles $N$ is usually sufficiently large
+that an exact solution (viz., in closed form) cannot be found.  One needs therefore reliable numerical methods
+for studying quantum mechanical systems with many particles.
+
+
+Studies of many-body systems
+span from our understanding of the strong force with quarks and 
+gluons as degrees of freedom, the spectacular macroscopic manifestations of quantal phenomena such as
+Bose-Einstein condensation with millions of atoms forming a coherent state,  to properties of new materials, with 
+electrons as effective degrees of freedom. The length scales range from few micrometers and nanometers, typical scales met in materials science, 
+to $10^{-15}-10^{-18}$ m,
+a relevant length scale  for the strong interaction. Energies can span from few meV to GeV or even TeV. 
+In some cases the basic interaction between the interacting particles is well-known. 
+A good example is the
+Coulomb force, familiar from studies of atoms, molecules and condensed matter physics. 
+In other cases, such as for the strong interaction
+between neutrons and protons (commonly dubbed as nucleons) or dense quantum liquids 
+one has to resort to parameterizations of the underlying interparticle 
+interactions. 
+But the system can also span over much larger dimensions as well, with neutron stars as one of the classical objects.
+This star is the endpoint of massive stars which have used up their fuel.
+A neutron star, as its name suggests, is composed mainly of neutrons, with a small fraction of protons and 
+probably quarks in its inner parts.  The star is extremely dense and compact, with a radius of approximately 
+10 km and a mass which is roughly $1.5$ times that of our sun. The quantum mechanical pressure which is set up by the
+interacting particles counteracts the gravitational forces, hindering thus a gravitational collapse.
+To describe a neutron star one needs to solve Schr\"odinger's equation for approximately $10^{54}$ 
+interacting particles! 
+
+With a given interparticle potential and the kinetic energy of the system, 
+one can in turn define the so-called
+many-particle Hamiltonian $\hat{H}$ which enters the solution of Schr\"odinger's equation or Dirac's equation in case relativistic effects
+need to be included.   
+For many particles, Schr\"odinger's equation is an integro-differential equation whose complexity increases exponentially
+with increasing numbers of particles and states that the system can access.  
+Unfortunately, apart from some few analytically solvable problems and one and two-particle systems that can be treated
+numerically exactly  
+via the solution of sets of partial differential equations,  
+the typical absence of an exactly solvable (on closed form) contribution to the many-particle Hamiltonian 
+means that we need reliable numerical many-body methods. 
+These methods should allow for controlled approximations
+and provide a computational scheme which accounts for successive 
+many-body corrections in a systematic way.  
+
+Typical examples of 
+popular many-body methods are coupled-cluster methods 
+\cite{kummel1978,bartlett2007,helgaker,dean2004,Kowalski2004}, 
+various types of 
+Monte Carlo methods \cite{Pudliner1997,kdl1997,ceperley1995}, 
+perturbative many-body methods \cite{ellis1977,lindgren,hko1995}, 
+Green's function methods \cite{dickhoff,blaizot},  
+the density-matrix renormalization group \cite{white1992,schollwock2005}, density functional theory \cite{jones1989} and 
+ab initio density functional theory \cite{bartlett2005,peirs2003,vanneck2006}, and large-scale diagonalization methods 
+\cite{Whitehead1977,caurier2005,horoi2006}, just to mention a few. 
+The physics of the system hints at which many-body methods to use. For systems with strong correlations
+among the constituents, methods based on mean-field theory such as Hartree-Fock theory and density functional theory are normally ruled out.
+This applies also to perturbative methods, unless one can renormalize the parts of the interaction which cause problems.
+
+The aim of this and the next three chapters is to present to you many-body methods
+which can be used to study properties of atoms, molecules, systems in the solid state 
+and nuclear physics. We limit the attention to non-relativistic quantum mechanics.
+
+In this chapter
+we limit ourselves to studies of electronic systems such atoms, molecules and quantum dots, 
+as discussed partly in chapter \ref{chap:mcvar} as well.
+Using the Born-Oppenheimer approximation we rewrote Schr\"odinger's equation for $N$ electrons as 
+\[
+  \left[-\sum_{i=1}^N \frac{1}{2} \nabla^2_i 
+    - \sum_{i=1}^N \frac{Z}{r_i} + \sum_{i<j}^N \frac{1}{r_{ij}} 
+    \right] \Psi(\mathbf{R}) = E \Psi(\mathbf{R}), 
+\]
+where we let $\mathbf{R}$ represent the positions which the $N$ electrons can take, that is $\mathbf{R}=\left\{\mathbf{r}_1,\mathbf{r}_2,\dots,\mathbf{r}_N\right\}$. 
+With more than one electron present we cannot find an solution on a closed form and must resort to numerical efforts. In this
+chapter we will examine Hartree-Fock theory 
+applied to the atomic problem. However, the machinery we expose can easily be extended to studies of molecules or two-dimensional systems like quantum dots.
+
+For atoms and molecules, the electron-electron interaction 
+is rather weak compared with the attraction from the nucleus. An independent particle picture
+is therefore a viable first step towards the solution of Schr\"odinger's equation. 
+We assume therefore that each electrons sees an effective field set up by the other electrons.
+This leads to an integro-differential equation  and methods like Hartree-Fock theory discussed in this chapter.
+
+
+In practical terms, for the Hartree-Fock method we end up solving a one-particle equation, as is the case for the hydrogen atom but modified due 
+to the screening from the other electrons.  This modified single-particle equation reads (see Eq.~(\ref{eq:radialsl} for the hydrogen case)
+in atomic units
+\[
+  -\frac{1}{2} \frac{d^2}{dr^2} u_{nl}(r) 
+       + \left (\frac{l (l + 1)}{2r^2}-\frac{Z}{r}+ \Phi(r)+F_{nl}\right ) u_{nl}(r)  = e_{nl} u_{nl}(r) .
+\]
+The function $u_{nl}$ is the solution of the radial part of the Schr\"odinger equation and the functions $\Phi(r)$ and
+$F_{nl}$ are the corrections due to the screening from the other electrons.  We will derive these equations in the next section.
+
+The total one-particle wave function, see chapter \ref{chap:mcvar}  is 
+\[
+  \psi_{nlm_lsm_s} = \phi_{nlm_l}({\bf r})\xi_{m_s}(s)
+\]
+with $s$ is the spin ($1/2$ for electrons), $m_s$ is the spin projection $m_s=\pm 1/2$, and the spatial part is
+\[
+   \phi_{nlm_l}({\bf r}) =  R_{nl}(r)Y_{lm_l}(\hat{{\bf r}})
+\]
+with $Y$ the spherical harmonics discussed in chapter \ref{chap:mcvar} and $u_{nl} = rR_{nl}$.
+The other quantum numbers are the orbital momentum  $l$ and its projection $m_l=-l,-l+1,\dots,l-1,l$ and the principal quantum
+number $n=n_r+l+1$, with $n_r$ the number of nodes of a given single-particle wave function. 
+All results are in atomic units, meaning that the energy is given by $e_{nl}=-Z^2/2n^2$ and the radius is dimensionless.
+
+
+We obtain then a modified single-particle eigenfunction which in turn can be used
+as an input in a variational Monte Carlo calculation of the ground state of a specific atom. 
+This is the aim of the next chapter. Since Hartree-Fock theory does not treat 
+correctly the role of many-body correlations, the hope is that
+performing a Monte Carlo calculation we may improve our results by obtaining a better agreement with experiment.
+
+In the next chapter we focus 
+on the variational Monte Carlo method as a way to improve upon the Hartree-Fock results.  
+Although the variational Monte Carlo approach will improve our agreement with experiment compared with the Hartree-Fock results, there are still further possibilities
+for improvement. This is provided by Green's function Monte Carlo methods, which allow for an in principle exact calculation.
+The diffusion Monte Carlo method is discussed in chapter 
+\ref{chap:advancedqmc}, with an application to studies of Bose-Einstein condensation.
+Other many-body methods such as large-scale diagonalization and coupled-cluster theories are 
+discussed in Ref.~\cite{deanhj2009}.
+
+
+
+
+
+
+\section{Hartree-Fock theory}\label{sec:hf}
+
+
+Hartree-Fock theory \cite{helgaker,bransden1983}
+is one of the simplest approximate theories  
+for solving the many-body Hamiltonian. It is based on a simple
+approximation to the true many-body wave-function; that the
+wave-function is given by a single Slater determinant of $N$ 
+orthonormal single-particle wave functions\footnote{We limit ourselves to a restricted 
+Hartree-Fock approach and assume that all the lowest-lying orbits are filled. This constitutes 
+an approach suitable for systems with filled shells. 
+The theory we outline is therefore applicable to systems which 
+exhibit so-called magic numbers like the noble gases, closed-shell nuclei  
+like $^{16}$O and $^{40}$Ca and quantum dots with magic number fillings.}
+\[
+  \psi_{nlm_lsm_s} = \phi_{nlm_l}({\bf r})\xi_{m_s}(s).
+\]
+We use hereafter the shorthand $\psi_{nlm_lsm_s}({\bf r}) = \psi_{\alpha}({\bf r})$,
+where $\alpha$ now contains all the quantum numbers  needed to specify a particular single-particle orbital.
+
+The Slater determinant can then be written as   
+\begin{equation}
+  \Phi(\mathbf{r}_1,\mathbf{r}_2,\dots,\mathbf{r}_N,\alpha,\beta,\dots,\nu)  = \frac{1}{\sqrt{N!}}\left| 
+  \begin{array}{cccc}
+    \psi_{\alpha}(\mathbf{r}_1)&\psi_{\alpha}(\mathbf{r}_2)&\dots&\psi_{\alpha}(\mathbf{r}_N) \\ [4pt]
+    \psi_{\beta}(\mathbf{r}_1)&\psi_{\beta}(\mathbf{r}_2)&\dots&\psi_{\beta}(\mathbf{r}_N) \\[4pt] 
+    \vdots              & \vdots            &\ddots&\vdots\\[4pt]
+    \psi_{\nu}(\mathbf{r}_1)&\psi_{\beta}(\mathbf{r}_2)&\dots&\psi_{\beta}(\mathbf{r}_N)
+  \end{array}
+  \right|.
+\label{HartreeFockDet}
+\end{equation}
+Here the variables $\mathbf{r}_i$ include the coordinates of 
+spin and space of particle $i$. The quantum numbers $\alpha,\beta,\dots,\nu$ encompass all possible quantum numbers needed to specify a 
+particular system. As an example, consider the Neon atom, with ten electrons which can fill the $1s$, $2s$ and $2p$ single-particle
+orbitals. Due to the spin projections $m_s$ and orbital momentum projections $m_l$, the $1s$ and $2s$ states have  a degeneracy of $2(2l+1)=2$ while the $2p$ orbital has
+a degeneracy of $2(2l+1) 2(2\cdot 1+1)= 6$.  This leads to ten possible values for  $\alpha,\beta,\dots,\nu$.  
+Fig.~\ref{fig:tenfirstelements} shows the possible quantum numbers which the ten first elements can have.
+%
+\begin{figure}
+%
+\begin{center}
+%
+\begin{pspicture}(10,6)
+
+%%%%%%%%%%
+
+%%%     linje 1   %%%
+
+\rput(0,4.5){
+             \rput(0,0){
+                \psframe(0,0)(0.5,0.5)
+              }
+              \multiput(0,0.5)(0.5,0){4}{ 
+                 \psframe(0,0)(0.5,0.5)
+              }
+              \rput(0.2,1.1){s}
+              \rput(1.2,1.1){p}
+              \rput(-0.3,.2){K}
+              \rput(-0.3,.7){L}
+              \rput(1.2,.2){H}
+
+              \psline{->}(0.25,0.05)(0.25,0.45)
+
+} %%* end rput linje 1
+
+%%%  linje 2   %%%
+
+\rput(0,3){
+          \multiput(0,0)(2.5,0){2}  {
+             \rput(0,0){
+                \psframe(0,0)(0.5,0.5)   
+                 \psline{->}(0.15,0.05)(0.15,0.45)
+                 \psline{<-}(0.35,0.05)(0.35,0.45)
+
+                \rput(0.2,1.1){s}
+                \rput(1.2,1.1){p}
+             }
+             \multiput(0,0.5)(0.5,0){4}{ 
+                 \psframe(0,0)(0.5,0.5)
+             }
+          }
+          \rput(-0.3,.2){K}
+          \rput(-0.3,.7){L}
+          \rput(1.2,.2){He}
+          \rput(3.7,.2){Li}
+          \psline{->}(2.75,0.55)(2.75,0.95)
+
+}  %* end rput linje 2
+
+%%%   linje 3  %%%%
+
+\rput(0,1.5)  {
+             \multiput(0,0)(2.5,0){4}  {
+%%%%%%%%%%
+                \rput(0,0){
+                   \psframe(0,0)(0.5,0.5)
+                   \psline{->}(0.15,0.05)(0.15,0.45)
+                   \psline{<-}(0.35,0.05)(0.35,0.45) 
+                }  
+                \multiput(0,0.5)(0.5,0){4}  {
+                   \psframe(0,0)(0.5,0.5)
+                }
+                \rput(0.2,1.1){s}
+                \rput(1.2,1.1){p}
+                \psline{->}(0.15,0.55)(0.15,0.95)
+                \psline{<-}(0.35,0.55)(0.35,0.95)
+             }
+             \rput(-0.3,0.2){$n=1$}  
+             \rput(-0.3,0.7){$n=2$}
+             \rput(1.2,0.2){Be}     
+             \rput(3.7,0.2){B}   
+             \rput(6.2,0.2){C}
+             \rput(8.7,0.2){N}
+             \multiput(2.5,0.55)(2.5,0){3} {
+               \psline{->}(0.75,0.05)(0.75,0.45)
+             }
+             \multiput(5,0.55)(2.5,0){2} {
+                 \psline{->}(1.25,0.05)(1.25,0.45)
+              }
+              \psline{->}(9.25,0.55)(9.25,0.95)
+
+}    %% end linje 3 
+
+%%%   linje 4   %%%
+\rput(0,0)  {
+             \multiput(0,0)(2.5,0){3} {
+%%%%%%%%%%
+                \rput(0,0){
+                   \psframe(0,0)(0.5,0.5)
+                   \psline{->}(0.15,0.05)(0.15,0.45)
+                   \psline{<-}(0.35,0.05)(0.35,0.45)
+                }
+                \multiput(0,0.5)(0.5,0){4}  {
+                   \psframe(0,0)(0.5,0.5)
+                }
+                \psline{->}(0.15,0.55)(0.15,0.95)
+                \psline{<-}(0.35,0.55)(0.35,0.95)
+                \psline{->}(0.65,0.55)(0.65,0.95)
+                \psline{<-}(0.85,0.55)(0.85,0.95)
+
+                \rput(0.2,1.1){s}
+                \rput(1.2,1.1){p}
+             }
+
+             \psline{->}(1.25,0.55)(1.25,0.95)
+             \psline{->}(1.75,0.55)(1.75,0.95)
+
+             \multiput(2.5,0.55)(2.5,0){2}  {
+                \psline{->}(1.15,0)(1.15,0.45)
+                \psline{<-}(1.35,0)(1.35,0.45)
+             }
+             \psline{->}(4.25,0.55)(4.25,0.95)
+             \psline{->}(6.65,0.55)(6.65,0.95)
+             \psline{<-}(6.85,0.55)(6.85,0.95)
+
+             \rput(-0.3,0.2){$n=1$}
+             \rput(-0.3,0.7){$n=2$}
+             \rput(1.2,0.2){O}
+             \rput(3.7,0.2){F}
+             \rput(6.2,0.2){Ne}
+ }   %% end linje 4 
+
+\end{pspicture}
+%
+\end{center}
+\caption{The electronic configurations for the ten first elements. We let an arrow which points upward to represent a state with $m_s=1/2$ while an arrow which points downwards
+has $m_s=-1/2$. \label{fig:tenfirstelements} }
+\end{figure}
+
+
+If we consider the helium atom with two electrons in the $1s$ state, we can write the total Slater determinant as 
+\be
+   \Phi({\bf r}_1,{\bf r}_2,\alpha,\beta)=\frac{1}{\sqrt{2}}
+\left| \begin{array}{cc} \psi_{\alpha}({\bf r}_1)& \psi_{\alpha}({\bf r}_2)\\\psi_{\beta}({\bf r}_1)&\psi_{\beta}({\bf r}_2)\end{array} \right|,
+\ee 
+with $\alpha=nlm_lsm_s=(1001/21/2)$ and $\beta=nlm_lsm_s=(1001/2-1/2)$  or using $m_s=1/2=\uparrow$ and $m_s=-1/2=\downarrow$ as 
+$\alpha=nlm_lsm_s=(1001/2\uparrow)$ and $\beta=nlm_lsm_s=(1001/2\downarrow)$.
+It is normal to skip the quantum number of the one-electron spin. We introduce therefore the shorthand
+ $nlm_l\uparrow$ or $nlm_l\downarrow)$ for a particular state.
+Writing out the Slater determinant
+\be
+\Phi({\bf r}_1,{\bf r}_2,\alpha,\beta)=
+\frac{1}{\sqrt{2}}\left[
+\psi_{\alpha}({\bf r}_1)\psi_{\beta}({\bf r}_2)-
+\psi_{\beta}({\bf r}_1)\psi_{\gamma}({\bf r}_2)\right],
+\ee
+we see that the Slater determinant is antisymmetric 
+with respect to the permutation of two particles, that is
+\[
+\Phi({\bf r}_1,{\bf r}_2,\alpha,\beta)=-\Phi({\bf r}_2,{\bf r}_1,\alpha,\beta),
+\]
+For three electrons we have  the general expression
+\be
+   \Phi({\bf r}_1,{\bf r}_2,{\bf r}_3,\alpha,\beta,\gamma)=\frac{1}{\sqrt{3!}}
+\left| \begin{array}{ccc} \psi_{\alpha}({\bf r}_1)& \psi_{\alpha}({\bf r}_2)& \psi_{\alpha}({\bf r}_3)\\\psi_{\beta}({\bf r}_1)&\psi_{\beta}({\bf r}_2)&\psi_{\beta}({\bf r}_3)\\\psi_{\gamma}({\bf r}_1)&\psi_{\gamma}({\bf r}_2)&\psi_{\gamma}({\bf r}_3)\end{array} \right|.
+\ee 
+Computing the determinant gives 
+\begin{eqnarray}
+\Phi({\bf r}_1,{\bf r}_2,{\bf r}_3,\alpha,\beta,\gamma)&=
+\frac{1}{\sqrt{3!}}\left[
+\psi_{\alpha}({\bf r}_1)\psi_{\beta}({\bf r}_2)\psi_{\gamma}({\bf r}_3)+
+\psi_{\beta}({\bf r}_1)\psi_{\gamma}({\bf r}_2)\psi_{\alpha}({\bf r}_3)+
+\psi_{\gamma}({\bf r}_1)\psi_{\alpha}({\bf r}_2)\psi_{\beta}({\bf r}_3)-\right. \nonumber \\
+&\left.\psi_{\gamma}({\bf r}_1)\psi_{\beta}({\bf r}_2)\psi_{\alpha}({\bf r}_3)-
+\psi_{\beta}({\bf r}_1)\psi_{\alpha}({\bf r}_2)\psi_{\gamma}({\bf r}_3)-
+\psi_{\alpha}({\bf r}_1)\psi_{\gamma}({\bf r}_2)\psi_{\beta}({\bf r}_3)
+\right].
+\end{eqnarray}
+We note again that 
+the wave-function is antisymmetric with respect to an
+interchange of any two electrons, as required by the Pauli principle. For an $N$-body Slater determinant we have thus
+(omitting the quantum numbers $\alpha,\beta,\dots,\nu$)
+\[
+  \Phi(\mathbf{r}_1, \mathbf{r}_2, \dots, \mathbf{r}_i, \dots,
+  \mathbf{r}_j, \dots \mathbf{r}_N) = -
+  \Phi(\mathbf{r}_1, \mathbf{r}_2, \dots, \mathbf{r}_j, \dots,
+  \mathbf{r}_i, \dots \mathbf{r}_N).
+\]
+
+As another example, consider the Slater determinant for the ground state of beryllium. This system
+is made up of four electrons and we assume that these electrons fill the $1s$ and $2s$ hydrogen-like
+orbits.  
+The radial part of the single-particle could also be represented by other single-particle wave functions
+such as those given by the harmonic oscillator.
+
+The ansatz for the Slater determinant can then be written as  
+\[
+   \Phi({\bf r}_1,{\bf r}_2,,{\bf r}_3,{\bf r}_4, \alpha,\beta,\gamma,\delta)=\frac{1}{\sqrt{4!}}
+\left| \begin{array}{cccc} \psi_{100\uparrow}({\bf r}_1)& \psi_{100\uparrow}({\bf r}_2)& \psi_{100\uparrow}({\bf r}_3)&\psi_{100\uparrow}({\bf r}_4) \\
+\psi_{100\downarrow}({\bf r}_1)& \psi_{100\downarrow}({\bf r}_2)& \psi_{100\downarrow}({\bf r}_3)&\psi_{100\downarrow}({\bf r}_4) \\
+\psi_{200\uparrow}({\bf r}_1)& \psi_{200\uparrow}({\bf r}_2)& \psi_{200\uparrow}({\bf r}_3)&\psi_{200\uparrow}({\bf r}_4) \\
+\psi_{200\downarrow}({\bf r}_1)& \psi_{200\downarrow}({\bf r}_2)& \psi_{200\downarrow}({\bf r}_3)&\psi_{200\downarrow}({\bf r}_4) \end{array} \right|.
+\]
+We choose an ordering where columns represent the spatial positions of various
+electrons while rows refer to specific quantum numbers.
+
+Note that the Slater determinant as written is zero since the spatial wave functions for the spin up and spin down 
+states are equal.   However, we can rewrite
+it as the product of two Slater determinants, one for spin up and one for spin down.
+In general we can rewrite it as 
+\[
+   \Phi({\bf r}_1,{\bf r}_2,,{\bf r}_3,{\bf r}_4, \alpha,\beta,\gamma,\delta)=Det\uparrow(1,2)Det\downarrow(3,4)-
+Det\uparrow(1,3)Det\downarrow(2,4)
+\]
+\[
+-Det\uparrow(1,4)Det\downarrow(3,2)+Det\uparrow(2,3)Det\downarrow(1,4)-Det\uparrow(2,4)Det\downarrow(1,3)
+\]
+\[
++Det\uparrow(3,4)Det\downarrow(1,2),
+\]
+where we have defined
+\[
+Det\uparrow(1,2)=\left| \frac{1}{\sqrt{2}}\begin{array}{cc} \psi_{100\uparrow}({\bf r}_1)& \psi_{100\uparrow}({\bf r}_2)\\
+\psi_{200\uparrow}({\bf r}_1)& \psi_{200\uparrow}({\bf r}_2) \end{array} \right|,
+\]
+and 
+\[
+Det\downarrow(3,4)=\left| \frac{1}{\sqrt{2}}\begin{array}{cc} \psi_{100\downarrow}({\bf r}_3)& \psi_{100\downarrow}({\bf r}_4)\\
+\psi_{200\downarrow}({\bf r}_3)& \psi_{200\downarrow}({\bf r}_4) \end{array} \right|.
+\]
+The total determinant is still zero!  In our variational Monte Carlo calculations this will obviously cause
+problems.
+
+We want to avoid to sum over spin variables, in particular when the interaction does not depend on spin.
+It can be shown, see for example Moskowitz {\em et al} \cite{moskowitz1981,schmidt1982}, 
+that for the variational energy
+we can approximate the Slater determinant as  the product of a spin up and a spin down Slater determinant
+\[
+   \Phi({\bf r}_1,{\bf r}_2,,{\bf r}_3,{\bf r}_4, \alpha,\beta,\gamma,\delta) \propto Det\uparrow(1,2)Det\downarrow(3,4),
+\]
+or more generally as 
+\[
+   \Phi({\bf r}_1,{\bf r}_2,\dots {\bf r}_N) \propto Det\uparrow Det\downarrow,
+\]
+where we have the Slater determinant as the product of a spin up part involving the number of electrons 
+with spin up only (two in beryllium
+and five in neon) and a spin down part involving the electrons with spin down.
+
+This ansatz is not antisymmetric under the exchange of electrons with  opposite spins but 
+it can be shown that it gives the same
+expectation value for the energy as the full Slater determinant
+as long as the Hamiltonian is spin independent. It is left as an exercise to the reader to show this.
+However, before  we can prove this need to set up the expectation value of a given two-particle Hamiltonian using a
+Slater determinant.
+
+
+\section{Expectation value of the Hamiltonian with a given Slater determinant}
+
+
+We rewrite our Hamiltonian 
+\[
+  \hat{H} = -\sum_{i=1}^N \frac{1}{2} \nabla^2_i 
+  - \sum_{i=1}^N \frac{Z}{r_i} + \sum_{i<j}^N \frac{1}{r_{ij}},
+\]
+as
+\begin{equation}
+    \hat{H} = \hat{H}_0 + \hat{H}_I 
+    = \sum_{i=1}^N\hat{h_i} + \sum_{i<j=1}^N\frac{1}{r_{ij}},
+\label{H1H2}
+\end{equation}
+where
+\begin{equation}
+  \hat{h_i} = - \frac{1}{2} \nabla^2_i - \frac{Z}{r_i}.
+\label{hi}
+\end{equation}
+The first term of Eq.~(\ref{H1H2}), $H_1$, is the sum of the $N$
+identical \emph{one-body} Hamiltonians $\hat{h_i}$. Each individual
+Hamiltonian $\hat{h_i}$ contains the kinetic energy operator of an
+electron and its potential energy due to the attraction of the
+nucleus. The second term, $H_2$, is the sum of the $N(N-1)/2$
+two-body interactions between each pair of electrons.
+Let us denote the ground state energy by $E_0$. According to the
+variational principle we have
+\begin{equation}
+  E_0 \le E[\Phi] = \int \Phi^*\hat{H}\Phi d\mathbf{\tau}
+\end{equation}
+where $\Phi$ is a trial function which we assume to be normalized
+\begin{equation}
+  \int \Phi^*\Phi d\mathbf{\tau} = 1,
+\end{equation}
+where we have used the shorthand $d\mathbf{\tau}=d\mathbf{r}_1d\mathbf{r}_2\dots d\mathbf{r}_N$.
+In the Hartree-Fock method the trial function is the Slater
+determinant of Eq.~(\ref{HartreeFockDet}) which can be rewritten as 
+\begin{equation}
+  \Psi(\mathbf{r}_1,\mathbf{r}_2,\dots,\mathbf{r}_N,\alpha,\beta,\dots,\nu) = \frac{1}{\sqrt{N!}}\sum_{P} (-)^PP\psi_{\alpha}(\mathbf{r}_1)
+    \psi_{\beta}(\mathbf{r}_2)\dots\psi_{\nu}(\mathbf{r}_N)=\sqrt{N!}{\cal A}\Phi_H,
+\label{HartreeFockPermutation}
+\end{equation}
+where we have introduced the anti-symmetrization operator ${\cal A}$ defined by the 
+summation over all possible permutations of two eletrons.
+It is defined as
+\begin{equation}
+  {\cal A} = \frac{1}{N!}\sum_{P} (-)^PP,
+\label{antiSymmetryOperator}
+\end{equation}
+with the the Hartree-function given by the simple product of all possible single-particle function (two for helium, four for beryllium and ten for
+neon)
+\begin{equation}
+  \Phi_H(\mathbf{r}_1,\mathbf{r}_2,\dots,\mathbf{r}_N,\alpha,\beta,\dots,\nu) =
+  \psi_{\alpha}(\mathbf{r}_1)
+    \psi_{\beta}(\mathbf{r}_2)\dots\psi_{\nu}(\mathbf{r}_N).
+\end{equation}
+
+Both $\hat{H}_0$ and $\hat{H}_I$ are invariant under electron
+permutations, and hence commute with ${\cal A}$
+\begin{equation}
+  [H_0,{\cal A}] = [H_I,{\cal A}] = 0.
+  \label{cummutionAntiSym}
+\end{equation}
+Furthermore, ${\cal A}$ satisfies
+\begin{equation}
+  {\cal A}^2 = {\cal A},
+  \label{AntiSymSquared}
+\end{equation}
+since every permutation of the Slater
+determinant reproduces it. The expectation value of $\hat{H}_0$ 
+\[
+  \int \Phi^*\hat{H}_0\Phi d\mathbf{\tau} 
+  = N! \int \Phi_H^*{\cal A}\hat{H}_0{\cal A}\Phi_H d\mathbf{\tau}
+\]
+is readily reduced to
+\[
+  \int \Phi^*\hat{H}_0\Phi d\mathbf{\tau} 
+  = N! \int \Phi_H^*\hat{H}_0{\cal A}\Phi_H d\mathbf{\tau},
+\]
+where we have used eqs.~(\ref{cummutionAntiSym}) and
+(\ref{AntiSymSquared}). The next step is to replace the anti-symmetry
+operator by its definition eq.~(\ref{HartreeFockPermutation}) and to
+replace $\hat{H}_0$ with the sum of one-body operators
+\begin{equation}
+  \int \Phi^*\hat{H}_0\Phi  d\mathbf{\tau}
+  = \sum_{i=1}^N \sum_{P} (-)^P\int 
+  \Phi_H^*\hat{h_i}P\Phi_H d\mathbf{\tau}.
+\end{equation}
+
+The integral vanishes if two or more electrons are permuted in only one
+of the Hartree-functions $\Phi_H$ because the individual orbitals are
+orthogonal. We obtain then
+\begin{equation}
+  \int \Phi^*\hat{H}_0\Phi  d\mathbf{\tau}
+  = \sum_{i=1}^N \int \Phi_H^*\hat{h_i}\Phi_H  d\mathbf{\tau}.
+\end{equation}
+Orthogonality allows us to further simplify the integral, and we
+arrive at the following expression for the expectation values of the
+sum of one-body Hamiltonians 
+\begin{equation}
+  \int \Phi^*\hat{H}_0\Phi  d\mathbf{\tau}
+  = \sum_{\mu=1}^N \int \psi_{\mu}^*(\mathbf{r}_i)\hat{h_i}\psi_{\mu}(\mathbf{r}_i)
+  d\mathbf{r}_i.
+  \label{eq:H1Expectation}
+\end{equation}
+
+The expectation value of the two-body Hamiltonian is obtained in a
+similar manner. We have
+\begin{equation}
+  \int \Phi^*\hat{H}_I\Phi d\mathbf{\tau} 
+  = N! \int \Phi_H^*{\cal A}\hat{H}_I{\cal A}\Phi_H d\mathbf{\tau},
+\end{equation}
+which reduces to
+\begin{equation}
+ \int \Phi^*\hat{H}_I\Phi d\mathbf{\tau} 
+  = \sum_{i\le j=1}^N \sum_{P} (-)^P\int 
+  \Phi_H^*\frac{1}{r_{ij}}P\Phi_H d\mathbf{\tau},
+\end{equation}
+by following the same arguments as for the one-body
+Hamiltonian. Because of the dependence on the inter-electronic distance $1/r_{ij}$,  permutations of
+two electrons no longer vanish, and we get
+\begin{equation}
+  \int \Phi^*\hat{H}_I\Phi d\mathbf{\tau} 
+  = \sum_{i < j=1}^N \int  
+  \Phi_H^*\frac{1}{r_{ij}}(1-P_{ij})\Phi_H d\mathbf{\tau}.
+\end{equation}
+where $P_{ij}$ is the permutation operator that interchanges
+electrons $i$ and $j$. Again we use the assumption that the orbitals
+are orthogonal, 
+and obtain
+\begin{equation}
+  \int \Phi^*\hat{H}_I\Phi d\mathbf{\tau} 
+  = \frac{1}{2}\sum_{\mu=1}^N\sum_{\nu=1}^N
+    \left[ \int \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)\frac{1} 
+    {r_{ij}}\psi_{\mu}(\mathbf{r}_i)\psi_{\nu}(\mathbf{r}_j)
+    d\mathbf{x_i}d\mathbf{x_j} \right.\\
+  \left.
+  - \int \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)
+  \frac{1}{r_{ij}}\psi_{\nu}(\mathbf{r}_i)\psi_{\mu}(\mathbf{r}_i)
+  d\mathbf{x_i}d\mathbf{x_j}
+  \right]. \label{H2Expectation}
+\end{equation}
+The first term is the so-called direct term or Hartree term, while the second is due to the Pauli principle and is called
+the exchange term or the Fock term.
+The factor  $1/2$ is introduced because we now run over
+all pairs twice. 
+
+Combining Eqs.~(\ref{eq:H1Expectation}) and
+(\ref{H2Expectation}) we obtain the functional 
+\begin{eqnarray}
+  E[\Phi] &
+  = &\sum_{\mu=1}^N \int \psi_{\mu}^*(\mathbf{r}_i)\hat{h_i}\psi_{\mu}(\mathbf{r}_i) d\mathbf{r}_i + 
+  \frac{1}{2}\sum_{{\mu}=1}^N\sum_{{\nu}=1}^N \left[ \int
+  \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)\frac{1} 
+  {r_{ij}}\psi_{\mu}(\mathbf{r}_i)\psi_{\nu}(\mathbf{r}_j) d\mathbf{r}_id\mathbf{r}_j-\right. \\ \nonumber 
+  & &-\left. \int
+  \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)\frac{1}{r_{ij}}\psi_{\nu}(\mathbf{r}_i)\psi_{\mu}(\mathbf{r}_j)
+  d\mathbf{r}_id\mathbf{r}_j \right]. 
+\label{FunctionalEPhi}
+\end{eqnarray}
+
+
+
+
+
+\section{Derivation of the Hartree-Fock equations}
+
+Having obtained the functional $E[\Phi]$, we now proceed to the second
+step of the calculation. 
+With the given functional, we can embark on at least  two types of variational strategies:
+\begin{itemize}
+\item We can vary the Slater determinant by changing the spatial part of the single-particle
+wave functions themselves. 
+\item   We can expand the single-particle functions in a known basis  and vary the coefficients, 
+that is, the new single-particle wave function $|a\rangle$ is written as a linear expansion
+in terms of a fixed chosen orthogonal basis (for the example harmonic oscillator, or Laguerre polynomials etc)
+\[
+\psi_a  = \sum_{\lambda} C_{a\lambda}\psi_{\lambda}.
+\]
+In this case we vary the coefficients $C_{a\lambda}$. 
+ \end{itemize}
+We will derive the pertinent Hartree-Fock equations and discuss the pros and cons of the two methods.
+Both cases lead to a new Slater determinant which is related to the previous one via  a unitary transformation.
+
+Before we proceed we need however to repeat some aspects of the calculus of variations.
+For more details see for example the text of Arfken \cite{arfken1985}.
+
+We have already met the variational principle in chapter \ref{chap:mcvar}.
+We give here a brief reminder on the calculus of variations.
+
+\subsection{Reminder on calculus of variations}
+The calculus of variations involves 
+problems where the quantity to be minimized or maximized is an integral. 
+
+In the general case we have an integral of the type
+\[ E[\Phi]= \int_a^b f(\Phi(x),\frac{\partial \Phi}{\partial \mathbf{r}},\mathbf{r})d\mathbf{r},\]
+where $E$ is the quantity which is sought minimized or maximized.
+The problem is that although $f$ is a function of the variables $\Phi$, $\partial \Phi/\partial \mathbf{r}$ 
+and $\mathbf{r}$, the exact dependence of
+$\Phi$ on $\mathbf{r}$ is not known.  This means again that even though 
+the integral has fixed limits $a$ and $b$, the path of integration is
+not known. In our case the unknown quantities are the single-particle 
+wave functions and we wish to choose an integration path which makes
+the functional $E[\Phi]$ stationary. This means that we want to find minima, or maxima or saddle points. 
+In physics we search normally for minima.
+
+Our task is therefore to find the minimum of $E[\Phi]$ so that its variation $\delta E$ 
+is zero  subject to specific
+constraints. In our case the constraints appear as the integral which expresses the orthogonality of the  
+single-particle wave functions.
+The constraints can be treated via the technique of Lagrangian multipliers. 
+We assume the existence of an optimum path, that is a path for which $E[\Phi]$ is stationary. 
+There are infinitely many such paths.
+The difference between two paths $\delta\Phi$ is called the variation of $\Phi$.
+
+The condition for a stationary value is given by a partial differential equation, which we here
+write in terms of one variable $x$
+\[
+\frac{\partial f}{\partial \Phi}-\frac{d}{dx}\frac{\partial f}{\partial \Phi_x}=0,\]
+This equation is better better known as Euler's equation and it can 
+easily be generalized to more variables.
+
+As an example consider a function of three independent variables $f(x,y,z)$ . 
+For the function $f$ to be an 
+extreme we have
+\[
+df=0.
+\]
+A necessary and sufficient condition is
+\[
+\frac{\partial f}{\partial x} =\frac{\partial f}{\partial y}=\frac{\partial f}{\partial z}=0,
+\]
+due to 
+\[
+df = \frac{\partial f}{\partial x}dx+\frac{\partial f}{\partial y}dy+\frac{\partial f}{\partial z}dz.
+\]
+In physical problems the variables $x,y,z$ are often subject to constraints 
+(in our case $\Phi$ and the orthogonality constraint)
+so that they are no longer all independent. It is possible at least in principle to use each constraint to 
+eliminate one variable
+and to proceed with a new and smaller set of independent varables.
+
+The use of so-called Lagrangian  multipliers is an alternative technique  when the elimination of
+of variables is incovenient or undesirable.  Assume that we have an equation of constraint 
+on the variables $x,y,z$
+\[
+\phi(x,y,z) = 0,
+\]
+ resulting in
+\[
+d\phi = \frac{\partial \phi}{\partial x}dx+\frac{\partial \phi}{\partial y}dy+\frac{\partial \phi}{\partial z}dz =0.
+\]
+Now we cannot set anymore 
+\[
+\frac{\partial f}{\partial x} =\frac{\partial f}{\partial y}=\frac{\partial f}{\partial z}=0,
+\]
+if $df=0$ is wanted 
+because there are now only two independent variables.  Assume $x$ and $y$ are the independent variables.
+Then $dz$ is no longer arbitrary. 
+However, we can add to
+\[
+df = \frac{\partial f}{\partial x}dx+\frac{\partial f}{\partial y}dy+\frac{\partial f}{\partial z}dz,
+\]
+a multiplum of $d\phi$, viz. $\lambda d\phi$, resulting  in
+
+\[
+df+\lambda d\phi = (\frac{\partial f}{\partial z}+\lambda\frac{\partial \phi}{\partial x})dx+(\frac{\partial f}{\partial y}+\lambda\frac{\partial \phi}{\partial y})dy+
+(\frac{\partial f}{\partial z}+\lambda\frac{\partial \phi}{\partial z})dz =0,
+\]
+where our multiplier is chosen so that
+\[
+\frac{\partial f}{\partial z}+\lambda\frac{\partial \phi}{\partial z} =0.
+\]
+
+However, since we took $dx$ and $dy$ to be arbitrary we must have
+\[
+\frac{\partial f}{\partial x}+\lambda\frac{\partial \phi}{\partial x} =0,
+\]
+and
+\[
+\frac{\partial f}{\partial y}+\lambda\frac{\partial \phi}{\partial y} =0.
+\]
+When all these equations are satisfied, $df=0$.  We have four unknowns, $x,y,z$ and
+$\lambda$. Actually we want only $x,y,z$, there is no need to determine $\lambda$. It is therefore often called
+Lagrange's undetermined multiplier. 
+If we have a set of constraints $\phi_k$ we have the equations
+\[
+\frac{\partial f}{\partial x_i}+\sum_k\lambda_k\frac{\partial \phi_k}{\partial x_i} =0.
+\]
+
+Let us specialize to the expectation value of the energy for one particle in three-dimensions.
+This expectation value reads
+\[
+  E=\int dxdydz \psi^*(x,y,z) \hat{H} \psi(x,y,z),
+\]
+with the constraint
+\[
+ \int dxdydz \psi^*(x,y,z) \psi(x,y,z)=1,
+\]
+and a Hamiltonian
+\[
+\hat{H}=-\frac{1}{2}\nabla^2+V(x,y,z).
+\]
+The integral involving the kinetic energy can be written as, if we assume periodic boundary conditions or that the function $\psi$ vanishes
+strongly for large values of $x,y,z$, 
+ \[
+  \int dxdydz \psi^* \left(-\frac{1}{2}\nabla^2\right) \psi dxdydz = \psi^*\nabla\psi|+\int dxdydz\frac{1}{2}\nabla\psi^*\nabla\psi.
+\]
+Inserting this expression into the expectation value for the energy and taking the variational minimum  
+(using $V(x,y,z)=V$) we obtain
+\[
+\delta E = \delta \left\{\int dxdydz\left( \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi\right)\right\} = 0.
+\]
+
+The requirement that the wave functions should be orthogonal gives 
+\[
+ \int dxdydz \psi^* \psi=\mathrm{constant},
+\]
+and multiplying it with a Lagrangian multiplier $\lambda$ and taking the variational minimum we obtain the final variational equation
+\[
+\delta \left\{\int dxdydz\left( \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi-\lambda\psi^*\psi\right)\right\} = 0.
+\]
+We introduce the function  $f$
+\[
+  f =  \frac{1}{2}\nabla\psi^*\nabla\psi+V\psi^*\psi-\lambda\psi^*\psi=
+\frac{1}{2}(\psi^*_x\psi_x+\psi^*_y\psi_y+\psi^*_z\psi_z)+V\psi^*\psi-\lambda\psi^*\psi.
+\]
+In our notation here we have dropped the dependence on $x,y,z$ 
+and introduced the shorthand $\psi_x$, $\psi_y$ and $\psi_z$  for the various first derivatives.
+
+For $\psi^*$ the Euler  equation results in
+\[
+\frac{\partial f}{\partial \psi^*}- \frac{\partial }{\partial x}\frac{\partial f}{\partial \psi^*_x}-\frac{\partial }{\partial y}\frac{\partial f}{\partial \psi^*_y}-\frac{\partial }{\partial z}\frac{\partial f}{\partial \psi^*_z}=0,
+\] 
+which yields 
+\[
+    -\frac{1}{2}(\psi_{xx}+\psi_{yy}+\psi_{zz})+V\psi=\lambda \psi.
+\]
+We can then identify the  Lagrangian multiplier as the energy of the system. The last equation is 
+nothing but the standard 
+Schr\"odinger equation and the variational  approach discussed here provides 
+a powerful method for obtaining approximate solutions of the wave function.
+
+\subsection{Varying the single-particle wave functions}
+
+If we generalize the Euler-Lagrange equations to more variables 
+and introduce $N^2$ Lagrange multipliers which we denote by 
+$\epsilon_{\mu\nu}$, we can write the variational equation for the functional of Eq.~(\ref{FunctionalEPhi}) as
+\begin{equation}
+  \delta E - \sum_{{\mu}=1}^N\sum_{{\nu}=1}^N \epsilon_{\mu\nu} \delta
+  \int \psi_{\mu}^* \psi_{\nu} = 0.
+\label{variationalHFfull}
+\end{equation}
+For the orthogonal wave functions $\psi_{\mu}$ this reduces to
+\begin{equation}
+  \delta E - \sum_{{\mu}=1}^N \epsilon_{\mu} \delta
+  \int \psi_{\mu}^* \psi_{\mu} = 0.
+\label{variationalHF}
+\end{equation}
+
+
+
+Variation with respect to the single-particle wave functions $\psi_{\mu}$ yields then
+
+\begin{equation}
+\begin{split}
+  \sum_{\mu=1}^N \int \delta\psi_{\mu}^*\hat{h_i}\psi_{\mu}
+  d\mathbf{x_i}  
+  + \frac{1}{2}\sum_{{\mu}=1}^N\sum_{{\nu}=1}^N \left[ \int
+  \delta\psi_{\mu}^*\psi_{\nu}^*\frac{1} 
+  {r_{ij}}\psi_{\mu}\psi_{\nu} d(\mathbf{x_ix_j})- \int
+  \delta\psi_{\mu}^*\psi_{\nu}^*\frac{1}{r_{ij}}\psi_{\nu}\psi_{\mu}
+  d\mathbf{r}_id\mathbf{r}_j \right] & \\
+  + \sum_{\mu=1}^N \int \psi_{\mu}^*\hat{h_i}\delta\psi_{\mu}
+  d\mathbf{r}_i 
+  + \frac{1}{2}\sum_{{\mu}=1}^N\sum_{{\nu}=1}^N \left[ \int
+  \psi_{\mu}^*\psi_{\nu}^*\frac{1} 
+  {r_{ij}}\delta\psi_{\mu}\psi_{\nu} d\mathbf{r}_id\mathbf{r}_j- \int
+  \psi_{\mu}^*\psi_{\nu}^*\frac{1}{r_{ij}}\psi_{\nu}\delta\psi_{\mu}
+  d\mathbf{r}_id\mathbf{r}_j \right] & \\
+  -  \sum_{{\mu}=1}^N E_{\mu} \int \delta\psi_{\mu}^*
+  \psi_{\mu}d\mathbf{x_i} 
+  -  \sum_{{\mu}=1}^N E_{\mu} \int \psi_{\mu}^*
+  \delta\psi_{\mu}d\mathbf{r}_i & = 0.
+\end{split}
+\end{equation}
+
+Although the variations $\delta\psi$ and $\delta\psi^*$ are not
+independent, they may in fact be treated as such, so that the 
+terms dependent on either $\delta\psi$ and $\delta\psi^*$ individually 
+may be set equal to zero. To see this, simply 
+replace the arbitrary variation $\delta\psi$ by $i\delta\psi$, so that
+$\delta\psi^*$ is replaced by $-i\delta\psi^*$, and combine the two
+equations. We thus arrive at the Hartree-Fock equations
+\begin{equation}
+  \begin{split}
+    \left[ -\frac{1}{2}\nabla_i^2-\frac{Z}{r_i} + \sum_{{\nu}=1}^N
+      \int \psi_{\nu}^*(\mathbf{r}_j)\frac{1}{r_{ij}}
+      \psi_{\nu}(\mathbf{r}_j)d\mathbf{r}_j \right]
+    \psi_{\mu}(\mathbf{x_i})  & \\
+    - \left[ \sum_{{\nu}=1}^N \int
+      \psi_{\nu}^*(\mathbf{r}_j) 
+      \frac{1}{r_{ij}}\psi_{\mu}(\mathbf{r}_j) d\mathbf{r}_j
+      \right] \psi_{\nu}(\mathbf{r}_i)  & 
+  = \epsilon_{\mu} \psi_{\mu}(\mathbf{r}_i).
+  \end{split}
+\label{HartreeFock}
+\end{equation}
+
+Notice that the integration $\int d\mathbf{r}_j$ implies an
+integration over the spatial coordinates $\mathbf{r_j}$ and a summation
+over the spin-coordinate of electron $j$.
+
+The two first terms are the one-body kinetic energy and the
+electron-nucleus potential. The third or
+\emph{direct} term is the averaged electronic repulsion of the other
+electrons. This
+term includes the 'self-interaction' of 
+electrons when $i=j$. The self-interaction is cancelled in the fourth
+term, or the \emph{exchange} term. The exchange term results from our
+inclusion of the Pauli principle and the assumed determinantal form of
+the wave-function. The effect of the exchange is for electrons of
+like-spin to avoid each other.  A theoretically convenient form of the
+Hartree-Fock equation is to regard the direct and exchange operator
+defined through the following operators
+\begin{equation}
+  V_{\mu}^{d}(\mathbf{r}_i) = \int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{\mu}(\mathbf{r}_j) d\mathbf{r}_j
+\end{equation}
+and
+\begin{equation}
+  V_{\mu}^{ex}(\mathbf{r}_i) g(\mathbf{r}_i) 
+  = \left(\int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}g(\mathbf{r}_j) d\mathbf{r}_j
+  \right)\psi_{\mu}(\mathbf{r}_i),
+\end{equation}
+respectively. The function $g(\mathbf{r}_i)$ is an arbitrary function,
+and by the substitution $g(\mathbf{r}_i) = \psi_{\nu}(\mathbf{r}_i)$
+we get
+\begin{equation}
+  V_{\mu}^{ex}(\mathbf{r}_i) \psi_{\nu}(\mathbf{r}_i) 
+  = \left(\int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{\nu}(\mathbf{r}_j)
+  d\mathbf{r}_j\right)\psi_{\mu}(\mathbf{r}_i).
+\end{equation}
+
+We may then rewrite the Hartree-Fock equations as
+\begin{equation}
+  H_i^{HF} \psi_{\nu}(\mathbf{r}_i) = \epsilon_{\nu}\psi_{\nu}(\mathbf{r}_i),
+\label{modifiedHF}
+\end{equation}
+with
+\begin{equation}
+  H_i^{HF}= h_i + \sum_{\mu=1}^NV_{\mu}^{d}(\mathbf{r}_i) -
+  \sum_{\mu=1}^NV_{\mu}^{ex}(\mathbf{r}_i),
+\label{HFoperator}
+\end{equation}
+and where $h_i$ is defined by equation (\ref{hi}). 
+
+
+\subsection{Detailed solution of  the Hartree-Fock equations}
+We show here the explicit form of the Hartree-Fock  for helium and beryllium
+
+Let us introduce 
+\[
+  \psi_{nlm_lsm_s} = \phi_{nlm_l}({\bf r})\xi_{m_s}(s)
+\]
+with $s$ is the spin ($1/2$ for electrons), $m_s$ is the spin projection $m_s=\pm 1/2$, and the spatial part is
+\[
+   \phi_{nlm_l}({\bf r}) =  R_{nl}(r)Y_{lm_l}(\hat{{\bf r}})
+\]
+with $Y$ the spherical harmonics and $u_{nl} = rR_{nl}$.
+We have for helium
+\[
+\Phi({\bf r}_1,{\bf r}_2,\alpha,\beta)=
+\frac{1}{\sqrt{2}}\phi_{100}({\bf r}_1)\phi_{100}({\bf r}_2)\left[
+\xi_{\uparrow}(1)\xi_{\downarrow}(2)-\xi_{\uparrow}(2)\xi_{\downarrow}(1)\right],
+\]
+The direct term acts on
+\[
+\frac{1}{\sqrt{2}}\phi_{100}({\bf r}_1)\phi_{100}({\bf r}_2)
+\xi_{\uparrow}(1)\xi_{\downarrow}(2)
+\]
+while the exchange term acts on 
+\[
+-\frac{1}{\sqrt{2}}\phi_{100}({\bf r}_1)\phi_{100}({\bf r}_2)\xi_{\uparrow}(2)\xi_{\downarrow}(1).
+\]
+How do these terms get translated into the Hartree and the Fock  terms?
+
+The Hartree term
+\begin{equation*}
+  V_{\mu}^{d}(\mathbf{r}_i) = \int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{\mu}(\mathbf{r}_j) d\mathbf{r}_j,
+\end{equation*}
+acts on $\psi_{\lambda}(\mathbf{r}_i)=\phi_{nlm_l}({\bf r}_i)\xi_{m_s}(s_i)$, that is  it results in 
+\[
+  V_{\mu}^{d}(\mathbf{r}_i)\psi_{\lambda}(\mathbf{r}_i) = \left(\int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{\mu}(\mathbf{r}_j) d\mathbf{r}_j\right)\psi_{\lambda}(\mathbf{r}_i),
+\]
+and accounting for spins we have
+\[
+  V_{nlm_l\uparrow}^{d}(\mathbf{r}_i)\psi_{\lambda}(\mathbf{r}_i) = \left(\int \psi_{nlm_l\uparrow}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{nlm_l\uparrow}(\mathbf{r}_j) d\mathbf{r}_j\right)\psi_{\lambda}(\mathbf{r}_i),
+\]
+and 
+\[
+  V_{nlm_l\downarrow}^{d}(\mathbf{r}_i)\psi_{\lambda}(\mathbf{r}_i) = \left(\int \psi_{nlm_l\downarrow}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{nlm_l\downarrow}(\mathbf{r}_j) d\mathbf{r}_j\right)\psi_{\lambda}(\mathbf{r}_i),
+\]
+
+If the state we act on has spin up, we obtain two terms  from the Hartree part,  
+\[
+  \sum_{\mu=1}^NV_{\mu}^{d}(\mathbf{r}_i),
+\]
+and since the interaction does not depend on spin we end up with
+a total contribution for helium
+\[
+  \sum_{\mu=1}^NV_{\mu}^{d}(\mathbf{r}_i)\psi_{\lambda}(\mathbf{r}_i)=\left(2\int \phi_{100}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{100}(\mathbf{r}_j) d\mathbf{r}_j\right)\psi_{\lambda}(\mathbf{r}_i),
+\] 
+one from spin up and one from spin down.  
+Since the energy for spin up or spin down is the same we can then write the action of the Hartree term as
+\[
+  \sum_{\mu=1}^NV_{\mu}^{d}(\mathbf{r}_i)\psi_{\lambda}(\mathbf{r}_i)=\left(2\int \phi_{100}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{100}(\mathbf{r}_j) d\mathbf{r}_j\right)\psi_{100\uparrow}(\mathbf{r}_i).
+\] 
+(the spin in $\psi_{100\uparrow}$ is irrelevant)
+
+What we need to code for helium is then 
+\[
+\Phi(r_i)u_{10}= 2V_{10}^d(r_i)u_{10}(r_i) = 2\int_0^{\infty}|u_{10}(r_j)|^2\frac{1}{r_{>}}dr_j)u_{10}(r_i).
+\]
+with $ r_{>} = max(r_i,r_j)$.
+What about the exchange or Fock term
+\begin{equation*}
+  V_{\mu}^{ex}(\mathbf{r}_i) \psi_{\lambda}(\mathbf{r}_i) 
+  = \left(\int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{\lambda}(\mathbf{r}_j) d\mathbf{r}_j
+  \right)\psi_{\mu}(\mathbf{r}_i)?
+\end{equation*}
+
+We must be careful here with
+\begin{equation*}
+  V_{\mu}^{ex}(\mathbf{r}_i) \psi_{\lambda}(\mathbf{r}_i) 
+  = \left(\int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{\lambda}(\mathbf{r}_j) d\mathbf{r}_j
+  \right)\psi_{\mu}(\mathbf{r}_i),
+\end{equation*}
+because the spins of $\mu$ and $\lambda$ have to be the same due to the
+constraint
+\[
+ \langle s_{\mu} m_s^{\mu} |  s_{\lambda} m_s^{\lambda} \rangle = \delta_{m_s^{\mu},m_s^{\lambda}}.
+\]
+This means that if $m_s^{\mu}=\uparrow$ then   $m_s^{\lambda}=\uparrow$ and if 
+$m_s^{\mu}=\downarrow$ then   $m_s^{\lambda}=\downarrow$.   That is
+\begin{equation*}
+  V_{\mu}^{ex}(\mathbf{r}_i) \psi_{\lambda}(\mathbf{r}_i) 
+  = \delta_{m_s^{\mu},m_s^{\lambda}}\left(\int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{\lambda}(\mathbf{r}_j) d\mathbf{r}_j
+  \right)\psi_{\mu}(\mathbf{r}_i),
+\end{equation*}
+
+The consequence is that for the $1s\uparrow$ (and the same for $1s\downarrow$) state we get only one contribution  from the Fock 
+term, namely
+\[
+  \sum_{\mu=1}^NV_{\mu}^{ex}(\mathbf{r}_i) \psi_{100\uparrow}(\mathbf{r}_i) 
+  = \delta_{m_s^{\mu},\uparrow}\left(\int \psi_{\mu}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{100\uparrow}(\mathbf{r}_j) d\mathbf{r}_j
+  \right)\psi_{\mu}(\mathbf{r}_i),
+\]
+resulting in 
+\[
+  \sum_{\mu=1}^NV_{\mu}^{ex}(\mathbf{r}_i) \psi_{100\uparrow}(\mathbf{r}_i) 
+  = \left(\int \psi_{100\uparrow}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{100\uparrow}(\mathbf{r}_j) d\mathbf{r}_j
+  \right)\psi_{100\uparrow}(\mathbf{r}_i).
+\]
+
+The final Fock term for helium is then
+\[
+  \sum_{\mu=1}^NV_{\mu}^{ex}(\mathbf{r}_i) \psi_{100\uparrow}(\mathbf{r}_i) 
+  = \left(\int \psi_{100\uparrow}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\psi_{100\uparrow}(\mathbf{r}_j) d\mathbf{r}_j
+  \right)\psi_{100\uparrow}(\mathbf{r}_i),
+\]
+which is exactly the same as the Hartree term except for a factor of $2$. Else the integral is the same. 
+We can then write the differential equation
+\[
+ \left( -\frac{1}{2} \frac{d^2}{dr^2} +\frac{l (l + 1)}{2r^2}-\frac{2}{r}+ \Phi_{nl}(r)-F_{nl}(r)\right ) u_{nl}(r)  = e_{nl} u_{nl}(r) .
+\]
+as
+\[
+  \left(-\frac{1}{2} \frac{d^2}{dr^2} 
+       +\frac{l (l + 1)}{2r^2}-\frac{2}{r}+ 2V_{10}^{d}(r)\right ) u_{10}(r)-V_{10}^{ex}(r)  = e_{10} u_{10}(r), 
+\]
+or
+\[
+  \left(-\frac{1}{2} \frac{d^2}{dr^2} -\frac{2}{r}+ V_{10}^{d}(r)\right ) u_{10}(r)  = e_{10} u_{10}(r), 
+\]
+since $l=0$.
+The shorthand $V_{10}^{ex}(r)$ contains the $1s$ wave function.
+
+The expression we have obtained are independent of  the spin projections and we have skipped them in the equations.
+
+
+
+For beryllium the Slater determinant takes the form  
+\[
+   \Phi({\bf r}_1,{\bf r}_2,,{\bf r}_3,{\bf r}_4, \alpha,\beta,\gamma,\delta)=\frac{1}{\sqrt{4!}}
+\left| \begin{array}{cccc} \psi_{100\uparrow}({\bf r}_1)& \psi_{100\uparrow}({\bf r}_2)& \psi_{100\uparrow}({\bf r}_3)&\psi_{100\uparrow}({\bf r}_4) \\
+\psi_{100\downarrow}({\bf r}_1)& \psi_{100\downarrow}({\bf r}_2)& \psi_{100\downarrow}({\bf r}_3)&\psi_{100\downarrow}({\bf r}_4) \\
+\psi_{200\uparrow}({\bf r}_1)& \psi_{200\uparrow}({\bf r}_2)& \psi_{200\uparrow}({\bf r}_3)&\psi_{200\uparrow}({\bf r}_4) \\
+\psi_{200\downarrow}({\bf r}_1)& \psi_{200\downarrow}({\bf r}_2)& \psi_{200\downarrow}({\bf r}_3)&\psi_{200\downarrow}({\bf r}_4) \end{array} \right|,
+\]
+
+When we now spell out the Hartree-Fock equations we get two coupled differential equations, one for $u_{10}$ and one for $u_{20}$.
+
+The $1s$ wave function has the same Hartree-Fock contribution as in helium for the $1s$ state, 
+but the $2s$ state gives two times the Hartree term 
+and one time the Fock term.
+We get
+\[
+  \sum_{\mu=1}^NV_{\mu}^{d}(\mathbf{r}_i)\psi_{100\uparrow}(\mathbf{r}_i)=2\int_0^{\infty}d\mathbf{r}_j\left( \phi_{100}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{100}(\mathbf{r}_j)+\phi_{200}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{200}(\mathbf{r}_j) \right)\psi_{100\uparrow}(\mathbf{r}_i)
+\] 
+\[
+= (2V_{10}^d(\mathbf{r}_i)+2V_{20}^d(\mathbf{r}_i))\psi_{100\uparrow}(\mathbf{r}_i)
+\]
+for the Hartree part.
+
+For the Fock term we get (we fix the spin)
+\[
+  \sum_{\mu=1}^NV_{\mu}^{ex}(\mathbf{r}_i)\psi_{100\uparrow}(\mathbf{r}_i)=
+\int_0^{\infty}d\mathbf{r}_j\phi_{100}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{100}(\mathbf{r}_j)\psi_{100\uparrow}(\mathbf{r}_i)+  \]
+\[
+\int_0^{\infty}d\mathbf{r}_j\phi_{200}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{100}(\mathbf{r}_j) \psi_{200\uparrow}(\mathbf{r}_i)=V_{10}^{ex}(\mathbf{r}_i)+V_{20}^{ex}(\mathbf{r}_i).
+\] 
+The first term is the same as we have for the Hartree term with $1s$ except the factor of two.
+The final differential equation is
+\[
+  \left(-\frac{1}{2} \frac{d^2}{dr^2}-\frac{4}{r}+ V_{10}^{d}(r)+2V_{20}^d(r)\right ) u_{10}(r)-V_{20}^{ex}(r)  = e_{10} u_{10}(r). 
+\]
+Note again that the $V_{20}^{ex}(r)$ contains the $1s$ function in the integral, that is 
+\[
+V_{20}^{ex}(r)=\int_0^{\infty}d\mathbf{r}_j\phi_{200}^*(\mathbf{r}_j)\frac{1}{r-r_j}\phi_{100}(\mathbf{r}_j) \psi_{200\uparrow}(\mathbf{r}).
+\]
+
+The $2s$ wave function obtains the following Hartree term  (recall that the interaction has no spin dependence)
+\[
+  \sum_{\mu=1}^NV_{\mu}^{d}(\mathbf{r}_i)\psi_{200\uparrow}(\mathbf{r}_i)=2\int_0^{\infty}d\mathbf{r}_j\left( \phi_{100}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{100}(\mathbf{r}_j)+\phi_{200}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{200}(\mathbf{r}_j) \right)\psi_{200\uparrow}(\mathbf{r}_i)=
+\]
+\[
+(2V_{10}^d(\mathbf{r}_i)+2V_{20}^d(\mathbf{r}_i))\psi_{200\uparrow}(\mathbf{r}_i)
+\] 
+
+For the Fock term we get 
+\[
+  \sum_{\mu=1}^NV_{\mu}^{ex}(\mathbf{r}_i)\psi_{200\uparrow}(\mathbf{r}_i)=
+\int_0^{\infty}d\mathbf{r}_j\phi_{100}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{200}(\mathbf{r}_j)\psi_{100\uparrow}(\mathbf{r}_i)+ 
+\]
+\[
+\int_0^{\infty}d\mathbf{r}_j\phi_{200}^*(\mathbf{r}_j) 
+  \frac{1}{r_{ij}}\phi_{200}(\mathbf{r}_j)\psi_{200\uparrow}(\mathbf{r}_i)= V_{10}^{ex}(\mathbf{r}_i)+V_{20}^{ex}(\mathbf{r}_i) \] 
+The second term is the same as we have for the Hartree term with $2s$.
+The final differential equation is
+\[
+  \left(-\frac{1}{2} \frac{d^2}{dr^2}-\frac{4}{r}+ 2V_{10}^{d}(r)+V_{20}^d(r)\right ) u_{20}(r)-V_{10}^{ex}(r)  = e_{20} u_{20}(r). 
+\]
+Note again that $V_{10}^{ex}(r)$ contains the $2s$ function in the integral, that is 
+\[
+V_{10}^{ex}(r)=\int_0^{\infty}d\mathbf{r}_j\phi_{100}^*(\mathbf{r}_j)\frac{1}{r-r_j}\phi_{200}(\mathbf{r}_j) \psi_{100\uparrow}(\mathbf{r}).
+\]
+We have  two coupled differential equations
+\[
+  \left(-\frac{1}{2} \frac{d^2}{dr^2}-\frac{4}{r}+ V_{10}^{d}(r)+2V_{20}^d(r)\right ) u_{10}(r)-V_{20}^{ex}(r)  = e_{10} u_{10}(r), 
+\] 
+and
+\[
+  \left(-\frac{1}{2} \frac{d^2}{dr^2}-\frac{4}{r}+ 2V_{10}^{d}(r)+V_{20}^d(r)\right ) u_{20}(r)-V_{10}^{ex}(r)  = e_{20} u_{20}(r). 
+\]
+Recall again that the interaction does not depend  on spin. This means that the single-particle energies and single-particle function 
+$u$ do not depend on spin.  
+
+\subsection{Hartree-Fock by variation of basis function coefficients}
+Another possibility is to expand the single-particle functions in a known basis  and vary the coefficients, 
+that is, the new single-particle wave function is written as a linear expansion
+in terms of a fixed chosen orthogonal basis (for example harmonic oscillator, Laguerre polynomials etc)
+\be
+\psi_a  = \sum_{\lambda} C_{a\lambda}\psi_{\lambda}.
+\label{eq:newbasis}
+\ee
+In this case we vary the coefficients $C_{a\lambda}$. 
+
+The single-particle wave functions $\psi_{\lambda}({\bf r})$, defined by the quantum numbers $\lambda$ and ${\bf r}$
+are defined as the overlap 
+\[
+   \psi_{\alpha}({\bf r})  = \langle {\bf r} | \alpha \rangle .
+\]
+We will omit the radial dependence of the wave functions and 
+introduce first the following shorthands for the Hartree and Fock integrals
+\[
+\langle \mu\nu|V|\mu\nu\rangle =  \int \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)V(r_{ij})\psi_{\mu}(\mathbf{r}_i)\psi_{\nu}(\mathbf{r}_j)
+    d\mathbf{r}_i\mathbf{r}_j,
+\]
+and 
+\[
+\langle \mu\nu|V|\nu\mu\rangle = \int \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)
+  V(r_{ij})\psi_{\nu}(\mathbf{r}_i)\psi_{\mu}(\mathbf{r}_i)
+  d\mathbf{r}_i\mathbf{r}_j.  
+\]
+Since the interaction is invariant under the interchange of two particles it means for example that we have
+\[
+\langle \mu\nu|V|\mu\nu\rangle =  \langle \nu\mu|V|\nu\mu\rangle,  
+\]
+or in the more general case
+\[
+\langle \mu\nu|V|\sigma\tau\rangle =  \langle \nu\mu|V|\tau\sigma\rangle.  
+\]
+
+The direct and exchange matrix elements can be  brought together if we define the antisymmetrized matrix element
+\[
+\langle \mu\nu|V|\mu\nu\rangle_{AS}= \langle \mu\nu|V|\mu\nu\rangle-\langle \mu\nu|V|\nu\mu\rangle,
+\]
+or for a general matrix element  
+\[
+\langle \mu\nu|V|\sigma\tau\rangle_{AS}= \langle \mu\nu|V|\sigma\tau\rangle-\langle \mu\nu|V|\tau\sigma\rangle.
+\]
+It has the symmetry property
+\[
+\langle \mu\nu|V|\sigma\tau\rangle_{AS}= -\langle \mu\nu|V|\tau\sigma\rangle_{AS}=-\langle \nu\mu|V|\sigma\tau\rangle_{AS}.
+\]
+The antisymmetric matrix element is also hermitian, implying 
+\[
+\langle \mu\nu|V|\sigma\tau\rangle_{AS}= \langle \sigma\tau|V|\mu\nu\rangle_{AS}.
+\]
+
+With these notations we rewrite Eq.~(\ref{H2Expectation}) as 
+\begin{equation}
+  \int \Phi^*\hat{H}_0\Phi d\mathbf{\tau} 
+  = \frac{1}{2}\sum_{\mu=1}^A\sum_{\nu=1}^A \langle \mu\nu|V|\mu\nu\rangle_{AS}.
+\label{H2Expectation2}
+\end{equation}
+
+
+Combining Eqs.~(\ref{eq:H1Expectation}) and
+(\ref{H2Expectation2}) we obtain the energy functional 
+\begin{equation}
+  E[\Phi] 
+  = \sum_{\mu=1}^N \langle \mu | h | \mu \rangle +
+  \frac{1}{2}\sum_{{\mu}=1}^N\sum_{{\nu}=1}^N \langle \mu\nu|V|\mu\nu\rangle_{AS}.
+\label{FunctionalEPhixx}
+\end{equation}
+which we will use as our starting point for the Hartree-Fock calculations. 
+
+If we vary the above energy functional with respect to the basis functions $|\mu \rangle$, this corresponds to 
+what was done in the previous subsection. We are however interested in defining a new basis defined in terms of
+a chosen basis as defined in Eq.~(\ref{eq:newbasis}). We can then rewrite the energy functional as
+\begin{equation}
+  E[\Psi] 
+  = \sum_{a=1}^N \langle a | h | a \rangle +
+  \frac{1}{2}\sum_{ab}^N\langle ab|V|ab\rangle_{AS},
+\label{FunctionalEPhi2}
+\end{equation}
+where $\Psi$ is the new Slater determinant defined by the new basis of Eq.~(\ref{eq:newbasis}). 
+Using Eq.~(\ref{eq:newbasis}) we can rewrite Eq.~(\ref{FunctionalEPhi2}) as 
+\begin{equation}
+  E[\Psi] 
+  = \sum_{a=1}^N \sum_{\alpha\beta} C^*_{a\alpha}C_{a\beta}\langle \alpha | h | \beta \rangle +
+  \frac{1}{2}\sum_{ab}\sum_{{\alpha\beta\gamma\delta}} C^*_{a\alpha}C^*_{b\beta}C_{a\gamma}C_{b\delta}\langle \alpha\beta|V|\gamma\delta\rangle_{AS}.
+\label{FunctionalEPhi3}
+\end{equation}
+We wish now to minimize the above functional. We introduce again a set of Lagrange multipliers, noting that
+since $\langle a | b \rangle = \delta_{a,b}$ and $\langle \alpha | \beta \rangle = \delta_{\alpha,\beta}$, 
+the coefficients $C_{a\gamma}$ obey the relation
+\[
+ \langle a | b \rangle=\delta_{a,b}=\sum_{\alpha\beta} C^*_{a\alpha}C_{a\beta}\langle \alpha | \beta \rangle=
+\sum_{\alpha} C^*_{a\alpha}C_{a\alpha},
+\]
+which allows us to define a functional to be minimized that reads
+\begin{equation}
+  E[\Psi] - \sum_{a}\epsilon_a\sum_{\alpha} C^*_{a\alpha}C_{a\alpha}.
+\end{equation}
+Minimizing with respect to $C^*_{k\alpha}$, remembering that $C^*_{k\alpha}$ and $C_{k\alpha}$
+are independent, we obtain
+\be
+\frac{d}{dC^*_{k\alpha}}\left[  E[\Psi] - \sum_{a}\epsilon_a\sum_{\alpha} C^*_{a\alpha}C_{a\alpha}\right]=0,
+\ee
+which yields for every single-particle state $k$ the following Hartree-Fock equations
+\be
+\sum_{\gamma} C_{k\gamma}\langle \alpha | h | \gamma \rangle+
+\frac{1}{2}\sum_{a}\sum_{\beta\gamma\delta} C^*_{a\beta}C_{a\delta}C_{k\gamma}\langle \alpha\beta|V|\gamma\delta\rangle_{AS}=\epsilon_kC_{k\alpha}.
+\ee
+
+We can rewrite this equation as 
+\be
+\sum_{\gamma=1}^N \left\{\langle \alpha | h | \gamma \rangle+
+\frac{1}{2}\sum_{a}^N\sum_{\beta\delta}^N C^*_{a\beta}C_{a\delta}\langle \alpha\beta|V|\gamma\delta\rangle_{AS}\right\}C_{k\gamma}=\epsilon_kC_{k\alpha}.
+\ee
+Defining 
+\[
+h_{\alpha\gamma}^{HF}=\langle \alpha | h | \gamma \rangle+
+\frac{1}{2}\sum_{a}^N\sum_{\beta\delta}^N C^*_{a\beta}C_{a\delta}\langle \alpha\beta|V|\gamma\delta\rangle_{AS},
+\]
+we can rewrite the new equations as 
+\be
+\sum_{\gamma=1}^Nh_{\alpha\gamma}^{HF}C_{k\gamma}=\epsilon_kC_{k\alpha}.
+\label{eq:newhf}
+\ee
+
+The advantage of this approach is that we can calculate and tabulate the matrix elements
+$\alpha | h | \gamma \rangle$ and  $\langle \alpha\beta|V|\gamma\delta\rangle_{AS}$ once and for all.
+If the basis $|\alpha\rangle$ is chosen properly, then the matrix elements can also serve as a good starting
+point for a Hartree-Fock calculation. Eq.~(\ref{eq:newhf}) is nothing but an eigenvalue problem. The eigenvectors
+are defined by the coefficients $C_{k\gamma}$. 
+
+The size of the matrices to diagonalize are seldomly larger than $1000\times 1000$ and can be solved
+by the standard eigenvalue methods that we discussed in chapter \ref{chap:eigenvalue}.
+
+
+For closed shell atoms it is natural to consider the spin-orbitals as
+paired. For example, two $1s$ orbitals with different spin have the same
+spatial wave-function, but orthogonal spin functions. For open-shell
+atoms two procedures are commonly used; the 
+\emph{restricted Hartree-Fock} (RHF) and 
+\emph{unrestricted Hartree-Fock} (UHF). 
+In RHF all the electrons except those occupying open-shell orbitals
+are forced to occupy doubly occupied spatial orbitals, while in UHF all
+orbitals are treated independently. The UHF, of course, yields a lower
+variational energy than the RHF formalism. One disadvantage of the
+UHF over the RHF, is that whereas the RHF wave function is an
+eigenfunction of $S^2$, the UHF function is not; that is, the
+total spin angular momentum is not a well-defined quantity for a UHL
+wave-function. Here we limit our attention to closed shell RHF's,
+and show how the coupled HF equations may be turned into a matrix
+problem by expressing the spin-orbitals using known sets of basis
+functions.
+
+In principle, a complete set of basis functions must be used to
+represent spin-orbitals exactly, but this is not computationally
+feasible. A given finite set of basis functions is, due to the
+incompleteness of the basis set, associated with 
+a \emph{basis-set truncation error}. The limiting HF energy, with
+truncation error equal to zero, will be referred to as the
+\emph{Hartree-Fock limit}.
+
+The computational time depends on the number of
+basis-functions and of the difficulty in computing the integrals of
+both the Fock matrix and the overlap matrix. Therefore we wish to keep
+the number of basis functions as low as possible and choose the
+basis-functions cleverly. By cleverly we mean that the
+truncation error should be kept as low as possible, and that the
+computation of the matrix elements of both the overlap and the Fock
+matrices should not be too time consuming.
+
+One choice of basis functions are the so-called \emph{Slater type orbitals} (STO), see for example 
+Ref.~\cite{atkins2003}). They are defined as
+
+\begin{equation}
+  \Psi_{nlm_l}(r,\theta,\phi) = {\cal N}r^{n_{_{eff}}-1}
+  e^{\frac{Z_{_{eff}}\rho}{n_{_{eff}}}}Y_{lm_l}(\theta,\phi).
+\label{STO}
+\end{equation}
+
+Here ${\cal N}$ is a normalization constant that for the purpose of
+basis set expansion may be put into the unknown $c_{i\mu}$'s,
+$Y_{lm_l}$ is a spherical harmonic
+and $\rho=r/a_0$.
+
+The normalization constant of the spherical harmonics may of course
+also be put into the expansion coefficients $c_{i\mu}$. The effective
+principal quantum number $n_{_{eff}}$ is related to the true principal
+quantum number $N$ by the following mapping (ref. \cite{atkins2003})
+
+\begin{equation*}
+  n\to n_{_{eff}}:1\to1\phantom{aa} 2\to2\phantom{aa} 3\to3\phantom{aa}
+  4\to3.7\phantom{aa} 5\to4.0\phantom{aa} 6\to4.2.
+\end{equation*}
+
+The effective atomic number $Z_{_{eff}}$ for the ground state orbitals
+of some neutral ground-state atoms are listed in table \ref{Zeff}. The
+values in table \ref{Zeff} have been constructed by fitting STOs to
+numerically computed wave-functions \cite{clementi1963}.
+\newline
+
+\begin{table}[hbtp]
+\begin{center} {\large \bf Effective Atomic Number} \\ 
+$\phantom{a}$ \\
+\begin{tabular}{lllllllll}
+\hline\\
+  & H     &       &       &       &       &       &       & He    \\
+1s& 1     &       &       &       &       &       &       & 1.6875\\
+  & Li    & Be    & B     & C     & N     & O     & F     & Ne    \\
+1s& 2.6906& 3.6848& 4.6795& 5.6727& 6.6651& 7.6579& 8.6501& 9.6421\\
+2s& 1.2792& 1.9120& 2.5762& 3.2166& 3.8474& 4.4916& 5.1276& 5.7584\\
+2p&       &       & 2.4214& 3.1358& 3.8340& 4.4532& 5.1000& 5.7584\\
+  & Na    & Mg    & Al    & Si    & P     & S     & Cl    & Ar    \\
+1s&10.6259&11.6089&12.5910&13.5754&14.5578&15.5409&16.5239&17.5075\\
+2s& 6.5714& 7.3920& 8.2136& 9.0200& 9.8250&10.6288&11.4304&12.2304\\
+2p& 6.8018& 7.8258& 8.9634& 9.9450&10.9612&11.9770&12.9932&14.0082\\
+3s& 2.5074& 3.3075& 4.1172& 4.9032& 5.6418& 6.3669& 7.0683& 7.7568\\
+3p&       &       & 4.0656& 4.2852& 4.8864& 5.4819& 6.1161& 6.7641\\ [10pt]
+\hline
+\end{tabular} 
+\end{center}
+\caption{Values of $Z_{_{eff}}$ for neutral ground-state atoms
+  \cite{clementi1963}.}
+\label{Zeff}
+\end{table}
+
+\section{Density Functional Theory}
+
+Hohenberg and Kohn \cite{hohenbergkohn1964} proved that 
+the total energy of a system including that of the many-body 
+effects of electrons (exchange and correlation) in the presence of 
+static external potential (for example, the atomic nuclei) 
+is a unique functional of the charge density. The minimum value of the total energy functional 
+is the ground state energy of the system. The electronic charge density which yields this 
+minimum is then the exact single particle ground state energy.
+
+It was then shown by Kohn and Sham  that it is possible to replace the many electron problem by an exactly 
+equivalent set of self consistent one electron equations. The total energy functional can be written as a sum of several terms:
+
+for a fixed set of atomic nuclei. The first two terms are the classical Coulomb interaction 
+between the electrons and ions and between electrons and other electrons respectively, both 
+of which are simply functions of the electronic charge density.
+This equation is analogous to the Hartree method, but the term contains the effects of exchange and 
+correlation and also the single particle kinetic energy.
+In the different HF methods one works with large basis sets. This
+poses a problem for large systems. An alternative to the HF methods is
+\emph{density functional theory} (DFT) \cite{hohenbergkohn1964,kohnsham1965}, see also 
+Refs.~\cite{perdew1981,perdew1992,perdew1992b,jones1989,thij}. DFT takes into 
+account electron correlations but is less demanding computationally
+than for example full diagonalization oor many-body perturbation theory.
+
+The electronic energy $E$ is said to be a \emph{functional} of the
+electronic density, $E[\rho]$, in the sense that for a given function
+$\rho(r)$, there is a single corresponding energy. The  
+\emph{Hohenberg-Kohn theorem} \cite{hohenbergkohn1964} confirms that such
+a functional exists, but does not tell us the form of the
+functional. As shown by Kohn and Sham, the exact ground-state energy
+$E$ of an $N$-electron system can be written as
+\[
+  E[\rho] = -\frac{1}{2} \sum_{i=1}^N\int
+  \Psi_i^*(\mathbf{r_1})\nabla_1^2 \Psi_i(\mathbf{r_1}) d\mathbf{r_1}
+  - \int \frac{Z}{r_1} \rho(\mathbf{r_1}) d\mathbf{r_1} +
+  \frac{1}{2} \int\frac{\rho(\mathbf{r_1})\rho(\mathbf{r_2})}{r_{12}}
+  d\mathbf{r_1}d\mathbf{r_2} + E_{EXC}[\rho]
+\]
+with $\Psi_i$ the \emph{Kohn-Sham} (KS) \emph{orbitals}. The
+ground-state charge density is given by
+\[
+  \rho(\mathbf{r}) = \sum_{i=1}^N|\Psi_i(\mathbf{r})|^2, 
+  %\label{}
+\]
+where the sum is over the occupied Kohn-Sham orbitals. The last term,
+$E_{EXC}[\rho]$, is the \emph{exchange-correlation energy} which in
+theory takes into account all non-classical electron-electron
+interaction. However, we do not know how to obtain this term exactly,
+and are forced to approximate it. The KS orbitals are found by solving
+the \emph{Kohn-Sham equations}, which can be found by applying a
+variational principle to the electronic energy $E[\rho]$. This approach
+is similar to the one used for obtaining the HF equation in the previous 
+section. The KS equations read
+\begin{equation}
+  \left\{ -\frac{1}{2}\nabla_1^2 - \frac{Z}{r_1} + \int 
+  \frac{\rho(\mathbf{r_2})}{r_{12}} d\mathbf{r_2} +
+  V_{EXC}(\mathbf{r_1}) \right\} \Psi_i(\mathbf{r_1}) =
+  \epsilon_i \Psi_i(\mathbf{r_1})
+  \label{eq:ks}
+\end{equation}
+where $\epsilon_i$ are the KS orbital energies, and where the 
+\emph{exchange-correlation potential} is given by
+\begin{equation}
+  V_{EXC}[\rho] = \frac{\delta E_{EXC}[\rho]}{\delta \rho}.
+  \label{eq:vexc}
+\end{equation}
+The KS equations are solved in a self-consistent fashion. A variety of
+basis set functions  can be used, and the experience gained in Hartree-Fock
+calculations are often useful. The computational time needed for a Density function theory
+calculation formally scales as the third power of the number of basis
+functions. 
+
+The main source of error in DFT usually arises from the approximate
+nature of $E_{XC}$. In the \emph{local density approximation} (LDA) it
+is approximated as
+\begin{equation}
+  E_{EXC} = \int \rho(\mathbf{r})\epsilon_{EXC}[\rho(\mathbf{r})]
+  d\mathbf{r},
+  \label{eq:localapprox}
+\end{equation}
+where $\epsilon_{EXC}[\rho(\mathbf{r})]$ is the exchange-correlation
+energy per electron in a homogeneous electron gas of constant density.
+The LDA approach is clearly an approximation as the charge is not
+continuously distributed. To account for the inhomogeneity of the
+electron density, a nonlocal correction involving the gradient of
+$\rho$ is often added to the exchange-correlation energy.
+\subsection{Hohenberg-Kohn Theorem}
+
+\subsection{Derivation of the Kohn-Sham Equations}
+
+\subsection{The Local Density Approximation and the Electron Gas}
+
+\subsection{Applications and Code Examples}
+
+
+\section{Exercises}
+
+\begin{prob}
+
+The aim of this problem is to perform Hartree-Fock calculations in order to obtain
+an optimal basis  for the single-particle wave functions Beryllium. 
+
+The Hartree-Fock functional is written as 
+\[
+  E[\Phi] = \sum_{\mu=1}^N \int \psi_{\mu}^*(\mathbf{r}_i)\hat{h_i}\psi_{\mu}(\mathbf{r}_i) d\mathbf{r}_i 
+  + \frac{1}{2}\sum_{\mu=1}^N\sum_{\nu=1}^N
+   \left[ \int \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)\frac{1} 
+    {r_{ij}}\psi_{\mu}(\mathbf{r}_i)\psi_{\nu}(\mathbf{r}_j)
+    d\mathbf{r}_i\mathbf{r}_j \right.
+\]
+\[ \left.
+  - \int \psi_{\mu}^*(\mathbf{r}_i)\psi_{\nu}^*(\mathbf{r}_j)
+  \frac{1}{r_{ij}}\psi_{\nu}(\mathbf{r}_i)\psi_{\mu}(\mathbf{r}_i)
+  d\mathbf{r}_i\mathbf{r}_j\right].
+\]
+The more compact version is
+\[
+  E[\Phi] 
+  = \sum_{\mu=1}^N \langle \mu | h | \mu\rangle+ \frac{1}{2}\sum_{\mu=1}^N\sum_{\nu=1}^N\left[\langle \mu\nu |\frac{1}{r_{ij}}|\mu\nu\rangle-\langle \mu\nu |\frac{1}{r_{ij}}|\nu\mu\rangle\right].
+\]
+
+With the given functional, we can perform at least two types of variational strategies.
+\begin{itemize}
+\item Vary the Slater determinant by changing the spatial part of the single-particle
+wave functions themselves. 
+\item   Expand the single-particle functions in a known basis  and vary the coefficients, 
+that is, the new function single-particle wave function $|a\rangle$ is written as a linear expansion
+in terms of a fixed basis $\phi$ (harmonic oscillator, Laguerre polynomials etc)
+\[
+\psi_a  = \sum_{\lambda} C_{a\lambda}\phi_{\lambda},
+\]
+ \end{itemize}
+Both cases lead to a new Slater determinant which is related to the previous via  a unitary transformation.
+The second one is the one we will use in this project.
+
+\begin{enumerate}
+\item Consider a Slater determinant built up of single-particle orbitals $\psi_{\lambda}$, 
+with $\lambda = 1,2,\dots,N$.
+
+The unitary transformation
+\[
+\psi_a  = \sum_{\lambda} C_{a\lambda}\phi_{\lambda},
+\]
+brings us into the new basis.  Show that the new basis is orthonormal.
+Show that the new Slater determinant constructed from the new single-particle wave functions can be
+written as the determinant based on the previous basis and the determinant of the matrix $C$.
+Show that the old and the new Slater determinants are equal up to a complex constant with absolute value unity.
+(Hint, $C$ is a unitary matrix). 
+
+
+\item
+Minimizing with respect to $C^*_{k\alpha}$, remembering that $C^*_{k\alpha}$ and $C_{k\alpha}$
+are independent and defining
+\[
+h_{\alpha\gamma}^{HF}=\langle \alpha | h | \gamma \rangle+
+\sum_{a=1}^N\sum_{\beta\delta} C^*_{a\beta}C_{a\delta}\langle \alpha\beta|V|\gamma\delta\rangle_{AS},
+\]
+show that you can write the Hartree-Fock  equations as 
+\[
+\sum_{\gamma}h_{\alpha\gamma}^{HF}C_{k\gamma}=\epsilon_kC_{k\alpha}.
+\]
+Explain the meaning of the different terms.
+
+Set up the Hartree-Fock equations for the ground state beryllium 
+with the electrons  occupying
+the respective 'hydrogen-like' orbitals $1s$ and $2s$.  
+There is no spin-orbit part in the two-body Hamiltonian.
+\item 
+As basis functions for our calculations we will use hydrogen-like single-particle functions. 
+In the computations you will need to program the Coulomb interaction with matrix elements
+involving single-particle wave functions with $l=0$ only, so-called $s$-waves.
+We need only the radial part since the 
+spherical harmonics for the $s$-waves are rather simple.
+Our radial wave functions are
+\[
+R_{n0}(r)=\left(\frac{2Z}{n}\right)^{3/2}\sqrt{\frac{(n-1)!}{2n\times n!}}L_{n-1}^1(\frac{2Zr}{n})\exp{(-\frac{Zr}{n})},
+\]
+with energies $-Z^2/2n^2$.
+A function for computing the generalized Laguerre  polynomials $L_{n-1}^1(\frac{2Zr}{n})$ is provided at the webpage of
+the course under the link of project 2. 
+We will use these functions to solve the Hartree-Fock problem for beryllium.
+
+Show that you can simplify the direct term developed during the lectures
+\[
+\int r_1^2dr_1 \int r_2^2dr_2R_{n_{\alpha}0}^*(r_1) R_{n_{\beta}0}^*(r_2) 
+  \frac{1}{(r_>)}R_{n_{\gamma}0}(r_1)R_{n_{\delta}0}(r_2)
+\]
+\[
+\int_0^{\infty} r_1^2dr_1R_{n_{\alpha}0}^*(r_1)R_{n_{\gamma}0}(r_1) 
+\left[\frac{1}{(r_1)}\int_0^{r_1} r_2^2dr_2 R_{n_{\beta}0}^*(r_2) 
+  R_{n_{\delta}0}(r_2)+\int_{r_1}^{\infty} r_2dr_2 R_{n_{\beta}0}^*(r_2) 
+  R_{n_{\delta}0}(r_2)\right].
+\]
+Find the corresponding expression for the exchange term.
+
+\item With the above ingredients we are now ready to solve 
+the Hartree-Fock equations  for the beryllium atom.  
+Write a program which solves the Hartree-Fock equations for beryllium.
+You will need methods to find eigenvalues (see chapter \ref{chap:eigenvalue}) and
+gaussian quadrature (chapter \ref{chap:integrate}) 
+to compute the integrals of the Coulomb interaction.
+Use as input for the first 
+iteration the hydrogen-like single-particle wave function.
+Compare the results (make a plot of the $1s$ and the $2s$ functions) 
+when self-consistency has been achieved 
+with those obtained using the hydrogen-like wave functions only (first iteration).
+Parameterize thereafter your results in terms of the following Slater-type orbitals (STO)
+\[
+R^{\mathrm{STO}}_{10}(r)=N_{10}\exp{(-\alpha_{10}r)}
+\]
+and
+\[
+R^{\mathrm{STO}}_{20}(r)=N_{20}r\exp{(-\alpha_{20}r/2)}
+\]
+Find the coefficients $\alpha_{10}$ and $\alpha_{20}$  which reproduce best the Hartree-Fock solutions.
+These functions can then be used in a  variational Monte Carlo calculation of the beryllium atom. 
+\end{enumerate}
+\end{prob}
+
+\begin{prob}
+In this problem we will attempt to perform so-called density functional calculations.
+\begin{enumerate}
+\item
+The first step is to perform a Hartree-Fock calculation using the code developed in the previous
+exercise but omitting the exchange (Fock) term. Solve the Hartree equation for beryllium
+and find the total density determined in terms of the single-particle wave functions
+$\psi_i$ as
+\[
+\rho^H(\mathbf{r})=\sum_{i=1}^N|\psi_i(\mathbf{r})|^2,
+\]
+where the single-particle functions $\psi_i$ are the solutions of the Hartree equations and the index
+$H$ refers to the density obtained by solving the Hartree equations.
+Check that the density is normalised to
+\[
+\int d^3 r \rho^H(\mathbf{r}) = N.
+\]
+Compare this density with the corresponding density $\rho^{\mathrm{HF}}(\mathbf{r})$ 
+you get by solving the full Hartree-Fock equations.
+Compare both the Hartree and Hartree-Fock densities with those resulting from your best
+VMC calculations. Discuss your results.
+
+\item  A popular approximation to the exchange potential in the density functional is to
+approximate the contribution to this term by the corresponding result from the infinite electron gas
+model.  The exchange term reads then
+\[
+V_x(\mathbf{r})=-\left(\frac{3}{\pi}\right)^{1/3}\rho^H(\mathbf{r}).
+\]
+Use the Hartree results to compute the total ground state energy of beryllium with the above approximation
+to the exchange potential.
+Compare the resulting energy with the resulting Hartree-Fock energy.
+\end{enumerate}
+\end{prob}
+
+\begin{prob}
+We consider a system of electrons confined in a pure two-dimensional 
+isotropic harmonic oscillator potential, with an idealized  total Hamiltonian given by 
+\[
+\OP{H}=\sum_{i=1}^{N} \left(  -\frac{1}{2} \nabla_i^2 + \frac{1}{2} \omega^2r_i^2  \right)+\sum_{i<j}\frac{1}{r_{ij}},
+\]
+where natural units ($\hbar=c=e=m_e=1$) are used and all energies are in so-called atomic units a.u. We will study systems of many electrons $N$ as functions of the oscillator frequency  $\omega$ using the above Hamiltonian.  The Hamiltonian includes a standard harmonic oscillator part
+\[
+\OP{H}_0=\sum_{i=1}^{N} \left(  -\frac{1}{2} \nabla_i^2 + \frac{1}{2} \omega^2r_i^2  \right),
+\]
+and the repulsive interaction between two electrons given by 
+\[
+\OP{H}_1=\sum_{i<j}\frac{1}{r_{ij}},
+\]
+with the distance between electrons given by $r_{ij}=\sqrt{{\bf r}_1-{\bf r}_2}$. We define the 
+modulus of the positions of the electrons (for a given electron $i$) as $r_i = \sqrt{r_{i_x}^2+r_{i_y}^2}$.
+We limit ourselves to quantum dots with $N=2$ and $N=6$ electrons only.
+
+\begin{enumerate}
+\item The first step is to develop a code that solves the Kohn-Sham equations for $N=2$ and $N=6$ quantum dot systems with frequencies $\omega=0.01$,
+$\omega=0.28$ and $\omega=1.0$ ignoring the exchange contribution. 
+This corresponds to solving the Hartree equations. 
+Solve the  Kohn-Sham equations with this approximation for these quantum dot systems
+and find the total density determined in terms of the single-particle wave functions
+$\psi_i$ as
+\[
+\rho^H(\mathbf{r})=\sum_{i=1}^N|\psi_i(\mathbf{r})|^2,
+\]
+where the single-particle functions $\psi_i$ are the solutions of the approximated Kohn-Sham equations.
+Check that the density is normalised to
+\[
+\int d^3 r \rho^H(\mathbf{r}) = N.
+\]
+Compare this density with the corresponding density 
+you get by solving the VMC calculations. Discuss your results.
+
+\item   A popular approximation to the exchange potential in the density functional is to
+approximate the contribution to this term by the corresponding result from the infinite electron gas
+model in two dimensions.  For the exchange interaction
+$V_x(\mathbf{r})$ we will use the local-density approximation of Rajagopal and Kimball, see Phys.~Rev.~B {\bf 15}, 2819 (1977).
+Use the Kohn-Sham  equations to compute the total ground state energy of the same ground states as in 2a)  
+with the above approximation
+to the exchange potential.
+Compare the resulting energy with that obtained by performing a Hartree-Fock calculation of these quantum dot systems..
+
+\end{enumerate}
+\end{prob}
+

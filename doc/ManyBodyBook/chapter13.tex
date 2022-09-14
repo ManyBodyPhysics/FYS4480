@@ -1,0 +1,2459 @@
+%  last update 22/10/2006
+
+%  correct several typos on closed-form soultions
+%  present solution to the Potts model
+%  add about cluster models, wolff's algo
+%  add about finite size scaling, show derivation of results
+
+\chapter{Monte Carlo Methods in Statistical Physics}\label{chap:mcstat} 
+
+\begin{quotation}
+When you are solving a problem, don't worry. Now, after you have solved the problem, then that's the time to worry. {\em Richard Feynman}
+\end{quotation}
+\abstract{The aim of this chapter is to present examples from the 
+physical sciences where Monte Carlo methods are widely applied.
+Here we focus on examples from statistical physics
+and discuss 
+two of the most studied models, the Ising model and the Potts model for the interaction
+among classical spins. These models have been widely used for studies of phase transitions. }
+
+\section{Introduction and Motivation}
+
+Fluctuations play a central role in our understanding of phase transitions. Their behavior
+near critical points convey important information about the underlying many-particle 
+interactions. In this chapter we will focus on two widely studied models in statistical physics,
+the Ising model and the Potts model for interacting spins. The main focus is on the Ising model. 
+Both models can exhibit first and second
+order phase transitions and are perhaps among the most studied
+systems in statistical physics with respect to 
+simulations of phase transitions. 
+The Norwegian-born chemist 
+Lars Onsager  developed in 1944 an ingenious mathematical  
+description of the Ising model \cite{onsager1944} meant to simulate a 
+ two-dimensional model of a magnet composed of many small atomic magnets. 
+This work proved later useful in analyzing other complex systems, 
+such as gases sticking to solid surfaces, and hemoglobin molecules that absorb oxygen. 
+He got the Nobel prize in chemistry in 1968 for his studies  of 
+non-equilibrium thermodynamics. Many people argue he should have received the Nobel prize in physics as well for
+his work on the Ising model.
+Another model we discuss at the end of this chapter is the so-called class 
+of Potts models, which exhibits both first and second order type of phase transitions.
+Both the Ising model and the Potts  model have been used to model phase transitions in
+solid state physics, with a particular emphasis on ferromagnetism and antiferromagnetism.
+
+Metals like 
+iron, nickel, cobalt and some of the rare earths (gadolinium, dysprosium) exhibit a 
+unique magnetic behavior which is called ferromagnetism because iron (ferrum in Latin) is 
+the most common and most dramatic example. 
+Ferromagnetic materials exhibit a long-range ordering phenomenon at the atomic level which causes 
+the unpaired electron spins to line up parallel with each other in a region called a domain. 
+The long range order which creates magnetic domains in ferromagnetic materials arises from a quantum 
+mechanical interaction at the atomic level. This interaction is remarkable in that it locks 
+the magnetic moments of neighboring atoms into a rigid parallel order over a large number of atoms in spite of 
+the thermal agitation which tends to randomize any atomic-level order. Sizes of domains range from a 0.1 mm to a 
+few mm. When an external magnetic field is applied, the domains already aligned in the direction of this 
+grow at the expense of their neighbors. 
+For a given ferromagnetic material the long range order abruptly disappears at a certain temperature 
+which is called the Curie temperature for the material. The Curie temperature of iron is about 1043 K while metals like
+cobalt and nickel have a Curie temperature of 1388 K and 627 K, respectively, and some of the rare earth metals like gadolinium
+and dysprosium have 293 K and 85 K, respectively.
+We could think of an actual metal as composed of for example a cubic lattice with atoms at each corner
+with a resulting magnetic moment pointing in a particular direction, as portrayed in Fig.~\ref{fig:latticefig}. 
+\begin{figure}[btp]
+\begin{center}
+\begin{picture}(100,260)
+\setlength{\unitlength}{1mm}
+\put(50,0){\circle*{4}}
+\put(0,0){\circle*{4}}
+\put(35,35){\circle*{4}}
+\put(35,85){\circle*{4}}
+\put(50,50){\circle*{4}}
+\put(85,85){\circle*{4}}
+\put(85,35){\circle*{4}}
+\put(0,50){\circle*{4}}
+\thicklines
+\put(0,0){\vector(-1,1){5}}
+\put(0,50){\vector(-1,1){5}}
+\put(50,0){\vector(-1,1){5}}
+\put(35,35){\vector(-1,1){5}}
+\put(35,85){\vector(-1,1){5}}
+\put(85,35){\vector(-1,1){5}}
+\put(85,85){\vector(-1,1){5}}
+\put(50,50){\vector(-1,1){5}}
+\dottedline{0.5}(0,0)(50,0)
+\dottedline{2}(0,0)(35,35)
+\dottedline{2}(35,35)(85,35)
+\dottedline{0.5}(50,0)(85,35)
+\dottedline{0.5}(0,0)(0,50)
+\dottedline{0.5}(50,0)(50,50)
+\dottedline{2}(35,35)(35,85)
+\dottedline{0.5}(0,50)(50,50)
+\dottedline{0.5}(0,50)(35,85)
+\dottedline{0.5}(50,50)(85,85)
+\dottedline{0.5}(35,85)(85,85)
+\dottedline{0.5}(85,35)(85,85)
+\end{picture}
+\end{center}
+\caption{Example of a cubic lattice with atoms at each corner. Each atom has a finite magnetic moment which 
+points in a particular direction. \label{fig:latticefig}}.
+\end{figure}
+In many respects, these atomic magnets are like ordinary magnets and 
+can be thought of in terms of little magnet vectors pointing from south to north poles.
+The Ising model provides a simple way of describing how a magnetic material responds to thermal 
+energy and an external magnetic field.  
+In this model, each domain has a corresponding spin of north or south.  
+The spins can be thought of as the poles of a bar magnet. 
+The model assigns a value of +1 or -1 to the spins north and south respectively.  
+The direction of the spins influences the total potential energy of the system.  
+
+Another physical case where the application of the Ising model enjoys considerable
+success is the description of 
+antiferromagnetism. This is a 
+type of magnetism where adjacent ions 
+spontaneously 
+align themselves at relatively low temperatures into opposite, or antiparallel, 
+arrangements throughout the material so that it exhibits almost no gross external magnetism. 
+In antiferromagnetic materials, which include certain metals and alloys in addition to some ionic solids, 
+the magnetism from magnetic atoms or ions oriented in one direction is canceled out by the set of 
+magnetic atoms or ions that are aligned in the reverse direction.
+
+This spontaneous antiparallel coupling of atomic magnets is disrupted by heating and disappears entirely 
+above a certain temperature, called the Néel temperature, characteristic of each antiferromagnetic material. 
+(The Néel temperature is named for Louis Néel, French physicist, who in 1936 gave one of the 
+first explanations of antiferromagnetism.) Some antiferromagnetic materials have Néel temperatures at, 
+or even several hundred degrees above, room temperature, but usually these temperatures are lower. 
+The Néel temperature for manganese oxide, for example, is 122 K.
+
+Antiferromagnetic solids exhibit special behaviour in an applied magnetic field depending upon the temperature. 
+At very low temperatures, the solid exhibits no response to the external field, because the antiparallel 
+ordering of atomic magnets is rigidly maintained. At higher temperatures, 
+some atoms break free of the orderly arrangement and align with the external field. 
+This alignment and the weak magnetism it produces in the solid reach their peak at the Néel temperature. 
+Above this temperature, thermal agitation progressively prevents alignment of the atoms with the magnetic field, 
+so that the weak magnetism produced in the solid by the alignment of its atoms continuously decreases as temperature is increased. 
+For further discussion of magnetic properties and solid state physics, see for example the text of Ashcroft and
+Mermin \cite{mermin}.
+
+As mentioned above, spin models like the Ising and Potts models can be used to model other systems as well,
+such as gases sticking to solid surfaces, and hemoglobin molecules that absorb oxygen. We sketch such an application
+in Fig.~\ref{fig:latticefig2}. 
+\begin{figure}
+\begin{center}
+\begin{picture}(100,100)(-1,-1)
+\setlength{\unitlength}{1mm}
+\thicklines
+\matrixput(0,0)(10,0){7}(0,10){4}{\circle{2}}
+\matrixput(10,0)(20,0){3}(0,20){2}{\circle*{2}}
+\matrixput(0,10)(20,0){4}(0,20){2}{\circle*{2}}
+\matrixput(1,0)(10,0){6}(0,10){4}{\line(1,0){8}}
+\matrixput(0,1)(10,0){7}(0,10){3}{\line(0,1){8}}
+\end{picture}
+\end{center}
+\caption{The open (white) circles at each lattice point can represent a vacant site, while the black circles can represent the absorption of an atom on a metal surface. \label{fig:latticefig2}}.
+\end{figure}
+
+
+However,  before we present the Ising model, 
+we feel it is appropriate to refresh  some important quantities
+in statistical physics, such as various definitions of statistical ensembles, 
+their partition functions
+and relevant variables. 
+
+
+
+\section{Review of Statistical Physics}
+
+
+
+In statistical physics the concept of an ensemble is one of the cornerstones in the definition of
+thermodynamical quantities. An ensemble is a collection of microphysics systems from which we derive 
+expectations values and thermodynamical properties related to experiment. 
+As an example, the specific heat (which is a measurable quantity in the laboratory) of a system of infinitely many particles, 
+can be derived from the basic interactions
+between the microscopic constituents. The latter can span from electrons to atoms and  molecules or a system of classical
+spins. All these microscopic constituents  interact via a well-defined interaction.
+We say therefore that statistical physics bridges the gap between the microscopic world and the macroscopic world.
+Thermodynamical quantities such as the specific heat or net magnetization of a system can all be derived
+from a microscopic theory.
+
+There are several types of ensembles, with their pertinent expectaction values and potentials.
+Table \ref{tab:listensembles} lists the most used ensembles in statistical physics together with frequently arising 
+extensive
+(depend on the size of the systems such as the number of particles) and intensive variables 
+(apply to all components of a system),
+in addition to associated potentials. 
+\begin{table}[htb]
+\caption{Overview of the most common ensembles and their  variables.
+Here we have define $\cal M$ - to be the  magnetization, $\cal D$ - the electric
+dipole moment, $\cal H$ - the magnetic field and $\cal E$ - to be the electric field. 
+The last two replace the pressure as an intensive variable, while the magnetisation and
+the dipole moment play the same role as volume, viz they are extensive 
+variables. The invers temperatur $\beta$ regulates the mean energy while the chemical
+potential $\mu$ regulates the mean number of particles.\label{tab:listensembles}}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+&&&&\\
+&\multicolumn{1}{|c}{Microcanonical}&\multicolumn{1}{|c}{Canonical}&
+\multicolumn{1}{|c}{Grand canonical}&\multicolumn{1}{|c|}{Pressure canonical}\\
+&&&&\\
+\hline 
+&&&&\\
+Exchange of heat  &no&yes&yes&yes\\
+with the environment&&&&\\
+&&&&\\
+Exchange of particles&no&no&yes&no\\
+with the environemt&&&&\\
+&&&&\\
+Thermodynamical&$V, \cal M, \cal D$&$V, \cal M, \cal D$&$V, \cal M, \cal D$
+&$P, \cal H, \cal E$\\
+parameters&     $E$&$T$&$T$&$T$\\
+	    &$N$&$N$&$\mu$&$N$\\
+&&&&\\
+Potential& Entropy& Helmholtz & $PV$ & Gibbs\\
+&&&&\\
+Energy &Internal& Internal & Internal & Enthalpy\\
+&&&&\\
+
+&&&&\\
+&&&&\\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\subsection{Microcanonical Ensemble}
+The microcanonical ensemble represents an hypothetically isolated system such as a nucleus which does not exchange 
+energy or particles via the environment. The thermodynamical quantity of interest is the entropy $S$ which is related to
+the logarithm of the number of possible microscopic states $\Omega(E)$ at a given energy $E$ that 
+the system can access. The relation is 
+%&\multicolumn{1}{c|}{Mikrocanoninal, $\Omega (N, V, E)$}\\ 
+\[ S=k_{B}ln\Omega.\]
+When the system is in its ground state the entropy is zero since there is only one possible
+ground state. For excited states, we can have a higher degeneracy than one and thus an entropy which is larger than zero.
+We may therefore loosely state that the entropy measures the degree of order in a system.
+At low energies, we expect that we have only few states which are accessible and that the system
+prefers a specific ordering. At higher energies, more states become accessible and the entropy 
+increases. 
+The entropy can  be used to compute observables such as the temperature 
+\[ \frac{1}{k_{B}T}=\left(\frac{\partial \log\Omega}{\partial E}\right)_{N, V},\]
+the pressure
+\[ \frac{p}{k_{B}T}=\left(\frac{\partial \log\Omega}{\partial V}\right)_{N, E},\]
+or the chemical potential.
+\[ \frac{\mu}{k_{B}T}=-\left(\frac{\partial \log\Omega}{\partial N}\right)_{V, E}.\]
+It is very difficult to compute the density of states $\Omega(E)$ and thereby the partition function in
+the microcanonical ensemble at a given energy $E$, since this
+requires the knowledge of all possible microstates at a given energy. 
+This means that calculations are seldomly done in the microcanonical ensemble.
+In addition, since the microcanonical
+ensemble is an isolated system, it is hard to give a physical meaning to a quantity like the microcanonical
+temperature. 
+
+\subsection{Canonical Ensemble}
+One of the most used ensembles is the canonical one, which is related to the microcanonical ensemble
+via a Legendre transformation. The temperature is an intensive variable in this ensemble whereas the energy
+follows as an expectation value. 
+In order to calculate expectation values such as the mean energy
+$\langle E \rangle $
+at a given temperature, we need a probability distribution.
+It is given by the Boltzmann distribution 
+\[
+  P_i(\beta) = \frac{e^{-\beta E_i}}{Z}
+\]
+with $\beta=1/k_BT$ being the inverse temperature, $k_B$ is the 
+Boltzmann constant, $E_i$ is the energy of a microstate $i$ while 
+$Z$ is the partition function for the canonical ensemble
+defined as
+\[
+Z=\sum_{i=1}^{M}e^{-\beta E_i},
+\]
+where the sum extends over all microstates
+$M$. 
+The potential of interest in this case is Helmholtz' free energy. It relates the expectation value of the
+energy at a given temperatur $T$ to the entropy at the same temperature via
+\[ F=-k_{B}TlnZ=\langle E \rangle-TS.\]
+Helmholtz' free energy expresses the struggle between 
+two important principles in physics, namely the strive towards an energy minimum and
+the drive towards higher entropy as the temperature increases. A higher entropy may be interpreted as a larger degree
+of disorder. When equilibrium is reached at a given temperature, we have a balance between these two principles.
+The numerical expression is Helmholtz' free energy.
+The creation of a macroscopic magnetic field from a bunch of atom-sized mini-magnets, as shown in 
+Fig.~\ref{fig:latticefig} 
+results from a careful balance between these two somewhat opposing principles in physics, order vs.~disorder.
+
+In the canonical ensemble the entropy is given by
+\[ S =k_{B}lnZ
++k_{B}T\left(\frac{\partial lnZ}{\partial T}\right)_{N, V},\]
+and the pressure by
+\[ p=k_{B}T\left(\frac{\partial lnZ}{\partial V}\right)_{N, T}.\]
+Similarly we can compute the chemical potential as 
+\[ \mu =-k_{B}T\left(\frac{\partial lnZ}{\partial N}\right)_{V, T}.\]
+
+For a system described by the canonical ensemble, the energy is an
+expectation value since we allow energy to be exchanged with the surroundings
+(a heat bath with temperature $T$). 
+
+This expectation value, the mean energy,
+can be calculated using 
+\[\langle E\rangle  =k_{B}T^{2}\left(\frac{\partial lnZ}{\partial T}\right)_{V, N}\]
+or 
+using the probability distribution
+$P_i$ as
+\[
+  \langle E \rangle = \sum_{i=1}^M E_i P_i(\beta)= 
+  \frac{1}{Z}\sum_{i=1}^M E_ie^{-\beta E_i}.
+\]
+The energy is proportional to the first derivative of the potential, Helmholtz' free energy.
+The corresponding variance is defined as
+\[
+\sigma_E^2=\langle E^2 \rangle-\langle E \rangle^2=
+         \frac{1}{Z}\sum_{i=1}^M E_i^2e^{-\beta E_i}-
+          \left(\frac{1}{Z}\sum_{i=1}^M E_ie^{-\beta E_i}\right)^2.
+\]
+If we divide the latter quantity with
+$kT^2$ we obtain the specific heat at constant volume 
+\[
+   C_V= \frac{1}{k_BT^2}\left(\langle E^2 \rangle-\langle E \rangle^2\right),
+\]
+which again can be related to the second derivative of Helmholtz' free energy.
+Using the same prescription, we can also evaluate the mean magnetization
+through 
+\[
+  \langle {\cal M} \rangle = \sum_i^M {\cal M}_i P_i(\beta)= 
+  \frac{1}{Z}\sum_i^M {\cal M}_ie^{-\beta E_i},
+\]
+and the corresponding variance
+\[
+\sigma_{{\cal M}}^2=\langle {\cal M}^2 \rangle-\langle {\cal M} \rangle^2=
+         \frac{1}{Z}\sum_{i=1}^M {\cal M}_i^2e^{-\beta E_i}-
+          \left(\frac{1}{Z}\sum_{i=1}^M {\cal M}_ie^{-\beta E_i}\right)^2.
+\]
+This quantity defines also the susceptibility 
+$\chi$ 
+\[
+  \chi=\frac{1}{k_BT}\left(\langle {\cal M}^2 \rangle-\langle {\cal M} \rangle^2\right).
+\]
+
+\subsection{Grand Canonical and Pressure Canonical} 
+Two other ensembles which are much used in statistical physics and thermodynamics are the grand canonical and pressure
+canonical ensembles. In the first
+we allow the system (in contact with a large heat bath) 
+to exchange both heat and particles with the environment.
+The potential is, with a partition function $\Xi (V, T, \mu)$ with variables 
+$V,T$ and $\mu$,
+\[ pV=k_{B}Tln\Xi,\]
+and the entropy is given by
+\[ S =k_{B}ln\Xi 
++k_{B}T\left(\frac{\partial ln\Xi}{\partial T}\right)_{V, \mu},\]
+while the mean number of particles is 
+\[ \langle N\rangle  =k_{B}T\left(\frac{\partial ln\Xi}{\partial \mu}\right)_{V, T}.\]
+The pressure is determined  as 
+\[ p =k_{B}T\left(\frac{\partial ln\Xi}{\partial V}\right)_{\mu, T}.\]
+
+In the pressure canonical ensemble we employ with Gibbs' free energy as the potential. It is related to
+Helmholtz' free energy via $G=F+pV$. The partition function is 
+$\Delta (N, p, T)$, with temperature, pressure and the number of particles as variables.
+The pressure and volume term can be replaced by other external potentials, such as an external magnetic
+field (or a gravitational field) which performs work on the system. Gibbs' free energy reads
+\[ G=-k_{B}Tln\Delta,\]
+and the entropy is given by
+\[ S =k_{B}ln\Delta 
++k_{B}T\left(\frac{\partial ln\Delta}{\partial T}\right)_{p, N}.\]
+We can compute the volume as 
+\[ V =-k_{B}T\left(\frac{\partial ln\Delta}{\partial p}\right)_{N, T},\]
+and finally the chemical potential
+\[ \mu =-k_{B}T\left(\frac{\partial ln\Delta}{\partial N}\right)_{p, T}.\]
+
+In this chapter we work with the canonical ensemble only.
+
+\section{Ising Model and Phase Transitions in  Magnetic Systems}
+
+\subsection{Theoretical Background}
+
+The model we will employ in our studies of phase transitions at finite temperature for 
+magnetic systems is the so-called Ising model. In its simplest form
+the energy is expressed as
+\[
+  E=-J\sum_{<kl>}^{N}s_ks_l-{\cal B}\sum_k^Ns_k,
+\]
+with  $s_k=\pm 1$, $N$ is the total number of spins, 
+$J$ is a coupling constant expressing the strength of the interaction
+between neighboring spins and 
+${\cal B}$ is an external magnetic field interacting with the magnetic
+moment set up by the spins.
+The symbol $<kl>$ indicates that we sum over nearest
+neighbors only. 
+Notice that for $J>0$ it is energetically favorable for neighboring spins 
+to be aligned. This feature leads to, at low enough temperatures,
+a cooperative phenomenon called spontaneous magnetization. That is, 
+through interactions between nearest neighbors, a given magnetic
+moment can influence the alignment of spins  that are separated 
+from the given spin by a macroscopic distance. These long range correlations
+between spins are associated with a long-range order in which
+the lattice has a net magnetization in the absence of a magnetic field. 
+In our further studies of the Ising model, we will mostly limit the attention 
+to cases with ${\cal B}=0$ only. 
+
+In order to calculate expectation values such as the mean energy
+$\langle E \rangle $ or
+magnetization $\langle {\cal M} \rangle $
+in statistical physics
+at a given temperature, we need a probability distribution 
+\[
+  P_i(\beta) = \frac{e^{-\beta E_i}}{Z}
+\]
+with $\beta=1/kT$ being the inverse temperature, $k$ the 
+Boltzmann constant, $E_i$ is the energy of a state $i$ while 
+$Z$ is the partition function for the canonical ensemble
+defined as
+\[
+Z=\sum_{i=1}^{M}e^{-\beta E_i},
+\]
+where the sum extends over all microstates
+$M$. 
+$P_i$ expresses the probability of finding the system in a given 
+configuration $i$.
+
+The energy for a specific configuration $i$
+is given by 
+\[
+   E_i =-J\sum_{<kl>}^{N}s_ks_l.
+\]
+To better understand what is meant with a configuration, 
+consider first the case of the one-dimensional Ising model
+with ${\cal B}=0$. 
+In general, a given configuration of $N$ spins in one
+dimension may look like
+\[
+\begin{array}{cccccccccc}
+\uparrow&\uparrow&\uparrow&\dots&\uparrow&\downarrow&\uparrow&\dots&\uparrow&\downarrow\\
+1&2&3&\dots& i-1&i&i+1&\dots&N-1&N\end{array}
+\]
+In order to illustrate these features 
+let us further specialize to
+just two spins.
+
+With two spins, since each spin takes two values only,
+we have $2^2=4$ possible arrangements of the two spins. 
+These four possibilities are 
+\[
+   1= \uparrow\uparrow\hspace{1cm}
+    2= \uparrow\downarrow\hspace{1cm}
+   3= \downarrow\uparrow\hspace{1cm}
+      4=\downarrow\downarrow
+\]
+
+What is the energy of each of these configurations? 
+
+For small systems, the way we treat the ends matters. Two cases are
+often used.
+\begin{enumerate}
+\item In the first case we employ what is called 
+free ends. This means that there is no contribution from points to the right or left of the
+endpoints. For the one-dimensional case, the energy is then written as 
+a sum over a single index
+\[
+   E_i =-J\sum_{j=1}^{N-1}s_js_{j+1},
+\]
+If we  label the first spin as $s_1$ and the second as $s_2$ 
+we obtain the following 
+expression for the energy 
+\[
+   E=-Js_1s_2.
+\]
+The calculation of the energy for the one-dimensional lattice
+with free ends for one specific spin-configuration 
+can easily be implemented in the following lines
+\begin{lstlisting}
+    for ( j=1; j < N; j++) {
+        energy += spin[j]*spin[j+1]; 
+    }
+\end{lstlisting}
+where the vector $spin[]$ contains the spin value $s_k=\pm 1$. 
+For the specific state $E_1$, we have chosen all spins up. The energy of
+this configuration becomes then
+\[
+   E_1=E_{\uparrow\uparrow}=-J.
+\]
+The other configurations give
+\[
+   E_2=E_{\uparrow\downarrow}=+J,
+\]
+\[
+   E_3=E_{\downarrow\uparrow}=+J,
+\]
+and
+\[
+   E_4=E_{\downarrow\downarrow}=-J.
+\]
+
+
+
+\item We can also choose so-called periodic boundary conditions.
+This means that the neighbour to the right of $s_N$ is assumed to take the value of 
+$s_1$. Similarly, the neighbour to the left of $s_1$ takes the value $s_N$.
+In this case the energy for the one-dimensional lattice
+reads 
+\[
+   E_i =-J\sum_{j=1}^{N}s_js_{j+1},
+\]
+and we obtain the following expression for the two-spin case
+\[
+   E=-J(s_1s_2+s_2s_1).
+\]
+In this case the energy for $E_1$ is different, we obtain namely
+\[
+   E_1=E_{\uparrow\uparrow}=-2J.
+\]
+The other cases do also differ and we have 
+\[
+   E_2=E_{\uparrow\downarrow}=+2J,
+\]
+\[
+   E_3=E_{\downarrow\uparrow}=+2J,
+\]
+and
+\[
+   E_4=E_{\downarrow\downarrow}=-2J.
+\]
+
+
+If we choose to use periodic boundary conditions we can code the above
+expression as
+\begin{lstlisting}
+    jm=N;
+    for ( j=1; j <=N ; j++) {
+        energy += spin[j]*spin[jm]; 
+        jm = j ;
+    }
+\end{lstlisting}
+
+\end{enumerate}
+The magnetization is however the same, defined as
+\[
+   {\cal M}_i=\sum_{j=1}^N s_j,
+\]
+where we  sum over all spins for a given configuration $i$. 
+
+Table \ref{tab:ising1} lists the energy and magnetization for both free ends
+and periodic boundary conditions. 
+\begin{table}[h]
+\begin{center}
+\caption{Energy and magnetization for the one-dimensional Ising model
+with $N=2$ spins with free ends (FE) and periodic boundary conditions
+(PBC).\label{tab:ising1}}
+\begin{tabular}{crrr}\\\hline
+State& Energy (FE) & Energy (PBC) & Magnetization \\ \hline
+$1= \uparrow\uparrow$& $-J$ & $-2J$ & 2\\
+$2=\uparrow\downarrow$&  $J$ & $2J$  & 0\\
+$   3= \downarrow\uparrow$&  $J$ & $2J$ &  0\\
+$      4=\downarrow\downarrow$&  $-J$ & $-2J$ & -2\\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+We can reorganize Table \ref{tab:ising1} according to the number of spins
+pointing up, as shown in Table \ref{tab:ising2}.
+\begin{table}[h]
+\caption{Degeneracy, energy and magnetization for the one-dimensional 
+Ising model
+with $N=2$ spins with free ends (FE) and periodic boundary conditions
+(PBC). \label{tab:ising2}}
+\begin{center}
+\begin{tabular}{llrrr}\\\hline 
+Number spins up& Degeneracy& Energy (FE)& Energy (PBC) & Magnetization \\ \hline
+2& 1&$-J$ &$-2J$ & 2\\
+1& 2 & $J$ &$2J$ & 0\\
+0& 1 & $-J$ &$-2J$ & -2 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+It is worth noting that for small dimensions of the lattice,
+the energy differs depending on whether we use
+periodic boundary conditions or free ends. This means also
+that the partition functions will be different, as discussed
+below. In the thermodynamic limit we have $N\rightarrow \infty$,
+and the final results do not depend on the kind of boundary conditions
+we choose. 
+
+
+For a one-dimensional lattice with periodic boundary conditions, 
+each spin sees two neighbors. For a
+two-dimensional lattice each spin sees four neighboring spins. 
+How many neighbors does a spin see in three dimensions?
+
+In a similar way, we could enumerate the number of states for
+a two-dimensional system consisting of two spins, i.e., 
+a $2\times 2$ Ising model on a square lattice with {\em periodic
+boundary conditions}. In this case we have a total of 
+$2^4=16$ states. 
+Some 
+examples of configurations with their respective energies are 
+listed here
+\[
+  E=-8J\hspace{1cm}\begin{array}{cc}\uparrow & \uparrow \\
+                                    \uparrow & \uparrow\end{array}
+\hspace{0.5cm}
+  E=0\hspace{1cm}\begin{array}{cc}\uparrow & \uparrow \\
+                                    \uparrow & \downarrow\end{array}
+\hspace{0.5cm}
+  E=0\hspace{1cm}\begin{array}{cc}\downarrow & \downarrow \\
+                                    \uparrow & \downarrow\end{array}
+\hspace{0.5cm}
+  E=-8J\hspace{1cm}\begin{array}{cc}\downarrow & \downarrow \\
+                                    \downarrow & \downarrow\end{array}
+\]
+
+In the Table \ref{tab:ising3} we group these configurations
+according to their total energy and magnetization.
+\begin{table}[h]
+\caption{Energy and magnetization for the two-dimensional Ising model
+with $N=2\times 2$ spins with periodic boundary conditions. \label{tab:ising3}}
+\begin{center}
+\begin{tabular}{llrr}\\\hline 
+Number spins up& Degeneracy& Energy & Magnetization \\ \hline
+4&1 & $-8J$ & 4\\
+3& 4 & $0$ & 2\\
+2& 4 & $0$ & 0 \\
+2& 2 & $8J$ & 0 \\
+1& 4 & $0$ & -2 \\
+0& 1 & $-8J$ & -4\\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+For the one-dimensional Ising model we can compute rather easily the exact partition function
+for a system of $N$ spins.
+Let us consider first the case with free ends.
+The energy reads 
+\[
+E=-J\sum_{j=1}^{N-1}s_js_{j+1}.
+\]
+The partition function for $N$ spins is given by 
+\[ 
+  Z_N=\sum_{s_1=\pm 1}\dots \sum_{s_N=\pm 1}\exp{(\beta J\sum_{j=1}^{N-1}s_js_{j+1})},
+\]
+and since the last spin occurs only once in the last sum in the exponential, we can single out the last 
+spin as follows
+\[ 
+ \sum_{s_N=\pm 1}\exp{(\beta Js_{N-1}s_{N})} = 2cosh (\beta J).
+\]
+The partition function consists then of a part from the last spin and one from the remaining spins
+resulting in 
+\[ 
+  Z_N=Z_{N-1}2cosh (\beta J).
+\]
+We can repeat this process and obtain 
+\[ 
+  Z_N=(2cosh (\beta J))^{N-2}Z_2,
+\]
+with $Z_2$ given by
+\[ 
+  Z_2=\sum_{s_1=\pm 1}\sum_{s_2=\pm 1}\exp{(\beta Js_1s_{2})}=4cosh(\beta J),
+\]
+resulting in 
+\[
+Z_N=2(2cosh(\beta J))^{N-1}.
+\]
+In the thermodynamical limit where we let $N\rightarrow \infty$, the way we treat the ends
+does not matter. However, since our computations will always be carried out with a limited
+value of $N$, we need to consider other boundary conditions as well. Here we limit the attention
+to periodic boundary  conditions.
+
+If we use periodic boundary conditions, the partition function is given by
+\[ 
+  Z_N=\sum_{s_1=\pm 1}\dots \sum_{s_N=\pm 1}\exp{(\beta J\sum_{j=1}^{N}s_js_{j+1})},
+\]
+where the sum in the exponential runs from $1$ to $N$ since the energy is defined as
+\[
+E=-J\sum_{j=1}^{N}s_js_{j+1}.
+\]
+We can then rewrite the partition function as 
+\[ 
+  Z_N=\sum_{\{s_i=\pm 1\}}\prod_{i=1}^{N}\exp{(\beta Js_is_{i+1})},
+\]
+where the first sum is meant to represent all lattice sites.
+Introducing the matrix $\hat{{\bf T}}$ (the so-called transfer matrix)
+\[
+    \hat{{\bf T}}=\left(\begin{array}{cc} e^{\beta J} & e^{-\beta J}\\ 
+                                          e^{-\beta J} & e^{\beta J}\end{array} \right), 
+\]   
+with matrix elements $t_{11} = e^{\beta J}$, $t_{1-1} = e^{-\beta J}$, $t_{-11} = e^{\beta J}$ and
+$t_{-1-1} = e^{\beta J}$
+we can rewrite the partition function as
+\[ 
+  Z_N=\sum_{\{s_i=\pm 1\}}\hat{{\bf T}}_{s_1s_2}\hat{{\bf T}}_{s_2s_3}\dots\hat{{\bf T}}_{s_Ns_1}=Tr \hat{{\bf T}}^N. 
+\]
+The $2\times 2$ matrix $\hat{{\bf T}}$ is easily diagonalized with eigenvalues 
+$\lambda_1= 2cosh(\beta J)$ and $\lambda_2=2sinh(\beta J)$. Similarly, the matrix  $\hat{{\bf T}}^N$ has 
+eigenvalues $\lambda_1^N$ and $\lambda_2^N$ and the trace of $\hat{{\bf T}}^N$ is just the sum over eigenvalues
+resulting in a partition function 
+\[
+   Z_N=\lambda_1^N+\lambda_2^N=2^N\left(\left[cosh(\beta J)\right]^{N}+
+                \left[sinh(\beta J)\right]^{N}\right).
+\]
+In the limit $N\rightarrow \infty$ the two partition functions with free ends and periodic boundary
+conditions agree, see below for a demonstration.
+
+In the development phase of an algorithm and its pertinent code it is always useful to
+test the numerics against closed-form results. It is therefore instructive to compute properties like the 
+internal energy and the specific heat for these two cases and test the results against those 
+produced by our code.
+We can then calculate the mean energy with free ends from the above formula for the partition function
+using 
+\[
+   \langle E \rangle=-\frac{\partial lnZ}{\partial\beta}=-(N-1)Jtanh(\beta J).
+\]
+Helmholtz's  free energy is given by
+\[ 
+    F= -k_BTlnZ_N = -Nk_BTln\left(2cosh(\beta J)\right).
+\] 
+If we take our simple system with just two spins in one-dimension,
+we see immediately that the above expression for the partition function
+is correct. Using the definition of the partition function we have
+\[
+Z_2=\sum_{i=1}^{2}e^{-\beta E_i}=2e^{-\beta J}+2e^{\beta J}=4cosh(\beta J)
+\]
+If we take the limit $T\rightarrow 0$ ($\beta\rightarrow \infty$)
+and set $N=2$, we obtain
+\[
+ \lim_{\beta \rightarrow\infty}  \langle E \rangle=-J\frac{e^{J\beta}-e^{-J\beta}}{e^{J\beta}+e^{-J\beta}}=-J,
+\]
+which is the energy where all spins point in the same direction. At low $T$,
+the system tends towards a state with the highest possible degree of order.
+
+The specific heat in one-dimension with free ends is
+\[
+   C_V=\frac{1}{kT^2}\frac{\partial^2}{\partial\beta^2}lnZ_N=
+       (N-1)k\left(\frac{\beta J}{cosh(\beta J)}\right)^2.
+\]
+Note well that this expression for the specific heat from the one-dimensional
+Ising model does not diverge or exhibit discontinuities, as can be seen from Fig.~\ref{fig:cv1dim}.
+\begin{center}
+\begin{figure}[hptp]
+\input{figures/cv1dim.tex}
+\caption{Heat capacity per spin ($C_V/(N-1)k_B$ 
+as function of inverse temperature $\beta$ for the one-dimensional
+Ising model.\label{fig:cv1dim}}
+\end{figure}
+\end{center}
+In one dimension we do not have a second order phase transition, although this is predicted by mean field models \cite{pliscke}.
+
+We can repeat this exercise for the case with periodic boundary conditions as well.
+Helmholtz's free energy is in this case
+\[
+F=-k_BTln(\lambda_1^N+\lambda_2^N)=-k_BT\left\{Nln(\lambda_1)+ln\left(1+(\frac{\lambda_2}{\lambda_1})^N\right)\right\} ,
+\]
+which in the limit $N\rightarrow \infty$ results in $F=-k_BTNln(\lambda_1)$
+as in the case with free ends.
+Since other thermodynamical quantities are related to derivatives of the free energy, all
+observables become identical in the thermodynamic limit. 
+
+
+Hitherto we have limited ourselves to studies of systems with zero external magnetic field, viz
+${\cal B}=0$.
+We will mostly study systems which exhibit a spontaneous magnitization. It is however instructive to extend
+the one-dimensional Ising model to  $\cal B\ne$ $0$, yielding a partition function (with periodic boundary
+conditions) 
+\[ 
+  Z_N=\sum_{s_1=\pm 1}\dots \sum_{s_N=\pm 1}\exp{(\beta \sum_{j=1}^{N}(Js_js_{j+1}+\frac{{\cal B}}{2}(s_j+s_{j+1}))},
+\]
+which yields a new transfer matrix 
+with matrix elements $t_{11} = e^{\beta( J+{\cal B})}$, $t_{1-1} = e^{-\beta J}$, $t_{-11} = e^{\beta J}$ and
+$t_{-1-1} = e^{\beta (J-{\cal B})}$
+with  eigenvalues 
+\[
+\lambda_1=e^{\beta J}cosh(\beta J)+(e^{2\beta J}sinh^2(\beta {\cal B})+e^{-2\beta J})^{1/2},
+\]
+and 
+\[
+\lambda_1=e^{\beta J}cosh(\beta J)-(e^{2\beta J}sinh^2(\beta {\cal B})+e^{-2\beta J})^{1/2}.
+\]
+The partition function is given by $Z_N=\lambda_1^N+\lambda_2^N$ and in the thermodynamic limit we
+obtain the following free energy 
+\[ 
+F=-Nk_BTln\left(e^{\beta J}cosh(\beta J)+(e^{2\beta J}sinh^2(\beta {\cal B})+e^{-2\beta J})^{1/2}\right).
+\]
+It is now useful to compute the expectation value of the magnetisation per spin
+\[ 
+\langle {\cal M}/N \rangle = 
+  \frac{1}{NZ}\sum_i^M {\cal M}_ie^{-\beta E_i}=-\frac{1}{N}\frac{\partial F}{\partial {\cal B}},
+\]
+resulting in
+\[ 
+\langle {\cal M}/N \rangle = \frac{sinh(\beta {\cal B})}{\left(sinh^2(\beta {\cal B})+e^{-2\beta J})^{1/2}\right)}.
+\]
+We see that for $ {\cal B}=0$ the magnetisation is zero.
+This means that for a one-dimensional Ising model we cannot have a spontaneous magnetization.
+For the two-dimensional model however, see the discussion below, the Ising model exhibits both a
+spontaneous magnetisation  and a specific heat and susceptibility which are discontinuous or even diverge. 
+However, except for the simplest case such as $2\times 2$ lattice of spins, with the following 
+partition function
+\[  
+   Z=2e^{-8J\beta}+2e^{8J\beta}+12,
+\] 
+and resulting mean energy 
+\[
+   \langle E \rangle=-\frac{J}{Z}\left(16e^{8J\beta}-16e^{-8J\beta}\right),
+\]
+it is a highly non-trivial task to find the closed-form expression for $Z_N$ in the thermodynamic
+limit.
+The closed-form expression for the Ising model in two dimensions was obtained via  a mathematical tour de force
+in 1944 by the Norwegian chemist Lars Onsager \cite{onsager1944}.
+The exact partition function 
+for $N$ spins in two dimensions and with zero magnetic field $\cal B$ is given by 
+\[
+   Z_N=\left[2cosh(\beta J)e^I\right]^N,
+\]
+with 
+\[
+I=\frac{1}{2\pi}\int_0^{\pi}d\phi ln
+        \left[\frac{1}{2}\left(1+(1-\kappa^2sin^2\phi)^{1/2}\right)\right],
+\]
+and
+\[
+   \kappa=2sinh(2\beta J)/cosh^2(2\beta J).
+\]
+The resulting energy is given by 
+\[ 
+  \langle E\rangle =  -Jcoth(2\beta J)\left[1+\frac{2}{\pi}(2tanh^2(2\beta J)-1)K_1(q)\right],
+\]
+with 
+$q=2sinh(2\beta J)/cosh^2(2\beta J)$ and the complete elliptic integral of the first kind
+\[
+K_1(q) = \int_0^{\pi/2}\frac{d\phi}{\sqrt{1-q^2sin^2\phi}}.
+\]
+Differentiating once more with respect to temperature we obtain the specific heat given by
+\be
+C_V=\frac{4k_B}{\pi}(\beta Jcoth(2\beta J))^2\left\{K_1(q)-K_2(q)-(1-tanh^2(2\beta J))\left[\frac{\pi}{2}+(2tanh^2(2\beta J)-1)K_1(q)\right]\right\},
+\label{eq:exactcvising1}
+\ee
+where
+\be
+   K_2(q) = \int_0^{\pi/2}d\phi\sqrt{1-q^2sin^2\phi},
+\ee
+is the complete elliptic integral of the second kind.
+Near the critical temperature $T_C$ the specific heat behaves as
+\be
+C_V \approx -\frac{2}{\pi}\left(\frac{2J}{k_BT_C}\right)^2ln\left|1-\frac{T}{T_C}\right|+\mathrm{const}.
+\label{eq:exactcvising2}
+\ee
+
+In theories of critical phenomena one ca show that for temperatures $T$ below a critical temperature $T_C$, the heat capacity scales as \cite{cardy}
+\[
+C_V\sim \left|1-\frac{T}{T_C}\right|^{-\alpha},
+\]
+and Onsager's result is a special case of this power law behavior. The limiting form of the function
+\[
+lim_{\alpha\rightarrow 0} \frac{1}{\alpha}(Y^{-\alpha}-1)=-lnY,
+\]
+can be used to infer 
+that the closed-form result is a special case of the power law singularity with 
+$\alpha =0$.
+
+Similar relations applies to other expectation values. An example is the 
+the spontaneous magnetisation per spin. This quantity is also highly non-trivial to compute.
+Here we simply limit ourselves to list Onsager's result
+\[
+\langle {\cal M}(T)/N \rangle =     \left[1-\frac{(1-tanh^2 (\beta J))^4}{16tanh^4(\beta J)}\right]^{1/8},
+\]
+for $T < T_C$. For $T> T_C$ the magnetization is zero. 
+From theories of critical phenomena one can show that
+the magnetization behaves as $T\rightarrow T_C$ from below
+\[
+\langle {\cal M}(T)/N \rangle \sim  (T_C-T)^{1/8}.
+\]
+The susceptibility behaves as 
+\[
+\chi(T) \sim |T_C-T|^{-7/4}.
+\]
+
+Before we proceed, we need to say some words about phase transitions and critical phenomena.
+
+\section{Phase Transitions and Critical Phenomena}
+
+A phase transition is marked by abrupt macroscopic changes as external parameters are changed, such as an increase
+of temperature. The point where a phase transition takes place is called a critical point.
+
+We distinguish normally between two types of phase transitions; first-order transitions and second-order 
+transitions. An important quantity in studies of phase transitions is the so-called correlation length
+$\xi$ and various correlations functions like spin-spin correlations. 
+For the Ising model we shall show below that the correlation length is related
+to the spin-correlation function, which again defines the magnetic susceptibility. The spin-correlation function
+is nothing but the covariance and expresses the degree of correlation between spins.
+
+The correlation length
+defines the length scale at which the overall properties of a material start to differ from its bulk properties.
+It is the distance over which the fluctuations of the microscopic degrees of freedom (for example the position of atoms)
+are significantly correlated with each other. Usually it is of the order of few interatomic spacings for a solid.
+The correlation length $\xi$ depends however on external conditions such as pressure and temperature.
+
+First order/discontinuous phase transitions are characterized by two or more states on either 
+side of the critical point that can coexist at the critical point.
+As we pass through the critical point we observe a discontinuous behavior of thermodynamical functions. 
+The correlation length is normally finite at the critical point.  Phenomena such as hysteris
+occur, viz. there is a continuation of  state below the critical point into one above the critical point. This continuation
+is metastable so that the system may take a macroscopically long time to readjust. A classical example is the  
+melting of ice. It takes a specific amount of time before all the ice has melted. The temperature remains constant and 
+water and ice can coexist for a macroscopic time. The energy shows a discontinuity at the critical point, reflecting the 
+fact that a certain amount of heat is needed in order to melt all the ice
+
+Second order or continuous transitions are different and in general much difficult to understand and model. 
+The correlation length diverges at the critical point, fluctuations are correlated
+over all distance scales, which forces the system to be in a unique critical phase. The two phases on either side of the 
+critical point become identical. The disappearance of a spontaneous magnetization is a classical example
+of a second-order phase transitions. Structural transitions in solids are other types of second-order phase transitions.
+Strong correlations make a perturbative treatment impossible. From a theoretical point of view, the way out
+is renormalization group theory \cite{wilson1975,wilson1983,cardy,stanley1999,nb1999,landaubinder,shankar1994a}. 
+Table \ref{tab:phasetransitions} lists some typical system with their pertinent order parameters.
+\begin{center}
+\begin{table}
+\caption{Examples of various phase transitions with respective order parameters.\label{tab:phasetransitions}}
+\begin{tabular}{|c|c|c|}
+\hline
+&&\\
+\multicolumn{1}{|c}{System}&\multicolumn{1}{|c}{Transition}&\multicolumn{1}{|c|}{Order Parameter}\\
+&&\\
+\hline 
+&&\\
+Liquid-gas  &          Condensation/evaporation&  Density difference $\Delta\rho=\rho_{liquid}-\rho_{gas}$ \\
+Binary liquid&  mixture/Unmixing  &   Composition difference \\
+Quantum liquid  &      Normal fluid/superfluid &  $<\phi>$, $\psi$ = wavefunction  \\
+Liquid-solid    &      Melting/crystallisation & Reciprocal lattice vector \\
+Magnetic solid   &     Ferromagnetic&  Spontaneous magnetisation $M$\\
+       &               Antiferromagnetic &  Sublattice magnetisation $M$\\
+Dielectric solid  &    Ferroelectric&  Polarization $P$ \\
+                  &    Antiferroelectric & Sublattice polarisation $P$\\
+&&\\
+&&\\ \hline
+\end{tabular}
+\end{table}
+\end{center}
+Using Ehrenfest's definition of the order of a phase transition we can relate the behavior around the critical point
+to various derivatives of the thermodynamical potential.  
+In the canonical ensemble we are using, the thermodynamical potential is Helmholtz' free energy 
+\[
+   F= \langle E\rangle -TS  = -kTln Z
+\]
+meaning $ lnZ = -F/kT  = -F\beta$. The energy is given as the first derivative of $F$
+\[
+   \langle E \rangle=-\frac{\partial lnZ}{\partial \beta} =\frac{\partial (\beta F)}{\partial \beta}.
+\]
+and the specific heat is defined via the second derivative of $F$
+\[
+   C_V=-\frac{1}{kT^2}\frac{\partial^2 (\beta F)}{\partial\beta^2}.
+\]
+We can relate observables to various derivatives of the partition 
+function and the free energy. When a given derivative of the free energy or the partition function is discontinuous 
+or diverges (logarithmic divergence for the heat capacity from the Ising model) we talk of a phase transition
+of order of the derivative.
+A first-order phase transition is recognized in a discontinuity of the energy, or the first derivative of $F$.
+The Ising model exhibits a second-order phase transition since the heat capacity diverges. The susceptibility is 
+given by the second derivative of $F$ with respect to external magnetic field. Both these quantities diverge.
+
+
+\subsection{The Ising Model and Phase Transitions}
+
+
+The Ising model in two dimensions with ${\cal B} = 0$ undergoes a
+phase transition of second order. What it actually means is that below
+a given critical temperature $T_C$, the Ising model exhibits
+a spontaneous magnetization with $\langle {\cal M} \rangle\ne 0$. Above 
+$T_C$ the average magnetization is zero. 
+The mean magnetization approaches zero at $T_C$ with an infinite slope. 
+Such a behavior is an example of what are called critical phenomena \cite{stanley1971,stanley1999,landaubinder}. 
+A critical phenomenon is normally marked by one or more
+thermodynamical variables which vanish above a critical point. In our case this is the mean magnetization $\langle {\cal M} \rangle\ne 0$. Such a parameter is normally called the order parameter. 
+
+Critical phenomena have been extensively studied in physics. One major reason is that we still do not
+have a satisfactory understanding of the properties of a system close to a critical point. Even for the simplest 
+three-dimensional systems we cannot predict exactly the values of various thermodynamical variables. Simplified theoretical
+approaches like mean-field models discussed below, can even predict the wrong physics. Mean-field theory results in a second-order phase transition for the one-dimensional Ising model, whereas we saw in the previous section that
+the one-dimensional
+Ising model does not predict any spontaneous magnetization at any
+finite temperature. The physical reason for this can be understood
+from the following simple consideration. Assume that the ground state
+for an $N$-spin system in one dimension is characterized by the
+following configuration   
+\[
+\begin{array}{cccccccccc}
+\uparrow&\uparrow&\uparrow&\dots&\uparrow&\uparrow&\uparrow&\dots&\uparrow&\uparrow\\
+1&2&3&\dots& i-1&i&i+1&\dots&N-1&N\end{array}
+\]
+which has a total energy $-NJ$ and magnetization $N$, where we used periodic boundary conditions. 
+If we flip half of the spins we obtain a possible  configuration where the first half of the spins point upwards and the last 
+half points downwards we arrive at the  configuration
+\[
+\begin{array}{cccccccccc}
+\uparrow&\uparrow&\uparrow&\dots&\uparrow&\uparrow&\downarrow&\dots&\downarrow&\downarrow\\
+1&2&3&\dots& N/2-1&N/2&N/2+1&\dots&N-1&N\end{array}
+\]
+with energy $(-N+4)J$ and net magnetization zero. This state is an example
+of a possible disordered state with net magnetization zero. The change in energy is 
+however too small to stabilize the disordered state. 
+There are many other such states with net magnetization zero with energies slightly larger than the above case.
+But it serves to demonstrate our point, we can namely build states at low energies compared with the ordered
+state with net magnetization zero. And the energy difference between the ground state is too small to stabilize the system.
+In two dimensions
+however the excitation energy to a disordered state is much higher,
+and this difference can be sufficient to stabilize the system. 
+In fact, the Ising model exhibits a phase transition to a disordered
+phase both in two and three dimensions. 
+
+For the two-dimensional case, we move from a phase with finite
+magnetization 
+$\langle {\cal M} \rangle \ne 0$ to a  paramagnetic phase
+with $\langle {\cal M} \rangle=0$ at a critical temperature $T_C$.
+At the critical temperature, quantities like the heat capacity
+$C_V$  and the susceptibility $\chi$ are discontinuous or diverge at the critical point  in the thermodynamic
+limit, i.e., with an infinitely large lattice. This means that 
+the variance in energy and magnetization are discontinuous or diverge. For a finite 
+lattice however, the variance will always scale as $\sim 1/\sqrt{M}$,
+$M$ being e.g., the number of  configurations which in our case
+is proportional with $L$, the number of spins in a the $x$ and $y$ directions.
+The total number of spins is $N=L\times L$ resulting in a total of
+$M=2^N$ microstates.
+Since our lattices will always be of a finite dimensions, the calculated
+$C_V$ or $\chi$ will not exhibit a diverging behavior. We will however
+notice a broad maximum in e.g., $C_V$ near $T_C$. This maximum,
+as discussed below, becomes sharper and sharper as $L$ is increased.
+ 
+
+Near $T_C$ we can characterize the behavior of many physical quantities
+by a power law behavior (below we will illustrate this in a qualitative way using
+mean-field theory).
+
+We showed in the previous section that the mean magnetization is given by
+(for temperature below $T_C$)
+\[
+  \langle {\cal M}(T) \rangle \sim \left(T-T_C\right)^{\beta},
+\]
+where $\beta=1/8$ is a so-called critical exponent. A similar relation
+applies to the heat capacity 
+\[
+  C_V(T) \sim \left|T_C-T\right|^{-\alpha},
+\]
+and the susceptibility
+\[
+  \chi(T) \sim \left|T_C-T\right|^{-\gamma},
+\]
+with $\alpha = 0$ and $\gamma = -7/4$.
+Another important quantity is the correlation length, which is expected
+to be of the order of the lattice spacing for $T$ is close to $T_C$. Because the spins
+become more and more correlated as $T$ approaches $T_C$, the correlation
+length increases as we get closer to the critical temperature. The discontinuous 
+behavior of the correlation $\xi$ near $T_C$  is
+\begin{equation}
+  \xi(T) \sim \left|T_C-T\right|^{-\nu}.
+  \label{eq:xi}
+\end{equation}
+A second-order phase transition is characterized by a
+correlation length which spans the whole system.  The correlation length is typically of the order
+of some few interatomic distances. The fact that a system like the Ising model,
+whose energy is described by the interaction between neighboring spins only, can yield  correlation lengths of macroscopic
+size at a critical point is still a feature which is not properly understood.  Stated differently, how can the spins
+propagate their correlations so extensively when we approach the critical point, in particular since the interaction acts only between nearest spins? Below we will compute the correlation
+length via the spin-sin correlation function for the one-dimensional Ising model.
+ 
+In our actual calculations of the two-dimensional Ising model, we are however 
+always limited to a finite lattice and $\xi$ will
+be proportional with the size of the lattice at the critical point. 
+Through finite size scaling relations \cite{stanley1999,landaubinder,cardy,nb1999} 
+it is possible to relate the behavior at finite lattices with the 
+results for an infinitely large lattice.
+The critical temperature scales then as
+\begin{equation}
+ T_C(L)-T_C(L=\infty) \propto aL^{-1/\nu},
+ \label{eq:tc}
+\end{equation}
+with  $a$ a constant and  $\nu$ defined in Eq.~(\ref{eq:xi}).
+The correlation length for a finite lattice size can then be shown to be proportional to
+\[
+  \xi(T) \propto L\sim \left|T_C-T\right|^{-\nu}.
+\]
+and if we set $T=T_C$ one can obtain the following relations for the 
+magnetization, energy and susceptibility for $T \le T_C$
+\[
+  \langle {\cal M}(T) \rangle \sim \left(T-T_C\right)^{\beta}
+  \propto L^{-\beta/\nu},
+\]
+\[
+  C_V(T) \sim \left|T_C-T\right|^{-\gamma} \propto L^{\alpha/\nu},
+\]
+and
+\[
+  \chi(T) \sim \left|T_C-T\right|^{-\alpha} \propto L^{\gamma/\nu}.
+\]
+
+
+
+\subsection{Critical Exponents and Phase Transitions from Mean-field Models}
+
+In order to understand the above critical exponents, we will derive some of the above relations using what is called mean-field theory.
+
+In studies of phase transitions we are interested in minimizing the free energy
+by varying the average magnetisation, which is the order parameter for the Ising model. The magnetization disappears at
+$T_C$.  
+
+Here we use mean field theory to model the free energy $F$.   
+In mean field theory the local magnetisation is a treated as a constant and all effects from fluctuations
+are neglected. Stated differently, we reduce a complicated system of many interacting spins to a set of equations
+for each spin. Each spin sees now a mean field which is set up by the surrounding spins.  We neglect therefore the
+role of spin-spin correlations.
+A way to achieve this is to rewrite the interaction between two spins at sites $i$ and $j$, respectively, 
+by adding and subtracting the mean value of the  spin
+$\langle S \rangle$, that is
+\[
+S_iS_j=(S_i-\langle S \rangle+\langle S \rangle)(S_i-\langle S \rangle+\langle S \rangle)
+\approx \langle S \rangle^2+\langle S\rangle(S_i-\langle S \rangle)+\langle S \rangle(S_j-\langle S \rangle),
+\]
+where we have ignored terms of the order 
+$(S_i-\langle S \rangle)(S_i-\langle S \rangle)$. These are the terms which lead to correlations between neighbouring
+spins. In mean field theory we ignore correlations. 
+
+This means that we can rewrite the  Hamiltonian
+\[
+  E=-J\sum_{<ij>}^{N}S_kS_l-B\sum_i^NS_i,
+\]
+as
+\[
+  E=-J\sum_{<ij>}\langle S \rangle^2+\langle S \rangle(S_i-\langle S \rangle)+\langle S \rangle(S_j-\langle S \rangle)    -B\sum_i S_i,
+\]
+resulting in
+\[
+  E=-(B+zJ\langle S \rangle) \sum_i S_i +zJ\langle S \rangle^2,
+\]
+with $z$ the number of nearest neighbours for a given site $i$.
+We have included the external magnetic field $B$ for completeness. 
+
+We can then define an effective field which all spins see, namely
+\[
+  B_{\mathrm{eff}}=(B+zJ\langle S \rangle).
+\]
+To obtain the vaue of $\langle S \rangle)$ we employ again our results from the canonical ensemble.
+The partition function reads in this case
+\[
+Z=e^{-NzJ\langle S \rangle^2/kT}\left(2cosh(B_{\mathrm{eff}}/kT)\right)^N,
+\]
+with a free energy
+\[
+F=-kTlnZ=-NkTln(2)+NzJ\langle S \rangle^2-NkTln\left(cosh(B_{\mathrm{eff}}/kT)\right)
+\]
+and minimizing $F$ with respect to  $\langle S \rangle$ we arrive at
+\[
+\langle S \rangle = tanh(2cosh\left(B_{\mathrm{eff}}/kT)\right).
+\]
+
+Close to the phase transition we expect $\langle S \rangle$ to become small
+and eventually vanish. We can then expand $F$ in powers of $\langle S \rangle$ as
+\[
+F=-NkTln(2)+NzJ\langle s \rangle^2-NkT-BN\langle s \rangle+NkT\left(\frac{1}{2}\langle s \rangle^2+
+\frac{1}{12}\langle s \rangle^4+\dots\right),
+\]
+and using $\langle M\rangle = N\langle S \rangle$ we can rewrite Helmholtz free energy as
+\[
+F=F_0-B\langle M\rangle +\frac{1}{2}a\langle M \rangle^2+
+\frac{1}{4}b\langle M \rangle^4+\dots
+\]
+
+Let $\langle M \rangle = m$ and
+\[
+F=F_0+\frac{1}{2}am^2+
+\frac{1}{4}bm^4+\frac{1}{6}cm^6
+\]
+$F$ has a minimum at equilibrium $F'(m) =0$ and $F''(m) > 0$
+\[
+F'(m)=0=m(a+bm^2+cm^4),
+\]
+and if we assume that $m$ is real we have two solutions
+\[
+   m=0,
+\]
+or
+\[
+  m^2 = \frac{b}{2c}\left(-1\pm\sqrt{1-4ac/b^2}\right).
+\]
+
+This relation can be used to 
+describe both first and second-order phase transitions. Here we consider the second case.
+We assume that $b > 0$ and let $a\ll 1$ since we want to study a perturbation around $m=0$. We reach the critical point when 
+$a=0$, that is
+\[
+  m^2 = \frac{b}{2c}\left(-1\pm\sqrt{1-4ac/b^2}\right)\approx -a/b.
+\]
+We define the temperature dependent function
+\[ a(T) = \alpha (T-T_C), \]
+with $\alpha > 0$ and $T_C$ being the critical temperature where the magnetization vanishes. If $a$ is negative we have two solutions
+\[    m = \pm \sqrt{-a/b}  = \pm \sqrt{\frac{\alpha (T_C-T)}{b}},\] meaning that
+$m$ evolves continuously to the critical temperature where $F=0$ for $T \le T_C$
+
+We can now compute the entropy as follows 
+\[ S= -\left(\frac{\partial F}{\partial T}\right).\]
+For $T \ge T_C$ we have $m=0$ and 
+\[ S= -\left(\frac{\partial F_0}{\partial T}\right),\]
+and for $T \le T_C$
+\[ S= -\left(\frac{\partial F_0}{\partial T}\right)-\alpha^2(T_C-T)/2b,\]
+and we see that there is a smooth  crossover at $T_C$. 
+
+In theories of critical phenomena one has that
+\[
+C_V\sim \left|1-\frac{T}{T_C}\right|^{-\alpha},
+\]
+and Onsager's result is a special case of this power law behavior. The limiting form of the function
+\[
+lim_{\alpha\rightarrow 0} \frac{1}{\alpha}(Y^{-\alpha}-1)=-\log{(Y)},
+\]
+meaning that the closed-form result is a special case of the power law singularity with 
+$\alpha =0$.
+
+%Another quantity (given by the covariance) is the correlation function
+%\begin{equation}
+%  G_{ij} = \langle S_iS_j \rangle-\langle S_i\rangle\langle S_j \rangle.
+%\end{equation}
+%and the correlation length
+%\begin{equation}
+%  \xi^{-1} = -\lim_{r \rightarrow \infty} \frac{\partial}{\partial r} ln G(r),
+%\end{equation}
+%with $r=|i-j|$.
+
+
+
+
+\section{The Metropolis Algorithm and the Two-dimensional Ising Model}
+
+We switch now back to the Ising model in two dimensions and explore how to
+write a program that will allow us to compute various thermodynamical
+quantities.
+The algorithm of choice for solving the Ising model is the approach
+proposed by Metropolis {\em et al.} \cite{metropolisalgo} in 1953. 
+As discussed in chapter \ref{chap:mcrandom}, new configurations 
+are generated from a previous one using a transition probability which depends
+on the energy difference between the initial and final states.
+
+In our case we have as the Monte Carlo sampling function the probability
+for finding the system in a state $s$ given by
+\[
+P_s=\frac{e^{-(\beta E_s)}}{Z},
+\]
+with energy $E_s$, $\beta=1/kT$ and $Z$ is a normalization constant which
+defines the partition function in the canonical ensemble. As discussed
+above
+\[
+  Z(\beta)=\sum_se^{-(\beta E_s)}
+\]
+is difficult to compute since we need all states. In a calculation 
+of the Ising model in two dimensions, the number of configurations is
+given by $2^N$ with $N=L\times L$ the number of spins for a lattice 
+of length $L$. Fortunately, the Metropolis algorithm considers
+only ratios between probabilities and we do not need to
+compute the partition function at all. 
+The algorithm goes as follows 
+\begin{svgraybox}
+\begin{enumerate}
+\item Establish an initial state with energy $E_b$ by positioning
+yourself at a random configuration in the lattice
+\item Change the initial configuration by flipping 
+e.g., one spin only. Compute the energy of this trial state
+$E_t$. 
+\item Calculate $\Delta E=E_t-E_b$. The number of values $\Delta E$
+is limited to five for the Ising model in two dimensions, see the discussion
+below.
+\item If $\Delta E \le 0$ we accept the new configuration, meaning that the
+energy is lowered and we are hopefully moving towards the energy minimum
+at a given temperature. Go to step 7. 
+\item If $\Delta E >  0$, calculate $w=e^{-(\beta \Delta E)}$.
+\item Compare $w$ with a random number $r$. If
+      \[
+         r \le w,
+\]
+then accept the new configuration, else we keep the old configuration.
+\item The next step is to update various expectations values.
+\item The steps (2)-(7) are then repeated in order to obtain a
+sufficently good representation of states. 
+\item Each time you sweep through the lattice, i.e., when you have summed
+over all spins, constitutes what is called a Monte Carlo cycle.
+You could think of one such cycle as a measurement. At the end, you should
+divide the various expectation values with the total number of
+cycles. You can choose whether you wish to divide by the number of spins
+or not. If you divide with the number of spins as well, your result for e.g.,
+the energy is now the energy per spin.
+\end{enumerate}                                                       
+\end{svgraybox}
+The crucial step is the calculation of the energy difference and the 
+change in magnetization. This part needs to be coded in an as efficient as possible way since the change in
+energy is computed many times.
+In the calculation of the energy difference from one spin configuration
+to the other, we will limit the change to the flipping of one
+spin only. For the Ising model in two dimensions it means that there
+will only be a limited set of values for $\Delta E$. Actually, there are
+only five  possible values. To see this, 
+select first a random spin position $x,y$ 
+and assume that this spin
+and its nearest neighbors are all pointing up. The energy for this
+configuration is $E=-4J$. Now we flip this spin as shown below.
+The energy of the new configuration is $E=4J$, yielding $\Delta E=8J$. 
+ \[
+  E=-4J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \uparrow & \uparrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\hspace{1cm}\Longrightarrow\hspace{1cm}
+  E=4J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \uparrow & \downarrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\]
+The four other possibilities are as follows
+\[
+  E=-2J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \downarrow & \uparrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\hspace{1cm}\Longrightarrow\hspace{1cm}
+  E=2J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \downarrow & \downarrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\]
+with $\Delta E=4J$,
+\[
+  E=0\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \downarrow & \uparrow & \uparrow\\
+                                  & \downarrow & \end{array}
+\hspace{1cm}\Longrightarrow\hspace{1cm}
+  E=0\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \downarrow & \downarrow & \uparrow\\
+                                  & \downarrow & \end{array}
+\]
+with $\Delta E=0$,
+\[
+  E=2J\hspace{1cm}\begin{array}{ccc}         & \downarrow &         \\
+                         \downarrow & \uparrow & \uparrow\\
+                                  & \downarrow & \end{array}
+\hspace{1cm}\Longrightarrow\hspace{1cm}
+  E=-2J\hspace{1cm}\begin{array}{ccc}         & \downarrow &         \\
+                         \downarrow & \downarrow & \uparrow\\
+                                  & \downarrow & \end{array}
+\]
+with $\Delta E=-4J$ and finally
+\[
+  E=4J\hspace{1cm}\begin{array}{ccc}         & \downarrow &         \\
+                         \downarrow & \uparrow & \downarrow\\
+                                  & \downarrow & \end{array}
+\hspace{1cm}\Longrightarrow\hspace{1cm}
+  E=-4J\hspace{1cm}\begin{array}{ccc}         & \downarrow &         \\
+                         \downarrow & \downarrow & \downarrow\\
+                                  & \downarrow & \end{array}
+\]
+with $\Delta E=-8J$.
+This means in turn that we could construct an array which contains all values
+of $e^{\beta \Delta E}$ before doing the Metropolis sampling. Else, we
+would have to evaluate the exponential  at each Monte Carlo sampling. 
+For the two-dimensional Ising model there are only five possible values. It is rather easy
+to convice oneself that for the one-dimensional Ising model we have only three possible values.
+The main part of the Ising model program is shown here (there is also a corresponding Fortran
+program). 
+\begin{lstlisting}[title={\url{http://folk.uio.no/mhjensen/compphys/programs/chapter13/cpp/ising_2dim.cpp}}]
+/* 
+   Program to solve the two-dimensional Ising model 
+   The coupling constant J = 1
+   Boltzmann's constant = 1, temperature has thus dimension energy
+   Metropolis sampling is used. Periodic boundary conditions.
+*/
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "lib.h"
+using namespace  std;
+ofstream ofile;
+// inline function for periodic boundary conditions
+inline int periodic(int i, int limit, int add) { 
+  return (i+limit+add) % (limit);
+}
+// Function to read in data from screen  
+void read_input(int&, int&, double&, double&, double&);
+// Function to initialise energy and magnetization
+void initialize(int, double, int **, double&, double&);
+// The metropolis algorithm 
+void Metropolis(int, long&, int **, double&, double&, double *);
+// prints to file the results of the calculations  
+void output(int, int, double, double *);
+
+//  main program
+int main(int argc, char* argv[])
+{
+  char *outfilename;
+  long idum;
+  int **spin_matrix, n_spins, mcs;
+  double w[17], average[5], initial_temp, final_temp, E, M, temp_step;
+
+  // Read in output file, abort if there are too few command-line arguments
+  if( argc <= 1 ){
+    cout << "Bad Usage: " << argv[0] << 
+      " read also output file on same line" << endl;
+    exit(1);
+  }
+  else{
+    outfilename=argv[1];
+  }
+  ofile.open(outfilename);
+  //    Read in initial values such as size of lattice, temp and cycles
+  read_input(n_spins, mcs, initial_temp, final_temp, temp_step);
+  spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
+  idum = -1; // random starting point
+  for ( double temp = initial_temp; temp <= final_temp; temp+=temp_step){
+    //    initialise energy and magnetization 
+    E = M = 0.;
+    // setup array for possible energy changes
+    for( int de =-8; de <= 8; de++) w[de+8] = 0;
+    for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temp);
+    // initialise array for expectation values
+    for( int i = 0; i < 5; i++) average[i] = 0.;
+    initialize(n_spins, double temp, spin_matrix, E, M);
+    // start Monte Carlo computation
+    for (int cycles = 1; cycles <= mcs; cycles++){
+      Metropolis(n_spins, idum, spin_matrix, E, M, w);
+      // update expectation values
+      average[0] += E;    average[1] += E*E;
+      average[2] += M;    average[3] += M*M; average[4] += fabs(M);
+    }
+    // print results
+    output(n_spins, mcs, temp, average);
+  }
+  free_matrix((void **) spin_matrix); // free memory
+  ofile.close();  // close output file
+  return 0;
+}
+\end{lstlisting}
+The array $w[17]$ contains values of $\Delta E$ spanning from $-8J$ to $8J$ and it is precalculated
+in the main part for every new temperature. The program takes as input the initial temperature,
+final temperature, a temperature step, 
+the number of spins in one direction (we force the lattice to be a square lattice,
+meaning that we have the same number of spins in the $x$ and the $y$ directions)
+and the number of Monte Carlo cycles. For every Monte Carlo cycle we run through all spins in the lattice
+in the function \lstinline{metropolis} and flip one spin at the time and perform the Metropolis test.
+However, every time we flip a spin we need to compute the actual energy difference 
+$\Delta E$ in order to access the right element of the array which stores
+$e^{\beta \Delta E}$. This is easily done in the Ising model since we can exploit 
+the fact that only one spin is flipped, meaning in turn that 
+all the remaining spins keep their values fixed.
+The energy difference between a state $E_1$ and a state $E_2$ with zero external magnetic field is
+\[
+   \Delta E = E_2-E_1 =J\sum_{<kl>}^{N}s_k^1s_{l}^1-J\sum_{<kl>}^{N}s_k^2s_{l}^2,
+\]
+which we can rewrite as 
+\[
+   \Delta E  = -J \sum_{<kl>}^{N}s_k^2(s_l^2-s_{l}^1),
+\]
+where the sum now runs only over the nearest neighbors $k$ of the spin 
+Since the spin to be flipped takes only two values, $s_l^1=\pm 1$ and $s_l^2=\pm 1$, it means that if
+$s_l^1= 1$, then $s_l^2=-1$ and if $s_l^1= -1$, then $s_l^2=1$. 
+The other spins keep their values, meaning that
+$s_k^1=s_k^2$.
+If $s_l^1= 1$ we must have $s_l^1-s_{l}^2=2$, and 
+if $s_l^1= -1$ we must have $s_l^1-s_{l}^2=-2$. From these results we see that the energy difference
+can be coded efficiently as 
+\be
+   \Delta E  = 2Js_l^1\sum_{<k>}^{N}s_k,
+\label{eq:deltaeising}
+\ee 
+where the sum runs only over the nearest neighbors $k$ of spin $l$.
+We can compute the change in magnetisation by flipping one spin as well.
+Since only spin $l$ is flipped, all the surrounding spins remain unchanged.
+The difference in magnetisation is therefore only given by the difference 
+$s_l^1-s_{l}^2=\pm 2$, or in a more compact way as
+\be
+M_2 = M_1+2s_l^2,
+\label{eq:deltamising}
+\ee
+where $M_1$ and $M_2$ are the magnetizations before and after the spin flip, respectively.  
+Eqs.~(\ref{eq:deltaeising}) and (\ref{eq:deltamising}) are implemented in the function \lstinline{metropolis}
+shown here
+\begin{lstlisting} 
+void Metropolis(int n_spins, long& idum, int **spin_matrix, double& E, double&M, double *w)
+{
+  // loop over all spins
+  for(int y =0; y < n_spins; y++) {
+    for (int x= 0; x < n_spins; x++){
+      // Find random position
+      int ix = (int) (ran1(&idum)*(double)n_spins);
+      int iy = (int) (ran1(&idum)*(double)n_spins);
+      int deltaE =  2*spin_matrix[iy][ix]*
+	(spin_matrix[iy][periodic(ix,n_spins,-1)]+
+	 spin_matrix[periodic(iy,n_spins,-1)][ix] +
+	 spin_matrix[iy][periodic(ix,n_spins,1)] +
+	 spin_matrix[periodic(iy,n_spins,1)][ix]);
+      // Here we perform the Metropolis test
+      if ( ran1(&idum) <= w[deltaE+8] ) {
+	spin_matrix[iy][ix] *= -1;  // flip one spin and accept new spin config
+        // update energy and magnetization
+        M += (double) 2*spin_matrix[iy][ix];
+        E += (double) deltaE;
+      }
+    }
+  }
+} // end of Metropolis sampling over spins
+\end{lstlisting}
+Note that we loop over all spins but that we choose the lattice positions $x$ and $y$ randomly.
+If the move is accepted after performing  the Metropolis test, we update the energy and the magnetisation.
+The new values are used to update the averages computed in the main function.
+
+When setting up the values of the spins it can be useful to have a visualization of the lattice, as shown
+for the $7\times 7$ lattice of Fig.~\ref{fig:77lattice}.
+\begin{figure}[hbtp]
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(100,100)
+\put(0,0){\vector(1,1){4}}
+\put(0,15){\vector(1,1){4}}
+\put(0,30){\vector(1,1){4}}
+\put(0,45){\vector(1,1){4}}
+\put(0,60){\vector(1,1){4}}
+\put(0,75){\vector(1,1){4}}
+\put(0,90){\vector(1,1){4}}
+\put(15,0){\vector(1,1){4}}
+\put(15,15){\vector(1,1){4}}
+\put(15,30){\vector(-1,-1){4}}
+\put(15,45){\vector(1,1){4}}
+\put(15,60){\vector(1,1){4}}
+\put(15,75){\vector(1,1){4}}
+\put(15,90){\vector(-1,-1){4}}
+\put(30,0){\vector(1,1){4}}
+\put(30,15){\vector(-1,-1){4}}
+\put(30,30){\vector(1,1){4}}
+\put(30,45){\vector(-1,-1){4}}
+\put(30,60){\vector(1,1){4}}
+\put(30,75){\vector(1,1){4}}
+\put(30,90){\vector(-1,-1){4}}
+\put(60,0){\vector(1,1){4}}
+\put(60,15){\vector(1,1){4}}
+\put(60,30){\vector(1,1){4}}
+\put(60,45){\vector(-1,-1){4}}
+\put(60,60){\vector(1,1){4}}
+\put(60,75){\vector(1,1){4}}
+\put(60,90){\vector(1,1){4}}
+\put(75,0){\vector(1,1){4}}
+\put(75,15){\vector(-1,-1){4}}
+\put(75,30){\vector(1,1){4}}
+\put(75,45){\vector(-1,-1){4}}
+\put(75,60){\vector(1,1){4}}
+\put(75,75){\vector(1,1){4}}
+\put(75,90){\vector(-1,-1){4}}
+\put(45,0){\vector(1,1){4}}
+\put(45,15){\vector(-1,-1){4}}
+\put(45,30){\vector(1,1){4}}
+\put(45,45){\vector(1,1){4}}
+\put(45,60){\vector(-1,-1){4}}
+\put(45,75){\vector(1,1){4}}
+\put(45,90){\vector(-1,-1){4}}
+\put(90,90){\vector(-1,-1){4}}
+\put(90,75){\vector(-1,-1){4}}
+\put(90,60){\vector(-1,-1){4}}
+\put(90,45){\vector(-1,-1){4}}
+\put(90,30){\vector(1,1){4}}
+\put(90,15){\vector(-1,-1){4}}
+\put(90,0){\vector(-1,-1){4}}
+\put(0,0){\grid(90,90)(15,15)}
+\put(0,100){\makebox(0,0)[t]{$0$}}
+\put(15,100){\makebox(0,0)[t]{$1$}}
+\put(30,100){\makebox(0,0)[t]{$2$}}
+\put(45,100){\makebox(0,0)[t]{$3$}}
+\put(60,100){\makebox(0,0)[t]{$4$}}
+\put(75,100){\makebox(0,0)[t]{$5$}}
+\put(90,100){\makebox(0,0)[t]{$6$}}
+\put(-5,90){\makebox(0,0)[t]{$0$}}
+\put(-5,75){\makebox(0,0)[t]{$1$}}
+\put(-5,60){\makebox(0,0)[t]{$2$}}
+\put(-5,45){\makebox(0,0)[t]{$3$}}
+\put(-5,30){\makebox(0,0)[t]{$4$}}
+\put(-5,15){\makebox(0,0)[t]{$5$}}
+\put(-5,0){\makebox(0,0)[t]{$6$}}
+\end{picture}
+\end{center}
+\caption{Example of a two-dimensional $7\times 7$ lattice with spins pointing either up or down.
+The variable \lstinline{spin_matrix[1][0]} takes the value +1 while \lstinline{spin_matrix[0][6]} is
+$-1$. \label{fig:77lattice}}
+\end{figure}
+
+Another important function is the function \lstinline{initialize}. This function sets up the initial energy,
+magnetisation and spin values for the different lattice positions. The latter 
+sets all spins equal one if the temperature is low, which for the two-dimensional Ising model means
+practically temperatures $T < 1.5$. Else, it keeps the value from the preceeding temperature. The latter is done in order to get a best possible estimate of the most likely state for the given temperature.
+
+
+We have built up a code
+where we run over a larger temperature span, typically with values $T\in [1.0,3.0]$.
+\begin{lstlisting} 
+// function to initialise energy, spin matrix and magnetization
+void initialize(int n_spins, double temp, int **spin_matrix, 
+		double& E, double& M)
+{
+  // setup spin matrix and intial magnetization
+  for(int y =0; y < n_spins; y++) {
+    for (int x= 0; x < n_spins; x++){
+      if (temp < 1.5) spin_matrix[y][x] = 1; // spin orientation for the ground state
+      M +=  (double) spin_matrix[y][x];
+    }
+  }
+  // setup initial energy
+  for(int y =0; y < n_spins; y++) {
+    for (int x= 0; x < n_spins; x++){
+      E -=  (double) spin_matrix[y][x]*
+	(spin_matrix[periodic(y,n_spins,-1)][x] +
+	 spin_matrix[y][periodic(x,n_spins,-1)]);
+    }
+  }
+}// end function initialise
+\end{lstlisting}
+In the function \lstinline{output} we print the final results, spanning from the mean energy to the 
+susceptibility. Note that we divide by all spins. All the thermodynamical variables we compute are so-called
+extensive ones meaning that they depend linearly on the number of spins. Since our results will depend on the size
+of the lattice, we need to divide by the total number of spins in order to see whether quantities like the 
+energy or the heat capacity stabilise or not as functions of increasing lattice size. This is 
+\begin{lstlisting} 
+void output(int n_spins, int mcs, double temperature, double *average)
+{
+  double norm = 1/((double) (mcs));  // divided by total number of cycles 
+  double Eaverage = average[0]*norm;
+  double E2average = average[1]*norm;
+  double Maverage = average[2]*norm;
+  double M2average = average[3]*norm;
+  double Mabsaverage = average[4]*norm;
+  // all expectation values are per spin, divide by 1/n_spins/n_spins
+  double Evariance = (E2average- Eaverage*Eaverage)/n_spins/n_spins;
+  double Mvariance = (M2average - Maverage*Maverage)/n_spins/n_spins;
+  double M2variance = (M2average - Mabsaverage*Mabsaverage)/n_spins/n_spins;
+  double Mvariance = (M2average - Mabsaverage*Mabsaverage)/n_spins/n_spins;
+  ofile << setiosflags(ios::showpoint | ios::uppercase);
+  ofile << setw(15) << setprecision(8) << temperature;
+  ofile << setw(15) << setprecision(8) << Eaverage/n_spins/n_spins;
+  ofile << setw(15) << setprecision(8) << Evariance/temperature/temperature;
+  //  ofile << setw(15) << setprecision(8) << Maverage/n_spins/n_spins;
+  ofile << setw(15) << setprecision(8) << M2variance/temperature;
+  ofile << setw(15) << setprecision(8) << Mabsaverage/n_spins/n_spins << endl;
+} // end output function
+\end{lstlisting}
+
+\subsection{Parallelization of the Ising Model}
+To parallelize the Ising model, or many Monte Carlo procedures is in general rather simple. Here we show an example of a modified main program where we let different nodes perform a given set of Monte Carlo samples.
+We have fixed the size of the grid to a $40\times 40$ lattice, but the reading of these variables can easily be done by the master node, either by reading the variables from the command line or via a user-defined file.
+
+Note that every node has its own seed for the random number generators.
+\begin{lstlisting} 
+/* 
+   Program to solve the two-dimensional Ising model 
+   with zero external field using MPI
+   The coupling constant J = 1
+   Boltzmann's constant = 1, temperature has thus dimension energy
+   Metropolis sampling is used. Periodic boundary conditions.
+   The code needs an output file on the command line.
+*/
+#include "mpi.h"
+#include <cmath>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "lib.h"
+
+using namespace  std;
+
+// output file
+ofstream ofile;
+
+// inline function for periodic boundary conditions
+inline int periodic(int i, int limit, int add) { 
+  return (i+limit+add) % (limit);
+}
+// Function to initialise energy and magnetization
+void initialize(int, int **, double&, double&);
+// The metropolis algorithm 
+void Metropolis(int, long&, int **, double&, double&, double *);
+// prints to file the results of the calculations  
+void output(int, int, double, double *);
+
+// Main program begins here
+
+int main(int argc, char* argv[])
+{
+  char *outfilename;
+  long idum;
+  int **spin_matrix, n_spins, mcs, my_rank, numprocs;
+  double w[17], average[5], total_average[5], 
+         initial_temp, final_temp, E, M, temp_step;
+
+  //  MPI initializations
+  MPI_Init (&argc, &argv);
+  MPI_Comm_size (MPI_COMM_WORLD, &numprocs);
+  MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
+  if (my_rank == 0 && argc <= 1) {
+    cout << "Bad Usage: " << argv[0] << 
+      " read output file" << endl;
+    exit(1);
+  }
+  if (my_rank == 0 && argc > 1) {
+    outfilename=argv[1];
+    ofile.open(outfilename); 
+  }
+  n_spins = 40; mcs = 1000000;  initial_temp = 2.4; final_temp = 2.7; temp_step =0.1;
+  /*
+  Determine number of intervall which are used by all processes
+  myloop_begin gives the starting point on process my_rank
+  myloop_end gives the end point for summation on process my_rank
+  */
+  int no_intervalls = mcs/numprocs;
+  int myloop_begin = my_rank*no_intervalls + 1;
+  int myloop_end = (my_rank+1)*no_intervalls;
+  if ( (my_rank == numprocs-1) &&( myloop_end < mcs) ) myloop_end = mcs;
+
+  // broadcast to all nodes common variables
+  MPI_Bcast (&n_spins, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast (&initial_temp, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast (&final_temp, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast (&temp_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  //  Allocate memory for spin matrix
+  spin_matrix = (int**) matrix(n_spins, n_spins, sizeof(int));
+  // every node has its own seed for the random numbers, this is important else
+  // if one starts with the same seed, one ends with the same random numbers
+  idum = -1-my_rank;  // random starting point
+  // Start Monte Carlo sampling by looping over T first
+  for ( double temperature = initial_temp; temperature <= final_temp; temperature+=temp_step){
+    //    initialise energy and magnetization 
+    E = M = 0.;
+    // initialise array for expectation values
+    initialize(n_spins, spin_matrix, E, M);
+    // setup array for possible energy changes
+    for( int de =-8; de <= 8; de++) w[de+8] = 0;
+    for( int de =-8; de <= 8; de+=4) w[de+8] = exp(-de/temperature);
+    for( int i = 0; i < 5; i++) average[i] = 0.;
+    for( int i = 0; i < 5; i++) total_average[i] = 0.;
+    // start Monte Carlo computation
+    for (int cycles = myloop_begin; cycles <= myloop_end; cycles++){
+      Metropolis(n_spins, idum, spin_matrix, E, M, w);
+      // update expectation values  for local node
+      average[0] += E;    average[1] += E*E;
+      average[2] += M;    average[3] += M*M; average[4] += fabs(M);
+    }
+    // Find total average
+    for( int i =0; i < 5; i++){
+      MPI_Reduce(&average[i], &total_average[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    }
+    // print results
+    if ( my_rank == 0) {
+      output(n_spins, mcs, temperature, total_average);
+    }
+  }
+  free_matrix((void **) spin_matrix); // free memory
+  ofile.close();  // close output file
+  // End MPI
+  MPI_Finalize (); 
+  return 0;
+}
+\end{lstlisting}
+ 
+\section{Selected Results for the Ising Model}
+In Figs.~\ref{fig:averageeising}-\ref{fig:suscising} we display selected results from the program discussed
+in the previous section. The results have all been obtained with one million Monte Carlo cycles 
+and the Metropolis algorithm for different two-dimensional lattices. A temperature step of $\Delta T = 0.1$ 
+was used for all lattices except the $100\times 100$ results. 
+For the latter we single out a smaller temperature region close 
+to the critical temperature and used $\Delta T = 0.05$.  
+Fig.~\ref{fig:averageeising} shows the energy to stabilize as function of lattice size. We note that the numerics
+indicates a smooth and continuous curve for the energy, although there is a larger increase close to the critical
+temperature $T_C\approx 2.269$.  
+\begin{center}
+\begin{figure}[hptp]
+\input{figures/averagee.tex}
+\caption{Average energy per spin as function of the lattice size for the two-dimensional
+Ising model.\label{fig:averageeising}}
+\end{figure}
+\end{center}
+We mentioned previously that the two-dimensional Ising model with zero external magnetic field exhibits a
+second-order phase transition and a spontaneous magnetization below $T_C$.
+Fig.~\ref{fig:absmagising} shows the absolute value of the magnetisation as function of the number of spins.
+We note that with increasing lattice size we   approach a steeper line and the transition from a smaller
+magnetisation to a larger one becomes sharper. 
+This is a possible sign of a phase transition, where we move from a state where all spins (or most of them)
+align in a specific direction (high degree of order) to a phase where both spin directions are equally probable
+(high degree of disorder) and result in zero net magnetisation. The ordered phase at low temperatures is called
+a ferromagnetic phase while the disordered phase is called the paramagnetic phase, with zero net magnetisation.
+Since we are plotting the absolute value,
+our net magnetisation will always be above zero since we are taking the average of a number which is never negative.
+\begin{center}
+\begin{figure}[hptp]
+\input{figures/absm.tex}
+\caption{Absolute value of the average magnetization per spin as function of the lattice size for the two-dimensional
+Ising model. \label{fig:absmagising}}
+\end{figure}
+\end{center}
+The reason we choose to plot the average absolute value instead of the net magnetisation is that slightly below $T_C$,
+the net magnetisation may oscillate between negative and positive values since the system, as function of the 
+number of Monte Carlo cycles is likely to have its spins pointing up or down. 
+This means that after a given number of cycles, the net spin may be slightly positive but could then occasionaly
+jump to a negative value and stay there for a given number of Monte Carlo cycles. Above the phase transition the net
+magnetisation is always zero.
+
+
+The fact that the system exhibits a spontaneous magnetization (no external field applied) below $T_C$ leads to the
+definition of the magnetisation as an order parameter. The order parameter is a quantity which is zero
+on one side of a critical temperature and non-zero on the other side.
+Since the magnetisation is a continuous quantity at $T_C$, with the closed-form results 
+\[
+    \left[1-\frac{(1-tanh^2 (\beta J))^4}{16tanh^4(\beta J)}\right]^{1/8},
+\]
+for $T < T_C$ and $0$ for $T> T_C$, our transition is defined as a continuous one or as a 
+second order phase transition.
+From Ehrenftest's definition of a phase transition we have that a second order or continuous phase transition
+exhibits second derivatives of Helmholtz' free energy (the potential in this case) with respect to
+e.g., temperature that are discontinuous or diverge at $T_C$. The specific heat for the two-dimensional Ising model
+exhibits a power-law behavior around $T_C$ with a logarithmic divergence. 
+In Fig.~\ref{fig:cvising} we show the corresponding specific heat.
+\begin{center}
+\begin{figure}[hptp]
+\input{figures/cv.tex}
+\caption{Heat capacity per spin as function of the lattice size for the two-dimensional
+Ising model.\label{fig:cvising}}
+\end{figure}
+\end{center}
+We see from this figure that as the size of the lattice is increased, the specific heat develops a sharper and 
+shaper peak centered around the critical temperature. 
+A similar behavior is seen for the  susceptibility as well, with an even sharper peak, as can be seen from 
+Fig.~\ref{fig:suscising}.
+\begin{center}
+\begin{figure}[hptp] 
+\input{figures/xi.tex}
+\caption{Susceptibility per spin  as function of the lattice size for the two-dimensional
+Ising model. Note that we have computed the susceptibility as $\xi=(\langle M^2\rangle -\langle |M|\rangle^2)/k_bT$.
+\label{fig:suscising}}
+\end{figure}
+\end{center}
+
+The Metropolis algorithm is not very efficient close to the critical temperature.
+Other algorihms such as the heat bath algorithm, the Wolff algorithm and other clustering algorithms,
+the  Swendsen-Wang algorithm, or the multi-histogram method \cite{ferrenberg1988,ferrenberg1989} 
+are much more efficient in simulating properties near 
+the critical temperature. For spin models like the class of higher-order Potts models
+discussed in section \ref{sec:potts}, 
+the efficiency of the Metropolis algorithm is simply inadequate.
+These topics are discussed in depth in the textbooks of Newman and Barkema \cite{nb1999} and Landau and Binder \cite{landaubinder}.  
+
+\section{Correlation Functions and Further Analysis of the Ising Model}
+
+
+
+
+\subsection{Thermalization}
+In the code discussed above we have assumed that one performs a calculation starting with low temperatures,
+typically well below $T_C$. For the Ising model this means to start with an ordered configuration.
+The final set of configurations that define the established equilibrium at a given $T$, will then
+be dominated by those configurations where most spins are aligned in one specific direction. 
+For a calculation starting at low $T$, it makes sense to start with an initial configuration
+where all spins have the same value, whereas if we were to perform a calculation at high $T$, for example
+well above $T_C$,
+it would most likely be more meaningful to have a randomly assigned value for the spins. 
+In our code example we use the final spin configuration from a lower temperature to define 
+the initial spin configuration for the next temperature. 
+
+In many other cases we may have a limited knowledge on the suitable initial configurations at a given $T$.
+This means in turn that if we guess wrongly, we may need a certain number of Monte Carlo cycles
+before we reach the most likely equilibrium configurations. 
+When equilibrium is established, 
+various observable such as the mean energy
+and magnetization oscillate around their mean values. A parallel is the particle in the box example  
+discussed
+in chapter \ref{chap:mcint}. There we
+considered a box divided into two equal halves separated by a wall.
+At the beginning, time $t=0$, there are $N$ particles on the left
+side. A small hole in the wall is then opened and one particle
+can pass through the hole per unit time. 
+After some time the system reaches its equilibrium state with
+equally many particles in both halves, $N/2$. 
+Thereafter, the mean number of particles oscillates around $N/2$. 
+
+The number of Monte Carlo cycles needed to reach this equilibrium position is 
+referred to as the thermalization time, or equilibration time $t_{\mathrm{eq}}$. 
+We should then discard the contributions to various expectation values 
+till we have reached equilibrium. 
+How to determine the thermalization time can be done in a brute force way, as demonstrated in Figs.~\ref{fig:mccycles}
+and \ref{fig:m1cycles}. 
+In Fig.~\ref{fig:mccycles}  the calculations have been performed with a $40\times 40$ lattice for a temperature $k_BT/J=2.4$,
+which corresponds to a case close to a disordered system. We compute the absolute value of the magnetization after
+each sweep over the lattice. 
+Two starting configurations were used, one with a random orientation of the spins and one with an ordered
+orientation, the latter corresponding to the ground state of the system. As expected, a disordered configuration
+as start configuration brings us closer to the average value at the given temperature, while more cycles are needed to
+reach the steady state with an ordered configuration. Guided by the eye, we could obviously make such plots
+and discard a given number of samples. However, such a rough guide hides several interesting features.
+Before we switch to a more detailed analysis, let us also study a case where we start with the 'correct' configuration
+for the relevant temperature.   
+\begin{center}
+\begin{figure}[hptp] 
+\input{figures/mcycles.tex}
+\caption{Absolute value of the mean magnetisation as function of time $t$. Time is represented by the number of Monte Carlo cycles.
+The calculations have been performed with a $40\times 40$ lattice for a temperature $k_BT/J=2.4$.
+Two start configurations were used, one with a random orientation of the spins and one with an ordered
+orientation, which corresponds to the ground state of the system.\label{fig:mccycles}}
+\end{figure}
+\end{center}
+Fig.~\ref{fig:m1cycles} displays the absolute value of the mean magnetisation as function of time $t$
+for  a $100\times 100$ lattice for temperatures $k_BT/J=1.5$ and $k_BT/J=2.4$.
+For the lowest temperature, an ordered start configuration was chosen, while for the temperature close
+to the critical temperature, a disordered configuration was used.
+We notice that for the low temperature case the system reaches rather quickly the expected value, while for 
+\begin{center}
+\begin{figure}[hptp] 
+\input{figures/m1cycles.tex}
+\caption{Absolute value of the mean magnetisation as function of time $t$. Time is represented by the number of Monte Carlo cycles.
+The calculations were performed with a $100\times 100$ lattice for temperatures $k_BT/J=1.5$ and $k_BT/J=2.4$.
+For the lowest temperature, an ordered start configuration was chosen, while for the temperature close
+to $T_C$, a disordered configuration was used.\label{fig:m1cycles}}
+\end{figure}
+\end{center}
+the temperature close to $k_BT_C/J\approx 2.269$ it takes more time to reach the actual steady state. 
+
+It seems thus that the time needed to reach a steady state is longer for temperatures close to the 
+critical temperature than for temperatures away.  In the next subsection we will define more rigorously the 
+equilibration time $t_{\mathrm{eq}}$ in terms of the so-called correlation time $\tau$. 
+The correlation time represents the typical time by which the correlation function discussed in the next
+subsection falls off. There are a number of ways to estimate the  correlation time $\tau$.
+It is normal to set the equilibration time $\tau=t_{\mathrm{eq}}$.
+The correlation time is a measure of how long it takes the system to get from one state 
+to another one that is significantly different from the first. Normally the equilibration time
+is longer than the correlation time, mainly because two states close to the steady state
+are more similar in structure than a state far from the steady state.
+
+Here we mention also that  
+one can show, using scaling relations \cite{nb1999}, that at the critical temperature the 
+correlation time $\tau$ relates to the lattice size $L$ as 
+\[
+    \tau \sim L^{d+z},
+\]
+with $d$ the dimensionality of the system.
+For the Metropolis algorithm based on a single spin-flip process, Nightingale and Bl\"ote obtained
+$z=2.1665\pm 0.0012$ \cite{nb1996}. This is a rather high value, meaning that our algorithm is not the best
+choice when studying properties of the Ising model near $T_C$. 
+
+We can understand this behavior by studying the development of the two-dimensional 
+Ising model as function of temperature. 
+The first figure to the left shows the start of a simulation of a $40\times 40$ lattice at a high temperature.
+Black dots stand for spin down or $-1$ while white dots represent spin up ($+1$). As the system cools down, we see 
+in the picture to the right that it starts developing domains with several spins pointing in one particular
+direction.  
+
+\noindent
+\begin{minipage}[b]{.46\linewidth}
+\centering\epsfig{figure=figures/pict4.ps,width=\linewidth,height=6cm}
+\end{minipage}\hfill
+\begin{minipage}[b]{.46\linewidth}
+\centering\epsfig{figure=figures/pict2.ps,width=\linewidth,height=6cm}
+\end{minipage}
+
+Cooling the system further we observe clusters pervading larger areas of the lattice, as seen
+in the next two pictures. The rightmost picture is the one with $T$ close to the critical temperature.
+The reason for the large correlation time (and the parameter $z$) for the single-spin flip Metropolis
+algorithm is the development of these large domains or clusters with all spins pointing in one direction.
+It is quite difficult for the algorithm to flip over one of these large domains because it has to do it spin by spin,
+with each move having a high probability of being rejected due to the ferromagnetic interaction 
+between spins.
+\noindent
+\begin{minipage}[b]{.46\linewidth}
+\centering\epsfig{figure=figures/pict1.ps,width=\linewidth,height=6cm}
+\end{minipage}\hfill
+\begin{minipage}[b]{.46\linewidth}
+\centering\epsfig{figure=figures/pict6.ps,width=\linewidth,height=6cm}
+\end{minipage}
+
+Since all spins point in the same direction, the chance of performing the flip
+\[
+  E=-4J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \uparrow & \uparrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\hspace{1cm}\Longrightarrow\hspace{1cm}
+  E=4J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \uparrow & \downarrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\] 
+leads to an energy difference of $\Delta E = 8J$. Using the exact critical temperature $k_BT_C/J\approx 2.269$,
+we obtain a probability $\exp{-(8/2.269)}=0.029429$ which is rather small. 
+The increase in large correlation times due to increasing lattices can be diminished by using  so-called
+cluster algorithms, such as that  
+introduced by Ulli Wolff in 1989 \cite{wolff} and the Swendsen-Wang \cite{swendsen1987} algorithm from 1987. 
+The two-dimensional Ising model with the Wolff or Swendsen-Wang algorithms exhibits a much smaller
+correlation time, with the variable $z=0.25\pm 001$. Here, instead of flipping a single spin, one flips an entire cluster
+of spins pointing in the same direction. 
+
+\subsection{Time-correlation Function}
+
+
+
+The so-called time-displacement autocorrelation $\phi(t)$ for the magnetization is given by\footnote{We follow closely chapter 3
+of Ref.~\cite{nb1999}.}
+\[
+\phi(t) = \int dt' \left[{\cal M}(t')-\langle {\cal M} \rangle\right]\left[{\cal M}(t'+t)-\langle {\cal M} \rangle\right],
+\]
+which can be rewritten as 
+\[
+\phi(t) = \int dt' \left[{\cal M}(t'){\cal M}(t'+t)-\langle {\cal M} \rangle^2\right],
+\]
+where $\langle {\cal M} \rangle$ is the average value of the magnetization and 
+${\cal M}(t)$ its instantaneous value. We can discretize this function as follows, where we used our
+set of computed values ${\cal M}(t)$ for a set of discretized times (our Monte Carlo cycles corresponding
+to a sweep over the lattice) 
+\be
+\phi(t)  = \frac{1}{t_{\mathrm{max}}-t}\sum_{t'=0}^{t_{\mathrm{max}}-t}{\cal M}(t'){\cal M}(t'+t)
+-\frac{1}{t_{\mathrm{max}}-t}\sum_{t'=0}^{t_{\mathrm{max}}-t}{\cal M}(t')\times
+\frac{1}{t_{\mathrm{max}}-t}\sum_{t'=0}^{t_{\mathrm{max}}-t}{\cal M}(t'+t).\label{eq:phitf}
+\ee
+One should be careful with times close to $t_{\mathrm{max}}$, the upper limit of the sums 
+becomes small and we end up integrating over a rather small time interval. This means that the statistical
+error in $\phi(t)$ due to the random nature of the fluctuations in ${\cal M}(t)$ can become large.
+Note also that we could replace the magnetization with the mean energy, or any other expectation values of interest.
+
+The time-correlation function for the magnetization gives a measure of the correlation between the magnetization
+at a time $t'$ and a time $t'+t$. If we multiply the magnetizations at these two different times,
+we will get a positive contribution if the magnetizations are fluctuating in the same direction, or a negative value
+if they fluctuate in the opposite direction. If we then integrate over time, or use the discretized version of
+Eq.~(\ref{eq:phitf}), the time correlation function $\phi(t)$ should take a non-zero value if the fluctuations are 
+correlated, else it should gradually go to zero. For times a long way apart the magnetizations are most likely 
+uncorrelated and $\phi(t)$ should be zero.
+Fig.~\ref{fig:phi} exhibits the time-correlation function for the magnetization for the same lattice and temperatures
+discussed in   Fig.~\ref{fig:m1cycles}.  
+\begin{center}
+\begin{figure}[hptp] 
+\input{figures/phit.tex}
+\caption{Time-autocorrelation function with time $t$  as number of Monte Carlo cycles.
+It has been normalized with $\phi(0)$. The calculations have been performed for a $100\times 100$ lattice 
+at $k_BT/J= 2.4$ with a disordered state as starting point and at $k_BT/J= 1.5$ with an ordered state as starting point.\label{fig:phi}}
+\end{figure}
+\end{center}
+We notice that the time needed before $\phi(t)$ reaches zero is $t\sim 300$ for a temperature $k_BT/J= 2.4$. This time is 
+close to the result we found
+in Fig.~\ref{fig:m1cycles}.  Similarly, for $k_BT/J= 1.5$ the correlation function reaches zero quickly, in good agreement 
+again with the results of Fig.~\ref{fig:m1cycles}.
+The time-scale, if we can define one, for which the correlation function falls off should in principle
+give us a measure of the correlation time $\tau$ of the simulation.  
+
+We can derive the correlation time by observing that our Metropolis algorithm is based on a random
+walk in the space of all  possible spin configurations. 
+We recall from chapter \ref{chap:mcrandom} that our probability 
+distribution function ${\bf \hat{w}}(t)$ after a given number of time steps $t$ could be written as
+\[
+   {\bf \hat{w}}(t) = {\bf \hat{W}^t\hat{w}}(0),
+\]
+with ${\bf \hat{w}}(0)$ the distribution at $t=0$ and ${\bf \hat{W}}$ representing the 
+transition probability matrix. 
+We can always expand ${\bf \hat{w}}(0)$ in terms of the right eigenvectors of 
+${\bf \hat{v}}$ of ${\bf \hat{W}}$ as 
+\[
+    {\bf \hat{w}}(0)  = \sum_i\alpha_i{\bf \hat{v}}_i,
+\]
+resulting in 
+\[
+   {\bf \hat{w}}(t) = {\bf \hat{W}}^t{\bf \hat{w}}(0)={\bf \hat{W}}^t\sum_i\alpha_i{\bf \hat{v}}_i=
+\sum_i\lambda_i^t\alpha_i{\bf \hat{v}}_i,
+\]
+with $\lambda_i$ the $i^{\mathrm{th}}$ eigenvalue corresponding to  
+the eigenvector ${\bf \hat{v}}_i$. 
+If we assume that $\lambda_0$ is the largest eigenvector we see that in the limit $t\rightarrow \infty$,
+${\bf \hat{w}}(t)$ becomes proportional to the corresponding eigenvector 
+${\bf \hat{v}}_0$. This is our steady state or final distribution. 
+
+We can relate this property to an observable like the mean magnetization.
+With the probabilty ${\bf \hat{w}}(t)$ (which in our case is the Boltzmann distribution) we
+can write the mean magnetization as 
+\[
+ \langle {\cal M}(t) \rangle  = \sum_{\mu} {\bf \hat{w}}(t)_{\mu}{\cal M}_{\mu},
+\]
+or as the scalar of a  vector product
+ \[
+ \langle {\cal M}(t) \rangle  = {\bf \hat{w}}(t){\bf m},
+\]
+with ${\bf m}$ being the vector whose elements are the values of ${\cal M}_{\mu}$ in its 
+various microstates $\mu$.
+We rewrite this relation  as
+ \[
+ \langle {\cal M}(t) \rangle  = {\bf \hat{w}}(t){\bf m}=\sum_i\lambda_i^t\alpha_i{\bf \hat{v}}_i{\bf m}_i.
+\]
+If we define $m_i={\bf \hat{v}}_i{\bf m}_i$ as the expectation value of
+${\cal M}$ in the $i^{\mathrm{th}}$ eigenstate we can rewrite the last equation as
+ \[
+ \langle {\cal M}(t) \rangle  = \sum_i\lambda_i^t\alpha_im_i.
+\]
+Since we have that in the limit $t\rightarrow \infty$ the mean magnetization is dominated by the 
+the largest eigenvalue $\lambda_0$, we can rewrite the last equation as
+ \[
+ \langle {\cal M}(t) \rangle  = \langle {\cal M}(\infty) \rangle+\sum_{i\ne 0}\lambda_i^t\alpha_im_i.
+\]
+We define the quantity
+\[
+   \tau_i=-\frac{1}{log\lambda_i},
+\]
+and rewrite the last expectation value as
+ \be
+ \langle {\cal M}(t) \rangle  = \langle {\cal M}(\infty) \rangle+\sum_{i\ne 0}\alpha_im_ie^{-t/\tau_i}.
+\label{eq:finalmeanm}
+\ee 
+The quantities $\tau_i$ are the correlation times for the system. They control also the auto-correlation function 
+discussed above.  The longest correlation time is obviously given by the second largest
+eigenvalue $\tau_1$, which normally defines the correlation time discussed above. For large times, this is the 
+only correlation time that survives. If higher eigenvalues of the transition matrix are well separated from 
+$\lambda_1$ and we simulate long enough,  $\tau_1$ may well define the correlation time. 
+In other cases we may not be able to extract a reliable result for $\tau_1$. 
+Coming back to the time correlation function $\phi(t)$ we can present a more general definition in terms
+of the mean magnetizations $ \langle {\cal M}(t) \rangle$. Recalling that the mean value is equal 
+to $ \langle {\cal M}(\infty) \rangle$ we arrive at the expectation values
+\[
+\phi(t) =\langle {\cal M}(0)-{\cal M}(\infty)\rangle \langle {\cal M}(t)-{\cal M}(\infty)\rangle,
+\]
+and using Eq.~(\ref{eq:finalmeanm}) we arrive at 
+\[
+\phi(t) =\sum_{i,j\ne 0}m_i\alpha_im_j\alpha_je^{-t/\tau_i},
+\]
+which is appropriate for all times.
+
+
+\section{The Potts' model}\label{sec:potts}
+
+The Potts model has been, in addition to the Ising model, widely used in studies
+of phase transitions in statistical physics. The so-called two-dimensional 
+$q$-state Potts
+model has an energy given by
+\[
+  E=-J\sum_{<kl>}^{N}\delta_{s_l,s_k},
+\]
+where the spin $s_k$ at lattice position $k$ can take the values
+$1,2,\dots,q$. The Kronecker delta function $\delta_{s_l,s_k}$ equals 
+unity if the spins are equal and is zero otherwise. The variable 
+$N$ is the total number of spins.
+
+For $q=2$ the Potts model corresponds to the Ising model. To see that 
+we can rewrite the last equation as
+\[
+  E=-\frac{J}{2}\sum_{<kl>}^{N}2(\delta_{s_l,s_k}-\frac{1}{2})-\sum_{<kl>}^{N}\frac{J}{2}.
+\]
+Now, $2(\delta_{s_l,s_k}-\frac{1}{2})$ is +1 when $s_l=s_k$ and $-1$ 
+when they are different. This model is thus equivalent to the Ising model  
+except a trivial difference in the energy minimum given by a an additional
+constant and a factor $J\rightarrow J/2$.
+One of the many applications of the Potts model is to helium absorbed on 
+the surface of graphite.
+
+For references on the Potts Models see Refs.~\cite{monroe2002,challa1986,yu1982,binder1987}
+
+Compared with the two-dimensional Ising model, the Potts model can take 
+only four possible values for $\Delta E$, as shown in the following part of code
+\begin{lstlisting} 
+void Energy(double T,double *Boltzmann){
+  Boltzmann[0] = exp(-J/T)  ;
+  Boltzmann[1] = exp(-2*J/T);
+  Boltzmann[2] = exp(-3*J/T);
+  Boltzmann[3] = exp(-4*J/T);
+}//Energy  
+\end{lstlisting}
+
+However, when we run the Potts model we must choose the new value of 
+$q$ randomly. The following functions encodes the Metropolis algorithm 
+for the Potts model.
+\begin{lstlisting} 
+void Metropolis(int q,double *Boltzmann,int **Spin,long& seed,double& E){ 
+
+  int  SpinFlip, LocalEnergy0, LocalEnergy, x, y, dE;
+   
+    for(int i = 0; i < N; i++){
+      for(int j = 0; j < N; j++){
+        x = (int) (ran1(&seed)*N);
+        y = (int) (ran1(&seed)*N);
+        LocalEnergy0 = 0;
+        LocalEnergy = 0;
+        dE = 0;
+        if(Spin[x][y] == Spin[x][periodic(y,N,-1)])
+          LocalEnergy0 --;
+        if(Spin[x][y] == Spin[periodic(x,N,-1)][y])
+          LocalEnergy0 --;
+        if(Spin[x][y] == Spin[x][periodic(y,N,1)])
+          LocalEnergy0 --;
+        if(Spin[x][y] == Spin[periodic(x,N,1)][y]) 
+          LocalEnergy0 --;
+        do{                                                        
+        SpinFlip = (int)(ran1(&seed)*(q)+1);               
+        }while(SpinFlip == Spin[x][y]);
+
+        if(SpinFlip == Spin[x][periodic(y,N,-1)])
+          LocalEnergy --;
+        if(SpinFlip == Spin[periodic(x,N,-1)][y])
+          LocalEnergy --;
+        if(SpinFlip == Spin[x][periodic(y,N,1)])
+          LocalEnergy --;
+        if(SpinFlip == Spin[periodic(x,N,1)][y]) 
+          LocalEnergy --;
+        
+        dE =  LocalEnergy - LocalEnergy0; 
+
+        if(dE<=0){
+          Spin[x][y] = SpinFlip;
+          E += J*dE;
+        }
+        else if(ran1(&seed)<Boltzmann[dE-1]){
+          Spin[x][y] = SpinFlip;
+          E += J*dE;
+\end{lstlisting}
+
+
+In the calculation of the energy difference from one spin configuration
+to the other, we have for the $q=2$ Potts two possible values  only. 
+When we change one of the values such as flipping a spin we start
+with an energy $E=-4J$. Now we flip this spin as shown below.
+The energy of the new configuration is $E=0J$, yielding $\Delta E=4J$. 
+\[
+  E=-4J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \uparrow & \uparrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\hspace{1cm}\Longrightarrow\hspace{1cm}
+  E=4J\hspace{1cm}\begin{array}{ccc}         & \uparrow &         \\
+                         \uparrow & \downarrow & \uparrow\\
+                                  & \uparrow & \end{array}
+\]
+
+However, when $q$ becomes large the standard Metropolis algorithm becomes inefficient.
+Assume that $q=100$. At high $T$  the acceptance probability is close to $1$ and our algorithm is efficient.
+
+When we cool down the system $T\rightarrow T_C$, more and more 'spins' will take the same value and we build
+up cluster/domains with equally valued 'spins'. 
+If the spins are aligned with its neigbours it has lower energy and thereby larger weight $e^{-\beta E}$. 
+
+The problem comes when $q$ is large. If our value is one of the other 96 values, we need on average
+$100/4=25$ steps to find a desired state. This can result in a very 
+long time to find state with lower energy.
+
+If we start at low temperatures, there is an extra cost to excite, leading to smaller 
+acceptance probability. We can easily end up in situation where we  
+have almost 96 out 100 moves rejected.
+This means that we need a better algorithm. Such improvements are discussed in
+the chapter on advanced statistical physics problems (not available in this version).  
+
+
+
+
+                                   
+\section{Exercises}
+
+
+%\subsection*{Exercise 13.1}
+\begin{prob}
+Convince yourself that the values listed in 
+Table \ref{tab:ising3} are correct.
+\end{prob}
+%\subsection*{Exercise 13.2}
+\begin{prob}
+Calculate the internal energy and heat capacity 
+of the one-dimensional Ising model using periodic
+boundary conditions and compare the results with those for free ends in the limit
+$N\rightarrow \infty$.
+\end{prob}
+%\subsection*{Project 13.1: Thermalization and the One-Dimensional Ising Model}
+\begin{prob}
+In this project we will use the Metropolis algorithm to generate states
+according to the Boltzmann distribution.
+Each new configuration is given by the change of only one spin at the time,
+that is
+$s_k\rightarrow -s_k$. 
+Use periodic boundary conditions and set the magnetic field 
+${\cal B} = 0$. 
+
+\begin{enumerate}
+\item Write a program which simulates the one-dimensional
+Ising model.
+Choose $J>0$, the number of spins $N=20$, temperature $T=3$ 
+and the number of Monte Carlo samples
+$mcs=100$. Let the initial configuration consist of all spins pointing up,
+i.e., $s_k=1$. 
+Compute the mean energy and magnetization for each cycle and find the number of cycles needed where the fluctuation of these variables is negligible. 
+What kind of criterium would you use in order to determine when the fluctuations are negligible?
+
+Change thereafter the initial condition by letting the spins take
+random values, either $-1$ or $1$.
+Compute again the mean energy and magnetization for each cycle and find the number of cycles needed where 
+the fluctuation of these variables is negligible. 
+
+Explain your results.
+\item Let $mcs \ge 1000$ and compute
+$\langle E \rangle$, $\langle E^2 \rangle$ and $C_V$
+as functions of  $T$ for $0.1 \le T \le 5$.
+Plot the results and compare with the exact ones for 
+periodic boundary conditions.
+
+\item Using the Metropolis sampling method you should now 
+find the number of accepted configurations as function of the total
+number of Monte Carlo samplings. How does 
+the number of accepted configurations behave as function of temperature $T$?
+Explain the results.
+
+
+\item Compute thereafter the probability 
+$P(E)$ for a system
+with $N=50$ at $T=1$. Choose $mcs \ge 1000$ and plot $P(E)$ as function of
+$E$. 
+Count the number of times a specific energy
+appears and build thereafter up a histogram. What does the histogram mean?
+\end{enumerate}
+\end{prob}
+
+
+%\subsection*{Project 13.2: simulation of the two-dimensional Ising model}\label{sec:potts}
+\begin{prob}
+Here we will simulate the two-dimensional Ising model.
+\begin{enumerate}
+\item Assume that the number of spins in the $x$ and $y$ directions are two, viz $L=2$.
+Find the closed-form expression for the partition function and the corresponding
+mean values 
+for $E$, ${\cal M}$, the capacity $C_V$ and the  suceptibility $\chi$
+as function of $T$ using periodic boundary conditions.
+\item  Write your own code for the two-dimensional Ising model
+with periodic boundary conditions and zero external field $\cal B$.
+Set $L=2$ and compare your numerical results with the closed-form ones from the previous exercise.
+using $T=0.5$ and $T=2.5$. 
+How many Monte Carlo cycles do you need before you reach the exact values with an
+unceertainty less than $1\%$? 
+What are most likely starting configurations for the spins. Try both an ordered arrangement of the spins
+and a randomly assigned orientations for both temperature. Analyse the mean energy and magnetisation
+as functions of the number of Monte Carlo cycles and estimate how many thermalization 
+cycles are needed.
+
+\item We will now study the behavior of the Ising model in two dimensions close to the 
+critical temperature as a function of the lattice size $L\times L$, with 
+$L$ the number of spins in the $x$ and $y$ directions.
+Calculate the expectation values 
+for $\langle E\rangle$ and $\langle {\cal M}\rangle$,
+the specific heat $C_V$ and the susceptibility $\chi$
+as functions  of $T$ for $L=10$, $L=20$, $L=40$ and $L=80$ for $T\in [2.0,2.4]$
+with a step in temperature $\Delta T=0.05$. 
+Plot  $\langle E\rangle$, $\langle {\cal M}\rangle$, $C_V$ and $\chi$
+as functions of $T$. Can you see an indication of a phase transition?
+\item  Use Eq.~(\ref{eq:tc}) and the exact result
+$\nu=1$ in order to estimate $T_C$ in the thermodynamic limit $L\rightarrow \infty$
+using your simulations with $L=10$, $L=20$, $L=40$ and  $L=80$.
+\item  In the remaining part we will use the exact result 
+$kT_C/J=2/ln(1+\sqrt{2})\approx 2.269$ and $\nu=1$.
+Determine the numerical values of
+$C_V$, $\chi$ and ${\cal M}$ at the exact value $T=T_C$
+for  $L=10$, $L=20$, $L=40$ and $L=80$.
+Plot $log_{10}$ ${\cal M}$
+and $\chi$ som funksjon av $log_{10}$  $L$
+and use the scaling relations in order to determine the constants
+$\beta$ and $\gamma$. 
+Are your log-log plots close to straight lines?
+The exact values are $\beta=1/8$ and $\gamma=7/4$.
+\item    Make a log-log plot using the results for 
+$C_V$ as function of  $L$ for your computations at the exact critical temperature.  
+The specific heat exhibits a logarithmic divergence
+with  $\alpha=0$, see Eqs.~(\ref{eq:exactcvising1}) and (\ref{eq:exactcvising2}). 
+Do your results agree with this behavior?
+Make also a plot of the specific heat computed at the critical temperature for the given lattice. 
+
+The exact specific heats behaves as
+\[
+C_V \approx -\frac{2}{\pi}\left(\frac{2J}{k_BT_C}\right)^2ln\left|1-\frac{T}{T_C}\right|+\mathrm{const}.
+\]
+Comment your results.
+\end{enumerate}
+\end{prob}
+
+
+
+%\subsection*{Project 13.3: Potts Model}
+\begin{prob}
+The Potts model has been, in addition to the Ising model, widely used in studies
+of phase transitions in statistical physics. The so-called two-dimensional 
+$q$-state Potts
+model has an energy given by
+\[
+  E=-J\sum_{<kl>}^{N}\delta_{s_l,s_k},
+\]
+where the spin $s_k$ at lattice position $k$ can take the values
+$1,2,\dots,q$. The Kroneckr delta function $\delta_{s_l,s_k}$ equals 
+unity if the spins are equal and is zero otherwise.
+$N$ is the total number of spins.
+For $q=2$ the Potts model corresponds to the Ising model. To see that 
+we can rewrite the last equation as
+\[
+  E=-\frac{J}{2}\sum_{<kl>}^{N}2(\delta_{s_l,s_k}-\frac{1}{2})-\sum_{<kl>}^{N}\frac{J}{2}.
+\]
+Now, $2(\delta_{s_l,s_k}-\frac{1}{2})$ is +1 when $s_l=s_k$ and $-1$ 
+when they are different. This model is thus equivalent to the Ising model  
+except a trivial difference in the energy minimum given by a an additional
+constant and a factor $J\rightarrow J/2$.
+One of the many applications of the Potts model is to helium absorbed on 
+the surface of graphite.
+
+The Potts model exhibits a second order phase transition for low values
+of $q$ and a first order transition for larger values of $q$.
+Using Eherenfest's definition of a phase transition, 
+a second order phase transition has second derivatives
+of the free energy that are discontinuous or diverge (the heat capacity and susceptibility
+in our case) while a first order transition has first derivatives
+like the mean energy that are discontinuous or diverge.
+Since the calculations are done with a finite lattice it is always
+difficult to find the order of the phase transitions. 
+In this project we will limit ourselves to find the temperature region
+where a phase transition occurs and see if the numerics allows
+us to extract enough information about the order of the transition.
+
+\begin{enumerate}
+\item Write a program which simulates the $q=2$ Potts model 
+for two-dimensional lattices with $10\times 10$, $40\times 40$
+and $80\times 80$ spins and compute the average energy and specific
+heat.
+Establish an appropriate temperature range for where you see a sudden change
+in the heat capacity and susceptibility. Make the analysis first for few Monte Carlo cycles and
+smaller lattices in order to narrow down the region of interest.
+To get appropriate statistics afterwards you should
+allow for at least $10^5$ Monte Carlo cycles. 
+In setting up this code you need to find an efficient way to simulate the
+energy differences between different microstates.  
+In doing this you need also to find all possible values of $\Delta E$.
+\item 
+Compare these results with those obtained with the two-dimensional Ising model.
+The exact critical temperature for the Ising model is $T_C=2.269$.
+Here you can eventually use the abovementioned program from the lectures
+or write your own code for the Ising model.
+Tip when comparing results with the Ising model: remove the constant term. 
+The first step is thus to check that your algorithm for the Potts model gives the same results as the
+ising model. Note that critical temperature for the $q=2$ Potts model is half of that for the Ising model.
+\item Extend the calculations to the Potts model with 
+$q=3, 6$ and $q=10$. 
+Make a table of the possible values of $\Delta E$ for each 
+value of $q$.
+Establish first the location of the peak in the 
+specific heat and study the behavior of the mean energy and magnetization 
+as functions 
+of $q$. Do you see a noteworthy change in behavior from the $q=2$ case?
+For larger $q$ values you may need lattices of at least $50 \times 50$
+in size.
+
+For $q=3$ and higher you can then proceed as follows:
+\begin{itemize}
+\item Do a calculation with a small lattice first over a large temperature region. Use typical
+temperature steps of $0.1$.
+\item Establish a small region where you see the heat capacity and the susceptibility start to increase.
+\item Decrease the temperature step in this region and perform calculations for larger lattices as well.
+\end{itemize}
+For $q=6$ and $q=10$ we have a first order phase transition, the energy shows a discontinuity at the critical 
+temperature. 
+\end{enumerate}
+
+To compute the magnetisation in this case can lead to some preliminary conceptual 
+problems. For the $q=2$ case we can always assign the values of $-1$ and $+1$ to the spins.
+We would then get the same magnetisation as we had with the two-dimensional Ising model.
+However, we could also assign the value of $0$ and $1$ to the spins. A simulation could then
+start with all spins equal $0$ at low temperatures. This is then the ordered state.
+Increasing the temperature and crossing the region where we have the phase transition, both spins
+value should be equally possible. This means half of the spins take the value 0 and the other half
+take the value 1, yielding a final magnetisation per spin of $1/2$.
+The important point is that we see the change in magnetisation when we cross the critical temperature.
+For higher $q$ values, for example $q=3$ we could choose something similar to the Ising
+model. The spins could take the values $-1,0,1$. We would again start with an ordered state and let 
+temperature increase. Above $T_C$ all values are equally possible resulting again in a magnetisation
+equal zero. For the values $0,1,2$ the situation would be different. Above $T_C$, one third has value 0,
+another third takes the value 1 and the last third is 2, resulting in a net magnetisation per spin
+equal $0\times 1/3 + 1\times 1/3 + 2\times 1/3=1$. 
+
+\end{prob}
+
+

@@ -1,0 +1,2462 @@
+
+%  distringuish between brute force and importance sampling
+%  add analytic derivation of local energy
+%  add importance sampling results
+%  extend the atomic  calculation to better wave functions
+%  add figures here and there
+
+
+\chapter{Quantum  Monte Carlo Methods}\label{chap:mcvar}
+
+\begin{quotation}
+If, in some cataclysm, all scientific knowledge were to be destroyed, and only one sentence passed 
+on to the next generation of creatures, what statement would contain the most information in the fewest words? 
+I believe it is the atomic hypothesis (or atomic fact, or whatever you wish to call it) that all 
+things are made of atoms, little particles that move around in perpetual motion, 
+attracting each other when they are a little distance apart, but repelling upon being squeezed 
+into one another. In that one sentence you will see an enormous amount of information about the world, 
+if just a little imagination and thinking are applied. {\em Richard Feynman, The Laws of Thermodynamics.}
+\end{quotation}
+
+\abstract{The aim of this chapter is to present examples of applications
+of Monte Carlo methods in studies of simple quantum mechanical systems.
+We study
+systems such as the harmonic oscillator, the hydrogen atom,
+the hydrogen molecule and the helium atom.
+Systems with many interacting fermions and bosons such as liquid  $^4$He  and Bose Einstein condensation of atoms
+are discussed in chapters \ref{chap:improvedvmc} and \ref{chap:advancedqmc}.}
+\section{Introduction}
+
+Most quantum mechanical  
+problems of interest in for example atomic, molecular, nuclear and solid state 
+physics consist of a large number of 
+interacting electrons and ions or nucleons. 
+The total number of particles $N$ is usually sufficiently large
+that an exact solution cannot be found. 
+In quantum mechanics we can express  
+the expectation value of a given  operator $\OP{O}$ for a system of 
+$N$ particles as
+\be
+   \langle \OP{O} \rangle =
+   \frac{\int d{\bf R}_1d{\bf R}_2\dots d{\bf R}_N
+         \Psi^{\ast}({\bf R_1},{\bf R}_2,\dots,{\bf R}_N)
+          \OP{O}({\bf R_1},{\bf R}_2,\dots,{\bf R}_N)
+          \Psi({\bf R_1},{\bf R}_2,\dots,{\bf R}_N)}
+        {\int d{\bf R}_1d{\bf R}_2\dots d{\bf R}_N
+        \Psi^{\ast}({\bf R_1},{\bf R}_2,\dots,{\bf R}_N)
+        \Psi({\bf R_1},{\bf R}_2,\dots,{\bf R}_N)},
+\label{eq:multidimvmc}
+\end{equation}
+where $\Psi({\bf R_1},{\bf R}_2,\dots,{\bf R}_N)$ is the wave function describing a many-body system. Although we have
+omitted the time dependence in this equation, it is
+an in general intractable problem.
+As an example from the nuclear many-body problem, we can write Schr\"odinger's
+equation as 
+a differential equation with the energy operator $\OP{H}$ (the so-called Hamiltonian) acting on the wave function as 
+\[
+  \OP{H}\Psi({\bf r}_1,..,{\bf r}_A,\alpha_1,..,\alpha_A)=E\Psi({\bf r}_1,..,{\bf r}_A,\alpha_1,..,\alpha_A)
+\]
+where
+\[
+  {\bf r}_1,..,{\bf r}_A,
+\]
+are the coordinates and 
+\[
+  \alpha_1,..,\alpha_A,
+\]
+are sets of relevant quantum numbers such as spin and isospin for a system of 
+$A$ nucleons ($A=N+Z$, $N$ being the number of neutrons and $Z$ the number of protons).
+There are
+\[
+ 2^A\times \left(\begin{array}{c} A\\ Z\end{array}\right)
+\]
+coupled second-order differential equations in $3A$ dimensions.
+For a nucleus like $^{16}$O, with eight protons and eight neutrons this number is
+$8.4\times 10^8$. This is a truely challenging many-body problem.
+
+Equation (\ref{eq:multidimvmc}) is a multidimensional integral. As such, Monte Carlo 
+methods are ideal for obtaining expectation values of quantum mechanical operators.
+Our problem is that we do not know the exact wavefunction $\Psi({\bf r}_1,..,{\bf r}_A,\alpha_1,..,\alpha_N)$.
+We can circumvent this problem by introducing a function which depends on selected variational parameters.
+This function should capture essential 
+features of the system under consideration. With such a trial wave function we can then attempt to perform a
+variational calculation of various observables, using Monte Carlo methods for 
+solving Eq.~(\ref{eq:multidimvmc}). 
+
+The present chapter aims therefore at giving you an overview of the variational Monte Carlo approach to quantum mechanics.
+We limit the attention to the simple Metropolis algorithm, without the inclusion of importance sampling.
+Importance sampling and diffusion Monte Carlo methods  are discussed in chapters \ref{chap:improvedvmc} and \ref{chap:advancedqmc}.
+  
+However, before we proceed  we need to recapitulate some of the postulates of quantum mechanics. 
+This is done in the next section. The remaining sections deal with mathematical and computational aspects of the variational 
+Monte Carlo methods, with examples and applications from electronic systems with few electrons. 
+
+\section{Postulates of Quantum Mechanics}
+\subsection{Mathematical Properties of the Wave Functions}
+Schr\"odinger's equation for a one-dimensional onebody problem reads
+\[
+    -\frac{\hbar^2}{2m}\nabla^2\Psi(x,t)+
+V(x,t)\Psi(x,t)=
+    \imath\hbar\frac{\partial \Psi(x,t)}{\partial t},
+\]
+where $V(x,t)$ is a potential acting on the particle. The first term is the kinetic energy.
+The solution to this partial differential equation is the wave function $\Psi(x,t)$.
+The wave function itself is not an observable (or physical quantity) but it serves to define 
+the quantum mechanical probability, which in turn can be used to compute expectation values of 
+selected operators, such as the kinetic energy or the total energy  itself.
+The quantum mechanical probability $P(x,t)dx$ is defined as\footnote{This is Max Born's postulate on how to
+interpret the wave function resulting from the solution of Schr\"odinger's equation. It is also
+the commonly accepted and operational interpretation.}
+\[
+   P(x,t)dx=\Psi(x,t)^*\Psi(x,t)dx,
+\]
+representing the probability 
+of finding the system in a region between
+$x$ and $x+dx$. It is, as opposed to the wave function, 
+always real, which can be seen from the following definition of the wave function, which has real
+and imaginary parts,
+\[
+   \Psi(x,t)=R(x,t)+\imath I(x,t),
+\]
+yielding
+\[
+   \Psi(x,t)^*\Psi(x,t)=(R-\imath I)(R+\imath I)=R^2+I^2.
+\]
+The variational Monte Carlo approach uses actually this definition of the probability, allowing us thereby 
+to deal with real quantities only.
+As a small digression, if we perform a rotation of time into the complex plane, using 
+$\tau = it/\hbar$, 
+the time-dependent Schr\"odinger equation becomes
+\[
+  \frac{\partial \Psi(x,\tau)}{\partial \tau} = 
+  \frac{\hbar^2}{2m} \frac{\partial^2\Psi(x,\tau)}{\partial x^2}
+   -V(x,\tau)\Psi(x,\tau).
+\]
+With $V=0$ we have a diffusion equation in complex time with 
+diffusion constant  
+\[
+   D= \frac{\hbar^2}{2m}.
+\]
+This is the starting point for the Diffusion Monte Carlo method discussed in chapter \ref{chap:advancedqmc}.
+In that case it is the wave function itself, given by the distribution of random walkers, that defines the probability.
+The latter leads to conceptual problems when we have anti-symmetric wave functions, as is the case for particles
+with spin being a multiplum of $1/2$. Examples of such particles are various leptons such as electrons, muons and various neutrinos, 
+baryons like protons and neutrons and quarks such as the up and down quarks. 
+
+The Born interpretation constrains the wave function to belong to the class of functions in $L^2$.  
+Some of the selected conditions which $\Psi$ has to satisfy are
+\begin{enumerate}
+\item Normalization
+\[
+   \int_{-\infty}^{\infty}P(x,t)dx=\int_{-\infty}^{\infty}\Psi(x,t)^*\Psi(x,t)dx=1,
+\]
+meaning that
+\[
+  \int_{-\infty}^{\infty}\Psi(x,t)^*\Psi(x,t)dx < \infty.
+\]
+\item $\Psi(x,t)$ and $\partial \Psi(x,t)/\partial x$ must be finite
+\item $\Psi(x,t)$ and $\partial \Psi(x,t)/\partial x$ must be continuous.
+\item $\Psi(x,t)$ and $\partial \Psi(x,t)/\partial x$ must be single valued.
+\end{enumerate}
+\subsection{Important Postulates}
+We list here some of the postulates that we will use in our discussion, see for example \cite{liboff}
+for further discussions.
+\subsubsection{Postulate I}
+Any physical quantity $A(\vec{r},\vec{p})$ which depends on position
+$\vec{r}$ and momentum
+$\vec{p}$ has a corresponding quantum mechanical operator by replacing
+$\vec{p}$  
+$-i\hbar \vec{\bigtriangledown}$, yielding the quantum mechanical operator
+%
+\[
+\OP{A} = A(\vec{r},-i\hbar \vec{\bigtriangledown)}.
+\]
+\begin{tabular}{|l|l|l|}  \hline
+Quantity & Classical definition & Quantum mechanical operator\\
+\hline
+Position            & $\vec{r}$           & $\OP{\vec{r}} = \vec{r}$\\
+Momentum    & $\vec{p}$
+						  & $\OP{\vec{p}} = -i \hbar \vec{\bigtriangledown}$\\
+Orbital momentum           & $\vec{L} = \vec{r} \times \vec{p}$
+		  & $\OP{\vec{L}} = \vec{r} \times (-i\hbar \vec{\bigtriangledown})$\\
+Kinetic energy     & $T = (\vec{p})^2 / 2 m$
+						  & $\OP{T} = - (\hbar^2 / 2 m) (\vec{\bigtriangledown})^2$\\
+Total energy 		  & $H = (p^2 / 2 m) + V(\vec{r})$
+						  & $\OP{H} = - ( \hbar^2 / 2 m )(\vec{\bigtriangledown})^2
+										  + V(\vec{r})$\\
+\hline
+\end{tabular}
+\subsubsection{Postulate II}
+
+The only possible outcome of  an ideal measurement of the physical
+quantity $A$ are the eigenvalues of the corresponding quantum mechanical
+operator $\OP{A}$,
+%
+\[
+\OP{A} \psi_{\nu}
+	 = a_{\nu} \psi_{\nu},
+\]
+%
+resulting in the eigenvalues  $ a_1, a_2, a_3,\cdots$
+as the only outcomes of a measurement. The corresponding
+eigenstates
+$ \psi_1, \psi_2, \psi_3 \cdots$
+contain all relevant information about the system.
+
+\subsubsection{Postulate III}
+Assume $\Phi$ is
+a linear combination of the eigenfunctions
+$\psi_{\nu}$
+for $\OP{A}$,
+%
+\[
+\Phi = c_1 \psi_1 + c_2 \psi_2 + \cdots
+  = \sum_{\nu} c_{\nu} \psi_{\nu}.
+\]
+%
+The eigenfunctions are orthogonal 
+and we get
+%
+\[
+c_{\nu} = \int (\Phi)^{\ast} \psi_{\nu} d\tau.
+\]
+%
+From this we can formulate the third postulate:\newline
+
+When the eigenfunction is  $\Phi$, the probability of 
+obtaining the value $a_{\nu}$ as the outcome of a measurement of the 
+physical quantity
+$A$ is given by $|c_{\nu}|^2$ and $\psi_{\nu}$ is an eigenfunction of
+$\OP{A}$ with eigenvalue  $a_{\nu}$.
+
+As a consequence one can show that
+when a quantal system is in the state $\Phi$,
+the mean value or expectation value of a physical quantity
+$A(\vec{r}, \vec{p})$
+is given by
+%
+\[
+\langle A \rangle 
+	= \int (\Phi)^{\ast} \OP{A}(\vec{r}, -i \hbar\vec{\bigtriangledown})
+		 \Phi d\tau.
+\]
+We  have assumed that
+$\Phi$ has been normalized, viz., $\int (\Phi)^{\ast} \Phi d\tau = 1$.
+Else
+%
+\[
+ \langle A \rangle = \frac{\int (\Phi)^{\ast} \OP{A} \Phi d\tau}
+			  {\int (\Phi)^{\ast} \Phi d\tau}.
+\]
+\subsubsection{Postulate IV}
+The time development of a quantal system is given by 
+%
+\[
+i \hbar \frac{\partial \Psi}{\partial t} = \OP{H} \Psi,
+\]
+%
+with $\OP{H}$ the quantal Hamiltonian operator for the system.
+
+
+\section{First Encounter with the Variational Monte Carlo Method}
+
+The required Monte Carlo techniques for variational Monte Carlo are conceptually
+simple, but the practical application may turn out to be rather 
+tedious and complex, relying on a good starting point for the 
+variational wave functions. These wave functions should include as
+much as possible of the pertinent physics since they
+form the starting point for a variational calculation of the expectation
+value of the Hamiltonian $H$. Given a Hamiltonian $H$ and a trial
+wave function $\Psi_T$, the variational principle states that
+the expectation value of $\langle H \rangle$ 
+\be
+   \langle H \rangle =
+   \frac{\int d{\bf R}\Psi^{\ast}_T({\bf R})H({\bf R})\Psi_T({\bf R})}
+        {\int d{\bf R}\Psi^{\ast}_T({\bf R})\Psi_T({\bf R})},
+      \label{eq:variation}
+\ee
+is an upper bound to the true ground state energy $E_0$ of the Hamiltonian $H$, that
+is 
+\[ 
+    E_0 \le \langle H \rangle .
+\]
+
+To show this, we note first that the trial wave function can be expanded
+in the eigenstates of the Hamiltonian since they form a complete set, see again Postulate III,
+\[
+   \Psi_T({\bf R})=\sum_i a_i\Psi_i({\bf R}),
+\]
+and assuming the set of eigenfunctions to be normalized, insertion of the 
+latter equation in Eq.~(\ref{eq:variation}) results in
+\[
+   \langle H \rangle =
+   \frac{\sum_{mn}a_m^{\ast}a_n\int d{\bf R}\Psi_m^{\ast}({\bf R})H({\bf R})\Psi_n({\bf R})}
+        {\sum_{mn}a_m^{\ast}a_n\int d{\bf R}\Psi^{\ast}_m({\bf R})\Psi_n({\bf R})}
+=
+   \frac{\sum_{mn}a_m^{\ast}a_n\int d{\bf R}\Psi_m^{\ast}({\bf R})E_n({\bf R})\Psi_n({\bf R})}
+        {\sum_{n}a^2_n},
+\]
+which can be rewritten
+as
+\[
+   \frac{\sum_{n}a^2_n E_n}
+        {\sum_{n}a^2_n} \ge E_0. 
+\]
+In general, the integrals involved in the calculation of various  expectation
+values  are multi-dimensional ones. Traditional integration methods
+like Gaussian-quadrature discussed in chapter \ref{chap:integrate}  
+will not be adequate for say the 
+computation of the energy of a many-body system.
+
+We could briefly summarize the above variational procedure in the 
+following three steps:
+\begin{svgraybox}
+\begin{enumerate}
+\item Construct first a trial wave function $\psi_T({\bf R};\alpha)$, 
+for say a many-body
+system consisting of $N$ particles located at positions
+${\bf R=(R_1,\dots ,R_N)}$. The trial wave function depends
+on $\alpha$ variational parameters $\alpha=(\alpha_1,\dots ,\alpha_m)$.
+\item Then we evaluate the expectation value of the Hamiltonian $H$ 
+\[
+   \langle H \rangle =
+   \frac{\int d{\bf R}\Psi^{\ast}_{T}({\bf R};\alpha)H({\bf R})
+         \Psi_{T}({\bf R};\alpha)}
+        {\int d{\bf R}\Psi^{\ast}_{T}({\bf R};\alpha)\Psi_{T}({\bf R};\alpha)}.
+\]
+\item Thereafter we vary $\alpha$ according to some minimization
+algorithm and return to the first step.
+\end{enumerate}
+\end{svgraybox}
+The above loop stops when we reach the minimum of the energy according
+to some specified criterion. 
+In most cases, a wave function has only small values in large parts of 
+configuration space, and a straightforward procedure which uses
+homogenously distributed random points in configuration space 
+will most likely lead to poor results. This may suggest that some kind
+of importance sampling combined with e.g., the Metropolis algorithm 
+may be  a more efficient way of obtaining the ground state energy.
+The hope is then that those regions of configurations space where
+the wave function assumes appreciable values are sampled more 
+efficiently. 
+
+The tedious part in a variational Monte Carlo calculation is the search for the variational
+minimum. A good knowledge of the system is required in order to carry out
+reasonable variational Monte Carlo calculations. This is not always the case, 
+and often variational Monte Carlo calculations 
+serve rather as the starting
+point for so-called diffusion Monte Carlo calculations. Diffusion Monte Carlo allows for an in principle  exact solution to  the many-body Schr\"odinger equation. 
+A good guess on the binding energy
+and its wave function is however necessary. 
+A carefully performed variational Monte Carlo calculation can aid in this context. 
+Diffusion Monte Carlo is discussed in depth in chapter \ref{chap:advancedqmc}.
+
+\section{Variational Monte Carlo for Quantum Mechanical Systems} 
+The variational quantum Monte Carlo  has been widely applied 
+to studies of quantal systems. Here we expose its philosophy and present
+applications and critical discussions.
+
+The recipe, as discussed in chapter \ref{chap:mcint} as well, consists in choosing 
+a trial wave function
+$\psi_T({\bf R})$ which we assume to be as realistic as possible. 
+The variable ${\bf R}$ stands for the spatial coordinates, in total 
+$3N$ if we have $N$ particles present. 
+The trial wave function defines the quantum-mechanical  probability distribution 
+\[
+   P({\bf R};\alpha)= \frac{\left|\psi_T({\bf R};\alpha)\right|^2}{\int \left|\psi_T({\bf R};\alpha)\right|^2d{\bf R}}.
+\]
+This is our new probability distribution function. 
+
+The expectation value of the Hamiltonian
+is given by
+\[
+   \langle \OP{H} \rangle =
+   \frac{\int d{\bf R}\Psi^{\ast}({\bf R})H({\bf R})\Psi({\bf R})}
+        {\int d{\bf R}\Psi^{\ast}({\bf R})\Psi({\bf R})},
+\]
+where $\Psi$ is the exact eigenfunction. Using our trial
+wave function we define a new operator, 
+the so-called local energy
+\be
+   \OP{E}_L({\bf R};\alpha)=\frac{1}{\psi_T({\bf R};\alpha)}\OP{H}\psi_T({\bf R};\alpha),
+   \label{eq:locale1}
+\ee
+which, together with our trial probability distribution function  
+allows us to compute the expectation value of the local energy
+\be
+  \langle E_L(\alpha) \rangle =\int P({\bf R};\alpha)\OP{E}_L({\bf R};\alpha) d{\bf R}.
+  \label{eq:vmc1}
+\ee
+This equation expresses the variational Monte Carlo approach.
+We compute this integral for a set of values of $\alpha$ and possible trial wave functions and search for
+the minimum of the function $E_L(\alpha)$. 
+If the trial wave function is close to the exact wave function, then $\langle E_L(\alpha) \rangle$ should approach
+$\langle \OP{H} \rangle$. Equation (\ref{eq:vmc1}) is solved using techniques from Monte Carlo integration, see the discussion below.
+For most Hamiltonians, $H$ is a sum of kinetic energy, involving 
+a second derivative, and a momentum independent and spatial dependent potential. 
+The contribution from the potential term is hence just the 
+numerical value of the potential. A typical Hamiltonian reads thus
+\begin{equation}
+  \OP{H} = - \frac {\hbar^2}{2m} \sum_{i=1}^N \nabla_i^2 + \sum_{i=1}^N V_{\mathrm{onebody}}({\bf r}_i) 
+  + \sum_{i<j}^N V_{\mathrm{int}}(\mid{\bf r}_i -{\bf r}_j \mid ). 
+\end{equation}
+where the sum runs over all particles $N$. We have included both a onebody potential 
+$V_{\mathrm{onebody}}({\bf r}_i)$ which acts on one particle at the time and a twobody
+interaction $V_{\mathrm{int}}(\mid{\bf r}_i -{\bf r}_j \mid )$ which acts between two particles
+at the time. We can obviously extend this to more complicated three-body and/or many-body forces as well.
+The main contributions to the energy of physical systems is largely dominated by one- and two-body
+forces. We will therefore limit our attention to such interactions only.
+
+Our local energy operator becomes then 
+\[
+   \OP{E}_L({\bf R};\alpha)=\frac{1}{\psi_T({\bf R};\alpha)}\left(- \frac {\hbar^2}{2m} \sum_{i=1}^N \nabla_i^2+ \sum_{i=1}^N 
+V_{\mathrm{onebody}}({\bf r}_i) + \sum_{i<j}^N V_{\mathrm{int}}(\mid{\bf r}_i -{\bf r}_j \mid )\right)\psi_T({\bf R};\alpha),
+\]
+resulting in
+\[
+   \OP{E}_L({\bf R};\alpha)=\frac{1}{\psi_T({\bf R};\alpha)}\left(- \frac {\hbar^2}{2m} \sum_{i=1}^N \nabla_i^2\right)\psi_T({\bf R};\alpha) 
+  + \sum_{i=1}^N V_{\mathrm{onebody}}({\bf r}_i) + \sum_{i<j}^N V_{\mathrm{int}}(\mid{\bf r}_i -{\bf r}_j \mid ).
+\]
+The numerically time-consuming part in the variational Monte Carlo calculation is the evaluation of the kinetic energy term.
+The potential energy, as long as it has a spatial dependence only, adds  a simple term to the local energy operator.
+
+
+In our discussion below, we base     
+our numerical Monte Carlo solution on the Metropolis
+algorithm. The implementation is rather similar to the
+one discussed in connection with the Ising model, the main
+difference resides in the form of the probability distribution function . The main test to be performed by the Metropolis algorithm is
+a ratio of probabilities, as discussed in chapter \ref{chap:mcrandom}. 
+Suppose we are attempting to move from 
+position ${\bf R}$ to a new position ${\bf R'}$. We need to perform the following two tests:  
+\begin{enumerate}
+ \item If 
+   \[ \frac{P({\bf R}';\alpha)}{P({\bf R};\alpha)} > 1, \]
+    where ${\bf R}'$ is the new position, the new step is accepted, or
+  \item 
+       \[ r\le  \frac{P({\bf R}';\alpha)}{P({\bf R};\alpha)}, \]
+  where $r$ is random number generated with uniform probability distribution function  such that
+  $r\in [0,1]$, the step is also accepted.
+\end{enumerate}
+In the Ising model we were flipping one spin at the time. Here we change
+the position of say a given particle to a trial position 
+${\bf R}'$, and then evaluate the ratio between two probabilities.
+We note again that we do not need to evaluate 
+the norm\footnote{This corresponds to the  partition function 
+$Z$ in statistical physics.} 
+$\int \left|\psi_T({\bf R};\alpha)\right|^2d{\bf R}$ (an in general
+impossible task), 
+since we are only computing ratios between probabilities.
+
+When writing a variational Monte Carlo program, one should always prepare in advance
+the required formulae for the local energy $E_L$ 
+in Eq.~(\ref{eq:vmc1}) 
+and the wave function needed in order to compute the 
+ratios of probabilities in the Metropolis algorithm.
+These two functions are almost called as often as a random
+number generator, and care should therefore be exercised 
+in order to prepare an efficient code. 
+
+
+If we now focus on the Metropolis algorithm and the Monte Carlo 
+evaluation of Eq.~(\ref{eq:vmc1}), a more detailed algorithm is   
+as follows
+\begin{svgraybox}
+       \begin{itemize}
+          \item Initialisation: Fix the number of Monte Carlo steps and 
+                thermalization steps. Choose an initial ${\bf R}$ and
+                variational parameters $\alpha$ and 
+                calculate
+                $\left|\psi_T({\bf R};\alpha)\right|^2$. 
+                Define also the value 
+                of the stepsize to be used when moving from one value of 
+                ${\bf R}$ to a new one.
+          \item Initialise the energy and the variance.
+          \item Start the Monte Carlo calculation with a loop over a given number of Monte Carlo cycles
+                \begin{enumerate}
+                  \item Calculate  a trial position  ${\bf R}_p={\bf R}+r*\Delta {\bf R}$
+                        where $r$ is a random variable $r \in [0,1]$ and $\Delta {\bf R}$ a user-chosen 
+                        step length.
+                  \item Use then the Metropolis algorithm to accept
+                        or reject this move by calculating the ratio
+                        \[
+                           w = P({\bf R}_p)/P({\bf R}).
+                        \]
+                        If $w \ge s$, where $s$ is a random number
+                          $s \in [0,1]$, 
+                          the new position is accepted, else we 
+                          stay at the same place.
+                  \item If the step is accepted, then we set 
+                        ${\bf R}={\bf R}_p$. 
+                  \item Update the local energy and the variance.
+                 \end{enumerate}
+          \item When the Monte Carlo sampling is finished, 
+we calculate the mean energy and the standard deviation. Finally,
+we may print our results to a specified file.
+      \end{itemize}
+\end{svgraybox}
+Note well that the way we choose the next step ${\bf R}_p={\bf R}+r*\Delta {\bf R}$ 
+is not determined 
+by the wave function. The wave function enters only the determination of the ratio of probabilities,
+similar to the way we simulated systems in statistical physics. This means in turn that our sampling of
+points may not be very efficient. We will return to an efficient sampling 
+of integration points in our discussion of diffusion Monte Carlo in chapter \ref{chap:advancedqmc}
+and  importance sampling later in this chapter.
+Here we note that the above algorithm will depend on the chosen value of $\Delta {\bf R}$.
+Normally, $\Delta {\bf R}$ is chosen in order to accept approximately $50\%$ of the proposed moves. 
+One refers often to this algorithm as the brute force Metropolis algorithm.
+
+\subsection{First illustration of Variational Monte Carlo Methods}
+
+The harmonic oscillator in one dimension lends itself nicely for 
+illustrative purposes. 
+The Hamiltonian is 
+\be
+   \label{eq:hovmccalc}
+   H=-\frac{\hbar^2}{2m}\frac{d^2}{dx^2}+\frac{1}{2}kx^2,
+\ee
+where $m$ is the mass of the particle and $k$ is the force
+constant, e.g., the spring tension for a classical oscillator. 
+In this example we will make life simple and choose
+$m=\hbar=k=1$. 
+We can rewrite the above  equation as 
+\[
+   H=-\frac{d^2}{dx^2}+x^2,
+\]
+The energy of the ground state is then
+$E_0=1$. The exact wave function for the ground state is 
+\[
+\Psi_0(x)=\frac{1}{\pi^{1/4}}e^{-x^2/2},
+\]
+but since we wish to illustrate the use of Monte Carlo 
+methods, we choose 
+the trial function
+\[
+\Psi_T(x)=\frac{\sqrt{\alpha}}{\pi^{1/4}}e^{-x^2\alpha^2/2}.
+  \label{eq:trialho}
+\]
+Inserting this function in the expression for the local energy
+in Eq.~(\ref{eq:locale1}), 
+we obtain the following expression for the local energy
+\[
+  E_L(x)=\alpha^2+x^2(1-\alpha^4),
+\]
+with the expectation value for the Hamiltonian of Eq.~(\ref{eq:vmc1}) 
+given by
+\[
+   \langle E_L\rangle=\int_{-\infty}^{\infty}\left|\psi_T(x)\right|^2E_L(x)dx,
+\]
+which reads with the above trial wave function
+\[
+   \langle E_L\rangle=
+   \frac{\int_{-\infty}^{\infty}dxe^{-x^2\alpha^2}\alpha^2+x^2(1-\alpha^4)}
+{\int_{-\infty}^{\infty}dxe^{-x^2\alpha^2}}.
+\]
+Using the fact that
+\[
+   \int_{-\infty}^{\infty}dxe^{-x^2\alpha^2}=\sqrt{\frac{\pi}{\alpha^2}},
+\]
+we obtain
+\[
+   \langle E_L \rangle=\frac{\alpha^2}{2}+\frac{1}{2\alpha^2}.
+\]
+and the variance 
+\be
+  \sigma^2=\frac{(\alpha^4-1)^2}{2\alpha^4}.
+  \label{eq:hovariance1}
+\ee
+
+In solving this problem we can choose whether we wish to use the Metropolis
+algorithm and sample over relevant configurations, or just use
+random numbers generated from a normal distribution, since the 
+harmonic oscillator wave functions follow closely such a 
+distribution. 
+The latter approach is easily implemented, as seen in this listing
+\begin{lstlisting}
+...  initialisations, declarations of variables
+...  mcs = number of  Monte Carlo samplings
+//   loop over Monte Carlo samples
+     for ( i=0; i < mcs; i++) {
+//   generate random variables from gaussian distribution 
+         x = normal_random(&idum)/sqrt2/alpha;
+         local_energy = alpha*alpha + x*x*(1-pow(alpha,4));
+         energy += local_energy;
+         energy2 += local_energy*local_energy;
+//   end of sampling
+     }
+//   write out the mean energy and the standard deviation
+     cout << energy/mcs <<  sqrt((energy2/mcs-(energy/mcs)**2)/mcs));
+\end{lstlisting}
+This variational Monte Carlo calculation is rather simple, we just generate a large
+number $N$ of random numbers corresponding to a gaussian probability distribution function
+(which resembles the ansatz for our trial wave function 
+$\sim |\Psi_T|^2$) and for each random number we compute the 
+local energy according to the approximation
+\[
+  \langle \OP{E}_L \rangle =\int P({\bf R})\OP{E}_L({\bf R}) d{\bf R}\approx 
+  \frac{1}{N}\sum_{i=1}^{N}E_L(x_i),
+\]
+and the energy squared through
+\[
+  \langle \OP{E}_L^2 \rangle =\int P({\bf R})\OP{E}_L^2({\bf R}) d{\bf R}\approx 
+  \frac{1}{N}\sum_{i=1}^{N}E_L^2(x_i).
+\]
+In a certain sense, this is nothing but the importance Monte Carlo
+sampling discussed in chapter \ref{chap:mcint}.
+Before we proceed however, there is an important aside which 
+is worth keeping in mind when computing the local energy.
+We could think of splitting the computation of the expectation
+value of the local energy into a kinetic energy part and a potential
+energy part. The expectation value of the kinetic energy is
+\be
+   -\frac{\int d{\bf R}\Psi^{\ast}_T({\bf R})\nabla^2\Psi_T({\bf R})}
+        {\int d{\bf R}\Psi^{\ast}_T({\bf R})\Psi_T({\bf R})},
+\ee    
+and we could be tempted to compute, if the wave function obeys spherical
+symmetry, just the second derivative with respect to one coordinate
+axis and then multiply by three. This will most likely increase the 
+variance, and should be avoided, even if the final expectation
+values are similar. For quantum mechanical systems, as discussed below, the exact wave 
+function leads to a variance which is exactly zero. 
+
+
+Another shortcut we could think of is to transform the numerator in the 
+latter equation to
+\be
+   \int d{\bf R}\Psi^{\ast}_T({\bf R})\nabla^2\Psi_T({\bf R})=
+    -\int d{\bf R}(\nabla\Psi^{\ast}_T({\bf R}))(\nabla\Psi_T({\bf R})),
+    \label{eq:vmctrick1}
+\ee
+using integration by parts and the relation
+\[
+   \int d{\bf R}\nabla(\Psi^{\ast}_T({\bf R})\nabla\Psi_T({\bf R}))=0,
+\]
+where we have used the fact that the wave function is zero at 
+${\bf R}=\pm \infty$. This relation can in turn be rewritten through
+integration by parts to
+\[
+   \int d{\bf R}(\nabla\Psi^{\ast}_T({\bf R}))(\nabla\Psi_T({\bf R}))+
+    \int d{\bf R}\Psi^{\ast}_T({\bf R})\nabla^2\Psi_T({\bf R}))=0.
+\]
+The right-hand side of Eq.~(\ref{eq:vmctrick1}) involves only first derivatives. 
+However, in case the wave function is the exact one, or rather
+close to the exact one, the left-hand side yields just a constant  times the 
+wave function squared, implying zero variance. The rhs does not
+and may therefore increase the variance.
+
+If we use integration by parts for the harmonic oscillator case, 
+the new local energy is 
+\[
+  E_L(x)=x^2(1+\alpha^4),
+\] 
+and the variance 
+\[
+  \sigma^2=\frac{(\alpha^4+1)^2}{2\alpha^4},
+\]
+which is larger than the variance of Eq.~(\ref{eq:hovariance1}). 
+
+
+
+
+
+\section{Variational Monte Carlo for atoms}
+
+The Hamiltonian for an $N$-electron atomic system consists of two terms
+\begin{equation}
+  \hat{H}(\mathbf{R}) 
+  = \hat{T}(\mathbf{R}) 
+  + \hat{V}(\mathbf{R}), 
+\label{hamiltonOperatorFull}
+\end{equation}
+the kinetic and the potential energy operator. Here $\mathbf{R} =
+\left\{ \mathbf{r}_1, \mathbf{r}_2, \dots \mathbf{r}_N \right\}$  represents
+the spatial and spin degrees of freedom associated with the different
+particles. The classical kinetic energy
+\[
+  T= \frac{\mathbf{P^2}}{2M} + \sum_{j=1}^N \frac{\mathbf{p}_j^2}{2m},
+\]
+is transformed to the quantum mechanical kinetic energy operator by 
+operator substitution of the momentum ($p_k \to -i\hbar
+\partial/\partial x_k$)
+\begin{equation}
+  \hat{T}(\mathbf{R}) = -\frac{\hbar^2}{2M}\nabla^2_0
+  -\sum_{i=1}^{N}\frac{\hbar^2}{2m}\nabla^2_i.
+\label{kineticEnergyOperatorFull}
+\end{equation}
+Here the first term is the kinetic energy operator of the nucleus,
+the second term is the kinetic energy operator of the electrons,
+$M$ is the mass of the nucleus and $m$ is the electron mass. The
+potential energy operator is given by
+\begin{equation}
+  \hat{V}(\mathbf{R}) = 
+  - \sum_{i=1}^{N} \frac{Ze^2}{(4\pi \epsilon_0)r_i}
+  + \sum_{i=1,i<j}^{N} \frac{e^2}{(4\pi \epsilon_0)r_{ij}},
+\label{potentialEnergyOperatorFull}
+\end{equation}
+where the $r_i$'s are the electron-nucleus distances and the
+$r_{ij}$'s are the inter-electronic distances. 
+
+We seek to find controlled and well understood approximations in order
+to reduce the complexity of the above equations. The
+\emph{Born-Oppenheimer approximation} is a commonly used
+approximation. In this approximation, the motion of the nucleus is disregarded.
+
+\subsection{The Born-Oppenheimer Approximation}
+
+In a system of interacting electrons and a nucleus there will usually
+be little momentum transfer between the two types of particles due to
+their differing masses. The forces between the particles are 
+of similar magnitude due to their similar charge. If one assumes
+that the momenta of the particles are also similar, the nucleus
+must have a much smaller velocity than the electrons due to its far
+greater mass. On the time-scale of nuclear motion, one can therefore
+consider the electrons to relax to a ground-state given by the
+Hamiltonian of Eqs.~(\ref{hamiltonOperatorFull}),
+(\ref{kineticEnergyOperatorFull}) and
+(\ref{potentialEnergyOperatorFull}) with the nucleus at a fixed
+location. This separation of the electronic and nuclear degrees of
+freedom is known as the Born-Oppenheimer approximation. 
+
+In the center of mass system the
+kinetic energy operator reads
+\begin{equation}
+  \hat{T}(\mathbf{R}) = -\frac{\hbar^2}{2(M+Nm)}\nabla^2_{CM}
+  -\frac{\hbar^2}{2\mu}\sum_{i=1}^{N}\nabla^2_i
+  -\frac{\hbar^2}{M}\sum_{i>j}^{N}\nabla_i\cdot\nabla_j,
+  \label{centerOfMassKineticEnergyOperator}
+\end{equation}
+while the potential energy operator remains unchanged. Note that the
+Laplace operators $\nabla^2_i$ now are in the center of mass reference
+system.
+
+The first term of Eq.~(\ref{centerOfMassKineticEnergyOperator})
+represents the kinetic energy operator of the center of mass. The
+second term represents the sum of the kinetic energy operators of the
+$N$ electrons, each of them having their mass $m$ replaced by the
+reduced mass $\mu = mM/(m+M)$ because of the motion of the
+nucleus. The nuclear motion is also responsible for the third term,
+or the \emph{mass polarization} term.
+
+The nucleus consists of protons
+and neutrons. The proton-electron mass ratio is about
+$1 / 1836$ and the neutron-electron mass ratio is about
+$1 / 1839$. We can therefore approximate the nucleus as stationary with respect to the electrons. 
+Taking the limit $M\to \infty$ in
+Eq.~(\ref{centerOfMassKineticEnergyOperator}), the kinetic energy 
+operator reduces to
+\[
+  \hat{T} = -\sum_{i=1}^{N}\frac{\hbar^2}{2m}\nabla^2_i
+\]
+
+The Born-Oppenheimer approximation thus disregards both the kinetic
+energy of the center of mass as well as the mass polarization term.
+The effects of the Born-Oppenheimer approximation are quite small and
+they are also well accounted for.
+However, this simplified electronic Hamiltonian remains very difficult
+to solve, and closed-form solutions do not exist for general systems
+with more than one electron. We use the Born-Oppenheimer approximation in our discussion
+of atomic and molecular systems. 
+
+The first term of Eq.~(\ref{potentialEnergyOperatorFull}) is the
+nucleus-electron potential and the second term is the
+electron-electron potential. The inter-electronic potential is the
+main problem in atomic physics. Because of this term, the
+Hamiltonian cannot be separated into one-particle parts, and the
+problem must be solved as a whole. A common approximation is to regard
+the effects of the electron-electron interactions either as averaged
+over the domain or by means of introducing a density functional. Popular methods
+in this direction are
+Hartree-Fock theory and Density Functional theory. These
+approaches are actually very efficient, and about $99\%$ or more of
+the electronic energies are obtained for most Hartree-Fock calculations.
+Other observables are usually obtained to an accuracy of about
+$90-95\%$ (ref. \cite{abinitio}).  We discuss these methods in chapter \ref{chap:advancedatoms}, where also systems with more than two electrons are discussed
+in more detail. Here we limit ourselves to systems with at most two electrons.  Relevant systems are neutral helium with two electrons, the hydrogen molecule or two electrons confined in a two-dimensional harmonic oscillator trap.  
+%One could also think of atoms stripped of a given number of electrons. An example is portrayed in 
+%Fig.~\ref{fig:strippedcarbon}, where only two electrons are left.  
+%\begin{figure}
+%    \centering
+%    \begin{tikzpicture}[scale=0.65]
+%        \nucleus
+%        \electron{1.2}{1.4}{260}
+%        \electron{4}{2}{30}
+%        \electron{5}{1}{60}
+%        \electron{5.5}{1.5}{150}
+%        \electron{4.8}{2.25}{80}
+%    \end{tikzpicture}
+%\caption{Picture of an ionized lithium atom with three protons (in red) and only two electrons. \label{fig:strippedcarbon}}
+%\end{figure}
+%\begin{figure}
+%    \centering
+%    \begin{tikzpicture}[scale=0.65]
+%        \nucleus
+%        \electron{1.2}{1.4}{260}
+%        \electron{4}{2}{30}
+%        \electron{5}{1}{60}
+%        \electron{5.5}{1.5}{150}
+%        \electron{4.8}{2.25}{80}
+%        \photoelectron{1.5}{0.75}{80}
+%    \end{tikzpicture}
+%\caption{Photoelectric effect. \label{fig:strippedcarbon}}
+%\end{figure}
+
+
+
+\subsection{The Hydrogen Atom}
+
+The spatial Schr\"odinger equation for the three-dimensional hydrogen atom can be solved in a closed form,
+see for example Ref.~\cite{liboff} for details.
+To achieve this, we rewrite the 
+equation in terms of  
+spherical coordinates using
+     \[
+        x=r\sin{\theta} \cos{\phi},  
+      \]
+      \[
+        y=r\sin{\theta} \sin{\phi},
+     \]
+and
+     \[
+        z=r\cos{\theta}.
+     \]
+The reason we introduce spherical coordinates is due to the spherical symmetry of the Coulomb potential
+\[
+    \frac{e^2}{4\pi\epsilon_0r}=\frac{e^2}{4\pi\epsilon_0\sqrt{x^2+y^2+z^2}},
+\]
+where we have used $r=\sqrt{x^2+y^2+z^2}$. 
+It is not possible to find a separable solution of the type
+\[
+    \psi(x,y,z)=\psi(x)\psi(y)\psi(z).
+\]
+as we can with the harmonic oscillator in three dimensions. However, with spherical coordinates we can find a solution
+of the form
+\[
+   \psi(r,\theta,\phi)=R(r)P(\theta)F(\phi)=RPF.
+\]
+These three coordinates yield in turn three quantum numbers which determine the energy of the system.
+We obtain three sets of ordinary second-order differential equations \cite{liboff}, 
+\[
+   \frac{1}{F}\frac{\partial^2 F }{\partial \phi^2}=-C^2_{\phi},
+\]
+\[
+   C_r\sin^2{(\theta)}P+\sin{(\theta)}\frac{\partial }{\partial \theta}(\sin{(\theta)}
+     \frac{\partial P}{\partial \theta})=C_{\phi}^2P,
+\]
+and
+\be
+\frac{1}{R}\frac{\partial }{\partial r}
+          (r^2\frac{\partial R}{\partial r}) 
++\frac{2mrke^2}{\hbar^2}+\frac{2mr^2}{\hbar^2}E
+=C_r,
+\label{eq:radiell}
+\ee
+where $C_r$ and $C_{\phi}$ are constants. 
+The angle-dependent differential equations result in the so-called spherical harmonic functions as
+solutions, with quantum numbers $l$ and $m_l$. These functions are given by
+\[
+    Y_{lm_l}(\theta,\phi)=P(\theta)F(\phi)=\sqrt{\frac{(2l+1)(l-m_l)!}{4\pi (l+m_l)!}}
+                      P_l^{m_l}(\cos{(\theta)})\exp{(im_l\phi)},
+\]
+with $P_l^{m_l}$ being the associated Legendre polynomials.
+They can be rewritten as 
+\[
+   Y_{lm_l}(\theta,\phi)=\sin^{|m_l|}(\theta) \times (\mathrm{polynom}(\cos{\theta)})\exp{(im_l\phi)},
+\]
+with the following selected examples
+\[
+   Y_{00}=\sqrt{\frac{1}{4\pi}},
+\]
+for $l=m_l=0$, 
+\[
+   Y_{10}=\sqrt{\frac{3}{4\pi}}\cos{(\theta)},
+\]
+for $l=1$ og $m_l=0$, 
+\[
+   Y_{1\pm 1}=\mp 1\sqrt{\frac{3}{8\pi}}\sin{(\theta)}\exp{(\pm i\phi)},
+\]
+for  $l=1$ og $m_l=\pm 1$, and 
+\[
+   Y_{20}=\sqrt{\frac{5}{16\pi}}(3\cos^2(\theta)-1)
+\]
+for $l=2$ og $m_l=0$. 
+The quantum numbers $l$ and $m_l$ represent the orbital momentum and projection of the orbital momentum, respectively and take 
+the values $l \ge 0$, $l=0,1,2,\dots$ and $m_l=-l,-l+1,\dots, l-1,l$.
+The spherical harmonics for $l \le 3$ are listed in Table \ref{tab:sphericalHaromical}.
+\begin{table}[hbtp]
+\begin{center} {\large \bf Spherical Harmonics} \\ 
+$\phantom{a}$ \\
+\begin{tabular}{ccccc}
+\hline\\ 
+$m_l\backslash l$ & \phantom{AA}0\phantom{AA}
+& \phantom{AA}1\phantom{AA} & \phantom{AA}2\phantom{AA} &
+\phantom{AA}3\phantom{AA} \\ 
+\hline\\ 
++3 &                      &
+&
+&$-\frac{1}{8}(\frac{35}{\pi})^{1/2}\sin^3\theta e^{+ 3i\phi}$
+\\ [7pt] 
+
++2 &                      &
+&$\frac{1}{4}(\frac{15}{2\pi})^{1/2}\sin^2\theta e^{+ 2i\phi}$
+&$\frac{1}{4}(\frac{105}{2\pi})^{1/2}\cos{\theta} \sin^2\theta e^{+ 2i\phi}$     \\ [7pt]
+
++1 &  
+&$-\frac{1}{2}(\frac{3}{2\pi})^{1/2}\sin{\theta}
+e^{+i\phi}$&$-\frac{1}{2}(\frac{15}{2\pi})^{1/2}\cos{\theta} \sin{\theta}
+e^{+ i\phi}$&$-\frac{1}{8}(\frac{21}{2\pi})^{1/2}(5\cos^2\theta
+-1)\sin{\theta} e^{+ i\phi}$\\ [7pt] 
+
+ 0 &$\frac{1}{2\pi^{1/2}}$&$\frac{1}{2}(\frac{3}{\pi})^{1/2}\cos{\theta}$
+ &$\frac{1}{4}(\frac{5}{\pi})^{1/2}(3\cos^2\theta-1)$
+ &$\frac{1}{4}(\frac{7}{\pi})^{1/2}(2-5\sin^2\theta)\cos{\theta}$
+ \\ [7pt] 
+
+-1 &  
+ &$+\frac{1}{2}(\frac{3}{2\pi})^{1/2}\sin{\theta}
+ e^{-i\phi}$&$+\frac{1}{2}(\frac{15}{2\pi})^{1/2}\cos{\theta} \sin{\theta}
+ e^{- i\phi}$&$+\frac{1}{8}(\frac{21}{2\pi})^{1/2}(5\cos^2\theta
+ -1)\sin{\theta} e^{- i\phi}$\\ [7pt] 
+
+-2 &                      &
+ &$\frac{1}{4}(\frac{15}{2\pi})^{1/2}\sin^2\theta e^{- 2i\phi}$
+ &$\frac{1}{4}(\frac{105}{2\pi})^{1/2}\cos{\theta} \sin^2\theta e^{- 2i\phi}$     \\ [7pt]
+
+-3 &                      &
+&
+&$+\frac{1}{8}(\frac{35}{\pi})^{1/2}\sin^3\theta e^{- 3i\phi}$
+\\ [7pt] 
+\hline
+\end{tabular} 
+\end{center}
+\caption{Spherical harmonics $Y_{lm_l}$ for the lowest $l$ and $m_l$
+  values.} 
+\label{tab:sphericalHaromical}
+\end{table}
+
+
+We focus now on the radial equation, which can be rewritten as 
+\[
+-\frac{\hbar^2 r^2}{2m}\left(\frac{\partial }{\partial r}
+          (r^2\frac{\partial R(r)}{\partial r})\right) 
+-\frac{ke^2}{r}R(r)+\frac{\hbar^2l(l+1)}{2mr^2}R(r)=ER(r).
+\]
+Introducing the function $u(r)=rR(r)$, we can rewrite the last equation as
+\be
+-\frac{\hbar^2}{2m}\frac{\partial^2 u(r)}{\partial r^2}-
+\left(\frac{ke^2}{r}-\frac{\hbar^2l(l+1)}{2mr^2}\right)u(r)=Eu(r),
+\label{eq:radialsl}
+\ee
+where $m$ is the mass of the electron, $l$ its orbital momentum
+taking values $l=0,1,2,\dots$, and the term
+$ke^2/r$ is the Coulomb potential. The first terms is the 
+kinetic energy. The full wave function
+will also depend on the other variables $\theta$ and $\phi$ as well.
+The energy, with no external magnetic field is however determined by the 
+above equation . We can then think of the  
+radial Schr\"odinger equation to be equivalent to a one-dimensional
+movement conditioned by an effective potential
+\[
+V_{\mathrm{eff}}(r)=-\frac{ke^2}{r}+\frac{\hbar^2l(l+1)}{2mr^2}.
+\]
+
+The radial equation yield closed form solutions resulting in the quantum number
+$n$, in addition to $lm_l$. The solution 
+$R_{nl}$ to the radial equation is given by the Laguerre polynomials \cite{liboff}. 
+The closed-form solutions are given by 
+\[
+\psi_{nlm_l}(r,\theta,\phi)=\psi_{nlm_l}=R_{nl}(r)Y_{lm_l}(\theta,\phi)=
+         R_{nl}Y_{lm_l}
+\]
+The ground state is defined by 
+$n=1$ and $l=m_l=0$ and reads
+\[
+   \psi_{100}=\frac{1}{a_0^{3/2}\sqrt{\pi}}\exp{(-r/a_0)},
+\]
+where we have defined the Bohr radius $a_0$
+\[
+  a_0 = \frac{\hbar^2}{mke^2},
+\]
+with length $a_0=0.05$ nm.
+The first excited state with  $l=0$ is
+\[
+   \psi_{200}=\frac{1}{4a_0^{3/2}\sqrt{2\pi}}
+   \left(2-\frac{r}{a_0}\right)\exp{(-r/2a_0)}.
+\]
+For states with  with $l=1$ and $n=2$, we can have the following combinations with $m_l=0$
+\[
+   \psi_{210}=\frac{1}{4a_0^{3/2}\sqrt{2\pi}}
+   \left(\frac{r}{a_0}\right)\exp{(-r/2a_0)}\cos{(\theta)}, 
+\]
+and $m_l=\pm 1$
+\[
+   \psi_{21\pm 1}=\frac{1}{8a_0^{3/2}\sqrt{\pi}}
+   \left(\frac{r}{a_0}\right)\exp{(-r/2a_0)}\sin{(\theta)}\exp{(\pm i\phi)}.
+\]
+The exact energy is independent of $l$ and $m_l$, since the potential is spherically symmetric.
+
+The first few non-normalized radial solutions of equation are listed in Table
+\ref{tab:hydrogenRadialFunctions}.
+\begin{table}[hbtp]
+\begin{center} {\bf Hydrogen-like atomic radial functions} \\ 
+$\phantom{a}$ \\
+\begin{tabular}{cccc}
+\hline\\ 
+$l\backslash n$ & \phantom{AA}1\phantom{AA}
+& \phantom{AA}2\phantom{AA} & \phantom{AA}3\phantom{AA}  \\ 
+\hline\\ 
+0 & $\exp{(-Zr)}$ & $(2-r)\exp{(-Zr/2)}$ & $(27-18r+2r^2)\exp{(-Zr/3)}$ \\[7pt]
+1 & & $r\exp{(-Zr/2)}$ & $r(6-r)\exp{(-Zr/3)}$\\[7pt]
+2 & & & $r^2\exp{(-Zr/3)}$ \\[7pt]
+\hline
+\end{tabular} 
+\end{center}
+\caption{The first few radial functions of the hydrogen-like atoms.} 
+\label{tab:hydrogenRadialFunctions}
+\end{table}
+
+When solving equations numerically, it is often convenient to rewrite
+the equation in terms of dimensionless variables. 
+This leads to an equation in dimensionless
+form which is easier to code, sparing one for eventual errors. 
+In order to  do so, we introduce first the dimensionless variable
+$\rho=r/\beta$, where $\beta$ is a constant we can choose.
+Schr\"odinger's equation is then rewritten as 
+\be
+-\frac{1}{2}\frac{\partial^2 u(\rho)}{\partial \rho^2}-
+\frac{mke^2\beta}{\hbar^2\rho}u(\rho)+\frac{l(l+1)}{2\rho^2}u(\rho)=
+\frac{m\beta^2}{\hbar^2}Eu(\rho).
+\ee
+We can determine $\beta$ by simply requiring\footnote{Remember that we are free
+to choose $\beta$.}
+\be
+    \frac{mke^2\beta}{\hbar^2}=1
+\ee
+With this choice, 
+the constant $\beta$ becomes the famous Bohr radius $a_0=0.05$ nm
+$a_0 =\beta ={\hbar^2}/{mke^2}$.
+We list here the standard units used in atomic physics and molecular
+physics calculations.  It is common to scale atomic units by setting
+$m=e=\hbar=4\pi\epsilon_0=1$, see Table \ref{atomicUnits}. 
+\begin{table}[hbtp]
+\begin{center} {\bf Atomic Units} \\ 
+$\phantom{a}$ \\
+\begin{tabular}{llc}
+\hline\\ 
+{\bf Quantity}                 & {\bf SI}               & {\bf Atomic unit}\\
+Electron mass, $m$               & $9.109\cdot 10^{-31}$ kg & 1 \\
+Charge, $e$                      & $1.602\cdot 10^{-19}$ C  & 1 \\
+Planck's reduced constant, $\hbar$& $1.055\cdot 10^{-34}$ Js& 1 \\       
+Permittivity, $4\pi\epsilon_0$   & $1.113\cdot 10^{-10}$ C$^2$ J$^{-1}$ m$^{-1}$&1\\
+Energy, $\frac{e^2}{4\pi\epsilon_0 a_0}$ & $27.211$ eV       & 1 \\
+Length, $a_0=\frac{4\pi\epsilon_0 \hbar^2}{me^2}$&$0.529\cdot10^{-10}$ m&1\\ [10pt]      
+\hline
+\end{tabular} 
+\end{center}
+\caption{Scaling from SI units to atomic units.}
+\label{atomicUnits}
+\end{table}
+We introduce thereafter the variable $\lambda$ 
+\[
+ \lambda = \frac{m\beta^2}{\hbar^2}E,
+\]
+and inserting $\beta$ and the exact energy  $E=E_0/n^2$, with
+$E_0=13.6$ eV, we have that 
+\[
+ \lambda = -\frac{1}{2n^2},
+\]
+$n$ being the principal quantum number.
+The equation we are then going to solve numerically is now
+\be
+-\frac{1}{2}\frac{\partial^2 u(\rho)}{\partial \rho^2}-
+\frac{u(\rho)}{\rho}+\frac{l(l+1)}{2\rho^2}u(\rho)-\lambda u(\rho)=0,
+\label{eq:hydrodimless1}
+\ee
+with the Hamiltonian
+\[
+H=-\frac{1}{2}\frac{\partial^2 }{\partial \rho^2}-
+\frac{1}{\rho}+\frac{l(l+1)}{2\rho^2}.
+\]
+
+The ground state of the hydrogen atom has the energy
+$\lambda=-1/2$, or $E=-13.6$ eV. The exact wave function 
+obtained from Eq.~(\ref{eq:hydrodimless1}) is
+\[
+   u(\rho)=\rho e^{-\rho},
+\]
+which yields the energy $\lambda = -1/2$. 
+Sticking to our variational philosophy, we could now introduce 
+a variational parameter $\alpha$ resulting in a trial
+wave function 
+\be
+   u_T^{\alpha}(\rho)=\alpha\rho e^{-\alpha\rho}. 
+   \label{eq:trialhydrogen}
+\ee
+
+Inserting this wave function into the expression for the
+local energy $E_L$ of Eq.~(\ref{eq:locale1}) yields
+\be
+   E_L(\rho)=-\frac{1}{\rho}-
+              \frac{\alpha}{2}\left(\alpha-\frac{2}{\rho}\right).
+      \label{eq:localhydrogen}
+\ee
+For the hydrogen atom we could perform the variational calculation 
+along the same lines as we did for the harmonic oscillator.
+The only difference is that Eq.~(\ref{eq:vmc1}) now reads
+\[
+  \langle H \rangle =\int P({\bf R})E_L({\bf R}) d{\bf R}=
+  \int_0^{\infty}\alpha^2\rho^2 e^{-2\alpha\rho}E_L(\rho)\rho^2d\rho,
+\]
+since $\rho\in [0, \infty )$. In this case we would use the exponential
+distribution instead of the normal distrubution, and our code could contain
+the following program statements
+\begin{lstlisting}
+...  initialisations, declarations of variables
+...  mcs = number of  Monte Carlo samplings
+     
+//   loop over Monte Carlo samples
+     for ( i=0; i < mcs; i++) {
+
+//   generate random variables from the exponential 
+//   distribution using ran1 and transforming to
+//   to an exponential mapping y = -ln(1-x)
+         x=ran1(&idum);
+         y=-log(1.-x);
+//   in our case y = rho*alpha*2
+         rho = y/alpha/2;
+         local_energy = -1/rho -0.5*alpha*(alpha-2/rho);
+         energy += (local_energy);
+         energy2 += local_energy*local_energy;
+//   end of sampling
+     }
+//   write out the mean energy and the standard deviation
+     cout << energy/mcs << sqrt((energy2/mcs-(energy/mcs)**2)/mcs));
+\end{lstlisting}
+As for the harmonic oscillator case, we need to generate a large
+number $N$ of random numbers corresponding to the exponential probability distribution function
+$\alpha^2\rho^2 e^{-2\alpha\rho}$ and for each random number we compute the 
+local energy and variance.
+\subsection{Metropolis sampling for the hydrogen atom and the harmonic oscillator}
+We present in this subsection results for the ground states
+of the hydrogen atom and harmonic oscillator using a variational 
+Monte Carlo procedure. For the hydrogen atom, the trial wave function 
+\[
+     u_T^{\alpha}(\rho)=\alpha\rho e^{-\alpha\rho},
+\]
+depends only on the dimensionless radius $\rho$. It is the solution
+of a one-dimensional differential equation, as is the case
+for the harmonic oscillator as well. The latter has the trial
+wave function 
+\[
+\Psi_T(x)=\frac{\sqrt{\alpha}}{\pi^{1/4}}e^{-x^2\alpha^2/2}.
+\]
+However, for the hydrogen atom we have $\rho\in [0,\infty)$, while
+for the harmonic oscillator we have $x\in (-\infty, \infty)$.  In the calculations below
+we have used a uniform distribution to generate the various positions. This means that we employ a shifted
+uniform distribution where the integration regions beyond a given value of $\rho$ and $x$ are omitted.
+This is obviously an approximation and techniques like importance sampling discussed in chapter \ref{chap:mcint}
+should be used.  Using a uniform distribution is 
+normally refered to as brute force Monte Carlo or brute force
+Metropolis sampling.  From a practical point of view, this means that the random variables are multiplied 
+by a given step length $\lambda$.  To better understand this, consider the above dimensionless radius $\rho\in [0,\infty)$.
+
+The new position can then be modelled as
+\[ \rho_{\mathrm{new}}=\rho_{\mathrm{old}}+\lambda\times r,\]
+with $r$ being a random number drawn from the uniform distribution in a region $r\in [0,\Lambda]$, with $\Lambda< \infty$, 
+a cutoff  large enough in order to have a contribution to the integrand close to zero.
+The step length $\lambda$ is chosen to give approximately an acceptance ratio of $50\%$ for all proposed moves.
+This is nothing but a simple rule of thumb. In this chapter we will stay with this brute force Metropolis algorithm.
+All results discussed here have been obtained with this approach.  Importance sampling and further improvements will be discussed in chapter \ref{chap:advancedatoms}. 
+\begin{figure}
+\begin{center}
+\input{figures/hovmc}
+\caption{Result  for ground state energy of the harmonic oscillator as
+         function of the variational parameter $\alpha$. The exact result
+         is for $\alpha=1$ with an energy $E=1$. 
+         See text for further details.\label{fig:hovmc}}
+\end{center}
+\end{figure}
+In Figs.~\ref{fig:hovmc} and \ref{fig:hydrogenvmc} we plot the ground state
+energies  for
+the one-dimensional harmonic oscillator and the hydrogen atom, respectively,
+as functions of the variational parameter $\alpha$. 
+These results are also displayed in Tables \ref{tab:tabhovmc} and
+\ref{tab:tabhydrogenvmc}. In these tables we list the variance and
+the standard deviation as well. We note that at $\alpha=1$ for the hydrogen atom, we obtain the exact
+result, and the variance is zero, as it should. The reason is that 
+we have used the exact wave function, and the action of the hamiltionan
+on the wave function
+\[
+   H\psi = \mathrm{constant}\times \psi,
+\]
+yields just a constant. The integral which defines various 
+expectation values involving moments of the Hamiltonian becomes then
+\[
+   \langle H^n \rangle =
+   \frac{\int d{\bf R}\Psi^{\ast}_T({\bf R})H^n({\bf R})\Psi_T({\bf R})}
+        {\int d{\bf R}\Psi^{\ast}_T({\bf R})\Psi_T({\bf R})}=
+\mathrm{constant}\times\frac{\int d{\bf R}\Psi^{\ast}_T({\bf R})\Psi_T({\bf R})}
+        {\int d{\bf R}\Psi^{\ast}_T({\bf R})\Psi_T({\bf R})}=
+\mathrm{constant}.
+\]
+\begin{table}[hbtp]
+\begin{center}
+\caption{Result  for ground state energy of the harmonic oscillator as
+         function of the variational parameter $\alpha$. The exact result
+         is for $\alpha=1$ with an energy $E=1$. We list the energy 
+         and the variance $\sigma^2$ as well. The variable $N$ is the number of Monte Carlo
+         samples. In this calculation we set $N=100000$ and a step length of 
+         2 was used in order to obtain an acceptance of $\approx 50\%$.
+         \label{tab:tabhovmc}}
+\begin{tabular}{rrr}\hline
+$\alpha$&$\langle H \rangle $&$\sigma^2$\\\hline
+ 5.00000E-01 &  2.06479E+00 &  5.78739E+00 \\ 
+ 6.00000E-01 &  1.50495E+00 &  2.32782E+00 \\ 
+ 7.00000E-01 &  1.23264E+00 &  9.82479E-01 \\ 
+ 8.00000E-01 &  1.08007E+00 &  3.44857E-01 \\ 
+ 9.00000E-01 &  1.01111E+00 &  7.24827E-02 \\ 
+ 1.00000E-00 &  1.00000E+00 &  0.00000E+00 \\ 
+ 1.10000E+00 &  1.02621E+00 &  5.95716E-02 \\ 
+ 1.20000E+00 &  1.08667E+00 &  2.23389E-01 \\ 
+ 1.30000E+00 &  1.17168E+00 &  4.78446E-01 \\ 
+ 1.40000E+00 &  1.26374E+00 &  8.55524E-01 \\ 
+ 1.50000E+00 &  1.38897E+00 &  1.30720E+00 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{figure}
+\begin{center}
+\input{figures/hydrogenvmc}
+\end{center}
+\caption{Result  for ground state energy of the hydrogen atom as
+         function of the variational parameter $\alpha$. The exact result
+         is for $\alpha=1$ with an energy $E=-1/2$. 
+         See text for further details.\label{fig:hydrogenvmc}}
+\end{figure}
+This explains why the variance is zero for $\alpha=1$. 
+However, the hydrogen atom and the harmonic oscillator are
+some of the few cases where we can use a trial wave function proportional
+to the exact one. These two systems offer some of the few examples 
+where we can find an exact solution to the problem.
+\begin{table}[hbtp]
+\begin{center}
+\caption{Result  for ground state energy of the hydrogen atom as
+         function of the variational parameter $\alpha$. The exact result
+         is for $\alpha=1$ with an energy $E=-1/2$. The variable $N$ is the number of Monte Carlo
+         samples. In this calculation we fixed $N=100000$ and a step length of 
+         4 Bohr radii  
+         was used in order to obtain an acceptance of $\approx 50\%$.
+         \label{tab:tabhydrogenvmc}}
+\begin{tabular}{rrr}\hline
+$\alpha$&$\langle H \rangle $&$\sigma^2$ \\\hline
+ 5.00000E-01 & -3.76740E-01 &  6.10503E-02 \\ 
+ 6.00000E-01 & -4.21744E-01 &  5.22322E-02 \\ 
+ 7.00000E-01 & -4.57759E-01 &  4.51201E-02 \\ 
+ 8.00000E-01 & -4.81461E-01 &  3.05736E-02 \\ 
+ 9.00000E-01 & -4.95899E-01 &  8.20497E-03 \\ 
+ 1.00000E-00 & -5.00000E-01 &  0.00000E+00 \\ 
+ 1.10000E+00 & -4.93738E-01 &  1.16989E-02 \\ 
+ 1.20000E+00 & -4.75563E-01 &  8.85899E-02 \\ 
+ 1.30000E+00 & -4.54341E-01 &  1.45171E-01 \\ 
+ 1.40000E+00 & -4.13220E-01 &  3.14113E-01 \\ 
+ 1.50000E+00 & -3.72241E-01 &  5.45568E-01 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+In most cases of interest, we do not know {\em a priori} the exact wave function,
+or how to make a good trial wave function. 
+In essentially all real problems a large amount of CPU time 
+and numerical experimenting is needed in order to ascertain the 
+validity of a Monte Carlo estimate. 
+The next examples 
+deal with such problems.
+
+
+\subsection{The Helium Atom}
+
+
+Most physical problems of interest in atomic, molecular and solid state 
+physics consist of  many 
+interacting electrons and ions. 
+The total number of particles $N$ is usually sufficiently large
+that an exact solution cannot be found. 
+Controlled and well understood approximations are sought to 
+reduce the complexity to a tractable level. Once
+the equations are solved, a large number of properties 
+may be calculated from the wave function. 
+Errors or approximations made in obtaining the
+wave function will be manifest in any property derived from the wave function. 
+Where high accuracy is required, considerable attention must be paid to
+the derivation of the wave function and any approximations made. 
+
+
+The helium atom consists of two electrons and a nucleus with
+charge $Z=2$. 
+In setting up the Hamiltonian of this system, we need to account for
+the repulsion between the two electrons as well. 
+A common and very reasonable approximation used in the solution of 
+of the Schr\"odinger equation for systems of interacting electrons and ions 
+is the Born-Oppenheimer approximation discussed above. 
+% add refs to Hyllerås
+But even this simplified electronic Hamiltonian remains very difficult to
+solve. No closed-form solutions exist for 
+general systems with more than one electron. 
+
+To set up the problem, 
+we start by labelling the distance between electron 1 and the nucleus as 
+$r_1$. Similarly we have $r_2$ for electron 2.
+The contribution  
+to the potential energy due to the attraction from the nucleus is
+\[
+   -\frac{2ke^2}{r_1}-\frac{2ke^2}{r_2},
+\] 
+and if we add the repulsion arising from the two 
+interacting electrons, we obtain the potential energy
+\[
+ V(r_1, r_2)=-\frac{2ke^2}{r_1}-\frac{2ke^2}{r_2}+
+               \frac{ke^2}{r_{12}},
+\]
+with the electrons separated at a distance 
+$r_{12}=|{\bf r}_1-{\bf r}_2|$.
+The Hamiltonian becomes then
+\[
+   \OP{H}=-\frac{\hbar^2\nabla_1^2}{2m}-\frac{\hbar^2\nabla_2^2}{2m}
+          -\frac{2ke^2}{r_1}-\frac{2ke^2}{r_2}+
+               \frac{ke^2}{r_{12}},
+\]
+and  Schr\"odingers equation reads
+\[
+   \OP{H}\psi=E\psi.
+\]
+Note that this equation has been written in atomic units (a.u.) 
+which are more convenient for quantum mechanical problems.
+This means that the final energy has to be multiplied by a $2\times E_0$,
+where $E_0=13.6$ eV, the binding energy of the hydrogen atom. 
+
+A very simple first approximation to this system is to omit
+the repulsion between the two electrons. The potential energy becomes
+then
+\[
+    V(r_1, r_2)\approx -\frac{Zke^2}{r_1}-
+                      \frac{Zke^2}{r_2}.
+\]
+The advantage of this approximation is that each electron can be 
+treated as being independent of each other, implying that
+each electron sees just a central symmetric potential, or central
+field.
+
+To see whether this gives a meaningful result, we set 
+$Z=2$ and neglect totally the repulsion between the two electrons.
+Electron 1 has the following Hamiltonian
+\[
+   \OP{h}_1=-\frac{\hbar^2\nabla_1^2}{2m}
+          -\frac{2ke^2}{r_1},
+\]
+with pertinent  wave function and eigenvalue $E_a$
+\[
+   \OP{h}_1\psi_a=E_a\psi_a,
+\]
+where $a=\{ n_al_am_{l_a}\}$ are the relevant  quantum numbers needed to describe the system.  We assume here that 
+we can use the hydrogen-like solutions, but with $Z$ not necessarily equal to one.
+The energy $E_a$ is
+\[
+   E_a=-\frac{Z^2E_0}{n_a^2}.
+\]
+In a similar way, we obtain for electron 2
+\[
+   \OP{h}_2=-\frac{\hbar^2\nabla_2^2}{2m}
+          -\frac{2ke^2}{r_2},
+\]
+with wave function $\psi_b$, $b=\{ n_bl_bm_{l_b}\}$ and energy 
+\[
+   E_b=\frac{Z^2E_0}{n_b^2}.
+\]
+Since the electrons do not interact, the 
+ground state wave function of the helium atom is given by
+\[
+  \psi=\psi_a\psi_b,
+\]
+resulting in the following approximation to Schr\"odinger's equation
+\[
+   \left(\OP{h}_1+\OP{h}_2\right)\psi=
+    \left(\OP{h}_1+\OP{h}_2\right)
+    \psi_a({\bf r}_1)\psi_b({\bf r}_2)=
+    E_{ab}\psi_a({\bf r}_1)\psi_b({\bf r}_2).
+\]
+The energy becomes then
+\[
+    \left(\OP{h}_1\psi_a({\bf r}_1)\right)\psi_b({\bf r}_2) +
+    \left(\OP{h}_2\psi_b({\bf r}_2)\right)\psi_a({\bf r}_1) =
+    \left(E_{a}+E_b\right)\psi_a({\bf r}_1)\psi_b({\bf r}_2),
+\]
+yielding
+\[
+   E_{ab}=Z^2E_0\left(\frac{1}{n_a^2}+\frac{1}{n_b^2}\right).
+\]
+If we insert $Z=2$ and assume that the ground state is determined
+by two electrons in the lowest-lying hydrogen orbit
+with $n_a=n_b=1$, the energy becomes
+\[
+    E_{ab}=8E_0=-108.8\hspace{0.1cm} \mathrm{eV},
+\]
+while the experimental value is 
+$-78.8$ eV. Clearly, this discrepancy is essentially due to
+our omission of the repulsion arising from the interaction of
+two electrons. 
+
+
+
+\subsubsection{Choice of trial wave function}
+
+
+The choice of trial wave function is critical in variational Monte Carlo calculations. 
+How to choose it is however a highly non-trivial task. 
+All observables are evaluated with respect to the probability distribution
+\[
+   P({\bf R})= \frac{\left|\psi_T({\bf R})\right|^2}{\int \left|\psi_T({\bf R})\right|^2d{\bf R}}.
+\]
+generated by the trial wave function.   
+The trial wave function must approximate an exact 
+eigenstate in order that accurate results are to be obtained. 
+Improved trial
+wave functions also improve the importance sampling, 
+reducing the cost of obtaining a certain statistical accuracy. 
+
+Quantum Monte Carlo methods are able to exploit trial 
+wave functions of arbitrary forms. Any wave function 
+that is physical and for which the value,
+the gradient and the laplacian of the wave function 
+may be efficiently computed can be used. 
+The power of Quantum Monte Carlo methods lies in the 
+flexibility of the form of the trial wave function. 
+
+It is important that the trial wave function satisfies 
+as many known properties of the exact wave function as possible. 
+A good trial wave function should exhibit much of the same features
+as does the exact wave function. Especially, it should be well-defined
+at the origin, that is $\Psi (|{\bf R}|=0)\ne 0$, and its derivative at the origin 
+should also be well-defined .
+One possible guideline in choosing the trial wave function
+is the  use of 
+constraints about the behavior of the wave function
+when the distance between one electron and the nucleus or two electrons
+approaches zero. 
+These constraints are the so-called ``cusp conditions''
+and are related to the derivatives of
+the wave function. 
+
+To see this, let us single out one of the electrons in the 
+helium atom and assume that this electron is close to
+the nucleus, i.e., $r_1 \rightarrow 0$. We assume also
+that the two electrons are far from each other and that 
+$r_2 \ne 0$. 
+The local energy can then be written as
+\[
+   E_L({\bf R})=\frac{1}{\psi_T({\bf R})}H\psi_T({\bf R})=
+     \frac{1}{\psi_T({\bf R})}\left(-\frac{1}{2}\nabla^2_1
+     -\frac{Z}{r_1}\right)\psi_T({\bf R}) + \mathrm{finite \hspace{0.1cm}terms}.
+\]
+Writing out the kinetic energy term in the spherical coordinates
+of electron $1$, we arrive at the following expression for the 
+local energy
+\[ 
+    E_L(R)=
+    \frac{1}{{\cal R}_T(r_1)}\left(-\frac{1}{2}\frac{d^2}{dr_1^2}-
+     \frac{1}{r_1}\frac{d}{dr_1}
+     -\frac{Z}{r_1}\right){\cal R}_T(r_1) + \mathrm{finite\hspace{0.1cm} terms},
+\]
+where ${\cal R}_T(r_1)$ is the radial part of the wave function for electron
+$1$. We have also used that the orbital momentum of electron 1 is $l=0$. 
+For small values of $r_1$, the terms which dominate are
+\[ 
+    \lim_{r_1 \rightarrow 0}E_L(R)=
+    \frac{1}{{\cal R}_T(r_1)}\left(-
+     \frac{1}{r_1}\frac{d}{dr_1}
+     -\frac{Z}{r_1}\right){\cal R}_T(r_1),
+\]
+since the second derivative does not diverge due to the finiteness of 
+$\Psi$ at the origin.
+The latter implies that in order for the kinetic energy term to balance
+the divergence in the potential term, we must have
+\[
+     \frac{1}{{\cal R}_T(r_1)}\frac{d {\cal R}_T(r_1)}{dr_1}=-Z,
+\]
+implying that
+\[
+   {\cal R}_T(r_1)\propto e^{-Zr_1}.
+\]
+A similar condition applies to electron 2 as well. 
+For orbital momenta $l > 0$ it is rather straightforward to show that
+\[
+     \frac{1}{{\cal R}_T(r)}\frac{d {\cal R}_T(r)}{dr}=-\frac{Z}{l+1}.
+\]
+
+Another constraint on the wave function is found when the  two
+electrons are approaching each other. In this case it is the dependence
+on the separation $r_{12}$ between the two electrons which has to
+reflect the correct behavior in the limit $r_{12} \rightarrow 0$.
+The resulting radial equation for the $r_{12}$ dependence is the
+same for the electron-nucleus case, except that the attractive 
+Coulomb interaction between the nucleus and the electron is
+replaced by a repulsive interaction and the kinetic energy term
+is twice as large. 
+
+To find an ansatz for the correlated part of the wave function, it is useful to rewrite the two-particle
+local energy in terms of the relative and center-of-mass motion. 
+Let us denote the distance between the two electrons as
+$r_{12}$. We omit the center-of-mass motion since we are only interested in the case when 
+$r_{12} \rightarrow 0$. The contribution from the center-of-mass (CoM) variable ${\bf R}_{\mathrm{CoM}}$ 
+gives only a finite contribution.  
+We focus only on the terms that are relevant for $r_{12}$. The relevant local energy becomes then
+\[
+\lim_{r_{12} \rightarrow 0}E_L(R)=
+    \frac{1}{{\cal R}_T(r_{12})}\left(2\frac{d^2}{dr_{ij}^2}+\frac{4}{r_{ij}}\frac{d}{dr_{ij}}+
+\frac{2}{r_{ij}}-\frac{l(l+1)}{r_{ij}^2}+2E
+\right){\cal R}_T(r_{12}) = 0,
+\]
+where $l$ is now equal $0$ if the spins of the two electrons are
+anti-parallel and $1$ if they are parallel. Repeating the argument for
+the electron-nucleus cusp with the factorization of the leading
+$r$-dependency, we get the similar cusp condition:
+\bdm
+\frac{d {\cal R}_T(r_{12})}{dr_{12}} = -\frac{1}{2(l+1)}
+{\cal R}_T(r_{12})\qquad
+r_{12}\to 0
+\edm
+resulting in
+\bdm
+{\cal R}_T  \propto
+\eqbrace{\exp{(r_{ij}/2})}{\mbox{ for anti-parallel spins, }l=0}
+{\exp{(r_{ij}/4})}{\mbox{ for parallel spins, } l=1}.
+\edm
+This is so-called cusp condition for the relative motion, resulting in a minimal requirement
+for the correlation part of the wave fuction.
+For general systems containing more than two electrons, we have this
+condition for each electron pair $ij$.
+
+Based on these consideration, a possible trial wave function which ignores
+the 'cusp'-condition between the two electrons is 
+\be
+   \psi_T({\bf R})=e^{-\alpha(r_1+r_2)},
+    \label{eq:wavehelium1}
+\ee
+where $r_{1,2}$ are dimensionless radii and $\alpha$ is a variational
+parameter which is to be interpreted as an effective charge.
+
+A possible trial wave function which also reflects the 'cusp'-condition
+between the two electrons is 
+\be
+   \psi_T({\bf R})=e^{-\alpha(r_1+r_2)}e^{r_{12}/2}.
+    \label{eq:wavehelium2}
+\ee
+The last equation can be generalized to
+\[
+   \psi_T({\bf R})=\phi({\bf r}_1)\phi({\bf r}_2)\dots\phi({\bf r}_N)
+                   \prod_{i< j}f(r_{ij}),
+\]
+for a system with $N$ electrons or particles. The wave function 
+$\phi({\bf r}_i)$ is the single-particle wave function for particle $i$,
+while $f(r_{ij})$ account for more complicated two-body correlations.
+For the helium atom, we placed both electrons in the hydrogenic orbit
+$1s$. We know that the ground state for the helium atom has a symmetric
+spatial part, while the spin wave function is anti-symmetric in order
+to obey the Pauli principle. In the present case we need not to deal with 
+spin degrees of freedom, since we are mainly trying to reproduce the 
+ground state of the system. However, adopting such a single-particle
+representation for the individual electrons means that for atoms beyond
+the ground state of helium, we cannot continue to place electrons in the lowest
+hydrogenic orbit. This is a consenquence of the Pauli principle,
+which states that the total wave function for a system of identical particles 
+such as fermions, has to be anti-symmetric. One way to account for this is by introducing
+the so-called Slater determinant (to be discussed in more detail in chapter \ref{chap:advancedatoms}).
+This determinant is written in terms of the various single-particle wave functions.
+
+If we consider the helium atom with two electrons in the $1s$ state, we can write the total Slater determinant as 
+\[
+   \Phi({\bf r}_1,{\bf r}_2,\alpha,\beta)=\frac{1}{\sqrt{2}}
+\left| \begin{array}{cc} \psi_{\alpha}({\bf r}_1)& \psi_{\alpha}({\bf r}_2)\\\psi_{\beta}({\bf r}_1)&\psi_{\beta}({\bf r}_2)\end{array} \right|,
+\] 
+with $\alpha=nlm_lsm_s=(1001/21/2)$ and $\beta=nlm_lsm_s=(1001/2-1/2)$  or using $m_s=1/2=\uparrow$ and $m_s=-1/2=\downarrow$ as 
+$\alpha=nlm_lsm_s=(1001/2\uparrow)$ and $\beta=nlm_lsm_s=(1001/2\downarrow)$.
+It is normal to skip the two quantum numbers $sm_s$ 
+of the one-electron spin. We introduce therefore the shorthand
+ $nlm_l\uparrow$ or $nlm_l\downarrow)$ for a particular state where an arrow pointing upward represents
+$m_s=1/2$ and a downward arrow stands for $m_s=-1/2$.
+Writing out the Slater determinant
+\[
+\Phi({\bf r}_1,{\bf r}_2,\alpha,\beta)=
+\frac{1}{\sqrt{2}}\left[
+\psi_{\alpha}({\bf r}_1)\psi_{\beta}({\bf r}_2)-
+\psi_{\beta}({\bf r}_1)\psi_{\gamma}({\bf r}_2)\right],
+\]
+we see that the Slater determinant is antisymmetric 
+with respect to the permutation of two particles, that is
+\[
+\Phi({\bf r}_1,{\bf r}_2,\alpha,\beta)=-\Phi({\bf r}_2,{\bf r}_1,\alpha,\beta).
+\]
+
+The Slater determinant obeys the cusp condition for the two electrons and combined with the correlation
+part we could write the ansatz for the wave function as
+\[
+   \psi_T({\bf R})=\frac{1}{\sqrt{2}}\left[
+\psi_{\alpha}({\bf r}_1)\psi_{\beta}({\bf r}_2)-
+\psi_{\beta}({\bf r}_1)\psi_{\gamma}({\bf r}_2)\right]f(r_{12}),
+\]
+
+Several forms of the correlation function $f(r_{ij})$ exist in the literature and we
+will mention only a selected few to give the general idea of how they
+are constructed. A form given by Hylleraas 
+ that had great success for the helium atom was the
+series expansion
+\[
+f(r_{ij})=\exp{(\epsilon s)}\sum_k c_k r^{l_k} s^{m_k} t^{n_k}
+\]
+where the inter-particle separation $r_{ij}$ for simplicity is written
+as $r$. In addition $s=r_i+r_i$ and $t=r_i-r_i$ with $r_i$ and $r_j$ being the two
+electron-nucleus distances. All the other quantities are free
+parameters. Notice that the cusp condition is satisfied by the
+exponential. Unfortunately the convergence of this function turned out
+to be quite slow. For example, to pinpoint the He-energy to the fourth
+decimal digit a nine term
+function would suffice. To double the number of digits, one needed
+almost $1100$ terms.
+
+The so called Pad\'e-Jastrow form, however, is more suited for larger
+systems. It is based on an exponential function with a rational
+exponent:
+\[
+f(r_{ij})=\exp{(U)}
+\]
+In its general form, $U$ is a potential series expansion on both the
+absolute particle coordinates $r_i$ and the inter-particle coordinates
+$r_{ij}$:
+\[
+U=
+\sum_{i<j}^{N}\left(
+\frac{\displaystyle\sum_k\alpha_k^{\phantom{k}} r_i^k}
+{\displaystyle 1+\sum_k\alpha_k^{\prime\vphantom{k}} r_i^k}
+\right) +
+\sum_i^{N}\left(
+\frac{\displaystyle\sum_k\beta_k^{\phantom{k}} r_{ij}^k}
+{\displaystyle 1+\sum_k\beta_k^{\prime\vphantom{k}} r_{ij}^k}
+\right)
+\]
+A typical Pad\'e-Jastrow function used for quantum mechanical Monte Carlo  calculations of
+molecular and atomic systems is
+\[
+\exp\left(\frac{a r_{ij}}{(1+\beta r_{ij})}\right)
+\]
+where $\beta$ is a variational parameter and $a$ dependes on the spins of the 
+interacting particles. 
+
+
+
+\subsection{Program Example for Atomic Systems}
+
+The variational Monte Carlo algorithm consists of two distinct parts. 
+In the first a walker, a single electron in our case,
+ consisting of an initially random 
+set of electron positions is propagated
+according to the Metropolis algorithm, 
+in order to equilibrate it and begin sampling . 
+In the second part, the walker continues to be moved, but
+energies and other observables are also accumulated 
+for later averaging and statistical analysis. 
+In the program below, the electrons are moved 
+individually and not as a whole configuration. 
+This improves the efficiency of the algorithm in larger systems,
+where configuration moves require increasingly small steps to 
+maintain the acceptance ratio. 
+\begin{figure}
+\begin{centering}
+\begin{tikzpicture}[scale=1., node distance = 2cm, auto]
+  \footnotesize
+    % Place nodes
+    \node [block] (init) {Initialize:\\
+    Set ${\bf r}^{\mathrm{old}}$, $\alpha$ and $\Psi_{T-\alpha}({\bf r}^{\mathrm{old}})$};
+    \node [block, below of=init, node distance=2.0cm] (suggestMove) {Suggest a move};
+    \node [block, below of=suggestMove] (evaluateAcceptance) {Compute acceptance ratio $R$};
+    \node [block, left of=evaluateAcceptance, node distance=4.5cm] (randomGenerator) {Generate a uniformly distributed variable $r$};
+    \node [decision, below of=evaluateAcceptance] (decide) {Is\\ $R \geq r$?};
+    \node [block, right of=decide, node distance=3.5 cm] (rejectMove) {Reject move: \\ ${\bf r}^{new} = {\bf r}^{old}$};
+    \node [block, below of=decide, node distance=2.2cm] (acceptMove) {Accept move:\\${\bf r}^{old} = {\bf r}^{new}$};
+    \node [decision, below of=acceptMove, node distance=2.2cm] (lastMove) {Last move?};
+    \node [block, below of=lastMove, node distance=2.2cm] (getLocalEnergy) {Get local\\ energy $E_L$};
+    \node [decision, below of=getLocalEnergy] (decideMC) {Last MC step?};
+    \node [block, below of=decideMC, node distance=2.2cm] (collectSamples) {Collect samples};
+    \node [block, below of=collectSamples, node distance=2.2cm] (end) {End};
+    
+%     % Draw edges
+    \path [line] (init) -- (suggestMove);
+    \path [line] (suggestMove) -- (evaluateAcceptance);
+    \path [line] (evaluateAcceptance) -- (decide);
+    \path [line] (randomGenerator) |- (decide);
+    \path [line] (decide) -- node [, color=black] {yes}(acceptMove);
+    \path [line] (decide) -- node [, color=black] {no}(rejectMove);
+    \path [line] (acceptMove) -- (lastMove); 
+    \path [line] (lastMove) -- node [, color=black] {yes}(getLocalEnergy);
+    \path [line] (rejectMove) |- (lastMove);
+    \path [line] (getLocalEnergy) -- (decideMC);
+    \path [line] (decideMC) -- node [, color=black] {yes}(collectSamples);
+
+    % Define a style for shifting a coordinate upwards
+    % Note the curly brackets around the coordinate.
+    \tikzstyle{s}=[shift={(0mm,\radius)}]
+    \path[line] (lastMove.west) -- +(-1.0,0)  -- +(-1.0, 4.34) 
+% % % %     % Draw semicircle junction to indicate that the lines are
+% % % %     % not connected. Since we want the semicircle to have its center 
+% % % %     % where the lines intersect, we have to shift the intersection 
+% % % %     % coordinate using the 's' style to account for this.
+    arc(-90:90:\radius) -- +(0.0, 4.42) -- (suggestMove.west);
+    
+    \path [line] (decideMC.west) -- node [, color=black]{no} +(-1.7,0) --+(-1.7,9.05) arc(-90:90:\radius) --+(0.0,5.4) -- +(2.8,5.4);
+       
+    \path [line] (collectSamples) -- (end);
+
+\end{tikzpicture}\caption{Chart flow for the Quantum Varitional Monte Carlo algorithm.}\label{chartFlowMA}
+\end{centering}
+\end{figure}
+The main part of the code contains calls to various functions, setup and 
+declarations of arrays etc. 
+Note that we have defined a fixed step length $h$ for the numerical computation of the second derivative 
+of the kinetic energy. Furthermore, we perform the Metropolis test when we have moved all electrons.
+This should be compared to the case where we move one electron at the time and perform the Metropolis test.
+The latter is similar to the algorithm for the Ising model  discussed in the previous chapter.
+A more detailed discussion and better statistical treatments and analyses are discussed in chapters
+\ref{chap:advancedqmc} and \ref{chap:advancedatoms}. 
+\begin{lstlisting}[title={\url{http://folk.uio.no/compphys/programs/chapter14/cpp/program1.cpp}}]
+// Variational Monte Carlo for atoms with up to two electrons 
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "lib.h"
+using namespace  std;
+// output file as global variable
+ofstream ofile;  
+// the step length and its squared inverse for the second derivative 
+#define h 0.001
+#define h2 1000000
+
+// declaraton of functions 
+
+// Function to read in data from screen, note call by reference  
+void initialise(int&, int&, int&, int&, int&, int&, double&) ;
+
+// The Mc sampling for the variational Monte Carlo 
+void  mc_sampling(int, int, int, int, int, int, double, double *, double *);
+
+// The variational wave function 
+double  wave_function(double **, double, int, int);
+
+// The local energy 
+double  local_energy(double **, double, double, int, int, int);
+
+// prints to screen the results of the calculations  
+void  output(int, int, int, double *, double *);
+
+
+// Begin of main program   
+
+//int main()
+int main(int argc, char* argv[])
+{
+  char *outfilename;
+  int number_cycles, max_variations, thermalization, charge;
+  int dimension, number_particles; 
+  double step_length;
+  double *cumulative_e, *cumulative_e2;
+
+  // Read in output file, abort if there are too few command-line arguments
+  if( argc <= 1 ){
+    cout << "Bad Usage: " << argv[0] << 
+      " read also output file on same line" << endl;
+    exit(1);
+  }
+  else{
+    outfilename=argv[1];
+  }
+  ofile.open(outfilename); 
+  //   Read in data 
+  initialise(dimension, number_particles, charge, 
+             max_variations, number_cycles, 
+	     thermalization, step_length) ;
+  cumulative_e = new double[max_variations+1];
+  cumulative_e2 = new double[max_variations+1];
+  
+  //  Do the mc sampling  
+  mc_sampling(dimension, number_particles, charge, 
+              max_variations, thermalization, 
+	      number_cycles, step_length, cumulative_e, cumulative_e2);
+  // Print out results  
+  output(max_variations, number_cycles, charge, cumulative_e, cumulative_e2);
+  delete [] cumulative_e; delete [] cumulative_e; 
+  ofile.close();  // close output file
+  return 0;
+}
+\end{lstlisting}
+
+The implementation of the brute force Metropolis algorithm is shown in the next function.
+Here we have a loop over the variational variables $\alpha$. It calls two functions, one to compute the wave function
+and one to update the local energy.
+\begin{lstlisting}
+// Monte Carlo sampling with the Metropolis algorithm  
+
+void mc_sampling(int dimension, int number_particles, int charge, 
+                 int max_variations, 
+                 int thermalization, int number_cycles, double step_length, 
+                 double *cumulative_e, double *cumulative_e2)
+{
+  int cycles, variate, accept, dim, i, j;
+  long idum;
+  double wfnew, wfold, alpha, energy, energy2, delta_e;
+  double **r_old, **r_new;
+  alpha = 0.5*charge;
+  idum=-1;
+  // allocate matrices which contain the position of the particles  
+  r_old = (double **) matrix( number_particles, dimension, sizeof(double));
+  r_new = (double **) matrix( number_particles, dimension, sizeof(double));
+  for (i = 0; i < number_particles; i++) { 
+    for ( j=0; j < dimension; j++) {
+      r_old[i][j] = r_new[i][j] = 0;
+    }
+  }
+  // loop over variational parameters  
+  for (variate=1; variate <= max_variations; variate++){
+    // initialisations of variational parameters and energies 
+    alpha += 0.1;  
+    energy = energy2 = 0; accept =0; delta_e=0;
+    //  initial trial position, note calling with alpha 
+    //  and in three dimensions 
+    for (i = 0; i < number_particles; i++) { 
+      for ( j=0; j < dimension; j++) {
+	r_old[i][j] = step_length*(ran1(&idum)-0.5);
+      }
+    }
+    wfold = wave_function(r_old, alpha, dimension, number_particles);
+    // loop over monte carlo cycles 
+    for (cycles = 1; cycles <= number_cycles+thermalization; cycles++){ 
+      // new position 
+      for (i = 0; i < number_particles; i++) { 
+	for ( j=0; j < dimension; j++) {
+	  r_new[i][j] = r_old[i][j]+step_length*(ran1(&idum)-0.5);
+	}
+      }
+      wfnew = wave_function(r_new, alpha, dimension, number_particles); 
+      // Metropolis test 
+      if(ran1(&idum) <= wfnew*wfnew/wfold/wfold ) { 
+	for (i = 0; i < number_particles; i++) { 
+	  for ( j=0; j < dimension; j++) {
+	    r_old[i][j]=r_new[i][j];
+	  }
+	}
+	wfold = wfnew;
+	accept = accept+1;
+      }
+      // compute local energy  
+      if ( cycles > thermalization ) {
+	delta_e = local_energy(r_old, alpha, wfold, dimension, 
+                               number_particles, charge);
+	// update energies  
+        energy += delta_e;
+        energy2 += delta_e*delta_e;
+      }
+    }   // end of loop over MC trials   
+    cout << "variational parameter= " << alpha 
+	 << " accepted steps= " << accept << endl;
+    // update the energy average and its squared 
+    cumulative_e[variate] = energy/number_cycles;
+    cumulative_e2[variate] = energy2/number_cycles;
+    
+  }    // end of loop over variational  steps 
+  free_matrix((void **) r_old); // free memory
+  free_matrix((void **) r_new); // free memory
+}   // end mc_sampling function  
+\end{lstlisting}
+The wave function is in turn defined in the next function.
+Here we limit ourselves to   a function which consists only of 
+the product of single-particle wave
+functions.
+\begin{lstlisting}
+// Function to compute the squared wave function, simplest form 
+
+double  wave_function(double **r, double alpha,int dimension, int number_particles)
+{
+  int i, j, k;
+  double wf, argument, r_single_particle, r_12;
+  
+  argument = wf = 0;
+  for (i = 0; i < number_particles; i++) { 
+    r_single_particle = 0;
+    for (j = 0; j < dimension; j++) { 
+      r_single_particle  += r[i][j]*r[i][j];
+    }
+    argument += sqrt(r_single_particle);
+  }
+  wf = exp(-argument*alpha) ;
+  return wf;
+}
+\end{lstlisting}
+Finally, the local energy is computed using a numerical derivation for the kinetic 
+energy.
+We use the familiar expression derived in
+Eq.~(\ref{eq:seconderivative}), that is
+\[
+ f_0''=\frac{ f_h -2f_0 +f_{-h}}{h^2},
+\]
+in order to compute 
+\be 
+  -\frac{1}{2\psi_T({\bf R})} \nabla^2\psi_T({\bf R}). 
+\ee
+The variable $h$ is a chosen step length. For helium, since it is
+rather easy to evaluate the local energy, the above is an unnecessary
+complication. However, for many-electron or other many-particle systems,
+the derivation of a closed-form expression for the kinetic energy can be 
+quite involved, and the numerical evaluation of the kinetic
+energy using  Eq.~(\ref{eq:seconderivative}) may result in a simpler
+code and/or even a faster one. 
+\begin{lstlisting}
+// Function to calculate the local energy with num derivative
+
+double  local_energy(double **r, double alpha, double wfold, int dimension, 
+                        int number_particles, int charge)
+{
+  int i, j , k;
+  double e_local, wfminus, wfplus, e_kinetic, e_potential, r_12, 
+    r_single_particle;
+  double **r_plus, **r_minus;
+  
+  // allocate matrices which contain the position of the particles  
+  // the function matrix is defined in the progam library 
+  r_plus = (double **) matrix( number_particles, dimension, sizeof(double));
+  r_minus = (double **) matrix( number_particles, dimension, sizeof(double));
+  for (i = 0; i < number_particles; i++) { 
+    for ( j=0; j < dimension; j++) {
+      r_plus[i][j] = r_minus[i][j] = r[i][j];
+    }
+  }
+  // compute the kinetic energy  
+  e_kinetic = 0;
+  for (i = 0; i < number_particles; i++) {
+    for (j = 0; j < dimension; j++) { 
+      r_plus[i][j] = r[i][j]+h;
+      r_minus[i][j] = r[i][j]-h;
+      wfminus = wave_function(r_minus, alpha, dimension, number_particles); 
+      wfplus  = wave_function(r_plus, alpha, dimension, number_particles); 
+      e_kinetic -= (wfminus+wfplus-2*wfold);
+      r_plus[i][j] = r[i][j];
+      r_minus[i][j] = r[i][j];
+    }
+  }
+  // include electron mass and hbar squared and divide by wave function 
+  e_kinetic = 0.5*h2*e_kinetic/wfold;
+  // compute the potential energy 
+  e_potential = 0;
+  // contribution from electron-proton potential  
+  for (i = 0; i < number_particles; i++) { 
+    r_single_particle = 0;
+    for (j = 0; j < dimension; j++) { 
+      r_single_particle += r[i][j]*r[i][j];
+    }
+    e_potential -= charge/sqrt(r_single_particle);
+  }
+  // contribution from electron-electron potential  
+  for (i = 0; i < number_particles-1; i++) { 
+    for (j = i+1; j < number_particles; j++) {
+      r_12 = 0;  
+      for (k = 0; k < dimension; k++) { 
+	r_12 += (r[i][k]-r[j][k])*(r[i][k]-r[j][k]);
+      }
+      e_potential += 1/sqrt(r_12);          
+    }
+  }
+  free_matrix((void **) r_plus); // free memory
+  free_matrix((void **) r_minus);
+  e_local = e_potential+e_kinetic;
+  return e_local;
+}
+\end{lstlisting}
+The remaining part of the program consists of the output and initialize functions and is not listed here. 
+
+
+The way we have rewritten Schr\"odinger's equation results in energies
+given in atomic units. If we wish to convert these energies into more familiar
+units like electronvolt (eV), we have to multiply our reults with
+$2E_0$ where $E_0=13.6$ eV, the binding energy of the hydrogen atom.
+Using Eq.~(\ref{eq:wavehelium1}) for the trial wave function, we obtain an
+energy minimum at  $\alpha =1.6875$\footnote{With hydrogen like wave functions for the 
+$1s$ state one can easily calculate the energy of the ground state for the helium atom as function of the charge $Z$. The results is $E[Z]= Z^2-4Z+\frac{5}{8}Z$, and taking the derivative with respect to $Z$ to find the minumum
+we get $   Z=2-\frac{5}{16} = 1.6875$. This number represents an optimal effective charge.}.
+The ground state is 
+$E=-2.85$ in atomic units or $E=-77.5$ eV. The experimental value is
+$-78.8$ eV. Obviously, improvements to the wave function such as 
+including the 'cusp'-condition for the two electrons as well, see
+Eq.~(\ref{eq:wavehelium2}), could improve our agreement with experiment.
+
+We note that the effective charge is less than the charge of the nucleus.
+We can interpret this reduction as an effective way of incorporating
+the repulsive electron-electron interaction.
+Finally, since we do not have the exact wave function, we see from
+Fig.~\ref{fig:sigmahelium} that the variance is not zero at the energy 
+minimum. 
+\begin{figure}
+\begin{center}
+\input{figures/sigmahelium}
+\end{center}
+\caption{Result for ground state energy of the helium atom using
+         Eq.~(\ref{eq:wavehelium1}) for the trial wave function. 
+         A total of $10^7$ Monte Carlo moves were used
+         with a step length of 1 Bohr radius. Approximately 50\% of all proposed moves were accepted.
+The variance at the minimum is 1.026, reflecting the fact that we do not have the exact wave function. The variance has a minimum at value of $\alpha$ different from the energy minimum. The numerical results are compared with 
+the exact result $E[Z]= Z^2-4Z+\frac{5}{8}Z$.\label{fig:sigmahelium}}
+\end{figure}
+Techniques such as importance sampling, to be contrasted to the brute force Metropolis sampling 
+used here,
+and various optimization techniques of the variance and the energy, will be discussed in the next section and in 
+chapter \ref{chap:advancedqmc}.
+
+\subsection{Importance sampling}
+
+
+As mentioned in connection with the generation of random numbers, sequential correlations must be
+given thorough attention as it may lead to bad error estimates of our
+numerical results.
+
+There are several things we need to keep in mind in order to keep the
+correlation low. First of all, the transition acceptance must be kept
+as high as possible. Otherwise, a walker will dwell at the same spot
+in state space for several iterations at a time, which will clearly
+lead to high correlation between nearby succeeding measurements.
+
+Secondly, when using the simple symmetric form of $\omega(\vec
+r_\textrm{old}\textrm{, }\vec r_\textrm{new})$, one has to keep in
+mind the random walk nature of the algorithm. Transitions will be made
+between points that are relatively close to each other in state space,
+which also clearly contributes to increase correlation. The
+seemingly obvious way to deal with this would be just to
+increase the step size, allowing the walkers to cover more of the
+state space in fewer steps (thus requiring fewer steps to reach
+ergodicity). But unfortunately, long before the step length becomes
+desirably large, the algorithm breaks down. When proposing moves
+symmetrically and uniformly around $\vec r_\textrm{old}$, the step
+acceptance becomes directly dependent on the step length in such a way
+that a too large step length reduces the acceptance. The reason for
+this is very simple. As the step length increases, a walker will more
+likely be given a move proposition to areas of very low probability,
+particularly if the governing trial wave function describes a
+localized system. In effect, the effective movement of the
+walkers again becomes too small, resulting in large correlation. For
+optimal results we therefore have to balance the step length with the
+acceptance.
+
+With a transition suggestion rule $\omega$ as simple as the uniform
+symmetrical one emphasized so far, the usual rule of thumb is to keep
+the acceptance around $0.5$. But the optimal interval varies a
+lot from case to case. We therefore have to treat each numerical
+experiment with care.
+
+By choosing a better $\omega$, we can still improve the efficiency of
+the step length versus acceptance. Recall that $\omega$ may be chosen
+arbitrarily as long as it fulfills ergodicity, meaning that it has to
+allow the walker to reach any point of the state space in a finite
+number of steps. What we basically want is an $\omega$ that pushes the
+ratio towards unity,
+increasing the acceptance. The theoretical situation of $\omega$
+exactly equal to $p$ itself:
+\bdm
+\omega(\vec r_\textrm{new}\textrm{, }\vec r_\textrm{old})=
+\omega(\vec r_\textrm{new}) = p(\vec r_\textrm{new})
+\edm
+would give the maximal acceptance of $1$. But then we would already
+have solved the problem of producing points distributed according to
+$p$. One typically settles on modifying the symmetrical $\omega$ so
+that the walkers move more towards areas of the state space where the
+distribution is large. One such procedure is the Fokker-Planck
+formalism where the walkers are moved according to
+the gradient of the distribution. The formalism ``pushes'' the walkers
+in a ``desirable'' direction. The idea is to propose moves similarly
+to an isotropic diffusion process with a drift. A new position $\vec
+x_\textrm{new}$ is calculated from the old one, $\vec x_\textrm{old}$,
+as follows:
+\be
+\vec r_\textrm{new} = \vec r_\textrm{old} + \chi +
+D\vec F(\vec r_\textrm{old})\delta t
+\label{eq:drift_diffusion_proposition}
+\ee
+Here $\chi$ is a Gaussian pseudo-random number with mean equal zero
+and variance equal $2D\delta t$. It accounts for the diffusion part of
+the transition. The third term on the left hand side accounts for the
+drift. $\vec F$ is a drift velocity dependent on the position of the
+walker and is derived from the quantum mechanical wave function
+$\psi$. The constant $D$, being the diffusion constant of $\chi$, also
+adjusts the size of the drift. $\delta t$ is a time step parameter
+whose presence will be clarified shortly.
+
+It can be shown that the $\omega$ corresponding to
+the move proposition rule in Eq.~(\ref{eq:drift_diffusion_proposition})
+becomes (in non-normalized form):
+\be
+\omega(\vec r_\textrm{old}\textrm{, }\vec r_\textrm{new}) =
+\exp\left(
+-\frac{(\vec r_\textrm{new}-\vec r_\textrm{old}-D\delta t\vec F(\vec
+  r_\textrm{old}))^2}{4D\delta t}\right)
+\label{eq:omega_drift_diffusion}
+\ee
+which, as expected, is a Gaussian with variance $2D\delta t$ centered
+slightly off $\vec r_\textrm{old}$ due to the drift term $D\vec F(\vec
+r_\textrm{old})\delta t$.
+
+What is the optimal choice for the drift term? From statistical
+mechanics we know that a simple isotropic drift diffusion process
+obeys a Fokker-Planck equation of the form:
+\be
+\frac{\partial f}{\partial t} = \sum_i D \frac{\partial}{\partial x_i}
+\left(\frac{\partial}{\partial x_i}-F_i(\vec F)\right)f
+\label{eq:fokker-planck}
+\ee
+where $f$ is the continuous distribution of walkers.
+Equation (\ref{eq:drift_diffusion_proposition}) is a discretized realization
+of such a process where $\delta t$ is the discretized time step. In
+order for the solution $f$ to converge to the desired distribution
+$p$, it can be shown that the drift velocity has to
+be chosen as follows:
+\bdm
+\vec F = \frac{1}{f}\vec\nabla f
+\edm
+where the operator $\vec\nabla$ is the vector of first derivatives of
+all spatial coordinates. Convergence for such a diffusion process is
+only guaranteed when the time step approaches zero. But in the
+Metropolis algorithm, where drift diffusion is used just as a
+transition proposition rule, this bias is corrected automatically by
+the rejection mechanism. In our application, the desired probability distribution function  being the
+square absolute of the wave function, $f = |\psi|^2$, the drift
+velocity becomes:
+\be
+\vec F = 2\frac{1}{\psi}\vec\nabla\psi
+\label{eq:drift_velocity_VMC}
+\ee
+As expected, the walker is ``pushed'' along the gradient of the wave
+function.
+
+When dealing with many-particle systems, 
+we should also consider whether to move only one
+particle at a time at each transition or all at once. The former
+method may often be more efficient. A movement of only one particle
+will restrict the accessible space a walker can move to in a single
+transition even more, thus introducing correlation. But on the other
+hand, the acceptance is increased so that each particle can be moved
+further than it could in a standard all-particle move. It is also
+computationally far more efficient to do one-particle transitions
+particularly when dealing with complicated distributions governing
+many-dimensional anti-symmetrical fermionic systems.
+
+Alternatively, we can treat the sequence of all one-particle
+transitions as one total transition of all particles. This gives a
+larger effective step length thus reducing the correlation. From a
+computational point of view, we may not gain any speed by summing up the
+individual one-particle transitions as opposed to doing an
+all-particle transition. But the reduced correlation increases the
+total efficiency. We are able to do fewer calculations in order to
+reach the same numerical accuracy.
+
+%Then the block averages themselves become ergodic.
+%It takes a correlation time for the walk to become ergodic.
+
+Another way to acquire some control over the correlation is to do a so
+called blocking procedure 
+on our set of numerical measurements.  This is discussed in chapter \ref{chap:improvedvmc}.
+
+
+\section{Exercises}
+
+%\subsection*{Project 14.1: Studies of light Atoms}
+\begin{prob}
+The aim of this problem is to test the variational Monte Carlo apppled to light atoms.
+We will test different trial wave function
+$\Psi_T$.
+The systems we study are atoms consisting of two electrons only, such as
+the helium atom, Li$_{II}$ and  Be$_{III}$. The atom Li$_{II}$
+has two electrons and 
+$Z=3$ while Be$_{III}$  has $Z=4$ but still two electrons only.
+A general ansatz for the trial wave function is
+\be
+   \psi_T({\bf R})=\phi({\bf r}_1)\phi({\bf r}_2)f(r_{12}).
+\ee
+For all systems we assume that the one-electron wave functions
+$\phi({\bf r}_i)$ are described by the an elecron in the lowest 
+hydrogen orbital $1s$.
+
+The specific trial functions we study are
+\be
+   \psi_{T1}({\bf r_1},{\bf r_2}, {\bf r_{12}}) =
+   \exp{\left(-\alpha(r_1+r_2)\right)},
+\ee
+where $\alpha$ is the variational parameter,
+\be
+   \psi_{T2}({\bf r_1},{\bf r_2}, {\bf r_{12}}) =
+   \exp{\left(-\alpha(r_1+r_2)\right)}(1+\beta r_{12}),
+\ee
+with  $\beta$ as a new variational parameter and
+\be
+   \psi_{T3}({\bf r_1},{\bf r_2}, {\bf r_{12}}) =
+   \exp{\left(-\alpha(r_1+r_2)\right)}
+   \exp{\left(\frac{r_{12}}{2(1+\beta r_{12})}\right)}.
+\ee
+
+\begin{enumerate}
+\item[a)] Find the closed-form  expressions for the local energy for the above trial wave function
+for the helium atom. Study the behavior of the local energy with these functions in the limits 
+$r_1\rightarrow 0$, 
+$r_2\rightarrow 0$ and $r_{12}\rightarrow 0$.
+\item[b)] Compute 
+\be
+   \langle \OP{H} \rangle =
+   \frac{\int d{\bf R}\Psi^{\ast}_T({\bf R})\OP{H}({\bf R})\Psi_T({\bf R})}
+        {\int d{\bf R}\Psi^{\ast}_T({\bf R})\Psi_T({\bf R})},
+\ee
+for the helium atom using the variational Monte Carlo method employing the 
+Metropolis algorithm to sample the different states using the trial wave function
+$\psi_{T1}({\bf r_1},{\bf r_2}, {\bf r_{12}})$. Compare your results with the closed-form expression 
+\be
+\langle\OP{H} \rangle = \frac{\hbar^2}{m_e} \alpha^2
+		  - \frac{27}{32} \frac{e^2}{\pi \epsilon_0} \alpha.
+\ee
+\item[c)] 
+Use the optimal value of $\alpha$ from the previous point to compute the ground state of the helium
+atom using the other two trial wave functions
+$\psi_{T2}({\bf r_1},{\bf r_2}, {\bf r_{12}})$ and
+$\psi_{T3}({\bf r_1},{\bf r_2}, {\bf r_{12}})$. 
+In this case you have to vary both $\alpha$ and $\beta$.
+Explain briefly which function 
+$\psi_{T1}({\bf r_1},{\bf r_2}, {\bf r_{12}})$,
+$\psi_{T2}({\bf r_1},{\bf r_2}, {\bf r_{12}})$ and $\psi_{T3}({\bf r_1},{\bf r_2}, {\bf r_{12}})$ is
+the best.
+\item[d)]
+Use the optimal value for all parameters and all wave functions to compute 
+the expectation value of the mean distance $\langle r_{12} \rangle$
+between the two electrons. Comment your results.
+\item[e)] We will now repeat point 1c), but we replace the helium atom with the ions
+Li$_{II}$ and Be$_{III}$. 
+Perform first a variational calculation using the first ansatz for the trial wave function
+$\psi_{T1}({\bf r_1},{\bf r_2}, {\bf r_{12}})$ in order to find an optimal value for
+$\alpha$. Use then this value to start the variational calculation of the energy for the wave 
+functions
+$\psi_{T2}({\bf r_1},{\bf r_2}, {\bf r_{12}})$
+and $\psi_{T3}({\bf r_1},{\bf r_2}, {\bf r_{12}})$.
+Comment your results.
+\end{enumerate}
+\end{prob}
+
+%\subsection*{Project 14.2: The H$_2^+$ molecule}
+\begin{prob}
+The H$_2^+$ molecule  consists of  two protons and one electron,
+with binding energy  $E_B=-2.8$ eV
+and an equilibrium position  $r_0=0.106$ nm between the 
+two protons.
+
+We define our system through the following variables.
+The electron is at a distance 
+${\bf r}$ from a chosen origo, 
+one of the protons is at the distance 
+$-{\bf R}/2$ while the other one is placed at
+${\bf R}/2$ from origo, resulting
+in a distance to the electron of 
+${\bf r}- {\bf R}/2$ and ${\bf r}+ {\bf R}/2$, respectively.
+
+In our solution of Schr\"odinger's equation for this system we are going
+to neglect the kinetic energies of the protons, since they are
+2000 times heavier than the electron. We assume thus that their
+velocities are negligible compared to the velocity of the electron.
+In addition we omit contributions from  nuclear forces, since they act
+at distances of several orders of magnitude smaller than the 
+equilibrium position. 
+ 
+We can then write Schr\"odinger's equation as follows
+\be
+    \left\{-\frac{\hbar^2\nabla_r^2}{2m_e}
+     -\frac{ke^2}{|{\bf r}- {\bf R}/2|}-\frac{ke^2}{|{\bf r}+ {\bf R}/2|}
+     +\frac{ke^2}{R}
+     \right\}\psi({\bf r},{\bf R})=E\psi({\bf r},{\bf R}),
+\ee
+where the first term is the kinetic energy of the electron,
+the second term is the potential energy the electron feels
+from the proton at 
+$-{\bf R}/2$  while the third term arises from the potential
+energy contribution from the proton at 
+${\bf R}/2$. 
+The last term arises due to the repulsion between the two protons.
+
+
+Since the potential is symmetric with respect to the interchange 
+of 
+${\bf R}\rightarrow -{\bf R}$
+and  ${\bf r}\rightarrow -{\bf r}$
+it means that the probability for the electron to move from one 
+proton to the other must be equal in both directions.
+We can say that the electron shares it's time between both
+protons.
+
+With this caveat, we can now construct a model for simulating this
+molecule.
+Since we have only one elctron, we could assume that in the limit 
+$R\rightarrow
+\infty$, i.e., when the distance between the two protons is large,
+the electron is essentially bound to only one of the protons.
+This should correspond to a hydrogen atom. 
+As a trial wave function, we could therefore use the electronic wave function
+for the ground  state of hydrogen, namely
+\be
+    \psi_{100}(r)=\left(\frac{1}{\pi a_0^3}\right)^{1/2} e^{-r/a_0}.
+\ee
+Since we do not know exactly where the electron is, we have to allow
+for the possibility that the electron can be coupled to one of the two
+protons. This form includes the 'cusp'-condition discussed
+in the previous section.
+We define thence two 
+hydrogen wave functions
+\be
+   \psi_1({\bf r},{\bf R})=\left(\frac{1}{\pi a_0^3}\right)^{1/2} e^{-|{\bf r}- {\bf R}/2|/a_0},
+\ee
+and
+\be
+   \psi_2({\bf r},{\bf R})=\left(\frac{1}{\pi a_0^3}\right)^{1/2} e^{-|{\bf r}+ {\bf R}/2|/a_0}.
+\ee
+Based on these two wave functions, which represent where the electron can be,
+we attempt at the following  linear combination
+\be
+   \psi_{\pm}({\bf r},{\bf R})=C_{\pm}\left(\psi_1({\bf r},{\bf R})\pm\psi_2({\bf r},{\bf R})\right),
+\ee
+with $C_{\pm}$ a constant. 
+Based on this discussion, 
+we add a second electron in order to simulate the H$_2$ molecule. That is the topic for project 14.3.
+\end{prob}
+
+
+%\subsection*{Project 14.3: the H$_2$ molecule}
+
+\begin{prob}
+The 
+H$_2$ molecule consists of two protons and two electrons 
+with a ground state energy $E=-1.17460$ a.u. and equilibrium distance between the two hydrogen atoms
+of $r_0=1.40$ Bohr radii.
+We define our systems using the following variables.
+Origo is chosen to be halfway between the two protons. The distance from 
+proton 1 is defined as 
+$-{\bf R}/2$ whereas proton 2 has a distance ${\bf R}/2$.
+Calculations are performed for fixed distances ${\bf R}$ between the two protons.
+
+Electron 1 has a distance $r_1$ from the chose origo, while  electron $2$
+has a distance $r_2$. 
+The kinetic energy operator becomes then
+\be
+   -\frac{\nabla_1^2}{2}-\frac{\nabla_2^2}{2}.
+\ee
+The distance between the two electrons is
+$r_{12}=|{\bf r}_1-{\bf r}_2|$. 
+The repulsion between the two electrons results in a potential energy term given by
+\be
+               +\frac{1}{r_{12}}.
+\ee
+In a similar way we obtain a repulsive contribution from the interaction between the two 
+protons given by
+\be
+               +\frac{1}{|{\bf R}|},
+\ee
+where ${\bf R}$ is the distance between the two protons.
+To obtain the final potential energy we need to include the attraction the electrons feel from the protons.
+To model this, we need to define the distance between the electrons and the two protons.
+If we model this along a 
+chosen $z$-akse with electron 1 placed at a distance 
+${\bf r}_1$ from a chose origo, one proton at $-{\bf R}/2$
+and the other at  ${\bf R}/2$, 
+the distance from proton 1 to electron 1 becomes
+\be
+{\bf r}_{1p1}={\bf r}_1+ {\bf R}/2,
+\ee
+and
+\be
+{\bf r}_{1p2}={\bf r}_1- {\bf R}/2,
+\ee
+from proton 2.
+Similarly, for electron 2 we obtain
+\be
+{\bf r}_{2p1}={\bf r}_2+{\bf R}/2,
+\ee
+and
+\be
+{\bf r}_{2p2}={\bf r}_2-{\bf R}/2.
+\ee
+These four distances define the attractive contributions to the potential energy
+\be
+   -\frac{1}{r_{1p1}}-\frac{1}{r_{1p2}}-\frac{1}{r_{2p1}}-\frac{1}{r_{2p2}}.
+\ee
+We can then write the total Hamiltonian as 
+\be
+   \OP{H}=-\frac{\nabla_1^2}{2}-\frac{\nabla_2^2}{2}
+   -\frac{1}{r_{1p1}}-\frac{1}{r_{1p2}}-\frac{1}{r_{2p1}}-\frac{1}{r_{2p2}}
+               +\frac{1}{r_{12}}+\frac{1}{|{\bf R}|},
+\ee
+and if we choose ${\bf R}=0$ we obtain the helium atom.
+
+In this project we will use a trial wave function of the form
+\be
+   \psi_{T}({\bf r_1},{\bf r_2}, {\bf R}) =
+   \psi({\bf r}_1,{\bf R})\psi({\bf r}_2,{\bf R})
+   \exp{\left(\frac{r_{12}}{2(1+\beta r_{12})}\right)},
+\ee
+with the following trial wave function 
+\be
+   \psi({\bf r}_1,{\bf R})=\left(\exp{(-\alpha r_{1p1})}
+      +\exp{(-\alpha r_{1p2})}\right),
+\ee
+for electron 1 and
+\be
+   \psi({\bf r}_2,{\bf R})=\left(\exp{(-\alpha r_{2p1})}
+      +\exp{(-\alpha r_{2p2})}\right).
+\ee
+The variational parameters are $\alpha$ and $\beta$.
+
+One can show that in the limit where all distances approach zero that 
+\be
+    \alpha = 1+\exp{(-R/\alpha)},
+    \label{eq:alpha}
+\ee
+resulting in $\beta$ kas the only variational parameter.
+The last equation is a non-linear equation which we can solve with for example
+Newton's method discussed in chapter \ref{chap:nonlinear}.
+\begin{enumerate}
+\item Find the local energy as function of 
+$R$.
+\item Set up and algorithm and write a program which computes the 
+expectation value of 
+$\langle \OP{H} \rangle$
+using the variational Monte Carlo method with a brute force Metropolis sampling.
+For each inter-proton distance  $R$ you must find the parameter 
+$\beta$ which minimizes the energy. Plot the corresponding energy as function
+of the distance $R$ between the protons.
+\item Use thereafter the optimal parameter sets to compute the 
+average distance
+$\langle r_{12} \rangle$ between the electrons where the energy as function of
+$R$ exhibits its minimum. Comment your results.
+\item 
+We modify now the approximation for the wave functions of electrons 1 and 2
+by subtracting the two terms instead of adding up, viz
+\be
+   \psi({\bf r}_1,{\bf R})=\left(\exp{(-\alpha r_{1p1})}
+      -\exp{(-\alpha r_{1p2})}\right),
+\ee
+for electron 1 
+\be
+   \psi({\bf r}_2,{\bf R})=\left(\exp{(-\alpha r_{2p1})}
+      -\exp{(-\alpha r_{2p2})}\right),
+\ee
+for electron 2. Mathematically, this approach is equally viable as the previous one.
+Repeat your calculations from point b) and see if you can obtain an energy minimum as 
+function of  $R$. Comment your results.
+\end{enumerate}
+\end{prob}
+
+
+
+
+
+
+
