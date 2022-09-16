@@ -41,3 +41,14 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 - Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4. Sections 3.1-3.3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek36.pdf
 
+
+
+### Week 37, September 12-16 
+
+- Topics to be covered
+  - Thursday: Exercises for week 37
+  - Friday: Wrappping up Wick's theorem, Wick's generalized theorem and diagrammatic representation, Particle-hole formalism and definition of new reference state, normalordering of operators
+  - Video of lecture at	https://youtu.be/LzLS_C7GMEM
+- Lecture Material: These slides, handwritten notes and chapter 3 of Shavitt and Bartlett covers most of the material discussed this week.
+- Third exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek37.pdf
+
