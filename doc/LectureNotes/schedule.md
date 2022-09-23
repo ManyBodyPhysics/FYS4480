@@ -58,7 +58,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Thursday: Discussion of particle-hole formalism with examples
   - Video of lecture at https://youtu.be/zfaCSdyJlis
   - Friday: Particle-hole formalism and definition of new reference state, normalordering of operators
-  - Video of lecture at	https://msu.zoom.us/j/91706435521?pwd=Zll6dU1lRVpEbmlMWU9za1dyT0gvQT09
+  - Video of lecture at	https://youtu.be/NfkG8isV4wc
 - Lecture Material: These slides, handwritten notes and chapter 3 and 4 of Shavitt and Bartlett covers most of the material discussed this week.
 - Fourth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek38.pdf
 
