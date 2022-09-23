@@ -41,7 +41,11 @@ div.toc p,a {
               ('Summarizing and defining a normal-ordered Hamiltonian',
                1,
                None,
-               'summarizing-and-defining-a-normal-ordered-hamiltonian')]}
+               'summarizing-and-defining-a-normal-ordered-hamiltonian'),
+              ('The Jordan-Wigner transformation',
+               2,
+               None,
+               'the-jordan-wigner-transformation')]}
 end of tocinfo -->
 
 <body>
@@ -464,6 +468,133 @@ $$
 \end{align}
 $$
 
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="the-jordan-wigner-transformation">The Jordan-Wigner transformation </h2>
+
+<p>For a spin-\( 1/2 \) one-dimensional quantum spin-chain a fermionization
+procedure exists 
+which allows the mapping between spin operators and fermionic
+creation-annihilation operators.
+The algebra governing the spin chain is the \( SU(2) \) algebra, represented by
+the \( \sigma \)-matrices. The Jordan-Wigner transformation is a
+transformation from fermionic annihilation and creation operators to
+the \( \sigma \)-matrices of a spin-\( 1/2 \) chain.
+</p>
+
+<p>There is an isomorphism 
+between the two systems, meaning that any \( a \) or \( a^\dag \) operator can be
+transformed into a tensor product of \( \sigma \)-matrices operating on a
+set of qubits.  
+The authors demonstrated, with an emphasis on single-particle fermionic operators,  
+that the Jordan-Wigner transformation
+ensures efficient, i.e., not exponential complexity, simulations of a
+fermionic system on a quantum computer. 
+Similar transformations must be found for other systems, in order to
+efficiently simulate many-body systems. 
+</p>
+
+<p>We present here the various ingredients needed in order to transform a given 
+Hamiltonian into a practical form suitable  for quantum mechanical simulations. 
+</p>
+
+<p>We begin with the  fermionic creation and annihilation operators, which satisfy the following
+anticommutation relations
+</p>
+$$
+\begin{equation}
+\label{eq:anticommutationrelations}
+\{a_k, a_l\}=\{a_k^\dag, a_l^\dag\}= 0, \quad 
+\{a_k^\dag, a_l\} = \delta_{kl}.
+\end{equation}
+$$
+
+<p>Thereafter we define the three traceless and Hermitian generators of the \( SU(2) \) group, the
+\( \sigma \)-matrices \( \sigma_x \), \( \sigma_y \) and \( \sigma_z \).  Together 
+with the
+identity matrix \( {\bf 1} \) they form a complete basis for all Hermitian \( 2\times2 \)
+matrices. They can be used to write all Hamiltonians on a spin \( 1/2 \)
+chain when taking sums of tensor products of these, in other words  
+they form a product basis for the operators on the qubits.
+The three \( \sigma \)-matrices are
+</p>
+$$
+\begin{equation}
+\sigma_x = \begin{pmatrix}
+  0 & 1\\
+  1 & 0 
+\end{pmatrix},
+\sigma_y = \begin{pmatrix}
+  0 & -i\\
+  i & 0 
+\end{pmatrix}, \quad
+\sigma_z = \begin{pmatrix}
+  1 & 0\\
+  0 & -1 
+\end{pmatrix}.
+\label{_auto2}
+\end{equation}
+$$
+
+<p>We define the raising and lowering matrices as</p>
+$$
+\sigma_+ = \frac{1}{2}(\sigma_x + i\sigma_y)=
+\begin{pmatrix}
+  0 & 1\\
+  0 & 0 
+\end{pmatrix},
+$$
+
+$$
+\begin{equation}
+\label{eq:raisingAndLowerin}
+\sigma_- = \frac{1}{2}(\sigma_x - i\sigma_y)
+=\begin{pmatrix}
+  0 & 0\\
+  1 & 0 
+\end{pmatrix}.
+\end{equation}
+$$
+
+<p>The transformation is based on the fact that for each possible
+quantum state of the fermion system, there can be either one or zero
+fermions. Therefore we need \( n \) qubits for a system with \( n \) possible
+fermion states. A qubit in state $ |0\rangle ^i=a^\dag_i|vacuum\rangle$ 
+represents a state with a
+fermion, while $ |1\rangle ^i=|vacuum\rangle$ represents no fermions. Then the raising
+operator \( \sigma_+ \) changes $ |1\rangle $ into $ |0\rangle $ when
+</p>
+$$
+\begin{equation}
+ |0\rangle  \equiv \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \quad
+ |1\rangle  \equiv \begin{pmatrix} 0 \\ 1 \end{pmatrix}.
+\label{_auto3}
+\end{equation}  
+$$
+
+<p>This means that \( \sigma_+ \) acts as a creation operator, and \( \sigma_- \)
+acts as an annihilation operator. In addition, because of the
+anticommutation of creation(annihilation)  operators for different states we have 
+\( a_1^\dag a_2^\dag |vacuum\rangle = - a_2^\dag a_1^\dag |vacuum\rangle \), meaning that for creation and
+annihilation operators for states higher than the state corresponding
+to the first qubit, we need to multiply with a \( \sigma_z \)-matrix on
+all the qubits leading up to the one in question, in order  to get the correct
+sign in the final operation. This leads us to the Jordan-Wigner
+transformation 
+</p>
+$$
+\begin{equation}
+\label{eq:JWtransformation}
+a^\dag_n = \left(\prod_{k=1}^{n-1} \sigma_z^k\right) \sigma_+^n, \quad 
+a_n = \left(\prod_{k=1}^{n-1} \sigma_z^k\right) \sigma_-^n.
+\end{equation}
+$$
+
+<p>The notation \( \sigma_z^i\sigma_+^j \) means a tensor product of the
+identity matrix on all qubits other than \( i \) and \( j \), \( {\bf 1}\otimes
+\sigma_z \otimes {\bf 1} \otimes \sigma_+\otimes{\bf 1} \), if \( i < j \), with \( {\bf 1} \)
+being the  identity matrices of appropriate dimension.
+</p>
 
 <!-- ------------------- end of main content --------------- -->
 <center style="font-size:80%">
