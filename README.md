@@ -160,3 +160,4 @@ In particular we recommend the texts by
 - Fourth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek38.pdf
 
 
+###  week 39, September 26-30
