@@ -62,4 +62,14 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 - Lecture Material: These slides, handwritten notes and chapter 3 and 4 of Shavitt and Bartlett covers most of the material discussed this week.
 - Fourth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek38.pdf
 
-
+###  Week 39, September 26-30
+- Topics to be covered
+  - Thursday:
+    - Repetition  of particle-hole formalism
+    - Diagrammatic representation
+    - Introduction of full configuration interaction theory
+  - Friday: 
+    - Full configuration interaction (FCI) theory
+    - Lipkin model as an example of applications of FCI theory
+- Lecture Material: These slides, handwritten notes
+- Fifth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek39.pdf

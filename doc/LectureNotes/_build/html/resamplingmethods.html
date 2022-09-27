@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>12. Resampling Techniques, Bootstrap and Blocking &#8212; Quantum Mechanics for Many-Particle Systems</title>
     
-  <link href="_static/css/theme.css" rel="stylesheet" />
-  <link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -31,31 +31,37 @@
     <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js">
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="13. Boltzmann Machines" href="boltzmannmachines.html" />
     <link rel="prev" title="11. Gradient Methods" href="gradientmethods.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
     
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
@@ -94,7 +100,7 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   About the course
  </span>
@@ -116,7 +122,7 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Basic Many-Body Physics
  </span>
@@ -153,7 +159,7 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Stochastic Methods
  </span>
@@ -180,7 +186,7 @@ const thebe_selector_output = ".output, .cell_output"
   </a>
  </li>
 </ul>
-<p class="caption" role="heading">
+<p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Computational Aspects
  </span>
@@ -242,7 +248,7 @@ const thebe_selector_output = ".output, .cell_output"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
         <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
     </div>
 </div>
 
@@ -260,7 +266,7 @@ const thebe_selector_output = ".output, .cell_output"
         </div>
 
         <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
             
             <div class="tocsection onthispage pt-5 pb-3">
                 <i class="fas fa-list"></i> Contents
@@ -410,7 +416,160 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
     <div id="main-content" class="row">
         <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-        
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Resampling Techniques, Bootstrap and Blocking</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-resampling-methods">
+   12.1. Why resampling methods ?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#statistical-analysis">
+   12.2. Statistical analysis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#statistics-wrapping-up-from-last-week">
+   12.3. Statistics, wrapping up from last week
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#statistics-final-expression">
+   12.4. Statistics, final expression
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#statistics-effective-number-of-correlations">
+   12.5. Statistics, effective number of correlations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#can-we-understand-this-time-auto-correlation-function">
+   12.6. Can we understand this? Time Auto-correlation Function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#time-auto-correlation-function">
+   12.7. Time Auto-correlation Function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id1">
+   12.8. Time Auto-correlation Function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id2">
+   12.9. Time Auto-correlation Function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id3">
+   12.10. Time Auto-correlation Function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id4">
+   12.11. Time Auto-correlation Function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#correlation-time">
+   12.12. Correlation Time
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-jackknife-and-bootstrap">
+   12.13. Resampling methods: Jackknife and Bootstrap
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-jackknife">
+   12.14. Resampling methods: Jackknife
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-jackknife-estimator">
+   12.15. Resampling methods: Jackknife estimator
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#jackknife-code-example">
+   12.16. Jackknife code example
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-bootstrap">
+   12.17. Resampling methods: Bootstrap
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-bootstrap-background">
+   12.18. Resampling methods: Bootstrap background
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-more-bootstrap-background">
+   12.19. Resampling methods: More Bootstrap background
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-bootstrap-approach">
+   12.20. Resampling methods: Bootstrap approach
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-bootstrap-steps">
+   12.21. Resampling methods: Bootstrap steps
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#code-example-for-the-bootstrap-method">
+   12.22. Code example for the Bootstrap method
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#resampling-methods-blocking">
+   12.23. Resampling methods: Blocking
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#blocking-transformations">
+   12.24. Blocking Transformations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id5">
+   12.25. Blocking Transformations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#blocking-transformations-getting-there">
+   12.26. Blocking Transformations, getting there
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#blocking-transformations-final-expressions">
+   12.27. Blocking Transformations, final expressions
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="resampling-techniques-bootstrap-and-blocking">
@@ -764,10 +923,78 @@ estimators for each component of <span class="math notranslate nohighlight">\(\w
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Runtime: 0.0916181 sec
-Jackknife Statistics :
-original           bias      std. error
-   99.98          99.97        0.149194
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
+<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">myenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="k">try</span><span class="p">:</span>
+<span class="ne">---&gt; </span><span class="mi">22</span>     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">multiarray</span>
+<span class="g g-Whitespace">     </span><span class="mi">23</span> <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+
+<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">myenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">multiarray</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">10</span> <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="ne">---&gt; </span><span class="mi">12</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">overrides</span>
+<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_multiarray_umath</span>
+
+<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">myenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">overrides</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="ne">----&gt; </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">numpy.core._multiarray_umath</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span>     <span class="n">add_docstring</span><span class="p">,</span> <span class="n">implement_array_function</span><span class="p">,</span> <span class="n">_get_implementing_args</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span> <span class="kn">from</span> <span class="nn">numpy.compat._inspect</span> <span class="kn">import</span> <span class="n">getargspec</span>
+
+<span class="ne">ImportError</span>: dlopen(/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numpy/core/_multiarray_umath.cpython-39-darwin.so, 0x0002): Library not loaded: &#39;@rpath/libcblas.3.dylib&#39;
+  <span class="n">Referenced</span> <span class="n">from</span><span class="p">:</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numpy/core/_multiarray_umath.cpython-39-darwin.so&#39;</span>
+  <span class="n">Reason</span><span class="p">:</span> <span class="n">tried</span><span class="p">:</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numpy/core/../../../../libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numpy/core/../../../../libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/bin/../lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/bin/../lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/usr/local/lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/usr/lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">)</span>
+
+<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
+
+<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
+<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">randint</span><span class="p">,</span> <span class="n">randn</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">myenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">150</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">    </span><span class="mi">147</span> <span class="c1"># Allow distributors to run custom init code</span>
+<span class="g g-Whitespace">    </span><span class="mi">148</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_distributor_init</span>
+<span class="ne">--&gt; </span><span class="mi">150</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">core</span>
+<span class="g g-Whitespace">    </span><span class="mi">151</span> <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="g g-Whitespace">    </span><span class="mi">152</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">compat</span>
+
+<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">myenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">48</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">24</span>     <span class="kn">import</span> <span class="nn">sys</span>
+<span class="g g-Whitespace">     </span><span class="mi">25</span>     <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">     </span><span class="mi">26</span><span class="s2"> </span>
+<span class="g g-Whitespace">     </span><span class="mi">27</span><span class="s2"> IMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!</span>
+<span class="s2">   (...)</span>
+<span class="g g-Whitespace">     </span><span class="mi">46</span><span class="s2"> &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span>
+<span class="g g-Whitespace">     </span><span class="mi">47</span>         <span class="n">__version__</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">48</span>     <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span> <span class="k">finally</span><span class="p">:</span>
+<span class="g g-Whitespace">     </span><span class="mi">50</span>     <span class="k">for</span> <span class="n">envkey</span> <span class="ow">in</span> <span class="n">env_added</span><span class="p">:</span>
+
+<span class="ne">ImportError</span>: 
+
+<span class="ne">IMPORTANT</span>: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!
+
+<span class="n">Importing</span> <span class="n">the</span> <span class="n">numpy</span> <span class="n">C</span><span class="o">-</span><span class="n">extensions</span> <span class="n">failed</span><span class="o">.</span> <span class="n">This</span> <span class="n">error</span> <span class="n">can</span> <span class="n">happen</span> <span class="k">for</span>
+<span class="n">many</span> <span class="n">reasons</span><span class="p">,</span> <span class="n">often</span> <span class="n">due</span> <span class="n">to</span> <span class="n">issues</span> <span class="k">with</span> <span class="n">your</span> <span class="n">setup</span> <span class="ow">or</span> <span class="n">how</span> <span class="n">NumPy</span> <span class="n">was</span>
+<span class="n">installed</span><span class="o">.</span>
+
+<span class="n">We</span> <span class="n">have</span> <span class="n">compiled</span> <span class="n">some</span> <span class="n">common</span> <span class="n">reasons</span> <span class="ow">and</span> <span class="n">troubleshooting</span> <span class="n">tips</span> <span class="n">at</span><span class="p">:</span>
+
+    <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">numpy</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">devdocs</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">troubleshooting</span><span class="o">-</span><span class="n">importerror</span><span class="o">.</span><span class="n">html</span>
+
+<span class="n">Please</span> <span class="n">note</span> <span class="ow">and</span> <span class="n">check</span> <span class="n">the</span> <span class="n">following</span><span class="p">:</span>
+
+  <span class="o">*</span> <span class="n">The</span> <span class="n">Python</span> <span class="n">version</span> <span class="ow">is</span><span class="p">:</span> <span class="n">Python3</span><span class="mf">.9</span> <span class="kn">from</span> <span class="s2">&quot;/Users/mhjensen/miniforge3/envs/myenv/bin/python&quot;</span>
+  <span class="o">*</span> <span class="n">The</span> <span class="n">NumPy</span> <span class="n">version</span> <span class="ow">is</span><span class="p">:</span> <span class="s2">&quot;1.21.6&quot;</span>
+
+<span class="ow">and</span> <span class="n">make</span> <span class="n">sure</span> <span class="n">that</span> <span class="n">they</span> <span class="n">are</span> <span class="n">the</span> <span class="n">versions</span> <span class="n">you</span> <span class="n">expect</span><span class="o">.</span>
+<span class="n">Please</span> <span class="n">carefully</span> <span class="n">study</span> <span class="n">the</span> <span class="n">documentation</span> <span class="n">linked</span> <span class="n">above</span> <span class="k">for</span> <span class="n">further</span> <span class="n">help</span><span class="o">.</span>
+
+<span class="n">Original</span> <span class="n">error</span> <span class="n">was</span><span class="p">:</span> <span class="n">dlopen</span><span class="p">(</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">mhjensen</span><span class="o">/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">myenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">_multiarray_umath</span><span class="o">.</span><span class="n">cpython</span><span class="o">-</span><span class="mi">39</span><span class="o">-</span><span class="n">darwin</span><span class="o">.</span><span class="n">so</span><span class="p">,</span> <span class="mh">0x0002</span><span class="p">):</span> <span class="n">Library</span> <span class="ow">not</span> <span class="n">loaded</span><span class="p">:</span> <span class="s1">&#39;@rpath/libcblas.3.dylib&#39;</span>
+  <span class="n">Referenced</span> <span class="n">from</span><span class="p">:</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numpy/core/_multiarray_umath.cpython-39-darwin.so&#39;</span>
+  <span class="n">Reason</span><span class="p">:</span> <span class="n">tried</span><span class="p">:</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numpy/core/../../../../libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numpy/core/../../../../libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/bin/../lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/Users/mhjensen/miniforge3/envs/myenv/bin/../lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/usr/local/lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;/usr/lib/libcblas.3.dylib&#39;</span> <span class="p">(</span><span class="n">no</span> <span class="n">such</span> <span class="n">file</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -897,15 +1124,6 @@ frequency of the observation <span class="math notranslate nohighlight">\(X_i\)<
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Runtime: 1.26874 sec
-Bootstrap Statistics :
-original           bias      std. error
- 100.116  14.8503        100.118        0.147249
-</pre></div>
-</div>
-<img alt="_images/resamplingmethods_59_1.png" src="_images/resamplingmethods_59_1.png" />
 </div>
 </div>
 </div>
@@ -1080,54 +1298,42 @@ It means we can apply blocking transformations until
 
               </div>
               
-        
             
-
-
-
-<div class='prev-next-bottom'>
-    
-    <div id="prev">
-        <a class="left-prev" href="gradientmethods.html" title="previous page">
-            <i class="prevnext-label fas fa-angle-left"></i>
-            <div class="prevnext-info">
-                <p class="prevnext-label">previous</p>
-                <p class="prevnext-title"><span class="section-number">11. </span>Gradient Methods</p>
-            </div>
-        </a>
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="gradientmethods.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title"><span class="section-number">11. </span>Gradient Methods</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="boltzmannmachines.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">13. </span>Boltzmann Machines</p>
     </div>
-     <div id="next">
-        <a class="right-next" href="boltzmannmachines.html" title="next page">
-            <div class="prevnext-info">
-                <p class="prevnext-label">next</p>
-                <p class="prevnext-title"><span class="section-number">13. </span>Boltzmann Machines</p>
-            </div>
-            <i class="prevnext-label fas fa-angle-right"></i>
-        </a>
-     </div>
-
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
-        
+            
         </div>
     </div>
     <footer class="footer">
-    <div class="container">
-      <p>
-        
-          By Morten Hjorth-Jensen<br/>
-        
-            &copy; Copyright 2021.<br/>
-      </p>
-    </div>
-  </footer>
+  <p>
+    
+      By Morten Hjorth-Jensen<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
 </main>
 
 
       </div>
     </div>
   
-  <script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
 
-  
   </body>
 </html>
