@@ -160,5 +160,15 @@ In particular we recommend the texts by
 - Fourth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek38.pdf
 
 
-###  week 39, September 26-30
-
+###  Week 39, September 26-30
+- Topics to be covered
+  - Thursday:
+    - Repetition  of particle-hole formalism
+    - Diagrammatic representation
+    - Introduction of full configuration interaction theory
+    - Video of Lecture at https://youtu.be/_VtGqoXK6b8
+  - Friday: 
+    - Full configuration interaction (FCI) theory
+    - Lipkin model as an example of applications of FCI theory
+- Lecture Material: These slides, handwritten notes
+- Fifth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek39.pdf
