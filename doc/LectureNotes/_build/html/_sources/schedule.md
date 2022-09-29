@@ -68,6 +68,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Repetition  of particle-hole formalism
     - Diagrammatic representation
     - Introduction of full configuration interaction theory
+    - Video of Lecture at https://youtu.be/_VtGqoXK6b8
   - Friday: 
     - Full configuration interaction (FCI) theory
     - Lipkin model as an example of applications of FCI theory
