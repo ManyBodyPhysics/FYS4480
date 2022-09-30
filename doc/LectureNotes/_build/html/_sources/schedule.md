@@ -72,5 +72,6 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Friday: 
     - Full configuration interaction (FCI) theory
     - Lipkin model as an example of applications of FCI theory
+    - Video of lecture at https://youtu.be/6goQRQv62gY
 - Lecture Material: These slides, handwritten notes
 - Fifth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek39.pdf
