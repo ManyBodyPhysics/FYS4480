@@ -75,3 +75,15 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Video of lecture at https://youtu.be/6goQRQv62gY
 - Lecture Material: These slides, handwritten notes
 - Fifth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek39.pdf
+
+### Week 40, October 3-7
+- Topics to be covered
+  - Thursday:
+    - Repetition  of Full Configuration Interaction theory
+    - Start Hartree-Fock theory
+    - Video of lecture
+  - Friday: 
+    - Hartree-Fock theory and stability of equations
+    - Video of lecture
+- Lecture Material: These slides, handwritten notes and Szabo and Ostlund, sections 3.1-3.4
+- Sixth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek40.pdf
