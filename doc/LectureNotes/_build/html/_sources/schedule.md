@@ -81,7 +81,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Thursday:
     - Repetition  of Full Configuration Interaction theory
     - Start Hartree-Fock theory
-    - Video of lecture
+    - Video of lecture https://youtu.be/6rnHjN99t5Q
   - Friday: 
     - Hartree-Fock theory and stability of equations
     - Video of lecture
