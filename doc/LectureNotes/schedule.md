@@ -84,6 +84,6 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Video of lecture https://youtu.be/6rnHjN99t5Q
   - Friday: 
     - Hartree-Fock theory and stability of equations
-    - Video of lecture
+    - Video of lecture https://youtu.be/xpQstM6hxK8
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, sections 3.1-3.4
 - Sixth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek40.pdf
