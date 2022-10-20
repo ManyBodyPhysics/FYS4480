@@ -8,8 +8,8 @@ doconce format html week42.do.txt --pygments_html_style=perldoc --html_style=sol
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="DocOnce: https://github.com/doconce/doconce/" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Week 42: Many-body perturbation theory, time-independent derivation">
-<title>Week 42: Many-body perturbation theory, time-independent derivation</title>
+<meta name="description" content="Week 42: Hartree-Fock theory in second quantization and diagrammatic representation. Stability of Hartree-Fock theory">
+<title>Week 42: Hartree-Fock theory in second quantization and diagrammatic representation. Stability of Hartree-Fock theory</title>
 <link href="https://cdn.rawgit.com/doconce/doconce/master/bundled/html_styles/style_solarized_box/css/solarized_light_code.css" rel="stylesheet" type="text/css" title="light"/>
 <script src="https://cdn.rawgit.com/doconce/doconce/master/bundled/html_styles/style_solarized_box/js/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
@@ -37,14 +37,31 @@ div.toc p,a {
 
 <!-- tocinfo
 {'highest level': 2,
- 'sections': [('Many-body perturbation theory',
+ 'sections': [('Week 42, October 17-21, 2022',
                2,
                None,
-               'many-body-perturbation-theory'),
-              ('Interpreting the correlation energy and the wave operator',
+               'week-42-october-17-21-2022'),
+              ('Hartree-Fock algorithm', 2, None, 'hartree-fock-algorithm'),
+              ('Developing a  Hartree-Fock program',
                2,
                None,
-               'interpreting-the-correlation-energy-and-the-wave-operator')]}
+               'developing-a-hartree-fock-program'),
+              ('Hartree-Fock in second quantization and stability of HF '
+               'solution',
+               2,
+               None,
+               'hartree-fock-in-second-quantization-and-stability-of-hf-solution'),
+              ("Thouless' theorem", 2, None, 'thouless-theorem'),
+              ('New operators', 2, None, 'new-operators'),
+              ("Showing that $|\\tilde{c}\\rangle= |c'\\rangle$",
+               2,
+               None,
+               'showing-that-tilde-c-rangle-c-rangle'),
+              ('Hartree-Fock in second quantization and stability of HF '
+               'solution',
+               2,
+               None,
+               'hartree-fock-in-second-quantization-and-stability-of-hf-solution')]}
 end of tocinfo -->
 
 <body>
@@ -66,7 +83,7 @@ MathJax.Hub.Config({
 
 <!-- ------------------- main content ---------------------- -->
 <center>
-<h1>Week 42: Many-body perturbation theory, time-independent derivation</h1>
+<h1>Week 42: Hartree-Fock theory in second quantization and diagrammatic representation. Stability of Hartree-Fock theory</h1>
 </center>  <!-- document title -->
 
 <!-- author(s): Morten Hjorth-Jensen -->
@@ -82,318 +99,576 @@ MathJax.Hub.Config({
 </center>
 <br>
 <center>
-<h4>Week 42, October 17-21</h4>
+<h4>Week 41, October 10-14</h4>
 </center> <!-- date -->
 <br>
-<h2 id="many-body-perturbation-theory">Many-body perturbation theory </h2>
 
-<p>We assume here that we are only interested in the ground state of the system and 
-expand the exact wave function in term of a series of Slater determinants
-</p>
-$$
-\vert \Psi_0\rangle = \vert \Phi_0\rangle + \sum_{m=1}^{\infty}C_m\vert \Phi_m\rangle,
-$$
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="week-42-october-17-21-2022">Week 42, October 17-21, 2022 </h2>
+<ul>
+<li> Topics to be covered
+<ol type="a"></li>
+ <li> Thursday:</li>
+<ul>
+    <li> Repetition  of derivation of Hartree-Fock theory</li>
+    <li> Discussion of implementation of Hartree-Fock code</li>
+    <li> Stability of Hartree-Fock theory and Thouless theorem</li>
+    <li> <a href="https://youtu.be/" target="_blank">Video of lecture</a></li>
+</ul>
+ <li> Friday:</li> 
+<ul>
+    <li> Work on first midterm</li>
+</ul>
+</ol>
+<li> Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3</li>
+<li> First midterm set at <a href="https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf" target="_blank"><tt>https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf</tt></a></li>
+</ul>
+<h2 id="hartree-fock-algorithm">Hartree-Fock algorithm </h2>
 
-<p>where we have assumed that the true ground state is dominated by the 
-solution of the unperturbed problem, that is
-</p>
+<p>Our Hartree-Fock matrix  is</p>
 $$
-\hat{H}_0\vert \Phi_0\rangle= W_0\vert \Phi_0\rangle.
-$$
-
-<p>The state \( \vert \Psi_0\rangle \) is not normalized, rather we have used an intermediate 
-normalization \( \langle \Phi_0 \vert \Psi_0\rangle=1 \) since we have \( \langle \Phi_0\vert \Phi_0\rangle=1 \). 
-</p>
-
-<p>The Schroedinger equation is</p>
-$$
-\hat{H}\vert \Psi_0\rangle = E\vert \Psi_0\rangle,
-$$
-
-<p>and multiplying the latter from the left with \( \langle \Phi_0\vert  \) gives</p>
-$$
-\langle \Phi_0\vert \hat{H}\vert \Psi_0\rangle = E\langle \Phi_0\vert \Psi_0\rangle=E,
-$$
-
-<p>and subtracting from this equation</p>
-$$
-\langle \Psi_0\vert \hat{H}_0\vert \Phi_0\rangle= W_0\langle \Psi_0\vert \Phi_0\rangle=W_0,
+\hat{h}_{\alpha\beta}^{HF}=\langle \alpha | \hat{h}_0 | \beta \rangle+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
 $$
 
-<p>and using the fact that the both operators \( \hat{H} \) and \( \hat{H}_0 \) are hermitian 
-results in
-</p>
-$$
-\Delta E=E-W_0=\langle \Phi_0\vert \hat{H}_I\vert \Psi_0\rangle,
-$$
-
-<p>which is an exact result. We call this quantity the correlation energy.</p>
-
-<p>This equation forms the starting point for all perturbative derivations. However,
-as it stands it represents nothing but a mere formal rewriting of Schroedinger's equation and is not of much practical use. The exact wave function \( \vert \Psi_0\rangle \) is unknown. In order to obtain a perturbative expansion, we need to expand the exact wave function in terms of the interaction \( \hat{H}_I \). 
+<p>The Hartree-Fock equations are solved in an iterative waym starting with a guess for the coefficients \( C_{j\gamma}=\delta_{j,\gamma} \) and solving the equations by diagonalization till the new single-particle energies
+\( \epsilon_i^{\mathrm{HF}} \) do not change anymore by a prefixed quantity. 
 </p>
 
-<p>Here we have assumed that our model space defined by the operator \( \hat{P} \) is one-dimensional, meaning that</p>
+<p>Normally we assume that the single-particle basis \( |\beta\rangle \) forms an eigenbasis for the operator
+\( \hat{h}_0 \), meaning that the Hartree-Fock matrix becomes  
+</p>
 $$
-\hat{P}= \vert \Phi_0\rangle \langle \Phi_0\vert ,
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+
+<p>The Hartree-Fock eigenvalue problem</p>
+$$
+\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
+$$
+
+<p>can be written out in a more compact form as</p>
+$$
+\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
+$$
+
+<p>The Hartree-Fock equations are, in their simplest form, solved in an iterative way, starting with a guess for the
+coefficients \( C_{i\alpha} \). We label the coefficients as \( C_{i\alpha}^{(n)} \), where the subscript \( n \) stands for iteration \( n \).
+To set up the algorithm we can proceed as follows:
+</p>
+
+<ul>
+ <li> We start with a guess \( C_{i\alpha}^{(0)}=\delta_{i,\alpha} \). Alternatively, we could have used random starting values as long as the vectors are normalized. Another possibility is to give states below the Fermi level a larger weight.</li>
+ <li> The Hartree-Fock matrix simplifies then to (assuming that the coefficients \( C_{i\alpha}  \)  are real)</li>
+</ul>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j = 1}^N\sum_{\gamma\delta} C_{j\gamma}^{(0)}C_{j\delta}^{(0)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+
+<p>Solving the Hartree-Fock eigenvalue problem yields then new eigenvectors \( C_{i\alpha}^{(1)} \) and eigenvalues
+\( \epsilon_i^{HF(1)} \). 
+</p>
+<ul>
+ <li> With the new eigenvalues we can set up a new Hartree-Fock potential</li> 
+</ul>
+$$
+\sum_{j = 1}^N\sum_{\gamma\delta} C_{j\gamma}^{(1)}C_{j\delta}^{(1)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+$$
+
+<p>The diagonalization with the new Hartree-Fock potential yields new eigenvectors and eigenvalues.
+This process is continued till for example
+</p>
+$$
+\frac{\sum_{p} |\epsilon_i^{(n)}-\epsilon_i^{(n-1)}|}{m} \le \lambda,  
+$$
+
+<p>where \( \lambda \) is a user prefixed quantity (\( \lambda \sim 10^{-8} \) or smaller) and \( p \) runs over all calculated single-particle
+energies and \( m \) is the number of single-particle states.
+</p>
+<h2 id="developing-a-hartree-fock-program">Developing a  Hartree-Fock program  </h2>
+
+<p>The Hartree-Fock algorithm can be broken down as follows. We recall that  our Hartree-Fock matrix  is </p>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\langle \alpha \vert\hat{h}_0 \vert \beta \rangle+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+$$
+
+<p>Normally we assume that the single-particle basis \( \vert\beta\rangle \)
+forms an eigenbasis for the operator \( \hat{h}_0 \), meaning that the
+Hartree-Fock matrix becomes
+</p>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+$$
+
+<p>The Hartree-Fock eigenvalue problem</p>
+$$
+\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
+$$
+
+<p>can be written out in a more compact form as</p>
+$$
+\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
+$$
+
+<p>The equations are often rewritten in terms of a so-called density matrix,
+which is defined as 
+</p>
+$$
+\begin{equation}
+\rho_{\gamma\delta}=\sum_{i=1}^{N}\langle\gamma|i\rangle\langle i|\delta\rangle = \sum_{i=1}^{N}C_{i\gamma}C^*_{i\delta}.
+\label{_auto1}
+\end{equation}
+$$
+
+<p>It means that we can rewrite the Hartree-Fock Hamiltonian as</p>
+$$
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{\gamma\delta} \rho_{\gamma\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+$$
+
+<p>It is convenient to use the density matrix since we can precalculate in every iteration the product of two eigenvector components \( C \). </p>
+
+<p>Note that \( \langle \alpha\vert\hat{h}_0\vert\beta \rangle \) denotes the
+matrix elements of the one-body part of the starting hamiltonian. For
+systems like self-bound nuclei \( \langle \alpha\vert\hat{h}_0\vert\beta \rangle \) is the
+kinetic energy, whereas for neutron drops, \( \langle \alpha \vert \hat{h}_0 \vert \beta \rangle \) represents the harmonic oscillator hamiltonian since
+the system is confined in a harmonic trap. If we are working in a
+harmonic oscillator basis with the same \( \omega \) as the trapping
+potential, then \( \langle \alpha\vert\hat{h}_0 \vert \beta \rangle \) is
+diagonal.
+</p>
+
+<p>An example of a function written in python which performs the
+Hartree-Fock calculation is shown here.  In setting up your code you
+will need to write a function which sets up the single-particle basis,
+the matrix elements \( t_{\alpha\gamma} \) of the one-body operator
+(called \( h0 \) in the function below) and the antisymmetrized TBMEs
+and the density matrix
+elements \( \rho_{\beta\delta} \) (called <em>densityMatrix</em> below).
+</p>
+
+<p>Here we display the Hartree-Fock part only, assuming that single-particle data and two-body matrix elements have already been read in. </p>
+
+<!-- code=python (!bc pycod) typeset with pygments style "perldoc" -->
+<div class="cell border-box-sizing code_cell rendered">
+  <div class="input">
+    <div class="inner_cell">
+      <div class="input_area">
+        <div class="highlight" style="background: #eeeedd">
+  <pre style="line-height: 125%;">	<span style="color: #CD5555">&quot;&quot;&quot; Star HF-iterations, preparing variables and density matrix &quot;&quot;&quot;</span>
+
+        <span style="color: #CD5555">&quot;&quot;&quot; Coefficients for setting up density matrix, assuming only one along the diagonals &quot;&quot;&quot;</span>
+	C = np.eye(spOrbitals) <span style="color: #228B22"># HF coefficients</span>
+        DensityMatrix = np.zeros([spOrbitals,spOrbitals])
+        <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+            <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                <span style="color: #658b00">sum</span> = <span style="color: #B452CD">0.0</span>
+                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(Nparticles):
+                    <span style="color: #658b00">sum</span> += C[gamma][i]*C[delta][i]
+                DensityMatrix[gamma][delta] = Decimal(<span style="color: #658b00">sum</span>)
+        maxHFiter = <span style="color: #B452CD">100</span>
+        epsilon =  <span style="color: #B452CD">1.0e-10</span> 
+        difference = <span style="color: #B452CD">1.0</span>
+	hf_count = <span style="color: #B452CD">0</span>
+	oldenergies = np.zeros(spOrbitals)
+	newenergies = np.zeros(spOrbitals)
+	<span style="color: #8B008B; font-weight: bold">while</span> hf_count &lt; maxHFiter <span style="color: #8B008B">and</span> difference &gt; epsilon:
+		<span style="color: #658b00">print</span> <span style="color: #CD5555">&quot;############### Iteration %i ###############&quot;</span> % hf_count
+   	        HFmatrix = np.zeros([spOrbitals,spOrbitals])		
+		<span style="color: #8B008B; font-weight: bold">for</span> alpha <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+			<span style="color: #8B008B; font-weight: bold">for</span> beta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                            <span style="color: #CD5555">&quot;&quot;&quot;  Setting up the Fock matrix using the density matrix and antisymmetrized interaction matrix elements&quot;&quot;&quot;</span>
+     		            sumFockTerm = <span style="color: #B452CD">0.0</span>
+                            <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                                <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                                    sumFockTerm += DensityMatrix[gamma][delta]*nninteraction[alpha][gamma][beta][delta]
+                            HFmatrix[alpha][beta] = Decimal(sumFockTerm)
+                            <span style="color: #CD5555">&quot;&quot;&quot;  Adding the one-body term, here plain harmonic oscillator &quot;&quot;&quot;</span>
+                            <span style="color: #8B008B; font-weight: bold">if</span> beta == alpha:   HFmatrix[alpha][alpha] += singleparticleH[alpha]
+		spenergies, C = np.linalg.eigh(HFmatrix)
+                <span style="color: #CD5555">&quot;&quot;&quot; Setting up new density matrix in m-scheme &quot;&quot;&quot;</span>
+                DensityMatrix = np.zeros([spOrbitals,spOrbitals])
+                <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                    <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                        <span style="color: #658b00">sum</span> = <span style="color: #B452CD">0.0</span>
+                        <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(Nparticles):
+                            <span style="color: #658b00">sum</span> += C[gamma][i]*C[delta][i]
+                        DensityMatrix[gamma][delta] = Decimal(<span style="color: #658b00">sum</span>)
+		newenergies = spenergies
+                <span style="color: #CD5555">&quot;&quot;&quot; Brute force computation of difference between previous and new sp HF energies &quot;&quot;&quot;</span>
+                <span style="color: #658b00">sum</span> =<span style="color: #B452CD">0.0</span>
+                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                    <span style="color: #658b00">sum</span> += (<span style="color: #658b00">abs</span>(newenergies[i]-oldenergies[i]))/spOrbitals
+                difference = <span style="color: #658b00">sum</span>
+                oldenergies = newenergies
+                <span style="color: #658b00">print</span> <span style="color: #CD5555">&quot;Single-particle energies, ordering may have changed &quot;</span>
+                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
+                    <span style="color: #658b00">print</span>(<span style="color: #CD5555">&#39;{0:4d}  {1:.4f}&#39;</span>.format(i, Decimal(oldenergies[i])))
+		hf_count += <span style="color: #B452CD">1</span>
+</pre>
+</div>
+      </div>
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output">
+      <div class="output_area">
+        <div class="output_subarea output_stream output_stdout output_text">          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="hartree-fock-in-second-quantization-and-stability-of-hf-solution">Hartree-Fock in second quantization and stability of HF solution </h2>
+
+<p>We wish now to derive the Hartree-Fock equations using our second-quantized formalism and study the stability of the equations. 
+Our ansatz for the ground state of the system is approximated as (this is our representation of a Slater determinant in second quantization)
+</p>
+$$   
+|\Phi_0\rangle = |c\rangle = a^{\dagger}_i a^{\dagger}_j \dots a^{\dagger}_l|0\rangle.
+$$
+
+<p>We wish to determine \( \hat{u}^{HF} \) so that 
+\( E_0^{HF}= \langle c|\hat{H}| c\rangle \) becomes a local minimum. 
+</p>
+
+<p>In our analysis here we will need Thouless' theorem, which states that
+an arbitrary Slater determinant \( |c'\rangle \) which is not orthogonal to a determinant
+\( | c\rangle ={\displaystyle\prod_{i=1}^{n}}
+a_{\alpha_{i}}^{\dagger}|0\rangle \), can be written as
+</p>
+$$
+|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle 
+$$
+
+<p>Let us give a simple proof of Thouless' theorem. The theorem states that we can make a linear combination av particle-hole excitations  with respect to a given reference state \( \vert c\rangle \). With this linear combination, we can make a new Slater determinant \( \vert c'\rangle  \) which is not orthogonal to 
+\( \vert c\rangle \), that is
+</p>
+$$
+\langle c|c'\rangle \ne 0.
+$$
+
+<p>To show this we need some intermediate steps. The exponential product of two operators  \( \exp{\hat{A}}\times\exp{\hat{B}} \) is equal to \( \exp{(\hat{A}+\hat{B})} \) only if the two operators commute, that is</p>
+$$
+[\hat{A},\hat{B}] = 0.
+$$
+<h2 id="thouless-theorem">Thouless' theorem </h2>
+
+<p>If the operators do not commute, we need to resort to the <a href="http://www.encyclopediaofmath.org/index.php/Campbell%E2%80%93Hausdorff_formula" target="_blank">Baker-Campbell-Hauersdorf</a>. This relation states that</p>
+$$
+\exp{\hat{C}}=\exp{\hat{A}}\exp{\hat{B}},
+$$
+
+<p>with </p>
+$$
+\hat{C}=\hat{A}+\hat{B}+\frac{1}{2}[\hat{A},\hat{B}]+\frac{1}{12}[[\hat{A},\hat{B}],\hat{B}]-\frac{1}{12}[[\hat{A},\hat{B}],\hat{A}]+\dots
+$$
+
+<p>From these relations, we note that 
+in our expression  for \( |c'\rangle \) we have commutators of the type
+</p>
+$$
+[a_{a}^{\dagger}a_{i},a_{b}^{\dagger}a_{j}],
+$$
+
+<p>and it is easy to convince oneself that these commutators, or higher powers thereof, are all zero. This means that we can write out our new representation of a Slater determinant as</p>
+$$
+|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}+\left(\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right)^2+\dots\right\}| c\rangle
+$$
+
+<p>We note that</p>
+$$
+\prod_{i}\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\sum_{b>F}C_{bi}a_{b}^{\dagger}a_{i}| c\rangle =0,
+$$
+
+<p>and all higher-order powers of these combinations of creation and annihilation operators disappear 
+due to the fact that \( (a_i)^n| c\rangle =0 \) when \( n > 1 \). This allows us to rewrite the expression for \( |c'\rangle  \) as
+</p>
+$$
+|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle,
+$$
+
+<p>which we can rewrite as </p>
+$$
+|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle.
+$$
+
+<p>The last equation can be written as</p>
+$$
+\begin{align}
+|c'\rangle&=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle=\left(1+\sum_{a>F}C_{ai_1}a_{a}^{\dagger}a_{i_1}\right)a^{\dagger}_{i_1} 
+\label{_auto2}\\
+& \times\left(1+\sum_{a>F}C_{ai_2}a_{a}^{\dagger}a_{i_2}\right)a^{\dagger}_{i_2} \dots |0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle.
+\label{_auto3}
+\end{align}
+$$
+<h2 id="new-operators">New operators </h2>
+
+<p>If we define a new creation operator </p>
+$$
+\begin{equation}
+b^{\dagger}_{i}=a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}, \label{eq:newb}
+\end{equation}
+$$
+
+<p>we have </p>
+$$
+|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle,
+$$
+
+<p>meaning that the new representation of the Slater determinant in second quantization, \( |c'\rangle \), looks like our previous ones. However, this representation is not general enough since we have a restriction on the sum over single-particle states in Eq.&nbsp;\eqref{eq:newb}. The single-particle states have all to be above the Fermi level.
+The question then is whether we can construct a general representation of a Slater determinant with a creation operator 
+</p>
+$$
+\tilde{b}^{\dagger}_{i}=\sum_{p}f_{ip}a_{p}^{\dagger},
+$$
+
+<p>where \( f_{ip} \) is a matrix element of a unitary matrix which transforms our creation and annihilation operators
+\( a^{\dagger} \) and \( a \) to \( \tilde{b}^{\dagger} \) and \( \tilde{b} \). These new operators define a new representation of a Slater determinant as
+</p>
+$$
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle.
+$$
+<h2 id="showing-that-tilde-c-rangle-c-rangle">Showing that \( |\tilde{c}\rangle= |c'\rangle \)  </h2>
+
+<p>We need to show that \( |\tilde{c}\rangle= |c'\rangle \). We need also to assume that the new state
+is not orthogonal to \( |c\rangle \), that is \( \langle c| \tilde{c}\rangle \ne 0 \). From this it follows that 
+</p>
+$$
+\langle c| \tilde{c}\rangle=\langle 0| a_{i_n}\dots a_{i_1}\left(\sum_{p=i_1}^{i_n}f_{i_1p}a_{p}^{\dagger} \right)\left(\sum_{q=i_1}^{i_n}f_{i_2q}a_{q}^{\dagger} \right)\dots \left(\sum_{t=i_1}^{i_n}f_{i_nt}a_{t}^{\dagger} \right)|0\rangle,
+$$
+
+<p>which is nothing but the determinant \( det(f_{ip}) \) which we can, using the intermediate normalization condition, 
+normalize to one, that is
+</p>
+$$
+det(f_{ip})=1,
+$$
+
+<p>meaning that \( f \) has an inverse defined as (since we are dealing with orthogonal, and in our case unitary as well, transformations)</p>
+$$
+\sum_{k} f_{ik}f^{-1}_{kj} = \delta_{ij},
+$$
+
+<p>and </p>
+$$
+\sum_{j} f^{-1}_{ij}f_{jk} = \delta_{ik}.
+$$
+
+<p>Using these relations we can then define the linear combination of creation (and annihilation as well) 
+operators as
+</p>
+$$
+\sum_{i}f^{-1}_{ki}\tilde{b}^{\dagger}_{i}=\sum_{i}f^{-1}_{ki}\sum_{p=i_1}^{\infty}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}.
+$$
+
+<p>Defining </p>
+$$
+c_{kp}=\sum_{i \le F}f^{-1}_{ki}f_{ip},
+$$
+
+<p>we can redefine </p>
+$$
+a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}=b_k^{\dagger},
+$$
+
+<p>our starting point. We have shown that our general representation of a Slater determinant </p>
+$$
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle=|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle,
+$$
+
+<p>with </p>
+$$
+b_k^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}.
+$$
+
+<p>This means that we can actually write an ansatz for the ground state of the system as a linear combination of
+terms which contain the ansatz itself \( |c\rangle \) with  an admixture from an infinity of one-particle-one-hole states. The latter has important consequences when we wish to interpret the Hartree-Fock equations and their stability. We can rewrite the new representation as 
+</p>
+$$
+|c'\rangle = |c\rangle+|\delta c\rangle,
+$$
+
+<p>where \( |\delta c\rangle \) can now be interpreted as a small variation. If we approximate this term with 
+contributions from one-particle-one-hole (<em>1p-1h</em>) states only, we arrive at 
+</p>
+$$
+|c'\rangle = \left(1+\sum_{ai}\delta C_{ai}a_{a}^{\dagger}a_i\right)|c\rangle.
+$$
+
+<p>In our derivation of the Hartree-Fock equations we have shown that </p>
+$$
+\langle \delta c| \hat{H} | c\rangle =0,
+$$
+
+<p>which means that we have to satisfy</p>
+$$
+\langle c|\sum_{ai}\delta C_{ai}\left\{a_{a}^{\dagger}a_i\right\} \hat{H} | c\rangle =0.
+$$
+
+<p>With this as a background, we are now ready to study the stability of the Hartree-Fock equations.</p>
+<h2 id="hartree-fock-in-second-quantization-and-stability-of-hf-solution">Hartree-Fock in second quantization and stability of HF solution </h2>
+
+<p>The variational condition for deriving the Hartree-Fock equations guarantees only that the expectation value \( \langle c | \hat{H} | c \rangle \) has an extreme value, not necessarily a minimum. To figure out whether the extreme value we have found  is a minimum, we can use second quantization to analyze our results and find a criterion 
+for the above expectation value to a local minimum. We will use Thouless' theorem and show that
+</p>
+$$
+\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} \ge \langle c |\hat{H} | c\rangle= E_0,
+$$
+
+<p>with</p>
+$$
+ {|c'\rangle} = {|c\rangle + |\delta c\rangle}.
+$$
+
+<p>Using Thouless' theorem we can write out \( |c'\rangle \) as</p>
+$$
+\begin{align}
+ {|c'\rangle}&=\exp\left\{\sum_{a > F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle
+\label{_auto4}\\ 
+&=\left\{1+\sum_{a > F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}
+a_{i}+\frac{1}{2!}\sum_{ab > F}\sum_{ij \le F}\delta C_{ai}\delta C_{bj}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}+\dots\right\}
+\label{_auto5}
+\end{align}
+$$
+
+<p>where the amplitudes \( \delta C \) are small.</p>
+
+<p>The norm of \( |c'\rangle \) is given by (using the intermediate normalization condition \( \langle c' |c\rangle=1 \)) </p>
+$$
+\langle c' | c'\rangle = 1+\sum_{a>F}
+\sum_{i\le F}|\delta C_{ai}|^2+O(\delta C_{ai}^3).
+$$
+
+<p>The expectation value for the energy is now given by (using the Hartree-Fock condition)</p>
+$$
+\langle c' |\hat{H} | c'\rangle=\langle c |\hat{H} | c\rangle +
+\sum_{ab>F}
+\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}\langle c |a_{i}^{\dagger}a_{a}\hat{H}a_{b}^{\dagger}a_{j}|c\rangle+
+$$
+
+$$
+\frac{1}{2!}\sum_{ab>F}
+\sum_{ij\le F}\delta C_{ai}\delta C_{bj}\langle c |\hat{H}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}|c\rangle+\frac{1}{2!}\sum_{ab>F}
+\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}^*\langle c|a_{j}^{\dagger}a_{b}a_{i}^{\dagger}a_{a}\hat{H}|c\rangle
++\dots
+$$
+
+<p>We have already calculated the second term on the right-hand side of the previous equation</p>
+$$
+\begin{align}
+\langle c | \left(\{a^\dagger_i a_a\} \hat{H} \{a^\dagger_b a_j\} \right) | c\rangle&=\sum_{pq} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle p|\hat{h}_0 |q\rangle 
+            \langle c | \left(\{a^{\dagger}_i a_a\}\{a^{\dagger}_pa_q\} 
+             \{a^{\dagger}_b a_j\} \right)| c\rangle
+\label{_auto6}\\
+& +\frac{1}{4} \sum_{pqrs} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle pq| \hat{v}|rs\rangle 
+            \langle c | \left(\{a^\dagger_i a_a\}\{a^{\dagger}_p a^{\dagger}_q a_s  a_r\} \{a^{\dagger}_b a_j\} \right)| c\rangle ,
+\label{_auto7}
+\end{align}
+$$
+
+<p>resulting in</p>
+$$
+E_0\sum_{ai}|\delta C_{ai}|^2+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a-\varepsilon_i)-\sum_{ijab} \langle aj|\hat{v}| bi\rangle \delta C_{ai}^*\delta C_{bj}.
+$$
+
+
+$$
+\frac{1}{2!}\langle c |\left(\{a^\dagger_j a_b\} \{a^\dagger_i a_a\} \hat{V}_N  \right) | c\rangle  = 
+\frac{1}{2!}\langle c |\left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right)^{\dagger} | c\rangle 
+$$
+
+<p>which is nothing but</p>
+$$
+\frac{1}{2!}\langle c |  \left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right) | c\rangle^*
+=\frac{1}{2} \sum_{ijab} (\langle ij|\hat{v}|ab\rangle)^*\delta C_{ai}^*\delta C_{bj}^*
+$$
+
+<p>or </p>
+$$
+\frac{1}{2} \sum_{ijab} (\langle ab|\hat{v}|ij\rangle)\delta C_{ai}^*\delta C_{bj}^*
+$$
+
+<p>where we have used the relation</p>
+$$ 
+\langle a |\hat{A} | b\rangle =  (\langle b |\hat{A}^{\dagger} | a\rangle)^*
+$$
+
+<p>due to the hermiticity of \( \hat{H} \) and \( \hat{V} \).</p>
+
+<p>We define two matrix elements</p>
+$$
+A_{ai,bj}=-\langle aj|\hat{v} bi\rangle
 $$
 
 <p>and</p>
 $$
-\hat{Q}=\sum_{m=1}^{\infty}\vert \Phi_m\rangle \langle \Phi_m\vert .
+B_{ai,bj}=\langle ab|\hat{v}|ij\rangle
 $$
 
-<p>We can thus rewrite the exact wave function as</p>
+<p>both being anti-symmetrized.</p>
+
+<p>With these definitions we write out the energy as</p>
 $$
-\vert \Psi_0\rangle= (\hat{P}+\hat{Q})\vert \Psi_0\rangle=\vert \Phi_0\rangle+\hat{Q}\vert \Psi_0\rangle.
+\begin{align}
+\langle c'|H|c'\rangle& = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a^{HF}-\varepsilon_i^{HF})+\sum_{ijab}A_{ai,bj}\delta C_{ai}^*\delta C_{bj}+
+\label{_auto8}\\
+&\frac{1}{2} \sum_{ijab} B_{ai,bj}^*\delta C_{ai}\delta C_{bj}+\frac{1}{2} \sum_{ijab} B_{ai,bj}\delta C_{ai}^*\delta C_{bj}^*
++O(\delta C_{ai}^3),
+\label{_auto9}
+\end{align}
 $$
 
-<p>Going back to the Schr\"odinger equation, we can rewrite it as, adding and a subtracting a term \( \omega \vert \Psi_0\rangle \) as</p>
+<p>which can be rewritten as</p>
 $$
-\left(\omega-\hat{H}_0\right)\vert \Psi_0\rangle=\left(\omega-E+\hat{H}_I\right)\vert \Psi_0\rangle,
+\langle c'|H|c'\rangle = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\Delta E+O(\delta C_{ai}^3),
 $$
 
-<p>where \( \omega \) is an energy variable to be specified later. </p>
+<p>and skipping higher-order terms we arrived</p>
+$$
+\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} =E_0+\frac{\Delta E}{\left(1+\sum_{ai}|\delta C_{ai}|^2\right)}.
+$$
 
-<p>We assume also that the resolvent of \( \left(\omega-\hat{H}_0\right) \) exits, that is
-it has an inverse which defined the unperturbed Green's function as
+<p>We have defined </p>
+$$
+\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle
+$$
+
+<p>with the vectors </p>
+$$ 
+\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
+$$
+
+<p>and the matrix </p>
+$$
+\hat{M}=\left(\begin{array}{cc} \Delta + A & B \\ B^* & \Delta + A^*\end{array}\right),
+$$
+
+<p>with \( \Delta_{ai,bj} = (\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij} \).</p>
+
+<p>The condition</p>
+$$
+\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle \ge 0
+$$
+
+<p>for an arbitrary  vector </p>
+$$ 
+\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
+$$
+
+<p>means that all eigenvalues of the matrix have to be larger than or equal zero. 
+A necessary (but no sufficient) condition is that the matrix elements (for all \( ai \) )
 </p>
 $$
-\left(\omega-\hat{H}_0\right)^{-1}=\frac{1}{\left(\omega-\hat{H}_0\right)}.
+(\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij}+A_{ai,bj} \ge 0.
 $$
 
-<p>We can rewrite Schroedinger's equation as</p>
-$$
-\vert \Psi_0\rangle=\frac{1}{\omega-\hat{H}_0}\left(\omega-E+\hat{H}_I\right)\vert \Psi_0\rangle,
-$$
+<p>This equation can be used as a first test of the stability of the Hartree-Fock equation.</p>
 
-<p>and multiplying from the left with \( \hat{Q} \) results in</p>
-$$
-\hat{Q}\vert \Psi_0\rangle=\frac{\hat{Q}}{\omega-\hat{H}_0}\left(\omega-E+\hat{H}_I\right)\vert \Psi_0\rangle,
-$$
-
-<p>which is possible since we have defined the operator \( \hat{Q} \) in terms of the eigenfunctions of \( \hat{H} \).</p>
-
-<p>These operators commute meaning that</p>
-$$
-\hat{Q}\frac{1}{\left(\omega-\hat{H}_0\right)}\hat{Q}=\hat{Q}\frac{1}{\left(\omega-\hat{H}_0\right)}=\frac{\hat{Q}}{\left(\omega-\hat{H}_0\right)}.
-$$
-
-<p>With these definitions we can in turn define the wave function as </p>
-$$
-\vert \Psi_0\rangle=\vert \Phi_0\rangle+\frac{\hat{Q}}{\omega-\hat{H}_0}\left(\omega-E+\hat{H}_I\right)\vert \Psi_0\rangle.
-$$
-
-<p>This equation is again nothing but a formal rewrite of Schr\"odinger's equation
-and does not represent a practical calculational scheme.  
-It is a non-linear equation in two unknown quantities, the energy \( E \) and the exact
-wave function \( \vert \Psi_0\rangle \). We can however start with a guess for \( \vert \Psi_0\rangle \) on the right hand side of the last equation.
-</p>
-
-<p> The most common choice is to start with the function which is expected to exhibit the largest overlap with the wave function we are searching after, namely \( \vert \Phi_0\rangle \). This can again be inserted in the solution for \( \vert \Psi_0\rangle \) in an iterative fashion and if we continue along these lines we end up with</p>
-$$
-\vert \Psi_0\rangle=\sum_{i=0}^{\infty}\left\{\frac{\hat{Q}}{\omega-\hat{H}_0}\left(\omega-E+\hat{H}_I\right)\right\}^i\vert \Phi_0\rangle, 
-$$
-
-<p>for the wave function and</p>
-$$
-\Delta E=\sum_{i=0}^{\infty}\langle \Phi_0\vert \hat{H}_I\left\{\frac{\hat{Q}}{\omega-\hat{H}_0}\left(\omega-E+\hat{H}_I\right)\right\}^i\vert \Phi_0\rangle, 
-$$
-
-<p>which is now  a perturbative expansion of the exact energy in terms of the interaction
-\( \hat{H}_I \) and the unperturbed wave function \( \vert \Psi_0\rangle \).
-</p>
-
-<p>In our equations for \( \vert \Psi_0\rangle \) and \( \Delta E \) in terms of the unperturbed
-solutions \( \vert \Phi_i\rangle \)  we have still an undetermined parameter \( \omega \)
-and a dependecy on the exact energy \( E \). Not much has been gained thus from a practical computational point of view. 
-</p>
-
-<p>In Brilluoin-Wigner perturbation theory it is customary to set \( \omega=E \). This results in the following perturbative expansion for the energy \( \Delta E \)</p>
-$$
-\Delta E=\sum_{i=0}^{\infty}\langle \Phi_0\vert \hat{H}_I\left\{\frac{\hat{Q}}{\omega-\hat{H}_0}\left(\omega-E+\hat{H}_I\right)\right\}^i\vert \Phi_0\rangle=
-$$
-
-$$
-\langle \Phi_0\vert \left(\hat{H}_I+\hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I+
-\hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I+\dots\right)\vert \Phi_0\rangle. 
-$$
-
-
-$$
-\Delta E=\sum_{i=0}^{\infty}\langle \Phi_0\vert \hat{H}_I\left\{\frac{\hat{Q}}{\omega-\hat{H}_0}\left(\omega-E+\hat{H}_I\right)\right\}^i\vert \Phi_0\rangle=$$
-
-$$
-\langle \Phi_0\vert \left(\hat{H}_I+\hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I+
-\hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I+\dots\right)\vert \Phi_0\rangle. 
-$$
-
-<p>This expression depends however on the exact energy \( E \) and is again not very convenient from a practical point of view. It can obviously be solved iteratively, by starting with a guess for  \( E \) and then solve till some kind of self-consistency criterion has been reached. </p>
-
-<p>Actually, the above expression is nothing but a rewrite again of the full Schr\"odinger equation. </p>
-
-<p>Defining \( e=E-\hat{H}_0 \) and recalling that \( \hat{H}_0 \) commutes with 
-\( \hat{Q} \) by construction and that \( \hat{Q} \) is an idempotent operator
-\( \hat{Q}^2=\hat{Q} \). 
-Using this equation in the above expansion for \( \Delta E \) we can write the denominator 
-</p>
-$$
-\hat{Q}\frac{1}{\hat{e}-\hat{Q}\hat{H}_I\hat{Q}}=
-$$
-
-$$
-\hat{Q}\left[\frac{1}{\hat{e}}+\frac{1}{\hat{e}}\hat{Q}\hat{H}_I\hat{Q}
-\frac{1}{\hat{e}}+\frac{1}{\hat{e}}\hat{Q}\hat{H}_I\hat{Q}
-\frac{1}{\hat{e}}\hat{Q}\hat{H}_I\hat{Q}\frac{1}{\hat{e}}+\dots\right]\hat{Q}.
-$$
-
-<p>Inserted in the expression for \( \Delta E \) leads to </p>
-$$
-\Delta E=
-\langle \Phi_0\vert \hat{H}_I+\hat{H}_I\hat{Q}\frac{1}{E-\hat{H}_0-\hat{Q}\hat{H}_I\hat{Q}}\hat{Q}\hat{H}_I\vert \Phi_0\rangle. 
-$$
-
-<p>In RS perturbation theory we set \( \omega = W_0 \) and obtain the following expression for the energy difference</p>
-$$
-\Delta E=\sum_{i=0}^{\infty}\langle \Phi_0\vert \hat{H}_I\left\{\frac{\hat{Q}}{W_0-\hat{H}_0}\left(\hat{H}_I-\Delta E\right)\right\}^i\vert \Phi_0\rangle=
-$$
-
-$$
-\langle \Phi_0\vert \left(\hat{H}_I+\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}(\hat{H}_I-\Delta E)+
-\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}(\hat{H}_I-\Delta E)\frac{\hat{Q}}{W_0-\hat{H}_0}(\hat{H}_I-\Delta E)+\dots\right)\vert \Phi_0\rangle.
-$$
-
-<p>Recalling that \( \hat{Q} \) commutes with \( \hat{H_0} \) and since \( \Delta E \) is a constant we obtain that</p>
-$$
-\hat{Q}\Delta E\vert \Phi_0\rangle = \hat{Q}\Delta E\vert \hat{Q}\Phi_0\rangle = 0.
-$$
-
-<p>Inserting this results in the expression for the energy results in</p>
-$$
-\Delta E=\langle \Phi_0\vert \left(\hat{H}_I+\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I+
-\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}(\hat{H}_I-\Delta E)\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I+\dots\right)\vert \Phi_0\rangle.
-$$
-
-<p>We can now this expression in terms of a perturbative expression in terms
-of \( \hat{H}_I \) where we iterate the last expression in terms of \( \Delta E \)
-</p>
-$$
-\Delta E=\sum_{i=1}^{\infty}\Delta E^{(i)}.
-$$
-
-<p>We get the following expression for \( \Delta E^{(i)} \)</p>
-$$
-\Delta E^{(1)}=\langle \Phi_0\vert \hat{H}_I\vert \Phi_0\rangle,
-$$
-
-<p>which is just the contribution to first order in perturbation theory,</p>
-$$
-\Delta E^{(2)}=\langle\Phi_0\vert \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\vert \Phi_0\rangle, 
-$$
-
-<p>which is the contribution to second order.</p>
-
-$$
-\Delta E^{(3)}=\langle \Phi_0\vert \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\Phi_0\rangle-
-\langle\Phi_0\vert \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\langle \Phi_0\vert \hat{H}_I\vert \Phi_0\rangle\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\vert \Phi_0\rangle,
-$$
-
-<p>being the third-order contribution. </p>
-<h2 id="interpreting-the-correlation-energy-and-the-wave-operator">Interpreting the correlation energy and the wave operator </h2>
-
-<p>In the shell-model lectures we showed that we could rewrite the exact state function for say the ground state, as a linear expansion in terms of all possible Slater determinants. That is, we 
-define the ansatz for the ground state as 
-</p>
-$$
-|\Phi_0\rangle = \left(\prod_{i\le F}\hat{a}_{i}^{\dagger}\right)|0\rangle,
-$$
-
-<p>where the index \( i \) defines different single-particle states up to the Fermi level. We have assumed that we have \( N \) fermions. 
-A given one-particle-one-hole (\( 1p1h \)) state can be written as
-</p>
-$$
-|\Phi_i^a\rangle = \hat{a}_{a}^{\dagger}\hat{a}_i|\Phi_0\rangle,
-$$
-
-<p>while a \( 2p2h \) state can be written as</p>
-$$
-|\Phi_{ij}^{ab}\rangle = \hat{a}_{a}^{\dagger}\hat{a}_{b}^{\dagger}\hat{a}_j\hat{a}_i|\Phi_0\rangle,
-$$
-
-<p>and a general \( ApAh \) state as </p>
-$$
-|\Phi_{ijk\dots}^{abc\dots}\rangle = \hat{a}_{a}^{\dagger}\hat{a}_{b}^{\dagger}\hat{a}_{c}^{\dagger}\dots\hat{a}_k\hat{a}_j\hat{a}_i|\Phi_0\rangle.
-$$
-
-<p>We use letters \( ijkl\dots \) for states below the Fermi level and \( abcd\dots \) for states above the Fermi level. A general single-particle state is given by letters \( pqrs\dots \).</p>
-
-<p>We can then expand our exact state function for the ground state 
-as
-</p>
-$$
-|\Psi_0\rangle=C_0|\Phi_0\rangle+\sum_{ai}C_i^a|\Phi_i^a\rangle+\sum_{abij}C_{ij}^{ab}|\Phi_{ij}^{ab}\rangle+\dots
-=(C_0+\hat{C})|\Phi_0\rangle,
-$$
-
-<p>where we have introduced the so-called correlation operator </p>
-$$
-\hat{C}=\sum_{ai}C_i^a\hat{a}_{a}^{\dagger}\hat{a}_i  +\sum_{abij}C_{ij}^{ab}\hat{a}_{a}^{\dagger}\hat{a}_{b}^{\dagger}\hat{a}_j\hat{a}_i+\dots
-$$
-
-<p>Since the normalization of \( \Psi_0 \) is at our disposal and since \( C_0 \) is by hypothesis non-zero, we may arbitrarily set \( C_0=1 \) with 
-corresponding proportional changes in all other coefficients. Using this so-called intermediate normalization we have
-</p>
-$$
-\langle \Psi_0 | \Phi_0 \rangle = \langle \Phi_0 | \Phi_0 \rangle = 1, 
-$$
-
-<p>resulting in </p>
-$$
-|\Psi_0\rangle=(1+\hat{C})|\Phi_0\rangle.
-$$
-
-<p>In a shell-model calculation, the unknown coefficients in \( \hat{C} \) are the 
-eigenvectors which result from the diagonalization of the Hamiltonian matrix.
-</p>
-
-<p>How can we use perturbation theory to determine the same coefficients? Let us study the contributions to second order in the interaction, namely</p>
-$$
-\Delta E^{(2)}=\langle\Phi_0\vert \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\vert \Phi_0\rangle.
-$$
-
-<p>The intermediate states given by \( \hat{Q} \) can at most be of a \( 2p-2h \) nature if we have a two-body Hamiltonian. This means that second order in the perturbation theory can have \( 1p-1h \) and \( 2p-2h \) at most as intermediate states. When we diagonalize, these contributions are included to infinite order. This means that higher-orders in perturbation theory bring in more complicated correlations. </p>
-
-<p>If we limit the attention to a Hartree-Fock basis, then we have that
-\( \langle\Phi_0\vert \hat{H}_I \vert 2p-2h\rangle \) is the only contribution and the contribution to the energy reduces to
-</p>
-$$
-\Delta E^{(2)}=\frac{1}{4}\sum_{abij}\langle ij\vert \hat{v}\vert ab\rangle \frac{\langle ab\vert \hat{v}\vert ij\rangle}{\epsilon_i+\epsilon_j-\epsilon_a-\epsilon_b}.
-$$
-
-<p>If we compare this to the correlation energy obtained from full configuration interaction theory with a Hartree-Fock basis, we found that</p>
-$$
-E-E_0 =\Delta E=
-\sum_{abij}\langle ij | \hat{v}| ab \rangle C_{ij}^{ab},
-$$
-
-<p>where the energy \( E_0 \) is the reference energy and \( \Delta E \) defines the so-called correlation energy.</p>
-
-<p>We see that if we set</p>
-$$
-C_{ij}^{ab} =\frac{1}{4}\frac{\langle ab \vert \hat{v} \vert ij \rangle}{\epsilon_i+\epsilon_j-\epsilon_a-\epsilon_b},
-$$
-
-<p>we have a perfect agreement between FCI and MBPT. However, FCI includes such \( 2p-2h \) correlations to infinite order. In order to make a meaningful comparison we would at least need to sum such correlations to infinite order in perturbation theory. </p>
-
-<p>Summing up, we can see that</p>
-<ul>
-<li> MBPT introduces order-by-order specific correlations and we make comparisons with exact calculations like FCI</li>
-<li> At every order, we can calculate all contributions since they are well-known and either tabulated or calculated on the fly.</li>
-<li> MBPT is a non-variational theory and there is no guarantee that higher orders will improve the convergence.</li> 
-<li> However, since FCI calculations are limited by the size of the Hamiltonian matrices to diagonalize (today's most efficient codes can attach dimensionalities of ten billion basis states, MBPT can function as an approximative method which gives a straightforward (but tedious) calculation recipe.</li> 
-<li> MBPT has been widely used to compute effective interactions for the nuclear shell-model.</li>
-<li> But there are better methods which sum to infinite order important correlations. Coupled cluster theory is one of these methods.</li> 
-</ul>
 <!-- ------------------- end of main content --------------- -->
 <center style="font-size:80%">
 <!-- copyright --> &copy; 1999-2022, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
