@@ -93,14 +93,10 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Thursday:
     - Repetition  of derivation of Hartree-Fock theory
     - Stability of Hartree-Fock theory and Thouless theorem
-    - "Video of lecture":"https://youtu.be/"
   - Friday:
     - Work on first midterm
 - Lecture Material: Lecture slides week 41, handwritten notes and Szabo and Ostlund, chapter 3
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf
-
-https://youtu.be/WfSTJIUMcFM
-
 
 
 ### Week 42, October 17-21, 2022
@@ -109,7 +105,7 @@ https://youtu.be/WfSTJIUMcFM
     - Repetition  of derivation of Hartree-Fock theory
     - Discussion of implementation of Hartree-Fock code
     - Stability of Hartree-Fock theory and Thouless theorem
-    - "Video of lecture":"https://youtu.be/"
+    - Video of lecture https://youtu.be/WfSTJIUMcFM
   o Friday: 
     * Work on first midterm
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3
