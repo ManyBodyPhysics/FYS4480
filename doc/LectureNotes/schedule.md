@@ -112,3 +112,18 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf
 
+
+
+
+###  Week 43, October 24-28, 2022
+- Topics to be covered
+  - Thursday:
+    - Linking FCI and Hartree-Fock theory with many-body perturbation theory
+    - Time-independent perturbation theory
+    - Video of lecture https://youtu.be/9B2ghXUnPQg
+  - Friday: 
+    - Time-dependent perturbation theory and diagrammatic representation
+    - Video of lecture https://youtu.be/
+- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
+- Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek43.pdf
+
