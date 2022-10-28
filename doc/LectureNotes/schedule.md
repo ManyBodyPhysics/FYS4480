@@ -123,7 +123,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Video of lecture https://youtu.be/9B2ghXUnPQg
   - Friday: 
     - Time-dependent perturbation theory and diagrammatic representation
-    - Video of lecture https://youtu.be/
+    - Video of lecture https://youtu.be/9TyfQsnTfyY
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek43.pdf
 
