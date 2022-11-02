@@ -225,3 +225,15 @@ In particular we recommend the texts by
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek43.pdf
 
+
+###  Week 44, October 31-November 3, 2022
+- Topics to be covered
+  - Thursday:
+    - Time-independent perturbation theory and diagrammatic representation
+    - Examples of contributions to perturbation theory
+  - Friday: 
+    - Time-dependent perturbation theory and diagrammatic representation
+    - Discussion of the Heisenberg, Schroedinger and Interaction pictures
+- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
+- Eight exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek44.pdf
+
