@@ -133,6 +133,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Thursday:
     - Time-independent perturbation theory and diagrammatic representation
     - Examples of contributions to perturbation theory
+    - Video of lecture at https://youtu.be/_1NfvhoeumA
   - Friday:
     - Time-dependent perturbation theory and diagrammatic representation
     - Discussion of the	Heisenberg, Schroedinger and Interaction pictures
