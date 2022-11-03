@@ -231,6 +231,7 @@ In particular we recommend the texts by
   - Thursday:
     - Time-independent perturbation theory and diagrammatic representation
     - Examples of contributions to perturbation theory
+    - Video of lecture https://youtu.be/_1NfvhoeumA
   - Friday: 
     - Time-dependent perturbation theory and diagrammatic representation
     - Discussion of the Heisenberg, Schroedinger and Interaction pictures
