@@ -137,5 +137,6 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Friday:
     - Time-dependent perturbation theory and diagrammatic representation
     - Discussion of the	Heisenberg, Schroedinger and Interaction pictures
+    - Video of lecture at https://youtu.be/tRyLceaRJRk
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
 - Eight exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek44.pdf
