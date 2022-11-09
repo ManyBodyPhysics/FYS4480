@@ -140,3 +140,15 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Video of lecture at https://youtu.be/tRyLceaRJRk
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
 - Eight exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek44.pdf
+
+###  Week 45, November 7-11, 2022
+- Topics to be covered
+  - Thursday:
+    - Adiabatic	hypothesis and linked diagram theorem
+    - Examples of diagrams and discussion of Pauli violating diagrams
+    - Video of lecture	
+  - Friday:
+    - Summary of perturbation theory and start discussion of Coupled Cluster theory
+    - Video of lecture at
+- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
+- Ninth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek45.pdf
