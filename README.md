@@ -220,7 +220,7 @@ In particular we recommend the texts by
     - Time-independent perturbation theory
     - Video of lecture https://youtu.be/9B2ghXUnPQg
   - Friday: 
-    - Time-dependent perturbation theory and diagrammatic representation
+    - Time-independent perturbation theory and diagrammatic representation
     - Video of lecture https://youtu.be/9TyfQsnTfyY
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek43.pdf
@@ -246,6 +246,30 @@ In particular we recommend the texts by
     - Examples of diagrams and discussion of Pauli violating diagrams 
     - Summary of perturbation theory and start discussion of Coupled Cluster theory
     - Video of lecture at https://youtu.be/wYBFXPNk0Io
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
+- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapters 4-6
 - Ninth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek45.pdf
+
+###  Week 46, November 14-18, 2022
+- Topics to be covered
+  - Thursday:
+    - Summary many-body perturbation theory and discussion of Coupled Cluster theory
+    - Video of lecture at https://youtu.be/
+  - Friday:
+    - Coupled Cluster theory with doubles excitations
+    - Diagrammatic representation of Coupled Cluster theory
+    - Video of lecture at https://youtu.be/
+- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 9
+- Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
+
+###  Week 47, November 21-25, 2022
+- Topics to be covered
+  - Thursday:
+    - Coupled Cluster theory, singles and doubles excitations
+    - Video of lecture at https://youtu.be/
+  - Friday:
+    - Coupled Cluster theory and summary of course
+    - Video of lecture at https://youtu.be/
+- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapters 9 and 10
+- Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
+
 
