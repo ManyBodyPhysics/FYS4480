@@ -1,0 +1,701 @@
+ 
+
+% Slides for FYS4480
+
+
+\documentclass[compress]{beamer}
+
+
+% Try the class options [notes], [notes=only], [trans], [handout],
+% [red], [compress], [draft], [class=article] and see what happens!
+
+% For a green structure color use:
+%\colorlet{structure}{green!50!black}
+
+\mode<article> % only for the article version
+{
+  \usepackage{beamerbasearticle}
+  \usepackage{fullpage}
+  \usepackage{hyperref}
+}
+
+\beamertemplateshadingbackground{red!10}{blue!10}
+
+%\beamertemplateshadingbackground{red!10}{blue!10}
+\beamertemplatetransparentcovereddynamic
+%\usetheme{Hannover}
+
+\setbeamertemplate{footline}[page number]
+
+
+%\usepackage{beamerthemeshadow}
+
+%\usepackage{beamerthemeshadow}
+\usepackage{ucs}
+
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{graphicx}
+\usepackage{simplewick}
+\usepackage{amsmath,amssymb}
+\usepackage[latin1]{inputenc}
+\usepackage{colortbl}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{shadow}
+\lstset{language=c++}
+\lstset{alsolanguage=[90]Fortran}
+\lstset{basicstyle=\small}
+%\lstset{backgroundcolor=\color{white}}
+%\lstset{frame=single}
+\lstset{stringstyle=\ttfamily}
+%\lstset{keywordstyle=\color{red}\bfseries}
+%\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+\usepackage{times}
+
+% Use some nice templates
+\beamertemplatetransparentcovereddynamic
+
+% own commands
+\newcommand*{\cre}[1]{a^{\dagger}_{#1}}
+\newcommand*{\an}[1]{a_{#1}}
+\newcommand*{\crequasi}[1]{b^{\dagger}_{#1}}
+\newcommand*{\anquasi}[1]{b_{#1}}
+\newcommand*{\for}[3]{\langle#1|#2|#3\rangle}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand*{\kpr}[1]{\left\{#1\right\}}
+\newcommand*{\ket}[1]{|#1\rangle}
+\newcommand*{\bra}[1]{\langle#1|}
+%\newcommand{\bra}[1]{\left\langle #1 \right|}
+%\newcommand{\ket}[1]{\left| # \right\rangle}
+\newcommand{\braket}[2]{\left\langle #1 \right| #2 \right\rangle}
+\newcommand{\OP}[1]{{\bf\widehat{#1}}}
+\newcommand{\matr}[1]{{\bf \cal{#1}}}
+\newcommand{\beN}{\begin{equation*}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\beaN}{\begin{eqnarray*}}
+\newcommand{\eeN}{\end{equation*}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\eeaN}{\end{eqnarray*}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\bsubeqs}{\begin{subequations}}
+\newcommand*{\fpr}[1]{\left[#1\right]}
+\newcommand{\esubeqs}{\end{subequations}}
+\newcommand*{\pr}[1]{\left(#1\right)}
+\newcommand{\element}[3]
+        {\bra{#1}#2\ket{#3}}
+
+\newcommand{\md}{\mathrm{d}}
+\newcommand{\e}[1]{\times 10^{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\gvec}[1]{\boldsymbol{#1}}
+\newcommand{\dr}{\, \mathrm d^3 \vec r}
+\newcommand{\dk}{\, \mathrm d^3 \vec k}
+\def\psii{\psi_{i}}
+\def\psij{\psi_{j}}
+\def\psiij{\psi_{ij}}
+\def\psisq{\psi^2}
+\def\psisqex{\langle \psi^2 \rangle}
+\def\psiR{\psi({\bf R})}
+\def\psiRk{\psi({\bf R}_k)}
+\def\psiiRk{\psi_{i}(\Rveck)}
+\def\psijRk{\psi_{j}(\Rveck)}
+\def\psiijRk{\psi_{ij}(\Rveck)}
+\def\ranglep{\rangle_{\psisq}}
+\def\Hpsibypsi{{H \psi \over \psi}}
+\def\Hpsiibypsi{{H \psii \over \psi}}
+\def\HmEpsibypsi{{(H-E) \psi \over \psi}}
+\def\HmEpsiibypsi{{(H-E) \psii \over \psi}}
+\def\HmEpsijbypsi{{(H-E) \psij \over \psi}}
+\def\psiibypsi{{\psii \over \psi}}
+\def\psijbypsi{{\psij \over \psi}}
+\def\psiijbypsi{{\psiij \over \psi}}
+\def\psiibypsiRk{{\psii(\Rveck) \over \psi(\Rveck)}}
+\def\psijbypsiRk{{\psij(\Rveck) \over \psi(\Rveck)}}
+\def\psiijbypsiRk{{\psiij(\Rveck) \over \psi(\Rveck)}}
+\def\EL{E_{\rm L}}
+\def\ELi{E_{{\rm L},i}}
+\def\ELj{E_{{\rm L},j}}
+\def\ELRk{E_{\rm L}(\Rveck)}
+\def\ELiRk{E_{{\rm L},i}(\Rveck)}
+\def\ELjRk{E_{{\rm L},j}(\Rveck)}
+\def\Ebar{\bar{E}}
+\def\Ei{\Ebar_{i}}
+\def\Ej{\Ebar_{j}}
+\def\Ebar{\bar{E}}
+\def\Rvec{{\bf R}}
+\def\Rveck{{\bf R}_k}
+\def\Rvecl{{\bf R}_l}
+\def\NMC{N_{\rm MC}}
+\def\sumMC{\sum_{k=1}^{\NMC}}
+\def\MC{Monte Carlo}
+\def\adiag{a_{\rm diag}}
+\def\tcorr{T_{\rm corr}}
+\def\intR{{\int {\rm d}^{3N}\!\!R\;}}
+
+\def\ul{\underline}
+\def\beq{\begin{eqnarray}}
+\def\eeq{\end{eqnarray}}
+
+\newcommand{\eqbrace}[4]{\left\{
+\begin{array}{ll}
+#1 & #2 \\[0.5cm]
+#3 & #4
+\end{array}\right.}
+\newcommand{\eqbraced}[4]{\left\{
+\begin{array}{ll}
+#1 & #2 \\[0.5cm]
+#3 & #4
+\end{array}\right\}}
+\newcommand{\eqbracetriple}[6]{\left\{
+\begin{array}{ll}
+#1 & #2 \\
+#3 & #4 \\
+#5 & #6
+\end{array}\right.}
+\newcommand{\eqbracedtriple}[6]{\left\{
+\begin{array}{ll}
+#1 & #2 \\
+#3 & #4 \\
+#5 & #6
+\end{array}\right\}}
+
+\newcommand{\mybox}[3]{\mbox{\makebox[#1][#2]{$#3$}}}
+\newcommand{\myframedbox}[3]{\mbox{\framebox[#1][#2]{$#3$}}}
+
+%% Infinitesimal (and double infinitesimal), useful at end of integrals
+%\newcommand{\ud}[1]{\mathrm d#1}
+\newcommand{\ud}[1]{d#1}
+\newcommand{\udd}[1]{d^2\!#1}
+
+%% Operators, algebraic matrices, algebraic vectors
+
+%% Operator (hat, bold or bold symbol, whichever you like best):
+\newcommand{\op}[1]{\widehat{#1}}
+%\newcommand{\op}[1]{\mathbf{#1}}
+%\newcommand{\op}[1]{\boldsymbol{#1}}
+
+%% Vector:
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+
+%% Matrix symbol:
+%\newcommand{\matr}[1]{\boldsymbol{#1}}
+%\newcommand{\bb}[1]{\mathbb{#1}}
+
+%% Determinant symbol:
+\renewcommand{\det}[1]{|#1|}
+
+%% Means (expectation values) of varius sizes
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\newcommand{\meanb}[1]{\big\langle #1 \big\rangle}
+\newcommand{\meanbb}[1]{\Big\langle #1 \Big\rangle}
+\newcommand{\meanbbb}[1]{\bigg\langle #1 \bigg\rangle}
+\newcommand{\meanbbbb}[1]{\Bigg\langle #1 \Bigg\rangle}
+
+%% Shorthands for text set in roman font
+\newcommand{\prob}[0]{\mathrm{Prob}} %probability
+\newcommand{\cov}[0]{\mathrm{Cov}}   %covariance
+\newcommand{\var}[0]{\mathrm{Var}}   %variancd
+
+%% Big-O (typically for specifying the speed scaling of an algorithm)
+\newcommand{\bigO}{\mathcal{O}}
+
+%% Real value of a complex number
+\newcommand{\real}[1]{\mathrm{Re}\!\left\{#1\right\}}
+
+%% Quantum mechanical state vectors and matrix elements (of different sizes)
+%\newcommand{\bra}[1]{\langle #1 |}
+\newcommand{\brab}[1]{\big\langle #1 \big|}
+\newcommand{\brabb}[1]{\Big\langle #1 \Big|}
+\newcommand{\brabbb}[1]{\bigg\langle #1 \bigg|}
+\newcommand{\brabbbb}[1]{\Bigg\langle #1 \Bigg|}
+%\newcommand{\ket}[1]{| #1 \rangle}
+\newcommand{\ketb}[1]{\big| #1 \big\rangle}
+\newcommand{\ketbb}[1]{\Big| #1 \Big\rangle}
+\newcommand{\ketbbb}[1]{\bigg| #1 \bigg\rangle}
+\newcommand{\ketbbbb}[1]{\Bigg| #1 \Bigg\rangle}
+%\newcommand{\overlap}[2]{\langle #1 | #2 \rangle}
+\newcommand{\overlapb}[2]{\big\langle #1 \big| #2 \big\rangle}
+\newcommand{\overlapbb}[2]{\Big\langle #1 \Big| #2 \Big\rangle}
+\newcommand{\overlapbbb}[2]{\bigg\langle #1 \bigg| #2 \bigg\rangle}
+\newcommand{\overlapbbbb}[2]{\Bigg\langle #1 \Bigg| #2 \Bigg\rangle}
+\newcommand{\bracket}[3]{\langle #1 | #2 | #3 \rangle}
+\newcommand{\bracketb}[3]{\big\langle #1 \big| #2 \big| #3 \big\rangle}
+\newcommand{\bracketbb}[3]{\Big\langle #1 \Big| #2 \Big| #3 \Big\rangle}
+\newcommand{\bracketbbb}[3]{\bigg\langle #1 \bigg| #2 \bigg| #3 \bigg\rangle}
+\newcommand{\bracketbbbb}[3]{\Bigg\langle #1 \Bigg| #2 \Bigg| #3 \Bigg\rangle}
+\newcommand{\projection}[2]
+{| #1 \rangle \langle  #2 |}
+\newcommand{\projectionb}[2]
+{\big| #1 \big\rangle \big\langle #2 \big|}
+\newcommand{\projectionbb}[2]
+{ \Big| #1 \Big\rangle \Big\langle #2 \Big|}
+\newcommand{\projectionbbb}[2]
+{ \bigg| #1 \bigg\rangle \bigg\langle #2 \bigg|}
+\newcommand{\projectionbbbb}[2]
+{ \Bigg| #1 \Bigg\rangle \Bigg\langle #2 \Bigg|}
+
+
+%% If you run out of greek symbols, here's another one you haven't
+%% thought of:
+\newcommand{\Feta}{\hspace{0.6ex}\begin{turn}{180}
+        {\raisebox{-\height}{\parbox[c]{1mm}{F}}}\end{turn}}
+\newcommand{\feta}{\hspace{-1.6ex}\begin{turn}{180}
+        {\raisebox{-\height}{\parbox[b]{4mm}{f}}}\end{turn}}
+
+
+
+
+\title[FYS-KJM4480]{Slides from FYS-KJM4480/9480 Lectures}
+\author[Quantum mechanics of many-particle systems]{%
+  Morten Hjorth-Jensen}
+\institute[ORNL, University of Oslo and MSU]{
+  Department of Physics and Center of Mathematics for Computing in Science Education\\
+  University of Oslo, N-0316 Oslo, Norway and\\
+  Department of Physics and Astronomy and Facility for Rare Isotope Beams, Michigan State University, East Lansing, MI 48824, USA }
+
+  
+\date[UiO]{Fall  2022}
+\subject{Quantum mechanics of many-particle systems}
+
+\begin{document}
+\include{commands}
+
+
+%\pagenumbering{plain}
+
+\frame{\titlepage}
+
+
+\section{Coupled Cluster theory}
+
+
+%\include{src/slide_mb_problemstatement}
+\begin{frame}[fragile]
+    \frametitle{Notation}
+    \framesubtitle{Second quantization}
+    \begin{block}{Antisymmetrized wavefunction}
+    \begin{align*}
+        \Phi_{AS}(\alpha_1, \dots, \alpha_A; \mathbf{x}_1, \dots \mathbf{x}_A) &= 
+            \frac{1}{\sqrt{A}} \sum_{\hat{P}} (-1)^P \hat{P} \prod_{i=1}^A \psi_{\alpha_i}(\mathbf{x}_i) \\
+        &\equiv \ket{\alpha_1 \dots \alpha_A} \\
+        &= a_{\alpha_1}^\dagger \dots a_{\alpha_A}^\dagger \ket{0}
+    \end{align*}
+    \end{block}
+    \begin{align*}
+        a_p^\dagger\ket{0} = \ket{p}, \quad a_p \ket{q} = \delta_{pq}\ket{0}
+    \end{align*}
+    \begin{align*}
+        \delta_{pq} &= \left\{a_p, a_q^\dagger \right\} \\
+        0 = \left\{a_p^\dagger, a_q \right\} &= \left\{a_p, a_q \right\} = \left\{a_p^\dagger, a_q^\dagger \right\}
+    \end{align*}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Notation}
+    \framesubtitle{Second quantization, quasiparticles}
+    \begin{block}{Reference state}
+        \begin{equation*}
+            \ket{\Phi_0} = \ket{\alpha_1 \dots \alpha_A}, \quad \alpha_1, \dots, \alpha_A \leq \alpha_F
+        \end{equation*}
+    \end{block}
+        
+    \begin{block}{Creation and annihilation operators}
+    \begin{align*}
+        \left\{a_p^\dagger, a_q \right\}&= \delta_{pq}, p, q \leq \alpha_F & 
+            \left\{a_p, a_q^\dagger \right\} &= \delta_{pq}, p, q > \alpha_F
+    \end{align*}
+        \begin{center}
+        $i,j,\ldots \leq \alpha_F, \quad a,b,\ldots > \alpha_F, \quad p,q, \ldots - \textrm{any}$
+        \end{center}
+    \begin{align*}
+        a_i\ket{\Phi_0} &= \ket{\Phi_i} & a_a^\dagger\ket{\Phi_0} &= \ket{\Phi^a} \\
+        a_i^\dagger\ket{\Phi_0} &= 0 & a_a\ket{\Phi_0} &= 0
+    \end{align*}
+    \end{block}
+            
+\end{frame}
+        
+\begin{frame}[fragile]
+    \frametitle{Notation}
+    \framesubtitle{Second quantization, operators}
+        \small
+    \begin{block}{Onebody operator}
+        \begin{equation*}
+            \hat{F} = \sum_{pq} \element{p}{\hat{f}}{q} a_p^\dagger a_q
+        \end{equation*}
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Notation}
+    \framesubtitle{Second quantization, operators}
+        \small
+    \begin{block}{Twobody operator}
+        \begin{align*}
+            \hat{V} &= \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs}_{AS} a_p^\dagger a_q^\dagger a_s a_r
+            \equiv \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} a_p^\dagger a_q^\dagger a_s a_r \\
+        \end{align*}
+        where we have defined the antisymmetric matrix elements
+        \begin{align*}
+            \element{pq}{\hat{v}}{rs}_{AS} &= \element{pq}{\hat{v}}{rs} - \element{pq}{\hat{v}}{sr}.
+        \end{align*}
+    \end{block}
+            
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{Notation}
+    \framesubtitle{Second quantization, operators}
+        \small
+    \begin{block}{Threebody operator}
+        \footnotesize
+        \begin{align*}
+            \hat{V_3} &= \frac{1}{36} \sum_{pqrstu} \element{pqr}{\hat{v}_3}{stu}_{AS} 
+                a_p^\dagger a_q^\dagger a_r^\dagger a_u a_t a_s
+            \equiv \frac{1}{36} \sum_{pqrstu} \element{pqr}{\hat{v}_3}{stu}
+                a_p^\dagger a_q^\dagger a_r^\dagger a_u a_t a_s
+        \end{align*}
+        \normalsize
+        where we have defined the antisymmetric matrix elements
+        \begin{align*}
+            \element{pqr}{\hat{v}_3}{stu}_{AS} &= \element{pqr}{\hat{v}_3}{stu} + \element{pqr}{\hat{v}_3}{tus} + \element{pqr}{\hat{v}_3}{ust} \\
+            & - \element{pqr}{\hat{v}_3}{sut} - \element{pqr}{\hat{v}_3}{tsu} - \element{pqr}{\hat{v}_3}{uts}.
+        \end{align*}
+    \end{block}
+        
+            
+\end{frame}
+        
+\begin{frame}[fragile]
+    \frametitle{Notation}
+    \framesubtitle{Second quantization, operators}
+    \normalsize
+    \begin{block}{Normal ordered operators}
+        \begin{equation*}
+            \left\{a_a a_b \ldots a_c^\dagger a_d^\dagger\right\} = 
+                (-1)^P a_c^\dagger a_d^\dagger \ldots a_a a_b
+        \end{equation*}
+    All creation operators to the left and all annihilation operators to the right times a factor determined by how many operators have been switched.
+    \end{block}
+        
+            
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Definition}
+    The normal ordered Hamiltonian is given by
+    \begin{align*}
+        \hat{H}_N &= 
+            \frac{1}{36} \sum_{\substack{
+                        pqr \\
+                        stu}}
+                 \element{pqr}{\hat{v}_3}{stu} 
+                    \normord{a^\dagger_p a^\dagger_q a^\dagger_r a_u a_t a_s} \nn
+        & \quad + 
+            \frac{1}{4} \sum_{pqrs} \bra{pq}\ket{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} 
+            + \sum_{pq} f_q^p \normord{a^\dagger_p a_q} \\
+        &= \hat{H}_3^N + \hat{V}_N + \hat{F}_N
+    \end{align*}
+    where
+    \begin{subequations}
+    \begin{align*}
+        \hat{F}_N &= \sum_{pq} f_q^p \normord{a^\dagger_p a_q} &
+        \hat{V}_N &= \frac{1}{4} \sum_{pqrs} \bra{pq}\ket{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} \\
+        && \hat{H}_3^N &= 
+                \frac{1}{36} \sum_{\substack{
+                            pqr \\
+                            stu}}
+                     \element{pqr}{\hat{v}_3}{stu} 
+                        \normord{a^\dagger_p a^\dagger_q a^\dagger_r a_u a_t a_s}
+    \end{align*}
+    \end{subequations}
+    \end{block}
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Definition}
+    The amplitudes are given by
+    \begin{subequations}
+    \begin{align*}
+        f_q^p &= \element{p}{\hat{h}_0}{q} + \sum_i \element{pi}{\hat{v}}{qi} 
+            + \frac{1}{2} \sum_{ij} \element{pij}{\hat{v}_3}{qij} \\
+        \bra{pq}\ket{rs} &= \element{pq}{\hat{v}}{rs} + \sum_i \element{pqi}{\hat{v}_3}{rsi},
+    \end{align*}
+    \end{subequations}
+    In relation to the Hamiltonian, $\hat{H}_N$ is given by
+    \begin{align*}
+        \hat{H}_N &= \hat{H} - E_0 \\
+        E_0 &= \element{\Phi_0}{\hat{H}}{\Phi_0} \\
+            &= \sum_i \element{i}{\hat{h}_0}{i}
+                + \frac{1}{2} \sum_{ij} \element{ij}{\hat{v}}{ij}
+                + \frac{1}{6} \sum_{ijk} \element{ijk}{\hat{v}_3}{ijk},
+    \end{align*}
+    where $E_0$ is the energy expectation value between reference states.
+    \end{block}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Derivation}
+    We start with the Hamiltonian
+    \begin{equation*}
+        \hat{H} = \hat{H}_0 + \hat{H}_I
+    \end{equation*}
+    where
+    \begin{subequations}
+        \begin{align*}
+        \hat{H}_0 &= \sum_{pq} \element{p}{\hat{h}_0}{q} a^\dagger_p a_q \\
+        \hat{H}_I &= \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} a^\dagger_p a^\dagger_q a_s  a_r \\
+        \hat{H}_3 &= \frac{1}{36} \sum_{\substack{
+                            pqr \\
+                            stu}}
+                     \element{pqr}{\hat{v}_3}{stu} a^\dagger_p a^\dagger_q a^\dagger_r a_u a_t a_s
+        \end{align*}
+    \end{subequations}
+
+    \end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Derivation, onebody part}
+    
+    \begin{equation*}
+        \hat{H}_0 = \sum_{pq} \element{p}{\hat{h}_0}{q} a^\dagger_p a_q
+    \end{equation*}
+
+    \begin{align*}
+        a^\dagger_p a_q &= \left\{a^\dagger_p a_q\right\} + \left\{ 
+    \contraction{}{a}{{}^{\dagger}_p}{a}
+    a^\dagger_p a_q
+    \right\} \nn
+        &= \left\{a^\dagger_p a_q\right\} + \delta_{pq\in i}
+    \end{align*}
+    \begin{align*}
+        \hat{H}_0 &= \sum_{pq} \element{p}{\hat{h}_0}{q} a^\dagger_p a_q \nn
+            &= \sum_{pq} \element{p}{\hat{h}_0}{q} \left\{a^\dagger_p a_q\right\} + 
+                \delta_{pq\in i} \sum_{pq} \element{p}{\hat{h}_0}{q} \nn
+            &= \sum_{pq} \element{p}{\hat{h}_0}{q} \left\{a^\dagger_p a_q\right\} +
+                \sum_i \element{i}{\hat{h}_0}{i}
+    \end{align*}
+
+
+
+    \end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \begin{block}{Derivation, onebody part}
+    A onebody part
+    \begin{equation*}
+            \hat{F}_N \Leftarrow \sum_{pq} \element{p}{\hat{h}_0}{q} \left\{a^\dagger_p a_q\right\}
+    \end{equation*}
+    and a scalar part
+    \begin{equation*}
+                E_0 \Leftarrow \sum_i \element{i}{\hat{h}_0}{i}
+    \end{equation*}
+
+
+
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Derivation, twobody part}
+    
+    \begin{equation*}
+        \hat{H}_I = \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} a^\dagger_p a^\dagger_q a_s  a_r
+    \end{equation*}
+
+\begin{align*}
+    a^\dagger_p a^\dagger_q a_s  a_r &= \pause
+        \normord{a^\dagger_p a^\dagger_q a_s  a_r} \nn
+        & \quad + \normord{
+            \contraction{a^\dagger_p}{a}{{}^\dagger_q}{a}
+            a^\dagger_p a^\dagger_q a_s  a_r}
+        + \normord{
+            \contraction{a^\dagger_p}{a}{{}^\dagger_q a_s}{a}
+            a^\dagger_p a^\dagger_q a_s  a_r}
+        + \normord{
+            \contraction{}{a}{{}^\dagger_p a^\dagger_q}{a}
+            a^\dagger_p a^\dagger_q a_s  a_r} \nn
+        & \quad + \normord{
+            \contraction{}{a}{{}^\dagger_p a^\dagger_q a_s}{a}
+            a^\dagger_p a^\dagger_q a_s  a_r}
+        + \normord{
+            \contraction[1.5ex]{}{a}{{}^\dagger_p a_q^\dagger a_s}{a}
+            \contraction{a^\dagger_p}{a}{{}^\dagger_q}{a}
+            a^\dagger_p a^\dagger_q a_s  a_r}
+        + \normord{
+            \contraction{}{a}{{}^\dagger_p a_q^\dagger}{a}
+            \contraction[1.5ex]{a^\dagger_p}{a}{{}^\dagger_q a_s}{a}
+            a^\dagger_p a^\dagger_q a_s  a_r} \nn
+    &= \normord{a^\dagger_p a^\dagger_q a_s  a_r} \nn
+        & \quad + \delta_{qs\in i} \normord{ a^\dagger_p a_r}
+        - \delta_{qr \in i} \normord{a^\dagger_p a_s}
+        - \delta_{ps \in i} \normord{a^\dagger_q a_r} \nn
+        & \quad + \delta_{pr \in i} \normord{a^\dagger_q a_s} 
+        + \delta_{pr \in i} \delta_{qs \in i} - \delta_{ps \in i} \delta_{qr \in i}
+\end{align*}
+
+
+    \end{block}
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Derivation, twobody part}
+    
+    \begin{align*}
+    \hat{H}_I &= \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} a^\dagger_p a^\dagger_q a_s  a_r \nn
+        &= \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} 
+        + \quad \frac{1}{4} \sum_{pqrs} \Bigl( 
+            \delta_{qs\in i} \element{pq}{\hat{v}}{rs} \normord{ a^\dagger_p a_r} \nn
+        & \quad - \delta_{qr \in i} \element{pq}{\hat{v}}{rs} \normord{a^\dagger_p a_s}
+            - \delta_{ps \in i}\element{pq}{\hat{v}}{rs} \normord{a^\dagger_q a_r} \nn
+        & \quad + \delta_{pr \in i} \element{pq}{\hat{v}}{rs} \normord{a^\dagger_q a_s}
+            + \delta_{pr \in i} \delta_{qs \in i}
+            - \delta_{ps \in i} \delta_{qr \in i} \Bigr) \nn
+    \end{align*}
+    \end{block}
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Derivation, twobody part}
+    
+    \begin{align*}
+        &= \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} \nn
+        & \quad + \frac{1}{4} \sum_{pqi} \Bigl(
+            \element{pi}{\hat{v}}{qi} - \element{pi}{\hat{v}}{iq} - \element{ip}{\hat{v}}{qi} + \element{ip}{\hat{v}}{iq}
+        \Bigr) \normord{a^\dagger_p a_q} \nn
+        & \quad + \frac{1}{4} \sum_{ij} \Bigl( 
+            \element{ij}{\hat{v}}{ij}
+            - \element{ij}{\hat{v}}{ji}
+        \Bigr) \nn
+        &= \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r}
+            + \sum_{pqi} \element{pi}{\hat{v}}{qi} \normord{a^\dagger_p a_q} 
+            + \frac{1}{2} \sum_{ij} \element{ij}{\hat{v}}{ij}
+    \end{align*}
+
+
+
+    \end{block}
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \begin{block}{Derivation, twobody part}
+    A twobody part
+    \begin{equation*}
+            \hat{V}_N \Leftarrow \frac{1}{4} \sum_{pqrs} \element{pq}{\hat{v}}{rs} 
+                \normord{a^\dagger_p a^\dagger_q a_s  a_r}
+    \end{equation*}
+    A onebody part
+    \begin{equation*}
+            \hat{F}_N \Leftarrow \sum_{pqi} \element{pi}{\hat{v}}{qi} \normord{a^\dagger_p a_q}
+    \end{equation*}
+    and a scalar part
+    \begin{equation*}
+                E_0 \Leftarrow \frac{1}{2} \sum_{ij} \element{ij}{\hat{v}}{ij}
+    \end{equation*}
+
+
+
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \begin{block}{Twobody Hamiltonian}
+    \begin{align*}
+        \hat{H}_N &= 
+            \frac{1}{4} \sum_{pqrs} \bra{pq}\hat{v}\ket{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} 
+            + \sum_{pq} f_q^p \normord{a^\dagger_p a_q} \\
+        &= \hat{V}_N + \hat{F}_N
+    \end{align*}
+    where
+    \begin{subequations}
+    \begin{align*}
+        \hat{F}_N &= \sum_{pq} f_q^p \normord{a^\dagger_p a_q} \\
+        \hat{V}_N &= \frac{1}{4} \sum_{pqrs} \bra{pq}\hat{v}\ket{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} \\
+    \end{align*}
+    \end{subequations}
+    \end{block}
+\end{frame}
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
+
+    \small
+    \begin{block}{Twobody Hamiltonian}
+    The amplitudes are given by
+    \begin{subequations}
+    \begin{align*}
+        f_q^p &= \element{p}{\hat{h}_0}{q} + \sum_i \element{pi}{\hat{v}}{qi} \\
+        \bra{pq}\ket{rs} &= \element{pq}{\hat{v}}{rs}
+    \end{align*}
+    \end{subequations}
+    In relation to the Hamiltonian, $\hat{H}_N$ is given by
+    \begin{align*}
+        \hat{H}_N &= \hat{H} - E_0 \\
+        E_0 &= \element{\Phi_0}{\hat{H}}{\Phi_0} \\
+            &= \sum_i \element{i}{\hat{h}_0}{i}
+                + \frac{1}{2} \sum_{ij} \element{ij}{\hat{v}}{ij}
+    \end{align*}
+    where $E_0$ is the energy expectation value between reference states.
+    \end{block}
+\end{frame}
+
+
+
+
+
+\include{src/ccsd_H2summary}
+\include{src/ccsd_H2diagrams}
+\include{src/ccsd_barh_expansion}
+\include{src/ccsd_factoring}
+\include{src/ccsd_algorithm}
+
+
+
+\end{document}
+
+
+
