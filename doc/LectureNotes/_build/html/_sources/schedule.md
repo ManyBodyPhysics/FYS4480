@@ -149,7 +149,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Examples of diagrams and discussion of Pauli violating diagrams 
     - Summary of perturbation theory and start discussion of Coupled Cluster theory
     - Video of lecture at https://youtu.be/wYBFXPNk0Io
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapters 4-6
+- Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week45/LatexSlides/slidesweek45.pdf, handwritten notes and Shavitt and Bartlett chapters 4-6
 - Ninth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek45.pdf
 
 ###  Week 46, November 14-18, 2022
@@ -161,7 +161,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Coupled Cluster theory with doubles excitations
     - Diagrammatic representation of Coupled Cluster theory
     - Video of lecture at https://youtu.be/
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 9
+- Lecture Material: Lecture slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week46/LatexSlides/slidesweek46.pdf, handwritten notes and Shavitt and Bartlett chapter 9
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
 
 ###  Week 47, November 21-25, 2022
@@ -172,7 +172,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Friday:
     - Coupled Cluster theory and summary of course
     - Video of lecture at https://youtu.be/
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapters 9 and 10
+- Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week47/LatexSlides/slidesweek47.pdf, handwritten notes and Shavitt and Bartlett chapters 9 and 10
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
 
 
