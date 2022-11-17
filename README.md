@@ -106,7 +106,8 @@ In particular we recommend the texts by
 
 ## Teaching schedule with links to material
 
-###  Week 34, August 22-26, 2022
+
+###  Week 34, August 22-26
 
 - Topics to be covered
   - Thursday: Introduction to many-body physics, notations and definitions
@@ -114,8 +115,8 @@ In particular we recommend the texts by
   - Friday: Discussion of notations and important properties in many-body physics
   - Video of lecture at https://www.youtube.com/watch?v=M14xN2BAULg
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
-- Recommended reading: Szabo and Ostlund, chapters 1 and 2, see https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Literature/szaboostlund.pdf
-###  Week 35, August 29-September 2, 2022
+
+###  Week 35, August 29-September 2
 
 - Topics to be covered
   - Thursday: Fermion state functions and computation of expectation values in first quantization
@@ -123,7 +124,6 @@ In particular we recommend the texts by
   - Friday: Introduction of second quantization
   - Video of lecture at https://youtu.be/Nbzp3wr0vyA
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
-- Recommended reading: Szabo and Ostlund, chapters 1 and 2, see https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Literature/szaboostlund.pdf
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek35.pdf
 
 ### Week 36, September 5-9
@@ -138,16 +138,14 @@ In particular we recommend the texts by
 
 
 
-
-### Week 37, September 12-16
+### Week 37, September 12-16 
 
 - Topics to be covered
   - Thursday: Exercises for week 37
   - Friday: Wrappping up Wick's theorem, Wick's generalized theorem and diagrammatic representation, Particle-hole formalism and definition of new reference state, normalordering of operators
-  - Video of lecture at https://youtu.be/LzLS_C7GMEM
+  - Video of lecture at	https://youtu.be/LzLS_C7GMEM
 - Lecture Material: These slides, handwritten notes and chapter 3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Third exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek37.pdf
-
 
 ### Week 38, September 19-23
 
@@ -159,7 +157,6 @@ In particular we recommend the texts by
 - Lecture Material: These slides, handwritten notes and chapter 3 and 4 of Shavitt and Bartlett covers most of the material discussed this week.
 - Fourth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek38.pdf
 
-
 ###  Week 39, September 26-30
 - Topics to be covered
   - Thursday:
@@ -170,7 +167,7 @@ In particular we recommend the texts by
   - Friday: 
     - Full configuration interaction (FCI) theory
     - Lipkin model as an example of applications of FCI theory
-    - Video of lecture https://youtu.be/6goQRQv62gY
+    - Video of lecture at https://youtu.be/6goQRQv62gY
 - Lecture Material: These slides, handwritten notes
 - Fifth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek39.pdf
 
@@ -179,10 +176,10 @@ In particular we recommend the texts by
   - Thursday:
     - Repetition  of Full Configuration Interaction theory
     - Start Hartree-Fock theory
-    - Video of lecture at https://youtu.be/6rnHjN99t5Q
-  - Friday:
+    - Video of lecture https://youtu.be/6rnHjN99t5Q
+  - Friday: 
     - Hartree-Fock theory and stability of equations
-    - Video of lecture at https://youtu.be/xpQstM6hxK8
+    - Video of lecture https://youtu.be/xpQstM6hxK8
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, sections 3.1-3.4
 - Sixth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek40.pdf
 
@@ -197,7 +194,6 @@ In particular we recommend the texts by
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf
 
 
-
 ### Week 42, October 17-21, 2022
 - Topics to be covered
   - Thursday:
@@ -206,10 +202,11 @@ In particular we recommend the texts by
     - Stability of Hartree-Fock theory and Thouless theorem
     - Video of lecture https://youtu.be/WfSTJIUMcFM
   o Friday:
-    * Video on Hartree-Fock stability https://youtu.be/cmDlRdnh2HI
+    * Video on stability of Hartree-Fock theory https://youtu.be/cmDlRdnh2HI
     * Work on first midterm
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf
+
 
 
 
@@ -220,10 +217,11 @@ In particular we recommend the texts by
     - Time-independent perturbation theory
     - Video of lecture https://youtu.be/9B2ghXUnPQg
   - Friday: 
-    - Time-independent perturbation theory and diagrammatic representation
+    - Time-dependent perturbation theory and diagrammatic representation
     - Video of lecture https://youtu.be/9TyfQsnTfyY
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek43.pdf
+
 
 
 ###  Week 44, October 31-November 3, 2022
@@ -246,7 +244,7 @@ In particular we recommend the texts by
     - Examples of diagrams and discussion of Pauli violating diagrams 
     - Summary of perturbation theory and start discussion of Coupled Cluster theory
     - Video of lecture at https://youtu.be/wYBFXPNk0Io
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapters 4-6
+- Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week45/LatexSlides/slidesweek45.pdf, handwritten notes and Shavitt and Bartlett chapters 4-6
 - Ninth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/ExercisesWeek45.pdf
 
 ###  Week 46, November 14-18, 2022
@@ -258,7 +256,7 @@ In particular we recommend the texts by
     - Coupled Cluster theory with doubles excitations
     - Diagrammatic representation of Coupled Cluster theory
     - Video of lecture at https://youtu.be/
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 9
+- Lecture Material: Lecture slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week46/LatexSlides/slidesweek46.pdf, handwritten notes and Shavitt and Bartlett chapter 9
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
 
 ###  Week 47, November 21-25, 2022
@@ -269,7 +267,7 @@ In particular we recommend the texts by
   - Friday:
     - Coupled Cluster theory and summary of course
     - Video of lecture at https://youtu.be/
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapters 9 and 10
+- Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week47/LatexSlides/slidesweek47.pdf, handwritten notes and Shavitt and Bartlett chapters 9 and 10
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
 
 
