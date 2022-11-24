@@ -251,11 +251,9 @@ In particular we recommend the texts by
 - Topics to be covered
   - Thursday:
     - Summary many-body perturbation theory and discussion of Coupled Cluster theory
-    - Video of lecture at https://youtu.be/
   - Friday:
     - Coupled Cluster theory with doubles excitations
     - Diagrammatic representation of Coupled Cluster theory
-    - Video of lecture at https://youtu.be/
 - Lecture Material: Lecture slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week46/LatexSlides/slidesweek46.pdf, handwritten notes and Shavitt and Bartlett chapter 9
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
 
@@ -263,7 +261,7 @@ In particular we recommend the texts by
 - Topics to be covered
   - Thursday:
     - Coupled Cluster theory, singles and doubles excitations
-    - Video of lecture at https://youtu.be/
+    - Video of lecture at https://youtu.be/MCuq8FIfHNk
   - Friday:
     - Coupled Cluster theory and summary of course
     - Video of lecture at https://youtu.be/
