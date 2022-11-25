@@ -264,7 +264,7 @@ In particular we recommend the texts by
     - Video of lecture at https://youtu.be/MCuq8FIfHNk
   - Friday:
     - Coupled Cluster theory and summary of course
-    - Video of lecture at https://youtu.be/
+    - Video of lecture at https://youtu.be/jZxYjVL-Z94
 - Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week47/LatexSlides/slidesweek47.pdf, handwritten notes and Shavitt and Bartlett chapters 9 and 10
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
 
