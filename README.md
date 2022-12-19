@@ -268,4 +268,6 @@ In particular we recommend the texts by
 - Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week47/LatexSlides/slidesweek47.pdf, handwritten notes and Shavitt and Bartlett chapters 9 and 10
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/SecondMidterm2022.pdf
 
-
+###  Week 50, December 19 and 21, 2022
+- Final oral exam, December 19 from 2pm to 6pm
+- Final oral exam, December 21 from 9am to 12pm
