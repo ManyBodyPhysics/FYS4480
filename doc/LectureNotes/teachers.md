@@ -8,8 +8,3 @@
 * _Office hours_: *Anytime*! 
 
 
-* _Name_:  Øyvind Sigmundson Schøyen, 
-* _Email_: oyvinssc@student.matnat.uio.no 	 
-* _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ452
-* _Office hours_: TBA
-
