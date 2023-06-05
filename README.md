@@ -101,25 +101,21 @@ In particular we recommend the texts by
 
 
 
-## Teaching schedule with links to material
 
+## Teaching schedule with links to material
 
 ###  Week 34, August 21-25
 
 - Topics to be covered
   - Thursday: Introduction to many-body physics, notations and definitions
-  - Video of lecture at 
   - Friday: Discussion of notations and important properties in many-body physics
-  - Video of lecture at 
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 
 ###  Week 35, August 28-September 1
 
 - Topics to be covered
   - Thursday: Fermion state functions and computation of expectation values in first quantization
-  - Video of lecture at 
   - Friday: Introduction of second quantization
-  - Video of lecture at 
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek35.pdf
 
@@ -127,9 +123,7 @@ In particular we recommend the texts by
 
 - Topics to be covered
   - Thursday: Second quantization, operators in second quantization and diagrammatic representation
-  - Video of lecture at 
   - Friday: Second quantization and Wick's theorem
-  - Video of lecture at 
 - Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4. Sections 3.1-3.3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek36.pdf
 
