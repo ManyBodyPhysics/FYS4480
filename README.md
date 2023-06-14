@@ -71,18 +71,18 @@ In particular we recommend the texts by
 - FCI, diagrams and particle-hole representations
      - Basics of FCI
      - Rewriting in terms of a particle-hole picture
-     - Discuss slater determinants and similarity transformations and algorithms for solving eigenvalue problems
+     - Slater determinants and similarity transformations and algorithms for solving eigenvalue problems
      - Eigenvector continuation
      - Introduce a diagrammatic representation
 - Mean-field theories
      - Hartree-Fock in coordinate space and 2nd quantization
      - Thouless theorem
      - Slater dets in HF theory
-     - DFT links
+     - Density functional theory
      - The electron gas as example
      - FCI and HF, diagrammatic representations and critical discussions
 - Many-body perturbation theory
-     - Time dependent and time-independent representation
+     - Time dependent and time-independent representations
      - Brillouin-Wigner and Rayleigh-Schrødinger pert theory
      - Diagrammatic representation
      - Linked-diagram theorem based on time-dependent theory
