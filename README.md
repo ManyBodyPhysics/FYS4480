@@ -31,8 +31,8 @@ depending on the background and interests of the participants.
 
 ## Practicalities
 
-1. Four lectures per week, Fall semester, 10 ECTS. The lectures will be recorded and linked to this site;
-2. Two hours of exercise sessions for work on projects and exercises;
+1. Four lectures per week, Fall semester, 10 ECTS. Thursday 1015am-12pm and Friday 1015-12pm. The lectures will be recorded and linked to this site;
+2. Two hours of exercise sessions for work on projects and exercises, Friday 1215pm-2pm;
 3. Two projects which are graded and count 30% each of the final grade and a final oral exam that counts 40% of the final grade;
 4. Weekly assignments;
 5. The course is offered as a so-called _cloned_ course,  FYS4480 at the Master of Science level and FYS9480 as a PhD course;
@@ -68,7 +68,7 @@ In particular we recommend the texts by
      - Wigner-Jordan transformation and 2nd quantization
      - Baker-Campbell-Hausdorf (BCH)
      - Suzuki-Trotter as an approximation to BCH
-- FCI and diagrams and particle-hole representations
+- FCI, diagrams and particle-hole representations
      - Basics of FCI
      - Rewriting in terms of a particle-hole picture
      - Discuss slater determinants and similarity transformations and algorithms for solving eigenvalue problems
@@ -88,8 +88,7 @@ In particular we recommend the texts by
      - Linked-diagram theorem based on time-dependent theory
 - Coupled cluster theories, standard and unitary
      - Derivation of equations for singles and doubles, reminder on unitary transformations
-     - non-hermiticity
-     - Specialize to CCD case and compare with FCI and MBPT
+     - Unitary coupled cluster theory
 - Green's function theory and parquet theory
 - SRG and IMSRG
 - Monte Carlo methods
