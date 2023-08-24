@@ -107,6 +107,7 @@ In particular we recommend the texts by
 
 - Topics to be covered
   - Thursday: Introduction to many-body physics, notations and definitions
+    - Video of lecture at https://youtu.be/uKku_uAnmRM
   - Friday: Discussion of notations and important properties in many-body physics
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 
