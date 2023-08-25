@@ -18,6 +18,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
   - Thursday: Introduction to many-body physics, notations and definitions
     - Video of lecture at https://youtu.be/uKku_uAnmRM
   - Friday: Discussion of notations and important properties in many-body physics
+    - Video of lecture at https://youtu.be/WGy3ybPAayw
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 
 ###  Week 35, August 28-September 1
