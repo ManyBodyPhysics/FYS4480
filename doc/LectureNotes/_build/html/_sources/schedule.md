@@ -25,7 +25,9 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 
 - Topics to be covered
   - Thursday: Fermion state functions and computation of expectation values in first quantization
+    - Video of lecture at https://www.youtube.com/watch?v=zG1fy6Wecxo
   - Friday: Introduction of second quantization
+    - Video of lecture at https://youtu.be/3aqZKgA4E4c
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek35.pdf
 
