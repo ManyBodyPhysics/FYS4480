@@ -129,6 +129,8 @@ In particular we recommend the texts by
   - Video of lecture https://youtu.be/CQQ6DIuw0R8"
   - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember7.pdf
   - Friday: Second quantization and Wick's theorem
+  - Video of lecture at https://youtu.be/agI_pf7-iTY
+  - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember8.pdf  
 - Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4. Sections 3.1-3.3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek36.pdf
 
