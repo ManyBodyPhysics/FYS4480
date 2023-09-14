@@ -48,7 +48,9 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 ### Week 37, September 11-15 
 
 - Topics to be covered
-  - Thursday: Exercises for week 37
+  - Thursday: Wick's theorem
+  - Video of lectue at https://youtu.be/xCbAo4YmXbo
+  - Whiteboard  notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember14.pdf  
   - Friday: Wrappping up Wick's theorem, Wick's generalized theorem and diagrammatic representation, Particle-hole formalism and definition of new reference state, normalordering of operators
 - Lecture Material: These slides, handwritten notes and chapter 3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Third exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek37.pdf
