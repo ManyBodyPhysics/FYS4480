@@ -143,6 +143,9 @@ In particular we recommend the texts by
   - Video of lectue at https://youtu.be/xCbAo4YmXbo
   - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember14.pdf  
   - Friday: Wrappping up Wick's theorem, Wick's generalized theorem and diagrammatic representation, Particle-hole formalism and definition of new reference state, normalordering of operators
+  - Video of lecture at https://youtu.be/S8CFkbbVqVc
+  - Whiteboard  notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember15.pdf
+
 - Lecture Material: These slides, handwritten notes and chapter 3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Third exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek37.pdf
 
