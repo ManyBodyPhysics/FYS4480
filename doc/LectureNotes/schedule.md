@@ -62,6 +62,8 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 
 - Topics to be covered
   - Thursday: Discussion of particle-hole formalism with examples
+  - Video of lecture at https://youtu.be/8JEVx8-7iRU
+  - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember21.pdf
   - Friday: Particle-hole formalism and definition of new reference state, normalordering of operators
 - Lecture Material: These slides, handwritten notes and chapter 3 and 4 of Shavitt and Bartlett covers most of the material discussed this week.
 - Fourth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek38.pdf
