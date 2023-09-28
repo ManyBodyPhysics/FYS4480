@@ -1,50 +1,61 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>15. Parallelization with MPI and OpenMPI &#8212; Quantum Mechanics for Many-Particle Systems</title>
-    
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
-    
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -53,1015 +64,423 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'parallelization';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="14. Optimization and Vectorization" href="vectorization.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
 
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="_static/logo.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Quantum Mechanics for Many-Particle Systems</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="intro.html">
-   Quantum mechanics for many-particle systems
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  About the course
- </span>
-</p>
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="schedule.html">
-   Schedule
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="teachers.html">
-   Instructor information
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="textbooks.html">
-   Textbooks
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Schedule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Basics of Many-Body Physics
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Basics of Many-Body Physics</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="notation.html">
-   1. Introduction to many-body physics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="secondquant.html">
-   2. Introduction to  second quantization
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="fci.html">
-   3. Full configuration interaction theory
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hfock.html">
-   4. Hartree-Fock theory
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="notation.html">1. Introduction to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secondquant.html">2. Introduction to  second quantization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fci.html">3. Full configuration interaction theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hfock.html">4. Hartree-Fock theory</a></li>
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Post Hartree-Fock Methods
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock Methods</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="mbpt.html">
-   6. Many-body perturbation theory
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="cc.html">
-   7. The Coupled Cluster Method
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="mbpt.html">6. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cc.html">7. The Coupled Cluster Method</a></li>
+
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Stochastic Methods
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Stochastic Methods</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="vmcdmc.html">
-   10. Variational Monte Carlo methods
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="gradientmethods.html">
-   11. Gradient Methods
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="resamplingmethods.html">
-   12. Resampling Techniques, Bootstrap and Blocking
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="vmcdmc.html">10. Variational Monte Carlo methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradientmethods.html">11. Gradient Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resamplingmethods.html">12. Resampling Techniques, Bootstrap and Blocking</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Deep Learning methods
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning methods</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="boltzmannmachines.html">
-   13. Boltzmann Machines
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="boltzmannmachines.html">13. Boltzmann Machines</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Computational Aspects
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Computational Aspects</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="vectorization.html">
-   14. Optimization and Vectorization
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   15. Parallelization with MPI and OpenMPI
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="vectorization.html">14. Optimization and Vectorization</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">15. Parallelization with MPI and OpenMPI</a></li>
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
+      </div>
+      
+      <main id="main-content" class="bd-main">
         
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/parallelization.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
     </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/parallelization.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onBinder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
-            <!-- Source interaction buttons -->
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
 
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
 
-            <!-- Launch buttons -->
 
-        </div>
 
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/parallelization.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Parallelization with MPI and OpenMPI</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
             
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div>
+                <h2> Contents </h2>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-much-is-parallelizable">
-   15.1. How much is parallelizable
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#today-s-situation-of-parallel-computing">
-   15.2. Today’s situation of parallel computing
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#overhead-present-in-parallel-computing">
-   15.3. Overhead present in parallel computing
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallelizing-a-sequential-algorithm">
-   15.4. Parallelizing a sequential algorithm
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#strategies">
-   15.5. Strategies
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-do-i-run-mpi-on-a-pc-laptop-mpi">
-   15.6. How do I run MPI on a PC/Laptop? MPI
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#can-i-do-it-on-my-own-pc-laptop-openmp-installation">
-   15.7. Can I do it on my own PC/laptop? OpenMP installation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-mpi">
-   15.8. Installing MPI
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-mpi-and-using-qt">
-   15.9. Installing MPI and using Qt
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-is-message-passing-interface-mpi">
-   15.10. What is Message Passing Interface (MPI)?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#going-parallel-with-mpi">
-   15.11. Going Parallel with MPI
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#mpi-is-a-library">
-   15.12. MPI is a library
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bindings-to-mpi-routines">
-   15.13. Bindings to MPI routines
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#communicator">
-   15.14. Communicator
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#some-of-the-most-important-mpi-functions">
-   15.15. Some of the most  important MPI functions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-first-mpi-c-c-program">
-   15.16. The first MPI C/C++ program
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-fortran-program">
-   15.17. The Fortran program
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-1">
-   15.18. Note 1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ordered-output-with-mpibarrier">
-   15.19. Ordered output with MPIBarrier
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-2">
-   15.20. Note 2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ordered-output">
-   15.21. Ordered output
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-3">
-   15.22. Note 3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-4">
-   15.23. Note 4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#numerical-integration-in-parallel">
-   15.24. Numerical integration in parallel
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule-with-mpi-reduce">
-   15.25. Dissection of trapezoidal rule with
-   <span class="math notranslate nohighlight">
-    \(MPI\_reduce\)
-   </span>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule">
-   15.26. Dissection of trapezoidal rule
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#integrating-with-mpi">
-   15.27. Integrating with
-   <strong>
-    MPI
-   </strong>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-do-i-use-mpi-reduce">
-   15.28. How do I use
-   <span class="math notranslate nohighlight">
-    \(MPI\_reduce\)
-   </span>
-   ?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-on-mpi-reduce">
-   15.29. More on
-   <span class="math notranslate nohighlight">
-    \(MPI\_Reduce\)
-   </span>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
-   15.30. Dissection of trapezoidal rule
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
-   15.31. Dissection of trapezoidal rule
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-quantum-dot-program-for-two-electrons">
-   15.32. The quantum dot program for two electrons
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-is-openmp">
-   15.33. What is OpenMP
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#getting-started-things-to-remember">
-   15.34. Getting started, things to remember
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#openmp-syntax">
-   15.35. OpenMP syntax
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#different-openmp-styles-of-parallelism">
-   15.36. Different OpenMP styles of parallelism
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-code-structure">
-   15.37. General code structure
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-region">
-   15.38. Parallel region
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#hello-world-not-again-please">
-   15.39. Hello world, not again, please!
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#hello-world-yet-another-variant">
-   15.40. Hello world, yet another variant
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#important-openmp-library-routines">
-   15.41. Important OpenMP library routines
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#private-variables">
-   15.42. Private variables
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#master-region">
-   15.43. Master region
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-for-loop">
-   15.44. Parallel for loop
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-computations-and-loops">
-   15.45. Parallel computations and loops
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#scheduling-of-loop-computations">
-   15.46. Scheduling of  loop computations
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#example-code-for-loop-scheduling">
-   15.47. Example code for loop scheduling
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#example-code-for-loop-scheduling-guided-instead-of-dynamic">
-   15.48. Example code for loop scheduling, guided instead of dynamic
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-on-parallel-for-loop">
-   15.49. More on Parallel for loop
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-can-happen-with-this-loop">
-   15.50. What can happen with this loop?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#inner-product">
-   15.51. Inner product
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#different-threads-do-different-tasks">
-   15.52. Different threads do different tasks
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#single-execution">
-   15.53. Single execution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#coordination-and-synchronization">
-   15.54. Coordination and synchronization
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#data-scope">
-   15.55. Data scope
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#some-remarks">
-   15.56. Some remarks
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallelizing-nested-for-loops">
-   15.57. Parallelizing nested for-loops
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#nested-parallelism">
-   15.58. Nested parallelism
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-tasks">
-   15.59. Parallel tasks
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#common-mistakes">
-   15.60. Common mistakes
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#not-all-computations-are-simple">
-   15.61. Not all computations are simple
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#not-all-computations-are-simple-competing-threads">
-   15.62. Not all computations are simple, competing threads
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-to-find-the-max-value-using-openmp">
-   15.63. How to find the max value using OpenMP
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#then-deal-with-the-race-conditions">
-   15.64. Then deal with the race conditions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-can-slow-down-openmp-performance">
-   15.65. What can slow down OpenMP performance?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id3">
-   15.66. What can slow down OpenMP performance?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#find-the-max-location-for-each-thread">
-   15.67. Find the max location for each thread
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#combine-the-values-from-each-thread">
-   15.68. Combine the values from each thread
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#matrix-matrix-multiplication">
-   15.69. Matrix-matrix multiplication
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id4">
-   15.70. Matrix-matrix multiplication
-  </a>
- </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-much-is-parallelizable">15.1. How much is parallelizable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#today-s-situation-of-parallel-computing">15.2. Today’s situation of parallel computing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overhead-present-in-parallel-computing">15.3. Overhead present in parallel computing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelizing-a-sequential-algorithm">15.4. Parallelizing a sequential algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#strategies">15.5. Strategies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-run-mpi-on-a-pc-laptop-mpi">15.6. How do I run MPI on a PC/Laptop? MPI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-i-do-it-on-my-own-pc-laptop-openmp-installation">15.7. Can I do it on my own PC/laptop? OpenMP installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-mpi">15.8. Installing MPI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-mpi-and-using-qt">15.9. Installing MPI and using Qt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-message-passing-interface-mpi">15.10. What is Message Passing Interface (MPI)?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#going-parallel-with-mpi">15.11. Going Parallel with MPI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mpi-is-a-library">15.12. MPI is a library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bindings-to-mpi-routines">15.13. Bindings to MPI routines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#communicator">15.14. Communicator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-of-the-most-important-mpi-functions">15.15. Some of the most  important MPI functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-mpi-c-c-program">15.16. The first MPI C/C++ program</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fortran-program">15.17. The Fortran program</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-1">15.18. Note 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ordered-output-with-mpibarrier">15.19. Ordered output with MPIBarrier</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-2">15.20. Note 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ordered-output">15.21. Ordered output</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-3">15.22. Note 3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-4">15.23. Note 4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-integration-in-parallel">15.24. Numerical integration in parallel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule-with-mpi-reduce">15.25. Dissection of trapezoidal rule with <span class="math notranslate nohighlight">\(MPI\_reduce\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule">15.26. Dissection of trapezoidal rule</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrating-with-mpi">15.27. Integrating with <strong>MPI</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-use-mpi-reduce">15.28. How do I use <span class="math notranslate nohighlight">\(MPI\_reduce\)</span>?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-mpi-reduce">15.29. More on <span class="math notranslate nohighlight">\(MPI\_Reduce\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">15.30. Dissection of trapezoidal rule</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">15.31. Dissection of trapezoidal rule</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quantum-dot-program-for-two-electrons">15.32. The quantum dot program for two electrons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-openmp">15.33. What is OpenMP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started-things-to-remember">15.34. Getting started, things to remember</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#openmp-syntax">15.35. OpenMP syntax</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#different-openmp-styles-of-parallelism">15.36. Different OpenMP styles of parallelism</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-code-structure">15.37. General code structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-region">15.38. Parallel region</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hello-world-not-again-please">15.39. Hello world, not again, please!</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hello-world-yet-another-variant">15.40. Hello world, yet another variant</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#important-openmp-library-routines">15.41. Important OpenMP library routines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#private-variables">15.42. Private variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#master-region">15.43. Master region</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-for-loop">15.44. Parallel for loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-computations-and-loops">15.45. Parallel computations and loops</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling-of-loop-computations">15.46. Scheduling of  loop computations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-code-for-loop-scheduling">15.47. Example code for loop scheduling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-code-for-loop-scheduling-guided-instead-of-dynamic">15.48. Example code for loop scheduling, guided instead of dynamic</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-parallel-for-loop">15.49. More on Parallel for loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-can-happen-with-this-loop">15.50. What can happen with this loop?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-product">15.51. Inner product</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#different-threads-do-different-tasks">15.52. Different threads do different tasks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#single-execution">15.53. Single execution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coordination-and-synchronization">15.54. Coordination and synchronization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-scope">15.55. Data scope</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-remarks">15.56. Some remarks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelizing-nested-for-loops">15.57. Parallelizing nested for-loops</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nested-parallelism">15.58. Nested parallelism</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-tasks">15.59. Parallel tasks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-mistakes">15.60. Common mistakes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#not-all-computations-are-simple">15.61. Not all computations are simple</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#not-all-computations-are-simple-competing-threads">15.62. Not all computations are simple, competing threads</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-find-the-max-value-using-openmp">15.63. How to find the max value using OpenMP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#then-deal-with-the-race-conditions">15.64. Then deal with the race conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-can-slow-down-openmp-performance">15.65. What can slow down OpenMP performance?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">15.66. What can slow down OpenMP performance?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#find-the-max-location-for-each-thread">15.67. Find the max location for each thread</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combine-the-values-from-each-thread">15.68. Combine the values from each thread</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-matrix-multiplication">15.69. Matrix-matrix multiplication</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">15.70. Matrix-matrix multiplication</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Parallelization with MPI and OpenMPI</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-much-is-parallelizable">
-   15.1. How much is parallelizable
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#today-s-situation-of-parallel-computing">
-   15.2. Today’s situation of parallel computing
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#overhead-present-in-parallel-computing">
-   15.3. Overhead present in parallel computing
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallelizing-a-sequential-algorithm">
-   15.4. Parallelizing a sequential algorithm
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#strategies">
-   15.5. Strategies
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-do-i-run-mpi-on-a-pc-laptop-mpi">
-   15.6. How do I run MPI on a PC/Laptop? MPI
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#can-i-do-it-on-my-own-pc-laptop-openmp-installation">
-   15.7. Can I do it on my own PC/laptop? OpenMP installation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-mpi">
-   15.8. Installing MPI
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-mpi-and-using-qt">
-   15.9. Installing MPI and using Qt
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-is-message-passing-interface-mpi">
-   15.10. What is Message Passing Interface (MPI)?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#going-parallel-with-mpi">
-   15.11. Going Parallel with MPI
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#mpi-is-a-library">
-   15.12. MPI is a library
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bindings-to-mpi-routines">
-   15.13. Bindings to MPI routines
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#communicator">
-   15.14. Communicator
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#some-of-the-most-important-mpi-functions">
-   15.15. Some of the most  important MPI functions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-first-mpi-c-c-program">
-   15.16. The first MPI C/C++ program
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-fortran-program">
-   15.17. The Fortran program
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-1">
-   15.18. Note 1
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ordered-output-with-mpibarrier">
-   15.19. Ordered output with MPIBarrier
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-2">
-   15.20. Note 2
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ordered-output">
-   15.21. Ordered output
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-3">
-   15.22. Note 3
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#note-4">
-   15.23. Note 4
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#numerical-integration-in-parallel">
-   15.24. Numerical integration in parallel
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule-with-mpi-reduce">
-   15.25. Dissection of trapezoidal rule with
-   <span class="math notranslate nohighlight">
-    \(MPI\_reduce\)
-   </span>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule">
-   15.26. Dissection of trapezoidal rule
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#integrating-with-mpi">
-   15.27. Integrating with
-   <strong>
-    MPI
-   </strong>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-do-i-use-mpi-reduce">
-   15.28. How do I use
-   <span class="math notranslate nohighlight">
-    \(MPI\_reduce\)
-   </span>
-   ?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-on-mpi-reduce">
-   15.29. More on
-   <span class="math notranslate nohighlight">
-    \(MPI\_Reduce\)
-   </span>
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
-   15.30. Dissection of trapezoidal rule
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
-   15.31. Dissection of trapezoidal rule
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-quantum-dot-program-for-two-electrons">
-   15.32. The quantum dot program for two electrons
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-is-openmp">
-   15.33. What is OpenMP
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#getting-started-things-to-remember">
-   15.34. Getting started, things to remember
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#openmp-syntax">
-   15.35. OpenMP syntax
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#different-openmp-styles-of-parallelism">
-   15.36. Different OpenMP styles of parallelism
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#general-code-structure">
-   15.37. General code structure
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-region">
-   15.38. Parallel region
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#hello-world-not-again-please">
-   15.39. Hello world, not again, please!
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#hello-world-yet-another-variant">
-   15.40. Hello world, yet another variant
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#important-openmp-library-routines">
-   15.41. Important OpenMP library routines
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#private-variables">
-   15.42. Private variables
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#master-region">
-   15.43. Master region
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-for-loop">
-   15.44. Parallel for loop
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-computations-and-loops">
-   15.45. Parallel computations and loops
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#scheduling-of-loop-computations">
-   15.46. Scheduling of  loop computations
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#example-code-for-loop-scheduling">
-   15.47. Example code for loop scheduling
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#example-code-for-loop-scheduling-guided-instead-of-dynamic">
-   15.48. Example code for loop scheduling, guided instead of dynamic
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-on-parallel-for-loop">
-   15.49. More on Parallel for loop
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-can-happen-with-this-loop">
-   15.50. What can happen with this loop?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#inner-product">
-   15.51. Inner product
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#different-threads-do-different-tasks">
-   15.52. Different threads do different tasks
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#single-execution">
-   15.53. Single execution
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#coordination-and-synchronization">
-   15.54. Coordination and synchronization
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#data-scope">
-   15.55. Data scope
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#some-remarks">
-   15.56. Some remarks
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallelizing-nested-for-loops">
-   15.57. Parallelizing nested for-loops
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#nested-parallelism">
-   15.58. Nested parallelism
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#parallel-tasks">
-   15.59. Parallel tasks
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#common-mistakes">
-   15.60. Common mistakes
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#not-all-computations-are-simple">
-   15.61. Not all computations are simple
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#not-all-computations-are-simple-competing-threads">
-   15.62. Not all computations are simple, competing threads
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#how-to-find-the-max-value-using-openmp">
-   15.63. How to find the max value using OpenMP
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#then-deal-with-the-race-conditions">
-   15.64. Then deal with the race conditions
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#what-can-slow-down-openmp-performance">
-   15.65. What can slow down OpenMP performance?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id3">
-   15.66. What can slow down OpenMP performance?
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#find-the-max-location-for-each-thread">
-   15.67. Find the max location for each thread
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#combine-the-values-from-each-thread">
-   15.68. Combine the values from each thread
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#matrix-matrix-multiplication">
-   15.69. Matrix-matrix multiplication
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id4">
-   15.70. Matrix-matrix multiplication
-  </a>
- </li>
-</ul>
 
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
-              <div>
+              
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="parallelization-with-mpi-and-openmpi">
-<h1><span class="section-number">15. </span>Parallelization with MPI and OpenMPI<a class="headerlink" href="#parallelization-with-mpi-and-openmpi" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="how-much-is-parallelizable">
-<h2><span class="section-number">15.1. </span>How much is parallelizable<a class="headerlink" href="#how-much-is-parallelizable" title="Permalink to this headline">¶</a></h2>
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="parallelization-with-mpi-and-openmpi">
+<h1><span class="section-number">15. </span>Parallelization with MPI and OpenMPI<a class="headerlink" href="#parallelization-with-mpi-and-openmpi" title="Permalink to this heading">#</a></h1>
+<section id="how-much-is-parallelizable">
+<h2><span class="section-number">15.1. </span>How much is parallelizable<a class="headerlink" href="#how-much-is-parallelizable" title="Permalink to this heading">#</a></h2>
 <p>If any non-parallel code slips into the
 application, the parallel
 performance is limited.</p>
 <p>In many simulations, however, the fraction of non-parallelizable work
 is <span class="math notranslate nohighlight">\(10^{-6}\)</span> or less due to large arrays or objects that are perfectly parallelizable.</p>
-</div>
-<div class="section" id="today-s-situation-of-parallel-computing">
-<h2><span class="section-number">15.2. </span>Today’s situation of parallel computing<a class="headerlink" href="#today-s-situation-of-parallel-computing" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="today-s-situation-of-parallel-computing">
+<h2><span class="section-number">15.2. </span>Today’s situation of parallel computing<a class="headerlink" href="#today-s-situation-of-parallel-computing" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Distributed memory is the dominant hardware configuration. There is a large diversity in these machines, from  MPP (massively parallel processing) systems to clusters of off-the-shelf PCs, which are very cost-effective.</p></li>
 <li><p>Message-passing is a mature programming paradigm and widely accepted. It often provides an efficient match to the hardware. It is primarily used for the distributed memory systems, but can also be used on shared memory systems.</p></li>
 <li><p>Modern nodes have nowadays several cores, which makes it interesting to use both shared memory (the given node) and distributed memory (several nodes with communication). This leads often to codes which use both MPI and OpenMP.</p></li>
 </ul>
 <p>Our lectures will focus on both MPI and OpenMP.</p>
-</div>
-<div class="section" id="overhead-present-in-parallel-computing">
-<h2><span class="section-number">15.3. </span>Overhead present in parallel computing<a class="headerlink" href="#overhead-present-in-parallel-computing" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="overhead-present-in-parallel-computing">
+<h2><span class="section-number">15.3. </span>Overhead present in parallel computing<a class="headerlink" href="#overhead-present-in-parallel-computing" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>Uneven load balance</strong>:  not all the processors can perform useful work at all time.</p></li>
 <li><p><strong>Overhead of synchronization</strong></p></li>
@@ -1070,23 +489,23 @@ is <span class="math notranslate nohighlight">\(10^{-6}\)</span> or less due to 
 </ul>
 <p>Due to the above overhead and that certain parts of a sequential
 algorithm cannot be parallelized we may not achieve an optimal parallelization.</p>
-</div>
-<div class="section" id="parallelizing-a-sequential-algorithm">
-<h2><span class="section-number">15.4. </span>Parallelizing a sequential algorithm<a class="headerlink" href="#parallelizing-a-sequential-algorithm" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="parallelizing-a-sequential-algorithm">
+<h2><span class="section-number">15.4. </span>Parallelizing a sequential algorithm<a class="headerlink" href="#parallelizing-a-sequential-algorithm" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Identify the part(s) of a sequential algorithm that can be  executed in parallel. This is the difficult part,</p></li>
 <li><p>Distribute the global work and data among <span class="math notranslate nohighlight">\(P\)</span> processors.</p></li>
 </ul>
-</div>
-<div class="section" id="strategies">
-<h2><span class="section-number">15.5. </span>Strategies<a class="headerlink" href="#strategies" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="strategies">
+<h2><span class="section-number">15.5. </span>Strategies<a class="headerlink" href="#strategies" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Develop codes locally, run with some few processes and test your codes.  Do benchmarking, timing and so forth on local nodes, for example your laptop or PC.</p></li>
 <li><p>When you are convinced that your codes run correctly, you can start your production runs on available supercomputers.</p></li>
 </ul>
-</div>
-<div class="section" id="how-do-i-run-mpi-on-a-pc-laptop-mpi">
-<h2><span class="section-number">15.6. </span>How do I run MPI on a PC/Laptop? MPI<a class="headerlink" href="#how-do-i-run-mpi-on-a-pc-laptop-mpi" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="how-do-i-run-mpi-on-a-pc-laptop-mpi">
+<h2><span class="section-number">15.6. </span>How do I run MPI on a PC/Laptop? MPI<a class="headerlink" href="#how-do-i-run-mpi-on-a-pc-laptop-mpi" title="Permalink to this heading">#</a></h2>
 <p>To install MPI is rather easy on hardware running unix/linux as operating systems, follow simply the instructions from the <a class="reference external" href="https://www.open-mpi.org/">OpenMPI website</a>. See also subsequent slides.
 When you have made sure you have installed MPI on your PC/laptop,</p>
 <ul class="simple">
@@ -1098,9 +517,9 @@ When you have made sure you have installed MPI on your PC/laptop,</p>
       mpiexec -n 8 ./nameofprog.x
 </pre></div>
 </div>
-</div>
-<div class="section" id="can-i-do-it-on-my-own-pc-laptop-openmp-installation">
-<h2><span class="section-number">15.7. </span>Can I do it on my own PC/laptop? OpenMP installation<a class="headerlink" href="#can-i-do-it-on-my-own-pc-laptop-openmp-installation" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="can-i-do-it-on-my-own-pc-laptop-openmp-installation">
+<h2><span class="section-number">15.7. </span>Can I do it on my own PC/laptop? OpenMP installation<a class="headerlink" href="#can-i-do-it-on-my-own-pc-laptop-openmp-installation" title="Permalink to this heading">#</a></h2>
 <p>If you wish to install MPI and OpenMP
 on your laptop/PC, we recommend the following:</p>
 <ul class="simple">
@@ -1114,9 +533,9 @@ on your laptop/PC, we recommend the following:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    c++ -o &lt;name executable&gt; &lt;name program.cpp&gt;  -lomp
 </pre></div>
 </div>
-</div>
-<div class="section" id="installing-mpi">
-<h2><span class="section-number">15.8. </span>Installing MPI<a class="headerlink" href="#installing-mpi" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="installing-mpi">
+<h2><span class="section-number">15.8. </span>Installing MPI<a class="headerlink" href="#installing-mpi" title="Permalink to this heading">#</a></h2>
 <p>For linux/ubuntu users, you need to install two packages (alternatively use the synaptic package manager)</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      sudo apt-get install libopenmpi-dev
       sudo apt-get install openmpi-bin
@@ -1132,14 +551,14 @@ gfortran compiler of openmpi) and then install with brew</p>
 </pre></div>
 </div>
 <p>where we indicate that we want  the number of processes to be 10.</p>
-</div>
-<div class="section" id="installing-mpi-and-using-qt">
-<h2><span class="section-number">15.9. </span>Installing MPI and using Qt<a class="headerlink" href="#installing-mpi-and-using-qt" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="installing-mpi-and-using-qt">
+<h2><span class="section-number">15.9. </span>Installing MPI and using Qt<a class="headerlink" href="#installing-mpi-and-using-qt" title="Permalink to this heading">#</a></h2>
 <p>With openmpi installed, when using Qt, add to your .pro file the instructions <a class="reference external" href="http://dragly.org/2012/03/14/developing-mpi-applications-in-qt-creator/">here</a></p>
 <p>You may need to tell Qt where openmpi is stored.</p>
-</div>
-<div class="section" id="what-is-message-passing-interface-mpi">
-<h2><span class="section-number">15.10. </span>What is Message Passing Interface (MPI)?<a class="headerlink" href="#what-is-message-passing-interface-mpi" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="what-is-message-passing-interface-mpi">
+<h2><span class="section-number">15.10. </span>What is Message Passing Interface (MPI)?<a class="headerlink" href="#what-is-message-passing-interface-mpi" title="Permalink to this heading">#</a></h2>
 <p><strong>MPI</strong> is a library, not a language. It specifies the names, calling sequences and results of functions
 or subroutines to be called from C/C++ or Fortran programs, and the classes and methods that make up the MPI C++
 library. The programs that users write in Fortran, C or C++ are compiled with ordinary compilers and linked
@@ -1147,9 +566,9 @@ with the MPI library.</p>
 <p>MPI programs should be able to run
 on all possible machines and run all MPI implementetations without change.</p>
 <p>An MPI computation is a collection of processes communicating with messages.</p>
-</div>
-<div class="section" id="going-parallel-with-mpi">
-<h2><span class="section-number">15.11. </span>Going Parallel with MPI<a class="headerlink" href="#going-parallel-with-mpi" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="going-parallel-with-mpi">
+<h2><span class="section-number">15.11. </span>Going Parallel with MPI<a class="headerlink" href="#going-parallel-with-mpi" title="Permalink to this heading">#</a></h2>
 <p><strong>Task parallelism</strong>: the work of a global problem can be divided
 into a number of independent tasks, which rarely need to synchronize.
 Monte Carlo simulations or numerical integration are examples of this.</p>
@@ -1162,9 +581,9 @@ have corresponding C/C++-binding</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>       MPI_COMMAND_NAME
 </pre></div>
 </div>
-</div>
-<div class="section" id="mpi-is-a-library">
-<h2><span class="section-number">15.12. </span>MPI is a library<a class="headerlink" href="#mpi-is-a-library" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="mpi-is-a-library">
+<h2><span class="section-number">15.12. </span>MPI is a library<a class="headerlink" href="#mpi-is-a-library" title="Permalink to this heading">#</a></h2>
 <p>MPI is a library specification for the message passing interface,
 proposed as a standard.</p>
 <ul class="simple">
@@ -1175,9 +594,9 @@ proposed as a standard.</p>
 <p>A message passing standard for portability and ease-of-use.
 Designed for high performance.</p>
 <p>Insert communication and synchronization functions where necessary.</p>
-</div>
-<div class="section" id="bindings-to-mpi-routines">
-<h2><span class="section-number">15.13. </span>Bindings to MPI routines<a class="headerlink" href="#bindings-to-mpi-routines" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="bindings-to-mpi-routines">
+<h2><span class="section-number">15.13. </span>Bindings to MPI routines<a class="headerlink" href="#bindings-to-mpi-routines" title="Permalink to this heading">#</a></h2>
 <p>MPI is a message-passing library where all the routines
 have corresponding C/C++-binding</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>       MPI_Command_name
@@ -1188,9 +607,9 @@ have corresponding C/C++-binding</p>
 </pre></div>
 </div>
 <p>The discussion in these slides focuses on the C++ binding.</p>
-</div>
-<div class="section" id="communicator">
-<h2><span class="section-number">15.14. </span>Communicator<a class="headerlink" href="#communicator" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="communicator">
+<h2><span class="section-number">15.14. </span>Communicator<a class="headerlink" href="#communicator" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>A group of MPI processes with a name (context).</p></li>
 <li><p>Any process is identified by its rank. The rank is only meaningful within a particular communicator.</p></li>
@@ -1203,9 +622,9 @@ have corresponding C/C++-binding</p>
 <li><p>Mechanism to identify subset of processes.</p></li>
 <li><p>Promotes modular design of parallel libraries.</p></li>
 </ul>
-</div>
-<div class="section" id="some-of-the-most-important-mpi-functions">
-<h2><span class="section-number">15.15. </span>Some of the most  important MPI functions<a class="headerlink" href="#some-of-the-most-important-mpi-functions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="some-of-the-most-important-mpi-functions">
+<h2><span class="section-number">15.15. </span>Some of the most  important MPI functions<a class="headerlink" href="#some-of-the-most-important-mpi-functions" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(MPI\_Init\)</span> - initiate an MPI computation</p></li>
 <li><p><span class="math notranslate nohighlight">\(MPI\_Finalize\)</span> - terminate the MPI computation and clean up</p></li>
@@ -1215,9 +634,9 @@ have corresponding C/C++-binding</p>
 <li><p><span class="math notranslate nohighlight">\(MPI\_Recv\)</span> - receive a message from a particular process within an MPI communicator</p></li>
 <li><p><span class="math notranslate nohighlight">\(MPI\_reduce\)</span>  or <span class="math notranslate nohighlight">\(MPI\_Allreduce\)</span>, send and receive messages</p></li>
 </ul>
-</div>
-<div class="section" id="the-first-mpi-c-c-program">
-<h2><span class="section-number">15.16. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program2.cpp">The first MPI C/C++ program</a><a class="headerlink" href="#the-first-mpi-c-c-program" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="the-first-mpi-c-c-program">
+<h2><span class="section-number">15.16. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program2.cpp">The first MPI C/C++ program</a><a class="headerlink" href="#the-first-mpi-c-c-program" title="Permalink to this heading">#</a></h2>
 <p>Let every process write “Hello world” (oh not this program again!!) on the standard output.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    using namespace std;
     #include &lt;mpi.h&gt;
@@ -1235,9 +654,9 @@ have corresponding C/C++-binding</p>
     MPI_Finalize ();
 </pre></div>
 </div>
-</div>
-<div class="section" id="the-fortran-program">
-<h2><span class="section-number">15.17. </span>The Fortran program<a class="headerlink" href="#the-fortran-program" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="the-fortran-program">
+<h2><span class="section-number">15.17. </span>The Fortran program<a class="headerlink" href="#the-fortran-program" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    PROGRAM hello
     INCLUDE &quot;mpif.h&quot;
     INTEGER:: size, my_rank, ierr
@@ -1251,17 +670,17 @@ have corresponding C/C++-binding</p>
     END PROGRAM hello
 </pre></div>
 </div>
-</div>
-<div class="section" id="note-1">
-<h2><span class="section-number">15.18. </span>Note 1<a class="headerlink" href="#note-1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="note-1">
+<h2><span class="section-number">15.18. </span>Note 1<a class="headerlink" href="#note-1" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The output to screen is not ordered since all processes are trying to write  to screen simultaneously.</p></li>
 <li><p>It is the operating system which opts for an ordering.</p></li>
 <li><p>If we wish to have an organized output, starting from the first process, we may rewrite our program as in the next example.</p></li>
 </ul>
-</div>
-<div class="section" id="ordered-output-with-mpibarrier">
-<h2><span class="section-number">15.19. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program3.cpp">Ordered output with MPIBarrier</a><a class="headerlink" href="#ordered-output-with-mpibarrier" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ordered-output-with-mpibarrier">
+<h2><span class="section-number">15.19. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program3.cpp">Ordered output with MPIBarrier</a><a class="headerlink" href="#ordered-output-with-mpibarrier" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    int main (int nargs, char* args[])
     {
      int numprocs, my_rank, i;
@@ -1276,9 +695,9 @@ have corresponding C/C++-binding</p>
           MPI_Finalize ();
 </pre></div>
 </div>
-</div>
-<div class="section" id="note-2">
-<h2><span class="section-number">15.20. </span>Note 2<a class="headerlink" href="#note-2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="note-2">
+<h2><span class="section-number">15.20. </span>Note 2<a class="headerlink" href="#note-2" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Here we have used the <span class="math notranslate nohighlight">\(MPI\_Barrier\)</span> function to ensure that that every process has completed  its set of instructions in  a particular order.</p></li>
 <li><p>A barrier is a special collective operation that does not allow the processes to continue until all processes in the communicator (here <span class="math notranslate nohighlight">\(MPI\_COMM\_WORLD\)</span>) have called <span class="math notranslate nohighlight">\(MPI\_Barrier\)</span>.</p></li>
@@ -1287,9 +706,9 @@ have corresponding C/C++-binding</p>
 <p>However, this is slightly more time-consuming since the processes synchronize between themselves as many times as there
 are processes.  In the next Hello world example we use the send and receive functions in order to a have a synchronized
 action.</p>
-</div>
-<div class="section" id="ordered-output">
-<h2><span class="section-number">15.21. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program4.cpp">Ordered output</a><a class="headerlink" href="#ordered-output" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ordered-output">
+<h2><span class="section-number">15.21. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program4.cpp">Ordered output</a><a class="headerlink" href="#ordered-output" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    .....
     int numprocs, my_rank, flag;
     MPI_Status status;
@@ -1307,9 +726,9 @@ action.</p>
     MPI_Finalize ();
 </pre></div>
 </div>
-</div>
-<div class="section" id="note-3">
-<h2><span class="section-number">15.22. </span>Note 3<a class="headerlink" href="#note-3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="note-3">
+<h2><span class="section-number">15.22. </span>Note 3<a class="headerlink" href="#note-3" title="Permalink to this heading">#</a></h2>
 <p>The basic sending of messages is given by the function <span class="math notranslate nohighlight">\(MPI\_SEND\)</span>, which in C/C++
 is defined as</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    int MPI_Send(void *buf, int count, 
@@ -1323,9 +742,9 @@ is the  number of variables we are passing. If we are passing only a single valu
 <p>If we transfer an array, it is  the overall size of the array.
 For example, if we want to send a 10 by 10 array, count would be <span class="math notranslate nohighlight">\(10\times 10=100\)</span>
 since we are  actually passing 100 values.</p>
-</div>
-<div class="section" id="note-4">
-<h2><span class="section-number">15.23. </span>Note 4<a class="headerlink" href="#note-4" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="note-4">
+<h2><span class="section-number">15.23. </span>Note 4<a class="headerlink" href="#note-4" title="Permalink to this heading">#</a></h2>
 <p>Once you have  sent a message, you must receive it on another task. The function <span class="math notranslate nohighlight">\(MPI\_RECV\)</span>
 is similar to the send call.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    int MPI_Recv( void *buf, int count, MPI_Datatype datatype, 
@@ -1341,9 +760,9 @@ where one can check if the receive was completed.</p>
 <p>The output of this code is the same as the previous example, but now
 process 0 sends a message to process 1, which forwards it further
 to process 2, and so forth.</p>
-</div>
-<div class="section" id="numerical-integration-in-parallel">
-<h2><span class="section-number">15.24. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program6.cpp">Numerical integration in parallel</a><a class="headerlink" href="#numerical-integration-in-parallel" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="numerical-integration-in-parallel">
+<h2><span class="section-number">15.24. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program6.cpp">Numerical integration in parallel</a><a class="headerlink" href="#numerical-integration-in-parallel" title="Permalink to this heading">#</a></h2>
 <p><strong>Integrating <span class="math notranslate nohighlight">\(\pi\)</span>.</strong></p>
 <ul class="simple">
 <li><p>The code example computes <span class="math notranslate nohighlight">\(\pi\)</span> using the trapezoidal rules.</p></li>
@@ -1354,9 +773,9 @@ to process 2, and so forth.</p>
 I=\int_a^bf(x) dx\approx h\left(f(a)/2 + f(a+h) +f(a+2h)+\dots +f(b-h)+ f(b)/2\right).
 \]</div>
 <p>Click <a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/Programs/LecturePrograms/programs/MPI/chapter07/program6.cpp">on this link</a> for the full program.</p>
-</div>
-<div class="section" id="dissection-of-trapezoidal-rule-with-mpi-reduce">
-<h2><span class="section-number">15.25. </span>Dissection of trapezoidal rule with <span class="math notranslate nohighlight">\(MPI\_reduce\)</span><a class="headerlink" href="#dissection-of-trapezoidal-rule-with-mpi-reduce" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="dissection-of-trapezoidal-rule-with-mpi-reduce">
+<h2><span class="section-number">15.25. </span>Dissection of trapezoidal rule with <span class="math notranslate nohighlight">\(MPI\_reduce\)</span><a class="headerlink" href="#dissection-of-trapezoidal-rule-with-mpi-reduce" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    //    Trapezoidal rule and numerical integration usign MPI
     using namespace std;
     #include &lt;mpi.h&gt;
@@ -1375,9 +794,9 @@ I=\int_a^bf(x) dx\approx h\left(f(a)/2 + f(a+h) +f(a+2h)+\dots +f(b-h)+ f(b)/2\r
       double  time_start, time_end, total_time;
 </pre></div>
 </div>
-</div>
-<div class="section" id="dissection-of-trapezoidal-rule">
-<h2><span class="section-number">15.26. </span>Dissection of trapezoidal rule<a class="headerlink" href="#dissection-of-trapezoidal-rule" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="dissection-of-trapezoidal-rule">
+<h2><span class="section-number">15.26. </span>Dissection of trapezoidal rule<a class="headerlink" href="#dissection-of-trapezoidal-rule" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      //  MPI initializations
       MPI_Init (&amp;nargs, &amp;args);
       MPI_Comm_size (MPI_COMM_WORLD, &amp;numprocs);
@@ -1394,9 +813,9 @@ I=\int_a^bf(x) dx\approx h\left(f(a)/2 + f(a+h) +f(a+2h)+\dots +f(b-h)+ f(b)/2\r
       local_b = local_a + local_n*h;
 </pre></div>
 </div>
-</div>
-<div class="section" id="integrating-with-mpi">
-<h2><span class="section-number">15.27. </span>Integrating with <strong>MPI</strong><a class="headerlink" href="#integrating-with-mpi" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="integrating-with-mpi">
+<h2><span class="section-number">15.27. </span>Integrating with <strong>MPI</strong><a class="headerlink" href="#integrating-with-mpi" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      total_sum = 0.0;
       local_sum = trapezoidal_rule(local_a, local_b, local_n, 
                                    &amp;int_function); 
@@ -1415,9 +834,9 @@ I=\int_a^bf(x) dx\approx h\left(f(a)/2 + f(a+h) +f(a+2h)+\dots +f(b-h)+ f(b)/2\r
     }  // end of main program
 </pre></div>
 </div>
-</div>
-<div class="section" id="how-do-i-use-mpi-reduce">
-<h2><span class="section-number">15.28. </span>How do I use <span class="math notranslate nohighlight">\(MPI\_reduce\)</span>?<a class="headerlink" href="#how-do-i-use-mpi-reduce" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="how-do-i-use-mpi-reduce">
+<h2><span class="section-number">15.28. </span>How do I use <span class="math notranslate nohighlight">\(MPI\_reduce\)</span>?<a class="headerlink" href="#how-do-i-use-mpi-reduce" title="Permalink to this heading">#</a></h2>
 <p>Here we have used</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    MPI_reduce( void *senddata, void* resultdata, int count, 
          MPI_Datatype datatype, MPI_Op, int root, MPI_Comm comm)
@@ -1430,9 +849,9 @@ while <span class="math notranslate nohighlight">\(MPI\_Datatype\)</span>
 defines the type of variable which is sent and received.</p>
 <p>The new feature is <span class="math notranslate nohighlight">\(MPI\_Op\)</span>. It defines the type
 of operation we want to do.</p>
-</div>
-<div class="section" id="more-on-mpi-reduce">
-<h2><span class="section-number">15.29. </span>More on <span class="math notranslate nohighlight">\(MPI\_Reduce\)</span><a class="headerlink" href="#more-on-mpi-reduce" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="more-on-mpi-reduce">
+<h2><span class="section-number">15.29. </span>More on <span class="math notranslate nohighlight">\(MPI\_Reduce\)</span><a class="headerlink" href="#more-on-mpi-reduce" title="Permalink to this heading">#</a></h2>
 <p>In our case, since we are summing
 the rectangle  contributions from every process we define  <span class="math notranslate nohighlight">\(MPI\_Op = MPI\_SUM\)</span>.
 If we have an array or matrix we can search for the largest og smallest element by sending either <span class="math notranslate nohighlight">\(MPI\_MAX\)</span> or
@@ -1443,9 +862,9 @@ If we have an array or matrix we can search for the largest og smallest element 
               MPI_Datatype datatype, MPI_Op, MPI_Comm comm)        
 </pre></div>
 </div>
-</div>
-<div class="section" id="id1">
-<h2><span class="section-number">15.30. </span>Dissection of trapezoidal rule<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="id1">
+<h2><span class="section-number">15.30. </span>Dissection of trapezoidal rule<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p>We use <span class="math notranslate nohighlight">\(MPI\_reduce\)</span> to collect data from each process. Note also the use of the function
 <span class="math notranslate nohighlight">\(MPI\_Wtime\)</span>.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    //  this function defines the function to integrate
@@ -1456,9 +875,9 @@ If we have an array or matrix we can search for the largest og smallest element 
     } // end of function to evaluate
 </pre></div>
 </div>
-</div>
-<div class="section" id="id2">
-<h2><span class="section-number">15.31. </span>Dissection of trapezoidal rule<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="id2">
+<h2><span class="section-number">15.31. </span>Dissection of trapezoidal rule<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    //  this function defines the trapezoidal rule
     double trapezoidal_rule(double a, double b, int n, 
                              double (*func)(double))
@@ -1479,9 +898,9 @@ If we have an array or matrix we can search for the largest og smallest element 
     }  // end trapezoidal_rule 
 </pre></div>
 </div>
-</div>
-<div class="section" id="the-quantum-dot-program-for-two-electrons">
-<h2><span class="section-number">15.32. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/master/doc/Programs/ParallelizationMPI/MPIvmcqdot.cpp">The quantum dot program for two electrons</a><a class="headerlink" href="#the-quantum-dot-program-for-two-electrons" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="the-quantum-dot-program-for-two-electrons">
+<h2><span class="section-number">15.32. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysics2/blob/master/doc/Programs/ParallelizationMPI/MPIvmcqdot.cpp">The quantum dot program for two electrons</a><a class="headerlink" href="#the-quantum-dot-program-for-two-electrons" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    // Variational Monte Carlo for atoms with importance sampling, slater det
     // Test case for 2-electron quantum dot, no classes using Mersenne-Twister RNG
     #include &quot;mpi.h&quot;
@@ -1940,9 +1359,9 @@ If we have an array or matrix we can search for the largest og smallest element 
     #undef TOLX
 </pre></div>
 </div>
-</div>
-<div class="section" id="what-is-openmp">
-<h2><span class="section-number">15.33. </span>What is OpenMP<a class="headerlink" href="#what-is-openmp" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="what-is-openmp">
+<h2><span class="section-number">15.33. </span>What is OpenMP<a class="headerlink" href="#what-is-openmp" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>OpenMP provides high-level thread programming</p></li>
 <li><p>Multiple cooperating threads are allowed to run simultaneously</p></li>
@@ -1957,13 +1376,13 @@ If we have an array or matrix we can search for the largest og smallest element 
 </li>
 </ul>
 <p>Many good tutorials online and excellent textbook</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><a class="reference external" href="http://mitpress.mit.edu/books/using-openmp">Using OpenMP, by B. Chapman, G. Jost, and A. van der Pas</a></p></li>
 <li><p>Many tutorials online like <a class="reference external" href="http://www.openmp.org">OpenMP official site</a></p></li>
 </ol>
-</div>
-<div class="section" id="getting-started-things-to-remember">
-<h2><span class="section-number">15.34. </span>Getting started, things to remember<a class="headerlink" href="#getting-started-things-to-remember" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="getting-started-things-to-remember">
+<h2><span class="section-number">15.34. </span>Getting started, things to remember<a class="headerlink" href="#getting-started-things-to-remember" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Remember the header file</p></li>
 </ul>
@@ -1985,9 +1404,9 @@ If we have an array or matrix we can search for the largest og smallest element 
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="openmp-syntax">
-<h2><span class="section-number">15.35. </span>OpenMP syntax<a class="headerlink" href="#openmp-syntax" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="openmp-syntax">
+<h2><span class="section-number">15.35. </span>OpenMP syntax<a class="headerlink" href="#openmp-syntax" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Mostly directives</p></li>
 </ul>
@@ -2005,9 +1424,9 @@ If we have an array or matrix we can search for the largest og smallest element 
 <li><p>Specifically, a <strong>structured block</strong></p></li>
 <li><p>Enter at top, exit at bottom only, exit(), abort() permitted</p></li>
 </ul>
-</div>
-<div class="section" id="different-openmp-styles-of-parallelism">
-<h2><span class="section-number">15.36. </span>Different OpenMP styles of parallelism<a class="headerlink" href="#different-openmp-styles-of-parallelism" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="different-openmp-styles-of-parallelism">
+<h2><span class="section-number">15.36. </span>Different OpenMP styles of parallelism<a class="headerlink" href="#different-openmp-styles-of-parallelism" title="Permalink to this heading">#</a></h2>
 <p>OpenMP supports several different ways to specify thread parallelism</p>
 <ul class="simple">
 <li><p>General parallel regions: All threads execute the code, roughly as if you made a routine of that region and created a thread to run that code</p></li>
@@ -2016,9 +1435,9 @@ If we have an array or matrix we can search for the largest og smallest element 
 <li><p>Several ways to manage thread coordination, including Master regions and Locks</p></li>
 <li><p>Memory model for shared data</p></li>
 </ul>
-</div>
-<div class="section" id="general-code-structure">
-<h2><span class="section-number">15.37. </span>General code structure<a class="headerlink" href="#general-code-structure" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="general-code-structure">
+<h2><span class="section-number">15.37. </span>General code structure<a class="headerlink" href="#general-code-structure" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;omp.h&gt;
     main ()
     {
@@ -2040,9 +1459,9 @@ If we have an array or matrix we can search for the largest og smallest element 
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="parallel-region">
-<h2><span class="section-number">15.38. </span>Parallel region<a class="headerlink" href="#parallel-region" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="parallel-region">
+<h2><span class="section-number">15.38. </span>Parallel region<a class="headerlink" href="#parallel-region" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>A parallel region is a block of code that is executed by a team of threads</p></li>
 <li><p>The following compiler directive creates a parallel region</p></li>
@@ -2057,9 +1476,9 @@ If we have an array or matrix we can search for the largest og smallest element 
 <li><p><strong>public(list of variables)</strong></p></li>
 <li><p><strong>private(list of variables)</strong></p></li>
 </ul>
-</div>
-<div class="section" id="hello-world-not-again-please">
-<h2><span class="section-number">15.39. </span>Hello world, not again, please!<a class="headerlink" href="#hello-world-not-again-please" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="hello-world-not-again-please">
+<h2><span class="section-number">15.39. </span>Hello world, not again, please!<a class="headerlink" href="#hello-world-not-again-please" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;omp.h&gt;
     #include &lt;cstdio&gt;
     int main (int argc, char *argv[])
@@ -2079,9 +1498,9 @@ If we have an array or matrix we can search for the largest og smallest element 
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="hello-world-yet-another-variant">
-<h2><span class="section-number">15.40. </span>Hello world, yet another variant<a class="headerlink" href="#hello-world-yet-another-variant" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="hello-world-yet-another-variant">
+<h2><span class="section-number">15.40. </span>Hello world, yet another variant<a class="headerlink" href="#hello-world-yet-another-variant" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;cstdio&gt;
     #include &lt;omp.h&gt;
     int main(int argc, char *argv[]) 
@@ -2106,18 +1525,18 @@ If a variable like <strong>id</strong> is  declared outside of the</p>
 <ul class="simple">
 <li><p>Why? What would go wrong? Why do we add  possibly?</p></li>
 </ul>
-</div>
-<div class="section" id="important-openmp-library-routines">
-<h2><span class="section-number">15.41. </span>Important OpenMP library routines<a class="headerlink" href="#important-openmp-library-routines" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="important-openmp-library-routines">
+<h2><span class="section-number">15.41. </span>Important OpenMP library routines<a class="headerlink" href="#important-openmp-library-routines" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>int omp get num threads ()</strong>, returns the number of threads inside a parallel region</p></li>
 <li><p><strong>int omp get thread num ()</strong>,  returns the  a thread for each thread inside a parallel region</p></li>
 <li><p><strong>void omp set num threads (int)</strong>, sets the number of threads to be used</p></li>
 <li><p><strong>void omp set nested (int)</strong>,  turns nested parallelism on/off</p></li>
 </ul>
-</div>
-<div class="section" id="private-variables">
-<h2><span class="section-number">15.42. </span>Private variables<a class="headerlink" href="#private-variables" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="private-variables">
+<h2><span class="section-number">15.42. </span>Private variables<a class="headerlink" href="#private-variables" title="Permalink to this heading">#</a></h2>
 <p>Private clause can be used to make thread- private versions of such variables:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel private(id)
     {
@@ -2131,9 +1550,9 @@ If a variable like <strong>id</strong> is  declared outside of the</p>
 <li><p>OpenMP provides ways to control that</p></li>
 <li><p>Can use default(none) to require the sharing of each variable to be described</p></li>
 </ul>
-</div>
-<div class="section" id="master-region">
-<h2><span class="section-number">15.43. </span>Master region<a class="headerlink" href="#master-region" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="master-region">
+<h2><span class="section-number">15.43. </span>Master region<a class="headerlink" href="#master-region" title="Permalink to this heading">#</a></h2>
 <p>It is often useful to have only one thread execute some of the code in a parallel region. I/O statements are a common example</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel 
     {
@@ -2145,9 +1564,9 @@ If a variable like <strong>id</strong> is  declared outside of the</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="parallel-for-loop">
-<h2><span class="section-number">15.44. </span>Parallel for loop<a class="headerlink" href="#parallel-for-loop" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="parallel-for-loop">
+<h2><span class="section-number">15.44. </span>Parallel for loop<a class="headerlink" href="#parallel-for-loop" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Inside a parallel region, the following compiler directive can be used to parallelize a for-loop:</p></li>
 </ul>
@@ -2167,9 +1586,9 @@ If a variable like <strong>id</strong> is  declared outside of the</p>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="parallel-computations-and-loops">
-<h2><span class="section-number">15.45. </span>Parallel computations and loops<a class="headerlink" href="#parallel-computations-and-loops" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="parallel-computations-and-loops">
+<h2><span class="section-number">15.45. </span>Parallel computations and loops<a class="headerlink" href="#parallel-computations-and-loops" title="Permalink to this heading">#</a></h2>
 <p>OpenMP provides an easy way to parallelize a loop</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel for
       for (i=0; i&lt;n; i++) c[i] = a[i];
@@ -2177,19 +1596,19 @@ If a variable like <strong>id</strong> is  declared outside of the</p>
 </div>
 <p>OpenMP handles index variable (no need to declare in for loop or make private)</p>
 <p>Which thread does which values?  Several options.</p>
-</div>
-<div class="section" id="scheduling-of-loop-computations">
-<h2><span class="section-number">15.46. </span>Scheduling of  loop computations<a class="headerlink" href="#scheduling-of-loop-computations" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="scheduling-of-loop-computations">
+<h2><span class="section-number">15.46. </span>Scheduling of  loop computations<a class="headerlink" href="#scheduling-of-loop-computations" title="Permalink to this heading">#</a></h2>
 <p>We can let  the OpenMP runtime decide. The decision is about how the loop iterates are scheduled
 and  OpenMP defines three choices of loop scheduling:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Static: Predefined at compile time. Lowest overhead, predictable</p></li>
 <li><p>Dynamic: Selection made at runtime</p></li>
 <li><p>Guided: Special case of dynamic; attempts to reduce overhead</p></li>
 </ol>
-</div>
-<div class="section" id="example-code-for-loop-scheduling">
-<h2><span class="section-number">15.47. </span>Example code for loop scheduling<a class="headerlink" href="#example-code-for-loop-scheduling" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="example-code-for-loop-scheduling">
+<h2><span class="section-number">15.47. </span>Example code for loop scheduling<a class="headerlink" href="#example-code-for-loop-scheduling" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;omp.h&gt;
     #define CHUNKSIZE 100
     #define N 1000
@@ -2207,9 +1626,9 @@ and  OpenMP defines three choices of loop scheduling:</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="example-code-for-loop-scheduling-guided-instead-of-dynamic">
-<h2><span class="section-number">15.48. </span>Example code for loop scheduling, guided instead of dynamic<a class="headerlink" href="#example-code-for-loop-scheduling-guided-instead-of-dynamic" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="example-code-for-loop-scheduling-guided-instead-of-dynamic">
+<h2><span class="section-number">15.48. </span>Example code for loop scheduling, guided instead of dynamic<a class="headerlink" href="#example-code-for-loop-scheduling-guided-instead-of-dynamic" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;omp.h&gt;
     #define CHUNKSIZE 100
     #define N 1000
@@ -2227,9 +1646,9 @@ and  OpenMP defines three choices of loop scheduling:</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="more-on-parallel-for-loop">
-<h2><span class="section-number">15.49. </span>More on Parallel for loop<a class="headerlink" href="#more-on-parallel-for-loop" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="more-on-parallel-for-loop">
+<h2><span class="section-number">15.49. </span>More on Parallel for loop<a class="headerlink" href="#more-on-parallel-for-loop" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The number of loop iterations cannot be non-deterministic; break, return, exit, goto not allowed inside the for-loop</p></li>
 <li><p>The loop index is private to each thread</p></li>
@@ -2248,9 +1667,9 @@ and  OpenMP defines three choices of loop scheduling:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel for
 </pre></div>
 </div>
-</div>
-<div class="section" id="what-can-happen-with-this-loop">
-<h2><span class="section-number">15.50. </span>What can happen with this loop?<a class="headerlink" href="#what-can-happen-with-this-loop" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="what-can-happen-with-this-loop">
+<h2><span class="section-number">15.50. </span>What can happen with this loop?<a class="headerlink" href="#what-can-happen-with-this-loop" title="Permalink to this heading">#</a></h2>
 <p>What happens with code like this</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel for
     for (i=0; i&lt;n; i++) sum += a[i]*a[i];
@@ -2262,9 +1681,9 @@ and  OpenMP defines three choices of loop scheduling:</p>
     for (i=0; i&lt;n; i++) sum += a[i]*a[i];
 </pre></div>
 </div>
-</div>
-<div class="section" id="inner-product">
-<h2><span class="section-number">15.51. </span>Inner product<a class="headerlink" href="#inner-product" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="inner-product">
+<h2><span class="section-number">15.51. </span>Inner product<a class="headerlink" href="#inner-product" title="Permalink to this heading">#</a></h2>
 <p>1</p>
 <p>&lt;
 &lt;
@@ -2290,9 +1709,9 @@ K</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="different-threads-do-different-tasks">
-<h2><span class="section-number">15.52. </span>Different threads do different tasks<a class="headerlink" href="#different-threads-do-different-tasks" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="different-threads-do-different-tasks">
+<h2><span class="section-number">15.52. </span>Different threads do different tasks<a class="headerlink" href="#different-threads-do-different-tasks" title="Permalink to this heading">#</a></h2>
 <p>Different threads do different tasks independently, each section is executed by one thread.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel
     {
@@ -2308,9 +1727,9 @@ K</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="single-execution">
-<h2><span class="section-number">15.53. </span>Single execution<a class="headerlink" href="#single-execution" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="single-execution">
+<h2><span class="section-number">15.53. </span>Single execution<a class="headerlink" href="#single-execution" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp single { ... }
 </pre></div>
 </div>
@@ -2320,9 +1739,9 @@ K</p>
 </pre></div>
 </div>
 <p>Code executed by the master thread, guaranteed and no implicit barrier at the end.</p>
-</div>
-<div class="section" id="coordination-and-synchronization">
-<h2><span class="section-number">15.54. </span>Coordination and synchronization<a class="headerlink" href="#coordination-and-synchronization" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="coordination-and-synchronization">
+<h2><span class="section-number">15.54. </span>Coordination and synchronization<a class="headerlink" href="#coordination-and-synchronization" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp barrier
 </pre></div>
 </div>
@@ -2343,9 +1762,9 @@ The form</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp critical
 </pre></div>
 </div>
-</div>
-<div class="section" id="data-scope">
-<h2><span class="section-number">15.55. </span>Data scope<a class="headerlink" href="#data-scope" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="data-scope">
+<h2><span class="section-number">15.55. </span>Data scope<a class="headerlink" href="#data-scope" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>OpenMP data scope attribute clauses:</p></li>
 <li><p><strong>shared</strong></p></li>
@@ -2359,18 +1778,18 @@ The form</p>
 <li><p>define how and which variables are transferred to a parallel region (and back)</p></li>
 <li><p>define which variables are visible to all threads in a parallel region, and which variables are privately allocated to each thread</p></li>
 </ul>
-</div>
-<div class="section" id="some-remarks">
-<h2><span class="section-number">15.56. </span>Some remarks<a class="headerlink" href="#some-remarks" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="some-remarks">
+<h2><span class="section-number">15.56. </span>Some remarks<a class="headerlink" href="#some-remarks" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>When entering a parallel region, the <strong>private</strong> clause ensures each thread having its own new variable instances. The new variables are assumed to be uninitialized.</p></li>
 <li><p>A shared variable exists in only one memory location and all threads can read and write to that address. It is the programmer’s responsibility to ensure that multiple threads properly access a shared variable.</p></li>
 <li><p>The <strong>firstprivate</strong> clause combines the behavior of the private clause with automatic initialization.</p></li>
 <li><p>The <strong>lastprivate</strong> clause combines the behavior of the private clause with a copy back (from the last loop iteration or section) to the original variable outside the parallel region.</p></li>
 </ul>
-</div>
-<div class="section" id="parallelizing-nested-for-loops">
-<h2><span class="section-number">15.57. </span>Parallelizing nested for-loops<a class="headerlink" href="#parallelizing-nested-for-loops" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="parallelizing-nested-for-loops">
+<h2><span class="section-number">15.57. </span>Parallelizing nested for-loops<a class="headerlink" href="#parallelizing-nested-for-loops" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Serial code</p></li>
 </ul>
@@ -2396,9 +1815,9 @@ The form</p>
 <li><p>Why not parallelize the inner loop? to save overhead of repeated thread forks-joins</p></li>
 <li><p>Why must <strong>j</strong> be private? To avoid race condition among the threads</p></li>
 </ul>
-</div>
-<div class="section" id="nested-parallelism">
-<h2><span class="section-number">15.58. </span>Nested parallelism<a class="headerlink" href="#nested-parallelism" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="nested-parallelism">
+<h2><span class="section-number">15.58. </span>Nested parallelism<a class="headerlink" href="#nested-parallelism" title="Permalink to this heading">#</a></h2>
 <p>When a thread in a parallel region encounters another parallel construct, it
 may create a new team of threads and become the master of the new
 team.</p>
@@ -2412,9 +1831,9 @@ team.</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="parallel-tasks">
-<h2><span class="section-number">15.59. </span>Parallel tasks<a class="headerlink" href="#parallel-tasks" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="parallel-tasks">
+<h2><span class="section-number">15.59. </span>Parallel tasks<a class="headerlink" href="#parallel-tasks" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp task 
     #pragma omp parallel shared(p_vec) private(i)
     {
@@ -2427,9 +1846,9 @@ team.</p>
        do_work (p_vec[i]);
 </pre></div>
 </div>
-</div>
-<div class="section" id="common-mistakes">
-<h2><span class="section-number">15.60. </span>Common mistakes<a class="headerlink" href="#common-mistakes" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="common-mistakes">
+<h2><span class="section-number">15.60. </span>Common mistakes<a class="headerlink" href="#common-mistakes" title="Permalink to this heading">#</a></h2>
 <p>Race condition</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    int nthreads;
     #pragma omp parallel shared(nthreads)
@@ -2450,9 +1869,9 @@ team.</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="not-all-computations-are-simple">
-<h2><span class="section-number">15.61. </span>Not all computations are simple<a class="headerlink" href="#not-all-computations-are-simple" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="not-all-computations-are-simple">
+<h2><span class="section-number">15.61. </span>Not all computations are simple<a class="headerlink" href="#not-all-computations-are-simple" title="Permalink to this heading">#</a></h2>
 <p>Not all computations are simple loops where the data can be evenly
 divided among threads without any dependencies between threads</p>
 <p>An example is finding the location and value of the largest element in an array</p>
@@ -2464,29 +1883,29 @@ divided among threads without any dependencies between threads</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="not-all-computations-are-simple-competing-threads">
-<h2><span class="section-number">15.62. </span>Not all computations are simple, competing threads<a class="headerlink" href="#not-all-computations-are-simple-competing-threads" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="not-all-computations-are-simple-competing-threads">
+<h2><span class="section-number">15.62. </span>Not all computations are simple, competing threads<a class="headerlink" href="#not-all-computations-are-simple-competing-threads" title="Permalink to this heading">#</a></h2>
 <p>All threads are potentially accessing and changing the same values, <strong>maxloc</strong> and <strong>maxval</strong>.</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>OpenMP provides several ways to coordinate access to shared values</p></li>
 </ol>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp atomic
 </pre></div>
 </div>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Only one thread at a time can execute the following statement (not block). We can use the critical option</p></li>
 </ol>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp critical
 </pre></div>
 </div>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Only one thread at a time can execute the following block</p></li>
 </ol>
 <p>Atomic may be faster than critical but depends on hardware</p>
-</div>
-<div class="section" id="how-to-find-the-max-value-using-openmp">
-<h2><span class="section-number">15.63. </span>How to find the max value using OpenMP<a class="headerlink" href="#how-to-find-the-max-value-using-openmp" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="how-to-find-the-max-value-using-openmp">
+<h2><span class="section-number">15.63. </span>How to find the max value using OpenMP<a class="headerlink" href="#how-to-find-the-max-value-using-openmp" title="Permalink to this heading">#</a></h2>
 <p>Write down the simplest algorithm and look carefully for race conditions. How would you handle them?
 The first step would be to parallelize as</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel for
@@ -2498,9 +1917,9 @@ The first step would be to parallelize as</p>
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="then-deal-with-the-race-conditions">
-<h2><span class="section-number">15.64. </span>Then deal with the race conditions<a class="headerlink" href="#then-deal-with-the-race-conditions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="then-deal-with-the-race-conditions">
+<h2><span class="section-number">15.64. </span>Then deal with the race conditions<a class="headerlink" href="#then-deal-with-the-race-conditions" title="Permalink to this heading">#</a></h2>
 <p>Write down the simplest algorithm and look carefully for race conditions. How would you handle them?
 The first step would be to parallelize as</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp parallel for
@@ -2517,22 +1936,22 @@ The first step would be to parallelize as</p>
 </div>
 <p>Exercise: write a code which implements this and give an estimate on performance. Perform several runs,
 with a serial code only with and without vectorization and compare the serial code with the one that  uses OpenMP. Run on different archictectures if you can.</p>
-</div>
-<div class="section" id="what-can-slow-down-openmp-performance">
-<h2><span class="section-number">15.65. </span>What can slow down OpenMP performance?<a class="headerlink" href="#what-can-slow-down-openmp-performance" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="what-can-slow-down-openmp-performance">
+<h2><span class="section-number">15.65. </span>What can slow down OpenMP performance?<a class="headerlink" href="#what-can-slow-down-openmp-performance" title="Permalink to this heading">#</a></h2>
 <p>Give it a thought!</p>
-</div>
-<div class="section" id="id3">
-<h2><span class="section-number">15.66. </span>What can slow down OpenMP performance?<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="id3">
+<h2><span class="section-number">15.66. </span>What can slow down OpenMP performance?<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
 <p>Performance poor because we insisted on keeping track of the maxval and location during the execution of the loop.</p>
 <ul class="simple">
 <li><p>We do not care about the value during the execution of the loop, just the value at the end.</p></li>
 </ul>
 <p>This is a common source of performance issues, namely the description of the method used to compute a value imposes additional, unnecessary requirements or properties</p>
 <p><strong>Idea: Have each thread find the maxloc in its own data, then combine and use temporary arrays indexed by thread number to hold the values found by each thread</strong></p>
-</div>
-<div class="section" id="find-the-max-location-for-each-thread">
-<h2><span class="section-number">15.67. </span>Find the max location for each thread<a class="headerlink" href="#find-the-max-location-for-each-thread" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="find-the-max-location-for-each-thread">
+<h2><span class="section-number">15.67. </span>Find the max location for each thread<a class="headerlink" href="#find-the-max-location-for-each-thread" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    int maxloc[MAX_THREADS], mloc;
     double maxval[MAX_THREADS], mval; 
     #pragma omp parallel shared(maxval,maxloc)
@@ -2549,9 +1968,9 @@ with a serial code only with and without vectorization and compare the serial co
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="combine-the-values-from-each-thread">
-<h2><span class="section-number">15.68. </span>Combine the values from each thread<a class="headerlink" href="#combine-the-values-from-each-thread" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="combine-the-values-from-each-thread">
+<h2><span class="section-number">15.68. </span>Combine the values from each thread<a class="headerlink" href="#combine-the-values-from-each-thread" title="Permalink to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #pragma omp flush (maxloc,maxval)
     #pragma omp master
       {
@@ -2568,9 +1987,9 @@ with a serial code only with and without vectorization and compare the serial co
 </pre></div>
 </div>
 <p>Note that we let the master process perform the last operation.</p>
-</div>
-<div class="section" id="matrix-matrix-multiplication">
-<h2><span class="section-number">15.69. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/ParallelizationOpenMP/OpenMPvectornorm.cpp">Matrix-matrix multiplication</a><a class="headerlink" href="#matrix-matrix-multiplication" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="matrix-matrix-multiplication">
+<h2><span class="section-number">15.69. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/ParallelizationOpenMP/OpenMPvectornorm.cpp">Matrix-matrix multiplication</a><a class="headerlink" href="#matrix-matrix-multiplication" title="Permalink to this heading">#</a></h2>
 <p>This code computes the norm of a vector using OpenMp</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    //  OpenMP program to compute vector norm by adding two other vectors
     #include &lt;cstdlib&gt;
@@ -2631,9 +2050,9 @@ with a serial code only with and without vectorization and compare the serial co
     }
 </pre></div>
 </div>
-</div>
-<div class="section" id="id4">
-<h2><span class="section-number">15.70. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/ParallelizationOpenMP/OpenMPmatrixmatrixmult.cpp">Matrix-matrix multiplication</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="id4">
+<h2><span class="section-number">15.70. </span><a class="reference external" href="https://github.com/CompPhysics/ComputationalPhysicsMSU/blob/master/doc/Programs/ParallelizationOpenMP/OpenMPmatrixmatrixmult.cpp">Matrix-matrix multiplication</a><a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
 <p>This the matrix-matrix multiplication code with plain c++ memory allocation using OpenMP</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    //  Matrix-matrix multiplication and Frobenius norm of a matrix with OpenMP
     #include &lt;cstdlib&gt;
@@ -2713,8 +2132,8 @@ with a serial code only with and without vectorization and compare the serial co
     }
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -2728,7 +2147,7 @@ with a serial code only with and without vectorization and compare the serial co
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./."
         },
         predefinedOutput: true
@@ -2736,37 +2155,161 @@ with a serial code only with and without vectorization and compare the serial co
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="vectorization.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">14. </span>Optimization and Vectorization</p>
-        </div>
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="vectorization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">14. </span>Optimization and Vectorization</p>
+      </div>
     </a>
 </div>
+                </footer>
+              
+            </div>
             
-        </div>
-    </div>
-    <footer class="footer">
-  <p>
-    
-      By Morten Hjorth-Jensen<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-much-is-parallelizable">15.1. How much is parallelizable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#today-s-situation-of-parallel-computing">15.2. Today’s situation of parallel computing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overhead-present-in-parallel-computing">15.3. Overhead present in parallel computing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelizing-a-sequential-algorithm">15.4. Parallelizing a sequential algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#strategies">15.5. Strategies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-run-mpi-on-a-pc-laptop-mpi">15.6. How do I run MPI on a PC/Laptop? MPI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-i-do-it-on-my-own-pc-laptop-openmp-installation">15.7. Can I do it on my own PC/laptop? OpenMP installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-mpi">15.8. Installing MPI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-mpi-and-using-qt">15.9. Installing MPI and using Qt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-message-passing-interface-mpi">15.10. What is Message Passing Interface (MPI)?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#going-parallel-with-mpi">15.11. Going Parallel with MPI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mpi-is-a-library">15.12. MPI is a library</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bindings-to-mpi-routines">15.13. Bindings to MPI routines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#communicator">15.14. Communicator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-of-the-most-important-mpi-functions">15.15. Some of the most  important MPI functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-first-mpi-c-c-program">15.16. The first MPI C/C++ program</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fortran-program">15.17. The Fortran program</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-1">15.18. Note 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ordered-output-with-mpibarrier">15.19. Ordered output with MPIBarrier</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-2">15.20. Note 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ordered-output">15.21. Ordered output</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-3">15.22. Note 3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#note-4">15.23. Note 4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-integration-in-parallel">15.24. Numerical integration in parallel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule-with-mpi-reduce">15.25. Dissection of trapezoidal rule with <span class="math notranslate nohighlight">\(MPI\_reduce\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dissection-of-trapezoidal-rule">15.26. Dissection of trapezoidal rule</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrating-with-mpi">15.27. Integrating with <strong>MPI</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-use-mpi-reduce">15.28. How do I use <span class="math notranslate nohighlight">\(MPI\_reduce\)</span>?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-mpi-reduce">15.29. More on <span class="math notranslate nohighlight">\(MPI\_Reduce\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">15.30. Dissection of trapezoidal rule</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">15.31. Dissection of trapezoidal rule</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quantum-dot-program-for-two-electrons">15.32. The quantum dot program for two electrons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-openmp">15.33. What is OpenMP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started-things-to-remember">15.34. Getting started, things to remember</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#openmp-syntax">15.35. OpenMP syntax</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#different-openmp-styles-of-parallelism">15.36. Different OpenMP styles of parallelism</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-code-structure">15.37. General code structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-region">15.38. Parallel region</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hello-world-not-again-please">15.39. Hello world, not again, please!</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hello-world-yet-another-variant">15.40. Hello world, yet another variant</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#important-openmp-library-routines">15.41. Important OpenMP library routines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#private-variables">15.42. Private variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#master-region">15.43. Master region</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-for-loop">15.44. Parallel for loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-computations-and-loops">15.45. Parallel computations and loops</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling-of-loop-computations">15.46. Scheduling of  loop computations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-code-for-loop-scheduling">15.47. Example code for loop scheduling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-code-for-loop-scheduling-guided-instead-of-dynamic">15.48. Example code for loop scheduling, guided instead of dynamic</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-parallel-for-loop">15.49. More on Parallel for loop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-can-happen-with-this-loop">15.50. What can happen with this loop?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-product">15.51. Inner product</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#different-threads-do-different-tasks">15.52. Different threads do different tasks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#single-execution">15.53. Single execution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coordination-and-synchronization">15.54. Coordination and synchronization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-scope">15.55. Data scope</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-remarks">15.56. Some remarks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelizing-nested-for-loops">15.57. Parallelizing nested for-loops</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nested-parallelism">15.58. Nested parallelism</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-tasks">15.59. Parallel tasks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-mistakes">15.60. Common mistakes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#not-all-computations-are-simple">15.61. Not all computations are simple</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#not-all-computations-are-simple-competing-threads">15.62. Not all computations are simple, competing threads</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-find-the-max-value-using-openmp">15.63. How to find the max value using OpenMP</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#then-deal-with-the-race-conditions">15.64. Then deal with the race conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-can-slow-down-openmp-performance">15.65. What can slow down OpenMP performance?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">15.66. What can slow down OpenMP performance?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#find-the-max-location-for-each-thread">15.67. Find the max location for each thread</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combine-the-values-from-each-thread">15.68. Combine the values from each thread</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-matrix-multiplication">15.69. Matrix-matrix multiplication</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">15.70. Matrix-matrix multiplication</a></li>
+</ul>
+  </nav></div>
 
-      </div>
-    </div>
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
   
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
