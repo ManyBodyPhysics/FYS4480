@@ -172,6 +172,8 @@ In particular we recommend the texts by
   - Friday: 
     - Full configuration interaction (FCI) theory
     - Lipkin model as an example of applications of FCI theory
+    - Video of lecture at https://youtu.be/fqWAeBiZ_zg
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember29.pdf
 - Lecture Material: These slides, handwritten notes
 - Fifth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek39.pdf
 
