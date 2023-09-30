@@ -1,61 +1,50 @@
 
-
 <!DOCTYPE html>
 
-
-<html lang="en" >
-
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>10. Variational Monte Carlo methods &#8212; Quantum Mechanics for Many-Particle Systems</title>
-  
-  
-  
-  <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
-  </script>
-  
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
-  
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
 
+    
+      
+
+    
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
-  
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -64,357 +53,416 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'vmcdmc';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="11. Gradient Methods" href="gradientmethods.html" />
     <link rel="prev" title="7. The Coupled Cluster Method" href="cc.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="en"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
 
-  
-  
-  <a class="skip-link" href="#main-content">Skip to main content</a>
-  
-  <div id="pst-scroll-pixel-helper"></div>
+    
 
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
-<form class="bd-search d-flex align-items-center"
-      action="search.html"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         id="search-input"
-         placeholder="Search this book..."
-         aria-label="Search this book..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
-  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
-  
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
-  
-  <div class="bd-container">
-    <div class="bd-container__inner bd-page-width">
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
       
-      <div class="bd-sidebar-primary bd-sidebar">
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
         
-
-  
-  <div class="sidebar-header-items sidebar-primary__section">
-    
-    
-    
-    
-  </div>
-  
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-  
-
-<a class="navbar-brand logo" href="intro.html">
-  
-  
-  
-  
-    
-    
       
-    
-    
-    <img src="_static/logo.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
-  
-  
-</a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item navbar-nav active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="intro.html">
-                    Quantum mechanics for many-particle systems
-                </a>
-            </li>
-        </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="schedule.html">Schedule</a></li>
-<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
-<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+      
+      <img src="_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Quantum Mechanics for Many-Particle Systems</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro.html">
+   Quantum mechanics for many-particle systems
+  </a>
+ </li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Basics of Many-Body Physics</span></p>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  About the course
+ </span>
+</p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="notation.html">1. Introduction to many-body physics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="secondquant.html">2. Introduction to  second quantization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fci.html">3. Full configuration interaction theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hfock.html">4. Hartree-Fock theory</a></li>
-
+ <li class="toctree-l1">
+  <a class="reference internal" href="schedule.html">
+   Schedule
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="teachers.html">
+   Instructor information
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="textbooks.html">
+   Textbooks
+  </a>
+ </li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock Methods</span></p>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Basics of Many-Body Physics
+ </span>
+</p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="mbpt.html">6. Many-body perturbation theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cc.html">7. The Coupled Cluster Method</a></li>
-
-
+ <li class="toctree-l1">
+  <a class="reference internal" href="notation.html">
+   1. Introduction to many-body physics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="secondquant.html">
+   2. Introduction to  second quantization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fci.html">
+   3. Full configuration interaction theory
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="hfock.html">
+   4. Hartree-Fock theory
+  </a>
+ </li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Stochastic Methods</span></p>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Post Hartree-Fock Methods
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="mbpt.html">
+   6. Many-body perturbation theory
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="cc.html">
+   7. The Coupled Cluster Method
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Stochastic Methods
+ </span>
+</p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">10. Variational Monte Carlo methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradientmethods.html">11. Gradient Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="resamplingmethods.html">12. Resampling Techniques, Bootstrap and Blocking</a></li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   10. Variational Monte Carlo methods
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="gradientmethods.html">
+   11. Gradient Methods
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="resamplingmethods.html">
+   12. Resampling Techniques, Bootstrap and Blocking
+  </a>
+ </li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning methods</span></p>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Deep Learning methods
+ </span>
+</p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="boltzmannmachines.html">13. Boltzmann Machines</a></li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="boltzmannmachines.html">
+   13. Boltzmann Machines
+  </a>
+ </li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Computational Aspects</span></p>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Computational Aspects
+ </span>
+</p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vectorization.html">14. Optimization and Vectorization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallelization.html">15. Parallelization with MPI and OpenMPI</a></li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="vectorization.html">
+   14. Optimization and Vectorization
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="parallelization.html">
+   15. Parallelization with MPI and OpenMPI
+  </a>
+ </li>
 </ul>
 
     </div>
-</nav></div>
-    </div>
-  
-  
-  <div class="sidebar-primary-items__end sidebar-primary__section">
-  </div>
-  
-  <div id="rtd-footer-container"></div>
+</nav> <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
 
-      </div>
-      
-      <main id="main-content" class="bd-main">
-        
-        
-
-<div class="sbt-scroll-pixel-helper"></div>
-
-          <div class="bd-content">
-            <div class="bd-article-container">
-              
-              <div class="bd-header-article">
-<div class="header-article-items header-article__inner">
-  
-    <div class="header-article-items__start">
-      
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <span class="fa-solid fa-bars"></span>
-</label></div>
-      
-    </div>
-  
-  
-    <div class="header-article-items__end">
-      
-        <div class="header-article-item">
-
-<div class="article-header-buttons">
-
-
-
-
-
-<div class="dropdown dropdown-launch-buttons">
-  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
-    <i class="fas fa-rocket"></i>
-  </button>
-  <ul class="dropdown-menu">
-      
-      
-      
-      <li><a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/vmcdmc.ipynb" target="_blank"
-   class="btn btn-sm dropdown-item"
-   title="Launch onBinder"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  
-    <img src="_static/images/logo_binder.svg">
-  </span>
-<span class="btn__text-container">Binder</span>
-</a>
-</li>
-      
-  </ul>
 </div>
 
 
+          
 
 
-
-
-<div class="dropdown dropdown-download-buttons">
-  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
-    <i class="fas fa-download"></i>
-  </button>
-  <ul class="dropdown-menu">
-      
-      
-      
-      <li><a href="_sources/vmcdmc.ipynb" target="_blank"
-   class="btn btn-sm btn-download-source-button dropdown-item"
-   title="Download source file"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="btn__text-container">.ipynb</span>
-</a>
-</li>
-      
-      
-      
-      
-      <li>
-<button onclick="window.print()"
-  class="btn btn-sm btn-download-pdf-button dropdown-item"
-  title="Print to PDF"
-  data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="btn__text-container">.pdf</span>
-</button>
-</li>
-      
-  </ul>
-</div>
-
-
-
-
-<button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button"
-  title="Fullscreen mode"
-  data-bs-placement="bottom" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
-  </button>
-`);
-</script>
-
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</label>
-</div></div>
-      
-    </div>
-  
-</div>
-</div>
-              
-              
-
-<div id="jb-print-docs-body" class="onlyprint">
-    <h1>Variational Monte Carlo methods</h1>
-    <!-- Table of contents -->
-    <div id="print-main-content">
-        <div id="jb-print-toc">
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
             
-            <div>
-                <h2> Contents </h2>
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/vmcdmc.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
             </div>
-            <nav aria-label="Page">
+            <nav id="bd-toc-nav" aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">10.1. Quantum Monte Carlo Motivation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">10.1.1. Quantum Monte Carlo: hydrogen atom</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">10.1.2. A simple Python code that solves the two-boson or two-fermion case in two-dimensions</a></li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">
+   10.1. Quantum Monte Carlo Motivation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">
+     10.1.1. Quantum Monte Carlo: hydrogen atom
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">
+     10.1.2. A simple Python code that solves the two-boson or two-fermion case in two-dimensions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">
+   10.2. Quantum Monte Carlo: the helium atom
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-metropolis-algorithm">
+   10.3. The Metropolis algorithm
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#importance-sampling">
+   10.4. Importance sampling
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#importance-sampling-program-elements">
+   10.5. Importance sampling, program elements
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">
+   10.6. Importance sampling, Fokker-Planck and Langevin equations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">
+   10.7. Code example for two electrons in a quantum dots
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bringing-the-gradient-optmization">
+     10.7.1. Bringing the gradient optmization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">
+   10.8. VMC for fermions: Efficient calculation of Slater determinants
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">
+     10.8.1. The gradient and the Laplacian
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">
+     10.8.2. Expectation value of the kinetic energy
+    </a>
+   </li>
+  </ul>
+ </li>
 </ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">10.2. Quantum Monte Carlo: the helium atom</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-metropolis-algorithm">10.3. The Metropolis algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">10.4. Importance sampling</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-program-elements">10.5. Importance sampling, program elements</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">10.6. Importance sampling, Fokker-Planck and Langevin equations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">10.7. Code example for two electrons in a quantum dots</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bringing-the-gradient-optmization">10.7.1. Bringing the gradient optmization</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">10.8. VMC for fermions: Efficient calculation of Slater determinants</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">10.8.1. The gradient and the Laplacian</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">10.8.2. Expectation value of the kinetic energy</a></li>
-</ul>
-</li>
-</ul>
+
             </nav>
         </div>
     </div>
 </div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Variational Monte Carlo methods</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">
+   10.1. Quantum Monte Carlo Motivation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">
+     10.1.1. Quantum Monte Carlo: hydrogen atom
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">
+     10.1.2. A simple Python code that solves the two-boson or two-fermion case in two-dimensions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">
+   10.2. Quantum Monte Carlo: the helium atom
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-metropolis-algorithm">
+   10.3. The Metropolis algorithm
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#importance-sampling">
+   10.4. Importance sampling
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#importance-sampling-program-elements">
+   10.5. Importance sampling, program elements
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">
+   10.6. Importance sampling, Fokker-Planck and Langevin equations
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">
+   10.7. Code example for two electrons in a quantum dots
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#bringing-the-gradient-optmization">
+     10.7.1. Bringing the gradient optmization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">
+   10.8. VMC for fermions: Efficient calculation of Slater determinants
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">
+     10.8.1. The gradient and the Laplacian
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">
+     10.8.2. Expectation value of the kinetic energy
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
 
-              
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
                 
-<div id="searchbox"></div>
-                <article class="bd-article" role="main">
-                  
   <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
-doconce format html vmcdmc.do.txt  --><section class="tex2jax_ignore mathjax_ignore" id="variational-monte-carlo-methods">
-<h1><span class="section-number">10. </span>Variational Monte Carlo methods<a class="headerlink" href="#variational-monte-carlo-methods" title="Permalink to this heading">#</a></h1>
-<section id="quantum-monte-carlo-motivation">
-<h2><span class="section-number">10.1. </span>Quantum Monte Carlo Motivation<a class="headerlink" href="#quantum-monte-carlo-motivation" title="Permalink to this heading">#</a></h2>
+doconce format html vmcdmc.do.txt  --><div class="tex2jax_ignore mathjax_ignore section" id="variational-monte-carlo-methods">
+<h1><span class="section-number">10. </span>Variational Monte Carlo methods<a class="headerlink" href="#variational-monte-carlo-methods" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="quantum-monte-carlo-motivation">
+<h2><span class="section-number">10.1. </span>Quantum Monte Carlo Motivation<a class="headerlink" href="#quantum-monte-carlo-motivation" title="Permalink to this headline">¶</a></h2>
 <p>We start with the variational principle.
 Given a hamiltonian <span class="math notranslate nohighlight">\(H\)</span> and a trial wave function <span class="math notranslate nohighlight">\(\Psi_T\)</span>, the variational principle states that the expectation value of <span class="math notranslate nohighlight">\(\langle H \rangle\)</span>, defined through</p>
 <div class="math notranslate nohighlight">
@@ -523,8 +571,8 @@ E[H(\boldsymbol{\alpha})]=\int P(\boldsymbol{R})E_L(\boldsymbol{R}) d\boldsymbol
 </ul>
 <p>Observe that the jumping in space is governed by the variable <em>step</em>. This is Called brute-force sampling.
 Need importance sampling to get more relevant sampling, see lectures below.</p>
-<section id="quantum-monte-carlo-hydrogen-atom">
-<h3><span class="section-number">10.1.1. </span>Quantum Monte Carlo: hydrogen atom<a class="headerlink" href="#quantum-monte-carlo-hydrogen-atom" title="Permalink to this heading">#</a></h3>
+<div class="section" id="quantum-monte-carlo-hydrogen-atom">
+<h3><span class="section-number">10.1.1. </span>Quantum Monte Carlo: hydrogen atom<a class="headerlink" href="#quantum-monte-carlo-hydrogen-atom" title="Permalink to this headline">¶</a></h3>
 <p>The radial Schroedinger equation for the hydrogen atom can be
 written as</p>
 <div class="math notranslate nohighlight">
@@ -686,9 +734,9 @@ function is</p>
 \label{_auto4} \tag{10}
 \end{equation}
 \end{split}\]</div>
-</section>
-<section id="a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">
-<h3><span class="section-number">10.1.2. </span>A simple Python code that solves the two-boson or two-fermion case in two-dimensions<a class="headerlink" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions" title="Permalink to this heading">#</a></h3>
+</div>
+<div class="section" id="a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">
+<h3><span class="section-number">10.1.2. </span>A simple Python code that solves the two-boson or two-fermion case in two-dimensions<a class="headerlink" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -805,60 +853,37 @@ function is</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">get_ipython</span><span class="p">()</span><span class="o">.</span><span class="n">run_line_magic</span><span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span><span class="p">,</span> <span class="s1">&#39;inline&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># Importing various packages</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">exp</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 90&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">88</span> <span class="n">AlphaValues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">MaxVariations</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">89</span> <span class="n">BetaValues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">MaxVariations</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">90</span> <span class="p">(</span><span class="n">Energies</span><span class="p">,</span> <span class="n">AlphaValues</span><span class="p">,</span> <span class="n">BetaValues</span><span class="p">)</span> <span class="o">=</span> <span class="n">MonteCarloSampling</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">92</span> <span class="c1"># Prepare for plots</span>
+<span class="g g-Whitespace">     </span><span class="mi">93</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
-<span class="nn">File ~/miniforge3/lib/python3.9/site-packages/IPython/core/interactiveshell.py:2432,</span> in <span class="ni">InteractiveShell.run_line_magic</span><span class="nt">(self, magic_name, line, _stack_depth)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2430</span>     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;local_ns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_local_scope</span><span class="p">(</span><span class="n">stack_depth</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2431</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">builtin_trap</span><span class="p">:</span>
-<span class="ne">-&gt; </span><span class="mi">2432</span>     <span class="n">result</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2434</span> <span class="c1"># The code below prevents the output from being displayed</span>
-<span class="g g-Whitespace">   </span><span class="mi">2435</span> <span class="c1"># when using magics with decorator @output_can_be_silenced</span>
-<span class="g g-Whitespace">   </span><span class="mi">2436</span> <span class="c1"># when the last Python token in the expression is a &#39;;&#39;.</span>
-<span class="g g-Whitespace">   </span><span class="mi">2437</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">magic</span><span class="o">.</span><span class="n">MAGIC_OUTPUT_CAN_BE_SILENCED</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+<span class="nn">Input In [1],</span> in <span class="ni">MonteCarloSampling</span><span class="nt">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">62</span>     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">63</span>         <span class="n">PositionNew</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">PositionOld</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">StepSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">.5</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">64</span> <span class="n">wfnew</span> <span class="o">=</span> <span class="n">WaveFunction</span><span class="p">(</span><span class="n">PositionNew</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">66</span> <span class="c1">#Metropolis test to see whether we accept the move</span>
+<span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="k">if</span> <span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">wfnew</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">wfold</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
 
-<span class="nn">File ~/miniforge3/lib/python3.9/site-packages/IPython/core/magics/pylab.py:99,</span> in <span class="ni">PylabMagics.matplotlib</span><span class="nt">(self, line)</span>
-<span class="g g-Whitespace">     </span><span class="mi">97</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available matplotlib backends: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">backends_list</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">98</span> <span class="k">else</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">99</span>     <span class="n">gui</span><span class="p">,</span> <span class="n">backend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">enable_matplotlib</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">gui</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">gui</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_show_matplotlib_backend</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">gui</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+<span class="nn">Input In [1],</span> in <span class="ni">WaveFunction</span><span class="nt">(r, alpha, beta)</span>
+<span class="g g-Whitespace">     </span><span class="mi">15</span> <span class="n">r1</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+<span class="g g-Whitespace">     </span><span class="mi">16</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+<span class="ne">---&gt; </span><span class="mi">17</span> <span class="n">r12</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="n">deno</span> <span class="o">=</span> <span class="n">r12</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">beta</span><span class="o">*</span><span class="n">r12</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">alpha</span><span class="o">*</span><span class="p">(</span><span class="n">r1</span><span class="o">+</span><span class="n">r2</span><span class="p">)</span><span class="o">+</span><span class="n">deno</span><span class="p">)</span>
 
-<span class="nn">File ~/miniforge3/lib/python3.9/site-packages/IPython/core/interactiveshell.py:3606,</span> in <span class="ni">InteractiveShell.enable_matplotlib</span><span class="nt">(self, gui)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3585</span> <span class="k">def</span> <span class="nf">enable_matplotlib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gui</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="g g-Whitespace">   </span><span class="mi">3586</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Enable interactive matplotlib and inline figure support.</span>
-<span class="g g-Whitespace">   </span><span class="mi">3587</span><span class="sd"> </span>
-<span class="g g-Whitespace">   </span><span class="mi">3588</span><span class="sd">     This takes the following steps:</span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">   </span><span class="mi">3604</span><span class="sd">         display figures inline.</span>
-<span class="g g-Whitespace">   </span><span class="mi">3605</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">-&gt; </span><span class="mi">3606</span>     <span class="kn">from</span> <span class="nn">matplotlib_inline.backend_inline</span> <span class="kn">import</span> <span class="n">configure_inline_support</span>
-<span class="g g-Whitespace">   </span><span class="mi">3608</span>     <span class="kn">from</span> <span class="nn">IPython.core</span> <span class="kn">import</span> <span class="n">pylabtools</span> <span class="k">as</span> <span class="n">pt</span>
-<span class="g g-Whitespace">   </span><span class="mi">3609</span>     <span class="n">gui</span><span class="p">,</span> <span class="n">backend</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">find_gui_and_backend</span><span class="p">(</span><span class="n">gui</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pylab_gui_select</span><span class="p">)</span>
-
-<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">matplotlib_inline</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">backend_inline</span><span class="p">,</span> <span class="n">config</span>  <span class="c1"># noqa</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.6&quot;</span>  <span class="c1"># noqa</span>
-
-<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">matplotlib_inline</span><span class="o">/</span><span class="n">backend_inline</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">6</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span><span class="w"> </span><span class="sd">&quot;&quot;&quot;A matplotlib backend for publishing figures via display_data&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="c1"># Copyright (c) IPython Development Team.</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1"># Distributed under the terms of the BSD 3-Clause License.</span>
-<span class="ne">----&gt; </span><span class="mi">6</span> <span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">colors</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="kn">from</span> <span class="nn">matplotlib.backends</span> <span class="kn">import</span> <span class="n">backend_agg</span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;matplotlib&#39;
+<span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="quantum-monte-carlo-the-helium-atom">
-<h2><span class="section-number">10.2. </span>Quantum Monte Carlo: the helium atom<a class="headerlink" href="#quantum-monte-carlo-the-helium-atom" title="Permalink to this heading">#</a></h2>
+</div>
+</div>
+<div class="section" id="quantum-monte-carlo-the-helium-atom">
+<h2><span class="section-number">10.2. </span>Quantum Monte Carlo: the helium atom<a class="headerlink" href="#quantum-monte-carlo-the-helium-atom" title="Permalink to this headline">¶</a></h2>
 <p>The helium atom consists of two electrons and a nucleus with
 charge <span class="math notranslate nohighlight">\(Z=2\)</span>.
 The contribution<br />
@@ -1049,9 +1074,9 @@ the <span class="math notranslate nohighlight">\(2s\)</span> hydrogen-orbital  (
 </div>
 </div>
 <p>With some practice this allows one to be able to check one’s own calculation and translate automatically into code lines.</p>
-</section>
-<section id="the-metropolis-algorithm">
-<h2><span class="section-number">10.3. </span>The Metropolis algorithm<a class="headerlink" href="#the-metropolis-algorithm" title="Permalink to this heading">#</a></h2>
+</div>
+<div class="section" id="the-metropolis-algorithm">
+<h2><span class="section-number">10.3. </span>The Metropolis algorithm<a class="headerlink" href="#the-metropolis-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>The Metropolis algorithm , see <a class="reference external" href="http://scitation.aip.org/content/aip/journal/jcp/21/6/10.1063/1.1699114">the original article</a> was invented by Metropolis et. al
 and is often simply called the Metropolis algorithm.
 It is a method to sample a normalized probability
@@ -1146,9 +1171,9 @@ By construction, the correct probability distribution is a right eigenvector
 with eigenvalue 1. Therefore, for the Metropolis method to converge
 to this result, we must show that <span class="math notranslate nohighlight">\(M\)</span> has only one eigenvalue with this
 magnitude, and all other eigenvalues are smaller.</p>
-</section>
-<section id="importance-sampling">
-<h2><span class="section-number">10.4. </span>Importance sampling<a class="headerlink" href="#importance-sampling" title="Permalink to this heading">#</a></h2>
+</div>
+<div class="section" id="importance-sampling">
+<h2><span class="section-number">10.4. </span>Importance sampling<a class="headerlink" href="#importance-sampling" title="Permalink to this headline">¶</a></h2>
 <p>We need to replace the brute force
 Metropolis algorithm with a walk in coordinate space biased by the trial wave function.
 This approach is based on the Fokker-Planck equation and the Langevin equation for generating a trajectory in coordinate space.  The link between the Fokker-Planck equation and the Langevin equations are explained, only partly, in the slides below.
@@ -1211,9 +1236,9 @@ A(y,x) = \mathrm{min}(1,q(y,x))),
 \[
 q(y,x) = \frac{G(x,y,\Delta t)|\Psi_T(y)|^2}{G(y,x,\Delta t)|\Psi_T(x)|^2}
 \]</div>
-</section>
-<section id="importance-sampling-program-elements">
-<h2><span class="section-number">10.5. </span>Importance sampling, program elements<a class="headerlink" href="#importance-sampling-program-elements" title="Permalink to this heading">#</a></h2>
+</div>
+<div class="section" id="importance-sampling-program-elements">
+<h2><span class="section-number">10.5. </span>Importance sampling, program elements<a class="headerlink" href="#importance-sampling-program-elements" title="Permalink to this headline">¶</a></h2>
 <p>The general derivative formula of the Jastrow factor is (the subscript <span class="math notranslate nohighlight">\(C\)</span> stands for Correlation)</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1406,9 +1431,9 @@ we have</p>
 \sum_{ij\ne k}\frac{(\mathbf{r}_k-\mathbf{r}_i)(\mathbf{r}_k-\mathbf{r}_j)}{r_{ki}r_{kj}}f'(r_{ki})f'(r_{kj})+
 \sum_{j\ne k}\left( f''(r_{kj})+\frac{2}{r_{kj}}f'(r_{kj})\right)
 \]</div>
-</section>
-<section id="importance-sampling-fokker-planck-and-langevin-equations">
-<h2><span class="section-number">10.6. </span>Importance sampling, Fokker-Planck and Langevin equations<a class="headerlink" href="#importance-sampling-fokker-planck-and-langevin-equations" title="Permalink to this heading">#</a></h2>
+</div>
+<div class="section" id="importance-sampling-fokker-planck-and-langevin-equations">
+<h2><span class="section-number">10.6. </span>Importance sampling, Fokker-Planck and Langevin equations<a class="headerlink" href="#importance-sampling-fokker-planck-and-langevin-equations" title="Permalink to this headline">¶</a></h2>
 <p>A stochastic process is simply a function of two variables, one is the time,
 the other is a stochastic variable <span class="math notranslate nohighlight">\(X\)</span>, defined by specifying</p>
 <ul class="simple">
@@ -1761,9 +1786,9 @@ assumptions seem to be appropriate</p>
 D= \frac{kT}{m\xi }
 \]</div>
 <p>where we have used <span class="math notranslate nohighlight">\(\langle (\mathbf{r}(t)-\mathbf{r}_{0})^{2}\rangle =6Dt\)</span>.</p>
-</section>
-<section id="code-example-for-two-electrons-in-a-quantum-dots">
-<h2><span class="section-number">10.7. </span>Code example for two electrons in a quantum dots<a class="headerlink" href="#code-example-for-two-electrons-in-a-quantum-dots" title="Permalink to this heading">#</a></h2>
+</div>
+<div class="section" id="code-example-for-two-electrons-in-a-quantum-dots">
+<h2><span class="section-number">10.7. </span>Code example for two electrons in a quantum dots<a class="headerlink" href="#code-example-for-two-electrons-in-a-quantum-dots" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2-electron VMC code for 2dim quantum dot with importance sampling</span>
@@ -1919,8 +1944,8 @@ D= \frac{kT}{m\xi }
 </div>
 </div>
 </div>
-<section id="bringing-the-gradient-optmization">
-<h3><span class="section-number">10.7.1. </span>Bringing the gradient optmization<a class="headerlink" href="#bringing-the-gradient-optmization" title="Permalink to this heading">#</a></h3>
+<div class="section" id="bringing-the-gradient-optmization">
+<h3><span class="section-number">10.7.1. </span>Bringing the gradient optmization<a class="headerlink" href="#bringing-the-gradient-optmization" title="Permalink to this headline">¶</a></h3>
 <p>The simple one-particle case in a harmonic oscillator trap</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2079,10 +2104,10 @@ D= \frac{kT}{m\xi }
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="vmc-for-fermions-efficient-calculation-of-slater-determinants">
-<h2><span class="section-number">10.8. </span>VMC for fermions: Efficient calculation of Slater determinants<a class="headerlink" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants" title="Permalink to this heading">#</a></h2>
+</div>
+</div>
+<div class="section" id="vmc-for-fermions-efficient-calculation-of-slater-determinants">
+<h2><span class="section-number">10.8. </span>VMC for fermions: Efficient calculation of Slater determinants<a class="headerlink" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants" title="Permalink to this headline">¶</a></h2>
 <p>The potentially most time-consuming part is the
 evaluation of the gradient and the Laplacian of an <span class="math notranslate nohighlight">\(N\)</span>-particle  Slater
 determinant.</p>
@@ -2171,8 +2196,8 @@ C_{ij}(\mathbf{r}^{\mathrm{new}}) = C_{ij}(\mathbf{r}^{\mathrm{old}})\quad
 \label{_auto5} \tag{15}
 \end{equation}
 \]</div>
-<p>Inserting this into the numerator of eq. (<span class="xref myst">14</span>)
-and using eq. (<span class="xref myst">12</span>) to substitute the cofactors
+<p>Inserting this into the numerator of eq. (<a class="reference external" href="#eq:detratio_cofactors">14</a>)
+and using eq. (<a class="reference external" href="#eq:inverse_cofactor">12</a>) to substitute the cofactors
 with the elements of the inverse matrix, we get:</p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto6"></div>
@@ -2190,7 +2215,7 @@ d_{ji}^{-1}(\mathbf{r}^{\mathrm{old}})}
 \label{_auto6} \tag{16}
 \end{equation}
 \]</div>
-<p>Now by eq. (<span class="xref myst">13</span>) the denominator of the rightmost
+<p>Now by eq. (<a class="reference external" href="#eq:unity_explicitely">13</a>) the denominator of the rightmost
 expression must be unity, so that we finally arrive at:</p>
 <!-- Equation labels as ordinary links -->
 <div id="eq:detratio_inverse"></div>
@@ -2265,8 +2290,8 @@ involving derivatives. It turns
 out that differentiating the Slater determinant with respect
 to the coordinates of a single particle  <span class="math notranslate nohighlight">\(\mathbf{r}_i\)</span> changes only the
 <em>i</em>-th row of the corresponding Slater matrix.</p>
-<section id="the-gradient-and-the-laplacian">
-<h3><span class="section-number">10.8.1. </span>The gradient and the Laplacian<a class="headerlink" href="#the-gradient-and-the-laplacian" title="Permalink to this heading">#</a></h3>
+<div class="section" id="the-gradient-and-the-laplacian">
+<h3><span class="section-number">10.8.1. </span>The gradient and the Laplacian<a class="headerlink" href="#the-gradient-and-the-laplacian" title="Permalink to this headline">¶</a></h3>
 <p>The gradient and the Laplacian can therefore be calculated as follows:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -2420,9 +2445,9 @@ As there are <span class="math notranslate nohighlight">\(Nd\)</span> independen
 for the gradient (quantum force) and <span class="math notranslate nohighlight">\(Nd\)</span> for the Laplacian (kinetic energy).
 With the updating algorithm we need only to invert the Slater
 determinant matrix once. This can be done by standard LU decomposition methods.</p>
-</section>
-<section id="expectation-value-of-the-kinetic-energy">
-<h3><span class="section-number">10.8.2. </span>Expectation value of the kinetic energy<a class="headerlink" href="#expectation-value-of-the-kinetic-energy" title="Permalink to this heading">#</a></h3>
+</div>
+<div class="section" id="expectation-value-of-the-kinetic-energy">
+<h3><span class="section-number">10.8.2. </span>Expectation value of the kinetic energy<a class="headerlink" href="#expectation-value-of-the-kinetic-energy" title="Permalink to this headline">¶</a></h3>
 <p>The expectation value of the kinetic energy expressed in atomic units for electron <span class="math notranslate nohighlight">\(i\)</span> is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -2563,9 +2588,9 @@ matrix <span class="math notranslate nohighlight">\(\hat{D}^{-1}\)</span> evalua
 an operation has a time scaling of <span class="math notranslate nohighlight">\(O(N)\)</span>. The only extra thing we
 need to do is to maintain the inverse matrix
 <span class="math notranslate nohighlight">\(\hat{D}^{-1}(\mathbf{x}^{\mathrm{old}})\)</span>.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -2579,7 +2604,7 @@ need to do is to maintain the inverse matrix
             mode: "python"
         },
         kernelOptions: {
-            name: "python3",
+            kernelName: "python3",
             path: "./."
         },
         predefinedOutput: true
@@ -2587,119 +2612,44 @@ need to do is to maintain the inverse matrix
     </script>
     <script>kernelName = 'python3'</script>
 
-                </article>
+              </div>
               
-
-              
-              
-              
-              
-                <footer class="prev-next-footer">
-                  <!-- Previous / next buttons -->
-<div class="prev-next-area">
-    <a class="left-prev"
-       href="cc.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">7. </span>The Coupled Cluster Method</p>
-      </div>
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="cc.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title"><span class="section-number">7. </span>The Coupled Cluster Method</p>
+        </div>
     </a>
-    <a class="right-next"
-       href="gradientmethods.html"
-       title="next page">
-      <div class="prev-next-info">
+    <a class='right-next' id="next-link" href="gradientmethods.html" title="next page">
+    <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title"><span class="section-number">11. </span>Gradient Methods</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
+    </div>
+    <i class="fas fa-angle-right"></i>
     </a>
 </div>
-                </footer>
-              
-            </div>
             
-            
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">10.1. Quantum Monte Carlo Motivation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">10.1.1. Quantum Monte Carlo: hydrogen atom</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">10.1.2. A simple Python code that solves the two-boson or two-fermion case in two-dimensions</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">10.2. Quantum Monte Carlo: the helium atom</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-metropolis-algorithm">10.3. The Metropolis algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">10.4. Importance sampling</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-program-elements">10.5. Importance sampling, program elements</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">10.6. Importance sampling, Fokker-Planck and Langevin equations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">10.7. Code example for two electrons in a quantum dots</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bringing-the-gradient-optmization">10.7.1. Bringing the gradient optmization</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">10.8. VMC for fermions: Efficient calculation of Slater determinants</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">10.8.1. The gradient and the Laplacian</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">10.8.2. Expectation value of the kinetic energy</a></li>
-</ul>
-</li>
-</ul>
-  </nav></div>
-
-</div></div>
-              
-            
-          </div>
-          <footer class="bd-footer-content">
-            
-<div class="bd-footer-content__inner container">
-  
-  <div class="footer-item">
-    
-<p class="component-author">
-By Morten Hjorth-Jensen
-</p>
-
-  </div>
-  
-  <div class="footer-item">
-    
-  <p class="copyright">
-    
-      © Copyright 2022.
-      <br/>
-    
-  </p>
-
-  </div>
-  
-  <div class="footer-item">
-    
-  </div>
-  
-  <div class="footer-item">
-    
-  </div>
-  
-</div>
-          </footer>
-        
-
-      </main>
+        </div>
     </div>
-  </div>
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+    <footer class="footer">
+  <p>
+    
+      By Morten Hjorth-Jensen<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
+</main>
 
-  <footer class="bd-footer">
-  </footer>
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
   </body>
 </html>
