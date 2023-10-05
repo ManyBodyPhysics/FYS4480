@@ -182,6 +182,8 @@ In particular we recommend the texts by
   - Thursday:
     - Repetition  of Full Configuration Interaction theory
     - Start Hartree-Fock theory
+    - Video of lecture  at https://youtu.be/Y0UyyBnCMSw
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober5.pdf    
   - Friday: 
     - Hartree-Fock theory and stability of equations
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, sections 3.1-3.4
