@@ -95,6 +95,8 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober5.pdf    
   - Friday: 
     - Hartree-Fock theory and stability of equations
+    - Video of lecture at https://youtu.be/2NLRRblU7lU
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober6.pdf
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, sections 3.1-3.4
 - Sixth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek40.pdf
 
