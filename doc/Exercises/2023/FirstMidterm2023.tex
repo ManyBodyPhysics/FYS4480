@@ -1,0 +1,539 @@
+\documentclass[a4,10pt]{article}
+
+\listfiles               %  print all files needed to compile this document
+
+\usepackage{relsize,makeidx,color,setspace,amsmath,amsfonts,amssymb}
+\usepackage[table]{xcolor}
+\usepackage{bm,ltablex,microtype}
+
+\usepackage[pdftex]{graphicx}
+
+\usepackage{fancyvrb} % packages needed for verbatim environments
+
+\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{epic,eepic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[dvips]{epsfig}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{bezier}
+\usepackage{pstricks}
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+%\usepackage{braket}
+\usepackage[dvips]{graphicx}
+\usepackage{pst-plot}
+
+\newcommand{\One}{\hat{\mathbf{1}}}
+\newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle}
+\newcommand{\element}[3]
+    {\bra{#1}#2\ket{#3}}
+
+\newcommand{\normord}[1]{
+    \left\{#1\right\}
+}
+
+\usepackage{amsmath}
+
+\usepackage{lmodern}         % Latin Modern fonts derived from Computer Modern
+
+% Hyperlinks in PDF:
+\definecolor{linkcolor}{rgb}{0,0,0.4}
+\usepackage{hyperref}
+\hypersetup{
+    breaklinks=true,
+    colorlinks=true,
+    linkcolor=linkcolor,
+    urlcolor=linkcolor,
+    citecolor=black,
+    filecolor=black,
+    %filecolor=blue,
+    pdfmenubar=true,
+    pdftoolbar=true,
+    bookmarksdepth=3   % Uncomment (and tweak) for PDF bookmarks with more levels than the TOC
+    }
+%\hyperbaseurl{}   % hyperlinks are relative to this root
+
+\setcounter{tocdepth}{2}  % levels in table of contents
+
+% --- fancyhdr package for fancy headers ---
+\usepackage{fancyhdr}
+\fancyhf{} % sets both header and footer to nothing
+\renewcommand{\headrulewidth}{0pt}
+\pagestyle{fancy}
+
+
+% prevent orhpans and widows
+\clubpenalty = 10000
+\widowpenalty = 10000
+
+% --- end of standard preamble for documents ---
+
+
+% insert custom LaTeX commands...
+
+\raggedbottom
+\makeindex
+\usepackage[totoc]{idxlayout}   % for index in the toc
+\usepackage[nottoc]{tocbibind}  % for references/bibliography in the toc
+
+%-------------------- end preamble ----------------------
+
+\begin{document}
+
+% matching end for #ifdef PREAMBLE
+
+\newcommand{\exercisesection}[1]{\subsection*{#1}}
+
+
+% ------------------- main content ----------------------
+
+
+
+% ----------------- title -------------------------
+
+\thispagestyle{empty}
+
+\begin{center}
+{\LARGE\bf
+\begin{spacing}{1.25}
+First midterm FYS4480 – Quantum mechanics for many-particle systems, deadline October 22. Total score 100 points.
+\end{spacing}
+}
+\end{center}
+
+% ----------------- author(s) -------------------------
+
+\begin{center}
+{\bf \href{{http://www.uio.no/studier/emner/matnat/fys/FYS4480/index-eng.html}}{FYS4480 – Quantum mechanics for many-particle systems}}
+\end{center}
+
+    \begin{center}
+% List of all institutions:
+\centerline{{\small Department of Physics, University of Oslo, Norway}}
+\end{center}
+
+\section*{Introduction}
+
+We have already encountered in various weekly exercises a schematic model called the Lipkin model, see Nucl.
+Phys. {\bf 62} (1965) 188). We repeat here some of the basic properties for the interaction among  $4$
+fermions that can occupy two different energy levels. Each levels has degeneration $d=4$. The two levels have quantum numbers $\sigma=\pm 1$,
+with the upper level having  $\sigma=+1$ and energy
+$\varepsilon_{1}=
+\varepsilon/2$. The lower level  has $\sigma=-1$ and energy
+$\varepsilon_{2}=-\varepsilon/2$. 
+In addition, the substates  of each level are characterized  
+by the quantum numbers $p=1,2,3,4$.
+
+We define the single-particle states
+\[
+\ket{u_{\sigma =-1,p}}=a_{-p}^{\dagger}\ket{0}
+\hspace{1cm}
+\ket{u_{\sigma =1,p}}=a_{+p}^{\dagger}\ket{0}.
+\]
+The single-particle states span an orthonormal basis.
+The Hamiltonian of the system is given by
+\[
+\begin{array}{ll}
+\hat{H}=&\hat{H}_{0}+\hat{H}_{1}+\hat{H}_{2}\\
+&\\
+\hat{H}_{0}=&\frac{1}{2}\varepsilon\sum_{\sigma ,p}\sigma
+a_{\sigma,p}^{\dagger}a_{\sigma ,p}\\
+&\\
+\hat{H}_{1}=&\frac{1}{2}V\sum_{\sigma ,p,p'}
+a_{\sigma,p}^{\dagger}a_{\sigma ,p'}^{\dagger}
+a_{-\sigma ,p'}a_{-\sigma ,p}\\
+&\\
+\hat{H}_{2}=&\frac{1}{2}W\sum_{\sigma ,p,p'}
+a_{\sigma,p}^{\dagger}a_{-\sigma ,p'}^{\dagger}
+a_{\sigma ,p'}a_{-\sigma ,p}\\
+&\\
+\end{array}
+\]
+where $V$ and $W$ are constants. The operator 
+$H_{1}$ can move pairs of fermions as shown in the left part of the fugure (a).
+while $H_{2}$ is a spin-exchange term.
+As shown in (b),
+$H_{2}$ moves a pair of fermions from a state $(p\sigma ,p' -\sigma)$ to a state
+$(p-\sigma ,p'\sigma)$.
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=.6\textwidth]{lipkin.png}
+\end{figure}
+
+It is a model which has been used widely in many-body physics and recently also in quantum computing, see for example \url{https://journals.aps.org/prc/abstract/10.1103/PhysRevC.104.024305}.
+In the weekly exercises we showed that the quasispin operators
+\[
+\begin{array}{ll}
+\hat{J}_{+}=&\sum_{p}
+a_{p+}^{\dagger}a_{p-}\\
+&\\
+\hat{J}_{-}=&\sum_{p}
+a_{p-}^{\dagger}a_{p+}\\
+&\\
+\hat{J}_{z}=&\frac{1}{2}\sum_{p\sigma}\sigma
+a_{p\sigma}^{\dagger}a_{p\sigma}\\
+&\\
+\hat{J}^{2}=&J_{+}J_{-}+J_{z}^{2}-J_{z}\\
+&\\
+\end{array}
+\]
+obey the commutation relations for angular momentum and that we could
+express $\hat{H}$ in terms of the above quasispin operators and the number operator
+\[
+\hat{N}=\sum_{p\sigma}
+a_{p\sigma}^{\dagger}a_{p\sigma}.
+\]
+
+\paragraph{Commutation relations (10pts)}
+Show that $\hat{H}$ commutes with $J^{2}$, viz., $J$ is a good quantum number. Does it commute with $J_z$?
+\paragraph{Wick's theorem}
+Consider thereafter a state with all four fermions in the lowest level (see the above figure).
+We can write this state as
+\[
+\ket{\Phi_0}=\ket{\Phi_{J_z=-2}} =a_{1-}^{\dagger}a_{2-}^{\dagger}
+a_{3-}^{\dagger}a_{4-}^{\dagger}\ket{0}.
+\]
+
+This state has $J_{z}=-2$ (convince yourself about this) and belongs
+to the set of possible projections of $J=2$.  We introduce the
+shorthand notation $\ket{J,J_z}$ for states with different values of
+spin $J$ and its projection $J_z$.  We can think of this as our
+computational basis for $J=2$ and all five projections $J_z$.  We will
+also assume that the state $\Phi_0$ can be considered as an ansatz for
+the ground state of the system.
+
+Use Wick's theorem to calculate the expectation values of
+\[
+\bra{\Phi_0}\hat{N}\ket{\Phi_0},
+\]
+and
+\[
+\bra{\Phi_0}\hat{H}\ket{\Phi_0}.
+\]
+
+\paragraph{Using quasispin operators (10pts)}
+Show that you can obtain the same result for
+\[
+\bra{\Phi_0}\hat{H}\ket{\Phi_0}.
+\]
+using the quasispin representation of the Hamiltonian (plus the number operator). 
+Comment your results.
+
+
+\paragraph{Setting up all basis states for $J=2$ (10pts)}
+
+We will now use the quasispin operators to construct all possible states with spin $J=2$ using as starting point a state with all fermions in the lowest
+single-particle state
+\[
+\ket{\Phi_{J_z=-2}} =a_{1-}^{\dagger}a_{2-}^{\dagger}
+a_{3-}^{\dagger}a_{4-}^{\dagger}\ket{0}.
+\]
+
+This state has $J_{z}=-2$ and belongs to the set of projections for
+$J=2$.  We will use the shorthand notation $\ket{J,J_z}$ for states
+with different spon $J$ and spin projection $J_z$.  The other possible
+states have $J_{z}=-1$, $J_{z}=0$, $J_{z}=1$ and $J_{z}=2$.
+
+Use the raising or lowering operators $J_{+}$ and $J_{-}$  in order to construct the 
+states for spin $J_{z}=-1$ $J_{z}=0$, $J_{z}=1$
+and $J_{z}=2$.
+The action of these two operators on a given state with spin $J$ and projection $J_z$
+is given by ($\hbar = 1$) by
+$J_+\ket{J,J_z}=\sqrt{J(J+1)-J_z(J_z+1)}\ket{J,J_z+1}$ and
+$J_-\ket{J,J_z}=\sqrt{J(J+1)-J_z(J_z-1)}\ket{J,J_z-1}$.
+
+
+
+\paragraph{Finding the eigenvalues using Full Configuration Interaction Theory (10pts)}
+
+Use the quasispin operators to construct the Hamiltonian matrix 
+  $H$ for the five-dimensional space that has total spin $J=2$ and spin projections $J_z=-2,-1,0,1,2$.
+Find thereafter the eigenvalues for the following parameter sets:
+\[
+\begin{array}{cccc}
+(1)&\varepsilon=2,&V=-1/3,&W=-1/4\\
+(2)&\varepsilon=2,&V=-4/3,&W=-1
+\end{array}
+\]
+Which state is the ground state? Comment your results in terms of the coefficients of the various eigenfunctions.
+
+
+
+\paragraph{Hartree-Fock theory, general part (15pts)}
+The standard way to perform a Hartree-Fock calculation is to
+expand the single-particle functions in a known basis  and vary the coefficients,  that is, the new function single-particle wave function $|p\rangle$ is written as a linear expansion in terms of a fixed basis $\phi$
+\begin{equation*} 
+\psi_p  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda},
+\end{equation*}
+
+This lead to a new Slater determinant which is related to the
+previous via a unitary transformation.  
+We consider a Slater determinant built up of single-particle orbitals
+$\phi_{\lambda}$ where the indices $\lambda$ refer to specific
+single-particle states. 
+
+The unitary transformation
+
+\begin{equation*}
+\psi_p  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda},
+\end{equation*}
+brings us into the new basis $\psi$.  The new basis is orthonormal and $C$ is a unitary matrix.
+
+
+Minimizing with respect to $C^*_{p\alpha}$, remembering that
+$C^*_{p\alpha}$ and $C_{p\alpha}$ (and that the indices contain all
+single-particle quantum numbers including spin) are independent and
+defining
+
+\begin{equation*}
+h_{\alpha\gamma}^{HF}=\langle \alpha | h | \gamma \rangle+
+\sum_{p}\sum_{\beta\delta} C^*_{p\beta}C_{p\delta}\langle \alpha\beta|V|\gamma\delta\rangle_{AS},
+\end{equation*}
+show that you can write the Hartree-Fock  equations as
+
+\begin{equation*}
+\sum_{\gamma}h_{\alpha\gamma}^{HF}C_{p\gamma}=\epsilon_p^{\mathrm{HF}}C_{p\alpha}.
+\label{eq:newhf}
+\end{equation*}
+
+Explain the meaning of the different terms and define the Hartree-Fock
+operator in second quantization. Write down its diagrammatic
+representation as well.  The greek letters refer to the wave functions
+in the original basis 
+while roman letters refer to the new basis.
+
+
+\paragraph{Hartree-Fock theory for the Lipkin model (15pts)}
+
+The single-particle states for the Lipkin model
+\[
+\ket{u_{\sigma =-1,p}}=a_{-p}^{\dagger}\ket{0}
+\hspace{1cm}
+\ket{u_{\sigma =1,p}}=a_{+p}^{\dagger}\ket{0}
+\]
+can now be used as basis for a new single-particle state
+$\ket{\phi_{\alpha ,p}}$  via a unitary  transformation
+\[
+\ket{\phi_{\alpha ,p}}=
+\sum_{\sigma =\pm1}C_{\alpha\sigma}\ket{u_{\sigma ,p}}
+\]
+with $\alpha=\pm 1$ and $p=1,2,3,4$. Why is $p$ the same in 
+$\ket{\phi}$
+as in $\ket{u}$?  Show that the new basis is orthonormal.
+
+\paragraph{Hartree-Fock energy (15pts)}
+
+With the new basis we can construct a new Slater determinant given by
+$\ket{\Psi}$
+\[
+\ket{\Psi}=\prod_{p=1}^{4}b_{\alpha ,p}^{\dagger}\ket{0}
+\]
+with $b_{\alpha ,p}^{\dagger}\ket{0}=\ket{\phi_{\alpha ,p}}$.
+h)   Use the Slater determinanten from the previous exercise to calculate
+\[
+E=\bra{\Psi}H\ket{\Psi},
+\]
+as a function of the coefficients $C_{\sigma\alpha}$. We assume the coefficients to be real.
+
+\paragraph{Stability of the Hartree-Fock equations (15pts)}
+
+Using our Hartree-Fock results for the energy, show that
+\[
+  \frac{\epsilon}{3} > V+W,
+\]
+has to be fulfilled in order to find a minimum in the energy. Comment your results.
+
+Hint: calculate the functional derivative  of the energy with respect to the coefficients $C_{\sigma\alpha}$. 
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{verbatim}
+<11|V|11> = (5*Z)/8
+<11|V|12> = (4096*Sqrt[2]*Z)/64827
+<11|V|13> = (1269*Sqrt[3]*Z)/50000
+<11|V|21> = (4096*Sqrt[2]*Z)/64827
+<11|V|22> = (16*Z)/729
+<11|V|23> = (110592*Sqrt[6]*Z)/24137569
+<11|V|31> = (1269*Sqrt[3]*Z)/50000
+<11|V|32> = (110592*Sqrt[6]*Z)/24137569
+<11|V|33> = (189*Z)/32768
+<12|V|11> = (4096*Sqrt[2]*Z)/64827
+<12|V|12> = (17*Z)/81
+<12|V|13> = (1555918848*Sqrt[6]*Z)/75429903125
+<12|V|21> = (16*Z)/729
+<12|V|22> = (512*Sqrt[2]*Z)/84375
+<12|V|23> = (2160*Sqrt[3]*Z)/823543
+<12|V|31> = (110592*Sqrt[6]*Z)/24137569
+<12|V|32> = (29943*Sqrt[3]*Z)/13176688
+<12|V|33> = (1216512*Sqrt[2]*Z)/815730721
+<13|V|11> = (1269*Sqrt[3]*Z)/50000
+<13|V|12> = (1555918848*Sqrt[6]*Z)/75429903125
+<13|V|13> = (815*Z)/8192
+<13|V|21> = (110592*Sqrt[6]*Z)/24137569
+<13|V|22> = (2160*Sqrt[3]*Z)/823543
+<13|V|23> = (37826560*Sqrt[2]*Z)/22024729467
+<13|V|31> = (189*Z)/32768
+<13|V|32> = (1216512*Sqrt[2]*Z)/815730721
+<13|V|33> = (617*Z)/(314928*Sqrt[3])
+<21|V|11> = (4096*Sqrt[2]*Z)/64827
+<21|V|12> = (16*Z)/729
+<21|V|13> = (110592*Sqrt[6]*Z)/24137569
+<21|V|21> = (17*Z)/81
+<21|V|22> = (512*Sqrt[2]*Z)/84375
+<21|V|23> = (29943*Sqrt[3]*Z)/13176688
+<21|V|31> = (1555918848*Sqrt[6]*Z)/75429903125
+<21|V|32> = (2160*Sqrt[3]*Z)/823543
+<21|V|33> = (1216512*Sqrt[2]*Z)/815730721
+<22|V|11> = (16*Z)/729
+<22|V|12> = (512*Sqrt[2]*Z)/84375
+<22|V|13> = (2160*Sqrt[3]*Z)/823543
+<22|V|21> = (512*Sqrt[2]*Z)/84375
+<22|V|22> = (77*Z)/512
+<22|V|23> = (5870679552*Sqrt[6]*Z)/669871503125
+<22|V|31> = (2160*Sqrt[3]*Z)/823543
+<22|V|32> = (5870679552*Sqrt[6]*Z)/669871503125
+<22|V|33> = (73008*Z)/9765625
+<23|V|11> = (110592*Sqrt[6]*Z)/24137569
+<23|V|12> = (2160*Sqrt[3]*Z)/823543
+<23|V|13> = (37826560*Sqrt[2]*Z)/22024729467
+<23|V|21> = (29943*Sqrt[3]*Z)/13176688
+<23|V|22> = (5870679552*Sqrt[6]*Z)/669871503125
+<23|V|23> = (32857*Z)/390625
+<23|V|31> = (1216512*Sqrt[2]*Z)/815730721
+<23|V|32> = (73008*Z)/9765625
+<23|V|33> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<31|V|11> = (1269*Sqrt[3]*Z)/50000
+<31|V|12> = (110592*Sqrt[6]*Z)/24137569
+<31|V|13> = (189*Z)/32768
+<31|V|21> = (1555918848*Sqrt[6]*Z)/75429903125
+<31|V|22> = (2160*Sqrt[3]*Z)/823543
+<31|V|23> = (1216512*Sqrt[2]*Z)/815730721
+<31|V|31> = (815*Z)/8192
+<31|V|32> = (37826560*Sqrt[2]*Z)/22024729467
+<31|V|33> = (617*Z)/(314928*Sqrt[3])
+<32|V|11> = (110592*Sqrt[6]*Z)/24137569
+<32|V|12> = (29943*Sqrt[3]*Z)/13176688
+<32|V|13> = (1216512*Sqrt[2]*Z)/815730721
+<32|V|21> = (2160*Sqrt[3]*Z)/823543
+<32|V|22> = (5870679552*Sqrt[6]*Z)/669871503125
+<32|V|23> = (73008*Z)/9765625
+<32|V|31> = (37826560*Sqrt[2]*Z)/22024729467
+<32|V|32> = (32857*Z)/390625
+<32|V|33> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<33|V|11> = (189*Z)/32768
+<33|V|12> = (1216512*Sqrt[2]*Z)/815730721
+<33|V|13> = (617*Z)/(314928*Sqrt[3])
+<33|V|21> = (1216512*Sqrt[2]*Z)/815730721
+<33|V|22> = (73008*Z)/9765625
+<33|V|23> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<33|V|31> = (617*Z)/(314928*Sqrt[3])
+<33|V|32> = (6890942464*Sqrt[2/3]*Z)/1210689028125
+<33|V|33> = (17*Z)/256
+
+\end{verbatim}
+
+
+
+% ------------------- end of main content ---------------
+
+\end{document}
+
