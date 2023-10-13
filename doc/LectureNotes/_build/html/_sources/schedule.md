@@ -103,12 +103,16 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 ### Week 41, October 9-13, 2023
 - Topics to be covered
   - Thursday:
-    - Repetition  of derivation of Hartree-Fock theory
+    - Koopman's theorem and repetition  of derivation of Hartree-Fock theory
     - Stability of Hartree-Fock theory and Thouless theorem
+    - Video of	lecture at https://youtu.be/fIwYYQ9Qjkk
+    - Whiteboard notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober12.pdf
   - Friday:
-    - Work on first midterm
-- Lecture Material: Lecture slides week 41, handwritten notes and Szabo and Ostlund, chapter 3
-- First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2023.pdf
+   - Stability of Hartree-Fock theory and Thouless theorem, continues
+   - Introduction to the homogenoeus electron gas in three dimensions
+   - Work on first midterm
+- Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3. See also Shavitt and Bartlett, chapters 3 and 4
+ First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2023.pdf
 
 
 ### Week 42, October 16-20, 2023
