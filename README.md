@@ -201,6 +201,8 @@ In particular we recommend the texts by
   - Friday:
    - Stability of Hartree-Fock theory and Thouless theorem, continues
    - Introduction to the homogenoeus electron gas in three dimensions
+   - Video of lecture at https://youtu.be/NEvKSnyN-og
+   - Whiteboard notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober13.pdf   
    - Work on first midterm
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3. See also Shavitt and Bartlett, chapters 3 and 4
  First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2023.pdf
