@@ -119,9 +119,7 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 ### Week 42, October 16-20, 2023
 - Topics to be covered
   - Thursday:
-    - Repetition  of derivation of Hartree-Fock theory
-    - Discussion of implementation of Hartree-Fock code
-    - Stability of Hartree-Fock theory and Thouless theorem
+    - The homogeneous electron gas in three dimensions
   o Friday:
     * Work on first midterm
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3
@@ -133,10 +131,11 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 ###  Week 43, October 23-27, 2023
 - Topics to be covered
   - Thursday:
+    - Linking Hartree-Fock theory with density functional theory
+    - Time-dependent  Hartree-Fock theory
+  - Friday: 
     - Linking FCI and Hartree-Fock theory with many-body perturbation theory
     - Time-independent perturbation theory
-  - Friday: 
-    - Time-dependent perturbation theory and diagrammatic representation
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek43.pdf
 
