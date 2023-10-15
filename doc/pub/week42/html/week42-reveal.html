@@ -184,204 +184,543 @@ MathJax.Hub.Config({
 </center>
 <br>
 <center>
-<h4>Week 41, October 10-14</h4>
+<h4>October 16-20</h4>
 </center> <!-- date -->
 <br>
 
 
 <center style="font-size:80%">
-<!-- copyright --> &copy; 1999-2022, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
+<!-- copyright --> &copy; 1999-2023, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
 </center>
 </section>
 
 <section>
-<h2 id="week-42-october-17-21-2022">Week 42, October 17-21, 2022 </h2>
+<h2 id="week-42-october-16-20-2023">Week 42, October 16-20, 2023 </h2>
 <ul>
 <p><li> Topics to be covered
 <ol type="a"></li>
  <p><li> Thursday:</li>
 <ul>
 
-<p><li> Repetition  of derivation of Hartree-Fock theory</li>
+<p><li> The homogeneous electron gas in three dimensions</li>
+<ul>
 
-<p><li> Discussion of implementation of Hartree-Fock code</li>
+<p><li> Hartree-Fock solution and ground state energy</li>
 
-<p><li> Stability of Hartree-Fock theory and Thouless theorem</li>
+<p><li> Link with density functional theory</li> 
+</ul>
+<p>
 
-<p><li> <a href="https://youtu.be/WfSTJIUMcFM" target="_blank">Video of lecture</a></li>
+<p><li> <a href="https://youtu.be/" target="_blank">Video of lecture to be added</a></li>
 </ul>
 <p>
  <p><li> Friday:</li>
 <ul>
 
-<p><li> <a href="https://youtu.be/cmDlRdnh2HI" target="_blank">Video of lecture</a></li>
-
-<p><li> Work on first midterm</li>
+<p><li> Work on first midterm only</li>
 </ul>
 <p>
 </ol>
 <p>
-<p><li> Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3</li>
-<p><li> First midterm set at <a href="https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf" target="_blank"><tt>https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2022/FirstMidterm2022.pdf</tt></a></li>
+<p><li> Lecture Material: These slides and handwritten</li>
+<p><li> First midterm set at <a href="https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2022.pdf" target="_blank"><tt>https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2022.pdf</tt></a></li>
 </ul>
 <p>
-<h2 id="hartree-fock-algorithm">Hartree-Fock algorithm </h2>
+<h2 id="the-infinite-electron-gas">The infinite electron gas </h2>
 
-<p>Our Hartree-Fock matrix  is</p>
-<p>&nbsp;<br>
-$$
-\hat{h}_{\alpha\beta}^{HF}=\langle \alpha | \hat{h}_0 | \beta \rangle+
-\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
-$$
-<p>&nbsp;<br>
-
-<p>The Hartree-Fock equations are solved in an iterative waym starting with a guess for the coefficients \( C_{j\gamma}=\delta_{j,\gamma} \) and solving the equations by diagonalization till the new single-particle energies
-\( \epsilon_i^{\mathrm{HF}} \) do not change anymore by a prefixed quantity. 
-</p>
-
-<p>Normally we assume that the single-particle basis \( |\beta\rangle \) forms an eigenbasis for the operator
-\( \hat{h}_0 \), meaning that the Hartree-Fock matrix becomes  
-</p>
-<p>&nbsp;<br>
-$$
-\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
-\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
-$$
-<p>&nbsp;<br>
-
-<p>The Hartree-Fock eigenvalue problem</p>
-<p>&nbsp;<br>
-$$
-\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
-$$
-<p>&nbsp;<br>
-
-<p>can be written out in a more compact form as</p>
-<p>&nbsp;<br>
-$$
-\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
-$$
-<p>&nbsp;<br>
-
-<p>The Hartree-Fock equations are, in their simplest form, solved in an iterative way, starting with a guess for the
-coefficients \( C_{i\alpha} \). We label the coefficients as \( C_{i\alpha}^{(n)} \), where the subscript \( n \) stands for iteration \( n \).
-To set up the algorithm we can proceed as follows:
+<p>The electron gas is perhaps the only realistic model of a 
+system of many interacting particles that allows for an analytical  solution
+of the Hartree-Fock equations. Furthermore, to first order in the interaction, one can also
+obtain an analytical expression for  the total energy and several other properties of a many-particle systems. 
+The model gives a very good approximation to the properties of valence electrons in metals.
+The assumptions are
 </p>
 
 <ul>
- <p><li> We start with a guess \( C_{i\alpha}^{(0)}=\delta_{i,\alpha} \). Alternatively, we could have used random starting values as long as the vectors are normalized. Another possibility is to give states below the Fermi level a larger weight.</li>
- <p><li> The Hartree-Fock matrix simplifies then to (assuming that the coefficients \( C_{i\alpha}  \)  are real)</li>
+ <p><li> System of electrons that is not influenced by external forces except by an attraction provided by a uniform background of ions. These ions give rise to a uniform background charge. The ions are stationary.</li>
+ <p><li> The system as a whole is neutral.</li>
+ <p><li> We assume we have \( N_e \) electrons in a cubic box of length \( L \) and volume \( \Omega=L^3 \). This volume contains also a uniform distribution of positive charge with density \( N_ee/\Omega \).</li> 
 </ul>
 <p>
+<p>The homogeneus electron gas is a system of electrons that is not
+influenced by external forces except by an attraction provided by a
+uniform background of ions. These ions give rise to a uniform
+background charge.  The ions are stationary and the system as a whole
+is neutral.
+Irrespective of this simplicity, this system, in both two and
+three-dimensions, has eluded a proper description of correlations in
+terms of various first principle methods, except perhaps for quantum
+Monte Carlo methods. In particular, the diffusion Monte Carlo
+calculations of <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.45.566" target="_blank">Ceperley</a> 
+and <a href="http://journals.aps.org/prb/abstract/10.1103/PhysRevB.39.5005" target="_blank">Ceperley and Tanatar</a> 
+are presently still considered as the
+best possible benchmarks for the two- and three-dimensional electron
+gas. 
+</p>
+
+<p>The electron gas, in 
+two or three dimensions is thus interesting as a test-bed for 
+electron-electron correlations. The three-dimensional 
+electron gas is particularly important as a cornerstone 
+of the local-density approximation in density-functional 
+theory. In the physical world, systems 
+similar to the three-dimensional electron gas can be 
+found in, for example, alkali metals and doped 
+semiconductors. Two-dimensional electron fluids are 
+observed on metal and liquid-helium surfaces, as well as 
+at metal-oxide-semiconductor interfaces. However, the Coulomb 
+interaction has an infinite range, and therefore 
+long-range correlations play an essential role in the
+electron gas. 
+</p>
+
+<p>At low densities, the electrons become 
+localized and form a lattice. This so-called Wigner 
+crystallization is a direct consequence 
+of the long-ranged repulsive interaction. At higher
+densities, the electron gas is better described as a
+liquid.
+When using, for example, Monte Carlo methods the electron gas must be approximated 
+by a finite system. The long-range Coulomb interaction 
+in the electron gas causes additional finite-size effects  that are not
+present in other infinite systems like nuclear matter or neutron star matter.
+This poses additional challenges to many-body methods when applied 
+to the electron gas.
+</p>
+<h2 id="the-infinite-electron-gas-as-a-homogenous-system">The infinite electron gas as a homogenous system </h2>
+
+<p>This is a homogeneous system and the one-particle wave functions are given by plane wave functions normalized to a volume \( \Omega \) 
+for a box with length \( L \) (the limit \( L\rightarrow \infty \) is to be taken after we have computed various expectation values)
+</p>
 <p>&nbsp;<br>
 $$
-\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
-\sum_{j = 1}^N\sum_{\gamma\delta} C_{j\gamma}^{(0)}C_{j\delta}^{(0)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+\psi_{\mathbf{k}\sigma}(\mathbf{r})= \frac{1}{\sqrt{\Omega}}\exp{(i\mathbf{kr})}\xi_{\sigma}
 $$
 <p>&nbsp;<br>
 
-<p>Solving the Hartree-Fock eigenvalue problem yields then new eigenvectors \( C_{i\alpha}^{(1)} \) and eigenvalues
-\( \epsilon_i^{HF(1)} \). 
+<p>where \( \mathbf{k} \) is the wave number and  \( \xi_{\sigma} \) is a spin function for either spin up or down</p>
+<p>&nbsp;<br>
+$$ 
+\xi_{\sigma=+1/2}=\left(\begin{array}{c} 1 \\ 0 \end{array}\right) \hspace{0.5cm}
+\xi_{\sigma=-1/2}=\left(\begin{array}{c} 0 \\ 1 \end{array}\right).
+$$
+<p>&nbsp;<br>
+
+<p>We assume that we have periodic boundary conditions which limit the allowed wave numbers to</p>
+<p>&nbsp;<br>
+$$
+k_i=\frac{2\pi n_i}{L}\hspace{0.5cm} i=x,y,z \hspace{0.5cm} n_i=0,\pm 1,\pm 2, \dots
+$$
+<p>&nbsp;<br>
+
+<p>We assume first that the electrons interact via a central, symmetric and translationally invariant
+interaction  \( V(r_{12}) \) with
+\( r_{12}=|\mathbf{r}_1-\mathbf{r}_2| \).  The interaction is spin independent.
 </p>
-<ul>
- <p><li> With the new eigenvalues we can set up a new Hartree-Fock potential</li> 
-</ul>
+
+<p>The total Hamiltonian consists then of kinetic and potential energy</p>
+<p>&nbsp;<br>
+$$
+\hat{H} = \hat{T}+\hat{V}.
+$$
+<p>&nbsp;<br>
+
+<p>The operator for the kinetic energy can be written as</p>
+<p>&nbsp;<br>
+$$
+\hat{T}=\sum_{\mathbf{k}\sigma}\frac{\hbar^2k^2}{2m}a_{\mathbf{k}\sigma}^{\dagger}a_{\mathbf{k}\sigma}.
+$$
+<p>&nbsp;<br>
+<h2 id="defining-the-hamiltonian-operator">Defining the Hamiltonian operator </h2>
+
+<p>The Hamiltonian operator is given by</p>
+<p>&nbsp;<br>
+$$
+\hat{H}=\hat{H}_{el}+\hat{H}_{b}+\hat{H}_{el-b},
+$$
+<p>&nbsp;<br>
+
+<p>with the electronic part</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_{el}=\sum_{i=1}^N\frac{p_i^2}{2m}+\frac{e^2}{2}\sum_{i\ne j}\frac{e^{-\mu |\mathbf{r}_i-\mathbf{r}_j|}}{|\mathbf{r}_i-\mathbf{r}_j|},
+$$
+<p>&nbsp;<br>
+
+<p>where we have introduced an explicit convergence factor
+(the limit \( \mu\rightarrow 0 \) is performed after having calculated the various integrals).
+Correspondingly, we have
+</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_{b}=\frac{e^2}{2}\int\int d\mathbf{r}d\mathbf{r}'\frac{n(\mathbf{r})n(\mathbf{r}')e^{-\mu |\mathbf{r}-\mathbf{r}'|}}{|\mathbf{r}-\mathbf{r}'|},
+$$
+<p>&nbsp;<br>
+
+<p>which is the energy contribution from the positive background charge with density
+\( n(\mathbf{r})=N/\Omega \). Finally,
+</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_{el-b}=-\frac{e^2}{2}\sum_{i=1}^N\int d\mathbf{r}\frac{n(\mathbf{r})e^{-\mu |\mathbf{r}-\mathbf{x}_i|}}{|\mathbf{r}-\mathbf{x}_i|},
+$$
+<p>&nbsp;<br>
+
+<p>is the interaction between the electrons and the positive background.</p>
+<h2 id="single-particle-hartree-fock-energy">Single-particle Hartree-Fock energy </h2>
+
+<p>In the first exercise below we show that the Hartree-Fock energy can be written as </p>
+<p>&nbsp;<br>
+$$
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m_e}-\frac{e^{2}}
+{\Omega^{2}}\sum_{k'\leq
+k_{F}}\int d\mathbf{r}e^{i(\mathbf{k}'-\mathbf{k})\mathbf{r}}\int
+d\mathbf{r'}\frac{e^{i(\mathbf{k}-\mathbf{k}')\mathbf{r}'}}
+{\vert\mathbf{r}-\mathbf{r}'\vert}
+$$
+<p>&nbsp;<br>
+
+<p>resulting in</p>
+<p>&nbsp;<br>
+$$
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m_e}-\frac{e^{2}
+k_{F}}{2\pi}
+\left[
+2+\frac{k_{F}^{2}-k^{2}}{kk_{F}}ln\left\vert\frac{k+k_{F}}
+{k-k_{F}}\right\vert
+\right]
+$$
+<p>&nbsp;<br>
+
+<p>The previous result can be rewritten in terms of the density</p>
+<p>&nbsp;<br>
+$$
+n= \frac{k_F^3}{3\pi^2}=\frac{3}{4\pi r_s^3},
+$$
+<p>&nbsp;<br>
+
+<p>where \( n=N_e/\Omega \), \( N_e \) being the number of electrons, and \( r_s \) is the radius of a sphere which represents the volum per conducting electron.  
+It can be convenient to use the Bohr radius \( a_0=\hbar^2/e^2m_e \).
+For most metals we have a relation \( r_s/a_0\sim 2-6 \).  The quantity \( r_s \) is dimensionless.
+</p>
+
+<p>In the second exercise below  we find that
+the total energy
+\( E_0/N_e=\langle\Phi_{0}|\hat{H}|\Phi_{0}\rangle/N_e \) for
+for this system to first order in the interaction is given as 
+</p>
+<p>&nbsp;<br>
+$$
+E_0/N_e=\frac{e^2}{2a_0}\left[\frac{2.21}{r_s^2}-\frac{0.916}{r_s}\right].
+$$
+<p>&nbsp;<br>
+
+
+<!-- --- begin exercise --- -->
+<h2 id="exercise-1-hartree-fock-single-particle-solution-for-the-electron-gas">Exercise 1: Hartree-Fock single-particle solution for the electron gas </h2>
+
+<p>The electron gas model allows closed form solutions for quantities like the 
+single-particle Hartree-Fock energy.  The latter quantity is given by the following expression
+</p>
+<p>&nbsp;<br>
+$$
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m}-\frac{e^{2}}
+{V^{2}}\sum_{k'\leq
+k_{F}}\int d\mathbf{r}e^{i(\mathbf{k'}-\mathbf{k})\mathbf{r}}\int
+d\mathbf{r}'\frac{e^{i(\mathbf{k}-\mathbf{k'})\mathbf{r}'}}
+{\vert\mathbf{r}-\mathbf{r'}\vert}
+$$
+<p>&nbsp;<br>
+
+
+<!-- --- begin subexercise --- -->
 <p>
-<p>&nbsp;<br>
-$$
-\sum_{j = 1}^N\sum_{\gamma\delta} C_{j\gamma}^{(1)}C_{j\delta}^{(1)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
-$$
-<p>&nbsp;<br>
-
-<p>The diagonalization with the new Hartree-Fock potential yields new eigenvectors and eigenvalues.
-This process is continued till for example
+<b>a)</b>
+Show first that
 </p>
 <p>&nbsp;<br>
 $$
-\frac{\sum_{p} |\epsilon_i^{(n)}-\epsilon_i^{(n-1)}|}{m} \le \lambda,  
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m}-\frac{e^{2}
+k_{F}}{2\pi}
+\left[
+2+\frac{k_{F}^{2}-k^{2}}{kk_{F}}ln\left\vert\frac{k+k_{F}}
+{k-k_{F}}\right\vert
+\right]
 $$
 <p>&nbsp;<br>
 
-<p>where \( \lambda \) is a user prefixed quantity (\( \lambda \sim 10^{-8} \) or smaller) and \( p \) runs over all calculated single-particle
-energies and \( m \) is the number of single-particle states.
+
+<!-- --- begin hint in exercise --- -->
+
+<p>
+<b>Hint.</b>
+Hint: Introduce the convergence factor 
+\( e^{-\mu\vert\mathbf{r}-\mathbf{r}'\vert} \)
+in the potential and use  \( \sum_{\mathbf{k}}\rightarrow
+\frac{V}{(2\pi)^{3}}\int d\mathbf{k} \)
 </p>
-<h2 id="developing-a-hartree-fock-program">Developing a  Hartree-Fock program  </h2>
 
-<p>The Hartree-Fock algorithm can be broken down as follows. We recall that  our Hartree-Fock matrix  is </p>
-<p>&nbsp;<br>
-$$
-\hat{h}_{\alpha\beta}^{HF}=\langle \alpha \vert\hat{h}_0 \vert \beta \rangle+
-\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
-$$
-<p>&nbsp;<br>
+<!-- --- end hint in exercise --- -->
 
-<p>Normally we assume that the single-particle basis \( \vert\beta\rangle \)
-forms an eigenbasis for the operator \( \hat{h}_0 \), meaning that the
-Hartree-Fock matrix becomes
-</p>
-<p>&nbsp;<br>
-$$
-\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
-\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
-$$
-<p>&nbsp;<br>
-
-<p>The Hartree-Fock eigenvalue problem</p>
-<p>&nbsp;<br>
-$$
-\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
-$$
-<p>&nbsp;<br>
-
-<p>can be written out in a more compact form as</p>
-<p>&nbsp;<br>
-$$
-\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
-$$
-<p>&nbsp;<br>
-
-<p>The equations are often rewritten in terms of a so-called density matrix,
-which is defined as 
+<!-- --- begin solution of exercise --- -->
+<p>
+<b>Solution.</b>
+We want to show that, given the Hartree-Fock equation for the electron gas
 </p>
 <p>&nbsp;<br>
 $$
-\begin{equation}
-\rho_{\gamma\delta}=\sum_{i=1}^{N}\langle\gamma|i\rangle\langle i|\delta\rangle = \sum_{i=1}^{N}C_{i\gamma}C^*_{i\delta}.
-\tag{1}
-\end{equation}
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m}-\frac{e^{2}}
+{V^{2}}\sum_{p\leq
+k_{F}}\int d\mathbf{r}\exp{(i(\mathbf{p}-\mathbf{k})\mathbf{r})}\int
+d\mathbf{r}'\frac{\exp{(i(\mathbf{k}-\mathbf{p})\mathbf{r}'})}
+{\vert\mathbf{r}-\mathbf{r'}\vert}
 $$
 <p>&nbsp;<br>
 
-<p>It means that we can rewrite the Hartree-Fock Hamiltonian as</p>
+<p>the single-particle energy can be written as</p>
 <p>&nbsp;<br>
 $$
-\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
-\sum_{\gamma\delta} \rho_{\gamma\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m}-\frac{e^{2}
+k_{F}}{2\pi}
+\left[
+2+\frac{k_{F}^{2}-k^{2}}{kk_{F}}ln\left\vert\frac{k+k_{F}}
+{k-k_{F}}\right\vert
+\right].
 $$
 <p>&nbsp;<br>
 
-<p>It is convenient to use the density matrix since we can precalculate in every iteration the product of two eigenvector components \( C \). </p>
+<p>We introduce the convergence factor 
+\( e^{-\mu\vert\mathbf{r}-\mathbf{r}'\vert} \)
+in the potential and use  \( \sum_{\mathbf{k}}\rightarrow
+\frac{V}{(2\pi)^{3}}\int d\mathbf{k} \). We can then rewrite the integral as 
+</p>
+<p>&nbsp;<br>
+$$
+\begin{align}
+\frac{e^{2}}
+{V^{2}}\sum_{k'\leq
+k_{F}}\int d\mathbf{r}\exp{(i(\mathbf{k'}-\mathbf{k})\mathbf{r})}\int
+d\mathbf{r}'\frac{\exp{(i(\mathbf{k}-\mathbf{p})\mathbf{r}'})}
+{\vert\mathbf{r}-\mathbf{r'}\vert}= & 
+\tag{1}\\
+\frac{e^{2}}{V (2\pi)^3}  \int d\mathbf{r}\int
+\frac{d\mathbf{r}'}{\vert\mathbf{r}-\mathbf{r'}\vert}\exp{(-i\mathbf{k}(\mathbf{r}-\mathbf{r}'))}\int d\mathbf{p}\exp{(i\mathbf{p}(\mathbf{r}-\mathbf{r}'))},
+\tag{2}
+\end{align}
+$$
+<p>&nbsp;<br>
 
-<p>Note that \( \langle \alpha\vert\hat{h}_0\vert\beta \rangle \) denotes the
-matrix elements of the one-body part of the starting hamiltonian. For
-systems like self-bound nuclei \( \langle \alpha\vert\hat{h}_0\vert\beta \rangle \) is the
-kinetic energy, whereas for neutron drops, \( \langle \alpha \vert \hat{h}_0 \vert \beta \rangle \) represents the harmonic oscillator hamiltonian since
-the system is confined in a harmonic trap. If we are working in a
-harmonic oscillator basis with the same \( \omega \) as the trapping
-potential, then \( \langle \alpha\vert\hat{h}_0 \vert \beta \rangle \) is
-diagonal.
+<p>and introducing the abovementioned convergence factor we have</p>
+<p>&nbsp;<br>
+$$
+\begin{align}
+\lim_{\mu \to 0}\frac{e^{2}}{V (2\pi)^3}  \int d\mathbf{r}\int d\mathbf{r}'\frac{\exp{(-\mu\vert\mathbf{r}-\mathbf{r}'\vert})}{\vert\mathbf{r}-\mathbf{r'}\vert}\int d\mathbf{p}\exp{(i(\mathbf{p}-\mathbf{k})(\mathbf{r}-\mathbf{r}'))}.
+\tag{3}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+<p>With a change variables to \( \mathbf{x} = \mathbf{r}-\mathbf{r}' \) and \( \mathbf{y}=\mathbf{r}' \) we rewrite the last integral as</p>
+<p>&nbsp;<br>
+$$
+\lim_{\mu \to 0}\frac{e^{2}}{V (2\pi)^3}  \int d\mathbf{p}\int d\mathbf{y}\int d\mathbf{x}\exp{(i(\mathbf{p}-\mathbf{k})\mathbf{x})}\frac{\exp{(-\mu\vert\mathbf{x}\vert})}{\vert\mathbf{x}\vert}.
+$$
+<p>&nbsp;<br>
+
+<p>The integration over \( \mathbf{x} \) can be performed using spherical coordinates, resulting in (with \( x=\vert \mathbf{x}\vert \))</p>
+<p>&nbsp;<br>
+$$
+\int d\mathbf{x}\exp{(i(\mathbf{p}-\mathbf{k})\mathbf{x})}\frac{\exp{(-\mu\vert\mathbf{x}\vert})}{\vert\mathbf{x}\vert}=\int x^2 dx d\phi d\cos{(\theta)}\exp{(i(\mathbf{p}-\mathbf{k})x\cos{(\theta))}}\frac{\exp{(-\mu x)}}{x}.
+$$
+<p>&nbsp;<br>
+
+<p>We obtain</p>
+<p>&nbsp;<br>
+$$
+\begin{align}
+4\pi \int dx \frac{ \sin{(\vert \mathbf{p}-\mathbf{k}\vert)x} }{\vert \mathbf{p}-\mathbf{k}\vert}{\exp{(-\mu x)}}= \frac{4\pi}{\mu^2+\vert \mathbf{p}-\mathbf{k}\vert^2}.
+\tag{4}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+<p>This results gives us </p>
+<p>&nbsp;<br>
+$$
+\begin{align}
+\lim_{\mu \to 0}\frac{e^{2}}{V (2\pi)^3}  \int d\mathbf{p}\int d\mathbf{y}\frac{4\pi}{\mu^2+\vert \mathbf{p}-\mathbf{k}\vert^2}=\lim_{\mu \to 0}\frac{e^{2}}{ 2\pi^2}  \int d\mathbf{p}\frac{1}{\mu^2+\vert \mathbf{p}-\mathbf{k}\vert^2},
+\tag{5}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+<p>where we have used that the integrand on the left-hand side does not depend on \( \mathbf{y} \) and that \( \int d\mathbf{y}=V \).</p>
+
+<p>Introducing spherical coordinates we can rewrite the integral as </p>
+<p>&nbsp;<br>
+$$
+\begin{align}
+\lim_{\mu \to 0}\frac{e^{2}}{ 2\pi^2}  \int d\mathbf{p}\frac{1}{\mu^2+\vert \mathbf{p}-\mathbf{k}\vert^2}=\frac{e^{2}}{ 2\pi^2}  \int d\mathbf{p}\frac{1}{\vert \mathbf{p}-\mathbf{k}\vert^2}=& 
+\tag{6}\\
+\frac{e^{2}}{\pi}  \int_0^{k_F} p^2dp\int_0^{\pi} d\theta\cos{(\theta)}\frac{1}{p^2+k^2-2pk\cos{(\theta)}},
+\tag{7}
+\end{align}
+$$
+<p>&nbsp;<br>
+
+<p>and with the change of variables \( \cos{(\theta)}=u \) we have </p>
+<p>&nbsp;<br>
+$$
+\frac{e^{2}}{\pi}  \int_0^{k_F} p^2dp\int_{0}^{\pi} d\theta\cos{(\theta)}\frac{1}{p^2+k^2-2pk\cos{(\theta)}}=\frac{e^{2}}{\pi}  \int_0^{k_F} p^2dp\int_{-1}^{1} du\frac{1}{p^2+k^2-2pku},
+$$
+<p>&nbsp;<br>
+
+<p>which gives</p>
+<p>&nbsp;<br>
+$$
+\frac{e^{2}}{k\pi}  \int_0^{k_F} pdp\left\{ln(\vert p+k\vert)-ln(\vert p-k\vert)\right\}.
+$$
+<p>&nbsp;<br>
+
+<p>Introducing new variables \( x=p+k \) and \( y=p-k \), we obtain after some straightforward reordering of the integral</p>
+<p>&nbsp;<br>
+$$
+\frac{e^{2}}{k\pi}\left[
+kk_F+\frac{k_{F}^{2}-k^{2}}{kk_{F}}ln\left\vert\frac{k+k_{F}}
+{k-k_{F}}\right\vert
+\right],
+$$
+<p>&nbsp;<br>
+
+<p>which gives the abovementioned expression for the single-particle energy.</p>
+<!-- --- end solution of exercise --- -->
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>b)</b>
+Rewrite the above result as a function of the density
+</p>
+<p>&nbsp;<br>
+$$
+n= \frac{k_F^3}{3\pi^2}=\frac{3}{4\pi r_s^3},
+$$
+<p>&nbsp;<br>
+
+<p>where \( n=N/V \), \( N \) being the number of particles, and \( r_s \) is the radius of a sphere which represents the volum per conducting electron.</p>
+
+<!-- --- begin solution of exercise --- -->
+<p>
+<b>Solution.</b>
+Introducing the dimensionless quantity \( x=k/k_F \) and the function
+</p>
+<p>&nbsp;<br>
+$$
+F(x) = \frac{1}{2}+\frac{1-x^2}{4x}\ln{\left\vert \frac{1+x}{1-x}\right\vert},
+$$
+<p>&nbsp;<br>
+
+<p>we can rewrite the single-particle Hartree-Fock energy as </p>
+<p>&nbsp;<br>
+$$
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m}-\frac{2e^{2}
+k_{F}}{\pi}F(k/k_F),
+$$
+<p>&nbsp;<br>
+
+<p>and dividing by the non-interacting contribution at the Fermi level, </p>
+<p>&nbsp;<br>
+$$
+\varepsilon_{0}^{F}=\frac{\hbar^{2}k_F^{2}}{2m},
+$$
+<p>&nbsp;<br>
+
+<p>we have</p>
+<p>&nbsp;<br>
+$$
+\frac{\varepsilon_{k}^{HF} }{\varepsilon_{0}^{F}}=x^2-\frac{e^2m}{\hbar^2 k_F\pi}F(x)=x^2-\frac{4}{\pi k_Fa_0}F(x),
+$$
+<p>&nbsp;<br>
+
+<p>where \( a_0=0.0529 \) nm is the Bohr radius, setting thereby a natural length scale. </p>
+
+<p>By introducing the radius \( r_s \) of a sphere whose volume is the volume occupied by each electron, we can rewrite the previous equation in terms of \( r_s \) using that the electron density \( n=N/V \)</p>
+<p>&nbsp;<br>
+$$
+n=\frac{k_F^3}{3\pi^2} = \frac{3}{4\pi r_s^3},
+$$
+<p>&nbsp;<br>
+
+<p>we have (with \( k_F=1.92/r_s \),</p>
+<p>&nbsp;<br>
+$$
+\frac{\varepsilon_{k}^{HF} }{\varepsilon_{0}^{F}}=x^2-\frac{e^2m}{\hbar^2 k_F\pi}F(x)=x^2-\frac{r_s}{a_0}0.663F(x),
+$$
+<p>&nbsp;<br>
+
+<p>with \( r_s \sim 2-6 \) for most metals.</p>
+<!-- --- end solution of exercise --- -->
+
+<p>It can be convenient to use the Bohr radius \( a_0=\hbar^2/e^2m \).
+For most metals we have a relation \( r_s/a_0\sim 2-6 \).
 </p>
 
-<p>An example of a function written in python which performs the
-Hartree-Fock calculation is shown here.  In setting up your code you
-will need to write a function which sets up the single-particle basis,
-the matrix elements \( t_{\alpha\gamma} \) of the one-body operator
-(called \( h0 \) in the function below) and the antisymmetrized TBMEs
-and the density matrix
-elements \( \rho_{\beta\delta} \) (called <em>densityMatrix</em> below).
-</p>
+<!-- --- end subexercise --- -->
 
-<p>Here we display the Hartree-Fock part only, assuming that single-particle data and two-body matrix elements have already been read in. </p>
+<!-- --- begin subexercise --- -->
+<p>
+<b>c)</b>
+Make a plot of the free electron energy and the Hartree-Fock energy and discuss the behavior around the Fermi surface. Extract also   the Hartree-Fock band width \( \Delta\varepsilon^{HF} \) defined as
+</p>
+<p>&nbsp;<br>
+$$ 
+\Delta\varepsilon^{HF}=\varepsilon_{k_{F}}^{HF}-
+\varepsilon_{0}^{HF}.
+$$
+<p>&nbsp;<br>
+
+<p>Compare this results with the corresponding one for a free electron and comment your results. How large is the contribution due to the exchange term in the Hartree-Fock equation?</p>
+
+<!-- --- begin solution of exercise --- -->
+<p>
+<b>Solution.</b>
+We can now define the so-called band gap, that is the scatter between the maximal and the minimal value of the electrons in the conductance band of a metal (up to the Fermi level). 
+For \( x=1 \) and \( r_s/a_0=4 \) we have 
+</p>
+<p>&nbsp;<br>
+$$
+\frac{\varepsilon_{k=k_F}^{HF} }{\varepsilon_{0}^{F}} = -0.326,
+$$
+<p>&nbsp;<br>
+
+<p>and for \( x=0 \) we have</p>
+<p>&nbsp;<br>
+$$
+\frac{\varepsilon_{k=0}^{HF} }{\varepsilon_{0}^{F}} = -2.652,
+$$
+<p>&nbsp;<br>
+
+<p>which results in a gap at the Fermi level of </p>
+<p>&nbsp;<br>
+$$
+\Delta \varepsilon^{HF} = \frac{\varepsilon_{k=k_F}^{HF} }{\varepsilon_{0}^{F}}-\frac{\varepsilon_{k=0}^{HF} }{\varepsilon_{0}^{F}} = 2.326.
+$$
+<p>&nbsp;<br>
+
+<p>This quantity measures the deviation from the \( k=0 \) single-particle energy and the energy at the Fermi level.
+The general result is 
+</p>
+<p>&nbsp;<br>
+$$
+\Delta \varepsilon^{HF} = 1+\frac{r_s}{a_0}0.663.
+$$
+<p>&nbsp;<br>
+
+<p>The following python code produces a plot of the electron energy for a free electron (only kinetic energy) and 
+for the Hartree-Fock solution. We have chosen here a ratio \( r_s/a_0=4 \) and the equations are plotted as funtions
+of \( k/f_F \). 
+</p>
 
 <!-- code=python (!bc pycod) typeset with pygments style "perldoc" -->
 <div class="cell border-box-sizing code_cell rendered">
@@ -389,56 +728,35 @@ elements \( \rho_{\beta\delta} \) (called <em>densityMatrix</em> below).
     <div class="inner_cell">
       <div class="input_area">
         <div class="highlight" style="background: #eeeedd">
-  <pre style="font-size: 80%; line-height: 125%;">	<span style="color: #CD5555">&quot;&quot;&quot; Star HF-iterations, preparing variables and density matrix &quot;&quot;&quot;</span>
+  <pre style="font-size: 80%; line-height: 125%;"><span style="color: #8B008B; font-weight: bold">import</span> <span style="color: #008b45; text-decoration: underline">numpy</span> <span style="color: #8B008B; font-weight: bold">as</span> <span style="color: #008b45; text-decoration: underline">np</span>
+<span style="color: #8B008B; font-weight: bold">from</span> <span style="color: #008b45; text-decoration: underline">math</span> <span style="color: #8B008B; font-weight: bold">import</span> log
+<span style="color: #8B008B; font-weight: bold">from</span>  <span style="color: #008b45; text-decoration: underline">matplotlib</span> <span style="color: #8B008B; font-weight: bold">import</span> pyplot <span style="color: #8B008B; font-weight: bold">as</span> plt
+<span style="color: #8B008B; font-weight: bold">from</span> <span style="color: #008b45; text-decoration: underline">matplotlib</span> <span style="color: #8B008B; font-weight: bold">import</span> rc, rcParams
+<span style="color: #8B008B; font-weight: bold">import</span> <span style="color: #008b45; text-decoration: underline">matplotlib.units</span> <span style="color: #8B008B; font-weight: bold">as</span> <span style="color: #008b45; text-decoration: underline">units</span>
+<span style="color: #8B008B; font-weight: bold">import</span> <span style="color: #008b45; text-decoration: underline">matplotlib.ticker</span> <span style="color: #8B008B; font-weight: bold">as</span> <span style="color: #008b45; text-decoration: underline">ticker</span>
+rc(<span style="color: #CD5555">&#39;text&#39;</span>,usetex=<span style="color: #8B008B; font-weight: bold">True</span>)
+rc(<span style="color: #CD5555">&#39;font&#39;</span>,**{<span style="color: #CD5555">&#39;family&#39;</span>:<span style="color: #CD5555">&#39;serif&#39;</span>,<span style="color: #CD5555">&#39;serif&#39;</span>:[<span style="color: #CD5555">&#39;Hartree-Fock energy&#39;</span>]})
+font = {<span style="color: #CD5555">&#39;family&#39;</span> : <span style="color: #CD5555">&#39;serif&#39;</span>,
+        <span style="color: #CD5555">&#39;color&#39;</span>  : <span style="color: #CD5555">&#39;darkred&#39;</span>,
+        <span style="color: #CD5555">&#39;weight&#39;</span> : <span style="color: #CD5555">&#39;normal&#39;</span>,
+        <span style="color: #CD5555">&#39;size&#39;</span>   : <span style="color: #B452CD">16</span>,
+        }
 
-        <span style="color: #CD5555">&quot;&quot;&quot; Coefficients for setting up density matrix, assuming only one along the diagonals &quot;&quot;&quot;</span>
-	C = np.eye(spOrbitals) <span style="color: #228B22"># HF coefficients</span>
-        DensityMatrix = np.zeros([spOrbitals,spOrbitals])
-        <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-            <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                <span style="color: #658b00">sum</span> = <span style="color: #B452CD">0.0</span>
-                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(Nparticles):
-                    <span style="color: #658b00">sum</span> += C[gamma][i]*C[delta][i]
-                DensityMatrix[gamma][delta] = Decimal(<span style="color: #658b00">sum</span>)
-        maxHFiter = <span style="color: #B452CD">100</span>
-        epsilon =  <span style="color: #B452CD">1.0e-10</span> 
-        difference = <span style="color: #B452CD">1.0</span>
-	hf_count = <span style="color: #B452CD">0</span>
-	oldenergies = np.zeros(spOrbitals)
-	newenergies = np.zeros(spOrbitals)
-	<span style="color: #8B008B; font-weight: bold">while</span> hf_count &lt; maxHFiter <span style="color: #8B008B">and</span> difference &gt; epsilon:
-		<span style="color: #658b00">print</span> <span style="color: #CD5555">&quot;############### Iteration %i ###############&quot;</span> % hf_count
-   	        HFmatrix = np.zeros([spOrbitals,spOrbitals])		
-		<span style="color: #8B008B; font-weight: bold">for</span> alpha <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-			<span style="color: #8B008B; font-weight: bold">for</span> beta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                            <span style="color: #CD5555">&quot;&quot;&quot;  Setting up the Fock matrix using the density matrix and antisymmetrized interaction matrix elements&quot;&quot;&quot;</span>
-     		            sumFockTerm = <span style="color: #B452CD">0.0</span>
-                            <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                                <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                                    sumFockTerm += DensityMatrix[gamma][delta]*nninteraction[alpha][gamma][beta][delta]
-                            HFmatrix[alpha][beta] = Decimal(sumFockTerm)
-                            <span style="color: #CD5555">&quot;&quot;&quot;  Adding the one-body term, here plain harmonic oscillator &quot;&quot;&quot;</span>
-                            <span style="color: #8B008B; font-weight: bold">if</span> beta == alpha:   HFmatrix[alpha][alpha] += singleparticleH[alpha]
-		spenergies, C = np.linalg.eigh(HFmatrix)
-                <span style="color: #CD5555">&quot;&quot;&quot; Setting up new density matrix in m-scheme &quot;&quot;&quot;</span>
-                DensityMatrix = np.zeros([spOrbitals,spOrbitals])
-                <span style="color: #8B008B; font-weight: bold">for</span> gamma <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                    <span style="color: #8B008B; font-weight: bold">for</span> delta <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                        <span style="color: #658b00">sum</span> = <span style="color: #B452CD">0.0</span>
-                        <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(Nparticles):
-                            <span style="color: #658b00">sum</span> += C[gamma][i]*C[delta][i]
-                        DensityMatrix[gamma][delta] = Decimal(<span style="color: #658b00">sum</span>)
-		newenergies = spenergies
-                <span style="color: #CD5555">&quot;&quot;&quot; Brute force computation of difference between previous and new sp HF energies &quot;&quot;&quot;</span>
-                <span style="color: #658b00">sum</span> =<span style="color: #B452CD">0.0</span>
-                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                    <span style="color: #658b00">sum</span> += (<span style="color: #658b00">abs</span>(newenergies[i]-oldenergies[i]))/spOrbitals
-                difference = <span style="color: #658b00">sum</span>
-                oldenergies = newenergies
-                <span style="color: #658b00">print</span> <span style="color: #CD5555">&quot;Single-particle energies, ordering may have changed &quot;</span>
-                <span style="color: #8B008B; font-weight: bold">for</span> i <span style="color: #8B008B">in</span> <span style="color: #658b00">range</span>(spOrbitals):
-                    <span style="color: #658b00">print</span>(<span style="color: #CD5555">&#39;{0:4d}  {1:.4f}&#39;</span>.format(i, Decimal(oldenergies[i])))
-		hf_count += <span style="color: #B452CD">1</span>
+N = <span style="color: #B452CD">100</span>
+x = np.linspace(<span style="color: #B452CD">0.0</span>, <span style="color: #B452CD">2.0</span>,N)
+F = <span style="color: #B452CD">0.5</span>+np.log(<span style="color: #658b00">abs</span>((<span style="color: #B452CD">1.0</span>+x)/(<span style="color: #B452CD">1.0</span>-x)))*(<span style="color: #B452CD">1.0</span>-x*x)*<span style="color: #B452CD">0.25</span>/x
+y = x*x -<span style="color: #B452CD">4.0</span>*<span style="color: #B452CD">0.663</span>*F
+
+plt.plot(x, y, <span style="color: #CD5555">&#39;b-&#39;</span>)
+plt.plot(x, x*x, <span style="color: #CD5555">&#39;r-&#39;</span>)
+plt.title(<span style="color: #CD5555">r&#39;{\bf Hartree-Fock single-particle energy for electron gas}&#39;</span>, fontsize=<span style="color: #B452CD">20</span>)     
+plt.text(<span style="color: #B452CD">3</span>, -<span style="color: #B452CD">40</span>, <span style="color: #CD5555">r&#39;Parameters: $r_s/a_0=4$&#39;</span>, fontdict=font)
+plt.xlabel(<span style="color: #CD5555">r&#39;$k/k_F$&#39;</span>,fontsize=<span style="color: #B452CD">20</span>)
+plt.ylabel(<span style="color: #CD5555">r&#39;$\varepsilon_k^{HF}/\varepsilon_0^F$&#39;</span>,fontsize=<span style="color: #B452CD">20</span>)
+<span style="color: #228B22"># Tweak spacing to prevent clipping of ylabel</span>
+plt.subplots_adjust(left=<span style="color: #B452CD">0.15</span>)
+plt.savefig(<span style="color: #CD5555">&#39;hartreefockspelgas.pdf&#39;</span>, <span style="color: #658b00">format</span>=<span style="color: #CD5555">&#39;pdf&#39;</span>)
+plt.show()
 </pre>
 </div>
       </div>
@@ -453,454 +771,453 @@ elements \( \rho_{\beta\delta} \) (called <em>densityMatrix</em> below).
     </div>
   </div>
 </div>
-<h2 id="hartree-fock-in-second-quantization-and-stability-of-hf-solution">Hartree-Fock in second quantization and stability of HF solution </h2>
 
-<p>We wish now to derive the Hartree-Fock equations using our second-quantized formalism and study the stability of the equations. 
-Our ansatz for the ground state of the system is approximated as (this is our representation of a Slater determinant in second quantization)
+<p>From the plot we notice that the exchange term increases considerably the band gap
+compared with the non-interacting gas of electrons.
 </p>
-<p>&nbsp;<br>
-$$   
-|\Phi_0\rangle = |c\rangle = a^{\dagger}_i a^{\dagger}_j \dots a^{\dagger}_l|0\rangle.
-$$
-<p>&nbsp;<br>
-
-<p>We wish to determine \( \hat{u}^{HF} \) so that 
-\( E_0^{HF}= \langle c|\hat{H}| c\rangle \) becomes a local minimum. 
-</p>
-
-<p>In our analysis here we will need Thouless' theorem, which states that
-an arbitrary Slater determinant \( |c'\rangle \) which is not orthogonal to a determinant
-\( | c\rangle ={\displaystyle\prod_{i=1}^{n}}
-a_{\alpha_{i}}^{\dagger}|0\rangle \), can be written as
+<!-- --- end solution of exercise --- -->
+<p>We will now define a quantity called the effective mass.
+For \( \vert\mathbf{k}\vert \) near \( k_{F} \), we can Taylor expand the Hartree-Fock energy as  
 </p>
 <p>&nbsp;<br>
 $$
-|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle 
+\varepsilon_{k}^{HF}=\varepsilon_{k_{F}}^{HF}+
+\left(\frac{\partial\varepsilon_{k}^{HF}}{\partial k}\right)_{k_{F}}(k-k_{F})+\dots
 $$
 <p>&nbsp;<br>
 
-<p>Let us give a simple proof of Thouless' theorem. The theorem states that we can make a linear combination of particle-hole excitations  with respect to a given reference state \( \vert c\rangle \). With this linear combination, we can make a new Slater determinant \( \vert c'\rangle  \) which is not orthogonal to 
-\( \vert c\rangle \), that is
+<p>If we compare the latter with the corresponding expressiyon for the non-interacting system</p>
+<p>&nbsp;<br>
+$$
+\varepsilon_{k}^{(0)}=\frac{\hbar^{2}k^{2}_{F}}{2m}+
+\frac{\hbar^{2}k_{F}}{m}\left(k-k_{F}\right)+\dots ,
+$$
+<p>&nbsp;<br>
+
+<p>we can define the so-called effective Hartree-Fock mass as</p>
+<p>&nbsp;<br>
+$$
+m_{HF}^{*}\equiv\hbar^{2}k_{F}\left(
+\frac{\partial\varepsilon_{k}^{HF}}
+{\partial k}\right)_{k_{F}}^{-1}
+$$
+<p>&nbsp;<br>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>d)</b>
+Compute \( m_{HF}^{*} \) and comment your results.
+</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>e)</b>
+Show that the level density (the number of single-electron states per unit energy) can be written as
 </p>
 <p>&nbsp;<br>
 $$
-\langle c|c'\rangle \ne 0.
+n(\varepsilon)=\frac{Vk^{2}}{2\pi^{2}}\left(
+\frac{\partial\varepsilon}{\partial k}\right)^{-1}
 $$
 <p>&nbsp;<br>
 
-<p>To show this we need some intermediate steps. The exponential product of two operators  \( \exp{\hat{A}}\times\exp{\hat{B}} \) is equal to \( \exp{(\hat{A}+\hat{B})} \) only if the two operators commute, that is</p>
-<p>&nbsp;<br>
-$$
-[\hat{A},\hat{B}] = 0.
-$$
-<p>&nbsp;<br>
-<h2 id="thouless-theorem">Thouless' theorem </h2>
+<p>Calculate \( n(\varepsilon_{F}^{HF}) \) and comment the results.</p>
 
-<p>If the operators do not commute, we need to resort to the <a href="http://www.encyclopediaofmath.org/index.php/Campbell%E2%80%93Hausdorff_formula" target="_blank">Baker-Campbell-Hauersdorf</a>. This relation states that</p>
-<p>&nbsp;<br>
-$$
-\exp{\hat{C}}=\exp{\hat{A}}\exp{\hat{B}},
-$$
-<p>&nbsp;<br>
 
-<p>with </p>
-<p>&nbsp;<br>
-$$
-\hat{C}=\hat{A}+\hat{B}+\frac{1}{2}[\hat{A},\hat{B}]+\frac{1}{12}[[\hat{A},\hat{B}],\hat{B}]-\frac{1}{12}[[\hat{A},\hat{B}],\hat{A}]+\dots
-$$
-<p>&nbsp;<br>
+<!-- --- end subexercise --- -->
 
-<p>From these relations, we note that 
-in our expression  for \( |c'\rangle \) we have commutators of the type
+<!-- --- end exercise --- -->
+
+<!-- --- begin exercise --- -->
+<h2 id="exercise-2-hartree-fock-ground-state-energy-for-the-electron-gas-in-three-dimensions">Exercise 2: Hartree-Fock ground state energy for the  electron gas in three dimensions </h2>
+
+<p>We consider a system of electrons in infinite matter, the so-called electron gas. This is a homogeneous system and the one-particle states are given by plane wave function normalized to a volume \( \Omega \) 
+for a box with length \( L \) (the limit \( L\rightarrow \infty \) is to be taken after we have computed various expectation values)
 </p>
 <p>&nbsp;<br>
 $$
-[a_{a}^{\dagger}a_{i},a_{b}^{\dagger}a_{j}],
+\psi_{\mathbf{k}\sigma}(\mathbf{r})= \frac{1}{\sqrt{\Omega}}\exp{(i\mathbf{kr})}\xi_{\sigma}
 $$
 <p>&nbsp;<br>
 
-<p>and it is easy to convince oneself that these commutators, or higher powers thereof, are all zero. This means that we can write out our new representation of a Slater determinant as</p>
+<p>where \( \mathbf{k} \) is the wave number and  \( \xi_{\sigma} \) is a spin function for either spin up or down</p>
 <p>&nbsp;<br>
-$$
-|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}+\left(\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right)^2+\dots\right\}| c\rangle
-$$
-<p>&nbsp;<br>
-
-<p>We note that</p>
-<p>&nbsp;<br>
-$$
-\prod_{i}\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\sum_{b>F}C_{bi}a_{b}^{\dagger}a_{i}| c\rangle =0,
+$$ 
+\xi_{\sigma=+1/2}=\left(\begin{array}{c} 1 \\ 0 \end{array}\right) \hspace{0.5cm}
+\xi_{\sigma=-1/2}=\left(\begin{array}{c} 0 \\ 1 \end{array}\right).
 $$
 <p>&nbsp;<br>
 
-<p>and all higher-order powers of these combinations of creation and annihilation operators disappear 
-due to the fact that \( (a_i)^n| c\rangle =0 \) when \( n > 1 \). This allows us to rewrite the expression for \( |c'\rangle  \) as
+<p>We assume that we have periodic boundary conditions which limit the allowed wave numbers to</p>
+<p>&nbsp;<br>
+$$
+k_i=\frac{2\pi n_i}{L}\hspace{0.5cm} i=x,y,z \hspace{0.5cm} n_i=0,\pm 1,\pm 2, \dots
+$$
+<p>&nbsp;<br>
+
+<p>We assume first that the particles interact via a central, symmetric and translationally invariant
+interaction  \( V(r_{12}) \) with
+\( r_{12}=|\mathbf{r}_1-\mathbf{r}_2| \).  The interaction is spin independent.
+</p>
+
+<p>The total Hamiltonian consists then of kinetic and potential energy</p>
+<p>&nbsp;<br>
+$$
+\hat{H} = \hat{T}+\hat{V}.
+$$
+<p>&nbsp;<br>
+
+<p>The operator for the kinetic energy is given by</p>
+<p>&nbsp;<br>
+$$
+\hat{T}=\sum_{\mathbf{k}\sigma}\frac{\hbar^2k^2}{2m}a_{\mathbf{k}\sigma}^{\dagger}a_{\mathbf{k}\sigma}.
+$$
+<p>&nbsp;<br>
+
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>a)</b>
+Find the expression for the interaction
+\( \hat{V} \) expressed with creation and annihilation operators.   The expression for the interaction
+has to be written in  \( k \) space, even though \( V \) depends only on the relative distance. It means that you need to set up the Fourier transform \( \langle \mathbf{k}_i\mathbf{k}_j| V | \mathbf{k}_m\mathbf{k}_n\rangle \).
+</p>
+
+<!-- --- begin solution of exercise --- -->
+<p>
+<b>Solution.</b>
+A general two-body interaction element is given by (not using anti-symmetrized matrix elements)
 </p>
 <p>&nbsp;<br>
-$$
-|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle,
-$$
-<p>&nbsp;<br>
-
-<p>which we can rewrite as </p>
-<p>&nbsp;<br>
-$$
-|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle.
+$$ 
+\hat{V} = \frac{1}{2} \sum_{pqrs} \langle pq \hat{v} \vert rs\rangle a_p^\dagger a_q^\dagger a_s a_r ,  
 $$
 <p>&nbsp;<br>
 
-<p>The last equation can be written as</p>
-<p>&nbsp;<br>
-$$
-\begin{align}
-|c'\rangle&=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle=\left(1+\sum_{a>F}C_{ai_1}a_{a}^{\dagger}a_{i_1}\right)a^{\dagger}_{i_1} 
-\tag{2}\\
-& \times\left(1+\sum_{a>F}C_{ai_2}a_{a}^{\dagger}a_{i_2}\right)a^{\dagger}_{i_2} \dots |0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle.
-\tag{3}
-\end{align}
-$$
-<p>&nbsp;<br>
-<h2 id="new-operators">New operators </h2>
-
-<p>If we define a new creation operator </p>
+<p>where \( \hat{v} \) is assumed to depend only on the relative distance between two interacting particles, that is
+\( \hat{v} = v(\vec r_1, \vec r_2) = v(|\vec r_1 - \vec r_2|) = v(r) \), with \( r = |\vec r_1 - \vec r_2| \)). 
+In our case we have, writing out explicitely the spin degrees of freedom as well
+</p>
 <p>&nbsp;<br>
 $$
 \begin{equation}
-b^{\dagger}_{i}=a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}, \tag{4}
+\hat{V} = \frac{1}{2} \sum_{\substack{\sigma_p \sigma_q \\ \sigma_r \sigma_s}}
+\sum_{\substack{\mathbf{k}_p \mathbf{k}_q \\ \mathbf{k}_r \mathbf{k}_s}}
+\langle \mathbf{k}_p \sigma_p, \mathbf{k}_q \sigma_2\vert v \vert \mathbf{k}_r \sigma_3, \mathbf{k}_s \sigma_s\rangle
+a_{\mathbf{k}_p \sigma_p}^\dagger a_{\mathbf{k}_q \sigma_q}^\dagger a_{\mathbf{k}_s \sigma_s} a_{\mathbf{k}_r \sigma_r} .
+\tag{8}
 \end{equation}
 $$
 <p>&nbsp;<br>
 
-<p>we have </p>
-<p>&nbsp;<br>
-$$
-|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle,
-$$
-<p>&nbsp;<br>
-
-<p>meaning that the new representation of the Slater determinant in second quantization, \( |c'\rangle \), looks like our previous ones. However, this representation is not general enough since we have a restriction on the sum over single-particle states in Eq.&nbsp;<a href="#mjx-eqn-4">(4)</a>. The single-particle states have all to be above the Fermi level.
-The question then is whether we can construct a general representation of a Slater determinant with a creation operator 
-</p>
-<p>&nbsp;<br>
-$$
-\tilde{b}^{\dagger}_{i}=\sum_{p}f_{ip}a_{p}^{\dagger},
-$$
-<p>&nbsp;<br>
-
-<p>where \( f_{ip} \) is a matrix element of a unitary matrix which transforms our creation and annihilation operators
-\( a^{\dagger} \) and \( a \) to \( \tilde{b}^{\dagger} \) and \( \tilde{b} \). These new operators define a new representation of a Slater determinant as
-</p>
-<p>&nbsp;<br>
-$$
-|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle.
-$$
-<p>&nbsp;<br>
-<h2 id="showing-that-tilde-c-rangle-c-rangle">Showing that \( |\tilde{c}\rangle= |c'\rangle \)  </h2>
-
-<p>We need to show that \( |\tilde{c}\rangle= |c'\rangle \). We need also to assume that the new state
-is not orthogonal to \( |c\rangle \), that is \( \langle c| \tilde{c}\rangle \ne 0 \). From this it follows that 
-</p>
-<p>&nbsp;<br>
-$$
-\langle c| \tilde{c}\rangle=\langle 0| a_{i_n}\dots a_{i_1}\left(\sum_{p=i_1}^{i_n}f_{i_1p}a_{p}^{\dagger} \right)\left(\sum_{q=i_1}^{i_n}f_{i_2q}a_{q}^{\dagger} \right)\dots \left(\sum_{t=i_1}^{i_n}f_{i_nt}a_{t}^{\dagger} \right)|0\rangle,
-$$
-<p>&nbsp;<br>
-
-<p>which is nothing but the determinant \( det(f_{ip}) \) which we can, using the intermediate normalization condition, 
-normalize to one, that is
-</p>
-<p>&nbsp;<br>
-$$
-det(f_{ip})=1,
-$$
-<p>&nbsp;<br>
-
-<p>meaning that \( f \) has an inverse defined as (since we are dealing with orthogonal, and in our case unitary as well, transformations)</p>
-<p>&nbsp;<br>
-$$
-\sum_{k} f_{ik}f^{-1}_{kj} = \delta_{ij},
-$$
-<p>&nbsp;<br>
-
-<p>and </p>
-<p>&nbsp;<br>
-$$
-\sum_{j} f^{-1}_{ij}f_{jk} = \delta_{ik}.
-$$
-<p>&nbsp;<br>
-
-<p>Using these relations we can then define the linear combination of creation (and annihilation as well) 
-operators as
-</p>
-<p>&nbsp;<br>
-$$
-\sum_{i}f^{-1}_{ki}\tilde{b}^{\dagger}_{i}=\sum_{i}f^{-1}_{ki}\sum_{p=i_1}^{\infty}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}.
-$$
-<p>&nbsp;<br>
-
-<p>Defining </p>
-<p>&nbsp;<br>
-$$
-c_{kp}=\sum_{i \le F}f^{-1}_{ki}f_{ip},
-$$
-<p>&nbsp;<br>
-
-<p>we can redefine </p>
-<p>&nbsp;<br>
-$$
-a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}=b_k^{\dagger},
-$$
-<p>&nbsp;<br>
-
-<p>our starting point. We have shown that our general representation of a Slater determinant </p>
-<p>&nbsp;<br>
-$$
-|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle=|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle,
-$$
-<p>&nbsp;<br>
-
-<p>with </p>
-<p>&nbsp;<br>
-$$
-b_k^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}.
-$$
-<p>&nbsp;<br>
-
-<p>This means that we can actually write an ansatz for the ground state of the system as a linear combination of
-terms which contain the ansatz itself \( |c\rangle \) with  an admixture from an infinity of one-particle-one-hole states. The latter has important consequences when we wish to interpret the Hartree-Fock equations and their stability. We can rewrite the new representation as 
-</p>
-<p>&nbsp;<br>
-$$
-|c'\rangle = |c\rangle+|\delta c\rangle,
-$$
-<p>&nbsp;<br>
-
-<p>where \( |\delta c\rangle \) can now be interpreted as a small variation. If we approximate this term with 
-contributions from one-particle-one-hole (<em>1p-1h</em>) states only, we arrive at 
-</p>
-<p>&nbsp;<br>
-$$
-|c'\rangle = \left(1+\sum_{ai}\delta C_{ai}a_{a}^{\dagger}a_i\right)|c\rangle.
-$$
-<p>&nbsp;<br>
-
-<p>In our derivation of the Hartree-Fock equations we have shown that </p>
-<p>&nbsp;<br>
-$$
-\langle \delta c| \hat{H} | c\rangle =0,
-$$
-<p>&nbsp;<br>
-
-<p>which means that we have to satisfy</p>
-<p>&nbsp;<br>
-$$
-\langle c|\sum_{ai}\delta C_{ai}\left\{a_{a}^{\dagger}a_i\right\} \hat{H} | c\rangle =0.
-$$
-<p>&nbsp;<br>
-
-<p>With this as a background, we are now ready to study the stability of the Hartree-Fock equations.</p>
-<h2 id="hartree-fock-in-second-quantization-and-stability-of-hf-solution">Hartree-Fock in second quantization and stability of HF solution </h2>
-
-<p>The variational condition for deriving the Hartree-Fock equations guarantees only that the expectation value \( \langle c | \hat{H} | c \rangle \) has an extreme value, not necessarily a minimum. To figure out whether the extreme value we have found  is a minimum, we can use second quantization to analyze our results and find a criterion 
-for the above expectation value to a local minimum. We will use Thouless' theorem and show that
-</p>
-<p>&nbsp;<br>
-$$
-\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} \ge \langle c |\hat{H} | c\rangle= E_0,
-$$
-<p>&nbsp;<br>
-
-<p>with</p>
-<p>&nbsp;<br>
-$$
- {|c'\rangle} = {|c\rangle + |\delta c\rangle}.
-$$
-<p>&nbsp;<br>
-
-<p>Using Thouless' theorem we can write out \( |c'\rangle \) as</p>
-<p>&nbsp;<br>
-$$
-\begin{align}
- {|c'\rangle}&=\exp\left\{\sum_{a > F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle
-\tag{5}\\ 
-&=\left\{1+\sum_{a > F}\sum_{i \le F}\delta C_{ai}a_{a}^{\dagger}
-a_{i}+\frac{1}{2!}\sum_{ab > F}\sum_{ij \le F}\delta C_{ai}\delta C_{bj}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}+\dots\right\}
-\tag{6}
-\end{align}
-$$
-<p>&nbsp;<br>
-
-<p>where the amplitudes \( \delta C \) are small.</p>
-
-<p>The norm of \( |c'\rangle \) is given by (using the intermediate normalization condition \( \langle c' |c\rangle=1 \)) </p>
-<p>&nbsp;<br>
-$$
-\langle c' | c'\rangle = 1+\sum_{a>F}
-\sum_{i\le F}|\delta C_{ai}|^2+O(\delta C_{ai}^3).
-$$
-<p>&nbsp;<br>
-
-<p>The expectation value for the energy is now given by (using the Hartree-Fock condition)</p>
-<p>&nbsp;<br>
-$$
-\langle c' |\hat{H} | c'\rangle=\langle c |\hat{H} | c\rangle +
-\sum_{ab>F}
-\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}\langle c |a_{i}^{\dagger}a_{a}\hat{H}a_{b}^{\dagger}a_{j}|c\rangle+
-$$
-<p>&nbsp;<br>
-
-<p>&nbsp;<br>
-$$
-\frac{1}{2!}\sum_{ab>F}
-\sum_{ij\le F}\delta C_{ai}\delta C_{bj}\langle c |\hat{H}a_{a}^{\dagger}a_{i}a_{b}^{\dagger}a_{j}|c\rangle+\frac{1}{2!}\sum_{ab>F}
-\sum_{ij\le F}\delta C_{ai}^*\delta C_{bj}^*\langle c|a_{j}^{\dagger}a_{b}a_{i}^{\dagger}a_{a}\hat{H}|c\rangle
-+\dots
-$$
-<p>&nbsp;<br>
-
-<p>We have already calculated the second term on the right-hand side of the previous equation</p>
-<p>&nbsp;<br>
-$$
-\begin{align}
-\langle c | \left(\{a^\dagger_i a_a\} \hat{H} \{a^\dagger_b a_j\} \right) | c\rangle&=\sum_{pq} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle p|\hat{h}_0 |q\rangle 
-            \langle c | \left(\{a^{\dagger}_i a_a\}\{a^{\dagger}_pa_q\} 
-             \{a^{\dagger}_b a_j\} \right)| c\rangle
-\tag{7}\\
-& +\frac{1}{4} \sum_{pqrs} \sum_{ijab}\delta C_{ai}^*\delta C_{bj} \langle pq| \hat{v}|rs\rangle 
-            \langle c | \left(\{a^\dagger_i a_a\}\{a^{\dagger}_p a^{\dagger}_q a_s  a_r\} \{a^{\dagger}_b a_j\} \right)| c\rangle ,
-\tag{8}
-\end{align}
-$$
-<p>&nbsp;<br>
-
-<p>resulting in</p>
-<p>&nbsp;<br>
-$$
-E_0\sum_{ai}|\delta C_{ai}|^2+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a-\varepsilon_i)-\sum_{ijab} \langle aj|\hat{v}| bi\rangle \delta C_{ai}^*\delta C_{bj}.
-$$
-<p>&nbsp;<br>
-
-<p>&nbsp;<br>
-$$
-\frac{1}{2!}\langle c |\left(\{a^\dagger_j a_b\} \{a^\dagger_i a_a\} \hat{V}_N  \right) | c\rangle  = 
-\frac{1}{2!}\langle c |\left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right)^{\dagger} | c\rangle 
-$$
-<p>&nbsp;<br>
-
-<p>which is nothing but</p>
-<p>&nbsp;<br>
-$$
-\frac{1}{2!}\langle c |  \left( \hat{V}_N \{a^\dagger_a a_i\} \{a^\dagger_b a_j\} \right) | c\rangle^*
-=\frac{1}{2} \sum_{ijab} (\langle ij|\hat{v}|ab\rangle)^*\delta C_{ai}^*\delta C_{bj}^*
-$$
-<p>&nbsp;<br>
-
-<p>or </p>
-<p>&nbsp;<br>
-$$
-\frac{1}{2} \sum_{ijab} (\langle ab|\hat{v}|ij\rangle)\delta C_{ai}^*\delta C_{bj}^*
-$$
-<p>&nbsp;<br>
-
-<p>where we have used the relation</p>
+<p>Inserting plane waves as eigenstates we can rewrite the matrix element as</p>
 <p>&nbsp;<br>
 $$ 
-\langle a |\hat{A} | b\rangle =  (\langle b |\hat{A}^{\dagger} | a\rangle)^*
+\langle \mathbf{k}_p \sigma_p, \mathbf{k}_q \sigma_q\vert \hat{v} \vert \mathbf{k}_r \sigma_r, \mathbf{k}_s \sigma_s\rangle =
+\frac{1}{\Omega^2} \delta_{\sigma_p \sigma_r} \delta_{\sigma_q \sigma_s}
+\int\int \exp{-i(\mathbf{k}_p \cdot \mathbf{r}_p)} \exp{-i( \mathbf{k}_q \cdot \mathbf{r}_q)} \hat{v}(r) \exp{i(\mathbf{k}_r \cdot \mathbf{r}_p)} \exp{i( \mathbf{k}_s \cdot \mathbf{r}_q)} d\mathbf{r}_p d\mathbf{r}_q , $$
+<p>&nbsp;<br>
+
+<p>where we have used the orthogonality properties of the spin functions. We change now the variables of integration
+by defining \( \mathbf{r} = \mathbf{r}_p - \mathbf{r}_q \), which gives \( \mathbf{r}_p = \mathbf{r} + \mathbf{r}_q \) and \( d^3 \mathbf{r} = d^3 \mathbf{r}_p \). 
+The limits are not changed since they are from \( -\infty \) to  \( \infty \) for all integrals. This results in
+</p>
+<p>&nbsp;<br>
+$$
+\begin{align*}
+\langle \mathbf{k}_p \sigma_p, \mathbf{k}_q \sigma_q\vert \hat{v} \vert \mathbf{k}_r \sigma_r, \mathbf{k}_s \sigma_s\rangle
+&= \frac{1}{\Omega^2} \delta_{\sigma_p \sigma_r} \delta_{\sigma_q \sigma_s} \int\exp{i (\mathbf{k}_s - \mathbf{k}_q) \cdot \mathbf{r}_q} \int v(r) \exp{i(\mathbf{k}_r - \mathbf{k}_p) \cdot ( \mathbf{r} + \mathbf{r}_q)} d\mathbf{r} d\mathbf{r}_q \\
+&= \frac{1}{\Omega^2} \delta_{\sigma_p \sigma_r} \delta_{\sigma_q \sigma_s} \int v(r) \exp{i\left[(\mathbf{k}_r - \mathbf{k}_p) \cdot \mathbf{r}\right]}
+\int \exp{i\left[(\mathbf{k}_s - \mathbf{k}_q + \mathbf{k}_r - \mathbf{k}_p) \cdot \mathbf{r}_q\right]} d\mathbf{r}_q d\mathbf{r} .
+\end{align*}
 $$
 <p>&nbsp;<br>
 
-<p>due to the hermiticity of \( \hat{H} \) and \( \hat{V} \).</p>
+<p>We recognize the integral over \( \mathbf{r}_q \) as a \( \delta \)-function, resulting in</p>
+<p>&nbsp;<br>
+$$ \langle \mathbf{k}_p \sigma_p, \mathbf{k}_q \sigma_q\vert \hat{v} \vert \mathbf{k}_r \sigma_r, \mathbf{k}_s \sigma_s\rangle =
+\frac{1}{\Omega} \delta_{\sigma_p \sigma_r} \delta_{\sigma_q \sigma_s} \delta_{(\mathbf{k}_p + \mathbf{k}_q),(\mathbf{k}_r + \mathbf{k}_s)} \int v(r) \exp{i\left[(\mathbf{k}_r - \mathbf{k}_p) \cdot \mathbf{r}\right]} d^3r . $$
+<p>&nbsp;<br>
 
-<p>We define two matrix elements</p>
+<p>For this equation to be different from zero, we must have conservation of momenta, we need to satisfy
+\( \mathbf{k}_p + \mathbf{k}_q = \mathbf{k}_r + \mathbf{k}_s \). We can use the conservation of momenta to remove one of the summation variables resulting in
+</p>
+<p>&nbsp;<br>
+$$ \hat{V} =
+\frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\mathbf{k}_p \mathbf{k}_q \mathbf{k}_r} \left[ \int v(r) \exp{i\left[(\mathbf{k}_r - \mathbf{k}_p) \cdot \mathbf{r}\right]} d^3r \right]
+a_{\mathbf{k}_p \sigma}^\dagger a_{\mathbf{k}_q \sigma'}^\dagger a_{\mathbf{k}_p + \mathbf{k}_q - \mathbf{k}_r, \sigma'} a_{\mathbf{k}_r \sigma}, $$
+<p>&nbsp;<br>
+
+<p>which can be rewritten as </p>
 <p>&nbsp;<br>
 $$
-A_{ai,bj}=-\langle aj|\hat{v} bi\rangle
+\begin{equation}
+\hat{V} =
+\frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\mathbf{k} \mathbf{p} \mathbf{q}} \left[ \int v(r) \exp{-i( \mathbf{q} \cdot \mathbf{r})} d\mathbf{r} \right]
+a_{\mathbf{k} + \mathbf{q}, \sigma}^\dagger a_{\mathbf{p} - \mathbf{q}, \sigma'}^\dagger a_{\mathbf{p} \sigma'} a_{\mathbf{k} \sigma},
+\tag{9}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+<p>This equation will be useful for our nuclear matter calculations as well. In the last equation we defined
+the quantities
+\( \mathbf{p} = \mathbf{k}_p + \mathbf{k}_q - \mathbf{k}_r \), \( \mathbf{k} = \mathbf{k}_r \) og \( \mathbf{q} = \mathbf{k}_p - \mathbf{k}_r \).
+</p>
+<!-- --- end solution of exercise --- -->
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>b)</b>
+Calculate thereafter the reference energy for the infinite electron gas in three dimensions using the above expressions for the kinetic energy and the potential energy.
+</p>
+
+<!-- --- begin solution of exercise --- -->
+<p>
+<b>Solution.</b>
+Let us now compute the expectation value of the reference energy using the expressions for the kinetic energy operator and the interaction.
+We need to compute \( \langle \Phi_0\vert \hat{H} \vert \Phi_0\rangle = \langle \Phi_0\vert \hat{T} \vert \Phi_0\rangle + \langle \Phi_0\vert \hat{V} \vert \Phi_0\rangle \), where \( \vert \Phi_0\rangle \) is our reference Slater determinant, constructed from filling all single-particle states up to the Fermi level.
+Let us start with the kinetic energy first
+</p>
+<p>&nbsp;<br>
+$$ \langle \Phi_0\vert \hat{T} \vert \Phi_0\rangle 
+= \langle \Phi_0\vert \left( \sum_{\mathbf{p} \sigma} \frac{\hbar^2 p^2}{2m} a_{\mathbf{p} \sigma}^\dagger a_{\mathbf{p} \sigma} \right) \vert \Phi_0\rangle \\
+= \sum_{\mathbf{p} \sigma} \frac{\hbar^2 p^2}{2m} \langle \Phi_0\vert a_{\mathbf{p} \sigma}^\dagger a_{\mathbf{p} \sigma} \vert \Phi_0\rangle . $$
+<p>&nbsp;<br>
+
+<p>From the possible contractions using Wick's theorem, it is straightforward to convince oneself that the expression for the kinetic energy becomes</p>
+<p>&nbsp;<br>
+$$ \langle \Phi_0\vert \hat{T} \vert \Phi_0\rangle = \sum_{\mathbf{i} \leq F} \frac{\hbar^2 k_i^2}{m} = \frac{\Omega}{(2\pi)^3} \frac{\hbar^2}{m} \int_0^{k_F} k^2 d\mathbf{k}.
+$$
+<p>&nbsp;<br>
+
+<p>The sum of the spin degrees of freedom results in  a factor of two only if we deal with identical spin \( 1/2 \) fermions. 
+Changing to spherical coordinates, the integral over the momenta \( k \) results in the final expression
+</p>
+<p>&nbsp;<br>
+$$ \langle \Phi_0\vert \hat{T} \vert \Phi_0\rangle = \frac{\Omega}{(2\pi)^3} \left( 4\pi \int_0^{k_F} k^4 d\mathbf{k} \right) = \frac{4\pi\Omega}{(2\pi)^3} \frac{1}{5} k_F^5 = \frac{4\pi\Omega}{5(2\pi)^3} k_F^5 = \frac{\hbar^2 \Omega}{10\pi^2 m} k_F^5 . $$
+<p>&nbsp;<br>
+
+<p>The density of states in momentum space is given by \( 2\Omega/(2\pi)^3 \), where we have included the degeneracy due to the spin degrees of freedom.
+The volume is given by  \( 4\pi k_F^3/3 \), and the number of particles becomes
+</p>
+<p>&nbsp;<br>
+$$ N = \frac{2\Omega}{(2\pi)^3} \frac{4}{3} \pi k_F^3 = \frac{\Omega}{3\pi^2} k_F^3 \quad \Rightarrow \quad
+k_F = \left( \frac{3\pi^2 N}{\Omega} \right)^{1/3}. $$
+<p>&nbsp;<br>
+
+<p>This gives us</p>
+<p>&nbsp;<br>
+$$
+\begin{equation}
+\langle \Phi_0\vert \hat{T} \vert \Phi_0\rangle =
+\frac{\hbar^2 \Omega}{10\pi^2 m} \left( \frac{3\pi^2 N}{\Omega} \right)^{5/3} =
+\frac{\hbar^2 (3\pi^2)^{5/3} N}{10\pi^2 m} \rho^{2/3} ,
+\tag{10}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+<p>We are now ready to calculate the expectation value of the potential energy</p>
+<p>&nbsp;<br>
+$$
+\begin{align*}
+\langle \Phi_0\vert \hat{V} \vert \Phi_0\rangle 
+&= \langle \Phi_0\vert \left( \frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\mathbf{k} \mathbf{p} \mathbf{q} } \left[ \int v(r) \exp{-i (\mathbf{q} \cdot \mathbf{r})} d\mathbf{r} \right] a_{\mathbf{k} + \mathbf{q}, \sigma}^\dagger a_{\mathbf{p} - \mathbf{q}, \sigma'}^\dagger a_{\mathbf{p} \sigma'} a_{\mathbf{k} \sigma} \right) \vert \Phi_0\rangle \\
+&= \frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\mathbf{k} \mathbf{p} \mathbf{q}} \left[ \int v(r) \exp{-i (\mathbf{q} \cdot \mathbf{r})} d\mathbf{r} \right]\langle \Phi_0\vert a_{\mathbf{k} + \mathbf{q}, \sigma}^\dagger a_{\mathbf{p} - \mathbf{q}, \sigma'}^\dagger a_{\mathbf{p} \sigma'} a_{\mathbf{k} \sigma} \vert \Phi_0\rangle .
+\end{align*}
+$$
+<p>&nbsp;<br>
+
+<p>The only contractions which result in non-zero results are those that involve states below the Fermi level, that is 
+\( k \leq k_F \), \( p \leq k_F \), \( |\mathbf{p} - \mathbf{q}| < \mathbf{k}_F \) and \( |\mathbf{k} + \mathbf{q}| \leq k_F \). Due to momentum conservation we must also have \( \mathbf{k} + \mathbf{q} = \mathbf{p} \), \( \mathbf{p} - \mathbf{q} = \mathbf{k} \) and  \( \sigma = \sigma' \) or  \( \mathbf{k} + \mathbf{q} = \mathbf{k} \) and \( \mathbf{p} - \mathbf{q} = \mathbf{p} \). 
+Summarizing, we must have
+</p>
+<p>&nbsp;<br>
+$$ \mathbf{k} + \mathbf{q} = \mathbf{p} \quad \text{and} \quad \sigma = \sigma', \qquad
+\text{or} \qquad
+\mathbf{q} = \mathbf{0} . $$
+<p>&nbsp;<br>
+
+<p>We obtain then</p>
+<p>&nbsp;<br>
+$$ \langle \Phi_0\vert \hat{V} \vert \Phi_0\rangle =
+\frac{1}{2\Omega} \left( \sum_{\sigma \sigma'} \sum_{\mathbf{q} \mathbf{p} \leq F} \left[ \int v(r) d\mathbf{r} \right] - \sum_{\sigma}
+\sum_{\mathbf{q} \mathbf{p} \leq F} \left[ \int v(r) \exp{-i (\mathbf{q} \cdot \mathbf{r})} d\mathbf{r} \right] \right). $$
+<p>&nbsp;<br>
+
+<p>The first term is the so-called direct term while the second term is the exchange term. 
+We can rewrite this equation as (and this applies to any potential which depends only on the relative distance between particles)
+</p>
+<p>&nbsp;<br>
+$$
+\begin{equation}
+\langle \Phi_0\vert \hat{V} \vert \Phi_0\rangle =
+\frac{1}{2\Omega} \left( N^2 \left[ \int v(r) d\mathbf{r} \right] - N \sum_{\mathbf{q}} \left[ \int v(r) \exp{-i (\mathbf{q}\cdot \mathbf{r})} d\mathbf{r} \right] \right),
+\tag{11}
+\end{equation}
+$$
+<p>&nbsp;<br>
+
+<p>where we have used the fact that a sum like \( \sum_{\sigma}\sum_{\mathbf{k}} \) equals the number of particles. Using the fact that the density is given by
+\( \rho = N/\Omega \), with \( \Omega \) being our volume, we can rewrite the last equation as
+</p>
+<p>&nbsp;<br>
+$$
+\langle \Phi_0\vert \hat{V} \vert \Phi_0\rangle =
+\frac{1}{2} \left( \rho N \left[ \int v(r) d\mathbf{r} \right] - \rho\sum_{\mathbf{q}} \left[ \int v(r) \exp{-i (\mathbf{q}\cdot \mathbf{r})} d\mathbf{r} \right] \right).
+$$
+<p>&nbsp;<br>
+
+<p>For the electron gas
+the interaction part of the Hamiltonian operator is given by
+</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_I=\hat{H}_{el}+\hat{H}_{b}+\hat{H}_{el-b},
+$$
+<p>&nbsp;<br>
+
+<p>with the electronic part</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_{el}=\sum_{i=1}^N\frac{p_i^2}{2m}+\frac{e^2}{2}\sum_{i\ne j}\frac{e^{-\mu |\mathbf{r}_i-\mathbf{r}_j|}}{|\mathbf{r}_i-\mathbf{r}_j|},
+$$
+<p>&nbsp;<br>
+
+<p>where we have introduced an explicit convergence factor
+(the limit \( \mu\rightarrow 0 \) is performed after having calculated the various integrals).
+Correspondingly, we have
+</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_{b}=\frac{e^2}{2}\int\int d\mathbf{r}d\mathbf{r}'\frac{n(\mathbf{r})n(\mathbf{r}')e^{-\mu |\mathbf{r}-\mathbf{r}'|}}{|\mathbf{r}-\mathbf{r}'|},
+$$
+<p>&nbsp;<br>
+
+<p>which is the energy contribution from the positive background charge with density
+\( n(\mathbf{r})=N/\Omega \). Finally,
+</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_{el-b}=-\frac{e^2}{2}\sum_{i=1}^N\int d\mathbf{r}\frac{n(\mathbf{r})e^{-\mu |\mathbf{r}-\mathbf{x}_i|}}{|\mathbf{r}-\mathbf{x}_i|},
+$$
+<p>&nbsp;<br>
+
+<p>is the interaction between the electrons and the positive background.
+We can show that
+</p>
+<p>&nbsp;<br>
+$$
+\hat{H}_{b}=\frac{e^2}{2}\frac{N^2}{\Omega}\frac{4\pi}{\mu^2},
 $$
 <p>&nbsp;<br>
 
 <p>and</p>
 <p>&nbsp;<br>
 $$
-B_{ai,bj}=\langle ab|\hat{v}|ij\rangle
+\hat{H}_{el-b}=-e^2\frac{N^2}{\Omega}\frac{4\pi}{\mu^2}.
 $$
 <p>&nbsp;<br>
 
-<p>both being anti-symmetrized.</p>
+<p>For the electron gas and a Coulomb interaction, these two terms are cancelled (in the thermodynamic limit) by the contribution from the direct term arising
+from the repulsive electron-electron interaction. What remains then  when computing the reference energy is only the kinetic energy contribution and the contribution from the exchange term.  For other interactions, like nuclear forces with a short range part and no infinite range, we need to compute both the direct term and the exchange term.
+</p>
+<!-- --- end solution of exercise --- -->
 
-<p>With these definitions we write out the energy as</p>
-<p>&nbsp;<br>
-$$
-\begin{align}
-\langle c'|H|c'\rangle& = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\sum_{ai}|\delta C_{ai}|^2(\varepsilon_a^{HF}-\varepsilon_i^{HF})+\sum_{ijab}A_{ai,bj}\delta C_{ai}^*\delta C_{bj}+
-\tag{9}\\
-&\frac{1}{2} \sum_{ijab} B_{ai,bj}^*\delta C_{ai}\delta C_{bj}+\frac{1}{2} \sum_{ijab} B_{ai,bj}\delta C_{ai}^*\delta C_{bj}^*
-+O(\delta C_{ai}^3),
-\tag{10}
-\end{align}
-$$
-<p>&nbsp;<br>
+<!-- --- end subexercise --- -->
 
-<p>which can be rewritten as</p>
-<p>&nbsp;<br>
-$$
-\langle c'|H|c'\rangle = \left(1+\sum_{ai}|\delta C_{ai}|^2\right)\langle c |H|c\rangle+\Delta E+O(\delta C_{ai}^3),
-$$
-<p>&nbsp;<br>
-
-<p>and skipping higher-order terms we arrived</p>
-<p>&nbsp;<br>
-$$
-\frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} =E_0+\frac{\Delta E}{\left(1+\sum_{ai}|\delta C_{ai}|^2\right)}.
-$$
-<p>&nbsp;<br>
-
-<p>We have defined </p>
-<p>&nbsp;<br>
-$$
-\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle
-$$
-<p>&nbsp;<br>
-
-<p>with the vectors </p>
-<p>&nbsp;<br>
-$$ 
-\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
-$$
-<p>&nbsp;<br>
-
-<p>and the matrix </p>
-<p>&nbsp;<br>
-$$
-\hat{M}=\left(\begin{array}{cc} \Delta + A & B \\ B^* & \Delta + A^*\end{array}\right),
-$$
-<p>&nbsp;<br>
-
-<p>with \( \Delta_{ai,bj} = (\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij} \).</p>
-
-<p>The condition</p>
-<p>&nbsp;<br>
-$$
-\Delta E = \frac{1}{2} \langle \chi | \hat{M}| \chi \rangle \ge 0
-$$
-<p>&nbsp;<br>
-
-<p>for an arbitrary  vector </p>
-<p>&nbsp;<br>
-$$ 
-\chi = \left[ \delta C\hspace{0.2cm} \delta C^*\right]^T
-$$
-<p>&nbsp;<br>
-
-<p>means that all eigenvalues of the matrix have to be larger than or equal zero. 
-A necessary (but no sufficient) condition is that the matrix elements (for all \( ai \) )
+<!-- --- begin subexercise --- -->
+<p>
+<b>c)</b>
+Show thereafter that the final Hamiltonian can be written as 
 </p>
 <p>&nbsp;<br>
 $$
-(\varepsilon_a-\varepsilon_i)\delta_{ab}\delta_{ij}+A_{ai,bj} \ge 0.
+H=H_{0}+H_{I},
 $$
 <p>&nbsp;<br>
 
-<p>This equation can be used as a first test of the stability of the Hartree-Fock equation.</p>
+<p>with</p>
+<p>&nbsp;<br>
+$$
+H_{0}={\displaystyle\sum_{\mathbf{k}\sigma}}
+\frac{\hbar^{2}k^{2}}{2m}a_{\mathbf{k}\sigma}^{\dagger}
+a_{\mathbf{k}\sigma},
+$$
+<p>&nbsp;<br>
+
+<p>and</p>
+<p>&nbsp;<br>
+$$
+H_{I}=\frac{e^{2}}{2\Omega}{\displaystyle\sum_{\sigma_{1}\sigma_{2}}}{\displaystyle\sum_{\mathbf{q}\neq 0,\mathbf{k},\mathbf{p}}}\frac{4\pi}{q^{2}}
+a_{\mathbf{k}+\mathbf{q},\sigma_{1}}^{\dagger}
+a_{\mathbf{p}-\mathbf{q},\sigma_{2}}^{\dagger}
+a_{\mathbf{p}\sigma_{2}}a_{\mathbf{k}\sigma_{1}}.
+$$
+<p>&nbsp;<br>
+
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>d)</b>
+Calculate \( E_0/N=\langle \Phi_{0}\vert H\vert \Phi_{0}\rangle/N \) for for this system to first order in the interaction. Show that, by using
+</p>
+<p>&nbsp;<br>
+$$
+\rho= \frac{k_F^3}{3\pi^2}=\frac{3}{4\pi r_0^3},
+$$
+<p>&nbsp;<br>
+
+<p>with \( \rho=N/\Omega \), \( r_0 \)
+being the radius of a sphere representing the volume an electron occupies 
+and the Bohr radius \( a_0=\hbar^2/e^2m \), 
+that the energy per electron can be written as 
+</p>
+<p>&nbsp;<br>
+$$
+E_0/N=\frac{e^2}{2a_0}\left[\frac{2.21}{r_s^2}-\frac{0.916}{r_s}\right].
+$$
+<p>&nbsp;<br>
+
+<p>Here we have defined
+\( r_s=r_0/a_0 \) to be a dimensionless quantity.
+</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- begin subexercise --- -->
+<p>
+<b>e)</b>
+Plot your results. Why is this system stable?
+Calculate thermodynamical quantities like the pressure, given by
+</p>
+<p>&nbsp;<br>
+$$
+P=-\left(\frac{\partial E}{\partial \Omega}\right)_N,
+$$
+<p>&nbsp;<br>
+
+<p>and the bulk modulus</p>
+<p>&nbsp;<br>
+$$
+B=-\Omega\left(\frac{\partial P}{\partial \Omega}\right)_N,
+$$
+<p>&nbsp;<br>
+
+<p>and comment your results.</p>
+
+<!-- --- end subexercise --- -->
+
+<!-- --- end exercise --- -->
 </section>
 
 
