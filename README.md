@@ -206,18 +206,16 @@ In particular we recommend the texts by
 - Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3. See also Shavitt and Bartlett, chapters 3 and 4
  First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2023.pdf
 
-
-
 ### Week 42, October 16-20, 2023
 - Topics to be covered
   - Thursday:
     - The homogeneous electron gas in three dimensions
+    - Video of lecture at https://youtu.be/bKgFrYpFPsY
+    - Whiteboard notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober19.pdf
   o Friday:
     * Work on first midterm
 - Lecture Material: These slides and handwritten notes
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2023.pdf
-
-
 
 
 ###  Week 43, October 23-27, 2023
