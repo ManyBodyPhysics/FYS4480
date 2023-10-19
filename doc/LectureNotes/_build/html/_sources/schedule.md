@@ -120,11 +120,12 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 - Topics to be covered
   - Thursday:
     - The homogeneous electron gas in three dimensions
+    - Video of lecture at https://youtu.be/bKgFrYpFPsY
+    - Whiteboard notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober19.pdf
   o Friday:
     * Work on first midterm
-- Lecture Material: These slides, handwritten notes and Szabo and Ostlund, chapter 3
+- Lecture Material: These slides and handwritten notes
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2023.pdf
-
 
 
 
