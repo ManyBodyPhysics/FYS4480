@@ -222,11 +222,10 @@ In particular we recommend the texts by
 - Topics to be covered
   - Thursday:
     - Linking Hartree-Fock theory with density functional theory
-    - Time-dependent  Hartree-Fock theory
-  - Friday: 
-    - Linking FCI and Hartree-Fock theory with many-body perturbation theory
-    - Time-independent perturbation theory
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
+    - Video of lecture  at https://https://youtu.be/zwY6n05uu7o
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober26.pdf   - Friday: 
+    - Density functional theory
+- Lecture Material: These slides, handwritten notes
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek43.pdf
 
 
