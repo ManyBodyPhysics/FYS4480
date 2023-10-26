@@ -133,7 +133,8 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 - Topics to be covered
   - Thursday:
     - Linking Hartree-Fock theory with density functional theory
-    - Time-dependent  Hartree-Fock theory
+    - Video of lecture  at https://https://youtu.be/zwY6n05uu7o
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober26.pdf
   - Friday: 
     - Linking FCI and Hartree-Fock theory with many-body perturbation theory
     - Time-independent perturbation theory
