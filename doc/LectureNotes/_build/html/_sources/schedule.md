@@ -136,8 +136,9 @@ This course will be delivered in a hybrid mode, with online and on site lectures
     - Video of lecture  at https://https://youtu.be/zwY6n05uu7o
     - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober26.pdf
   - Friday: 
-    - Linking FCI and Hartree-Fock theory with many-body perturbation theory
-    - Time-independent perturbation theory
+    - Electron gas in three dimensions and links with density functional theory
+    - Video of lecture at https://youtu.be/40SOQTXSgek
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober27.pdf
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek43.pdf
 
