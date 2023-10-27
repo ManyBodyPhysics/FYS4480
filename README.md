@@ -218,14 +218,18 @@ In particular we recommend the texts by
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/FirstMidterm2023.pdf
 
 
+
 ###  Week 43, October 23-27, 2023
 - Topics to be covered
   - Thursday:
     - Linking Hartree-Fock theory with density functional theory
     - Video of lecture  at https://https://youtu.be/zwY6n05uu7o
-    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober26.pdf   - Friday: 
-    - Density functional theory
-- Lecture Material: These slides, handwritten notes
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober26.pdf
+  - Friday:
+    - Electron gas in three dimensions and links with density functional theory
+    - Video of lecture at https://youtu.be/40SOQTXSgek
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureOctober27.pdf
+- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4 and sections 5.1-5.3
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek43.pdf
 
 
