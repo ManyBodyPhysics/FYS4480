@@ -1,0 +1,183 @@
+\documentclass[prc]{revtex4}
+\usepackage[dvips]{graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+\usepackage{lscape}
+
+\usepackage{epic,eepic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[dvips]{epsfig}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{bezier}
+\usepackage{pstricks}
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+%\usepackage{braket}
+\usepackage[dvips]{graphicx}
+\usepackage{pst-plot}
+
+\newcommand{\One}{\hat{\mathbf{1}}}
+\newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle}
+\newcommand{\element}[3]
+    {\bra{#1}#2\ket{#3}}
+
+\newcommand{\normord}[1]{
+    \left\{#1\right\}
+}
+
+\usepackage{amsmath}
+\begin{document}
+\title{Exercises FYS4480, week 43, October 29-November , 2023}
+%\author{}
+\maketitle
+
+
+
+\subsection*{Exercise 1}
+
+We consider a system of electrons in infinite matter, the so-called
+electron gas. This is a homogeneous system and the one-particle states
+are given by plane wave function normalized to a volume $\Omega$ for a
+box with length $L$ (the limit $L\rightarrow \infty$ is to be taken
+after we have computed various expectation values)
+\[
+\psi_{{\bf k}\sigma}({\bf r})= \frac{1}{\sqrt{\Omega}}\exp{(i{\bf kr})}\xi_{\sigma}
+\]
+where ${\bf k}$ is the wave number and  $\xi_{\sigma}$ is a spin function for either spin up or down
+\[ 
+\xi_{\sigma=+1/2}=\left(\begin{array}{c} 1 \\ 0 \end{array}\right) \hspace{0.5cm}
+\xi_{\sigma=-1/2}=\left(\begin{array}{c} 0 \\ 1 \end{array}\right).\]
+
+We assume that we have periodic boundary conditions which limit the allowed wave numbers to
+\[
+k_i=\frac{2\pi n_i}{L}\hspace{0.5cm} i=x,y,z \hspace{0.5cm} n_i=0,\pm 1,\pm 2, \dots
+\]
+We assume first that the particles interact via a central, symmetric and translationally invariant
+interaction  $V(r_{12})$ with
+$r_{12}=|{\bf r}_1-{\bf r}_2|$.  The interaction is spin independent.
+
+The total Hamiltonian consists then of kinetic and potential energy
+\[
+\hat{H} = \hat{T}+\hat{V}.
+\]
+\begin{enumerate}
+\item[a)] Show that the operator for the kinetic energy can be written as
+\[
+\hat{T}=\sum_{{\bf k}\sigma}\frac{\hbar^2k^2}{2m}a_{{\bf k}\sigma}^{\dagger}a_{{\bf k}\sigma}.
+\]
+Find also the number operator $\hat{N}$ and find a corresponding expression for the interaction
+$\hat{V}$ expressed with creation and annihilation operators.   The expression for the interaction
+has to be written in  $k$ space, even though $V$ depends only on the relative distance. It means that you ned to set up the Fourier transform $\langle {\bf k}_i{\bf k}_j| V | {\bf k}_m{\bf k}_n\rangle$.
+\item[b)] We assume that  $V(r_{12}) < 0$ kand that the integral 
+$\int |V(x)| d^3x < \infty$.
+
+Use the operator form for $\hat{H}$ from the previous exercise and calculate
+$E_0=\bra{\Phi_{0}}H\ket{\Phi_{0}}$ for this system to first order in perturbation theory
+and express the result as a function of the density $\rho=N/\Omega$. 
+The state $\ket{\Phi_{0}}$  is a Slater determinant determined by filling all states up to Fermi level.
+Show that the system will collapse (you wil not be able to find an energy minimum). Comment your results.
+\item[c)] We will now study the electron gas. The Hamilton operator is given by
+\[
+\hat{H}=\hat{H}_{el}+\hat{H}_{b}+\hat{H}_{el-b},
+\]
+with the electronic part
+\[
+\hat{H}_{el}=\sum_{i=1}^N\frac{p_i^2}{2m}+\frac{e^2}{2}\sum_{i\ne j}\frac{e^{-\mu |{\bf r}_i-{\bf r}_j|}}{|{\bf r}_i-{\bf r}_j|},
+\]
+where we have introduced an explicit convergence factor
+(the limit $\mu\rightarrow 0$ is performed after having calculated the various integrals).
+Correspondingly, we have
+\[
+\hat{H}_{b}=\frac{e^2}{2}\int\int d{\bf r}d{\bf r}'\frac{n({\bf r})n({\bf r}')e^{-\mu |{\bf r}-{\bf r}'|}}{|{\bf r}-{\bf r}'|},
+\]
+which is the energy contribution from the positive background charge with density
+$n({\bf r})=N/\Omega$. Finally,
+\[
+\hat{H}_{el-b}=-\frac{e^2}{2}\sum_{i=1}^N\int d{\bf r}\frac{n({\bf r})e^{-\mu |{\bf r}-{\bf x}_i|}}{|{\bf r}-{\bf x}_i|},
+\]
+is the interaction between the electrons and the positive background.
+
+Show that
+\[
+\hat{H}_{b}=\frac{e^2}{2}\frac{N^2}{\Omega}\frac{4\pi}{\mu^2},
+\]
+and
+\[
+\hat{H}_{el-b}=-e^2\frac{N^2}{\Omega}\frac{4\pi}{\mu^2}.
+\]
+Show thereafter that the final Hamiltonian can be written as 
+\[
+H=H_{0}+H_{I},
+\]
+with
+\[
+H_{0}={\displaystyle\sum_{{\bf k}\sigma}}
+\frac{\hbar^{2}k^{2}}{2m}a_{{\bf k}\sigma}^{\dagger}
+a_{{\bf k}\sigma},
+\]
+and
+\[
+H_{I}=\frac{e^{2}}{2\Omega}{\displaystyle\sum_{\sigma_{1}
+\sigma_{2}}}{\displaystyle
+\sum_{{\bf q}\neq 0,{\bf k},{\bf p}}}\frac{4\pi}{q^{2}}
+a_{{\bf k}+{\bf q},\sigma_{1}}^{\dagger}
+a_{{\bf p}-{\bf q},\sigma_{2}}^{\dagger}
+a_{{\bf p}\sigma_{2}}a_{{\bf k}\sigma_{1}}.
+\] 
+\item[d)] Calculate
+$E_0/N=\bra{\Phi_{0}}H\ket{\Phi_{0}}/N$ for
+for this system to first order in the interaction.
+Show that, by using
+\[
+\rho= \frac{k_F^3}{3\pi^2}=\frac{3}{4\pi r_0^3},
+\]
+with $\rho=N/\Omega$, $r_0$
+being the radius of a sphere representing the volume an electron occupies 
+and the Bohr radius $a_0=\hbar^2/e^2m$, 
+that the energy per electron can be written as 
+\[
+E_0/N=\frac{e^2}{2a_0}\left[\frac{2.21}{r_s^2}-\frac{0.916}{r_s}\right].
+\]
+Here we have defined
+$r_s=r_0/a_0$ to be a dimensionless quantity.
+
+Plot your results and link your discussion to the result in exercise b). Why is this system stable?
+\item[e)] 
+Calculate thermodynamical quantities like the pressure, given by
+\[
+P=-\left(\frac{\partial E}{\partial \Omega}\right)_N,\]
+and the bulk modulus
+\[
+B=-\Omega\left(\frac{\partial P}{\partial \Omega}\right)_N,\]
+and comment your results.
+\item[f)] 
+The single-particle Hartree-Fock energies are given by the expression 
+\[
+\varepsilon_{k}^{HF}=\frac{\hbar^{2}k^{2}}{2m}-\frac{e^{2}
+k_{F}}{2\pi}
+\left[
+2+\frac{k_{F}^{2}-k^{2}}{kk_{F}}ln\left\vert\frac{k+k_{F}}
+{k-k_{F}}\right\vert
+\right].
+\]
+(You don't need to calculate this quantity).  How can you use the Hartree-Fock energy to 
+find the ground state energy? Are there differences between the Hartree-Fock results and those you 
+found in exercise d)?  Comment your results.
+\end{enumerate}
+
+
+
+\end{document}
+
+
+
