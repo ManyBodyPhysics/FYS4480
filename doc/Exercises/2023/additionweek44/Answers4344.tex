@@ -1,0 +1,592 @@
+\documentclass[a4paper, 11pt, notitlepage, english]{article}
+
+\usepackage{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc, url}
+\usepackage{textcomp}
+\usepackage{amsmath, amssymb}
+\usepackage{amsbsy, amsfonts}
+\usepackage{graphicx, color}
+\usepackage{parskip}
+\usepackage{framed}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{flafter}
+
+
+\usepackage{geometry}
+\geometry{headheight=0.01mm}
+\geometry{top=24mm, bottom=29mm, left=39mm, right=39mm}
+
+\renewcommand{\arraystretch}{2}
+\setlength{\tabcolsep}{10pt}
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+
+\usepackage{listings}
+\lstset{language=python}
+\lstset{basicstyle=\ttfamily\small}
+\lstset{frame=single}
+\lstset{keywordstyle=\color{red}\bfseries}
+\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+
+\newcommand{\dd}[1]{\ \text{d}#1}
+\newcommand{\f}[2]{\frac{#1}{#2}} 
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bra}[1]{\langle #1|}
+\newcommand{\ket}[1]{|#1 \rangle}
+\newcommand{\braket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\braup}[1]{\langle #1 \left|\uparrow\rangle\right.}
+\newcommand{\bradown}[1]{\langle #1 \left|\downarrow\rangle\right.}
+\newcommand{\av}[1]{\left| #1 \right|}
+\newcommand{\op}[1]{\hat{#1}}
+\newcommand{\braopket}[3]{\langle #1 | {#2} | #3 \rangle}
+\newcommand{\ketbra}[2]{\ket{#1}\bra{#2}}
+\newcommand{\pp}[1]{\frac{\partial}{\partial #1}}
+\newcommand{\ppn}[1]{\frac{\partial^2}{\partial #1^2}}
+\newcommand{\up}{\left|\uparrow\rangle\right.}
+\newcommand{\upup}{\left|\uparrow\uparrow\rangle\right.}
+\newcommand{\down}{\left|\downarrow\rangle\right.}
+\newcommand{\downdown}{\left|\downarrow\downarrow\rangle\right.}
+\newcommand{\updown}{\left|\uparrow\downarrow\rangle\right.}
+\newcommand{\downup}{\left|\downarrow\uparrow\rangle\right.}
+\newcommand{\bupup}{\left.\langle\uparrow\uparrow\right|}
+\newcommand{\bdowndown}{\left.\langle\downarrow\downarrow\right|}
+\newcommand{\bupdown}{\left.\langle\uparrow\downarrow\right|}
+\newcommand{\bdownup}{\left.\langle\downarrow\uparrow\right|}
+\renewcommand{\d}{{\rm d}}
+\newcommand{\Res}[2]{{\rm Res}(#1;#2)}
+\newcommand{\To}{\quad\Rightarrow\quad}
+\newcommand{\eps}{\epsilon}
+\newcommand{\inner}[2]{\langle #1 , #2 \rangle}
+
+
+\newcommand{\bt}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\textsf{\textbf{#1}}}
+\newcommand{\I}{\boldsymbol{\mathcal{I}}}
+\newcommand{\p}{\partial}
+
+\title{Exercises week 35, August 28-September 1, 2023}
+
+\begin{document}
+\maketitle
+
+\subsection{(a)}
+
+I annenkvantisering kan den kinetiske energien $\hat T$ skrives ved hjelp av kreasjons- og annihilasjonsoperatorene på følgende måte:
+\[ \hat T = \sum_{i,j} \bra{i} \hat f \ket{j} \hat a_i^\dagger \hat a_j , \qquad
+\hat f = \frac{\hat{\vec p}^2}{2m} . \]
+%
+som i vår notasjon med bølgetall og spinnkvantetall blir
+\begin{equation}
+\hat T = \sum_{\vec k \sigma} \sum_{\vec k' \sigma'}
+\frac{1}{2m} \bra{\vec k \sigma} \hat{\vec p}^2 \ket{\vec k' \sigma'} \hat a_{\vec k \sigma}^\dagger a_{\vec k' \sigma'} .
+\label{eq:T_original}
+\end{equation}
+%
+Dette uttrykket kan forenkles ved å studere matriseelementet og sette inn for bølgefunksjonene, siden jeg vet at
+\begin{equation}
+\braket{\vec r m_z}{\vec k \sigma} = \psi_{\vec k \sigma} (\vec r) = \frac{1}{\sqrt \Omega} e^{i \vec k \cdot \vec r} \xi_\sigma .
+\label{eq:psi}
+\end{equation}
+%
+Dette gir meg
+\begin{align*}
+\bra{\vec k \sigma} \hat{\vec p}^2 \ket{\vec k' \sigma'}
+%
+&= \frac{\hbar^2}{\Omega} \xi_{\sigma}^\dagger \xi_{\sigma'} \int e^{-i \vec k \cdot \vec r} \left[-\gvec \nabla^2 \left( e^{i \vec k' \cdot \vec r} \right) \right] \dr \\
+%
+&= \frac{\hbar^2}{\Omega} \vec k^2 \delta_{\sigma \sigma'} \int e^{i(\vec k' - \vec k) \cdot \vec r} \dr \\
+%
+&= \hbar^2 \vec k^2 \delta_{\sigma \sigma'} \delta_{\vec k \vec k'} ,
+\end{align*}
+%
+hvor jeg har brukt ortogonaliteten til spinnbølgefunksjonene og den diskrete deltafunksjonen. For enkelhets skyld kan jeg skrive $\vec k^2 = k^2$, hvor $k = |\vec k|$, og jeg får dermed ved å sette inn dette resultatet i ligning \eqref{eq:T_original} at den kinetiske energien er gitt ved
+\begin{equation}
+\hat T = \sum_{\vec k \sigma} \frac{\hbar^2 k^2}{2m} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma} ,
+\label{eq:T}
+\end{equation}
+%
+som er nettopp det jeg skulle vise.
+
+Anntallsoperatoren vil være gitt ved
+\begin{equation}
+\hat N = \sum_{\vec k \sigma} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma}.
+\label{eq:N}
+\end{equation}
+%
+Dette fordi ved de kjente egenskapene til kreasjons- og annihilasjonsoperatorene vil leddet inne i summen gi $1$ dersom bølgefunksjonen inneholder $\ket{\vec k \sigma}$, og $0$ ellers. Den vil dermed telle opp antall forskjellige bølgetall og spinn bølgefunksjonen består av, og resultatet må dermed bli antallet partikler tilstanden beskriver.
+
+Vekselvirkningsoperatoren er generelt gitt ved uttrykket
+\[ \hat V = \frac{1}{2} \sum_{ijmn} \bra{ij} \hat v \ket{mn} \hat a_i^\dagger \hat a_j^\dagger \hat a_n \hat a_m ,  \]
+%
+hvor $\hat v$ er det som blir kalt $V$ i oppgaveteksten ($\hat v = \hat v(\vec r_1, \vec r_2) = \hat v(|\vec r_1 - \vec r_2|) = \hat v(r)$, der $r = |\vec r_1 - \vec r_2|$). I dette tilfellet blir dette
+\begin{equation}
+\hat V = \frac{1}{2} \sum_{\substack{\sigma_1 \sigma_2 \\ \sigma_3 \sigma_4}}
+\sum_{\substack{\vec k_1 \vec k_2 \\ \vec k_3 \vec k_4}}
+\bra{\vec k_1 \sigma_1, \vec k_2 \sigma_2} \hat v \ket{\vec k_3 \sigma_3, \vec k_4 \sigma_4}
+\hat a_{\vec k_1 \sigma_1}^\dagger \hat a_{\vec k_2 \sigma_2}^\dagger \hat a_{\vec k_4 \sigma_4} \hat a_{\vec k_3 \sigma_3} .
+\label{eq:V_original}
+\end{equation}
+%
+Jeg ser først litt nærmere på matriseelementet som inngår i denne formelen ved å sette inn bølgefunksjonene ved hjelp av ligning \eqref{eq:psi} og skrive opp integralet. Dette gir
+\[ \bra{\vec k_1 \sigma_1, \vec k_2 \sigma_2} \hat v \ket{\vec k_3 \sigma_3, \vec k_4 \sigma_4} =
+%
+\frac{1}{\Omega^2} \delta_{\sigma_1 \sigma_3} \delta_{\sigma_2 \sigma_4}
+\iint e^{-i\vec k_1 \cdot \vec r_1} e^{-i \vec k_2 \cdot \vec r_2} v(r) e^{i\vec k_3 \cdot \vec r_1} e^{i \vec k_4 \cdot \vec r_2} \dr_1 \dr_2 , \]
+%
+hvor jeg har benyttet ortogonaliteten til spinnfunksjonene. Jeg ønsker nå å skifte integrasjonsvariabler i disse to integralene. Jeg setter nå $\vec r = \vec r_1 - \vec r_2$, som gir $\vec r_1 = \vec r + \vec r_2$ og $\md^3 \vec r = \md^3 \vec r_1$. Grensene er uendret siden de er fra $-\infty$ til $\infty$ på alle integralene. Dette gir meg
+\begin{align*}
+\bra{\vec k_1 \sigma_1, \vec k_2 \sigma_2} \hat v \ket{\vec k_3 \sigma_3, \vec k_4 \sigma_4}
+%
+&= \frac{1}{\Omega^2} \delta_{\sigma_1 \sigma_3} \delta_{\sigma_2 \sigma_4} \int
+e^{i (\vec k_4 - \vec k_2) \cdot \vec r_2} \int v(r) e^{i(\vec k_3 - \vec k_1) \cdot ( \vec r + \vec r_2)} \dr \dr_2 \\
+%
+&= \frac{1}{\Omega^2} \delta_{\sigma_1 \sigma_3} \delta_{\sigma_2 \sigma_4} \int v(r) e^{i(\vec k_3 - \vec k_1) \cdot \vec r}
+\int e^{i (\vec k_4 - \vec k_2 + \vec k_3 - \vec k_1) \cdot \vec r_2} \dr_2 \dr .
+\end{align*}
+%
+Jeg kjenner så igjen integralet over $\vec r_2$ som en deltafunksjon, noe som gir meg
+\[ \bra{\vec k_1 \sigma_1, \vec k_2 \sigma_2} \hat v \ket{\vec k_3 \sigma_3, \vec k_4 \sigma_4} =
+\frac{1}{\Omega} \delta_{\sigma_1 \sigma_3} \delta_{\sigma_2 \sigma_4} \delta_{(\vec k_1 + \vec k_2),(\vec k_3 + \vec k_4)} \int v(r) e^{i(\vec k_3 - \vec k_1) \cdot \vec r} \dr . \]
+%
+For at dette skal bli ulik $0$ må dermed $\vec k_1 + \vec k_2 = \vec k_3 + \vec k_4$, altså bevaring av moment. Dette kan brukes til å fjerne den ene av $\vec k$-summene i ligning \eqref{eq:V_original}. Jeg setter dermed dette uttrykket inn i denne ligningen og får
+\[ \hat V =
+\frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k_1 \vec k_2 \vec k_3} \left[ \int v(r) e^{i(\vec k_3 - \vec k_1) \cdot \vec r} \dr \right]
+\hat a_{\vec k_1 \sigma}^\dagger \hat a_{\vec k_2 \sigma'}^\dagger \hat a_{\vec k_1 + \vec k_2 - \vec k_3, \sigma'} \hat a_{\vec k_3 \sigma}, \]
+%
+eller skrevet om på en litt annen måte:
+\begin{equation}
+\hat V =
+\frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k \vec p \vec q} \left[ \int v(r) e^{-i \vec q \cdot \vec r} \dr \right]
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma},
+\label{eq:V}
+\end{equation}
+%
+hvor jeg har introdusert størrelsene $\vec p = \vec k_1 + \vec k_2 - \vec k_3$, $\vec k = \vec k_3$ og $\vec q = \vec k_1 - \vec k_3$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{(b)}
+
+Jeg skal nå finne $\bra{\Phi_0} \hat H \ket{\Phi_0} = \bra{\Phi_0} \hat T \ket{\Phi_0} + \bra{\Phi_0} \hat V \ket{\Phi_0}$, der $\ket{\Phi_0}$ er Slaterdeterminanten gitt ved å fylle opp alle tilstander til og med ferminivået. Jeg regner først ut forventningsverdien til den kinetiske energien:
+\[ \bra{\Phi_0} \hat T \ket{\Phi_0}
+%
+= \bra{\Phi_0} \left( \sum_{\vec k \sigma} \frac{\hbar^2 k^2}{2m} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma} \right) \ket{\Phi_0} \\
+%
+= \sum_{\vec k \sigma} \frac{\hbar^2 k^2}{2m} \bra{\Phi_0} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma} \ket{\Phi_0} . \]
+%
+Hva skjer så med $\hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma} \ket{\Phi_0}$? Summen over $\vec k$ går over alle $\vec k$, også over Ferminivået. $\ket{\Phi_0}$ inneholder derimot bare tilstander med $\vec k$ under Ferminivået, så leddet over vil bli $0$ for alle $|\vec k| = k > |\vec k_F| = k_F$. For alle $k \leq k_F$, vil resultatet bli $\ket{\Phi_0}$ da den bare annihilerer og så kreerer den samme tilstanden. Altså vil jeg ha
+\[ \bra{\Phi_0} \hat T \ket{\Phi_0} = \sum_{\vec k, k \leq k_F} \frac{\hbar^2 k^2}{m} = \frac{\Omega}{(2\pi)^3} \frac{\hbar^2}{m} \int_0^{k_F} k^2 \dk , \]
+%
+hvor jeg har summert bort spinnet siden dette vil kun vil bidra med en faktor på $2$ og i tillegg skrevet om summen til et integral. Jeg skifter så til sfæriske koordinater, og siden det ikke er noen vinkelavhengigheter i integralet vil vinkelintegralene kun bidra med en faktor på $4\pi$. Jeg sitter dermed igjen med
+\[ \bra{\Phi_0} \hat T \ket{\Phi_0} = \frac{\Omega}{(2\pi)^3} \left( 4\pi \int_0^{k_F} k^4 \dk \right) = \frac{4\pi\Omega}{(2\pi)^3} \frac{1}{5} k_F^5 = \frac{4\pi\Omega}{5(2\pi)^3} k_F^5 = \frac{\hbar^2 \Omega}{10\pi^2 m} k_F^5 . \]
+%
+Tetthet av tilstander i $k$-rommet er gitt ved $2\Omega/(2\pi)^3$ (med spinndegenerasjon) og volumet fermisfæren dekker er $4\pi k_F^3/3$, slik at antall partikler er gitt ved
+\[ N = \frac{2\Omega}{(2\pi)^3} \frac{4}{3} \pi k_F^3 = \frac{\Omega}{3\pi^2} k_F^3 \quad \Rightarrow \quad
+k_F = \left( \frac{3\pi^2 N}{\Omega} \right)^{1/3}. \]
+%
+Dette gir meg
+\begin{equation}
+\bra{\Phi_0} \hat T \ket{\Phi_0} =
+\frac{\hbar^2 \Omega}{10\pi^2 m} \left( \frac{3\pi^2 N}{\Omega} \right)^{5/3} =
+\frac{\hbar^2 (3\pi^2)^{5/3} N}{10\pi^2 m} \rho^{2/3} ,
+\label{eq:T_forventning}
+\end{equation}
+%
+Jeg ser så på forventningsverdien til den potensielle energien ved å benytte ligning \eqref{eq:V}:
+\begin{align*}
+\bra{\Phi_0} \hat V \ket{\Phi_0}
+%
+&= \bra{\Phi_0} \left( \frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k \vec p \vec q} \left[ \int v(r) e^{-i \vec q \cdot \vec r} \dr \right]
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} \right) \ket{\Phi_0} \\
+%
+&= \frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k \vec p \vec q} \left[ \int v(r) e^{-i \vec q \cdot \vec r} \dr \right]
+\bra{\Phi_0} \hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} \ket{\Phi_0} .
+\end{align*}
+%
+Må så finne matriseelementet. Innser at fordi $\ket{\Phi_0}$ bare inneholder tilstander under Ferminivået, kreasjons- og annihilasjonsoperatorene gi $0$ dersom de har en bølgevektor over Ferminivået. Altså: $k \leq k_F$, $p \leq k_F$, $|\vec p - \vec q| < \vec k_F$ og $|\vec k + \vec q| \leq k_F$. Samtidig må jeg enten ha $\vec k + \vec q = \vec p$, $\vec p - \vec q = \vec k$ og $\sigma = \sigma'$, eller $\vec k + \vec q = \vec k$ og $\vec p - \vec q = \vec p$. Jeg har dermed:
+\[ \vec k + \vec q = \vec p \quad \text{og} \quad \sigma = \sigma', \qquad
+\text{eller} \qquad
+\vec q = \vec 0 . \]
+%
+Hva blir så matriseelementet ved hver av disse betingelsene? Den første betingelsen gir $-1$ fordi $\ket{\Phi_0}$ er normert, og det gjøres et odde antall permutasjoner for å fikse rekkefølgen til kreasjons- og annihilasjonsoperatorene. Den andre betingelsen gir $+1$, fordi det nå gjøres et like antall permutasjoner, og jeg har dermed:
+\[ \bra{\Phi_0} \hat V \ket{\Phi_0} =
+%
+\frac{1}{2\Omega} \left( \sum_{\sigma \sigma'} \sum_{\substack{\vec k \vec p \\ kq \leq k_F}} \left[ \int v(r) \dr \right] - \sum_{\sigma}
+\sum_{\substack{\vec p \vec q \\ pq \leq k_F}} \left[ \int v(r) e^{-i \vec q \cdot \vec r} \dr \right] \right) , \]
+%
+som gir
+\begin{equation}
+\bra{\Phi_0} \hat V \ket{\Phi_0} =
+%
+\frac{1}{2\Omega} \left( N^2 \left[ \int v(r) \dr \right] - N \sum_{\substack{\vec q \\ q \leq k_F}} \left[ \int v(r) e^{-i \vec q \cdot \vec r} \dr \right] \right) .
+\label{eq:V_b}
+\end{equation}
+%
+Ser så på det siste integralet. $v(r)$ avtar forholdsvis fort siden $\int |v(r)| \md r < \infty$ og $v(r) < 0$. $q$ er alltid veldig liten da Fermisfæren er er liten. Det betyr at eksponentialfunksjonen alltid vil være nær $1$ for de verdier for $r$ som gir $v(r)$ betydelig ulik $0$. Dermed kan jeg sette eksponentialfunksjonen lik $1$, og det gir
+\begin{align*}
+\bra{\Phi_0} \hat V \ket{\Phi_0}
+%
+&= \frac{1}{2\Omega} \left( N^2 \left[ \int v(r) \dr \right] - N \sum_{\substack{\vec q \\ q \leq k_F}} \left[ \int v(r) \dr \right] \right) \\
+%
+&= \frac{1}{2\Omega} \left( N^2 - \frac{N^2}{2} \right) \int v(r) \dr \\
+%
+&= \frac{\pi N^2}{\Omega} \int_0^\infty v(r) \, \md r .
+\end{align*}
+%
+Ved så å bruke ligning \eqref{eq:T_forventning} og ligningen over får jeg:
+\begin{equation}
+\frac{E_0}{N} = \frac{\bra{\Phi_0} \hat H \ket{\Phi_0}}{N} = \frac{\bra{\Phi_0} \hat T \ket{\Phi_0} + \bra{\Phi_0} \hat V \ket{\Phi_0}}{N} =
+\frac{\hbar^2 (3\pi^2)^{5/3}}{10\pi^2 m} \rho^{2/3} -
+\pi \rho \int_0^\infty |v(r)| \, \md r .
+\label{eq:E0}
+\end{equation}
+%
+Et plott av denne funksjonen kan sees i figur \ref{fig:1b}. Ser fra figuren at funksjonen ikke har noe minimumspunkt sett bort fra $\rho = 0$. Det betyr at systemet enten vil være ``spredt for alle vinder'', som tilsvarer $\rho = 0$ eller det vil kollapse helt fordi energien vil stadig minke når $\rho \to \infty$. Potensialet virker tiltrekkende siden $v(r) < 0$. Av resultatet over kommer det derfor frem at potensialet er for kraftig til at systemet er stabilt ved en ikke-null tetthet.
+
+\begin{figure}[tbp]
+\centering
+\begin{minipage}[p]{0.7\textwidth}
+\small{\input{figur1b}}
+\end{minipage}\hfill
+\begin{minipage}[p]{0.3\textwidth}
+\caption{Her vises et plott av energi per partikkel $E_0/N$ som funksjon av tettheten $\rho$ gitt ved ligning \eqref{eq:E0}.}
+\label{fig:1b}
+\end{minipage}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{(c)}
+
+Jeg skal nå regne ut følgende del av Hamiltonoperatoren:
+\[ \hat H_b = \frac{e^2}{2} \iint \frac{n(\vec r) n(\vec r')e^{-\mu|\vec r - \vec r'|}}{|\vec r - \vec r'|} \dr \dr' , \]
+%
+hvor $n(\vec r) = N/\Omega$, det vil si tettheten til den positive bagkrunnsladningen. I tillegg til å sette inn dette i integralet over, skifter jeg variabel. Jeg setter $\vec r_{12} = \vec r - \vec r'$, noe som gir meg $\md^3 \vec r_{12} = \md^3 r$, og jeg får dermed
+\[ \hat H_b = \frac{e^2 N^2}{2\Omega^2} \iint \frac{e^{-\mu |\vec r_{12}|}}{|\vec r_{12}|} \dr_{12} \dr' = \frac{e^2 N^2}{2\Omega} \int \frac{e^{-\mu |\vec r_{12}|}}{|\vec r_{12}|} \dr_{12} . \]
+%
+Her har jeg brukt at $\int \! \dr = \Omega$. Jeg skifter så til sfæriske koordinater. Ingen vinkelavhengighet gir at vinkelintegralene bidrar med en faktor på $4\pi$, og jeg sitter dermed igjen med
+\[ \hat H_b = \frac{4\pi e^2 N^2}{2\Omega} \int_0^\infty re^{-\mu r} \, \md r . \]
+%
+Integralet løser jeg ved hjelp av delvis integrasjon:
+\[ \int_0^\infty re^{-\mu r} \, \md r = \left[ -\frac{r}{\mu} e^{-\mu r} \right]_0^\infty + \frac{1}{\mu} \int_0^\infty e^{-\mu r} \, \md r
+%
+= \frac{1}{\mu} \left[ - \frac{1}{\mu} e^{-\mu r} \right]_0^\infty = \frac{1}{\mu^2}, \]
+%
+som gir
+\begin{equation}
+\hat H_b = \frac{e^2}{2} \frac{N^2}{\Omega} \frac{4\pi}{\mu^2} .
+\label{eq:H_b}
+\end{equation}
+%
+Så skal jeg regne ut en ny del av Hamiltonoperatoren:
+\[ \hat H_{el-b} = -e^2 \sum_{i = 1}^N \int \frac{n(\vec r) e^{-\mu |\vec r - \vec x_i|}}{|\vec r - \vec x_i|} \dr . \]
+%
+Jeg setter inn for $n(\vec r)$ og skifter variabel på samme måte som isted med $\vec y = \vec r - \vec x_i$, som gir $\md^3 \vec y = \md^3 \vec r$. Dermed har jeg
+\[ \hat H_{el-b} = -\frac{e^2 N}{\Omega} \sum_{i = 1^N} \int \frac{e^{-\mu |\vec y|}}{|\vec y|} \, \md^3 \vec y
+%
+=  -\frac{4\pi e^2 N}{\Omega} \sum_{i = 1}^N \int_0^\infty y e^{-\mu y} \md y, \]
+%
+hvor jeg i den siste overgangen har byttet til sfæriske koordinater på samme måte som tidligere. Dette integralet har jeg nettopp regnet ut, og ved å bruke det tidligere resultatet får jeg
+\[ \hat H_{el-b} = -\frac{4\pi e^2 N}{\Omega} \sum_{i = 1}^N \frac{1}{\mu^2}, \]
+som gir
+\begin{equation}
+\hat H_{el-b} = -e^2 \frac{N^2}{\Omega} \frac{4\pi}{\mu^2} .
+\label{eq:H_el-b}
+\end{equation}
+%
+Må så til slutt finne leddet $\hat H_{el}$. Det er gitt ved
+\[ \hat H_{el} = \sum_{i=1}^N \frac{\hat{\vec p}_i^2}{2m} + \frac{e^2}{2} \sum_{i \neq j} \frac{e^{-\mu |\vec r_i - \vec r_j|}}{\vec r_i - \vec r_j} . \]
+%
+Det første leddet her er $\hat T$ som jeg regnet ut i oppgave 1a gitt ved ligning \eqref{eq:T}. Det siste leddet er potensialet, og det er både sentral-symmetrisk og translasjonsinvariant slik at jeg kan bruke uttrykket for $\hat V$ også fant i oppgave 1a gitt ved ligning \eqref{eq:V}. Siden $v(r)$ nå er oppgitt,
+\[ v(|\vec r|) = e^2 \frac{e^{\mu|\vec r|}}{|\vec r|}, \]
+%
+kan jeg se nærmere på integralet i denne ligningen. Det viser seg at jeg har regnet ut dette integralet på en regneøvelse, så det gjør jeg ikke her også. Resultatet blir:
+\[ \int v(|\vec r|) e^{-i \vec q \cdot \vec r} \dr =
+e^2 \int \frac{e^{\mu |\vec r|}}{|\vec r|} e^{-i \vec q \cdot \vec r} \dr =
+e^2 \frac{4\pi}{\mu^2 + q^2} , \]
+%
+som gir
+\begin{align*}
+\hat H_{el} &= \sum_{\vec k \sigma} \frac{\hbar^2 k^2}{2m} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma} +
+\frac{e^2}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k \vec p \vec q} \frac{4\pi}{\mu^2 + q^2}
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} \\
+%
+&= \sum_{\vec k \sigma} \frac{\hbar^2 k^2}{2m} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma} +
+\frac{e^2}{2\Omega} \sum_{\sigma \sigma'} \sum_{\substack{\vec k \vec p \vec q \\ q \neq 0}} \frac{4\pi}{q^2}
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} + \\
+&\quad\,\,
+\frac{e^2}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k \vec p} \frac{4\pi}{\mu^2}
+\hat a_{\vec k, \sigma}^\dagger \hat a_{\vec p, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} ,
+\end{align*}
+%
+hvor jeg i den siste overgangen har delt opp summen over $\vec q$ og benyttet at $\mu \to 0$. Finner så hva sekvensen av kreasjons- og annihilasjonsoperatorer er for den siste summen:
+\[ \hat a_{\vec k, \sigma}^\dagger \hat a_{\vec p, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} =
+- \hat a_{\vec k, \sigma}^\dagger \hat a_{\vec p, \sigma'}^\dagger \hat a_{\vec k \sigma} \hat a_{\vec p \sigma'} =
+- \hat a_{\vec k, \sigma}^\dagger \hat a_{\vec p \sigma'} \delta_{\vec p \vec k} \delta_{\sigma \sigma'} + \hat a_{\vec k, \sigma}^\dagger \hat a_{\vec k \sigma} \hat a_{\vec p, \sigma'}^\dagger \hat a_{\vec p \sigma'} , \]
+som gir
+\[ \sum_{\sigma \sigma'} \sum_{\vec k \vec p} \hat a_{\vec k, \sigma}^\dagger \hat a_{\vec p, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} =
+\hat N^2 - \hat N , \]
+%
+hvor jeg har kjent igjen antallsoperatoren fra ligning \eqref{eq:N}. Leddet med $\hat N$ i første potens vil gå mot $0$ i den termodynamiske grensen. Dette fordi vi ser på energien per partikkelen, $E_0/N$, som gjør at dette leddet gir opphav til et ledd som er proposjonalt med $1/(\Omega \mu^2)$. I den termodynamiske grensen går $\Omega$ mot uendelig, og dermed vil dette leddet kunne settes lik $0$. Jeg har dermed
+%
+\[ \hat H_{el} = \sum_{\vec k \sigma} \frac{\hbar^2 k^2}{2m} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma} +
+\frac{e^2}{2\Omega} \sum_{\sigma \sigma'} \sum_{\substack{\vec k \vec p \vec q \\ q \neq 0}} \frac{4\pi}{q^2}
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} +
+\frac{e^2}{2} \frac{N^2}{\Omega} \frac{4\pi}{\mu^2}. \]
+%
+Det totale uttrykket for Hamiltonoperatoren er $\hat H = \hat H_{el} + \hat H_{b} + \hat H_{el-b}$. Sammenligner så dette med ligning \eqref{eq:H_b} og \eqref{eq:H_el-b} og ser at det siste leddet i ligningen over kanselleres. Dermed vil Hamiltonoperatoren vil kunne skrives som $\hat H = \hat H_0 + \hat H_I$, hvor
+\begin{equation}
+\hat H_0 = \sum_{\vec k \sigma} \frac{\hbar^2 k^2}{2m} \hat a_{\vec k \sigma}^\dagger \hat a_{\vec k \sigma},
+\label{eq:H0}
+\end{equation}
+og
+\begin{equation}
+\hat H_I = \frac{e^2}{2\Omega} \sum_{\sigma \sigma'} \sum_{\substack{\vec k \vec p \vec q \\ q \neq 0}} \frac{4\pi}{q^2}
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma},
+\label{eq:HI}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{(d)}
+
+Jeg skal nå beregne $E_0 = \bra{\Phi_0} \hat H \ket{\Phi_0}$, hvor $\hat H$ er gitt ved ligning \eqref{eq:H0} og \eqref{eq:HI}. Jeg ser at $\hat H_0$ er nøyaktig den samme som $\hat T$ i oppgave 1b, og jeg kan dermed plukke resultatet fra denne oppgaven. Altså
+\begin{equation}
+\bra{\Phi_0} \hat H_0 \ket{\Phi_0} =
+\frac{\hbar^2 \Omega}{10\pi^2 m} k_F^5 .
+\label{eq:H0_forventning}
+\end{equation}
+%
+Forventningsverdien for $\hat H_I$ er gitt ved
+\begin{align*}
+\bra{\Phi_0} \hat H_I \ket{0} &=
+\bra{\Phi_0} \left( \frac{e^2}{2\Omega} \sum_{\sigma \sigma'} \sum_{\substack{\vec k \vec p \vec q \\ q \neq 0}} \frac{4\pi}{q^2}
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} \right) \ket{\Phi_0} \\
+%
+&= \frac{e^2}{2\Omega} \sum_{\sigma \sigma'} \sum_{\substack{\vec k \vec p \vec q \\ q \neq 0}} \frac{4\pi}{q^2} \bra{\Phi_0}
+\hat a_{\vec k + \vec q, \sigma}^\dagger \hat a_{\vec p - \vec q, \sigma'}^\dagger \hat a_{\vec p \sigma'} \hat a_{\vec k \sigma} \ket{\Phi_0},
+\end{align*}
+%
+hvor jeg har satt inn for $\hat H_I$ ved hjelp av ligning \eqref{eq:HI}. For at dette matriseelementet skal være ulik $0$ må $\vec k + \vec q = \vec p$ og $\sigma = \sigma'$ (får ikke den andre muligheten som jeg fikk i oppgave 1b fordi $q \neq 0$). Samtidig må $p \leq k_F$ og $k \leq k_F$. Da er matriseelementet $-1$, og jeg får
+\[ \bra{\Phi_0} \hat H_I \ket{0} =
+-\frac{4\pi e^2}{2\Omega} \sum_{\sigma} \sum_{\substack{\vec k, \vec p \neq \vec k \\ k, p \leq k_F}} \frac{1}{|\vec p - \vec k|^2} =
+-\frac{4\pi e^2}{\Omega} \sum_{\substack{\vec k, \vec p \neq \vec k \\ k, p \leq k_F}} \frac{1}{|\vec p - \vec k|^2}. \]
+%
+Gjør så dette om til integral, og får
+\[ \bra{\Phi_0} \hat H_I \ket{\Phi_0} =
+-\frac{4\pi e^2}{\Omega} \left( \frac{\Omega}{(2\pi)^3} \right)^2 \int_0^{k_F} \!\!\!\! \int_0^{k_F} \frac{1}{|\vec p - \vec k|^2} \, \md^3 \vec k \, \md^3 \vec p . \]
+%
+Må altså finne dette integralet. Skriver om til polarkoordinater, og får
+\[ \int_0^{k_F} \!\!\! \int_0^{k_F} \frac{1}{|\vec p - \vec k|^2} \, \md^3 \vec k \, \md^3 \vec p =
+2\pi \int_0^{k_F} \!\!\! \int_0^\pi \!\!\! \int_0^{k_F} \frac{k^2 \sin \theta}{p^2 + k^2 - 2kp \cos \theta} \, \md k \md \theta \, \md^3 \vec p , \]
+%
+da $p$ vil være en konstant i $k$-integralet. Først tar jeg integralet over $\theta$. Dette integralet har vi gjort tidligere på regneøvelse, og gir
+\begin{align*}
+\int_0^{k_F} \!\!\! \int_0^{k_F} \frac{1}{|\vec p - \vec k|^2} \, \md^3 \vec k \, \md^3 \vec p &=
+%
+2\pi \int_0^{k_F} \!\!\! \int_0^{k_F} \left[ \frac{k^2 \ln \left( k^2 + p^2 - 2kp\cos \theta \right)}{2kp} \right]_{\theta = 0}^{\theta = \pi} \, \md k \, \md^3 \vec p \\
+%
+&= \pi \int_0^{k_F} \!\!\! \int_0^{k_F} \frac{k}{p} \ln \left( \frac{(p + k)^2}{(p - k)^2} \right) \, \md k \, \md^3 \vec p \\
+%
+&= 2\pi \int_0^{k_F} \!\!\! \int_0^{k_F} \frac{k}{p} \ln \left| \frac{p + k}{p - k} \right| \, \md k \, \md^3 \vec p \\
+%
+&= 2\pi \int_0^{k_F} \!\!\! \int_0^{k_F} \frac{k}{p} \ln | p + k| - \frac{k}{p} \ln|k-p| \, \md k \, \md^3 \vec p .
+\end{align*}
+%
+Å regne ut alle disse integralene blir det lite tid til. Jeg bruker derfor resultatet
+\[ \int k\ln|k+p| = \frac{1}{2} k^2 \ln|k + p| - \frac{k^2}{4} - \frac{1}{2} p^2 \ln|k+p| + \frac{kp}{2} + C , \]
+%
+som gir meg
+\[ \int_0^{k_F} k\ln|k+p| = \frac{1}{2} k_F^2 \ln|k_F + p| - \frac{k_F^2}{4} - \frac{1}{2} p^2 \ln|k_F+p| + \frac{k_F p}{2} + \frac{1}{2} p^2 \ln p , \]
+%
+og
+\[ \int_0^{k_F} k\ln|k-p| = \frac{1}{2} k_F^2 \ln|k_F - p| - \frac{k_F^2}{4} - \frac{1}{2} p^2 \ln|k_F-p| - \frac{k_F p}{2} + \frac{1}{2} p^2 \ln p . \]
+%
+Slår jeg dette sammen får jeg
+\begin{align*}
+\int_0^{k_F} \!\!\! \int_0^{k_F} \frac{1}{|\vec p - \vec k|^2} \, \md^3 \vec k \, \md^3 \vec p &=
+%
+2\pi \int_0^{k_F} \frac{1}{p} \left( \frac{1}{2} k_F^2 \ln \left| \frac{k_F + p}{k_F - p} \right| - \frac{1}{2} p^2 \ln \left| \frac{k_F + p}{k_F - p} \right| + k_F p \right) \, \md^3 \vec p \\
+%
+&= 2\pi k_F \frac{4}{3} \pi k_F^3 + \pi \int_0^{k_F} \left( \frac{k_F^2}{p} - p \right) \ln \left| \frac{k_F + p}{k_F - p} \right| \, \md^3 \vec p \\
+%
+&= \frac{8\pi^2}{3} k_F^4 + 4\pi^2 \int_0^{k_F} \left( k_F^2 p - p^3 \right) \ln \left| \frac{k_F + p}{k_F - p} \right| \, \md p .
+\end{align*}
+%
+Jeg bruker så Wolfram Alpha, som gir meg
+\[ \int_0^{k_F} p \ln |p + k_F| \, \md p = \frac{1}{4} k_F^2 \left( 2\ln k_F + 1 \right), \]
+%
+\[ \int_0^{k_F} p^3 \ln |p + k_F| \, \md p = \frac{1}{48} k_F^4 \left( 12\ln k_F + 7 \right), \]
+%
+\[ \int_0^{k_F} p \ln |p - k_F| \, \md p = \frac{1}{4} k_F^2 \left( 2\ln k_F - 3 \right), \]
+%
+og
+\[ \int_0^{k_F} p^3 \ln |p - k_F| \, \md p = \frac{1}{48} k_F^4 \left( 12\ln k_F - 25 \right). \]
+%
+Dette gir meg
+\begin{multline*}
+\int_0^{k_F} \!\!\! \int_0^{k_F} \frac{1}{|\vec p - \vec k|^2} \, \md^3 \vec k \, \md^3 \vec p = \\
+\frac{8\pi^2}{3} \pi k_F^4 + 4\pi^2 \left( k_F^2 \frac{1}{4} k_F^2 \left( 2\ln k_F + 1 \right) - k_F^2 \frac{1}{4} k_F^2 \left( 2\ln k_F - 3 \right) - \right. \\
+\left. \frac{1}{48} k_F^4 \left( 12\ln k_F + 7 \right) + \frac{1}{48} k_F^4 \left( 12\ln k_F - 25 \right) \right),
+\end{multline*}
+%
+som jeg kan trekke sammen og få
+\[ \int_0^{k_F} \!\!\! \int_0^{k_F} \frac{1}{|\vec p - \vec k|^2} \, \md^3 \vec k \, \md^3 \vec p =
+%
+\frac{8}{3} \pi^2 k_F^4 + 4\pi^2 \left( k_F^4 - \frac{2}{3} k_F^4 \right) =
+4\pi^2 k_F^4 . \]
+%
+Dette setter jeg så inn i uttrykket for $\bra{\Phi_0} \hat H_I \ket{\Phi_0}$, og da får jeg
+\[ \bra{\Phi_0} \hat H_I \ket{\Phi_0} =
+-\frac{4\pi e^2}{\Omega} \left( \frac{\Omega}{(2\pi)^3} \right)^2 4\pi^2 k_F^4 . \]
+%
+Dermed får jeg
+\[ \frac{E_0}{N} = \frac{1}{N} \left( \frac{\hbar^2 \Omega}{10\pi^2 m} k_F^5 -\frac{4\pi e^2}{\Omega} \left( \frac{\Omega}{(2\pi)^3} \right)^2 4\pi^2 k_F^4 \right) . \]
+%
+Setter så inn for $k_F$ og regner ut:
+\begin{align*}
+\frac{E_0}{N} &=
+%
+\frac{\hbar^2 \Omega}{10\pi^2 m N} k_F^5 - \frac{4\pi e^2}{\Omega N} \left( \frac{\Omega}{(2\pi)^3} \right)^2 4\pi^2 k_F^4 \\
+%
+&= \frac{\hbar^2 \Omega}{10\pi^2 m N} k_F^5 - \frac{e^2 \Omega}{4\pi^3 N}k_F^4 \\
+%
+&= \frac{\hbar^2 \Omega}{10\pi^2 m N} \left( \frac{3\pi^2 N}{\Omega} \right)^{5/3} - \frac{e^2 \Omega}{4\pi^3 N} \left( \frac{3\pi^2 N}{\Omega} \right)^{4/3} \\
+%
+&= \frac{\hbar^2 N^{2/3}}{\Omega^{2/3}} \frac{(3\pi^2)^{5/3}}{10\pi^2 m} -
+\frac{e^2 \Omega^{1/3}}{N^{1/3}} \frac{(3\pi^2)^{4/3}}{4\pi^3} .
+\end{align*}
+%
+Innfører så
+\[ r_0 = \left( \frac{3\Omega}{4\pi N} \right)^{1/3}, \quad \text{og} \quad
+a_0 = \frac{\hbar^2}{e^2 m} , \]
+%
+som gir meg
+\begin{align*}
+\frac{E_0}{N} &=
+%
+\hbar^2 \frac{(3\pi^2)^{5/3}}{10\pi^2 m} \left( \frac{3}{4\pi} \right)^{2/3} \frac{1}{r_0^2} -
+e^2 \frac{(3\pi^2)^{4/3}}{4\pi^3} \left( \frac{3}{4\pi} \right)^{1/3} \frac{1}{r_0} \\
+%
+&= \frac{1}{2} \left( \frac{\hbar^2}{m} \frac{2.21}{r_0^2} -
+e^2 \frac{0.916}{r_0} \right)
+\end{align*}
+%
+Til slutt definerer jeg $r_s = r_0 / a_0$, og får
+\begin{equation}
+\frac{E_0}{N} = \frac{e^2}{2a_0} \left( \frac{2.21}{r_s^2} - \frac{0.916}{r_s} \right).
+\label{eq:energiPerElektron}
+\end{equation}
+%
+Et plott av dette uttrykket kan sees i figur \ref{fig:1d}.
+%
+\begin{figure}[btp]
+\centering
+\begin{minipage}[p]{0.7\textwidth}
+\small{\input{figur1d}}
+\end{minipage}\hfill
+\begin{minipage}[p]{0.3\textwidth}
+\caption{Her vises et plott av $E_0 / N$ gitt i ligning \eqref{eq:energiPerElektron}. Ser tydelig at funksjonen har et minimumspunkt.}
+\label{fig:1d}
+\end{minipage}
+\end{figure}
+%
+Fra figuren kommer det tydelig frem at funksjonen har et minimumspunkt, og det er dette som gjør at systemet ikke kollapser. Dette fordi det faktum at funksjonen har et globalt minimumspunkt gjør at systemet kan henfalle til et stabilt energiminimum. Den mer fysiske begrunnelsen for at dette systemet ikke vil kollapse som det i oppgave 1b er at de positive ladningene fra gitteret og de negative ladningene fra elektrongassen vil skjerme for hverandre. Jeg kan nå enkelt finne det globale minimumspunktet:
+\[ \frac{\partial}{\partial r_s} \left( \frac{E_0}{N} \right) = 0 \quad \Rightarrow \quad
+\frac{2 \times 2.21}{r_s^3} - \frac{0.916}{r_s^2} = 0, \]
+%
+som gir
+\[ r_s = \frac{2 \times 2.21}{0.916} \approx 4.83 . \]
+%
+For å regne ut de termodynamiske størrelsene regner jeg først ut følgende:
+\begin{align*}
+\left( \frac{\partial r_s}{\partial \Omega} \right)_N
+%
+&= \left( \frac{\partial}{\partial \Omega} \left[ \frac{1}{a_0} \left( \frac{3 \Omega}{4\pi N} \right)^{1/3} \right] \right)_N
+%
+= \frac{1}{3a_0} \left( \frac{3}{4\pi N} \right)^{1/3} \Omega^{-2/3} \\
+%
+&= \frac{1}{3a_0} \left( \frac{3}{4\pi N} \right)^{1/3} \frac{1}{a_0^2} \left( \frac{3}{4\pi N} \right)^{2/3} \frac{1}{r_s^2}
+%
+= \frac{1}{4\pi N a_0^3} \frac{1}{r_s^2} .
+\end{align*}
+%
+Regningene blir dermed litt enklere. Trykket blir dermed:
+\begin{align*}
+P &= - \left( \frac{\partial E_0}{\partial \Omega} \right)_N
+%
+= - \frac{\partial E_0}{\partial r_s} \left( \frac{\partial r_s}{\partial \Omega} \right)_N \\
+%
+&= \frac{Ne^2}{2a_0} \left( \frac{2 \times 2.21}{r_s^3} - \frac{0.916}{r_s^2} \right) \left( \frac{1}{4\pi N a_0^3} \frac{1}{r_s^2} \right) \\
+%
+&= \frac{e^2}{8\pi a_0^4} \frac{1}{r_s^4} \left( \frac{2 \times 2.21}{r_s} - 0.916 \right).
+\end{align*}
+%
+Ved energiminimum får jeg derfor $P = 0$. Dette er fornuftig, siden et trykk ulik $0$ ville medført enten ekspansjon eller kontraksjon av systemet, noe som ikke skal skje i et stabilt punkt.
+
+Dersom $r_s$ øker vil trykket bli negativt. Det kan fortsås ved at systemet gjerne vil være i den stabile tilstanden, og ved å minke tettheten vil systemet motsette seg disse endringene ved å prøve å trekke seg sammen - derav negativt trykk.
+
+Dersom $r_s$ minker, vil trykket bli positivt. Det kan forstås på tilsvarende måte ved at tettheten til systemet nå øker, og systemet motsetter seg denne endringen ved å øke trykket utover.
+%
+Jeg regner ut bulk modulus på samme måte:
+\begin{align*}
+B &= -\Omega \left( \frac{\partial P}{\partial \Omega} \right)
+%
+= -\Omega \frac{\partial P}{\partial r_s} \left( \frac{\partial r_s}{\partial \Omega} \right)_N \\
+%
+&= \Omega \frac{e^2}{2a_0} \frac{1}{4\pi a_0^3} \left( \frac{5 \times 2 \times 2.21}{r_s^6} - \frac{4 \times 0.916}{r_s^5} \right) \left( \frac{1}{4\pi N a_0^3} \frac{1}{r_s^2} \right) \\
+%
+&= \frac{\Omega e^2}{32 \pi^2 N a_0^7} \frac{1}{r_s^7} \left( \frac{5 \times 2 \times 2.21}{r_s} - 4 \times 0.916 \right) \\
+%
+&= \frac{e^2}{32 \pi^2 a_0^7} \frac{1}{r_s^7} \left( \frac{5 \times 2 \times 2.21}{r_s} - 4 \times 0.916 \right) \frac{4\pi a_0^3}{3} r_s^3 \\
+%
+&= \frac{e^2}{24 \pi a_0^4} \frac{1}{r_s^4} \left( \frac{5 \times 2 \times 2.21}{r_s} - 4 \times 0.916 \right) .
+\end{align*}
+%
+Dette gir at bulk modulus går mot uendelig når $r_s \to 0$, men den synker asymptotisk mot $0$ når $r_s \to \infty$. Det virker fornuftig, da systemet vil mer og mer motsette seg kompresjon når tettheten til systemet minker som beskrevet tidligere.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{(e)}
+
+Dersom enpartikkel Hatree-Fock-energiene er gitt, vil grunntilstandsenergien kunne finnes ved hjelp av formelen
+\begin{equation}
+E = \sum_{\substack{\vec k \\ k \leq k_F}} \epsilon_k + \bra{\vec k} \hat f \ket{\vec k},
+\label{eq:grunntilstand}
+\end{equation}
+%
+hvor $\hat f$ gitt helt i begynnelsen av denne besvarelsen. Denne formelen har jeg hentet fra ligning (3.38) i Raimes, og modifisert med en faktor på $2$ på grunn av spinndegenerasjon. Dette matriseelementet har jeg derimot regnet ut i oppgave 1a, og ved å hente resultatet derfra, får jeg
+\[ E = \sum_{\substack{\vec k \\ k \leq k_F}} \epsilon_k + \frac{\hbar^2 k^2}{2m} . \]
+%
+For å evaluere denne summen skrives den om til et integral, og det gir
+\[ E = \frac{\Omega}{(2\pi)^3} \int_0^{k_F} \epsilon_k + \frac{\hbar^2 k^2}{2m} \dk, \]
+%
+som ved omskriving til polarkoordinater og innsetting av enpartikkel Hatree-Fock-energiene gir
+\begin{equation}
+E = \frac{4\pi\Omega}{(2\pi)^3} \int_0^{k_F} \frac{\hbar^2 k^4}{m} -
+\frac{e^2 k^2 k_F}{2\pi} \left[ 2 + \frac{k_F^2 - k^2}{kk_F} \ln \left| \frac{k+k_F}{k-k_F} \right| \right] \md k .
+\label{eq:grunntilstand_endelig}
+\end{equation}
+
+Jeg har tidligere i denne oppgaven funnet forventningsverdien til Hamiltonoperatoren, gitt $\ket{\Phi_0}$, som er en Slater-determinant av tilstandene $\ket{\psi_{\vec k \sigma}}$ opp til Ferminivået. $E_0$ gitt ved ligning \eqref{eq:E0} er derfor grunntilstandsenergien gitt ved første ordens perturbasjonsteori.
+
+Energien $E$ gitt ved ligning \eqref{eq:grunntilstand} er den estimerte grunntilstandsenergien som en Hatree-Fock-regning gir, og ved å se tilbake på regningene mine ser jeg at uttrykket i ligning \eqref{eq:grunntilstand_endelig} er nøyaktig det samme som et uttrykk jeg har fått i utregningen av $E_0$, som betyr at $E_0 = E$. Estimatet til grunntilstandsenergien fra en Hatree-Fock-regning er altså nøyaktig det samme som det man får ved første ordens perturbasjonsteori.
+
+I Gross, Runge \& Heinonen er det vist at forventningsverdien til den fulle Hamiltonoperatoren $\hat H$ gitt Hatree-Fock-bølgefunksjonene, det vil si første ordens perturbasjonsteori med Hatree-Fock-bølgefunksjonene som basis, alltid vil gi grunntilstandsenergien estimert ut fra en Hatree-Fock-regning. I vårt tilfelle er Hatree-Fock-bølgefunksjonene nøyaktig de samme som egentilstandene til den uperturberte Hamiltonoperatoren $\hat H_0$. Av den grunn vil første ordens perturbasjonsteori med planbølgene, slik jeg har gjort tidligere i denne oppgaven, gi samme estimat for grunntilstandsenergien som en Hatree-Fock-regning gir.
+
+
+\end{document}
+
+
