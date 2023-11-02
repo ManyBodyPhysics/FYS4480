@@ -239,7 +239,9 @@ In particular we recommend the texts by
   - Thursday:
     - Time-independent perturbation theory and diagrammatic representation
     - Examples of contributions to perturbation theory
-  - Friday: 
+    - Video of lecture at https://youtu.be/pkGHRbMGssU
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember2.pdf
+- Friday: 
     - Time-dependent perturbation theory and diagrammatic representation
     - Discussion of the Heisenberg, Schroedinger and Interaction pictures
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
