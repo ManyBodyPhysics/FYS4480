@@ -147,11 +147,14 @@ This course will be delivered in a hybrid mode, with online and on site lectures
 ###  Week 44, October 30-November 2, 2023
 - Topics to be covered
   - Thursday:
-    - Time-independent perturbation theory and diagrammatic representation
+    - Time-independent perturbation theory and links with FCI and Hartree-Fock theory
     - Examples of contributions to perturbation theory
+    - Video of lecture at https://youtu.be/pkGHRbMGssU
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember2.pdf
   - Friday: 
     - Time-dependent perturbation theory and diagrammatic representation
-    - Discussion of the Heisenberg, Schroedinger and Interaction pictures
+    - Video of lecture at https://youtu.be/
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember3.pdf  
 - Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
 - Eight exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek44.pdf
 
