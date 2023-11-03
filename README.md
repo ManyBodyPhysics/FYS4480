@@ -242,9 +242,10 @@ In particular we recommend the texts by
     - Video of lecture at https://youtu.be/pkGHRbMGssU
     - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember2.pdf
 - Friday: 
-    - Time-dependent perturbation theory and diagrammatic representation
-    - Discussion of the Heisenberg, Schroedinger and Interaction pictures
-- Lecture Material: These slides, handwritten notes and Shavitt and Bartlett chapter 4-6
+    - Many-body perturbation theory, basic equations
+    - Video of lecture https://youtu.be/XcUF7jjEwgM
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember3.pdf    
+- Lecture Material: Slides, handwritten notes and Shavitt and Bartlett chapter 4-6
 - Eight exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek44.pdf
 
 ###  Week 45, November 6-10, 2023
