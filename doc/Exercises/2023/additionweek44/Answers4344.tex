@@ -125,7 +125,7 @@ The sum runs only over one set of quantum numbers (wave number and spin) due to 
 The operator for the two-body interaction is given by (note that we do not employ anti-symmetrized matrix elements)
 \[ \hat V = \frac{1}{2} \sum_{pqrs} \bra{pq} \hat v \ket{rs} \hat a_p^\dagger \hat a_q^\dagger \hat a_s \hat a_r ,  \]
 %
-wheere $\hat v$ er det som blir kalt $V$ i oppgaveteksten ($\hat v = \hat v(\vec r_1, \vec r_2) = \hat v(|\vec r_1 - \vec r_2|) = \hat v(r)$, der $r = |\vec r_1 - \vec r_2|$). I dette tilfellet blir dette
+where $\hat v$ ($\hat v = \hat v(\vec r_1, \vec r_2) = \hat v(|\vec r_1 - \vec r_2|) = \hat v(r)$, der $r = |\vec r_1 - \vec r_2|$) is the two-body interaction, resulting in
 \begin{equation}
 \hat V = \frac{1}{2} \sum_{\substack{\sigma_1 \sigma_2 \\ \sigma_3 \sigma_4}}
 \sum_{\substack{\vec k_1 \vec k_2 \\ \vec k_3 \vec k_4}}
@@ -133,14 +133,15 @@ wheere $\hat v$ er det som blir kalt $V$ i oppgaveteksten ($\hat v = \hat v(\vec
 \hat a_{\vec k_1 \sigma_1}^\dagger \hat a_{\vec k_2 \sigma_2}^\dagger \hat a_{\vec k_4 \sigma_4} \hat a_{\vec k_3 \sigma_3} .
 \label{eq:V_original}
 \end{equation}
-%
-Jeg ser først litt nærmere på matriseelementet som inngår i denne formelen ved å sette inn bølgefunksjonene ved hjelp av ligning \eqref{eq:psi} og skrive opp integralet. Dette gir
+
+Inserting the single-particle wave functions from \eqref{eq:psi} we obtain
 \[ \bra{\vec k_1 \sigma_1, \vec k_2 \sigma_2} \hat v \ket{\vec k_3 \sigma_3, \vec k_4 \sigma_4} =
 %
 \frac{1}{\Omega^2} \delta_{\sigma_1 \sigma_3} \delta_{\sigma_2 \sigma_4}
 \iint e^{-i\vec k_1 \cdot \vec r_1} e^{-i \vec k_2 \cdot \vec r_2} v(r) e^{i\vec k_3 \cdot \vec r_1} e^{i \vec k_4 \cdot \vec r_2} \dr_1 \dr_2 , \]
 %
-hvor jeg har benyttet ortogonaliteten til spinnfunksjonene. Jeg ønsker nå å skifte integrasjonsvariabler i disse to integralene. Jeg setter nå $\vec r = \vec r_1 - \vec r_2$, som gir $\vec r_1 = \vec r + \vec r_2$ og $\md^3 \vec r = \md^3 \vec r_1$. Grensene er uendret siden de er fra $-\infty$ til $\infty$ på alle integralene. Dette gir meg
+where we used the orthogonality of the single-particle wave functions.
+Using $\vec r = \vec r_1 - \vec r_2$, which gives $\vec r_1 = \vec r + \vec r_2$ and $\md^3 \vec r = \md^3 \vec r_1$ and the limits  $-\infty$ til $\infty$ (these are unchanged) we obtain
 \begin{align*}
 \bra{\vec k_1 \sigma_1, \vec k_2 \sigma_2} \hat v \ket{\vec k_3 \sigma_3, \vec k_4 \sigma_4}
 %
@@ -151,16 +152,18 @@ e^{i (\vec k_4 - \vec k_2) \cdot \vec r_2} \int v(r) e^{i(\vec k_3 - \vec k_1) \
 \int e^{i (\vec k_4 - \vec k_2 + \vec k_3 - \vec k_1) \cdot \vec r_2} \dr_2 \dr .
 \end{align*}
 %
-Jeg kjenner så igjen integralet over $\vec r_2$ som en deltafunksjon, noe som gir meg
+We recognize the integral over $\vec r_2$ as a $\delta$-function. Using this we obtain 
 \[ \bra{\vec k_1 \sigma_1, \vec k_2 \sigma_2} \hat v \ket{\vec k_3 \sigma_3, \vec k_4 \sigma_4} =
 \frac{1}{\Omega} \delta_{\sigma_1 \sigma_3} \delta_{\sigma_2 \sigma_4} \delta_{(\vec k_1 + \vec k_2),(\vec k_3 + \vec k_4)} \int v(r) e^{i(\vec k_3 - \vec k_1) \cdot \vec r} \dr . \]
-%
-For at dette skal bli ulik $0$ må dermed $\vec k_1 + \vec k_2 = \vec k_3 + \vec k_4$, altså bevaring av moment. Dette kan brukes til å fjerne den ene av $\vec k$-summene i ligning \eqref{eq:V_original}. Jeg setter dermed dette uttrykket inn i denne ligningen og får
+
+The latter is non-zero only if we conserve the exchanged momentum. This leads to the requirements
+$\vec k_1 + \vec k_2 = \vec k_3 + \vec k_4$. With these contraints we can remove one of the summations, the sum over $\vec k$ in \eqref{eq:V_original}.
+We obtain then
 \[ \hat V =
 \frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k_1 \vec k_2 \vec k_3} \left[ \int v(r) e^{i(\vec k_3 - \vec k_1) \cdot \vec r} \dr \right]
 \hat a_{\vec k_1 \sigma}^\dagger \hat a_{\vec k_2 \sigma'}^\dagger \hat a_{\vec k_1 + \vec k_2 - \vec k_3, \sigma'} \hat a_{\vec k_3 \sigma}, \]
 %
-eller skrevet om på en litt annen måte:
+which we can rewrite as 
 \begin{equation}
 \hat V =
 \frac{1}{2\Omega} \sum_{\sigma \sigma'} \sum_{\vec k \vec p \vec q} \left[ \int v(r) e^{-i \vec q \cdot \vec r} \dr \right]
@@ -168,7 +171,8 @@ eller skrevet om på en litt annen måte:
 \label{eq:V}
 \end{equation}
 %
-hvor jeg har introdusert størrelsene $\vec p = \vec k_1 + \vec k_2 - \vec k_3$, $\vec k = \vec k_3$ og $\vec q = \vec k_1 - \vec k_3$.
+where we have introduced the quantities 
+$\vec p = \vec k_1 + \vec k_2 - \vec k_3$, $\vec k = \vec k_3$ and $\vec q = \vec k_1 - \vec k_3$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
