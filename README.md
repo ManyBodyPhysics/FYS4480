@@ -250,42 +250,41 @@ In particular we recommend the texts by
 
 ###  Week 45, November 6-10, 2023
 - Topics to be covered
-  - Friday:
+  - Thursday:
     - Adiabatic hypothesis and linked diagram theorem
-    - Examples of diagrams and discussion of Pauli violating diagrams 
-    - Summary of perturbation theory and start discussion of Coupled Cluster theory
+    - Examples of diagrams and discussion of Pauli violating diagrams
+  - Friday:
+    - Solution of exercises from week 44 and 45
 - Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week45/LatexSlides/slidesweek45.pdf, handwritten notes and Shavitt and Bartlett chapters 4-6
 - Ninth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek45.pdf
 
 ###  Week 46, November 13-17, 2023
 - Topics to be covered
   - Thursday:
-    - Summary many-body perturbation theory and discussion of Coupled Cluster theory
+    - Diagram rules
+    - Examples of diagrams and discussion of Pauli violating diagrams
   - Friday:
-    - Coupled Cluster theory with doubles excitations
-    - Diagrammatic representation of Coupled Cluster theory
-- Lecture Material: Lecture slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week46/LatexSlides/slidesweek46.pdf, handwritten notes and Shavitt and Bartlett chapter 9
+    - Adiabatic hypothesis and linked diagram theorem
+    - Summary many-body perturbation theory and begin Green's function theory
+- Lecture Material: Lecture slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week46/LatexSlides/slidesweek46.pdf, handwritten notes and Shavitt and Bartlett chapters 4-6
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
 
 ###  Week 47, November 20-24, 2023
 - Topics to be covered
   - Thursday:
-    - Coupled Cluster theory, singles and doubles excitations
+    - Green's function theory
   - Friday:
-    - Coupled Cluster theory and summary of course
-- Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week47/LatexSlides/slidesweek47.pdf, handwritten notes and Shavitt and Bartlett chapters 9 and 10
+    - Green's function theory
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
 
 ###  Week 48, November 27-December 1, 2023
 - Topics to be covered
   - Thursday:
-    - Coupled Cluster theory, singles and doubles excitations
+    - Green's function theory
   - Friday:
-    - Coupled Cluster theory and summary of course
-- Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week47/LatexSlides/slidesweek47.pdf, handwritten notes and Shavitt and Bartlett chapters 9 and 10
-- Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
+    - Green's function theory and summary of course
 
 
-###  Week 50, December 19 and 21, 2023
-- Final oral exam, day to be determined
+###  Week 50, December 19, 2023
+- Final oral exam
 
