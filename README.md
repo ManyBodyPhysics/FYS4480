@@ -261,12 +261,16 @@ In particular we recommend the texts by
 ###  Week 46, November 13-17, 2023
 - Topics to be covered
   - Thursday:
-    - Diagram rules
-    - Examples of diagrams and discussion of Pauli violating diagrams
+    - Diagram rules (whiteboard notes)
+    - Examples of diagrams and discussion of Pauli violating diagrams (Whiteboard notes)
+    - Video of lecture at https://youtu.be/rCtpX221u24
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember16.pdf
   - Friday:
-    - Adiabatic hypothesis and linked diagram theorem
-    - Summary many-body perturbation theory and begin Green's function theory
-- Lecture Material: Lecture slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week46/LatexSlides/slidesweek46.pdf, handwritten notes and Shavitt and Bartlett chapters 4-6
+    - Time-dependent perturbation theory, definitions of Schroedinger, Heisenberg and interaction picture, see slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/src/week45/LatexSlides/pictures.pdf
+    - Video of lecture at https://youtu.be/8-dnWUDTnS0
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember17.pdf
+- Lecture Material: Slides at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/pub/week46/pdf/slidesweek46.pdf, handwritten notes a\
+nd Shavitt and Bartlett chapter 4-6
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
 
 ###  Week 47, November 20-24, 2023
@@ -275,6 +279,7 @@ In particular we recommend the texts by
     - Green's function theory
   - Friday:
     - Green's function theory
+- Lecture Material: 
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
 
 ###  Week 48, November 27-December 1, 2023
@@ -283,6 +288,8 @@ In particular we recommend the texts by
     - Green's function theory
   - Friday:
     - Green's function theory and summary of course
+- Lecture Material: 
+- Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
 
 
 ###  Week 50, December 19, 2023
