@@ -282,8 +282,9 @@ nd Shavitt and Bartlett chapter 4-6
     - Video of lecture at https://youtu.be/HOWJ47CqqUc
     - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember23.pdf
   - Friday:
-    - Green's functions, Dyson's equation
-    - Video of lecture to be added https://youtu.be/
+    - Green's functions, basic equations
+    - Video of lecture at https://youtu.be/UJjlvVJHwhs"
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember24.pdf
 - Lecture Material: Slides for week 47 at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/pub/week47/pdf/slidesweek47.pdf and handwritten notes.
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
 
