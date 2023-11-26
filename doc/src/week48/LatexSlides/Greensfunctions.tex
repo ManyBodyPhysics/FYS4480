@@ -1,0 +1,2292 @@
+% Slides for FYS4480, Green's function theories
+
+
+\documentclass[compress]{beamer}
+
+
+% Try the class options [notes], [notes=only], [trans], [handout],
+% [red], [compress], [draft], [class=article] and see what happens!
+
+% For a green structure color use:
+%\colorlet{structure}{green!50!black}
+
+\mode<article> % only for the article version
+{
+  \usepackage{beamerbasearticle}
+  \usepackage{fullpage}
+  \usepackage{hyperref}
+}
+
+\beamertemplateshadingbackground{red!10}{blue!10}
+
+%\beamertemplateshadingbackground{red!10}{blue!10}
+\beamertemplatetransparentcovereddynamic
+%\usetheme{Hannover}
+
+\setbeamertemplate{footline}[page number]
+
+
+%\usepackage{beamerthemeshadow}
+
+%\usepackage{beamerthemeshadow}
+\usepackage{ucs}
+
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{graphicx}
+\usepackage{simplewick}
+\usepackage{amsmath,amssymb}
+\usepackage[latin1]{inputenc}
+\usepackage{colortbl}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{shadow}
+\lstset{language=c++}
+\lstset{alsolanguage=[90]Fortran}
+\lstset{basicstyle=\small}
+%\lstset{backgroundcolor=\color{white}}
+%\lstset{frame=single}
+\lstset{stringstyle=\ttfamily}
+%\lstset{keywordstyle=\color{red}\bfseries}
+%\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+\usepackage{times}
+
+% Use some nice templates
+\beamertemplatetransparentcovereddynamic
+
+% own commands
+\newcommand*{\cre}[1]{a^{\dagger}_{#1}}
+\newcommand*{\an}[1]{a_{#1}}
+\newcommand*{\crequasi}[1]{b^{\dagger}_{#1}}
+\newcommand*{\anquasi}[1]{b_{#1}}
+\newcommand*{\for}[3]{\langle#1|#2|#3\rangle}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand*{\kpr}[1]{\left\{#1\right\}}
+\newcommand*{\ket}[1]{|#1\rangle}
+\newcommand*{\bra}[1]{\langle#1|}
+%\newcommand{\bra}[1]{\left\langle #1 \right|}
+%\newcommand{\ket}[1]{\left| # \right\rangle}
+\newcommand{\braket}[2]{\left\langle #1 \right| #2 \right\rangle}
+\newcommand{\OP}[1]{{\bf\widehat{#1}}}
+\newcommand{\matr}[1]{{\bf \cal{#1}}}
+\newcommand{\beN}{\begin{equation*}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\beaN}{\begin{eqnarray*}}
+\newcommand{\eeN}{\end{equation*}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\eeaN}{\end{eqnarray*}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\bsubeqs}{\begin{subequations}}
+\newcommand*{\fpr}[1]{\left[#1\right]}
+\newcommand{\esubeqs}{\end{subequations}}
+\newcommand*{\pr}[1]{\left(#1\right)}
+\newcommand{\element}[3]
+        {\bra{#1}#2\ket{#3}}
+\newcommand{\md}{\mathrm{d}}
+\newcommand{\e}[1]{\times 10^{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\gvec}[1]{\boldsymbol{#1}}
+\newcommand{\dr}{\, \mathrm d^3 \vec r}
+\newcommand{\dk}{\, \mathrm d^3 \vec k}
+\def\psii{\psi_{i}}
+\def\psij{\psi_{j}}
+\def\psiij{\psi_{ij}}
+\def\psisq{\psi^2}
+\def\psisqex{\langle \psi^2 \rangle}
+\def\psiR{\psi({\bf R})}
+\def\psiRk{\psi({\bf R}_k)}
+\def\psiiRk{\psi_{i}(\Rveck)}
+\def\psijRk{\psi_{j}(\Rveck)}
+\def\psiijRk{\psi_{ij}(\Rveck)}
+\def\ranglep{\rangle_{\psisq}}
+\def\Hpsibypsi{{H \psi \over \psi}}
+\def\Hpsiibypsi{{H \psii \over \psi}}
+\def\HmEpsibypsi{{(H-E) \psi \over \psi}}
+\def\HmEpsiibypsi{{(H-E) \psii \over \psi}}
+\def\HmEpsijbypsi{{(H-E) \psij \over \psi}}
+\def\psiibypsi{{\psii \over \psi}}
+\def\psijbypsi{{\psij \over \psi}}
+\def\psiijbypsi{{\psiij \over \psi}}
+\def\psiibypsiRk{{\psii(\Rveck) \over \psi(\Rveck)}}
+\def\psijbypsiRk{{\psij(\Rveck) \over \psi(\Rveck)}}
+\def\psiijbypsiRk{{\psiij(\Rveck) \over \psi(\Rveck)}}
+\def\EL{E_{\rm L}}
+\def\ELi{E_{{\rm L},i}}
+\def\ELj{E_{{\rm L},j}}
+\def\ELRk{E_{\rm L}(\Rveck)}
+\def\ELiRk{E_{{\rm L},i}(\Rveck)}
+\def\ELjRk{E_{{\rm L},j}(\Rveck)}
+\def\Ebar{\bar{E}}
+\def\Ei{\Ebar_{i}}
+\def\Ej{\Ebar_{j}}
+\def\Ebar{\bar{E}}
+\def\Rvec{{\bf R}}
+\def\Rveck{{\bf R}_k}
+\def\Rvecl{{\bf R}_l}
+\def\NMC{N_{\rm MC}}
+\def\sumMC{\sum_{k=1}^{\NMC}}
+\def\MC{Monte Carlo}
+\def\adiag{a_{\rm diag}}
+\def\tcorr{T_{\rm corr}}
+\def\intR{{\int {\rm d}^{3N}\!\!R\;}}
+\def\ul{\underline}
+\def\beq{\begin{eqnarray}}
+\def\eeq{\end{eqnarray}}
+\newcommand{\eqbrace}[4]{\left\{
+\begin{array}{ll}
+#1 & #2 \\[0.5cm]
+#3 & #4
+\end{array}\right.}
+\newcommand{\eqbraced}[4]{\left\{
+\begin{array}{ll}
+#1 & #2 \\[0.5cm]
+#3 & #4
+\end{array}\right\}}
+\newcommand{\eqbracetriple}[6]{\left\{
+\begin{array}{ll}
+#1 & #2 \\
+#3 & #4 \\
+#5 & #6
+\end{array}\right.}
+\newcommand{\eqbracedtriple}[6]{\left\{
+\begin{array}{ll}
+#1 & #2 \\
+#3 & #4 \\
+#5 & #6
+\end{array}\right\}}
+\newcommand{\mybox}[3]{\mbox{\makebox[#1][#2]{$#3$}}}
+\newcommand{\myframedbox}[3]{\mbox{\framebox[#1][#2]{$#3$}}}
+%% Infinitesimal (and double infinitesimal), useful at end of integrals
+%\newcommand{\ud}[1]{\mathrm d#1}
+\newcommand{\ud}[1]{d#1}
+\newcommand{\udd}[1]{d^2\!#1}
+%% Operators, algebraic matrices, algebraic vectors
+%% Operator (hat, bold or bold symbol, whichever you like best):
+\newcommand{\op}[1]{\widehat{#1}}
+%\newcommand{\op}[1]{\mathbf{#1}}
+%\newcommand{\op}[1]{\boldsymbol{#1}}
+%% Vector:
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+%% Matrix symbol:
+%\newcommand{\matr}[1]{\boldsymbol{#1}}
+%\newcommand{\bb}[1]{\mathbb{#1}}
+%% Determinant symbol:
+\renewcommand{\det}[1]{|#1|}
+%% Means (expectation values) of varius sizes
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\newcommand{\meanb}[1]{\big\langle #1 \big\rangle}
+\newcommand{\meanbb}[1]{\Big\langle #1 \Big\rangle}
+\newcommand{\meanbbb}[1]{\bigg\langle #1 \bigg\rangle}
+\newcommand{\meanbbbb}[1]{\Bigg\langle #1 \Bigg\rangle}
+%% Shorthands for text set in roman font
+\newcommand{\prob}[0]{\mathrm{Prob}} %probability
+\newcommand{\cov}[0]{\mathrm{Cov}}   %covariance
+\newcommand{\var}[0]{\mathrm{Var}}   %variancd
+%% Big-O (typically for specifying the speed scaling of an algorithm)
+\newcommand{\bigO}{\mathcal{O}}
+%% Real value of a complex number
+\newcommand{\real}[1]{\mathrm{Re}\!\left\{#1\right\}}
+%% Quantum mechanical state vectors and matrix elements (of different sizes)
+%\newcommand{\bra}[1]{\langle #1 |}
+\newcommand{\brab}[1]{\big\langle #1 \big|}
+\newcommand{\brabb}[1]{\Big\langle #1 \Big|}
+\newcommand{\brabbb}[1]{\bigg\langle #1 \bigg|}
+\newcommand{\brabbbb}[1]{\Bigg\langle #1 \Bigg|}
+%\newcommand{\ket}[1]{| #1 \rangle}
+\newcommand{\ketb}[1]{\big| #1 \big\rangle}
+\newcommand{\ketbb}[1]{\Big| #1 \Big\rangle}
+\newcommand{\ketbbb}[1]{\bigg| #1 \bigg\rangle}
+\newcommand{\ketbbbb}[1]{\Bigg| #1 \Bigg\rangle}
+%\newcommand{\overlap}[2]{\langle #1 | #2 \rangle}
+\newcommand{\overlapb}[2]{\big\langle #1 \big| #2 \big\rangle}
+\newcommand{\overlapbb}[2]{\Big\langle #1 \Big| #2 \Big\rangle}
+\newcommand{\overlapbbb}[2]{\bigg\langle #1 \bigg| #2 \bigg\rangle}
+\newcommand{\overlapbbbb}[2]{\Bigg\langle #1 \Bigg| #2 \Bigg\rangle}
+\newcommand{\bracket}[3]{\langle #1 | #2 | #3 \rangle}
+\newcommand{\bracketb}[3]{\big\langle #1 \big| #2 \big| #3 \big\rangle}
+\newcommand{\bracketbb}[3]{\Big\langle #1 \Big| #2 \Big| #3 \Big\rangle}
+\newcommand{\bracketbbb}[3]{\bigg\langle #1 \bigg| #2 \bigg| #3 \bigg\rangle}
+\newcommand{\bracketbbbb}[3]{\Bigg\langle #1 \Bigg| #2 \Bigg| #3 \Bigg\rangle}
+\newcommand{\projection}[2]
+{| #1 \rangle \langle  #2 |}
+\newcommand{\projectionb}[2]
+{\big| #1 \big\rangle \big\langle #2 \big|}
+\newcommand{\projectionbb}[2]
+{ \Big| #1 \Big\rangle \Big\langle #2 \Big|}
+\newcommand{\projectionbbb}[2]
+{ \bigg| #1 \bigg\rangle \bigg\langle #2 \bigg|}
+\newcommand{\projectionbbbb}[2]
+{ \Bigg| #1 \Bigg\rangle \Bigg\langle #2 \Bigg|}
+%% If you run out of greek symbols, here's another one you haven't
+%% thought of:
+\newcommand{\Feta}{\hspace{0.6ex}\begin{turn}{180}
+        {\raisebox{-\height}{\parbox[c]{1mm}{F}}}\end{turn}}
+\newcommand{\feta}{\hspace{-1.6ex}\begin{turn}{180}
+        {\raisebox{-\height}{\parbox[b]{4mm}{f}}}\end{turn}}
+\title[FYS4480]{Slides from FYS4480/9480 Lectures}
+\author[Quantum mechanics for many-particle systems]{%
+  Morten Hjorth-Jensen}
+\institute[ORNL, University of Oslo and MSU]{
+  Department of Physics and Center for Computing in Science Education\\
+  University of Oslo, N-0316 Oslo, Norway and\\
+  Department of Physics and Astronomy and Facility for Rare Isotope Beams, Michigan State University, East Lansing, MI 48824, USA }
+  
+\date[UiO]{Fall  2023}
+\subject{FYS4480/9480 Quantum mechanics for  many-particle systems}
+\begin{document}
+\include{commands}
+%\pagenumbering{plain}
+\frame{\titlepage}
+\frame
+{
+\frametitle{Schr\"odinger picture}
+\begin{small}
+{\scriptsize
+The time-dependent Schr\"odinger equation (or equation of motion) reads
+\[
+\imath \hbar\frac{\partial }{\partial t}|\Psi_S(t)\rangle = \hat{H}\Psi_S(t)\rangle,
+\]
+where the subscript $S$ stands for Schr\"odinger here.
+A formal solution is given by 
+\[
+|\Psi_S(t)\rangle = \exp{(-\imath\hat{H}(t-t_0)/\hbar)}|\Psi_S(t_0)\rangle.
+\]
+The Hamiltonian $\hat{H}$ is hermitian and the exponent represents a unitary 
+operator with an operation carried ut on the wave function at a time $t_0$.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+Our Hamiltonian is normally written out as the sum of an unperturbed part $\hat{H}_0$ and an interaction part $\hat{H}_I$, that is
+\[
+\hat{H}=\hat{H}_0+\hat{H}_I.
+\]
+In general we have $[\hat{H}_0,\hat{H}_I]\ne 0$ since $[\hat{T},\hat{V}]\ne 0$.
+We wish now to define a unitary transformation in terms of $\hat{H}_0$ by defining
+\[
+|\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}|\Psi_S(t)\rangle,
+\]
+which is again a unitary transformation carried out now at the time $t$ on the 
+wave function in the Schr\"odinger picture. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+We can easily find the equation of motion by taking the time derivative
+\[
+\imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle = -\hat{H}_0\exp{(\imath\hat{H}_0t/\hbar)}\Psi_S(t)\rangle+\exp{(\imath\hat{H}_0t/\hbar)}
+\imath \hbar\frac{\partial }{\partial t}\Psi_S(t)\rangle.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+Using the definition of the Schr\"odinger equation, we can rewrite the last equation as 
+\[
+\imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}\left[-\hat{H}_0+\hat{H}_0+\hat{H}_I\right]\exp{(-\imath\hat{H}_0t/\hbar)}\Psi_I(t)\rangle,
+\]
+which gives us
+\[
+\imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle = \hat{H}_I(t)\Psi_I(t)\rangle,
+\]
+ with 
+\[
+\hat{H}_I(t)=
+\exp{(\imath\hat{H}_0t/\hbar)}\hat{H}_I\exp{(-\imath\hat{H}_0t/\hbar)}.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+The order of the operators is important since $\hat{H}_0$ and $\hat{H}_I$ do generally not commute.
+The expectation value of
+an arbitrary operator in the interaction picture can now be written as
+\[
+\langle \Psi'_S(t)|\hat{O}_S|\Psi_S(t)\rangle = 
+\langle \Psi'_I(t) |\exp{(\imath\hat{H}_0t/\hbar)}\hat{O}_I
+\exp{(-\imath\hat{H}_0t/\hbar)}|\Psi_I(t)\rangle,
+\]
+and using the definition
+\[
+\hat{O}_I(t)=
+\exp{(\imath\hat{H}_0t/\hbar)}\hat{O}_I\exp{(-\imath\hat{H}_0t/\hbar)},
+\]
+we obtain
+\[
+\langle \Psi'_S(t)|\hat{O}_S|\Psi_S(t)\rangle = 
+\langle \Psi'_I(t) |\hat{O}_I(t)|\Psi_I(t)\rangle,
+\]
+stating that a unitary transformation does not change expectation values!
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+If the take the time derivative of the operator in the interaction picture we arrive at the following equation of motion
+\[
+\imath \hbar\frac{\partial }{\partial t}\hat{O}_I(t) = \exp{(\imath\hat{H}_0t/\hbar)}\left[\hat{O}_S\hat{H}_0-\hat{H}_0\hat{O}_S\right]\exp{(-\imath\hat{H}_0t/\hbar)}=\left[\hat{O}_I(t),\hat{H}_0\right].
+\]
+Here we have used the time-independence of the Schr\"odinger equation
+together with the observation that any function of an operator commutes with the operator itself. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+In order to solve the equation of motion equation in the interaction picture, we define a unitary operator
+time-development operator $\hat{U}(t,t')$. Later we will derive its
+connection with the linked-diagram theorem, which yields a
+linked expression for the actual operator. 
+The action of the operator on the wave function is
+\[
+|\Psi_I(t) \rangle = \hat{U}(t,t_0)|\Psi_I(t_0)\rangle,
+\]
+with the obvious value $\hat{U}(t_0,t_0)=1$.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+The time-development operator $U$ has the
+properties that
+\[
+     \hat{U}^{\dagger}(t,t')\hat{U}(t,t')=\hat{U}(t,t')\hat{U}^{\dagger}(t,t')=1,
+\]
+which implies that $U$ is unitary
+\[
+     \hat{U}^{\dagger}(t,t')=\hat{U}^{-1}(t,t').
+\]
+Further,
+\[
+    \hat{U}(t,t')\hat{U}(t't'')=\hat{U}(t,t'')
+\]
+and
+\[
+    \hat{U}(t,t')\hat{U}(t',t)=1,
+\]
+which leads to
+\[
+    \hat{U}(t,t')=\hat{U}^{\dagger}(t',t).
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+Using our definition of Schr\"odinger's equation in the interaction picture, we can then construct the operator $\hat{U}$. We have defined
+\[
+|\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}|\Psi_S(t)\rangle,
+\]
+which can be rewritten as 
+\[
+|\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}(t-t_0)/\hbar)}|\Psi_S(t_0)\rangle,
+\]
+or
+\[
+|\Psi_I(t)\rangle = \exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}(t-t_0)/\hbar)}\exp{(-\imath\hat{H}_0t_0/\hbar)}|\Psi_I(t_0)\rangle.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+From the last expression we can define
+\[
+\hat{U}(t,t_0)=\exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}(t-t_0)/\hbar)}\exp{(-\imath\hat{H}_0t_0/\hbar)}.
+\]
+It is then easy to convince oneself that the properties defined above are satisfied by the definition of $\hat{U}$. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+We derive the equation of motion for $\hat{U}$ using the above definition.
+This results in
+\[
+\imath \hbar\frac{\partial }{\partial t}\hat{U}(t,t_0) = \hat{H}_I(t)\hat{U}(t,t_0),
+\]
+which we integrate from $t_0$ to a time $t$ resulting in
+\[
+\hat{U}(t,t_0)-\hat{U}(t_0,t_0)=\hat{U}(t,t_0)-1=-\frac{\imath}{\hbar}\int_{t_0}^t dt' \hat{H}_I(t')\hat{U}(t',t_0),
+\]
+which can be rewritten as
+\[
+\hat{U}(t,t_0)=1-\frac{\imath}{\hbar}\int_{t_0}^t dt' \hat{H}_I(t')\hat{U}(t',t_0).
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+We can solve this equation iteratively keeping in mind the time-ordering of the of the operators
+\[
+\hat{U}(t,t_0)=1-\frac{\imath}{\hbar}\int_{t_0}^t dt' \hat{H}_I(t')+\left(\frac{-\imath}{\hbar}\right)^2\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')+\dots
+\]
+The third term can be written as 
+\[
+\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')=
+\frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')
++\frac{1}{2}\int_{t_0}^t dt''\int_{t''}^{t} dt' \hat{H}_I(t')\hat{H}_I(t'').
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+We obtain this expression by changing the integration order in the second term
+via a change of the integration variables $t'$ and $t''$  in 
+\[
+\frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'').
+\]
+We can rewrite the terms which contain the double integral as
+\[
+\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')=\]
+\[
+\frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt''\left[\hat{H}_I(t')\hat{H}_I(t'')\Theta(t'-t'')
++\hat{H}_I(t')\hat{H}_I(t'')\Theta(t''-t')\right],
+\]
+with $\Theta(t''-t')$ being the standard Heavyside or step function. The step function allows us to give a specific time-ordering to the above expression.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+With the $\Theta$-function we can rewrite the last expression as 
+\[
+\int_{t_0}^t dt'\int_{t_0}^{t'} dt'' \hat{H}_I(t')\hat{H}_I(t'')=
+\frac{1}{2}\int_{t_0}^t dt'\int_{t_0}^{t'} dt''\hat{T}\left[\hat{H}_I(t')\hat{H}_I(t'')\right],
+\]
+where $\Hat{T}$ is the so-called time-ordering operator. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interaction picture}
+\begin{small}
+{\scriptsize
+With this definition, we can rewrite the expression for $\hat{U}$ as 
+\[
+\hat{U}(t,t_0)=\sum_{n=0}^{\infty}\left(\frac{-\imath}{\hbar}\right)^n\frac{1}{n!}
+\int_{t_0}^t dt_1\dots \int_{t_0}^t dt_N \hat{T}\left[\hat{H}_I(t_1)\dots\hat{H}_I(t_n)\right]=\hat{T}\exp{\left[\frac{-\imath}{\hbar}
+\int_{t_0}^t dt' \hat{H}_I(t')\right]}.
+\]
+The above time-evolution operator in the interaction picture will be used
+to derive various contributions to many-body perturbation theory. See also exercise 26 for a discussion of the various time orderings.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Heisenberg picture}
+\begin{small}
+{\scriptsize
+We wish now to define a unitary transformation in terms of $\hat{H}$ by defining
+\[
+|\Psi_H(t)\rangle = \exp{(\imath\hat{H}t/\hbar)}|\Psi_S(t)\rangle,
+\]
+which is again a unitary transformation carried out now at the time $t$ on the 
+wave function in the Schr\"odinger picture. If we combine this equation with 
+Schr\"odinger's equation we obtain the following equation of motion
+\[
+\imath \hbar\frac{\partial }{\partial t}|\Psi_H(t)\rangle = 0,
+\]
+meaning that $|\Psi_H(t)\rangle$ is time independent. An operator in this picture is defined as
+\[
+\hat{O}_H(t)=
+\exp{(\imath\hat{H}t/\hbar)}\hat{O}_S\exp{(-\imath\hat{H}t/\hbar)}.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Heisenberg picture}
+\begin{small}
+{\scriptsize
+The time dependence is then in the operator itself, and this yields in turn the
+following equation of motion
+\[
+\imath \hbar\frac{\partial }{\partial t}\hat{O}_H(t) = \exp{(\imath\hat{H}t/\hbar)}\left[\hat{O}_H\hat{H}-\hat{H}\hat{O}_H\right]\exp{(-\imath\hat{H}t/\hbar)}=\left[\hat{O}_H(t),\hat{H}\right].
+\]
+We note that an operator in the Heisenberg picture can be related to the corresponding
+operator in the interaction picture as 
+\[
+\hat{O}_H(t)=
+\exp{(\imath\hat{H}t/\hbar)}\hat{O}_S\exp{(-\imath\hat{H}t/\hbar)}=\]
+\[
+\exp{(\imath\hat{H}_It/\hbar)}\exp{(-\imath\hat{H}_0t/\hbar)}\hat{O}_I\exp{(\imath\hat{H}_0t/\hbar)}\exp{(-\imath\hat{H}_It/\hbar)}.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Heisenberg picture}
+\begin{small}
+{\scriptsize
+With our definition of the time evolution operator we see that
+\[
+\hat{O}_H(t)=\hat{U}(0,t)\hat{O}_I\hat{U}(t,0),
+\]
+which in turn implies that $\hat{O}_S=\hat{O}_I(0)=\hat{O}_H(0)$, all operators are equal at $t=0$. The wave function in the Heisenberg formalism is 
+related to the other pictures as 
+\[
+|\Psi_H\rangle=|\Psi_S(0)\rangle=|\Psi_I(0)\rangle,
+\]
+since the wave function in the Heisenberg picture is time independent. 
+We can relate this wave function to that a given time $t$ via the time evolution operator as
+\[
+|\Psi_H\rangle=\hat{U}(0,t)|\Psi_I(t)\rangle.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Adiabatic hypothesis}
+\begin{small}
+{\scriptsize
+We assume that the interaction term is switched on gradually. Our wave function at time $t=-\infty$ and $t=\infty$ is supposed to represent a non-interacting system
+given by the solution to the unperturbed part of our Hamiltonian $\hat{H}_0$.
+We assume the ground state is given by $|\Phi_0\rangle$, which could be a Slater determinant.
+We define our Hamiltonian as
+\[
+\hat{H}=\hat{H}_0+\exp{(-\varepsilon t/\hbar)}\hat{H}_I,
+\]
+where $\varepsilon$ is a small number. The way we write the Hamiltonian 
+and its interaction term is meant to simulate the switching of the interaction.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Adiabatic hypothesis}
+\begin{small}
+{\scriptsize
+The time evolution of the wave function in the interaction picture is then
+\[
+|\Psi_I(t) \rangle = \hat{U}_{\varepsilon}(t,t_0)|\Psi_I(t_0)\rangle,
+\]
+with 
+\[
+\hat{U}_{\varepsilon}(t,t_0)=\sum_{n=0}^{\infty}\left(\frac{-\imath}{\hbar}\right)^n\frac{1}{n!}
+\int_{t_0}^t dt_1\dots \int_{t_0}^t dt_N \exp{(-\varepsilon(t_1+\dots+t_n)/\hbar)}\hat{T}\left[\hat{H}_I(t_1)\dots\hat{H}_I(t_n)\right]
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Adiabatic hypothesis}
+\begin{small}
+{\scriptsize
+In the limit $t_0\rightarrow -\infty$, the solution ot Schr\"odinger's equation is
+$|\Phi_0\rangle$, and the eigenenergies are given by 
+\[
+\hat{H}_0|\Phi_0\rangle=W_0|\Phi_0\rangle,
+\]
+meaning that 
+\[
+|\Psi_S(t_0)\rangle = \exp{(-\imath W_0t_0/\hbar)}|\Phi_0\rangle,
+\]
+with the corresponding interaction picture wave function given by
+\[
+|\Psi_I(t_0)\rangle = \exp{(\imath \hat{H}_0t_0/\hbar)}|\Psi_S(t_0)\rangle=|\Phi_0\rangle.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Adiabatic hypothesis}
+\begin{small}
+{\scriptsize
+The solution becomes time independent in the limit $t_0\rightarrow -\infty$.
+The same conclusion can be reached by looking at 
+\[
+\imath \hbar\frac{\partial }{\partial t}|\Psi_I(t)\rangle =
+\exp{(\varepsilon |t|/\hbar)}\hat{H}_I|\Psi_I(t)\rangle 
+\]
+and taking the limit $t\rightarrow -\infty$.
+We can rewrite the equation for the wave function at a time $t=0$ as
+\[
+|\Psi_I(0) \rangle = \hat{U}_{\varepsilon}(0,-\infty)|\Phi_0\rangle.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+Our wave function for ground state (after Gell-Mann and Low, see Phys.~Rev.~{\bf 84}, 350 (1951)) is then
+\[
+        \frac{\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle}=
+    \lim_{\epsilon \rightarrow 0}
+   \lim_{t'\rightarrow -\infty}
+   \frac{U(0,-\infty )\ket{\Phi_0} }
+   { \bra{\Phi_0} U(0,-\infty )\ket{\Phi_0} },
+\]
+and we ask whether this quantity exists to all orders in perturbation theory.
+Goldstone's theorem states that only linked diagrams enter the expression for the final binding energy. It means that energy difference reads now
+\[
+\Delta E=\sum_{i=0}^{\infty}\langle \Phi_0|\hat{H}_I\left\{\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\right\}^i|\Phi_0\rangle_L,
+\]
+where the subscript $L$ indicates that only linked diagrams are included. In our Rayleigh-Schr\"odinger expansion, the energy difference included also unlinked diagrams. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+If it does, Gell-Mann and Low showed that it is an eigenstate of $\hat{H}$ with eigenvalue
+\[
+ \hat{H}\frac{\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle}= E\frac{\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle}
+\]
+and multiplying from the left with $\langle \Phi_0|$ we can rewrite the last equation
+as
+\[
+E-W_0=\frac{\langle \Phi_0|\hat{H}_I\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle},
+\]
+since $\hat{H}_0|\Phi_0\rangle = W_0|\Phi_0\rangle$. The numerator and the denominators of the last equation do not exist separately. The theorem of Gell-Mann and Low asserts that this ratio exists. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+We wish to link the above expression with the corresponding expression from time-dependent perturbation theory. We write our expression as
+\[
+E-W_0=\Delta E= \lim_{\epsilon \rightarrow 0^+}
+   \frac{\bra{\Phi_0(0)}\hat{H}_IU_{\epsilon }(0,-\infty )\ket{\Phi_0(-\infty)} }
+   { \bra{\Phi_0(0)} U_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)} },
+\]
+with a numerator 
+\[
+N=\lim_{\epsilon \rightarrow 0^+}\bra{\Phi_0(0)}\hat{H}_IU_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}, 
+\]
+which we rewrite as
+\[
+ N=\lim_{\epsilon \rightarrow 0^+}\bra{\Phi_0(0)}\hat{H}_I(t=0)\displaystyle\sum_{n=0}^{\infty}\frac{(-i)^n}{n!}
+   \int_{-\infty}^{0}dt_1  \int_{-\infty}^{0}dt_2\dots  \int_{-\infty}^{0}dt_n}\exp{(\epsilon/\hbar(t_1+\dots+t_n))} \hat{T}\left[H_1(t_1)H_1(t_2)\dots H_1(t_n)\right] \ket{\Phi_0(-\infty)}. 
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+A linked diagram (or connected diagram) is a diagram which is linked to the last interaction vertex at $t=0$.
+We divide the diagrams into linked and unlinked. 
+In general, the way we can distribute $\mu$ unlinked diagrams among the total of $n$ diagrams is given by the combinatorial factor
+\[
+\left(\begin{array}{c} n \\ \mu \end{array}\right) = \frac{n!}{\mu!\nu!},
+\]
+and using the following relation
+\[
+\sum_{n=0}^{\infty}\frac{1}{n!}\sum_{\mu+\nu=n}^{\infty}\frac{n!}{\mu!\nu!}=\sum_{\mu=0}^{\infty}\frac{1}{\mu!}\sum_{\nu}^{\infty}\frac{1}{\nu!},
+\]
+we can rewrite the numerator $N$ as 
+\[
+N=\bra{\Phi_0(0)}\hat{H}_IU_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}_L\bra{\Phi_0(0)}U_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)},  
+=N_LD,
+\]
+with $N_L$ now containing only linked terms
+\[
+ N_L=\lim_{\epsilon \rightarrow 0^+}\bra{\Phi_0(0)}\hat{H}_I(t=0)\displaystyle\sum_{\nu=0}^{\infty}\frac{(-i)^{\nu}}{\nu!}
+   \int_{-\infty}^{0}dt_1  \int_{-\infty}^{0}dt_2\dots  \int_{-\infty}^{0}dt_n}\exp{(\epsilon/\hbar(t_1+\dots+t_n))} \hat{T}\left[H_1(t_1)H_1(t_2)\dots H_1(t_n)\right] \ket{\Phi_0(-\infty)}_L, 
+\]
+with the subscript $L$ indicating that only linked diagrams appear, that is those diagrams which are linked to the last interaction vertex.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+A linked diagram (or connected diagram) is a diagram which is linked to the last interaction vertex at $t=0$.
+We divide the diagrams into linked and unlinked. 
+In general, the way we can distribute $\mu$ unlinked diagrams among the total of $n$ diagrams is given by the combinatorial factor
+\[
+\left(\begin{array}{c} n \\ \mu \end{array}\right) = \frac{n!}{\mu!\nu!},
+\]
+and using the following relation
+\[
+\sum_{n=0}^{\infty}\frac{1}{n!}\sum_{\mu+\nu=n}^{\infty}\frac{n!}{\mu!\nu!}=\sum_{\mu=0}^{\infty}\frac{1}{\mu!}\sum_{\nu}^{\infty}\frac{1}{\nu!},
+\]
+we can rewrite the numerator $N$ as 
+\[
+N=\bra{\Phi_0(0)}\hat{H}_IU_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}_L\bra{\Phi_0(0)}U_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)},  
+=N_LD,
+\]
+with $N_L$ now containing only linked terms
+\[
+ N_L=\lim_{\epsilon \rightarrow 0^+}\bra{\Phi_0(0)}\hat{H}_I(t=0)\displaystyle\sum_{\nu=0}^{\infty}\frac{(-i)^{\nu}}{\nu!}
+   \int_{-\infty}^{0}dt_1  \int_{-\infty}^{0}dt_2\dots  \int_{-\infty}^{0}dt_n}\exp{(\epsilon/\hbar(t_1+\dots+t_n))} \hat{T}\left[H_1(t_1)H_1(t_2)\dots H_1(t_n)\right] \ket{\Phi_0(-\infty)}_L, 
+\]
+with the subscript $L$ indicating that only linked diagrams appear, that is those diagrams which are linked to the last interaction vertex.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+We note that also that the term $D$ is nothing but the denominator of the equation for the energy. We obtain then the following expression for the energy
+\[
+E-W_0=\Delta E=N_L= \bra{\Phi_0(0)}\hat{H}_IU_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}_L,
+\]
+and Goldstone's theorem is then proved. 
+The corresponding expression from Rayleigh-Schr\"odinger perturbation theory is given by
+\[
+\Delta E=\langle \Phi_0|\left(\hat{H}_I+\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I+
+\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I+\dots\right)|\Phi_0\rangle_C.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+An important point in the derivation of the Gell-Mann and Low theorem
+\[
+E-W_0=\frac{\langle \Phi_0|\hat{H}_I\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle},
+\]
+is that the numerator and the denominators of the last equation do not exist separately. The theorem of Gell-Mann and Low asserts that this ratio exists. To prove it we proceed as follows. Consider the expression
+\[
+(\hat{H}_0-E)U_{\epsilon }(0,-\infty )\ket{\Phi_0}=\left[\hat{H}_0,U_{\epsilon }(0,-\infty )\right]\ket{\Phi_0}.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+To evaluate the commutator 
+\[
+(\hat{H}_0-E)U_{\epsilon }(0,-\infty )\ket{\Phi_0}=\left[\hat{H}_0,U_{\epsilon }(0,-\infty )\right]\ket{\Phi_0}.
+\]
+we write the associate commutator as
+\[
+\left[\hat{H}_0,\hat{H}_I(t_1)\hat{H}_I(t_2)\dots \hat{H}_I(t_n)\right]=
+\left[\hat{H}_0,\hat{H}_I(t_1)\right]\hat{H}_I(t_2)\dots \hat{H}_I(t_n)+
+\]
+\[
+\dots+\hat{H}_I(t_1)\left[\hat{H}_0,\hat{H}_I(t_2)\right]\hat{H}_I(t_3)\dots \hat{H}_I(t_n)+\dots
+\]
+Using the equation of motion for an operator in the interaction picture we have
+\[
+\imath \hbar\frac{\partial }{\partial t}\hat{H}_I(t) = \left[\hat{H}_I(t),\hat{H}_0\right].
+\]
+Each of the above commutators yield then a time derivative!
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+We have then
+\[
+\left[\hat{H}_0,\hat{H}_I(t_1)\hat{H}_I(t_2)\dots \hat{H}_I(t_n)\right]=\imath \hbar\left(\frac{\partial }{\partial t_n}+\frac{\partial }{\partial t_1}+\dots+\frac{\partial }{\partial t_n}\right) \hat{H}_I(t_1)\hat{H}_I(t_2)\dots\hat{H}_I(t_n),
+\]
+meaning that we can rewrite
+\[
+(\hat{H}_0-E)U_{\epsilon }(0,-\infty )\ket{\Phi_0}=\left[\hat{H}_0,U_{\epsilon }(0,-\infty )\right]\ket{\Phi_0},
+\]
+as
+\[
+(\hat{H}_0-E)U_{\epsilon }(0,-\infty )\ket{\Phi_0}=-\sum_{n=1}^{\infty}\left(\frac{-\imath}{\hbar}\right)^{n-1}\frac{1}{n!}
+\int_{t_0}^t dt_1\dots \int_{t_0}^t dt_N \exp{(-\varepsilon(t_1+\dots+t_n)/\hbar)}
+\]
+\[
+\times\sum_{i=1}^n(\frac{\partial }{\partial t_i} )\hat{T}\left[\hat{H}_I(t_1)\dots\hat{H}_I(t_n)\right].
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+All the time derivatives in this equation 
+\[
+(\hat{H}_0-E)U_{\epsilon }(0,-\infty )\ket{\Phi_0}=-\sum_{n=1}^{\infty}\left(\frac{-\imath}{\hbar}\right)^{n-1}\frac{1}{n!}
+\int_{t_0}^t dt_1\dots \int_{t_0}^t dt_N \exp{(-\varepsilon(t_1+\dots+t_n)/\hbar)}
+\]
+\[
+\times\sum_{i=1}^n(\frac{\partial }{\partial t_i} )\hat{T}\left[\hat{H}_I(t_1)\dots\hat{H}_I(t_n)\right],
+\]
+make the same contribution, as can be seen by changing dummy variables. We can therefore retain just one time derivative $\partial/\partial t$ and multiply with $n$. Integrating by parts wrt $t_1$  we obtain two terms. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+Integrating by parts wrt $t_1$  one can finally show that
+\[
+        \frac{\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle}=
+    \lim_{\epsilon \rightarrow 0}
+   \lim_{t'\rightarrow -\infty}
+   \frac{U(0,-\infty )\ket{\Phi_0} }
+   { \bra{\Phi_0} U(0,-\infty )\ket{\Phi_0} },
+\]
+For more details about the derivation, see Gell-Mann and Low, Phys.~Rev.~{\bf 84}, 350  (1951). See also chapter 6.2 of Raimes or Fetter and Walecka, chapter 3.6.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+In the present discussion of the time-dependent theory we will make
+use of the so-called complex-time approach to describe the time
+evolution operator $U$.
+This means that we
+allow the time $t$ to be rotated by a small angle $\epsilon$
+relative to the real time axis. The complex time $t$ is then
+related to the real time $\tilde{t}$ by
+\[
+t=\tilde{t}(1-i\epsilon ).
+\]
+Let us first study the true eigenvector $\Psi_{\alpha}$ which evolves
+from the unperturbed eigenvectors $\Phi_{\alpha}$ through the action of the
+time development operator
+\[
+   U_{\varepsilon}(t,t')=\lim_{\epsilon \rightarrow 0}
+   \lim_{t'\rightarrow -\infty}
+   {\displaystyle\sum_{n=0}^{\infty}\frac{(-i)^n}{n!}
+   \int_{t'}^{t}dt_1  \int_{t'}^{t}dt_2\dots  \int_{t'}^{t}dt_n}
+\]
+\[
+	      \times T\left[H_1(t_1)H_1(t_2)\dots H_1(t_n)\right],
+\]
+where $T$ stands for the correct time-ordering.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+In time-dependent
+perturbation theory we let $\Psi_{\alpha}$ develop from $\Phi_{\alpha}$ in the
+remote past to a given time $t$
+\[
+    \frac{\ket{\Psi_{\alpha}}}
+    {\left\langle\psi_{\alpha} | \Psi_{\alpha} \right\rangle}=
+    \lim_{\epsilon \rightarrow 0}
+   \lim_{t'\rightarrow -\infty}
+   \frac{U_{\varepsilon}(t,t' )\ket{\psi_{\alpha}} }
+   { \bra{\psi_{\alpha}} U(t,t' )\ket{\Phi_{\alpha}} },
+\]
+and similarly, we let
+$\Psi_{\beta}$ develop from $\Phi_{\beta}$ in the remote future
+\[
+    \frac{\bra{\Psi_{\beta}}}{\left\langle
+    \psi_{\beta} | \Psi_{\beta} \right\rangle}=
+    \lim_{\epsilon \rightarrow 0}
+    \lim_{t'\rightarrow \infty}
+    \frac{\bra{\psi_{\beta}}U_{\varepsilon}(t' ,t) }
+    { \bra{\psi_{\beta}} U_{\varepsilon}(t' ,t)\ket{\Phi_{\beta}} }.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+Here we are interested in the expectation value of a given
+operator ${\cal O}$ acting at a time $t=0$. This can be achieved
+from the two previous equations defining
+\[
+     \ket{\Psi_{\alpha ,\beta}'}=
+     \frac{\ket{\Psi_{\alpha ,\beta}}}
+     {\left\langle\Phi_{\alpha ,\beta} | \Psi_{\alpha ,\beta} \right\rangle}
+\]
+we have
+\[
+   {\cal O}_{\alpha\beta}
+  =\frac{N_{\beta\alpha}}{D_{\beta}D_{\alpha}},
+\]
+where we have introduced
+\[
+   N_{\beta\alpha}=
+   \bra{\Phi_{\beta}}U_{\varepsilon}(\infty ,0){\cal O}U_{\varepsilon}(0,-\infty )\ket{\Phi_{\alpha}} ,
+\]
+and 
+\[
+   D_{\alpha ,\beta}=
+   \sqrt{\bra{\psi_{\alpha ,\beta}}
+   U_{\varepsilon}(\infty ,0)U_{\varepsilon}(0,-\infty )\ket{\Phi_{\alpha ,\beta}}}. 
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+If the operator ${\cal O}$ stands for the hamiltonian $H$ we obtain
+\[
+    {\displaystyle  \frac{\bra{\Psi_{\lambda}'}H\ket{\Psi_{\lambda}'} }
+   { \left\langle\Psi_{\lambda}' | \Psi_{\lambda}' \right\rangle} }
+\]
+At this stage, {\em it is important to observe} that our 
+expression for the expectation value of a given operator ${\cal O}$
+{\em is hermitian} insofar ${\cal O}^{\dagger}={\cal O}$. This is readily 
+demonstrated. The above equation is of the general form
+\[
+U(t,t_0){\cal O}U(t_0,-t),
+\]
+and noting that 
+\[
+   U^{\dagger}(t,t_0)=
+   \left({\displaystyle e^{iH_0t}e^{-iH(t-t_0)}e^{-iH_0t}}\right)^{\dagger}
+   =U(t_0,-t),
+\]
+since $H^{\dagger}=H$ and $H_0^{\dagger}=H_0$, we have that
+\[
+    \left(U(t,t_0){\cal O}U(t_0,-t)\right)^{\dagger}
+    =U(t,t_0){\cal O}U(t_0,-t).
+\]
+The question we pose now is what happens in the limit $\varepsilon\rightarrow 0$?
+Do we get results which are meaningful?
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+Our wave function for ground state is then
+\[
+        \frac{\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle}=
+    \lim_{\epsilon \rightarrow 0}
+   \lim_{t'\rightarrow -\infty}
+   \frac{U(0,-\infty )\ket{\Phi_0} }
+   { \bra{\Phi_0} U(0,-\infty )\ket{\Phi_0} },
+\]
+meaning that the energy difference is given by
+\[
+E_0-W_0=\Delta E_0= \lim_{\epsilon \rightarrow 0}
+   \lim_{t'\rightarrow -\infty}
+   \frac{\bra{\Phi_0}\hat{H}_IU_{\varepsilon}(0,-\infty )\ket{\Phi_0} }
+   { \bra{\Phi_0} U_{\varepsilon}(0,-\infty )\ket{\Phi_0} },
+\]
+and we ask whether this quantity exists to all orders in perturbation theory.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+If it does, Gell-Mann and Low showed that it is an eigenstate of $\hat{H}$ with eigenvalue
+\[
+ \hat{H}\frac{\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle}= E_0\frac{\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle}
+\]
+and multiplying from the left with $\langle \Phi_0|$ we can rewrite the last equation
+as
+\[
+E_0-W_0=\frac{\langle \Phi_0|\hat{H}_I\ket{\Psi_0}}{\left\langle\Phi_0 | \Psi_0 \right\rangle},
+\]
+since $\hat{H}_0|\Phi_0\rangle = W_0|\Phi_0\rangle$. The numerator and the denominators of the last equation do not exist separately. The theorem of Gell-Mann and Low asserts that this ratio exists. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+Goldstone's theorem states that only linked diagrams enter the expression for the final binding energy. It means that energy difference reads now
+\[
+\Delta E_0=\sum_{i=0}^{\infty}\langle \Phi_0|\hat{H}_I\left\{\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\right\}^i|\Phi_0\rangle_L,
+\]
+where the subscript $L$ indicates that only linked diagrams are included. In our Rayleigh-Schr\"odinger expansion, the energy difference included also unlinked diagrams. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+We wish to link the above expression with the corresponding expression from time-dependent perturbation theory. We write our expression as
+\[
+E_0-W_0=\Delta E_0= \lim_{\epsilon \rightarrow 0^+}
+   \frac{\bra{\Phi_0(0)}\hat{H}_IU_{\epsilon }(0,-\infty )\ket{\Phi_0(-\infty)} }
+   { \bra{\Phi_0(0)} U_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)} },
+\]
+with a numerator 
+\[
+N=\lim_{\epsilon \rightarrow 0^+}\bra{\Phi_0(0)}\hat{H}_IU_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}, 
+\]
+which we rewrite as
+\[
+ N=\lim_{\epsilon \rightarrow 0^+}\bra{\Phi_0(0)}\hat{H}_I(t=0)\displaystyle\sum_{n=0}^{\infty}\frac{(-i)^n}{n!}
+   \int_{-\infty}^{0}dt_1  \int_{-\infty}^{0}dt_2\dots  \int_{-\infty}^{0}dt_n}\exp{(\epsilon/\hbar(t_1+\dots+t_n))} \hat{T}\left[H_1(t_1)H_1(t_2)\dots H_1(t_n)\right] \ket{\Phi_0(-\infty)}. 
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+From this term we can obtain both linked and unlinked contributions. Goldstone's theorem states that only linked diagrams enter the expression for the final binding energy. 
+A linked diagram (or connected diagram) is a diagram which is linked to the last interaction vertex at $t=0$.
+We label the number of linked diagrams with the variable $\nu$ and the number of unlinked with $\mu$  with $n=\nu+\mu$.  The number of unlinked diagrams is then $\mu=n-\nu$. 
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+In general, the way we can distribute $\mu$ unlinked diagrams among the total of $n$ diagrams is given by the combinatorial factor
+\[
+\left(\begin{array}{c} n \\ \mu \end{array}\right) = \frac{n!}{\mu!\nu!},
+\]
+and using the following relation
+\[
+\sum_{n=0}^{\infty}\frac{1}{n!}\sum_{\mu+\nu=n}^{\infty}\frac{n!}{\mu!\nu!}=\sum_{\mu=0}^{\infty}\frac{1}{\mu!}\sum_{\nu}^{\infty}\frac{1}{\nu!},
+\]
+we can rewrite the numerator $N$ as 
+\[
+N=\bra{\Phi_0(0)}\hat{H}_IU_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}_L\bra{\Phi_0(0)}U_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}=N_LD.
+\]
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+We define  $N_L$ to contain only linked terms
+%\[
+% N_L=\lim_{\epsilon \rightarrow 0^+}\bra{\Phi_0(0)}\hat{H}_I(t=0)\sum_{\nu=0}^{\infty}\frac{(-i)^{\nu}}{\nu!}\int_{-\infty}^{0}dt_1  \int_{-\infty}^{0}dt_2\dots  \int_{-\infty}^{0}dt_n}\exp{(\epsilon/\hbar(t_1+\dots+t_n))} \hat{T}\left[H_1(t_1)H_1(t_2)\dots H_1(t_n)\right] \ket{\Phi_0(-\infty)}_L, 
+%\]
+with the subscript $L$ indicating that only linked diagrams appear, that is those diagrams which are linked to the last interaction vertex.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Goldstone's theorem and Gell-Mann and Low theorem on the ground state}
+\begin{small}
+{\scriptsize
+We note that also that the term $D$ is nothing but the denominator of the equation for the energy. We obtain then the following expression for the energy
+\[
+E_0-W_0=\Delta E_0=N_L= \bra{\Phi_0(0)}\hat{H}_IU_{\epsilon}(0,-\infty )\ket{\Phi_0(-\infty)}_L,
+\]
+and Goldstone's theorem is then proved. 
+The corresponding expression from Rayleigh-Schr\"odinger perturbation theory is given by
+\[
+\Delta E_0=\langle \Phi_0|\left(\hat{H}_I+\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I+
+\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I+\dots\right)|\Phi_0\rangle_C.
+\]
+}
+\end{small}
+}
+
+
+% Green's function theory
+
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+We consider first a particle in free space described by a single particle Hamiltonian $\hat{h}$. Its eigenstates and eigenenergies are
+
+$$
+\hat{h}\left|\phi_{n}\right\rangle=\varepsilon_{n}\left|\phi_{n}\right\rangle
+$$
+
+In general, if we put the particle in one of its
+$\left|\phi_{n}\right\rangle$ orbits, it will remain in the same state
+forever.
+
+We prepare now the system in a generic state
+$\left|\psi_{\mathrm{T}}\right\rangle$ ($\mathrm{T}$ stands for trial) and then
+follow its time evolution. If the trial state is created at time
+$t=0$, the wavefunction at a later time $t$ is given by
+
+$$
+\begin{aligned}
+|\psi(t)\rangle & =e^{-i h_{1} t / \hbar}\left|\psi_{t r}\right\rangle \\
+& =\sum_{n}\left|\phi_{n}\right\rangle e^{-i \varepsilon_{n} t / \hbar}\left\langle\phi_{n} \mid \psi_{t r}\right\rangle
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+
+The above result shows that if one knows the eigentstates
+$\left|\phi_{n}\right\rangle$, it is easy to compute the
+time evolution. We expand $\left|\psi_{\mathrm{T}}\right\rangle$ in this
+basis and let every component propagate independently. Eventually, at
+time $t$, we want to know the probability amplitude for a  measurement
+where  the particle is at a position $\mathbf{r}$,
+
+$$
+\begin{aligned}
+\langle\mathbf{r} \mid \psi(t)\rangle & =\left\langle\mathbf{r}\left|e^{-i \hat{h} t / \hbar}\right| \psi_{\mathrm{T}}\right\rangle \\
+& =\int d \mathbf{r}^{\prime}\left\langle\mathbf{r}\left|e^{-i \hat{h} t / \hbar}\right| \mathbf{r}^{\prime}\right\rangle\left\langle\mathbf{r}^{\prime} \mid \psi_{\mathrm{T}}\right\rangle
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+& =\int d \mathbf{r}^{\prime} \sum_{n}\left\langle\mathbf{r} \mid \phi_{n}\right\rangle e^{-i \varepsilon_{n} t / \hbar}\left\langle\phi_{n} \mid \mathbf{r}^{\prime}\right\rangle\left\langle\mathbf{r}^{\prime} \mid \psi_{\mathrm{T}}\right\rangle \\
+& \equiv \int d \mathbf{r}^{\prime} G\left(\mathbf{r}, \mathbf{r}^{\prime} ; t\right) \psi_{\mathrm{T}}\left(\mathbf{r}^{\prime}\right),
+\end{aligned}
+$$
+
+which defines the propagator $G$.
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+ Once $G\left(\mathbf{r}, \mathbf{r}^{\prime} ; t\right)$
+ is known it can be used to calculate the evolution of any initial
+ state. However,there is more information included in the
+ propagator. This is apparent from the expansion in the third line of the last equation.
+ First, the braket $\left\langle\phi_{n} \mid
+ \mathbf{r}\right\rangle=\left\langle\phi_{n}\left|\psi^{\dagger}(\mathbf{r})\right|
+ 0\right\rangle$ gives us the probability that putting a particle at
+ position $\mathbf{r}$ and mesuring its energy right away, would make
+ the system to collapse into the eigenstate
+ $\left|\phi_{n}\right\rangle$.
+
+ Second, the time evolution is a
+ superposition of waves propagating with different energies and could
+ be inverted to find the eigenspectrum. We could think of  an experiment in
+ which the particle is put at position $\mathbf{r}$ and picked up at
+ $\mathbf{r}^{\prime}$ after some time $t$. If one can do this for
+ different positions and elapsed times and with good resolution, then a
+ Fourier transform would simply give back the full eigenvalue
+ spectrum. This  gives us the complete information about our particle.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{One-body Green's functions}
+\begin{small}
+{\scriptsize
+
+We now want to apply the above ideas to see what we can learn by
+adding and removing a particle in an environment when many other particles are
+present. This can cause the particle to behave in an unxepected way,
+induce collective excitations of the full systems, and so
+on. Moreover, the role played by the physical vacuum in the above
+example, is now taken by a many-body state (usually its ground
+state). Thus, it is also possible to probe the system by removing
+particles.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Heisenberg picture}
+\begin{small}
+{\scriptsize
+
+In the following we consider the Heisenberg description of the field operators (see discussions earlier on different pictures)),
+
+$$
+\psi_{s}^{\dagger}(\mathbf{r}, t)=e^{i H t / \hbar} \psi_{s}^{\dagger}(\mathbf{r}) e^{-i H t / \hbar}
+$$
+
+where the subscript $s$ serves to indicate possible internal degrees of freedom (spin, etc...). We omit the superscrips $\mathrm{H}$ (Heisenberg) and $S$ (Schr\"odinger) from the operators since the two pictures distinguish themselves by  the presence of the time variable, which appears only in the first case. Similarly,
+
+$$
+\psi_{s}(\mathbf{r}, t)=e^{i H t / \hbar} \psi_{s}(\mathbf{r}) e^{-i H t / \hbar},
+$$
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Creation and annihilation operators}
+\begin{small}
+{\scriptsize
+
+For the case of a general single-particle basis
+$\left\{u_{\alpha}(\mathbf{r})\right\}$ one uses the following
+creation and annihilation operators
+
+$$
+\begin{aligned}
+& a_{\alpha}^{\dagger}(t)=e^{i H t / \hbar} a_{\alpha}^{\dagger} e^{-i H t / \hbar}, \\
+& a_{\alpha}(t)=e^{i H t / \hbar} a_{\alpha} e^{-i H t / \hbar}
+\end{aligned}
+$$
+
+which are related to $\psi_{s}^{\dagger}(\mathbf{r}, t)$ and
+$\psi_{s}(\mathbf{r}, t)$.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Eigenstates}
+\begin{small}
+{\scriptsize
+
+  In most applications the Hamiltonian is split in an unperturbed part $\hat{H}_{0}$ and a residual interaction $\hat{H}_I$
+
+$$
+\hat{H}=\hat{H}_{0}+\hat{H}_I .
+$$
+
+The $N$-body eigenstates  of the full Hamiltonian are $\left|\Psi_{n}^{N}\right\rangle$, while $\left|\Phi_{n}^{N}\right\rangle$ are the corresponding unperturbed ones
+
+$$
+\begin{aligned}
+H\left|\Psi_{n}^{N}\right\rangle & =E_{n}^{N}\left|\Psi_{n}^{N}\right\rangle \\
+H_{0}\left|\Phi_{n}^{N}\right\rangle & =E_{n}^{(0), N}\left|\Phi_{n}^{N}\right\rangle
+\end{aligned}
+$$
+
+The definitions given in the following are general and do not depend on the type of interaction being used. Thus, most properties of Green's functions result from genaral principles of quantum mechanics and are valid for any system.
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Definitions}
+\begin{small}
+{\scriptsize
+The two-points Green's function describes the propagation of one particle or one hole on top of the ground state $\left|\Psi_{0}^{N}\right\rangle$. This is defined by
+
+$$
+g_{s s^{\prime}}\left(\mathbf{r}, t ; \mathbf{r}^{\prime}, t^{\prime}\right)=-\frac{i}{\hbar}\left\langle\Psi_{0}^{N}\left|T\left[\psi_{s}(\mathbf{r}, t) \psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}, t^{\prime}\right)\right]\right| \Psi_{0}^{N}\right\rangle
+$$
+
+where $T[\cdots]$ is the time ordering operator that imposes a change of sign for each exchange of two fermion operators
+
+$$
+T\left[\psi_{s}(\mathbf{r}, t) \psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}, t^{\prime}\right)\right]= \begin{cases}\psi_{s}(\mathbf{r}, t) \psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}, t^{\prime}\right), & t>t^{\prime} \\ \pm \psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}, t^{\prime}\right) \psi_{s}(\mathbf{r}, t), & t^{\prime}>t\end{cases}
+$$
+
+where the upper (lower) sign is for bosons (fermions). A similar definition can be given for the non interacting state $\left|\Phi_{0}^{N}\right\rangle$, in this case the Heisenberg operators discussed above must evolve only according to $H_{0}$ and the notation $g^{(0)}$ is used.
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Fourier transform}
+\begin{small}
+{\scriptsize
+
+If the Hamiltonian does not depend on time, the propagator defined above
+depends only on the difference $t-t^{\prime}$
+
+$$
+\begin{aligned}
+g_{s s^{\prime}}\left(\mathbf{r}, \mathbf{r}^{\prime} ; t-t^{\prime}\right)= & -\frac{i}{\hbar} \theta\left(t-t^{\prime}\right)\left\langle\Psi_{0}^{N}\left|\psi_{s}(\mathbf{r}) e^{-i\left(H-E_{0}^{N}\right)\left(t-t^{\prime}\right) / \hbar} \psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}\right)\right| \Psi_{0}^{N}\right\rangle \\
+& \mp \frac{i}{\hbar} \theta\left(t^{\prime}-t\right)\left\langle\Psi_{0}^{N}\left|\psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}\right) e^{i\left(H-E_{0}^{N}\right)\left(t-t^{\prime}\right) / \hbar} \psi_{s}(\mathbf{r})\right| \Psi_{0}^{N}\right\rangle .
+\end{aligned}
+$$
+
+In this case it is useful to Fourier transform with respect to time and define
+
+$$
+g_{s s^{\prime}}\left(\mathbf{r}, \mathbf{r}^{\prime} ; \omega\right)=\int d \tau e^{i \omega \tau} g_{s s^{\prime}}\left(\mathbf{r}, \mathbf{r}^{\prime} ; \tau\right)
+$$
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Rewrite of propagator}
+\begin{small}
+{\scriptsize
+
+Using the relation
+
+$$
+\theta( \pm \tau)=\mp \lim _{\eta \rightarrow 0^{+}} \frac{1}{2 \pi i} \int_{-\infty}^{+\infty} d \omega \frac{e^{-i \omega \tau}}{\omega \pm i \eta}
+$$
+
+we obtain
+
+$$
+\begin{aligned}
+g_{s s^{\prime}}\left(\mathbf{r}, \mathbf{r}^{\prime} ; \omega\right)= & g_{s s^{\prime}}^{p}\left(\mathbf{r}, \mathbf{r}^{\prime} ; \omega\right)+g_{s s^{\prime}}^{h}\left(\mathbf{r}, \mathbf{r}^{\prime} ; \omega\right) \\
+= & \left\langle\Psi_{0}^{N}\left|\psi_{s}(\mathbf{r}) \frac{1}{\hbar \omega-\left(H-E_{0}^{N}\right)+i \eta} \psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}\right)\right| \Psi_{0}^{N}\right\rangle \\
+& \mp\left\langle\Psi_{0}^{N}\left|\psi_{s^{\prime}}^{\dagger}\left(\mathbf{r}^{\prime}\right) \frac{1}{\hbar \omega+\left(H-E_{0}^{N}\right)-i \eta} \psi_{s}(\mathbf{r})\right| \Psi_{0}^{N}\right\rangle,
+\end{aligned}
+$$
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Particle and hole propagators}
+\begin{small}
+{\scriptsize
+
+In the last equation, $g^{p}$ propagates a particle from
+$\mathbf{r}^{\prime}$ to $\mathbf{r}$, while $g^{h}$ propagates a hole
+from $\mathbf{r}$ to $\mathbf{r}^{\prime}$. Note that the
+interpretation is that a particle is added at $\mathbf{r}^{\prime}$,
+and later on some (indistiguishable) particle is removed from
+$\mathbf{r}^{\prime}$ (and similarly for holes). In the meantime, it
+is the fully correlated $(N \pm 1)$ body system that propagates.
+
+In many cases,  in particular in
+the vicinity of the Fermi surface, this motion mantains many
+characteristics that are typical of a particle moving in free space,
+even if the motion itself could actually be a collective excitation of
+many constituents. But since it looks like a single particle state we
+may still refer to it as quasiparticle.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Orthonormal basis set definitions}
+\begin{small}
+{\scriptsize
+
+The same definitions can be made for any orthonormal basis $\{\alpha\}$, leading to the realtions
+
+$$
+g_{\alpha \beta}\left(t, t^{\prime}\right)=-\frac{i}{\hbar}\left\langle\Psi_{0}^{N}\left|T\left[a_{\alpha}(t) a_{\beta}^{\dagger}\left(t^{\prime}\right)\right]\right| \Psi_{0}^{N}\right\rangle
+$$
+
+where
+
+$$
+g_{s s^{\prime}}\left(\mathbf{r}, t ; \mathbf{r}^{\prime}, t^{\prime}\right)=\sum_{\alpha \beta} u_{\alpha}(\mathbf{r}, s) g_{\alpha \beta}\left(t, t^{\prime}\right) u_{\beta}^{*}\left(\mathbf{r}^{\prime}, s^{\prime}\right)
+$$
+
+and
+
+$$
+\begin{aligned}
+g_{\alpha \beta}(\omega)= & \left\langle\Psi_{0}^{N}\left|a_{\alpha} \frac{1}{\hbar \omega-\left(H-E_{0}^{N}\right)+i \eta} a_{\beta}^{\dagger}\right| \Psi_{0}^{N}\right\rangle \\
+& \mp\left\langle\Psi_{0}^{N}\left|a_{\beta}^{\dagger} \frac{1}{\hbar \omega+\left(H-E_{0}^{N}\right)-i \eta} a_{\alpha}\right| \Psi_{0}^{N}\right\rangle .
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+
+
+
+\frame
+{
+\frametitle{Lehmann representation}
+\begin{small}
+{\scriptsize
+
+As discussed above for the one particle case, the information
+contained in the propagators becomes more clear if one Fourier
+transforms the time variable and inserts a completness for the
+intermediate states. This is so because it makes the spectrum and the
+transition amplitudes to apper explicitely. Using the completeness
+relations for the $(N \pm 1)$-body systems in the last equation, one has
+
+$$
+\begin{aligned}
+g_{\alpha \beta}(\omega)= & \sum_{n} \frac{\left\langle\Psi_{0}^{N}\left|a_{\alpha}\right| \Psi_{n}^{N+1}\right\rangle\left\langle\Psi_{n}^{N+1}\left|a_{\beta}^{\dagger}\right| \Psi_{0}^{N}\right\rangle}{\hbar \omega-\left(E_{n}^{N+1}-E_{0}^{N}\right)+i \eta} \\
+& \mp \sum_{k} \frac{\left\langle\Psi_{0}^{N}\left|a_{\beta}^{\dagger}\right| \Psi_{k}^{N-1}\right\rangle\left\langle\Psi_{k}^{N-1}\left|a_{\alpha}\right| \Psi_{0}^{N}\right\rangle}{\hbar \omega-\left(E_{0}^{N}-E_{k}^{N-1}\right)-i \eta} .
+\end{aligned}
+$$
+
+which is known as the Lehmann repressentation of a many-body Green's
+function. Here, the first and second terms on the left hand
+side describe the propagation of a (quasi)particle and a (quasi)hole
+excitations.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+The poles in last equation are the energies relatives to the
+$\left|\Psi_{0}^{N}\right\rangle$ ground state. Hence they give the
+energies actually relased in a capture reaction experiment to a bound
+state of $\left|\Psi_{n}^{N+1}\right\rangle$. The residues are
+transition amplitudes for the addition of a particle and take the name
+of spectroscopic amplitudes. They play the same role of the
+$\left\langle\phi_{n} \mid \mathbf{r}\right\rangle$ wave function.
+In fact these energies and amplitudes are solutions of a
+Schr\"odinger-like equation: the Dyson equation. The hole part of the
+propagator gives instead information on the process of particle
+emission, the poles being the exact energy absorbed in the
+process. For example, in the single particle Green's function of an atome,
+the quasiparticle and quasihole poles are respectively the
+electron affinities an ionization energies.
+
+We will look at the physical significance of spectroscopic amplitudes
+below and derive the Dyson equation (which is the
+fundamental equation in many-body Green's function theory) below.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Spectral function}
+\begin{small}
+{\scriptsize
+As a last definition, we rewrite the above Lehmann representation  in a form
+that can compared more easily to experiments. By using the relation
+
+$$
+\frac{1}{x \pm i \eta}=\mathcal{P} \frac{1}{x} \mp i \pi \delta(x)
+$$
+}
+we can extract the one-body spectral function
+
+$$
+S_{\alpha \beta}(\omega)=S_{\alpha \beta}^{p}(\omega)+S_{\alpha \beta}^{h}(\omega),
+$$
+
+where the particle and hole components are
+
+$$
+\begin{aligned}
+S_{\alpha \beta}^{p}(\omega) & =-\frac{1}{\pi} \operatorname{Im} g_{\alpha \beta}^{p}(\omega) \\
+& =\sum_{n}\left\langle\Psi_{0}^{N}\left|a_{\alpha}\right| \Psi_{n}^{N+1}\right\rangle\left\langle\Psi_{n}^{N+1}\left|a_{\beta}^{\dagger}\right| \Psi_{0}^{N}\right\rangle \delta\left(\hbar \omega-\left(E_{n}^{N+1}-E_{0}^{N}\right)\right) \\
+S_{\alpha \beta}^{h}(\omega) & =\frac{1}{\pi} \operatorname{Im} g_{\alpha \beta}^{h}(\omega) \\
+& =\mp \sum_{k}\left\langle\Psi_{0}^{N}\left|a_{\beta}^{\dagger}\right| \Psi_{k}^{N-1}\right\rangle\left\langle\Psi_{k}^{N-1}\left|a_{\alpha}\right| \Psi_{0}^{N}\right\rangle \delta\left(\hbar \omega-\left(E_{0}^{N}-E_{k}^{N-1}\right)\right) .
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Dispersion relation}
+\begin{small}
+{\scriptsize
+The diagonal part of the spectral function is interpreted as the
+probability of adding $\left[S_{\alpha \alpha}^{p}(\omega)\right]$ or
+removing $\left[S_{\alpha \alpha}^{h}(\omega)\right]$ one particle in
+the state $\alpha$ leaving the residual system in a state of energy
+$\omega$.
+
+By comparing the last two equations to the Lehmann representation, we
+see that the propagator is completely constrained by its imaginary
+part. We have
+
+$$
+g_{\alpha \beta}(\omega)=\int d \omega^{\prime} \frac{S_{\alpha \beta}^{p}\left(\omega^{\prime}\right)}{\omega-\omega^{\prime}+i \eta}+\int d \omega^{\prime} \frac{S_{\alpha \beta}^{h}\left(\omega^{\prime}\right)}{\omega-\omega^{\prime}-i \eta} .
+$$
+
+In general the single particle propagator of a finite system has
+isolated poles in correspondence to the bound eigenstates of the
+$(N+1)$-body system. For larger enegies, where
+$\left|\Psi_{n}^{N+1}\right\rangle$ are states in the continuum, it
+develops a branch cut. The particle propagator $g^{p}(\omega)$ is
+analytic in the upper half of the complex plane, and so is the full
+propagator for $\omega \geq
+E_{0}^{N+1}-E_{0}^{N}$. Analogously, the hole propagator has poles for
+$\omega \leq E_{0}^{N}-E_{0}^{N-1}$ and is analytic in the lower
+complex plane. Note that high excitation energies in the (N-1)body
+system correspond to negative values of the poles
+$E_{0}^{N}-E_{k}^{N-1}$, so $g^{h}(\omega)$ develops a branch cut for
+large negative energies.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Expectation values}
+\begin{small}
+{\scriptsize
+The one-body density matrix can be obtained from the one-body
+propagator. One simply chooses the appropriate time ordering
+
+$$
+\rho_{\alpha \beta}=\left\langle\Psi_{0}^{N}\left|a_{\beta}^{\dagger} a_{\alpha}\right| \Psi_{0}^{N}\right\rangle= \pm i \hbar \lim _{t^{\prime} \rightarrow t^{+}} g_{\alpha \beta}\left(t, t^{\prime}\right)
+$$
+
+(where the upper sign is for bosons and the lower one is for fermions). Alternatively, the hole spectral function can be used
+
+$$
+\rho_{\alpha \beta}=\mp \int d \omega S_{\alpha \beta}^{h}(\omega) \text {. }
+$$
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+Thus, the expectation value of a one-body operator for the
+ground states $\left|\Psi_{0}^{N}\right\rangle$ is usually as
+
+$$
+\begin{aligned}
+\left\langle\Psi_{0}^{N}|O| \Psi_{0}^{N}\right\rangle & =\mp \sum_{\alpha \beta} \int d \omega o_{\alpha \beta} S_{\beta \alpha}^{h}(\omega) \\
+& = \pm i \hbar \lim _{t^{\prime} \rightarrow t^{+}} \sum_{\alpha \beta} o_{\alpha \beta} g_{\beta \alpha}\left(t, t^{\prime}\right)
+\end{aligned}
+$$
+
+and both terms are equivalent.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{More on sum rules}
+\begin{small}
+{\scriptsize
+From the particle spectral function, one can extract the quantity
+
+$$
+d_{\alpha \beta}=\left\langle\Psi_{0}^{N}\left|a_{\alpha} a_{\beta}^{\dagger}\right| \Psi_{0}^{N}\right\rangle=\int d \omega S_{\beta \alpha}^{p}(\omega)
+$$
+
+which leads to the following sum rule
+
+$$
+\int d \omega S_{\alpha \beta}(\omega)=d_{\alpha \beta} \mp \rho_{\alpha \beta}=\left\langle\Psi_{0}^{N}\left|\left[a_{\alpha}, a_{\beta}^{\dagger}\right]_{\mp}\right| \Psi_{0}^{N}\right\rangle=\delta_{\alpha \beta} .
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Sum rule for the energy}
+\begin{small}
+{\scriptsize
+For the case of an Hamiltonian containing up to two-body interactions only we have
+
+$$
+\begin{aligned}
+H & =U+V \\
+& =\sum_{\alpha \beta} t_{\alpha \beta} a_{\alpha}^{\dagger} a_{\beta}+\frac{1}{4} \sum_{\alpha \beta \gamma \delta} v_{\alpha \beta, \gamma \delta} a_{\alpha}^{\dagger} a_{\beta}^{\dagger} a_{\delta} a_{\gamma},
+\end{aligned}
+$$
+
+and we can derive an important sum rule that relates the total energy
+of the state $\left|\Psi_{0}^{N}\right\rangle$ to its one-body Green's
+function. To derive this, one makes use of the equation of motion for
+Heisenberg operators, which gives
+
+$$
+i \hbar \frac{d}{d t} a_{\alpha}(t)=e^{i H t / \hbar}\left[a_{\alpha}, H\right] e^{-i H t / \hbar},
+$$
+
+with $^{2}$
+
+$$
+\left[a_{\alpha}, H\right]=\sum_{\beta} t_{\alpha \beta} a_{\beta}+\frac{1}{2} \sum_{\beta \gamma \delta} v_{\alpha \beta \gamma \delta} a_{\beta}^{\dagger} a_{\delta} a_{\gamma}
+$$
+
+which is valid for both fermions and bosons.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Green's function equation}}
+\begin{small}
+{\scriptsize
+If one uses the last equation we can derive the propagator as function of time through
+
+$$
+\begin{aligned}
+i \hbar \frac{\partial}{\partial t} g_{\alpha \beta}\left(t-t^{\prime}\right)= & \delta\left(t-t^{\prime}\right) \delta_{\alpha \beta}+\sum_{\gamma} t_{\alpha \gamma} g_{\gamma \beta}\left(t-t^{\prime}\right) \\
+& -\frac{i}{\hbar} \sum_{\eta \gamma \zeta} \frac{1}{2} v_{\alpha \eta, \gamma \zeta}\left\langle\Psi_{0}^{N}\left|T\left[a_{\eta}^{\dagger}(t) a_{\zeta}(t) a_{\gamma}(t) a_{\beta}^{\dagger}\left(t^{\prime}\right)\right]\right| \Psi_{0}^{N}\right\rangle
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{More on energy sum rule}
+\begin{small}
+{\scriptsize
+
+The braket in the last line contains the four-point Green's function to be discussed below.
+The four-point Green's function can describe the simultaneous propagation of
+two particles. Thus, one sees that applying the equation of motion to
+a propagator leads to relations which contain Green's functions of
+higher order. This result is particularly important because it shows
+there exist a hierarchy between propagators, so that the exact
+equations that determine the one-body function will depend on the
+two-body one, the two-body function will contain contributions from
+three-body propagators, and so on.
+
+For the moment we just want to select a particular order of the
+operators in order to extract the one- and two-body
+density matrices. To do this, we chose $t^{\prime}$ to be a later time
+than $t$ and take its limit to the latter from above. This yields
+
+$$
+\pm i \hbar \lim _{t^{\prime} \rightarrow t^{+}} \sum_{\alpha} \frac{\partial}{\partial t} g_{\alpha \alpha}\left(t-t^{\prime}\right)=\langle T\rangle+2\langle V\rangle
+$$
+
+(note that for $t \neq t^{\prime}$, the term
+$\delta\left(t-t^{\prime}\right)=0$ and it does not contribute to the
+limit). This result can also be expressed in energy representation by
+inverting the Fourier transformation. We have then
+
+$$
+\lim _{\tau \rightarrow 0^{-}} \frac{\partial}{\partial \tau} g_{\alpha \beta}(\tau)=-\int d \omega \omega S_{\alpha \beta}^{h}(\omega)
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Expectation values of the energy}
+\begin{small}
+{\scriptsize
+By combining the above results we arrive at
+
+$$
+\begin{aligned}
+\langle H\rangle=\langle U\rangle+\langle V\rangle & = \pm i \hbar \frac{1}{2} \lim _{t^{\prime} \rightarrow t^{+}} \sum_{\alpha \beta}\left\{\delta_{\alpha \beta} \frac{\partial}{\partial t}+t_{\alpha \beta}\right\} g_{\beta \alpha}\left(t-t^{\prime}\right) \\
+& =\mp \frac{1}{2} \sum_{\alpha \beta} \int d \omega\left\{\delta_{\alpha \beta} \omega+t_{\alpha \beta}\right\} S_{\beta \alpha}^{h}(\omega)
+\end{aligned}
+$$
+
+We used here the relation $[A, B C]_{-}=[A, B] C-B[C, A]=\{A, B\}
+C-B\{C, A\}$ which is valid for both commutators and anticommutators
+
+
+Surprisingly, for an Hamiltonian containing only two-body forces it is
+possible to extract the ground state energy by knowing only the
+one-body propagator. 
+
+When interactions among three or more particles are present, this
+relation has to be augmented to include additional terms. In these
+cases higher order Green's functions will appear explicitly.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Higher order  Green's functions}
+\begin{small}
+{\scriptsize
+
+The definition of the one-body Green's function  can be extended to Green's functions for the
+propagation of more than one particle. In general, for each additional
+particle it will be necessary to introduce one additional creation and
+one annihilation operator. Thus a $2 n$-points Green's function will
+propagate a maximum of $n$ quasiparticles. The explicit definition of
+the four-point propagator is
+
+$$
+g_{\alpha \beta, \gamma \delta}^{4-p t}\left(t_{1}, t_{2} ; t_{1}^{\prime}, t_{2}^{\prime}\right)=-\frac{i}{\hbar}\left\langle\Psi_{0}^{N}\left|T\left[a_{\beta}\left(t_{2}\right) a_{\alpha}\left(t_{1}\right) a_{\gamma}^{\dagger}\left(t_{1}^{\prime}\right) a_{\delta}^{\dagger}\left(t_{2}^{\prime}\right)\right]\right| \Psi_{0}^{N}\right\rangle
+$$
+
+while the six-point case is
+
+$$
+\begin{aligned}
+& g_{\alpha \beta \gamma, \mu \nu \lambda}^{6-p t}\left(t_{1}, t_{2}, t_{3} ; t_{1}^{\prime}, t_{2}^{\prime}, t_{3}^{\prime}\right)= \\
+& \quad-\frac{i}{\hbar}\left\langle\Psi_{0}^{N}\left|T\left[a_{\gamma}\left(t_{3}\right) a_{\beta}\left(t_{2}\right) a_{\alpha}\left(t_{1}\right) a_{\mu}^{\dagger}\left(t_{1}^{\prime}\right) a_{\nu}^{\dagger}\left(t_{2}^{\prime}\right) a_{\lambda}^{\dagger}\left(t_{3}^{\prime}\right)\right]\right| \Psi_{0}^{N}\right\rangle,
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Interpretations}
+\begin{small}
+{\scriptsize
+It should be noted that the actual number of particles that are
+propagated by these objects depends on the ordering of the time
+variables. Therefore the information on transitions between
+eigenstates of the systems with $N, N \pm 1$ and $N \pm 2$ bodies are
+all encoded in the four-point propagator, while additional states of $N \pm 3$-body
+states are included in the six-point propagator. Obviously, the presence of so many
+time variables makes the use of these functions extremely difficult
+(and even impossible, in many cases). However, it is still useful to
+consider only certain time orderings which allow to extract the
+information not included in the two-point propagator.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Two-particle-two-hole propagator}
+\begin{small}
+{\scriptsize
+The two-particle-two-hole propagator is a two-times Green's function
+defined as
+
+$$
+g_{\alpha \beta, \gamma \delta}^{I I}\left(t, t^{\prime}\right)=-\frac{i}{\hbar}\left\langle\Psi_{0}^{N}\left|T\left[a_{\beta}(t) a_{\alpha}(t) a_{\gamma}^{\dagger}\left(t^{\prime}\right) a_{\delta}^{\dagger}\left(t^{\prime}\right)\right]\right| \Psi_{0}^{N}\right\rangle
+$$
+
+which corresponds to the limit $t_{1}^{\prime}=t_{2}^{\prime+}$ and $t_{2}=t_{1}^{+}$of $g^{4-p t}$.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{More details}
+\begin{small}
+{\scriptsize
+As for the case of $g_{\alpha \beta}\left(t, t^{\prime}\right)$, if
+the Hamiltonian is time-independent, the last equation is a function of the
+time difference only. Therefore it has a Lehmann representation
+containing the exact spectrum of the $(N \pm 2)$-body systems
+
+$$
+\begin{aligned}
+g_{\alpha \beta, \gamma \delta}^{I I}(\omega) & =\sum_{n} \frac{\left\langle\Psi_{0}^{N}\left|a_{\beta} a_{\alpha}\right| \Psi_{n}^{N+2}\right\rangle\left\langle\Psi^{N+2}\left|a_{\gamma}^{\dagger} a_{\delta}^{\dagger}\right| \Psi_{0}^{N}\right\rangle}{\omega-\left(E_{n}^{N+2}-E_{0}^{N}\right)+i \eta} \\
+& -\sum_{k} \frac{\left\langle\Psi_{0}^{N}\left|a_{\gamma}^{\dagger} a_{\delta}^{\dagger}\right| \Psi_{k}^{N-2}\right\rangle\left\langle\Psi_{k}^{N-2}\left|a_{\beta} a_{\alpha}\right| \Psi_{0}^{N}\right\rangle}{\omega-\left(E_{0}^{N}-E_{k}^{N-2}\right)-i \eta}
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Spectral functions}
+\begin{small}
+{\scriptsize
+Similarly one defines the two-particle and two-hole spectral functions
+
+$$
+S_{\alpha \beta}^{I I}, \gamma \delta(\omega)=S_{\alpha \beta, \gamma \delta}^{p p}(\omega)+S_{\alpha \beta, \gamma \delta}^{h h}(\omega)
+$$
+
+and
+
+$$
+\begin{aligned}
+S_{\alpha \beta, \gamma \delta}^{p p}(\omega) & =-\frac{1}{\pi} \operatorname{Im} g_{\alpha \beta, \gamma \delta}^{p p}(\omega) \\
+& =\sum_{n}\left\langle\Psi_{0}^{N}\left|a_{\beta} a_{\alpha}\right| \Psi_{n}^{N+2}\right\rangle\left\langle\Psi_{n}^{N+2}\left|a_{\gamma}^{\dagger} a_{\delta}^{\dagger}\right| \Psi_{0}^{N}\right\rangle \delta\left(\hbar \omega-\left(E_{n}^{N+2}-E_{0}^{N}\right)\right), \\
+S_{\alpha \beta, \gamma \delta}^{h h}(\omega) & =\frac{1}{\pi} \operatorname{Im} g_{\alpha \beta, \gamma \delta}^{h h}(\omega) \\
+& =-\sum_{k}\left\langle\Psi_{0}^{N}\left|a_{\gamma}^{\dagger} a_{\delta}^{\dagger}\right| \Psi_{k}^{N-2}\right\rangle\left\langle\Psi_{k}^{N-2}\left|a_{\beta} a_{\alpha}\right| \Psi_{0}^{N}\right\rangle \delta\left(\hbar \omega-\left(E_{0}^{N}-E_{k}^{N-2}\right)\right) .
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Two-body density functions}
+\begin{small}
+{\scriptsize
+Based on these equations it is easy to obtain relations for the two-body density matrix
+
+$$
+\Gamma_{\alpha \beta, \gamma \delta}=\left\langle\Psi^{N}\left|a_{\gamma}^{\dagger} a_{\delta}^{\dagger} a_{\beta} a_{\alpha}\right| \Psi^{N}\right\rangle=-\int d \omega S_{\alpha \beta, \gamma \delta}^{h h}(\omega)
+$$
+
+and, hence, for the expectation value of any two-body operator
+
+$$
+\begin{aligned}
+\left\langle\Psi_{0}^{N}|V| \Psi_{0}^{N}\right\rangle & =-\sum_{\alpha \beta \gamma \delta} \int d \omega v_{\alpha \beta, \gamma \delta} S_{\gamma \delta, \alpha \beta}^{h}(\omega) \\
+& =+i \hbar \lim _{t^{\prime} \rightarrow t^{+}} \frac{1}{4} \sum_{\alpha \beta \gamma \delta} v_{\alpha \beta, \gamma \delta} g_{\gamma \delta, \alpha \beta}^{I I}\left(t, t^{\prime}\right) .
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Polarization propagator}
+\begin{small}
+{\scriptsize
+The polarization propagator $\Pi_{\alpha \beta, \gamma \delta}$
+corresponds to the time ordering of $g^{4-p t}$ in which a
+particle-hole excitation is created at one single time. Therefore, no
+process involving particle transfer in included. However it describes
+transition to the excitations of the system, as long as they can be
+reached with a one-body operator. For example, this includes
+collective modes of a nucleus. This is defined as
+
+$$
+\begin{aligned}
+\Pi_{\alpha \beta, \gamma \delta}\left(t, t^{\prime}\right)=- & \frac{i}{\hbar}\left\langle\Psi_{0}^{N}\left|T\left[a_{\beta}^{\dagger}(t) a_{\alpha}(t) a_{\gamma}^{\dagger}\left(t^{\prime}\right) a_{\delta}\left(t^{\prime}\right)\right]\right| \Psi_{0}^{N}\right\rangle \\
+& +\frac{i}{\hbar}\left\langle\Psi_{0}^{N}\left|a_{\beta}^{\dagger} a_{\alpha}\right| \Psi_{0}^{N}\right\rangle\left\langle\Psi_{0}^{N}\left|a_{\gamma}^{\dagger} a_{\delta}\right| \Psi_{0}^{N}\right\rangle
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Including completeness}
+\begin{small}
+{\scriptsize
+
+  After including a completeness of $\left|\Psi_{n}^{N}\right\rangle$
+states, the contribution of to the ground states (at zero
+energy) is cancelled by the last term in the equation. Thus one can
+Fourier transform to the Lehmann representation
+
+$$
+\begin{aligned}
+\Pi_{\alpha \beta, \gamma \delta}(\omega) & =\sum_{n \neq 0} \frac{\left\langle\Psi_{0}^{N}\left|a_{\beta}^{\dagger} a_{\alpha}\right| \Psi_{n}^{N}\right\rangle\left\langle\Psi_{n}^{N}\left|a_{\gamma}^{\dagger} a_{\delta}\right| \Psi_{0}^{N}\right\rangle}{\omega-\left(E_{n}^{N}-E_{0}^{N}\right)+i \eta} \\
+& -\sum_{n \neq 0} \frac{\left\langle\Psi_{0}^{N}\left|a_{\gamma}^{\dagger} a_{\delta}\right| \Psi_{n}^{N}\right\rangle\left\langle\Psi_{n}^{N}\left|a_{\beta}^{\dagger} a_{\alpha}\right| \Psi_{0}^{N}\right\rangle}{\omega+\left(E_{n}^{N}-E_{0}^{N}\right)-i \eta}
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Transition matrix elements}
+\begin{small}
+{\scriptsize
+Note that $\Pi_{\alpha \beta, \gamma \delta}(\omega)=\Pi_{\delta
+  \gamma, \beta \alpha}(-\omega)$ due to time reversal symmetry. Also
+the forward and backward parts carry the same information.
+
+Once again, the residues of the propagator can be used to
+calculate expectation values. In this case, given a one-body operator
+we obtain the transition matrix elements to any excited state
+
+$$
+\left\langle\Psi_{n}^{N}|O| \Psi_{0}^{N}\right\rangle=\sum_{\alpha \beta} o_{\beta \alpha}\left\langle\Psi_{n}^{N}\left|a_{\beta}^{\dagger} a_{\alpha}\right| \Psi_{0}^{N}\right\rangle
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Coupling to experiment}
+\begin{small}
+{\scriptsize
+
+
+Here we explore the connection between the information contained in
+various propagators and experimental data. The focus is on the
+experimental properties that are probed by the removal of
+particles. Also, from now on, we will only consider fermionic systems.
+
+An important case is when the spectrum for the $N \pm 1$-particle
+system near the Fermi energy involves discrete bound states. This
+happens in finite system like nuclei or molecules. In these cases the
+main quantity of interest is the overlap wave function
+
+$$
+\begin{aligned}
+\psi_{k}^{\text {overlap }}(\mathbf{r})= & \left\langle\Psi_{k}^{N-1}\left|\psi_{s}(\mathbf{r})\right| \Psi_{0}^{N}\right\rangle \\
+= & \sqrt{N} \int d \mathbf{r}_{2} \int d \mathbf{r}_{3} \cdots \int d \mathbf{r}_{N} \\
+& \quad \times\left[\Psi_{k}^{N-1}\left(\mathbf{r}_{2}, \mathbf{r}_{3}, \ldots \mathbf{r}_{N}\right)\right]^{*} \Psi_{0}^{N}\left(\mathbf{r}, \mathbf{r}_{2}, \mathbf{r}_{3}, \ldots \mathbf{r}_{N}\right) .
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Particle knock-out processes}
+\begin{small}
+{\scriptsize
+
+This integral comes out in the description of most
+particle knock-out processes because it represents the matrix element
+between the initial and final states, in the case when the emitted
+particle is ejected with energy large enough the it interacts only
+weakly with the residual system. The quantity of interest here is the
+so called spectroscopic factor to the final state $k$,
+
+$$
+S_{k}=\int d \mathbf{r}\left|\psi_{k}^{\text {overlap }}(\mathbf{r})\right|^{2}
+$$
+
+When the system is made of completely non interacting particles,
+$S_{k}$ is unity. In real cases however, correlations among the
+constituents reduce this value. The possibility of extracting this
+quantity from experimental data gives us information on the spectral
+function and therefore on the structure of the correlated system.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Spectroscopic strength from particle emission}
+\begin{small}
+{\scriptsize
+In order to make the connection with experimental data obtained from
+knockout reactions, it is useful to consider the response of a system
+to a weak probe. The hole spectral function
+can be substantially "observed" these reactions. The general idea is
+to transfer a large amount of momentum and energy to a particle of a
+bound system in the ground state. This is then ejected from the
+system, and one ends up with a fast-moving particle and a bound
+$(N-1)$-particle system. By observing the momentum of the ejected
+particle it is then possible the reconstruct the spectral function of
+the system, provided that the interaction between the ejected particle
+and the remainder is sufficiently weak or treated in a controlled
+fashion, for example by constraining this treatment with information from
+other experimental data.
+
+We assume that the $N$-particle system is initially in its ground state,
+
+$$
+\left|\Psi_{i}\right\rangle=\left|\Psi_{0}^{N}\right\rangle
+$$
+
+and makes a transition to a final $N$-particle eigenstate
+
+$$
+\left|\Psi_{f}\right\rangle=a_{p}^{\dagger}\left|\Psi_{n}^{N-1}\right\rangle
+$$
+
+composed of a bound $(N-1)$-particle eigenstate, $\left|\Psi_{n}^{N-1}\right\rangle$, and a particle with momentum $\boldsymbol{p}$.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Particle emission}
+\begin{small}
+{\scriptsize
+For simplicity we consider the transition matrix elements for a scalar external probe
+
+$$
+\rho(\boldsymbol{q})=\sum_{j=1}^{N} \exp \left(i \boldsymbol{q} \cdot \boldsymbol{r}_{j}\right)
+$$
+
+which transfers momentum $\boldsymbol{q}$ to a particle. Suppressing other possible sp quantum numbers, like e.g. spin, the second-quantized form of this operator is given by
+
+$$
+\hat{\rho}(\boldsymbol{q})=\sum_{\boldsymbol{p}, \boldsymbol{p}^{\prime}}\left\langle\boldsymbol{p}|\exp (i \boldsymbol{q} \cdot \boldsymbol{r})| \boldsymbol{p}^{\prime}\right\rangle a_{\boldsymbol{p}}^{\dagger} a_{\boldsymbol{p}^{\prime}}=\sum_{\boldsymbol{p}} a_{\boldsymbol{p}}^{\dagger} a_{\boldsymbol{p}-\boldsymbol{q}}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Transition matrix element}
+\begin{small}
+{\scriptsize
+The transition matrix element now becomes
+
+$$
+\begin{aligned}
+\left\langle\Psi_{f}|\hat{\rho}(\boldsymbol{q})| \Psi_{i}\right\rangle & =\sum_{\boldsymbol{p}^{\prime}}\left\langle\Psi_{n}^{N-1}\left|a_{\boldsymbol{p}} a_{\boldsymbol{p}^{\prime}}^{\dagger} a_{\boldsymbol{p}^{\prime}-\boldsymbol{q}}\right| \Psi_{0}^{N}\right\rangle \\
+& =\sum_{\boldsymbol{p}^{\prime}}\left\langle\Psi_{n}^{N-1}\left|\delta_{\boldsymbol{p}^{\prime}, \boldsymbol{p}} a_{\boldsymbol{p}^{\prime}-\boldsymbol{q}}+a_{\boldsymbol{p}^{\prime}}^{\dagger} a_{\boldsymbol{p}^{\prime}-\boldsymbol{q}} a_{\boldsymbol{p}}\right| \Psi_{0}^{N}\right\rangle \\
+& \approx\left\langle\Psi_{n}^{N-1}\left|a_{\boldsymbol{p}-\boldsymbol{q}}\right| \Psi_{0}^{N}\right\rangle .
+\end{aligned}
+$$
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Impulse approximation}
+\begin{small}
+{\scriptsize
+    
+The last line is obtained in the so-called Impulse Approximation (or
+Sudden Approximation), where it is assumed that the ejected particle
+is the one that has absorbed the momentum from the external
+field. This is a very good approximation whenever the momentum
+$\boldsymbol{p}$ of the ejectile is much larger than typical momenta
+for the particles in the bound states; the neglected term 
+is then very small, as it involves the removal of a particle with
+momentum $\boldsymbol{p}$ from $\left|\Psi_{0}^{N}\right\rangle$.
+
+There is one other assumption in the derivation: the fact that the
+final eigenstate of the $N$-particle system was written in the form of
+a plane-wave state for the ejectile on top of an $(N-1)$-particle
+eigenstate. This is again a good approximation if the ejectile
+momentum is large enough, as can be understood by rewriting the
+Hamiltonian in the $N$-particle system as
+
+$$
+H_{N}=\sum_{i=1}^{N} \frac{\boldsymbol{p}_{i}^{2}}{2 m}+\sum_{i<j=1}^{N} V(i, j)=H_{N-1}+\frac{\boldsymbol{p}_{N}^{2}}{2 m}+\sum_{i=1}^{N-1} V(i, N)
+$$
+
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Final state interaction}
+\begin{small}
+{\scriptsize
+The last term in the above equation represents the Final State Interaction, or
+the interaction between the ejected particle $N$ and the other
+particles $1 \ldots N-1$. If the relative momentum between particle
+$N$ and the others is large enough their mutual interaction can be
+neglected, and $H_{N} \approx H_{N-1}+\boldsymbol{p}_{N}^{2} / 2
+m$. The results above are called the Plane Wave Impulse
+Approximation or PWIA knock-out amplitude, for obvious reasons, and is
+precisely a removal amplitude (in the momentum representation)
+appearing in the Lehmann representation of the sp propagator.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Cross section}
+\begin{small}
+{\scriptsize
+The cross section of the knock-out reaction, where the momentum and
+energy of the ejected particle and the probe are either measured or
+known, is according to Fermi's golden rule proportional to
+
+$$
+d \sigma \sim \sum_{n} \delta\left(\omega+E_{i}-E_{f}\right)\left|\left\langle\Psi_{f}|\hat{\rho}(\boldsymbol{q})| \Psi_{i}\right\rangle\right|^{2}
+$$
+
+where the energy-conserving $\delta$-function contains the energy
+transfer $\omega$ of the probe, and the initial and final energies of
+the system are $E_{i}=E_{0}^{N}$ and
+$E_{f}=E_{n}^{N-1}+\boldsymbol{p}^{2} / 2 m$, respectively. Note that
+the internal state of the residual $N-1$ system is not measured, hence
+the summation over $n$. Defining the missing momentum
+$\boldsymbol{p}_{\text {miss }}$ and missing energy $E_{\text {miss
+}}$ of the knock-out reaction as ${ }^{1}$
+
+$$
+\boldsymbol{p}_{m i s s}=\boldsymbol{p}-\boldsymbol{q}
+$$
+
+and
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+$$
+E_{\text {miss }}=\boldsymbol{p}^{2} / 2 m-\omega=E_{0}^{N}-E_{n}^{N-1},
+$$
+\footnotetext{${ }^{1}$ We will neglect here the recoil of the residual $N-1$ system, i.e. we assume the mass of the $N$ and $N-1$ system to be much heavier than the mass $m$ of the ejected particle.
+}
+respectively, the PWIA knock-out cross section can be rewritten as
+
+$$
+\begin{aligned}
+d \sigma & \sim \sum_{n} \delta\left(E_{\text {miss }}-E_{0}^{N}+E_{n}^{N-1}\right)\left|\left\langle\Psi_{n}^{N-1}\left|a_{\boldsymbol{p}_{\text {miss }}}\right| \Psi_{0}^{N}\right\rangle\right|^{2} \\
+& =S^{h}\left(\boldsymbol{p}_{\text {miss }}, E_{\text {miss }}\right) .
+\end{aligned}
+$$
+
+The PWIA cross section is therefore exactly proportional to the
+diagonal part of the hole spectral function. This is of course only
+true in the PWIA, but when the deviations of the impulse approximation
+and the effects of the final state interaction are under control, it
+is possible to obtain precise experimental information on the hole
+spectral function of the system under study.
+}
+\end{small}
+}
+
+\end{document}
+
+
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Single-particle Green's functions}
+\begin{small}
+{\scriptsize
+
+}
+\end{small}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
