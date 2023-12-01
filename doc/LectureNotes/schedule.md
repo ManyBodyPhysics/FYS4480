@@ -199,14 +199,17 @@ nd Shavitt and Bartlett chapter 4-6
 
 ###  Week 48, November 27-December 1, 2023
 - Topics to be covered
-  - Thursday:
-    - Green's function theory
+  - Thursday:s
+    - Discussion of second midterm
   - Friday:
-    - Green's function theory and summary of course
-- Lecture Material: 
+    - Dyson's equation and perturbative expansions
+    - Summary of course and discussion of final oral exam
+    - Video of lecture at https://youtu.be/ug-vTAU732w
+    - Whiteboard notes at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureNovember30.pdf
+- Lecture Material: Slides for week 48 at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/pub/week48/pdf/slidesweek48.pdf
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/SecondMidterm2023.pdf
 
 
 ###  Week 50, December 19, 2023
-- Final oral exam
+- Final oral exam, schedule via studentweb
 
