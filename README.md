@@ -1,4 +1,4 @@
-# Quantum Mechanics for Many-Particle systems
+# Quantum mechanics for many-particle systems: a computational perspective
 
 This course gives an introduction to the quantum mechanics of
 many-body systems and the methods relevant for many-body
