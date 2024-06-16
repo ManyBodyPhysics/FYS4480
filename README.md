@@ -102,44 +102,44 @@ There are many good textbooks on many-body physics. In addition to to ourn own c
 
 ## Teaching schedule with links to material
 
-###  Week 34, August 21-25
+###  Week 34, August 19-23
 
 - Topics to be covered
   - Thursday: Introduction to many-body physics, notations and definitions
-    - Video of lecture at https://youtu.be/uKku_uAnmRM
+    - Video of lecture at https://youtu.be/
   - Friday: Discussion of notations and important properties in many-body physics
-    - Video of lecture at https://youtu.be/WGy3ybPAayw
+    - Video of lecture at https://youtu.be/
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 
-###  Week 35, August 28-September 1
+###  Week 35, August 26-30
 
 - Topics to be covered
   - Thursday: Fermion state functions and computation of expectation values in first quantization
     - Video of lecture at https://www.youtube.com/watch?v=zG1fy6Wecxo
   - Friday: Introduction of second quantization
-    - Video of lecture at https://youtu.be/3aqZKgA4E4c
+    - Video of lecture at https://youtu.be/
 - Lecture Material at https://manybodyphysics.github.io/FYS4480/doc/pub/secondquant/html/secondquant-bs.html
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek35.pdf
 
-### Week 36, September 4-8
+### Week 36, September 2-6
 
 - Topics to be covered
   - Thursday: Second quantization, operators in second quantization and diagrammatic representation
-  - Video of lecture https://youtu.be/CQQ6DIuw0R8"
+  - Video of lecture https://youtu.be/
   - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember7.pdf
   - Friday: Second quantization and Wick's theorem
-  - Video of lecture at https://youtu.be/agI_pf7-iTY
+  - Video of lecture at https://youtu.be/
   - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember8.pdf  
 - Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4. Sections 3.1-3.3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek36.pdf
 
 
 
-### Week 37, September 11-15 
+### Week 37, September 9-13 
 
 - Topics to be covered
   - Thursday: Wick's theorem
-  - Video of lectue at https://youtu.be/xCbAo4YmXbo
+  - Video of lectue at https://youtu.be/
   - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember14.pdf  
   - Friday: Wrappping up Wick's theorem, Wick's generalized theorem and diagrammatic representation, Particle-hole formalism and definition of new reference state, normalordering of operators
   - Video of lecture at https://youtu.be/S8CFkbbVqVc
@@ -148,7 +148,7 @@ There are many good textbooks on many-body physics. In addition to to ourn own c
 - Lecture Material: These slides, handwritten notes and chapter 3 of Shavitt and Bartlett covers most of the material discussed this week.
 - Third exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek37.pdf
 
-### Week 38, September 18-22
+### Week 38, September 16-20
 
 - Topics to be covered
   - Thursday: Discussion of particle-hole formalism with examples
