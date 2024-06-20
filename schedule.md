@@ -17,7 +17,7 @@
     - Video of lecture TBA https://www.youtube.com/watch?v=zG1fy6Wecxo
   - Friday: Introduction of second quantization
     - Video of lecture TBA https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week35, see either jupyter-notebook or pdf file
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek35.pdf
 
 ### Week 36, September 2-6
