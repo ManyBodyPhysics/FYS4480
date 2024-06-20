@@ -8,7 +8,7 @@
     - Video of lecture TBA https://youtu.be/
   - Friday: Discussion of notations and important properties in many-body physics
     - Video of lecture TBA https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week34, see either jupyter-notebook or pdf file
 
 ###  Week 35, August 26-30
 
