@@ -28,7 +28,7 @@
   - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/LectureSeptember7.pdf
   - Friday: Second quantization and Wick's theorem
   - Video of lecture TBA https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week36, see either jupyter-notebook or pdf file
 - Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek36.pdf
 
 
@@ -40,7 +40,7 @@
   - Video of lectue at https://youtu.be/
   - Friday: Wrappping up Wick's theorem, Wick's generalized theorem and diagrammatic representation, Particle-hole formalism and definition of new reference state, normalordering of operators
   - Video of lecture TBA https://youtu.be/S8CFkbbVqVc
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week37, see either jupyter-notebook or pdf file
 - Third exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek37.pdf
 
 ### Week 38, September 16-20
