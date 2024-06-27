@@ -50,7 +50,7 @@
   - Video of lecture TBA https://youtu.be/
   - Friday: Particle-hole formalism and definition of new reference state, normalordering of operators
   - Video of lecture TBA https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week38, see either jupyter-notebook or pdf file
 - Fourth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek38.pdf
 
 ###  Week 39, September 23-27
@@ -64,6 +64,7 @@
     - Full configuration interaction (FCI) theory
     - Lipkin model as an example of applications of FCI theory
     - Video of lecture TBA https://youtu.be/
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week39, see either jupyter-notebook or pdf file    
 - Fifth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek39.pdf
 
 ### Week 40, September 30-October 4
@@ -75,7 +76,7 @@
   - Friday: 
     - Hartree-Fock theory and stability of equations
     - Video of lecture TBA https://youtu.be
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week40, see either jupyter-notebook or pdf file
 - Sixth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek40.pdf
 
 ### Week 41, October 7-11, 2024
@@ -88,7 +89,7 @@
    - Stability of Hartree-Fock theory and Thouless theorem, continues
    - Video of lecture TBA https://youtu.be
    - Work on first midterm
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week41, see either jupyter-notebook or pdf file
  First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/FirstMidterm2024.pdf
 
 ### Week 42, October 14-18, 2024
@@ -97,8 +98,8 @@
     - The homogeneous electron gas in three dimensions
     - Video of lecture TBA https://youtu.be/
   o Friday:
-    - TBA
-- Lecture Material: TBA
+    - The homogeneous electron gas in three and two and two dimensions
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week42, see either jupyter-notebook or pdf file
 - First midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/FirstMidterm2024.pdf
 
 
@@ -111,7 +112,7 @@
   - Friday:
     - Electron gas in three dimensions and links with density functional theory
     - Video of lecture TBA https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week43, see either jupyter-notebook or pdf file
 - Seventh exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek43.pdf
 
 
@@ -125,7 +126,7 @@
 - Friday: 
     - Many-body perturbation theory, basic equations
     - Video of lecture https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week44, see either jupyter-notebook or pdf file
 - Eight exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek44.pdf
 
 ###  Week 45, November 4-8, 2024
@@ -135,7 +136,7 @@
     - Examples of diagrams and discussion of Pauli violating diagrams
   - Friday:
     - TBA
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week45, see either jupyter-notebook or pdf file
 - Ninth exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek45.pdf
 
 ###  Week 46, November 11-15, 2024
@@ -146,7 +147,7 @@
   - Friday:
     - Time-dependent perturbation theory, definitions of Schroedinger, Heisenberg and interaction picture
     - Video of lecture TBA https://youtu.be
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week46, see either jupyter-notebook or pdf file
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/SecondMidterm2024.pdf
 
 ###  Week 47, November 18-22, 2024
@@ -159,7 +160,7 @@
   - Friday:
     - Green's functions, basic equations
     - Video of lecture TBA https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week47, see either jupyter-notebook or pdf file
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/SecondMidterm2024.pdf
 
 ###  Week 48, November 25-29, 2024
@@ -170,9 +171,8 @@
     - Dyson's equation and perturbative expansions
     - Summary of course and discussion of final oral exam
     - Video of lecture TBA https://youtu.be/
-- Lecture Material: TBA
+- Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week48, see either jupyter-notebook or pdf file
 - Work on second midterm set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/SecondMidterm2024.pdf
-
 
 ###  Week 50, December 16-20, 2024
 - Final oral exam, time to be decided and schedule will be availbale via studentweb
