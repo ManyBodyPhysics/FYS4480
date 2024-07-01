@@ -166,7 +166,7 @@
 ###  Week 48, November 25-29, 2024
 - Topics to be covered
   - Thursday:s
-    - Discussion of second midterm
+    - TBA
   - Friday:
     - Dyson's equation and perturbative expansions
     - Summary of course and discussion of final oral exam
