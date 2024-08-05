@@ -44,9 +44,9 @@ depending on the background and interests of the participants.
 _Recommended textbooks_:
 There are many good textbooks on many-body physics. In addition to to ourn own collection of lecture notes, we will use material from the following  texts
 - Dickhoff and Van Neck at https://www.worldscientific.com/worldscibooks/10.1142/5804#t=aboutBook
-- Negele and Orland at https://www.taylorfrancis.com/books/mono/10.1201/9780429497926/quantum-many-particle-systems-john-negele-henri-orland
 - Szabo and Ostlund at for example https://www.amazon.com/Modern-Quantum-Chemistry-Introduction-Electronic/dp/0486691861?asin=0486691861&revisionId=&format=4&depth=1
 - Shavitt and Bartlett at https://www.cambridge.org/core/books/manybody-methods-in-chemistry-and-physics/D12027E4DAF75CE8214671D842C6B80C
+- Carsten Ulrich, Time dependent Density Functional Theory, gives a good link with other for example Hartree-Fock theory
 
 ## Topics (not all will be discussed)
 
