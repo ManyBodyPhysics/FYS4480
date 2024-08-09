@@ -31,6 +31,7 @@ depending on the background and interests of the participants.
 * _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ470
 * _Name_: Ruben Guevara
 * _Email_: ruben.guevara@fys.uio.no
+* _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ375
 
 ## Practicalities
 
