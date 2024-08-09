@@ -1,5 +1,5 @@
 # Quantum mechanics for many-particle systems
-## Teaching schedule with links to material (Note that material will be added during July 2024)
+## Teaching schedule with links to material (Note that material will be added during July and August 2024)
 
 ###  Week 34, August 19-23
 
