@@ -1,0 +1,1079 @@
+TITLE: January 22-26,2024: Measurements, spectral decomposition and Hamiltonians
+AUTHOR: Morten Hjorth-Jensen {copyright, 1999-present|CC BY-NC} at Department of Physics, University of Oslo, Norway & Department of Physics and Astronomy and Facility for Rare Isotope Beams, Michigan State University, USA
+DATE: today
+
+
+
+!split
+===== Summary from last week and plans for this week =====
+
+!bblock  Last week we:
+o defined the state vector and the associated notation
+o introduced the inner product and showed how to calculate it in an orthonormal basis
+o introduced outer products and projection operators
+o introduced tensor products and showed how to construct state vectors for multiple qubits
+!eblock
+Most of the material can be found in Scherer, Mathematics of Quantum Computations, chapter 2
+!split
+===== This week's plans =====
+!bblock  We will repeat some of these topics today and discuss also 
+o tensor products of Hilbert Spaces and definition of Computational Basis, partly repetition from last week
+o the idea of wavefunction collapse as a result of measurement
+o Spectral Decomposition, Measurements and Density matrices 
+o Simple Hamiltonians and other operators
+o First exercise set and discussions of coding examples
+o "Video of lecture":"https://youtu.be/E1dhiboQHis"
+o "Whiteboard notes":"https://github.com/CompPhysics/QuantumComputingMachineLearning/blob/gh-pages/doc/HandWrittenNotes/2024/NotesJanuary24.pdf"
+!eblock
+
+* _Reading recommendation_: Scherer, Mathematics of Quantum Computations, chapter 3.1-3.3 and Hundt, Quantum Computing for Programmers, chapter  2.1-2.5. Hundt's text is relevant for the programming part where we build from scratch the ingredients we will need.
+
+
+!split
+===== Links to code examples =====
+
+The code examples presented by Keran are at
+URL:"https://github.com/CompPhysics/QuantumComputingMachineLearning/blob/gh-pages/doc/pub/week2/ipynb/codeskeran.ipynb"
+
+
+!split
+===== Measurements =====
+
+The probability of a measurement on a quantum system giving a certain
+result is determined by the weight of the relevant basis state in the
+state vector. After the measurement, the system is in a state that
+corresponds to the result of the measurement. The operators and
+gates discussed below are examples of operations we can perform on
+specific states.
+
+
+We  consider the state
+!bt
+\[
+\vert \psi\rangle = \alpha \vert 0 \rangle +\beta \vert 1 \rangle
+\]
+!et
+
+!split
+===== Properties of a measurement =====
+
+o A measurement can yield only one of the above states, either $\vert 0\rangle$ or $\vert 1\rangle$.
+o The probability of a measurement resulting in $\vert 0\rangle$ is $\alpha^*\alpha = \vert \alpha \vert^2$.
+o The probability of a measurement resulting in $\vert 1\rangle$ is $\beta^*\beta = \vert \beta \vert^2$.
+o And we note that the sum of the outcomes gives $\alpha^*\alpha+\beta^*\beta=1$ since the two states are normalized.
+
+After the measurement, the state of the system is the state associated with the result of the measurement.
+
+We have already encountered the projection operators $P$ and $Q$. Let
+us now look at other types of operations we can make on qubit states.
+
+
+
+
+!split
+===== Entanglement  ===== 
+
+
+In order to study entanglement and why it is so important for quantum
+computing, we need to introduce some basic measures and useful
+quantities.  These quantities are the spectral decomposition of
+hermitian operators, how these are then used to define measurements
+and how we can define so-called density operators (matrices). These
+are all quantities which will become very useful when we discuss
+entanglement and in particular how to quantify it. In order to define
+these quantities we need first to remind ourselves about some basic linear
+algebra properties of hermitian operators and matrices.
+
+!split
+===== Basic properties of hermitian operators =====
+
+The operators we typically encounter in quantum mechanical studies are
+o Hermitian (self-adjoint) meaning that for example the elements of a Hermitian matrix $\bm{U}$ obey $u_{ij}=u_{ji}^*$.
+o Unitary $\bm{U}\bm{U}^{\dagger}=\bm{U}^{\dagger}\bm{U}=\bm{I}$, where $\bm{I}$ is the unit matrix
+o The oparator $\bm{U}$ and its self-adjoint commute (often labeled as normal operators), that is  $[\bm{U},\bm{U}^{\dagger}]=0$. An operator is _normal_ if and only if it is diagonalizable. A Hermitian operator is normal.
+
+Unitary operators in a Hilbert space preserve the norm and orthogonality. If $\bm{U}$ is a unitary operator acting on a state $\vert \psi_j\rangle$, the action of
+
+!bt
+\[
+\vert \phi_i\rangle=\bm{U}\vert \psi_j\rangle,
+\]
+!et
+preserves both the norm and orthogonality, that is $\langle \phi_i \vert \phi_j\rangle=\langle \psi_i \vert \psi_j\rangle=\delta_{ij}$, as discussed earlier.
+
+!split
+===== The Pauli matrices again =====
+
+As example, consider the Pauli matrix $\sigma_x$. We have already seen that this matrix is a unitary matrix. Consider then an orthogonal and normalized basis $\vert 0\rangle^{\dagger} =\begin{bmatrix} 1 &  0\end{bmatrix}$ and $\vert 1\rangle^{\dagger} =\begin{bmatrix} 0 &  1\end{bmatrix}$ and a state which is a linear superposition of these two basis states
+
+!bt
+\[
+\vert \psi_a\rangle=\alpha_0\vert 0\rangle +\alpha_1\vert 1\rangle.
+\]
+!et
+
+A new state $\vert \psi_b\rangle$ is given by
+!bt
+\[
+\vert \psi_b\rangle=\sigma_x\vert \psi_a\rangle=\alpha_0\vert 1\rangle +\alpha_1\vert 0\rangle.
+\]
+!et
+
+!split
+===== Spectral Decomposition =====
+
+An important technicality which we will use in the discussion of
+density matrices, entanglement, quantum entropies and other properties
+is the so-called spectral decomposition of an operator.
+
+Let $\vert \psi\rangle$ be a vector in a Hilbert space of dimension $n$ and a hermitian operator $\bm{A}$ defined in this
+space. Assume $\vert \psi\rangle$ is an eigenvector of $\bm{A}$ with eigenvalue $\lambda$, that is
+
+!bt
+\[
+\bm{A}\vert \psi\rangle = \lambda\vert \psi\rangle = \lambda \bm{I}\vert \psi \rangle,
+\]
+!et
+where we used $\bm{I}\vert \psi \rangle = 1 \vert \psi \rangle$.
+Subtracting the right hand side from the left hand side gives
+!bt
+\[
+\left[\bm{A}-\lambda \bm{I}\right]\vert \psi \rangle=0,
+\]
+!et
+
+which has a nontrivial solution only if the determinant
+$\mathrm{det}(\bm{A}-\lambda\bm{I})=0$.
+
+!split
+===== ONB again and again =====
+
+We define now an orthonormal basis $\vert i \rangle =\{\vert 0
+\rangle, \vert 1\rangle, \dots, \vert n-1\rangle$ in the same Hilbert
+space. We will assume that this basis is an eigenbasis of $\bm{A}$ with eigenvalues $\lambda_i$
+
+We expand a new vector using this eigenbasis of $\bm{A}$
+!bt
+\[
+\vert \psi \rangle = \sum_{i=0}^{n-1}\alpha_i\vert i\rangle,
+\]
+!et
+with the normalization condition $\sum_{i=0}^{n-1}\vert \alpha_i\vert^2$.
+Acting with $\bm{A}$ on this new state results in
+
+!bt
+\[
+\bm{A}\vert \psi \rangle = \sum_{i=0}^{n-1}\alpha_i\bm{A}\vert i\rangle=\sum_{i=0}^{n-1}\alpha_i\lambda_i\vert i\rangle.
+\]
+!et
+
+!split
+===== Projection operators =====
+
+If we then use that the outer product of any state with itself defines a projection operator we have the projection operators
+!bt
+\[
+\bm{P}_{\psi} = \vert \psi\rangle\langle \psi\vert,
+\]
+!et
+and
+!bt
+\[
+\bm{P}_{j} = \vert j\rangle\langle j\vert,
+\]
+!et
+we have that 
+!bt
+\[
+\bm{P}_{j}\vert \psi\rangle=\vert j\rangle\langle j\vert\sum_{i=0}^{n-1}\alpha_i\vert i\rangle=\sum_{i=0}^{n-1}\alpha_i\vert j\rangle\langle j\vert i\rangle.
+\]
+!et
+
+!split
+===== Further manipulations =====
+
+This results in
+!bt
+\[
+\bm{P}_{j}\vert \psi\rangle=\alpha_j\vert j\rangle,
+\]
+!et
+since $\langle j\vert i\rangle$.
+With the last equation we can rewrite
+!bt
+\[
+\bm{A}\vert \psi \rangle = \sum_{i=0}^{n-1}\alpha_i\lambda_i\vert i\rangle=\sum_{i=0}^{n-1}\lambda_i\bm{P}_i\vert \psi\rangle,
+\]
+!et
+from which we conclude that
+!bt
+\[
+\bm{A}=\sum_{i=0}^{n-1}\lambda_i\bm{P}_i.
+\]
+!et
+
+!split
+===== Spectral decomposition =====
+
+This is the spectral decomposition of a hermitian and normal
+operator. It is true for any state and it is independent of the
+basis. The spectral decomposition can in turn be used to exhaustively
+specify a measurement, as we will see in the next section.
+
+As an example, consider two states $\vert \psi_a\rangle$ and $\vert
+\psi_b\rangle$ that are eigenstates of $\bm{A}$ with eigenvalues
+$\lambda_a$ and $\lambda_b$, respectively. In the diagonalization
+process we have obtained the coefficients $\alpha_0$, $\alpha_1$,
+$\beta_0$ and $\beta_1$ using an expansion in terms of the orthogonal
+basis $\vert 0\rangle$ and $\vert 1\rangle$.
+
+!split
+===== Explicit results =====
+
+We have then
+
+!bt
+\[
+\vert \psi_a\rangle = \alpha_0\vert 0\rangle+\alpha_1\vert 1\rangle,
+\]
+!et
+and
+!bt
+\[
+\vert \psi_b\rangle = \beta_0\vert 0\rangle+\beta_1\vert 1\rangle,
+\]
+!et
+with corresponding projection operators
+
+!bt
+\[
+\bm{P}_a=\vert \psi_a\rangle \langle \psi_a\vert = \begin{bmatrix} \vert \alpha_0\vert^2 &\alpha_0\alpha_1^* \\
+                                                                   \alpha_1\alpha_0^* & \vert \alpha_1\vert^* \end{bmatrix},
+\]    
+!et
+and
+!bt
+\[
+\bm{P}_b=\vert \psi_b\rangle \langle \psi_b\vert = \begin{bmatrix} \vert \beta_0\vert^2 &\beta_0\beta_1^* \\
+                                                                   \beta_1\beta_0^* & \vert \beta_1\vert^* \end{bmatrix}.
+\]
+!et
+
+!split
+===== The spectral decomposition =====
+The results from the previous slide gives us
+the following spectral decomposition of $\bm{A}$
+!bt
+\[
+\bm{A}=\lambda_a \vert \psi_a\rangle \langle \psi_a\vert+\lambda_b \vert \psi_b\rangle \langle \psi_b\vert,
+\]
+!et
+which written out in all its details reads
+!bt
+\[
+\bm{A}=\lambda_a\begin{bmatrix} \vert \alpha_0\vert^2 &\alpha_0\alpha_1^* \\
+                                                                   \alpha_1\alpha_0^* & \vert \alpha_1\vert^* \end{bmatrix} +\lambda_b\begin{bmatrix} \vert \beta_0\vert^2 &\beta_0\beta_1^* \\
+                                                                   \beta_1\beta_0^* & \vert \beta_1\vert^* \end{bmatrix}.
+\]
+!et
+
+!split
+===== Measurements =====
+
+Armed with the spectral decomposition, we are now ready to discuss how
+to compute measurements of observables.  When we make a measurement,
+quantum mechanics postulates that mutually exclusive measurement
+outcomes correspond to orthogonal projection operators.
+
+We assume now we can contruct a series of such orthogonal operators based on $\vert i \rangle \in \{\vert 0\rangle, \vert 1\rangle,\dots, \vert n-1\rangle$ computational basis states. These projection operators $\bm{P}_0,\bm{P}_1,\dots,\bm{P}_{n-1}$ are all idempotent and sum to one
+!bt
+\[
+\sum_{i=0}^{n-1}\bm{P}_i=\bm{I}.
+\]
+!et
+
+!split
+===== Qubit example =====
+
+As an example, consider the basis of two qubits $\vert 0\rangle$ and $\vert 1\rangle$ with the correspong sum
+!bt
+\[
+\sum_{i=0}^{1}\bm{P}_i=\begin{bmatrix} 1 & 0 \\ 0 & 1\end{bmatrix}.
+\]
+!et
+Based on the spectral decomposition discussed above, we can define the probability of eigenvalue $\lambda_i$ as
+!bt
+\[
+\mathrm{Prob}(\lambda_i) = \vert \bm{P}_i\vert \psi\rangle\vert^2,
+\]
+!et
+where $\vert \psi_a\rangle$ is a quantum state representing the system prior to a specific measurement.
+
+!split
+===== Total probability =====
+
+We can rewrite this as 
+!bt
+\[
+\mathrm{Prob}(\lambda_i) = \langle \psi\vert \bm{P}_i^{\dagger}\bm{P}_i\vert \psi\rangle =\langle \psi\vert \bm{P}_i\vert \psi\rangle.
+\]
+!et
+The total probability for all measurements is the sum overt all probabilities
+!bt
+\[
+\sum_{i=0}^{n-1}\mathrm{Prob}(\lambda_i)=1.
+\]
+!et
+We can in turn define the post-measurement normalized pure quantum state as, for the specific outcome $\lambda_i$, as
+!bt
+\[
+\vert \psi'\rangle = \frac{\bm{P}_i\vert \psi\rangle}{\sqrt{\langle \psi \vert \bm{P}_i\vert \psi\rangle}}. 
+\]
+!et
+
+
+!split
+===== Binary example system =====
+
+As an example, consider the binary system states $\vert 0\rangle$ and $\vert 1\rangle$ with corresponding projection operators
+!bt
+\[
+\bm{P}_0 =\vert 0 \rangle \langle 0\vert,
+\]
+!et
+and 
+!bt
+\[
+\bm{P}_1 =\vert 1 \rangle \langle 1\vert,
+\]
+!et
+with the properties
+
+!bt
+\[
+\sum_{i=0}^1\bm{P}_i^{\dagger}\bm{P}_1=\bm{I},
+\]
+!et
+
+!bt
+\[
+\bm{P}_0^{\dagger}\bm{P}_0=\bm{P}_0^2=\bm{P}_0,
+\]
+!et
+and
+!bt
+\[
+\bm{P}_1^{\dagger}\bm{P}_1=\bm{P}_1^2=\bm{P}_1.
+\]
+!et
+
+!split
+===== Superposition state =====
+
+Assume thereafter that we have a state $\vert \psi\rangle$ which is a superposition of the above two qubit states
+!bt
+\[
+\vert \psi \rangle = \alpha\vert 0 \rangle + \beta \vert 1\rangle.
+\]
+!et
+The probability of finding either $\vert 0\rangle$ or $\vert 1\rangle$ is then
+!bt
+\[
+\bm{P}_{\psi(0)}=\langle \psi\vert \bm{P}_0^{\dagger}\bm{P}_0\vert \psi\rangle=\vert \alpha\vert^2,
+\]
+!et
+and similarly we have 
+!bt
+\[
+\bm{P}_{\psi(1)}=\langle \psi\vert \bm{P}_1^{\dagger}\bm{P}_1\vert \psi\rangle=\vert \beta\vert^2.
+\]
+!et
+!split
+===== More derivations =====
+
+If we set 
+!bt
+\[
+\vert \psi \rangle = \frac{1}{\sqrt{2}}\left(\vert 0 \rangle + \vert 1\rangle\right),
+\]
+!et
+we have $\vert \alpha\vert^2=\vert \beta\vert^2=1/2$. In general for this system we have
+!bt
+\[
+\vert \psi'_0\rangle = \frac{\bm{P}_0\vert \psi\rangle}{\sqrt{\langle \psi \vert \bm{P}_0\vert \psi\rangle}}=\frac{\alpha}{\vert \alpha\vert}\vert 0 \rangle,
+\]
+!et
+and
+!bt
+\[
+\vert \psi'_1\rangle = \frac{\bm{P}_1\vert \psi\rangle}{\sqrt{\langle \psi \vert \bm{P}_1\vert \psi\rangle}}=\frac{\beta}{\vert \beta\vert}\vert 1 \rangle. 
+\]
+!et
+
+!split
+===== Final result =====
+In general we have that 
+!bt
+\[
+\bm{P}_{\psi(x)}=\langle \psi\vert \bm{P}_x^{\dagger}\bm{P}_x\vert \psi\rangle,,
+\]
+!et
+which we can rewrite as
+!bt
+\[
+\mathrm{Prob}(\psi(x))=\mathrm{Tr}\left[\bm{P}_x^{\dagger}\bm{P}_x\vert \psi\rangle\langle \psi\vert\right].
+\]
+!et
+
+!split
+===== Example =====
+
+The last equation can be understood better through the following example with a state $\vert \psi\rangle$
+
+!bt
+\[
+\vert \psi \rangle = \alpha \vert 0\rangle+\beta \vert 1\rangle,
+\]
+!et
+which results in a projection operator
+!bt
+\[
+\vert \psi \rangle\langle \psi\vert = \begin{bmatrix} \vert \alpha \vert^2 & \alpha\beta^* \\ \alpha^*\beta & \vert\beta\vert^2\end{bmatrix}.
+\]
+!et
+!split
+===== Computing matrix products =====
+We have that
+!bt
+\[
+\bm{P}_0^{\dagger}\bm{P}_0=\bm{P}_0=\begin{bmatrix} 1 & 0 \\ 0 & 0\end{bmatrix},
+\]
+!et
+and computing the matrix product $\bm{P}_0\vert\psi\rangle\langle \psi\vert$ gives
+!bt
+\[
+\bm{P}_0\vert\psi\rangle\langle \psi\vert=\begin{bmatrix} 1 & 0 \\ 0 & 0\end{bmatrix}\begin{bmatrix} \vert \alpha \vert^2 & \alpha\beta^* \\ \alpha^*\beta & \vert\beta\vert^2\end{bmatrix}=\begin{bmatrix} \vert \alpha \vert^2 & \alpha\beta^* \\ 0 & 0\end{bmatrix},
+\]
+!et
+and taking the trace of this matrix, that is computing
+!bt
+\[
+\mathrm{Prob}(\psi(0))=\mathrm{Tr}\left[\bm{P}_0^{\dagger}\bm{P}_0\vert \psi\rangle\langle \psi\vert\right]=\vert \alpha\vert^2,
+\]
+!et
+we obtain the same results as the one we had earlier by computing
+the probabliblity for $0$ given by the expression
+!bt
+\[
+\bm{P}_{\psi(0)}=\langle \psi\vert \bm{P}_0^{\dagger}\bm{P}_0\vert \psi\rangle=\vert \alpha\vert^2.
+\]
+!et
+
+!split
+===== Outcome probability =====
+
+It is straight forward to show that
+!bt
+\[
+\mathrm{Prob}(\psi(1))=\mathrm{Tr}\left[\bm{P}_1^{\dagger}\bm{P}_1\vert \psi\rangle\langle \psi\vert\right]=\vert \beta\vert^2,
+\]
+!et
+which we also could have obtained by computing
+!bt
+\[
+\bm{P}_{\psi(1)}=\langle \psi\vert \bm{P}_1^{\dagger}\bm{P}_1\vert \psi\rangle=\vert \beta\vert^2.
+\]
+!et
+
+We can now extend these expressions to the complete ensemble of measurements. Using the spectral decomposition we have that the probability of an outcome $p(x)$ is
+!bt
+\[
+p(x)=\sum_{i=0}^{n-1}p_i\bm{P}_{\psi_i(x)},
+\]
+!et
+where $p_i$ are the probabilities of a specific outcome.  Add later a digression on marginal probabilities.
+
+With these prerequisites we are now ready to introduce the density  matrices, or density operators.
+
+!split
+===== Density matrices/operators =====
+
+The last equation can be rewritten as 
+
+!bt
+\[
+p(x)=\sum_{i=0}^{n-1}p_i\bm{P}_{\psi_i(x)}=\sum_{i=0}^{n-1}p_i\mathrm{Tr}\left[\bm{P}_x^{\dagger}\bm{P}_x\vert \psi_i\rangle\langle \psi_i\vert\right],
+\]
+!et
+and we define the _density matrix/operator_ as
+!bt
+\[
+\rho=\sum_{i=0}^{n-1}p_i\vert \psi_i\rangle\langle \psi_i\vert,
+\]
+!et
+we can rewrite the first equation above as 
+!bt
+\[
+p(x)=\mathrm{Tr}\left[\bm{P}_x^{\dagger}\bm{P}_x\rho\right].
+\]
+!et
+If we can define the state of a system in terms of the density matrix, the probability of a specific outcome is then given by
+!bt
+\[
+p(x)_{\rho}=\mathrm{Tr}\left[\bm{P}_x^{\dagger}\bm{P}_x\rho\right].
+\]
+!et
+
+!split
+===== Properties of density matrices =====
+
+A density matrix in a Hilbert space with $n$ states has the following properties (which we state without proof)
+o There exists a probability $p_i\geq 0$ with $\sum_ip_i=1$,
+o There exists an orthonormal basis $\psi_i$ such that we can define $\rho=\sum_ip_i\vert\psi_i\rangle\langle \psi_i\vert$,
+o We have $0 \leq \rho^2\leq 1$ and
+o The norm $\vert\vert \rho \vert\vert_2\leq 1$.
+
+With the density matrix we can also define the state the system collapses to after a measurement, namely
+
+!bt
+\[
+\rho'_x=\frac{\bm{P}_x\rho\bm{P}_x^{\dagger}}{\mathrm{Tr}[\bm{P}_x^{\dagger}\bm{P}_x\rho]}.
+\]
+!et
+
+
+!split
+===== Representation of states and Hamiltonians =====
+
+
+Before we proceed we need several other definitions.  Throughout these
+lectures we will assume that the interacting part of the Hamiltonian
+can be approximated by a two-body interaction.  This means that our
+Hamiltonian can be written as the sum of a onebody part, which
+includes kinetic energy and an eventual external field, and a twobody
+interaction
+
+
+
+
+!bt
+\begin{equation}
+    \hat{H} = \hat{H}_0 + \hat{H}_I 
+    = \sum_{i=1}^N \hat{h}_0(x_i) + \sum_{i < j}^N \hat{v}(r_{ij}),
+\end{equation}
+!et
+with the onebody part 
+!bt
+\begin{equation}
+  H_0=\sum_{i=1}^N \hat{h}_0(x_i).
+label{hinuclei}
+\end{equation}
+!et
+
+!split
+===== Typical onebody Hamiltonians =====
+
+The onebody part $u_{\mathrm{ext}}(x_i)$ is normally approximated by a
+harmonic oscillator potential or the Coulomb interaction an electron
+feels from the nucleus. However, other potentials are fully possible,
+such as one derived from the self-consistent solution of the
+Hartree-Fock equations or density functional theories.
+
+
+!split
+===== Symmetries =====
+Our Hamiltonian is invariant under the permutation (interchange) of
+two particles.  Since we deal with fermions however, the total wave
+function is antisymmetric.  Let $\hat{P}$ be an operator which
+interchanges two particles.  Due to the symmetries we have ascribed to
+our Hamiltonian, this operator commutes with the total Hamiltonian,
+
+!bt 
+\[
+[\hat{H},\hat{P}] = 0,
+ \]
+!et
+meaning that $\Psi_{\lambda}(x_1, x_2, \dots , x_N)$ is an eigenfunction of 
+$\hat{P}$ as well, that is
+!bt 
+\[
+\hat{P}_{ij}\Psi_{\lambda}(x_1, x_2, \dots,x_i,\dots,x_j,\dots,x_N)=
+\beta\Psi_{\lambda}(x_1, x_2, \dots,x_i,\dots,x_j,\dots,x_N),
+\]
+!et
+where $\beta$ is the eigenvalue of $\hat{P}$. We have introduced the suffix $ij$ in order to indicate that we permute particles $i$ and $j$. The variable $N$ refers to the number of particles.
+The Pauli principle tells us that the total wave function for a system of fermions
+has to be antisymmetric, resulting in the eigenvalue $\beta = -1$.   The variable $N$ represents the number of particles.
+
+!split
+===== Fermions =====
+If we deal with fermions, we assume that  we can approximate the exact eigenfunction with a Slater determinant
+!bt
+\begin{equation}
+   \Phi(x_1, x_2,\dots ,x_N,\alpha,\beta,\dots, \sigma)=\frac{1}{\sqrt{N!}}
+\left| \begin{array}{ccccc} \psi_{\alpha}(x_1)& \psi_{\alpha}(x_2)& \dots & \dots & \psi_{\alpha}(x_N)\\
+                            \psi_{\beta}(x_1)&\psi_{\beta}(x_2)& \dots & \dots & \psi_{\beta}(x_N)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \psi_{\sigma}(x_1)&\psi_{\sigma}(x_2)& \dots & \dots & \psi_{\sigma}(x_N)\end{array} \right|, label{eq:HartreeFockDet}
+\end{equation}
+!et
+where  $x_i$  stand for the coordinates and spin values of a particle $i$ and $\alpha,\beta,\dots, \gamma$ 
+are quantum numbers needed to describe remaining quantum numbers.  
+This ansatz for the computational basis is often based on single-particle functions which are eigenfunctions of a part of the total Hamiltonian. Most frequently, these single-particle basis functions are eigenpairs of the non-interacting part of the Hamiltonian (normally defined by kinetic and external potential operators).
+
+!split
+===== Ansatz for states =====
+
+
+For Fermions (identical and indistinguishable particles) we will 
+form an ansatz for a given state in terms of so-called Slater determinants determined
+by a chosen basis of single-particle functions. 
+
+For a given $n\times n$ matrix $\mathbf{A}$ we can write its determinant
+!bt
+\[
+   det(\mathbf{A})=|\mathbf{A}|=
+\left| \begin{array}{ccccc} a_{11}& a_{12}& \dots & \dots & a_{1n}\\
+                            a_{21}&a_{22}& \dots & \dots & a_{2n}\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                            a_{n1}& a_{n2}& \dots & \dots & a_{nn}\end{array} \right|,
+\]
+!et
+in a more compact form as 
+!bt
+\[
+|\mathbf{A}|= \sum_{i=1}^{n!}(-1)^{p_i}\hat{P}_i a_{11}a_{22}\dots a_{nn},
+\]
+!et
+where $\hat{P}_i$ is a permutation operator which permutes the column indices $1,2,3,\dots,n$
+and the sum runs over all $n!$ permutations.  The quantity $p_i$ represents the number of transpositions of column indices that are needed in order to bring a given permutation back to its initial ordering, in our case given by $a_{11}a_{22}\dots a_{nn}$ here.
+
+
+!split
+===== Simple fermionic example =====
+A simple $2\times 2$ determinant illustrates this. We have
+!bt
+\[
+   det(\mathbf{A})=
+\left| \begin{array}{cc} a_{11}& a_{12}\\
+                            a_{21}&a_{22}\end{array} \right|= (-1)^0a_{11}a_{22}+(-1)^1a_{12}a_{21},
+\]
+!et
+
+where in the last term we have interchanged the column indices $1$ and
+$2$. The natural ordering we have chosen is $a_{11}a_{22}$.
+
+
+
+!split
+===== Using an ONB =====
+We define our new single-particle basis (this is a normal approach for
+Hartree-Fock theory) by performing a unitary transformation on our
+previous basis (labelled with greek indices) as
+!bt
+\[
+\vert \psi\rangle_i  = \sum_{j} u_{ij}\vert \phi\rangle_j. 
+\]
+!et
+If the basis has infinitely many solutions, we need to truncate the
+above sum.  We assume that the basis $\vert\phi\rangle_j$ is
+orthogonal.
+
+If we stay with determinants, a feature which will become useful is to
+expand a new determinant in terms of a previous one that is defined by
+a given set of single-particle state functions.  As discussed above,
+we can define a new basis that is a linear combination of another
+basis (assumed to be orthogonal and normalized).  This means that if
+the coefficients $u_{ij}$ belong to a unitary or orthogonal
+orthogonality is preserved, as discussed above.
+
+This propertry is extremely useful when we build up a basis of many-body Stater determinant based states. 
+
+
+!split
+===== Simple  Hamiltonian models =====
+
+
+
+In order to study get started with coding, we will study two simple Hamiltonian systems, one which we can use for a single qubit systems and one which has as basis functions a two-qubit system. These two simple Hamiltonians exhibit also something which is called level crossing, a feature which we will use in later studies of entanglement.
+
+We study first a simple two-level system. Thereafter we
+extend our model to a four-level system which can be
+interpreted as composed of two separate (not necesseraly identical)
+subsystems.
+
+We let our hamiltonian depend linearly on a strength parameter $z$
+
+!bt
+\[
+       H=H_0+\lambda H_\mathrm{I},
+\]
+!et
+
+with $\lambda \in [0,1]$, where the limits $\lambda=0$ and $\lambda=1$
+represent the non-interacting (or unperturbed) and fully interacting
+system, respectively.
+
+
+!split
+===== Defining a computational basis =====
+The model is an eigenvalue problem with only
+two available states, which we label $\vert 0\rangle$ and $\vert
+1\rangle$, respectively. Below we will let state $\vert 0 \rangle$
+represent the lowest state (often referred to as model-space state)
+with its pertinent eigenvalue and eigenvector whereas state $\vert 1\rangle$ represents the eigenvalue of
+the excluded space.  The non-interacting solutions to our problem are
+
+!bt
+\begin{equation}
+       H_0\vert 0 \rangle =\epsilon_0\vert 0 \rangle,
+\end{equation}
+!et
+and
+!bt
+\begin{equation}
+       H_0\vert 1\rangle =\epsilon_1\vert 1\rangle,
+\end{equation}
+!et
+
+with $\epsilon_0 < \epsilon_1$. We label the off-diagonal matrix
+elements $X$, while $X_0=\langle 0 \vert H_I\vert 0 \rangle$ and
+$X_1=\langle 1 \vert H_1\vert 1 \rangle$.
+
+
+
+!split
+===== Analytical solutions  =====
+The solution to the  eigenvalue
+problem
+
+!bt
+label{eq:twolevelH}
+\begin{equation}
+\left(\begin{array}{cc}\epsilon_0+\lambda X_0 &\lambda X \\
+\lambda X &\epsilon_1+\lambda X_1 \end{array}\right)
+\end{equation}
+!et
+yields
+!bt
+\begin{eqnarray}
+     label{eq:exact}
+     E(\lambda)=&\frac{1}{2}\left\{\epsilon_0 +\epsilon_1 +\lambda X_0
+     +\lambda X_1 \pm \left(
+     \epsilon_1 -\epsilon_0 +\lambda X_1-\lambda X_0\right) \right. \\ \nonumber
+     & \left. \times\sqrt{1+\frac{4\lambda^2X^2}{\left(
+     \epsilon_1 -\epsilon_0 +\lambda X_1-\lambda X_0\right)^2}}
+     \right\}.
+\end{eqnarray}
+!et
+
+!split
+===== Numerical examples =====
+
+_For this part we recommend using the jupyter-notebook_.
+
+In the results below we set the parameters $\epsilon_0=0$,
+$\epsilon_1=4$, $X_0=-X_1=3$ and $X=0.2$.  This eigenvalue problem can
+easily be rewritten in terms of the standard Pauli matrices.  The
+non-interacting solutions represent our computational basis.
+Pertinent to our choice of parameters, is that at $\lambda\geq 2/3$,
+the lowest eigenstate is dominated by $\vert 1\rangle$ while the upper
+is $\vert 0 \rangle$. At $\lambda=1$ the $\vert 0 \rangle$ mixing of
+the lowest eigenvalue is $1\%$ while for $\lambda\leq 2/3$ we have a
+$\vert 0 \rangle$ component of more than $90\%$.  The character of the
+eigenvectors has therefore been interchanged when passing $z=2/3$. The
+value of the parameter $X$ represents the strength of the coupling
+between the model space and the excluded space.  The following code
+computes and plots the eigenvalues.
+
+!bc pycod
+%matplotlib inline
+
+from  matplotlib import pyplot as plt
+import numpy as np
+dim = 2
+#Setting up a tridiagonal matrix and finding eigenvectors and eigenvalues
+Hamiltonian = np.zeros((dim,dim))
+#number of lambda values
+n = 100
+lmbd = np.linspace(0.,1.0,n)
+e0 = 0.0
+e1 = 4.0
+X = 0.20
+Xp = 3.0
+Eigenvalue = np.zeros((dim,n))
+for i in range(n): 
+    Hamiltonian[0,0] = lmbd[i]*Xp+e0
+    Hamiltonian[0,1] = lmbd[i]*X
+    Hamiltonian[1,0] = Hamiltonian[0,1]
+    Hamiltonian[1,1] = e1+lmbd[i]*(-Xp)
+    # diagonalize and obtain eigenvalues, not necessarily sorted
+    EigValues, EigVectors = np.linalg.eig(Hamiltonian)
+    # sort eigenvectors and eigenvalues
+    permute = EigValues.argsort()
+    EigValues = EigValues[permute]
+    EigVectors = EigVectors[:,permute]
+    Eigenvalue[0,i] = EigValues[0]
+    Eigenvalue[1,i] = EigValues[1]
+plt.plot(lmbd, Eigenvalue[0,:] ,'b-',lmbd, Eigenvalue[1,:],'g-',)
+plt.xlabel('$\lambda$')
+plt.ylabel('Eigenvalues')
+plt.show()
+!ec
+
+
+This model exhibits a simple level crossing where the
+composition of the final interacting states change character as we
+gradually switch on the interaction.
+
+
+
+We extend the simple two-level system to a four level
+system. This system can be thought of as composed of two subsystems
+$A$ and $B$. Each subsystem has computational basis states
+
+!bt
+\[
+\vert 0\rangle_{\mathrm{A,B}}=\begin{bmatrix} 1 & 0\end{bmatrix}^T \hspace{1cm} \vert 1\rangle_{\mathrm{A,B}}=\begin{bmatrix} 0 & 1\end{bmatrix}^T.
+\]
+!et
+The subsystems could represent single particles or composite many-particle systems of a given symmetry.
+This leads to the many-body computational basis states
+
+!bt
+\[
+\vert 00\rangle = \vert 0\rangle_{\mathrm{A}}\otimes \vert 0\rangle_{\mathrm{B}}=\begin{bmatrix} 1 & 0 & 0 &0\end{bmatrix}^T,
+\]
+!et
+and
+!bt
+\[
+\vert 10\rangle = \vert 1\rangle_{\mathrm{A}}\otimes \vert 0\rangle_{\mathrm{B}}=\begin{bmatrix} 0 & 1 & 0 &0\end{bmatrix}^T,
+\]
+!et
+and
+!bt
+\[
+\vert 01\rangle = \vert 0\rangle_{\mathrm{A}}\otimes \vert 1\rangle_{\mathrm{B}}=\begin{bmatrix} 0 & 0 & 1 &0\end{bmatrix}^T,
+\]
+!et
+and finally
+!bt
+\[
+\vert 11\rangle = \vert 1\rangle_{\mathrm{A}}\otimes \vert 1\rangle_{\mathrm{B}}=\begin{bmatrix} 0 & 0 & 0 &1\end{bmatrix}^T.
+\]
+!et
+
+These computational basis states define also the eigenstates of the non-interacting  Hamiltonian
+!bt
+\[
+H_0\vert 00 \rangle = \epsilon_{00}\vert 00 \rangle,
+\]
+!et
+!bt
+\[
+H_0\vert 10 \rangle = \epsilon_{10}\vert 10 \rangle,
+\]
+!et
+!bt
+\[
+H_0\vert 01 \rangle = \epsilon_{01}\vert 01 \rangle,
+\]
+!et
+and
+!bt
+\[
+H_0\vert 11 \rangle = \epsilon_{11}\vert 11 \rangle.
+\]
+!et
+The interacting part of the Hamiltonian $H_{\mathrm{I}}$ is given by the tensor product of two $\sigma_x$ and $\sigma_z$  matrices, respectively, that is
+!bt
+\[
+H_{\mathrm{I}}=H_x\sigma_x\otimes\sigma_x+H_z\sigma_z\otimes\sigma_z,
+\]
+!et
+where $H_x$ and $H_z$ are interaction strength parameters. Our final Hamiltonian matrix is given by
+!bt
+\[
+\bm{H}=\begin{bmatrix} \epsilon_{00}+H_z & 0 & 0 & H_x \\
+                       0  & \epsilon_{10}-H_z & H_x & 0 \\
+		       0 & H_x & \epsilon_{01}-H_z & 0 \\
+		       H_x & 0 & 0 & \epsilon_{11} +H_z \end{bmatrix}.
+\] 
+!et
+
+The four eigenstates of the above Hamiltonian matrix can in turn be used to
+define density matrices. As an example, the density matrix of the
+first eigenstate (lowest energy $E_0$) $\Psi_0$ is
+
+!bt
+\[
+\rho_0=\left(\alpha_{00}\vert 00 \rangle\langle 00\vert+\alpha_{10}\vert 10 \rangle\langle 10\vert+\alpha_{01}\vert 01 \rangle\langle 01\vert+\alpha_{11}\vert 11 \rangle\langle 11\vert\right),
+\]
+!et
+
+where the coefficients $\alpha_{ij}$ are the eigenvector coefficients
+resulting from the solution of the above eigenvalue problem.
+
+
+!bc pycod
+%matplotlib inline
+from  matplotlib import pyplot as plt
+import numpy as np
+from scipy.linalg import logm, expm
+def log2M(a): # base 2 matrix logarithm
+    return logm(a)/np.log(2.0)
+
+dim = 4
+Hamiltonian = np.zeros((dim,dim))
+#number of lambda values
+n = 40
+lmbd = np.linspace(0.0,1.0,n)
+Hx = 2.0
+Hz = 3.0
+# Non-diagonal part as sigma_x tensor product with sigma_x
+sx = np.matrix([[0,1],[1,0]])
+sx2 = Hx*np.kron(sx, sx)
+# Diagonal part as sigma_z tensor product with sigma_z
+sz = np.matrix([[1,0],[0,-1]])
+sz2 = Hz*np.kron(sz, sz)
+noninteracting = [0.0, 2.5, 6.5, 7.0]
+D = np.diag(noninteracting)
+Eigenvalue = np.zeros((dim,n))
+
+for i in range(n): 
+    Hamiltonian = lmbd[i]*(sx2+sz2)+D
+    # diagonalize and obtain eigenvalues, not necessarily sorted
+    EigValues, EigVectors = np.linalg.eig(Hamiltonian)
+    # sort eigenvectors and eigenvalues
+    permute = EigValues.argsort()
+    EigValues = EigValues[permute]
+    EigVectors = EigVectors[:,permute]
+    # Compute density matrix for selected system state, here ground state
+    DensityMatrix = np.zeros((dim,dim))
+    DensityMatrix = np.outer(EigVectors[:,0],EigVectors[:,0])
+    # Plotting eigenvalues 
+    Eigenvalue[0,i] = EigValues[0]
+    Eigenvalue[1,i] = EigValues[1]
+    Eigenvalue[2,i] = EigValues[2]
+    Eigenvalue[3,i] = EigValues[3]
+plt.plot(lmbd, Eigenvalue[0,:] ,'b-',lmbd, Eigenvalue[1,:],'g-',)
+plt.plot(lmbd, Eigenvalue[2,:] ,'r-',lmbd, Eigenvalue[3,:],'y-',)
+plt.xlabel('$\lambda$')
+plt.ylabel('Eigenvalues')
+plt.show()
+!ec
+
+
+!split
+===== First exercise set =====
+
+The exercises we present each week are meant to build the basis for
+the two projects we will work on during the semester.  The first
+project deals with implementing the so-called
+_Variational Quantum Eigensolver_ algorithm for finding the eigenvalues and eigenvectors of selected Hamiltonians.
+Feel free to use the above codes in order to get started.
+
+
+
+!split
+===== Exercise: One-qubit basis and  Pauli matrices  =====
+
+Write a function which sets up a one-qubit basis and apply the various Pauli matrices to these basis states.
+
+!split
+===== Exercise: Hadamard and Phase gates  =====
+
+Apply the Hadamard and Phase gates to the same one-qubit basis states and study their actions on these states.
+
+!split
+===== Exercise: Rewrite simple one-qubit Hamiltonian in terms of Pauli matrices  =====
+
+We define a  symmetric matrix  $H\in {\mathbb{R}}^{2\times 2}$
+!bt
+\[
+H = \begin{bmatrix} H_{11} & H_{12} \\ H_{21} & H_{22}
+\end{bmatrix},
+\]
+!et
+We  let $H = H_0 + H_I$, where
+!bt
+\[
+H_0= \begin{bmatrix} E_1 & 0 \\ 0 & E_2\end{bmatrix},
+\]
+!et
+is a diagonal matrix. Similarly,
+!bt
+\[
+H_I= \begin{bmatrix} V_{11} & V_{12} \\ V_{21} & V_{22}\end{bmatrix},
+\]
+!et
+where $V_{ij}$ represent various interaction matrix elements.
+We can view $H_0$ as the non-interacting solution
+!bt
+\begin{equation}
+       H_0\vert 0 \rangle =E_1\vert 0 \rangle,
+\end{equation}
+!et
+and
+!bt
+\begin{equation}
+       H_0\vert 1\rangle =E_2\vert 1\rangle,
+\end{equation}
+!et
+where we have defined the orthogonal computational one-qubit basis states $\vert 0\rangle$ and $\vert 1\rangle$.
+
+
+!bsubex
+Show that you can rewrite the above Hamiltonian in terms of the Pauli $x$ and $z$ matrices
+!bsol
+We rewrite $H$ (and $H_0$ and $H_I$)  via Pauli matrices
+!bt
+\[
+H_0 = \mathcal{E} I + \Omega \sigma_z, \quad \mathcal{E} = \frac{E_1
+  + E_2}{2}, \; \Omega = \frac{E_1-E_2}{2},
+\]
+!et
+and
+!bt
+\[
+H_I = c \bm{I} +\omega_z\sigma_z + \omega_x\sigma_x,
+\]
+!et
+with $c = (V_{11}+V_{22})/2$, $\omega_z = (V_{11}-V_{22})/2$ and $\omega_x = V_{12}=V_{21}$.
+Study the behavior of these eigenstates as functions of the interaction strength $\lambda$.
+!esol
+!esubex
+
+!split
+===== Exercise: Develop code for two and more qubit basis sets =====
+
+Using the one-qubit basis write a code which sets up a two-qubit basis
+and encodes this basis.
+
+!split
+===== Exercise: Two-qubit Hamiltonian =====
+
+Use the Hamiltonian for the two-qubit example to find the eigenpairs
+as functions of the interaction strength $\lambda$ and study the final
+eigenvectors as functions of the admixture of the original basis
+states.
+
+
+
+
+
+!split
+===== The next lecture, January 30 =====
+
+In our next lecture, we will discuss
+o Reminder and review of  density matrices and measurements
+o Schmidt decomposition and entanglement
+o Discussion of entropies, classical information entropy (Shannon entropy) and von Neumann entropy
+Chapters 3 and 4 of Scherer's text contains useful discussions of several of these topics.
+
+
+
+
