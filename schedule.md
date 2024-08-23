@@ -5,11 +5,16 @@
 
 - Topics to be covered
   - Thursday: Introduction to many-body physics, notations and definitions
-    - Video of lecture to be added (TBA) https://youtu.be/
+    - Video of lecture https://youtu.be/AIbnm_sBtqA
   - Friday: Discussion of notations and important properties in many-body physics
-    - Video of lecture TBA https://youtu.be/
+    - Video of lecture https://youtu.be/so-Cn5nb1Uk
+    - Whiteboard notes for week 34 at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesWeek34.pdf
 - Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week34, see either jupyter-notebook or pdf file
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek34.pdf
+
+Video of lecture TBA at URL:"
+  o "
+
 
 ###  Week 35, August 26-30
 
