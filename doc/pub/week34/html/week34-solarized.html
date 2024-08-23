@@ -204,6 +204,10 @@ div.toc p,a {
               ('Pauli principle', 2, None, 'pauli-principle'),
               ('Slater determinant', 2, None, 'slater-determinant'),
               ('Determinant algebra', 2, None, 'determinant-algebra'),
+              ('Transposition of column indices',
+               2,
+               None,
+               'transposition-of-column-indices'),
               ('Simple determinant example',
                2,
                None,
@@ -238,7 +242,24 @@ div.toc p,a {
                'wave function expansion and orthogonal transformations',
                2,
                None,
-               'preparing-for-later-studies-varying-the-coefficients-of-a-wave-function-expansion-and-orthogonal-transformations')]}
+               'preparing-for-later-studies-varying-the-coefficients-of-a-wave-function-expansion-and-orthogonal-transformations'),
+              ('Choice of basis states', 2, None, 'choice-of-basis-states'),
+              ('Links to Hartree-Fock theory',
+               2,
+               None,
+               'links-to-hartree-fock-theory'),
+              ('ONB again', 2, None, 'onb-again'),
+              ('Preserving orthogonality', 2, None, 'preserving-orthogonality'),
+              ('Useful property', 2, None, 'useful-property'),
+              ('Another useful property', 2, None, 'another-useful-property'),
+              ('Generalizing', 2, None, 'generalizing'),
+              ('Link with Slater determinant',
+               2,
+               None,
+               'link-with-slater-determinant'),
+              ('New Slater determinant', 2, None, 'new-slater-determinant'),
+              ('Energy functional', 2, None, 'energy-functional'),
+              ('New expression', 2, None, 'new-expression')]}
 end of tocinfo -->
 
 <body>
@@ -1214,7 +1235,7 @@ called reversibility. We say quantum mechanics is a theory which is
 reversible with a probabilistic determinism. Classical mechanics on
 the other is reversible in a deterministic way, that is, knowing all
 initial conditions we can in principle determine the future motion of
-an object which obey the laws of motion of classical mechanics.
+an object which obeys the laws of motion of classical mechanics.
 </p>
 
 <p>We have then</p>
@@ -1380,8 +1401,13 @@ $$
 $$
 
 <p>where \( \hat{P}_i \) is a permutation operator which permutes the column indices \( 1,2,3,\dots,n \)
-and the sum runs over all \( n! \) permutations.  The quantity \( p_i \) represents the number of transpositions of column indices that are needed in order to bring a given permutation back to its initial ordering, in our case given by \( a_{11}a_{22}\dots a_{nn} \) here.
+and the sum runs over all \( n! \) permutations.
 </p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="transposition-of-column-indices">Transposition of column indices </h2>
+
+<p>The quantity \( p_i \) represents the number of transpositions of column indices that are needed in order to bring a given permutation back to its initial ordering, in our case given by \( a_{11}a_{22}\dots a_{nn} \) here.</p>
 
 <!-- !split --><br><br><br><br><br><br><br><br><br><br>
 <h2 id="simple-determinant-example">Simple determinant example  </h2>
@@ -1426,7 +1452,7 @@ many-body interactions are present.
 variational principle we have
 </p>
 $$
-  E_0 \le E[\Phi] = \int \Phi^*\hat{H}\Phi d\mathbf{\tau}
+  E_0 \le E[\Phi] = \int \Phi^*\hat{H}\Phi d\mathbf{\tau},
 $$
 
 <p>where \( \Phi \) is a trial function which we assume to be normalized</p>
@@ -1440,11 +1466,16 @@ $$
 <h2 id="ground-state-energy-and-links-with-material-to-be-covered">Ground state energy and links with material to be covered </h2>
 
 <p>In the Hartree-Fock method the trial function is the Slater
-determinant of Eq.&nbsp;\eqref{eq:HartreeFockDet} which can be rewritten as 
+determinant which can be rewritten as 
 </p>
 $$
   \Phi(x_1,x_2,\dots,x_N,\alpha,\beta,\dots,\nu) = \frac{1}{\sqrt{N!}}\sum_{P} (-)^P\hat{P}\psi_{\alpha}(x_1)
-    \psi_{\beta}(x_2)\dots\psi_{\nu}(x_N)=\sqrt{N!}\hat{A}\Phi_H,
+    \psi_{\beta}(x_2)\dots\psi_{\nu}(x_N),
+$$
+
+<p>which equals</p>
+$$
+\sqrt{N!}\hat{A}\Phi_H,
 $$
 
 <p>where we have introduced the antisymmetrization operator \( \hat{A} \) defined by the 
@@ -1456,10 +1487,7 @@ summation over all possible permutations of two particles.
 
 <p>It is defined as</p>
 $$
-\begin{equation}
   \hat{A} = \frac{1}{N!}\sum_{p} (-)^p\hat{P},
-\label{antiSymmetryOperator}
-\end{equation}
 $$
 
 <p>with \( p \) standing for the number of permutations. We have introduced for later use the so-called
@@ -1479,16 +1507,12 @@ $$
 and hence commute with \( \hat{A} \)
 </p>
 $$
-\begin{equation}
-  [H_0,\hat{A}] = [H_I,\hat{A}] = 0. \label{commutionAntiSym}
-\end{equation}
+  [H_0,\hat{A}] = [H_I,\hat{A}] = 0. 
 $$
 
 <p>Furthermore, \( \hat{A} \) satisfies</p>
 $$
-\begin{equation}
   \hat{A}^2 = \hat{A},  \label{AntiSymSquared}
-\end{equation}
 $$
 
 <p>since every permutation of the Slater
@@ -1507,11 +1531,10 @@ $$
 <p>is readily reduced to</p>
 $$
   \int \Phi^*\hat{H}_0\Phi d\mathbf{\tau} 
-  = N! \int \Phi_H^*\hat{H}_0\hat{A}\Phi_H d\mathbf{\tau},
+  = N! \int \Phi_H^*\hat{H}_0\hat{A}\Phi_H d\mathbf{\tau}.
 $$
 
-<p>where we have used Eqs.&nbsp;\eqref{commutionAntiSym} and
-\eqref{AntiSymSquared}. The next step is to replace the antisymmetrization
+<p>The next step is to replace the antisymmetrization
 operator by its definition and to
 replace \( \hat{H}_0 \) with the sum of one-body operators
 </p>
@@ -1538,12 +1561,9 @@ arrive at the following expression for the expectation values of the
 sum of one-body Hamiltonians 
 </p>
 $$
-\begin{equation}
   \int \Phi^*\hat{H}_0\Phi  d\mathbf{\tau}
   = \sum_{\mu=1}^N \int \psi_{\mu}^*(x)\hat{h}_0\psi_{\mu}(x)dx
   d\mathbf{r}.
-\label{H1Expectation}
-\end{equation}
 $$
 
 
@@ -1555,13 +1575,10 @@ $$
 \langle \mu | \hat{h}_0 | \mu \rangle = \int \psi_{\mu}^*(x)\hat{h}_0\psi_{\mu}(x)dx,
 $$
 
-<p>and rewrite Eq.&nbsp;\eqref{H1Expectation} as</p>
+<p>which allows us to rewrite the expectation values as</p>
 $$
-\begin{equation}
   \int \Phi^*\hat{H}_0\Phi  d\tau
   = \sum_{\mu=1}^N \langle \mu | \hat{h}_0 | \mu \rangle.
-\label{H1Expectation1}
-\end{equation}
 $$
 
 
@@ -1596,7 +1613,7 @@ any two particles no longer vanish, and we get
 $$
   \int \Phi^*\hat{H}_I\Phi d\mathbf{\tau} 
   = \sum_{i < j=1}^N \int  
-  \Phi_H^*\hat{v}(r_{ij})(1-P_{ij})\Phi_H d\mathbf{\tau}.
+  \Phi_H^*\hat{v}(r_{ij})(1-P_{ij})\Phi_H d\mathbf{\tau},
 $$
 
 <p>where \( P_{ij} \) is the permutation operator that interchanges
@@ -1609,18 +1626,17 @@ are orthogonal.
 
 <p>We obtain</p>
 $$
-\begin{align}
+\begin{align*}
   \int \Phi^*\hat{H}_I\Phi d\mathbf{\tau} 
   = \frac{1}{2}\sum_{\mu=1}^N\sum_{\nu=1}^N
     &\left[ \int \psi_{\mu}^*(x_i)\psi_{\nu}^*(x_j)\hat{v}(r_{ij})\psi_{\mu}(x_i)\psi_{\nu}(x_j)
-    dx_idx_j \right.
-\label{_auto2}\\
+    dx_idx_j \right.\\
   &\left.
   - \int \psi_{\mu}^*(x_i)\psi_{\nu}^*(x_j)
   \hat{v}(r_{ij})\psi_{\nu}(x_i)\psi_{\mu}(x_j)
   dx_idx_j
   \right]. \label{H2Expectation}
-\end{align}
+\end{align*}
 $$
 
 <p>The first term is the so-called direct term. It is frequently also called the  Hartree term, 
@@ -1678,6 +1694,8 @@ $$
 to truncate the above sum.  We assume that the basis \( \phi_{\lambda} \) is orthogonal.
 </p>
 
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="choice-of-basis-states">Choice of basis states </h2>
 <p>It is normal to choose a single-particle basis defined as the eigenfunctions
 of parts of the full Hamiltonian. The typical situation consists of the solutions of the one-body part of the Hamiltonian, that is we have
 </p>
@@ -1692,10 +1710,20 @@ $$
    \phi_{\lambda}(\mathbf{r})  = \langle \mathbf{r} | \lambda \rangle .
 $$
 
-<p>In deriving the Hartree-Fock equations, we  will expand the single-particle functions in a known basis  and vary the coefficients, 
-that is, the new single-particle wave function is written as a linear expansion
-in terms of a fixed chosen orthogonal basis (for example the well-known harmonic oscillator functions or the hydrogen-like functions etc).
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="links-to-hartree-fock-theory">Links to Hartree-Fock theory </h2>
+
+<p>In deriving the Hartree-Fock equations, we will expand the
+single-particle functions in a known basis and vary the coefficients,
+that is, the new single-particle wave function is written as a linear
+expansion in terms of a fixed chosen orthogonal basis (for example the
+well-known harmonic oscillator functions or the hydrogen-like
+functions etc).
 </p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="onb-again">ONB again </h2>
 
 <p>We stated that a unitary transformation keeps the orthogonality. To see this consider first a basis of vectors \( \mathbf{v}_i \),</p>
 $$
@@ -1706,6 +1734,10 @@ $$
 $$
 \mathbf{v}_j^T\mathbf{v}_i = \delta_{ij}.
 $$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="preserving-orthogonality">Preserving orthogonality </h2>
 
 <p>An orthogonal or unitary transformation</p>
 $$
@@ -1726,11 +1758,21 @@ $$
 and \( \langle p \vert q\rangle = \delta_{pq} \). 
 </p>
 
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="useful-property">Useful property </h2>
+
 <p>This propertry is extremely useful when we build up a basis of many-body Stater determinant based states. </p>
 
-<b>Note also that although a basis \( \vert \alpha\rangle \) contains an infinity of states, for practical calculations we have always to make some truncations.</b>
+<b>Note also that although a basis \( \vert \alpha\rangle \) contains an infinity of states, for practical calculations we have always to make some truncations.</b> 
 
-<p>Before we develop for example the Hartree-Fock equations, there is another very useful property of determinants that we will use both in connection with Hartree-Fock calculations and later shell-model calculations.  </p>
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="another-useful-property">Another useful property </h2>
+
+<p>Before we develop for example the Hartree-Fock equations, there is
+another very useful property of determinants that we will use both in
+connection with Hartree-Fock calculations and later shell-model
+calculations.
+</p>
 
 <p>Consider the following determinant</p>
 $$
@@ -1738,6 +1780,10 @@ $$
                          \alpha_1b_{21}+\alpha_2b_{22}&a_{22}\end{array} \right|=\alpha_1\left|\begin{array}{cc} b_{11}& a_{12}\\
                          b_{21}&a_{22}\end{array} \right|+\alpha_2\left| \begin{array}{cc} b_{12}& a_{12}\\b_{22}&a_{22}\end{array} \right|
 $$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="generalizing">Generalizing </h2>
 
 <p>We can generalize this to  an \( n\times n \) matrix and have </p>
 $$
@@ -1755,6 +1801,9 @@ $$
 
 <p>This is a property we will use in our Hartree-Fock discussions. </p>
 
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="link-with-slater-determinant">Link with Slater determinant </h2>
+
 <p>We can generalize the previous results, now 
 with all elements \( a_{ij} \)  being given as functions of 
 linear combinations  of various coefficients \( c \) and elements \( b_{ij} \),
@@ -1771,6 +1820,9 @@ $$
 with elements \( c_{ij} \) and \( b_{ij} \) respectively.  
 This is a property we will use in our Hartree-Fock discussions. Convince yourself about the correctness of the above expression by setting \( n=2 \). 
 </p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="new-slater-determinant">New Slater determinant </h2>
 
 <p>With our definition of the new basis in terms of an orthogonal basis we have</p>
 $$
@@ -1797,10 +1849,8 @@ $$
 
 <p>which is nothing but \( det(\mathbf{C})det(\Phi) \), with \( det(\Phi) \) being the determinant given by the basis functions \( \phi_{\lambda}(x) \). </p>
 
-<p>In our discussions hereafter we will use our definitions of single-particle states above and below the Fermi (\( F \)) level given by the labels
-\( ijkl\dots \le F \) for so-called single-hole states and \( abcd\dots > F \) for so-called particle states.
-For general single-particle states we employ the labels \( pqrs\dots \). 
-</p>
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="energy-functional">Energy functional </h2>
 
 <p>The energy functional is</p>
 $$
@@ -1822,6 +1872,9 @@ $$
 $$
 
 <p>where \( \Phi^{New} \) is the new Slater determinant defined by the new basis of Eq.&nbsp;\eqref{eq:newbasis}. </p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="new-expression">New expression </h2>
 
 <p>Using Eq.&nbsp;\eqref{eq:newbasis} we can rewrite Eq.&nbsp;\eqref{FunctionalEPhi2} as </p>
 $$
