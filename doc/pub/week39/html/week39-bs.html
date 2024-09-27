@@ -330,6 +330,7 @@ doconce format html week39.do.txt --html_style=bootstrap --pygments_html_style=d
                None,
                'hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion'),
               ('Using the density matrix', 2, None, 'using-the-density-matrix'),
+              ('Code example', 2, None, 'code-example'),
               ("Analysis of Hartree-Fock equations and Koopman's theorem",
                2,
                None,
@@ -509,6 +510,7 @@ MathJax.Hub.Config({
      <!-- navigation toc: --> <li><a href="#hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion" style="font-size: 80%;">Hartree-Fock by varying the coefficients of a wave function expansion</a></li>
      <!-- navigation toc: --> <li><a href="#hartree-fock-by-varying-the-coefficients-of-a-wave-function-expansion" style="font-size: 80%;">Hartree-Fock by varying the coefficients of a wave function expansion</a></li>
      <!-- navigation toc: --> <li><a href="#using-the-density-matrix" style="font-size: 80%;">Using the density matrix</a></li>
+     <!-- navigation toc: --> <li><a href="#code-example" style="font-size: 80%;">Code example</a></li>
      <!-- navigation toc: --> <li><a href="#analysis-of-hartree-fock-equations-and-koopman-s-theorem" style="font-size: 80%;">Analysis of Hartree-Fock equations and Koopman's theorem</a></li>
      <!-- navigation toc: --> <li><a href="#analysis-of-hartree-fock-equations-and-koopman-s-theorem" style="font-size: 80%;">Analysis of Hartree-Fock equations and Koopman's theorem</a></li>
      <!-- navigation toc: --> <li><a href="#analysis-of-hartree-fock-equations-and-koopman-s-theorem" style="font-size: 80%;">Analysis of Hartree-Fock equations and Koopman's theorem</a></li>
@@ -1893,6 +1895,75 @@ $$
 <p>It is convenient to use the density matrix since we can precalculate in every iteration the product of two eigenvector components \( C \). </p>
 
 <!-- !split -->
+<h2 id="code-example" class="anchor">Code example </h2>
+
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="cell border-box-sizing code_cell rendered">
+  <div class="input">
+    <div class="inner_cell">
+      <div class="input_area">
+        <div class="highlight" style="background: #f8f8f8">
+  <pre style="line-height: 125%;"><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">numpy</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">np</span>
+<span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">HartreeFock</span>:
+    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">__init__</span>(<span style="color: #008000">self</span>, num_electrons, num_orbitals):
+        <span style="color: #008000">self</span><span style="color: #666666">.</span>num_electrons <span style="color: #666666">=</span> num_electrons
+        <span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals <span style="color: #666666">=</span> num_orbitals
+	<span style="color: #408080; font-style: italic"># You would need to replace these by proper integrals</span>
+        <span style="color: #008000">self</span><span style="color: #666666">.</span>h <span style="color: #666666">=</span> np<span style="color: #666666">.</span>random<span style="color: #666666">.</span>rand(num_orbitals, num_orbitals)  <span style="color: #408080; font-style: italic"># One-electron integrals</span>
+        <span style="color: #008000">self</span><span style="color: #666666">.</span>coulomb <span style="color: #666666">=</span> np<span style="color: #666666">.</span>random<span style="color: #666666">.</span>rand(num_orbitals, num_orbitals, num_orbitals, num_orbitals)  <span style="color: #408080; font-style: italic"># Two-electron integrals</span>
+    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">build_fock_matrix</span>(<span style="color: #008000">self</span>, density_matrix):
+        fock_matrix <span style="color: #666666">=</span> <span style="color: #008000">self</span><span style="color: #666666">.</span>h<span style="color: #666666">.</span>copy()
+        <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals):
+            <span style="color: #008000; font-weight: bold">for</span> j <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals):
+                fock_matrix[i, j] <span style="color: #666666">+=</span> np<span style="color: #666666">.</span>sum(density_matrix <span style="color: #666666">*</span> <span style="color: #008000">self</span><span style="color: #666666">.</span>coulomb[i, j])
+        <span style="color: #008000; font-weight: bold">return</span> fock_matrix
+    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">build_density_matrix</span>(<span style="color: #008000">self</span>, coefficients):
+        density_matrix <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((<span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals, <span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals))
+        <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">self</span><span style="color: #666666">.</span>num_electrons):
+            density_matrix <span style="color: #666666">+=</span> np<span style="color: #666666">.</span>outer(coefficients[:, i], coefficients[:, i])
+        <span style="color: #008000; font-weight: bold">return</span> density_matrix
+    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">diagonalize</span>(<span style="color: #008000">self</span>, fock_matrix):
+        energy, coefficients <span style="color: #666666">=</span> np<span style="color: #666666">.</span>linalg<span style="color: #666666">.</span>eigh(fock_matrix)
+        <span style="color: #008000; font-weight: bold">return</span> energy, coefficients
+    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">run</span>(<span style="color: #008000">self</span>, max_iter<span style="color: #666666">=100</span>, tol<span style="color: #666666">=1e-6</span>):
+        coeffs <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((<span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals, <span style="color: #008000">self</span><span style="color: #666666">.</span>num_electrons))
+        density_matrix <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((<span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals, <span style="color: #008000">self</span><span style="color: #666666">.</span>num_orbitals))
+        <span style="color: #008000; font-weight: bold">for</span> iteration <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(max_iter):
+            fock_matrix <span style="color: #666666">=</span> <span style="color: #008000">self</span><span style="color: #666666">.</span>build_fock_matrix(density_matrix)
+            energies, coeffs <span style="color: #666666">=</span> <span style="color: #008000">self</span><span style="color: #666666">.</span>diagonalize(fock_matrix)
+            
+            new_density_matrix <span style="color: #666666">=</span> <span style="color: #008000">self</span><span style="color: #666666">.</span>build_density_matrix(coeffs)
+            <span style="color: #008000; font-weight: bold">if</span> np<span style="color: #666666">.</span>linalg<span style="color: #666666">.</span>norm(new_density_matrix <span style="color: #666666">-</span> density_matrix) <span style="color: #666666">&lt;</span> tol:
+                <span style="color: #008000">print</span>(<span style="color: #BA2121">f&quot;Converged in </span><span style="color: #BB6688; font-weight: bold">{</span>iteration<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> iterations&quot;</span>)
+                <span style="color: #008000; font-weight: bold">break</span>
+            density_matrix <span style="color: #666666">=</span> new_density_matrix
+        <span style="color: #008000; font-weight: bold">return</span> energies, coeffs
+<span style="color: #408080; font-style: italic"># Example usage</span>
+<span style="color: #008000; font-weight: bold">if</span> <span style="color: #19177C">__name__</span> <span style="color: #666666">==</span> <span style="color: #BA2121">&quot;__main__&quot;</span>:
+    num_electrons <span style="color: #666666">=</span> <span style="color: #666666">2</span>
+    num_orbitals <span style="color: #666666">=</span> <span style="color: #666666">4</span>
+    hf <span style="color: #666666">=</span> HartreeFock(num_electrons, num_orbitals)
+    energies, coefficients <span style="color: #666666">=</span> hf<span style="color: #666666">.</span>run()
+    <span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;Final energies:&quot;</span>, energies)
+    <span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;Final coefficients:&quot;</span>, coefficients)
+</pre>
+</div>
+      </div>
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output">
+      <div class="output_area">
+        <div class="output_subarea output_stream output_stdout output_text">          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- !split -->
 <h2 id="analysis-of-hartree-fock-equations-and-koopman-s-theorem" class="anchor">Analysis of Hartree-Fock equations and Koopman's theorem </h2>
 <div class="panel panel-default">
 <div class="panel-body">
@@ -1900,13 +1971,13 @@ $$
 <p>We can rewrite the ground state energy by adding and subtracting \( \hat{u}^{HF}(x_i) \) </p>
 $$
   E_0^{HF} =\langle \Phi_0 | \hat{H} | \Phi_0\rangle = 
-\sum_{i\le F}^A \langle i | \hat{h}_0 +\hat{u}^{HF}| j\rangle+ \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F}^A \langle i |\hat{u}^{HF}| i\rangle,
+\sum_{i\le F} \langle i | \hat{h}_0 +\hat{u}^{HF}| j\rangle+ \frac{1}{2}\sum_{i\le F}\sum_{j \le F}\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F} \langle i |\hat{u}^{HF}| i\rangle,
 $$
 
 <p>which results in</p>
 $$
   E_0^{HF}
-  = \sum_{i\le F}^A \varepsilon_i^{HF} + \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F}^A \langle i |\hat{u}^{HF}| i\rangle.
+  = \sum_{i\le F} \varepsilon_i^{HF} + \frac{1}{2}\sum_{i\le F}\sum_{j \le F}\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F} \langle i |\hat{u}^{HF}| i\rangle.
 $$
 
 <p>Our single-particle states \( ijk\dots \) are now single-particle states obtained from the solution of the Hartree-Fock equations.</p>
@@ -1922,7 +1993,7 @@ $$
 <p>Using our definition of the Hartree-Fock single-particle energies we obtain then the following expression for the total ground-state energy</p>
 $$
   E_0^{HF}
-  = \sum_{i\le F}^A \varepsilon_i - \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right].
+  = \sum_{i\le F} \varepsilon_i - \frac{1}{2}\sum_{i\le F}\sum_{j \le F}\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right].
 $$
 
 <p>This form will be used in our discussion of Koopman's theorem.</p>
@@ -2030,17 +2101,17 @@ between nuclear forces and separation energies. Changing to nuclear system, we d
 </p>
 $$
   E[\Phi^{\mathrm{HF}}(A)] 
-  = \sum_{i=1}^A \langle i | \hat{h}_0 | i \rangle +
-  \frac{1}{2}\sum_{ij=1}^A\langle ij|\hat{v}|ij\rangle_{AS},
+  = \sum_{i=1} \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1}\langle ij|\hat{v}|ij\rangle_{AS},
 $$
 
 <p>where \( \Phi^{\mathrm{HF}}(A) \) is the new Slater determinant defined by the new basis of Eq.&nbsp;\eqref{eq:newbasis}
-for \( A \) nucleons, where \( A=N+Z \), with \( N \) now being the number of neutrons and \( Z \) th enumber of protons.  If we assume again that the single-particle wave functions in the new basis do not change from a nucleus with \( A \) nucleons to a nucleus with \( A-1 \)  nucleons, we can then define the corresponding energy for the \( A-1 \) systems as 
+for \( A \) nucleons, where \( A=N+Z \), with \( N \) now being the number of neutrons and \( Z \) the number of protons.  If we assume again that the single-particle wave functions in the new basis do not change from a nucleus with \( A \) nucleons to a nucleus with \( A-1 \)  nucleons, we can then define the corresponding energy for the \( A-1 \) systems as 
 </p>
 $$
   E[\Phi^{\mathrm{HF}}(A-1)] 
-  = \sum_{i=1; i\ne k}^A \langle i | \hat{h}_0 | i \rangle +
-  \frac{1}{2}\sum_{ij=1;i,j\ne k}^A\langle ij|\hat{v}|ij\rangle_{AS},
+  = \sum_{i=1; i\ne k} \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1;i,j\ne k}\langle ij|\hat{v}|ij\rangle_{AS},
 $$
 
 <p>where we have removed a single-particle state \( k\le F \), that is a state below the Fermi level.  </p>
@@ -2057,14 +2128,14 @@ $$
 $$
   E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
   = \langle k | \hat{h}_0 | k \rangle +
-  \frac{1}{2}\sum_{i=1;i\ne k}^A\langle ik|\hat{v}|ik\rangle_{AS}  \frac{1}{2}\sum_{j=1;j\ne k}^A\langle kj|\hat{v}|kj\rangle_{AS},
+  \frac{1}{2}\sum_{i=1;i\ne k}\langle ik|\hat{v}|ik\rangle_{AS}  \frac{1}{2}\sum_{j=1;j\ne k}\langle kj|\hat{v}|kj\rangle_{AS},
 $$
 
 <p>which becomes </p>
 $$
   E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
   = \langle k | \hat{h}_0 | k \rangle +
-  \frac{1}{2}\sum_{j=1}^A\langle kj|\hat{v}|kj\rangle_{AS}
+  \frac{1}{2}\sum_{j=1}\langle kj|\hat{v}|kj\rangle_{AS}
 $$
 
 <p>which is just our definition of the Hartree-Fock single-particle energy</p>

@@ -1432,7 +1432,55 @@ It means that we can rewrite the Hartree-Fock Hamiltonian as
 It is convenient to use the density matrix since we can precalculate in every iteration the product of two eigenvector components $C$. 
 
 
+!split
+===== Code example =====
 
+!bc pycod
+import numpy as np
+class HartreeFock:
+    def __init__(self, num_electrons, num_orbitals):
+        self.num_electrons = num_electrons
+        self.num_orbitals = num_orbitals
+	# You would need to replace these by proper integrals
+        self.h = np.random.rand(num_orbitals, num_orbitals)  # One-electron integrals
+        self.coulomb = np.random.rand(num_orbitals, num_orbitals, num_orbitals, num_orbitals)  # Two-electron integrals
+    def build_fock_matrix(self, density_matrix):
+        fock_matrix = self.h.copy()
+        for i in range(self.num_orbitals):
+            for j in range(self.num_orbitals):
+                fock_matrix[i, j] += np.sum(density_matrix * self.coulomb[i, j])
+        return fock_matrix
+    def build_density_matrix(self, coefficients):
+        density_matrix = np.zeros((self.num_orbitals, self.num_orbitals))
+        for i in range(self.num_electrons):
+            density_matrix += np.outer(coefficients[:, i], coefficients[:, i])
+        return density_matrix
+    def diagonalize(self, fock_matrix):
+        energy, coefficients = np.linalg.eigh(fock_matrix)
+        return energy, coefficients
+    def run(self, max_iter=100, tol=1e-6):
+        coeffs = np.zeros((self.num_orbitals, self.num_electrons))
+        density_matrix = np.zeros((self.num_orbitals, self.num_orbitals))
+        for iteration in range(max_iter):
+            fock_matrix = self.build_fock_matrix(density_matrix)
+            energies, coeffs = self.diagonalize(fock_matrix)
+            
+            new_density_matrix = self.build_density_matrix(coeffs)
+            if np.linalg.norm(new_density_matrix - density_matrix) < tol:
+                print(f"Converged in {iteration} iterations")
+                break
+            density_matrix = new_density_matrix
+        return energies, coeffs
+# Example usage
+if __name__ == "__main__":
+    num_electrons = 2
+    num_orbitals = 4
+    hf = HartreeFock(num_electrons, num_orbitals)
+    energies, coefficients = hf.run()
+    print("Final energies:", energies)
+    print("Final coefficients:", coefficients)
+
+!ec
 
 
 
@@ -1443,14 +1491,14 @@ We can rewrite the ground state energy by adding and subtracting $\hat{u}^{HF}(x
 !bt
 \[
   E_0^{HF} =\langle \Phi_0 | \hat{H} | \Phi_0\rangle = 
-\sum_{i\le F}^A \langle i | \hat{h}_0 +\hat{u}^{HF}| j\rangle+ \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F}^A \langle i |\hat{u}^{HF}| i\rangle,
+\sum_{i\le F} \langle i | \hat{h}_0 +\hat{u}^{HF}| j\rangle+ \frac{1}{2}\sum_{i\le F}\sum_{j \le F}\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F} \langle i |\hat{u}^{HF}| i\rangle,
 \]
 !et
 which results in
 !bt
 \[
   E_0^{HF}
-  = \sum_{i\le F}^A \varepsilon_i^{HF} + \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F}^A \langle i |\hat{u}^{HF}| i\rangle.
+  = \sum_{i\le F} \varepsilon_i^{HF} + \frac{1}{2}\sum_{i\le F}\sum_{j \le F}\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right]-\sum_{i\le F} \langle i |\hat{u}^{HF}| i\rangle.
 \]
 !et
 Our single-particle states $ijk\dots$ are now single-particle states obtained from the solution of the Hartree-Fock equations.
@@ -1463,7 +1511,7 @@ Using our definition of the Hartree-Fock single-particle energies we obtain then
 !bt
 \[
   E_0^{HF}
-  = \sum_{i\le F}^A \varepsilon_i - \frac{1}{2}\sum_{i\le F}^A\sum_{j \le F}^A\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right].
+  = \sum_{i\le F} \varepsilon_i - \frac{1}{2}\sum_{i\le F}\sum_{j \le F}\left[\langle ij |\hat{v}|ij \rangle-\langle ij|\hat{v}|ji\rangle\right].
 \]
 !et
 This form will be used in our discussion of Koopman's theorem.
@@ -1553,17 +1601,17 @@ between nuclear forces and separation energies. Changing to nuclear system, we d
 !bt
 \[
   E[\Phi^{\mathrm{HF}}(A)] 
-  = \sum_{i=1}^A \langle i | \hat{h}_0 | i \rangle +
-  \frac{1}{2}\sum_{ij=1}^A\langle ij|\hat{v}|ij\rangle_{AS},
+  = \sum_{i=1} \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1}\langle ij|\hat{v}|ij\rangle_{AS},
 \]
 !et
 where $\Phi^{\mathrm{HF}}(A)$ is the new Slater determinant defined by the new basis of Eq.~(ref{eq:newbasis})
-for $A$ nucleons, where $A=N+Z$, with $N$ now being the number of neutrons and $Z$ th enumber of protons.  If we assume again that the single-particle wave functions in the new basis do not change from a nucleus with $A$ nucleons to a nucleus with $A-1$  nucleons, we can then define the corresponding energy for the $A-1$ systems as 
+for $A$ nucleons, where $A=N+Z$, with $N$ now being the number of neutrons and $Z$ the number of protons.  If we assume again that the single-particle wave functions in the new basis do not change from a nucleus with $A$ nucleons to a nucleus with $A-1$  nucleons, we can then define the corresponding energy for the $A-1$ systems as 
 !bt
 \[
   E[\Phi^{\mathrm{HF}}(A-1)] 
-  = \sum_{i=1; i\ne k}^A \langle i | \hat{h}_0 | i \rangle +
-  \frac{1}{2}\sum_{ij=1;i,j\ne k}^A\langle ij|\hat{v}|ij\rangle_{AS},
+  = \sum_{i=1; i\ne k} \langle i | \hat{h}_0 | i \rangle +
+  \frac{1}{2}\sum_{ij=1;i,j\ne k}\langle ij|\hat{v}|ij\rangle_{AS},
 \]
 !et
 where we have removed a single-particle state $k\le F$, that is a state below the Fermi level.  
@@ -1577,7 +1625,7 @@ Calculating the difference
 \[
   E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
   = \langle k | \hat{h}_0 | k \rangle +
-  \frac{1}{2}\sum_{i=1;i\ne k}^A\langle ik|\hat{v}|ik\rangle_{AS}  \frac{1}{2}\sum_{j=1;j\ne k}^A\langle kj|\hat{v}|kj\rangle_{AS},
+  \frac{1}{2}\sum_{i=1;i\ne k}\langle ik|\hat{v}|ik\rangle_{AS}  \frac{1}{2}\sum_{j=1;j\ne k}\langle kj|\hat{v}|kj\rangle_{AS},
 \]
 !et
 which becomes 
@@ -1585,7 +1633,7 @@ which becomes
 \[
   E[\Phi^{\mathrm{HF}}(A)]-   E[\Phi^{\mathrm{HF}}(A-1)] 
   = \langle k | \hat{h}_0 | k \rangle +
-  \frac{1}{2}\sum_{j=1}^A\langle kj|\hat{v}|kj\rangle_{AS}
+  \frac{1}{2}\sum_{j=1}\langle kj|\hat{v}|kj\rangle_{AS}
 \]
 !et
 which is just our definition of the Hartree-Fock single-particle energy
@@ -1696,11 +1744,6 @@ and
 \]
 !et
 !eblock
-
-
-
-
-
 
 
 
