@@ -7,11 +7,11 @@ DATE: Week 40, September 30-October 4
 !bblock
 o Topics to be covered
   o Thursday:
-    o The Hartree-Fock algorithm, efficient ways of implementing
+    o Efficient ways of implementing the Hartree-Fock algorithm, 
     o Thouless' theorem and stability of Hartree-Fock equations
 #    o "Video of lecture TBA":"https://youtu.be/"
   o Friday: 
-    o Stability of Hartree-Fock equations
+    o Stability of Hartree-Fock equations and Thouless' theorem
     o The homogeneous electron gas in three dimensions
 #    o "Video of lecture TBA":"https://youtu.be/"
 o Lecture Material: These slides and Szabo and Ostlund, sections 3.1-3.4
@@ -19,11 +19,777 @@ o Seventh exercise set at URL:"https://github.com/ManyBodyPhysics/FYS4480/blob/m
 !eblock
 
 
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+Another possibility is to expand the single-particle functions in a
+known basis and vary the coefficients, that is, the new
+single-particle wave function is written as a linear expansion in
+terms of a fixed chosen orthogonal basis (for example the well-known
+harmonic oscillator functions or the hydrogen-like functions etc).  We
+define our new Hartree-Fock single-particle basis by performing a
+unitary transformation on our previous basis (labelled with greek
+indices) as
+
+
+!bt
+\begin{equation}
+\psi_p^{HF}  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda}. label{eq:newbasis}
+\end{equation}
+!et
+In this case we vary the coefficients $C_{p\lambda}$. If the basis has infinitely many solutions, we need
+to truncate the above sum.  We assume that the basis $\phi_{\lambda}$ is orthogonal.
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+It is normal to choose a single-particle basis defined as the eigenfunctions
+of parts of the full Hamiltonian. The typical situation consists of the solutions of the one-body part of the Hamiltonian, that is we have
+!bt
+\[
+\hat{h}_0\phi_{\lambda}=\epsilon_{\lambda}\phi_{\lambda}.
+\]
+!et 
+The single-particle wave functions $\phi_{\lambda}(\mathbf{r})$, defined by the quantum numbers $\lambda$ and $\mathbf{r}$
+are defined as the overlap 
+!bt
+\[
+   \phi_{\lambda}(\mathbf{r})  = \langle \mathbf{r} | \lambda \rangle .
+\]
+!et
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+In deriving the Hartree-Fock equations, we will expand the
+single-particle functions in a known basis and vary the coefficients,
+that is, the new single-particle wave function is written as a linear
+expansion in terms of a fixed chosen orthogonal basis (for example the
+well-known harmonic oscillator functions or the hydrogen-like
+functions etc).
+
+We stated that a unitary transformation keeps the orthogonality. To see this consider first a basis of vectors $\mathbf{v}_i$,
+!bt
+\[
+\mathbf{v}_i = \begin{bmatrix} v_{i1} \\ \dots \\ \dots \\v_{in} \end{bmatrix}
+\]
+!et
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+We assume that the basis is orthogonal, that is 
+!bt
+\[
+\mathbf{v}_j^T\mathbf{v}_i = \delta_{ij}.
+\]
+!et
+An orthogonal or unitary transformation
+!bt
+\[
+\mathbf{w}_i=\mathbf{U}\mathbf{v}_i,
+\]
+!et
+preserves the dot product and orthogonality since
+!bt
+\[
+\mathbf{w}_j^T\mathbf{w}_i=(\mathbf{U}\mathbf{v}_j)^T\mathbf{U}\mathbf{v}_i=\mathbf{v}_j^T\mathbf{U}^T\mathbf{U}\mathbf{v}_i= \mathbf{v}_j^T\mathbf{v}_i = \delta_{ij}.
+\]
+!et
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+This means that if the coefficients $C_{p\lambda}$ belong to a unitary or orthogonal trasformation (using the Dirac bra-ket notation)
+!bt
+\[
+\vert p\rangle  = \sum_{\lambda} C_{p\lambda}\vert\lambda\rangle,
+\]
+!et
+orthogonality is preserved, that is $\langle \alpha \vert \beta\rangle = \delta_{\alpha\beta}$
+and $\langle p \vert q\rangle = \delta_{pq}$. 
+
+This propertry is extremely useful when we build up a basis of many-body Stater determinant based states. 
+
+_Note also that although a basis $\vert \alpha\rangle$ contains an infinity of states, for practical calculations we have always to make some truncations._ 
+
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+Before we develop the Hartree-Fock equations, there is another very
+useful property of determinants that we will use both in connection
+with Hartree-Fock calculations. This applies also to our previous
+discussion on full configuration interaction theory.
+
+Consider the following determinant
+!bt
+\[
+\left| \begin{array}{cc} \alpha_1b_{11}+\alpha_2sb_{12}& a_{12}\\
+                         \alpha_1b_{21}+\alpha_2b_{22}&a_{22}\end{array} \right|=\alpha_1\left|\begin{array}{cc} b_{11}& a_{12}\\
+                         b_{21}&a_{22}\end{array} \right|+\alpha_2\left| \begin{array}{cc} b_{12}& a_{12}\\b_{22}&a_{22}\end{array} \right|
+\]
+!et
+
+
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+We can generalize this to  an $n\times n$ matrix and have 
+!bt
+\[
+\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots & \sum_{k=1}^n c_k b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots & \sum_{k=1}^n c_k b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+a_{n1}& a_{n2} & \dots & \sum_{k=1}^n c_k b_{nk} &\dots & a_{nn}\end{array} \right|=
+\sum_{k=1}^n c_k\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots &  b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots &  b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+a_{n1}& a_{n2} & \dots &  b_{nk} &\dots & a_{nn}\end{array} \right| .
+\]
+!et
+This is a property we will use in our Hartree-Fock discussions. 
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+We can generalize the previous results, now 
+with all elements $a_{ij}$  being given as functions of 
+linear combinations  of various coefficients $c$ and elements $b_{ij}$,
+!bt
+\[
+\left| \begin{array}{cccccc} \sum_{k=1}^n b_{1k}c_{k1}& \sum_{k=1}^n b_{1k}c_{k2} & \dots & \sum_{k=1}^n b_{1k}c_{kj}  &\dots & \sum_{k=1}^n b_{1k}c_{kn}\\
+\sum_{k=1}^n b_{2k}c_{k1}& \sum_{k=1}^n b_{2k}c_{k2} & \dots & \sum_{k=1}^n b_{2k}c_{kj} &\dots & \sum_{k=1}^n b_{2k}c_{kn}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots &\dots \\
+\sum_{k=1}^n b_{nk}c_{k1}& \sum_{k=1}^n b_{nk}c_{k2} & \dots & \sum_{k=1}^n b_{nk}c_{kj} &\dots & \sum_{k=1}^n b_{nk}c_{kn}\end{array} \right|=det(\mathbf{C})det(\mathbf{B}),
+\]
+!et
+where $det(\mathbf{C})$ and $det(\mathbf{B})$ are the determinants of $n\times n$ matrices
+with elements $c_{ij}$ and $b_{ij}$ respectively.  
+This is a property we will use in our Hartree-Fock discussions. Convince yourself about the correctness of the above expression by setting $n=2$. 
+
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+With our definition of the new basis in terms of an orthogonal basis we have
+!bt
+\[
+\psi_p(x)  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x).
+\]
+!et
+If the coefficients $C_{p\lambda}$ belong to an orthogonal or unitary matrix, the new basis
+is also orthogonal. 
+Our Slater determinant in the new basis $\psi_p(x)$ is written as
+!bt
+\[
+\frac{1}{\sqrt{N!}}
+\left| \begin{array}{ccccc} \psi_{p}(x_1)& \psi_{p}(x_2)& \dots & \dots & \psi_{p}(x_N)\\
+                            \psi_{q}(x_1)&\psi_{q}(x_2)& \dots & \dots & \psi_{q}(x_N)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \psi_{t}(x_1)&\psi_{t}(x_2)& \dots & \dots & \psi_{t}(x_N)\end{array} \right|=\frac{1}{\sqrt{N!}}
+\left| \begin{array}{ccccc} \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_1)& \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_N)\\
+                            \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_N)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_N)\end{array} \right|,
+\]
+!et
+which is nothing but $det(\mathbf{C})det(\Phi)$, with $det(\Phi)$ being the determinant given by the basis functions $\phi_{\lambda}(x)$. 
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+In our discussions hereafter we will use our definitions of single-particle states above and below the Fermi ($F$) level given by the labels
+$ijkl\dots \le F$ for so-called single-hole states and $abcd\dots > F$ for so-called particle states.
+For general single-particle states we employ the labels $pqrs\dots$. 
+
+
+
+
+In Eq.~(ref{FunctionalEPhi}), restated here
+!bt
+\[
+  E[\Phi] 
+  = \sum_{\mu=1}^N \langle \mu | h | \mu \rangle +
+  \frac{1}{2}\sum_{{\mu}=1}^N\sum_{{\nu}=1}^N \langle \mu\nu|\hat{v}|\mu\nu\rangle_{AS},
+\]
+!et 
+we found the expression for the energy functional in terms of the basis function $\phi_{\lambda}(\mathbf{r})$. We then  varied the above energy functional with respect to the basis functions $|\mu \rangle$. 
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+Now we are interested in defining a new basis defined in terms of
+a chosen basis as defined in Eq.~(ref{eq:newbasis}). We can then rewrite the energy functional as
+!bt
+\begin{equation}
+  E[\Phi^{HF}] 
+  = \sum_{i=1}^N \langle i | h | i \rangle +
+  \frac{1}{2}\sum_{ij=1}^N\langle ij|\hat{v}|ij\rangle_{AS}, label{FunctionalEPhi2}
+\end{equation}
+!et
+where $\Phi^{HF}$ is the new Slater determinant defined by the new basis of Eq.~(ref{eq:newbasis}). 
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+Using Eq.~(ref{eq:newbasis}) we can rewrite Eq.~(ref{FunctionalEPhi2}) as 
+!bt
+\begin{equation}
+  E[\Psi] 
+  = \sum_{i=1}^N \sum_{\alpha\beta} C^*_{i\alpha}C_{i\beta}\langle \alpha | h | \beta \rangle +
+  \frac{1}{2}\sum_{ij=1}^N\sum_{{\alpha\beta\gamma\delta}} C^*_{i\alpha}C^*_{j\beta}C_{i\gamma}C_{j\delta}\langle \alpha\beta|\hat{v}|\gamma\delta\rangle_{AS}. label{FunctionalEPhi3}
+\end{equation}
+!et
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+
+We wish now to minimize the above functional. We introduce again a set of Lagrange multipliers, noting that
+since $\langle i | j \rangle = \delta_{i,j}$ and $\langle \alpha | \beta \rangle = \delta_{\alpha,\beta}$, 
+the coefficients $C_{i\gamma}$ obey the relation
+!bt
+\[
+ \langle i | j \rangle=\delta_{i,j}=\sum_{\alpha\beta} C^*_{i\alpha}C_{i\beta}\langle \alpha | \beta \rangle=
+\sum_{\alpha} C^*_{i\alpha}C_{i\alpha},
+\]
+!et
+which allows us to define a functional to be minimized that reads
+!bt
+\begin{equation}
+  F[\Phi^{HF}]=E[\Phi^{HF}] - \sum_{i=1}^N\epsilon_i\sum_{\alpha} C^*_{i\alpha}C_{i\alpha}.
+\end{equation}
+!et
+
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+
+Minimizing with respect to $C^*_{i\alpha}$, remembering that the equations for $C^*_{i\alpha}$ and $C_{i\alpha}$
+can be written as two  independent equations, we obtain
+!bt
+\[
+\frac{d}{dC^*_{i\alpha}}\left[  E[\Phi^{HF}] - \sum_{j}\epsilon_j\sum_{\alpha} C^*_{j\alpha}C_{j\alpha}\right]=0,
+\]
+!et
+which yields for every single-particle state $i$ and index $\alpha$ (recalling that the coefficients $C_{i\alpha}$ are matrix elements of a unitary (or orthogonal for a real symmetric matrix) matrix)
+the following Hartree-Fock equations
+!bt
+\[
+\sum_{\beta} C_{i\beta}\langle \alpha | h | \beta \rangle+
+\sum_{j=1}^N\sum_{\beta\gamma\delta} C^*_{j\beta}C_{j\delta}C_{i\gamma}\langle \alpha\beta|\hat{v}|\gamma\delta\rangle_{AS}=\epsilon_i^{HF}C_{i\alpha}.
+\]
+!et
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+We can rewrite this equation as (changing dummy variables)
+!bt
+\[
+\sum_{\beta} \left\{\langle \alpha | h | \beta \rangle+
+\sum_{j}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}\right\}C_{i\beta}=\epsilon_i^{HF}C_{i\alpha}.
+\]
+!et
+Note that the sums over greek indices run over the number of basis set functions (in principle an infinite number).
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+Defining 
+!bt
+\[
+h_{\alpha\beta}^{HF}=\langle \alpha | h | \beta \rangle+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS},
+\]
+!et
+we can rewrite the new equations as 
+!bt
+\begin{equation}
+\sum_{\beta}h_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{HF}C_{i\alpha}. label{eq:newhf}
+\end{equation}
+!et
+The latter is nothing but a standard eigenvalue problem. Compared with Eq.~(ref{eq:hartreefockcoordinatespace}),
+we see that we do not need to compute any integrals in an iterative procedure for solving the equations.
+It suffices to tabulate the matrix elements $\langle \alpha | h | \beta \rangle$ and $\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}$ once and for all. Successive iterations require thus only a look-up in tables over one-body and two-body matrix elements. These details will be discussed below when we solve the Hartree-Fock equations numerical. 
+
+
+
+!split
+===== Hartree-Fock algorithm =====
+
+Our Hartree-Fock matrix  is thus
+!bt
+\[
+\hat{h}_{\alpha\beta}^{HF}=\langle \alpha | \hat{h}_0 | \beta \rangle+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+\]
+!et
+The Hartree-Fock equations are solved in an iterative waym starting with a guess for the coefficients $C_{j\gamma}=\delta_{j,\gamma}$ and solving the equations by diagonalization till the new single-particle energies
+$\epsilon_i^{\mathrm{HF}}$ do not change anymore by a prefixed quantity. 
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+Normally we assume that the single-particle basis $|\beta\rangle$ forms an eigenbasis for the operator
+$\hat{h}_0$, meaning that the Hartree-Fock matrix becomes  
+!bt
+\[
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j=1}^N\sum_{\gamma\delta} C^*_{j\gamma}C_{j\delta}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+\]
+!et
+The Hartree-Fock eigenvalue problem
+!bt
+\[
+\sum_{\beta}\hat{h}_{\alpha\beta}^{HF}C_{i\beta}=\epsilon_i^{\mathrm{HF}}C_{i\alpha},
+\]
+!et
+can be written out in a more compact form as
+!bt
+\[
+\hat{h}^{HF}\hat{C}=\epsilon^{\mathrm{HF}}\hat{C}. 
+\]
+!et
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+
+The Hartree-Fock equations are, in their simplest form, solved in an
+iterative way, starting with a guess for the coefficients
+$C_{i\alpha}$. We label the coefficients as $C_{i\alpha}^{(n)}$, where
+the subscript $n$ stands for iteration $n$.  To set up the algorithm
+we can proceed as follows:
+
+ * We start with a guess $C_{i\alpha}^{(0)}=\delta_{i,\alpha}$. Alternatively, we could have used random starting values as long as the vectors are normalized. Another possibility is to give states below the Fermi level a larger weight.
+ * The Hartree-Fock matrix simplifies then to (assuming that the coefficients $C_{i\alpha} $  are real)
+!bt
+\[
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{j = 1}^N\sum_{\gamma\delta} C_{j\gamma}^{(0)}C_{j\delta}^{(0)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+\]
+!et
+
+
+
+!split
+===== Hartree-Fock by varying the coefficients of a wave function expansion =====
+
+Solving the Hartree-Fock eigenvalue problem yields then new eigenvectors $C_{i\alpha}^{(1)}$ and eigenvalues
+$\epsilon_i^{HF(1)}$. 
+ * With the new eigenvalues we can set up a new Hartree-Fock potential 
+!bt
+\[
+\sum_{j = 1}^N\sum_{\gamma\delta} C_{j\gamma}^{(1)}C_{j\delta}^{(1)}\langle \alpha\gamma|\hat{v}|\beta\delta\rangle_{AS}.
+\]
+!et
+The diagonalization with the new Hartree-Fock potential yields new eigenvectors and eigenvalues.
+This process is continued till for example
+!bt
+\[
+\frac{\sum_{p} |\epsilon_i^{(n)}-\epsilon_i^{(n-1)}|}{m} \le \lambda,  
+\]
+!et
+where $\lambda$ is a user prefixed quantity ($\lambda \sim 10^{-8}$ or smaller) and $p$ runs over all calculated single-particle
+energies and $m$ is the number of single-particle states.
+
+
+!split
+===== Using the density matrix =====
+
+The equations are often rewritten in terms of a so-called density matrix,
+which is defined as 
+!bt
+\begin{equation}
+\rho_{\gamma\delta}=\sum_{i=1}^{N}\langle\gamma|i\rangle\langle i|\delta\rangle = \sum_{i=1}^{N}C_{i\gamma}C^*_{i\delta}.
+\end{equation}
+!et
+It means that we can rewrite the Hartree-Fock Hamiltonian as
+!bt
+\[
+\hat{h}_{\alpha\beta}^{HF}=\epsilon_{\alpha}\delta_{\alpha,\beta}+
+\sum_{\gamma\delta} \rho_{\gamma\delta}\langle \alpha\gamma|V|\beta\delta\rangle_{AS}.
+\]
+!et
+It is convenient to use the density matrix since we can precalculate in every iteration the product of two eigenvector components $C$. 
+
+
+!split
+===== Code example =====
+
+!bc pycod
+import numpy as np
+class HartreeFock:
+    def __init__(self, num_electrons, num_orbitals):
+        self.num_electrons = num_electrons
+        self.num_orbitals = num_orbitals
+	# You would need to replace these by proper integrals
+        self.h = np.random.rand(num_orbitals, num_orbitals)  # One-electron integrals
+        self.coulomb = np.random.rand(num_orbitals, num_orbitals, num_orbitals, num_orbitals)  # Two-electron integrals
+    def build_fock_matrix(self, density_matrix):
+        fock_matrix = self.h.copy()
+        for i in range(self.num_orbitals):
+            for j in range(self.num_orbitals):
+                fock_matrix[i, j] += np.sum(density_matrix * self.coulomb[i, j])
+        return fock_matrix
+    def build_density_matrix(self, coefficients):
+        density_matrix = np.zeros((self.num_orbitals, self.num_orbitals))
+        for i in range(self.num_electrons):
+            density_matrix += np.outer(coefficients[:, i], coefficients[:, i])
+        return density_matrix
+    def diagonalize(self, fock_matrix):
+        energy, coefficients = np.linalg.eigh(fock_matrix)
+        return energy, coefficients
+    def run(self, max_iter=100, tol=1e-6):
+        coeffs = np.zeros((self.num_orbitals, self.num_electrons))
+        density_matrix = np.zeros((self.num_orbitals, self.num_orbitals))
+        for iteration in range(max_iter):
+            fock_matrix = self.build_fock_matrix(density_matrix)
+            energies, coeffs = self.diagonalize(fock_matrix)
+            
+            new_density_matrix = self.build_density_matrix(coeffs)
+            if np.linalg.norm(new_density_matrix - density_matrix) < tol:
+                print(f"Converged in {iteration} iterations")
+                break
+            density_matrix = new_density_matrix
+        return energies, coeffs
+# Example usage
+if __name__ == "__main__":
+    num_electrons = 2
+    num_orbitals = 4
+    hf = HartreeFock(num_electrons, num_orbitals)
+    energies, coefficients = hf.run()
+    print("Final energies:", energies)
+    print("Final coefficients:", coefficients)
+
+!ec
+
 !split
 ===== Hartree-Fock in second quantization and stability of HF solution =====
 
-The variational condition for deriving the Hartree-Fock equations guarantees only that the expectation value $\langle c | \hat{H} | c \rangle$ has an extreme value, not necessarily a minimum. To figure out whether the extreme value we have found  is a minimum, we can use second quantization to analyze our results and find a criterion 
-for the above expectation value to a local minimum. We will use Thouless' theorem and show that
+We wish now to derive the Hartree-Fock equations using our second-quantized formalism and study the stability of the equations. 
+Our ansatz for the ground state of the system is approximated as (this is our representation of a Slater determinant in second quantization)
+!bt
+\[   
+|\Phi_0\rangle = |c\rangle = a^{\dagger}_i a^{\dagger}_j \dots a^{\dagger}_l|0\rangle.
+\]
+!et
+We wish to determine $\hat{u}^{HF}$ so that 
+$E_0^{HF}= \langle c|\hat{H}| c\rangle$ becomes a local minimum. 
+
+In our analysis here we will need Thouless' theorem, which states that
+an arbitrary Slater determinant $|c'\rangle$ which is not orthogonal to a determinant
+$| c\rangle ={\displaystyle\prod_{i=1}^{n}}
+a_{\alpha_{i}}^{\dagger}|0\rangle$, can be written as
+!bt
+\[
+|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle 
+\]
+!et
+
+
+
+!split
+===== Thouless' theorem =====
+
+
+Let us give a simple proof of Thouless' theorem. The theorem states that we can make a linear combination av particle-hole excitations  with respect to a given reference state $\vert c\rangle$. With this linear combination, we can make a new Slater determinant $\vert c'\rangle $ which is not orthogonal to 
+$\vert c\rangle$, that is
+!bt
+\[
+\langle c|c'\rangle \ne 0.
+\] 
+!et
+To show this we need some intermediate steps. The exponential product of two operators  $\exp{\hat{A}}\times\exp{\hat{B}}$ is equal to $\exp{(\hat{A}+\hat{B})}$ only if the two operators commute, that is
+!bt
+\[
+[\hat{A},\hat{B}] = 0.
+\]
+!et 
+
+!split
+===== Thouless' theorem =====
+
+
+If the operators do not commute, we need to resort to the "Baker-Campbell-Hauersdorf":"http://www.encyclopediaofmath.org/index.php/Campbell%E2%80%93Hausdorff_formula". This relation states that
+!bt
+\[
+\exp{\hat{C}}=\exp{\hat{A}}\exp{\hat{B}},
+\]
+!et
+with 
+!bt
+\[
+\hat{C}=\hat{A}+\hat{B}+\frac{1}{2}[\hat{A},\hat{B}]+\frac{1}{12}[[\hat{A},\hat{B}],\hat{B}]-\frac{1}{12}[[\hat{A},\hat{B}],\hat{A}]+\dots
+\]
+!et
+
+
+!split
+===== Thouless' theorem =====
+
+From these relations, we note that 
+in our expression  for $|c'\rangle$ we have commutators of the type
+!bt
+\[
+[a_{a}^{\dagger}a_{i},a_{b}^{\dagger}a_{j}],
+\]
+!et
+and it is easy to convince oneself that these commutators, or higher powers thereof, are all zero. This means that we can write out our new representation of a Slater determinant as
+!bt
+\[
+|c'\rangle=exp\left\{\sum_{a>F}\sum_{i\le F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}+\left(\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right)^2+\dots\right\}| c\rangle
+\]
+!et
+
+
+
+!split
+===== Thouless' theorem =====
+
+We note that
+!bt
+\[
+\prod_{i}\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\sum_{b>F}C_{bi}a_{b}^{\dagger}a_{i}| c\rangle =0,
+\]
+!et
+and all higher-order powers of these combinations of creation and annihilation operators disappear 
+due to the fact that $(a_i)^n| c\rangle =0$ when $n > 1$. This allows us to rewrite the expression for $|c'\rangle $ as
+!bt
+\[
+|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| c\rangle,
+\]
+!et
+which we can rewrite as 
+!bt
+\[
+|c'\rangle=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle.
+\]
+!et
+
+
+!split
+===== Thouless' theorem =====
+
+The last equation can be written as
+!bt
+\begin{align}
+|c'\rangle&=\prod_{i}\left\{1+\sum_{a>F}C_{ai}a_{a}^{\dagger}a_{i}\right\}| a^{\dagger}_{i_1} a^{\dagger}_{i_2} \dots a^{\dagger}_{i_n}|0\rangle=\left(1+\sum_{a>F}C_{ai_1}a_{a}^{\dagger}a_{i_1}\right)a^{\dagger}_{i_1} \\
+& \times\left(1+\sum_{a>F}C_{ai_2}a_{a}^{\dagger}a_{i_2}\right)a^{\dagger}_{i_2} \dots |0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle.
+\end{align}
+!et
+
+
+!split
+===== New operators =====
+
+
+If we define a new creation operator 
+!bt
+\begin{equation}
+b^{\dagger}_{i}=a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}, label{eq:newb}
+\end{equation}
+!et
+we have 
+!bt
+\[
+|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle=\prod_{i}\left(a^{\dagger}_{i}+\sum_{a>F}C_{ai}a_{a}^{\dagger}\right)|0\rangle,
+\]
+!et
+meaning that the new representation of the Slater determinant in second quantization, $|c'\rangle$, looks like our previous ones. However, this representation is not general enough since we have a restriction on the sum over single-particle states in Eq.~(ref{eq:newb}). The single-particle states have all to be above the Fermi level.
+
+
+!split
+===== Thouless' theorem =====
+
+The question then is whether we can construct a general representation of a Slater determinant with a creation operator 
+!bt
+\[
+\tilde{b}^{\dagger}_{i}=\sum_{p}f_{ip}a_{p}^{\dagger},
+\]
+!et
+where $f_{ip}$ is a matrix element of a unitary matrix which transforms our creation and annihilation operators
+$a^{\dagger}$ and $a$ to $\tilde{b}^{\dagger}$ and $\tilde{b}$. These new operators define a new representation of a Slater determinant as
+!bt
+\[
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle.
+\]
+!et
+
+
+
+!split
+===== Showing that $|\tilde{c}\rangle= |c'\rangle$  =====
+
+
+
+We need to show that $|\tilde{c}\rangle= |c'\rangle$. We need also to assume that the new state
+is not orthogonal to $|c\rangle$, that is $\langle c| \tilde{c}\rangle \ne 0$. From this it follows that 
+!bt
+\[
+\langle c| \tilde{c}\rangle=\langle 0| a_{i_n}\dots a_{i_1}\left(\sum_{p=i_1}^{i_n}f_{i_1p}a_{p}^{\dagger} \right)\left(\sum_{q=i_1}^{i_n}f_{i_2q}a_{q}^{\dagger} \right)\dots \left(\sum_{t=i_1}^{i_n}f_{i_nt}a_{t}^{\dagger} \right)|0\rangle,
+\]
+!et  
+which is nothing but the determinant $det(f_{ip})$ which we can, using the intermediate normalization condition, 
+normalize to one, that is
+!bt
+\[
+det(f_{ip})=1,
+\]
+!et  
+meaning that $f$ has an inverse defined as (since we are dealing with orthogonal, and in our case unitary as well, transformations)
+!bt
+\[
+\sum_{k} f_{ik}f^{-1}_{kj} = \delta_{ij},
+\]
+!et  
+and 
+!bt
+\[
+\sum_{j} f^{-1}_{ij}f_{jk} = \delta_{ik}.
+\]
+!et  
+
+
+
+!split
+===== Thouless' theorem =====
+
+Using these relations we can then define the linear combination of creation (and annihilation as well) 
+operators as
+!bt
+\[
+\sum_{i}f^{-1}_{ki}\tilde{b}^{\dagger}_{i}=\sum_{i}f^{-1}_{ki}\sum_{p=i_1}^{\infty}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}.
+\]
+!et
+Defining 
+!bt
+\[
+c_{kp}=\sum_{i \le F}f^{-1}_{ki}f_{ip},
+\]
+!et
+we can redefine 
+!bt
+\[
+a_{k}^{\dagger}+\sum_{i}\sum_{p=i_{n+1}}^{\infty}f^{-1}_{ki}f_{ip}a_{p}^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}=b_k^{\dagger},
+\]
+!et
+our starting point.
+
+
+!split
+===== Thouless' theorem =====
+
+We have shown that our general representation of a Slater determinant 
+!bt
+\[
+|\tilde{c}\rangle=\prod_{i}\tilde{b}^{\dagger}_{i}|0\rangle=|c'\rangle=\prod_{i}b^{\dagger}_{i}|0\rangle,
+\]
+!et
+with 
+!bt
+\[
+b_k^{\dagger}=a_{k}^{\dagger}+\sum_{p=i_{n+1}}^{\infty}c_{kp}a_{p}^{\dagger}.
+\]
+!et
+
+
+!split
+===== Thouless' theorem =====
+
+
+This means that we can actually write an ansatz for the ground state of the system as a linear combination of
+terms which contain the ansatz itself $|c\rangle$ with  an admixture from an infinity of one-particle-one-hole states. The latter has important consequences when we wish to interpret the Hartree-Fock equations and their stability. We can rewrite the new representation as 
+!bt
+\[
+|c'\rangle = |c\rangle+|\delta c\rangle,
+\]
+!et
+where $|\delta c\rangle$ can now be interpreted as a small variation. If we approximate this term with 
+contributions from one-particle-one-hole (*1p-1h*) states only, we arrive at 
+!bt
+\[
+|c'\rangle = \left(1+\sum_{ai}\delta C_{ai}a_{a}^{\dagger}a_i\right)|c\rangle.
+\]
+!et
+
+
+!split
+===== Thouless' theorem =====
+
+In our derivation of the Hartree-Fock equations we have shown that 
+!bt
+\[
+\langle \delta c| \hat{H} | c\rangle =0,
+\]
+!et
+which means that we have to satisfy
+!bt
+\[
+\langle c|\sum_{ai}\delta C_{ai}\left\{a_{a}^{\dagger}a_i\right\} \hat{H} | c\rangle =0.
+\]
+!et
+With this as a background, we are now ready to study the stability of the Hartree-Fock equations.
+This is the topic for week 40.
+
+
+
+
+!split
+===== Hartree-Fock in second quantization and stability of HF solution =====
+
+The variational condition for deriving the Hartree-Fock equations
+guarantees only that the expectation value $\langle c | \hat{H} | c
+\rangle$ has an extreme value, not necessarily a minimum. To figure
+out whether the extreme value we have found is a minimum, we can use
+second quantization to analyze our results and find a criterion for
+the above expectation value to a local minimum. We will use Thouless'
+theorem and show that
+
+
 !bt
 \[
 \frac{\langle c' |\hat{H} | c'\rangle}{\langle c' |c'\rangle} \ge \langle c |\hat{H} | c\rangle= E_0,
@@ -200,6 +966,10 @@ A necessary (but no sufficient) condition is that the matrix elements (for all $
 \]
 !et
 This equation can be used as a first test of the stability of the Hartree-Fock equation.
+
+
+
+
 
 
 
