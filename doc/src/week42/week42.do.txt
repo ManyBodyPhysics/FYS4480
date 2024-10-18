@@ -412,6 +412,16 @@ $\rho(r)$, there is a single corresponding energy. The
 Hohenberg-Kohn theorems (two) confirms that such a functional exists,
 but does not tell us the form of the functional.
 
+Density functional theory has turned out to be a resounding success. A
+large majority of crystalline materials, many molecules and molecular
+structures have been explained using DFT. Walter Kohn, involved in
+both the Hohenberg-Kohn theory and development of the Kohn-Sham
+equations, received the Nobel Prize in Chemistry for DFT and
+computational chemistry in 1998.  DFT is used in a broad spectrum of
+disciplines, including quantum chemistry, materials science, condensed
+matter physics and low-energy nuclear physics
+
+
 
 !split
 ===== The many-particle equation =====
@@ -432,19 +442,14 @@ equation: the many-particle Schr\"{o}dinger equation,
 
 Here $\Phi(\bm{r} ; t)$ is the many-body wavefunction for $N$ particles, where each particle has its own mass $m_i$, charge $Z_i$ and position $\bm{r}_i$. The only interaction is the Coulomb interaction $e^2/r$. 
 
-Despite its apparent simplicity, the above equation  is
-notoriously difficult to solve. This is where density functional
-theory (DFT) comes in. Using a set of reasonable physical
-approximations we can simplify the many-particle Schr\"{o}dinger
-equation to something that we can actually solve numerically.
 
 !split
 ===== Born-Oppenheimer approximation =====
 
-The first approximation arises from the physical problem we want to
+In atomic and molecular physics, materials science and quantum chemsitry, the Born-Oppenheimer  approximation arises from the physical problem we want to
 study: the ground state of a collection of interacting ions and
 electrons. Because even the lightest ion is more than a thousand times
-heavier than an electron, we will forget about the dynamics of the
+heavier than an electron, we approximate our Hamiltonian  to not include  the dynamics of the
 ions all-together. This is known as the _Born-Oppenheimer_
 approximation.
 
@@ -454,41 +459,48 @@ approximation.
 
 We then write the time-independent Schr\"{o}dinger
 equation for a collection of $N$ electrons subject to the
-electric potential created by the fixed ions,
+electric potential created by the fixed ions, labeled $v_{\mathrm{ext}}(\bm{r})$,
 
 !bt
 \[
 	\left( \sum_{i}^N \left( - \frac{\hbar^2}{2m} \frac{\partial^2}{\partial \bm{r}_i^2}
-	+ V(\bm{r}_i) \right)
-	 + \sum_{i<j}^N \frac{e^2}{|\bm{r}_i - \bm{r}_j|} \right) \Psi(\bm{r}) = E_0  \Psi( \bm{r} )
+	+ v_{\mathrm{ext}}(\bm{r}_i) \right)
+	 + \sum_{i<j}^N \frac{e^2}{|\bm{r}_i - \bm{r}_j|} \right) \Psi(\bm{r}) = E_0  \Psi( \bm{r} ),
 \]
 !et
 where $\bm{r}_i$ are the positions of the electrons.
+
+We can replace the explicit Coulomb repulsion with a generic two-body interaction
+!bt
+\[
+	\sum_{i}^N \left( - \frac{\hbar^2}{2m} \frac{\partial^2}{\partial \bm{r}_i^2}
+	+ _{\mathrm{ext}}(\bm{r}_i) \right)
+	 + \sum_{i<j}^N v(r_{ij})( = E_0  \Psi( \bm{r} ),
+\]
+!et
+where $r_{ij}=\vert \bm{r}_i-\bm{r}_j\vert$. 
 
 
 !split
 ===== Potential term =====
 The potential
-$V(\bm{r}_i)$ is created by the charged ions,
+$v_{\mathrm{ext}}(\bm{r}_i)$ is created by the charged ions,
 !bt
 \[
-	V(\bm{r}_i) = - \sum_j \frac{e^2 Z_j}{| \bm{r}_i - \bm{R}_j|}
+	v_{\mathrm{ext}}(\bm{r}_i) = - \sum_j \frac{e^2 Z_j}{| \bm{r}_i - \bm{R}_j|}
 \]
 !et
 where $\bm{R}$ is the (static) positions of the ions and $Z_j$ their
-charge.  Note that the above Hamiltonian, the left hand side of
-the last equation, contains three terms: the kinetic
-energy ($T$), the potential energy ($V$) and the interaction energy
-($U$).
+charge.
 
 !split
 ===== Electronic density =====
 
 The electronic density is obtained by integrating out all electron
-degrees of freedom except one,
+degrees of freedom except one, that is (setting $\bm{r}=\bm{r}_1$)
 !bt
 \[
-	n(\bm{r}) = \int d^3 \bm{r}_2 \cdots d^3 \bm{r}_N
+	n(\bm{r})=n(\bm{r}_1) = \int d^3 \bm{r}_2 \cdots d^3 \bm{r}_N
 		\left| \Psi (\bm{r}_1 \cdots \bm{r}_n) \right|^2.
 \]
 !et
@@ -497,7 +509,7 @@ The total potential energy $V$ is just given by the integral over the
 potential $V(\bm{r})$ times the density,
 !bt
 \[
-	V = \int d^3 \bm{r} V(\bm{r}) n(\bm{r}).
+	V = \int d^3 \bm{r} v_{\mathrm{ext}}(\bm{r}) n(\bm{r}).
 \]
 !et
 
@@ -509,12 +521,12 @@ ground state energy $E_0$ and a certain electronic density
 $n(\bm{r})$. The strength of the Coulomb interaction and the mass of an
 electron are constants of nature, so the only input that can possibly
 influence the electronic density $n(\bm{r})$ and the energy $E_0$ of our
-ground state is our choice of potential $V(\bm{r})$. In other words, the
+ground state is our choice of potential $v_{\mathrm{ext}}(\bm{r})$. In other words, the
 ground state energy is a {\em functional} of the input potential,
 
 !bt
 \[
-	E_0 [V(\bm{r})] = \mathcal{F}_E[ V(\bm{r}) ]
+E_0 [v_{\mathrm{ext}}(\bm{r})] = \mathcal{F}_E[ v_{\mathrm{ext}}(\bm{r}) ]
 \]
 !et
 
@@ -528,46 +540,11 @@ energy based on thr Born-Oppenheimer approximation.
 
 At first this results seems counterintuitive. After all, the ground
 state energy clearly contains the kinetic energy $T$, the interaction
-energy $U$ and the potential energy. Only the latter term {\em
-explicitly} depends on the potential. We can thus write the ground
+energy $U$ and the potential energy. Only the latter term 
+explicitly depends on the potential. We can thus write the ground
 state energy in terms of a separate functional for the kinetic and
 interaction energy, and the potential energy
 
-!bt
-\[
-	E  [n(\bm{r})]= \mathcal{F}_E' [ V(\bm{r}) ] + \int d^3\bm{r} V(\bm{r})  n(\bm{r})
-\]
-!et
-
-
-!split
-===== Conjugate varibales =====
-
-Hohenberg and Kohn
-came to the elegant insight that
-the {\em potential $V(\bm{r})$ and electronic density $n(\bm{r})$ are
-conjugate variables}. Other conjugate variables you may know are for
-example pressure and volume in thermodynamics or momentum and position
-in classical physics. The fact that the potential $V(\bm{r})$ and the
-density $n(\bm{r})$ are conjugate means you can equally well describe any
-solution of the Hamiltonian problem  using the potential or the density.
-
-
-!split
-===== Legendre transform =====
-
-Formally known as a Legendre transform (in the same way you go from
-the Hamiltonian to the Lagrangian formulation of classical mechanics),
-we can change the functional of the last equation  to depend on the
-density $n(\bm{r})$ rather than the potential $V(\bm{r})$. This is the {\em
-Hohenberg-Kohn theorem}: there exists a _universal_ functional of
-electronic density, $\mathcal{F}[n(\bm{r})]$, such that for the correct
-density $n(\bm{r})$ it provides the ground state energy of the Hamiltonian under study
-!bt
-\[
-	E [n(\bm{r})] = \mathcal{F}[n(\bm{r})] +  \int d^3\bm{r} V(\bm{r})  n(\bm{r}).
-\]
-!et
 
 !split
 ===== How to find the functional =====
@@ -591,10 +568,9 @@ solve.
 
 We know that a free homogeneous electron gas (HEG) with density $n$ has a
 ground state energy of
-
 !bt
 \[
-	E_0 = \frac{3 \hbar^2 \left( 3 \pi^2 \right)^{2/3}}{10 m} n_0^{5/3}.
+E_0 = \frac{3 \hbar^2 \left( 3 \pi^2 \right)^{2/3}}{10 m} n_0^{5/3}.
 \]
 !et
 
@@ -642,7 +618,7 @@ potential energy, is thus
 \[
 	\mathcal{E}_{\mathrm{HK}}[n(\bm{r})] = 
 		\mathcal{T}_0 [n(\bm{r})]
-		 + \int d^3 \bm{r} V(r) n(\bm{r})
+		 + \int d^3 \bm{r} v_{\mathrm{ext}}(r) n(\bm{r})
 		 + \mathcal{U}_{\mathrm{H}} [n(\bm{r})]
 		 + E_{xc} [ n(\bm{r})].
 \]
@@ -681,7 +657,7 @@ out
 !bt
 \[
 	\frac{\delta \mathcal{T}[n(\bm{r})] }{\delta n(\bm{r})}
-	+ V(\bm{r})
+	+ v_{\mathrm{ext}}(\bm{r})
 	+ \int \frac{n(\bm{r}')}{|\bm{r}-\bm{r}'|}d^3 \bm{r}'
 	+ \frac{\delta E_{xc} [n(\bm{r})] }{\delta n(\bm{r})}
 	=0.
@@ -713,10 +689,11 @@ equation with the potential given by the last equation,
 !split
 ===== Numerical solution =====
 
-We solve these equations numerically, which is tractable because it is
-just a linear differential equation. The electronic density is
-obtained by occupying the $N$ solutions $\psi_i(\bm{r})$ with the
-lowest energy,
+The Kohn-Sham equations have to be solved numerically. As with our
+discussions of Hartree-Fock theory, this is tractable because the
+equations are just given by a set of coupled differential
+equation. The electronic density is obtained by occupying the $N$
+solutions $\psi_i(\bm{r})$ with the lowest energy,
 
 !bt
 \[
@@ -727,61 +704,4 @@ lowest energy,
 Now the electronic density obtained this way can be used to calculate
 a new Kohn-Sham potential. We
 continue this iterative procedure until we reach convergence.
-
-A final comment is in order: in the above derivation we completely
-ignored the spin of electrons. Of course, real electrons have spin so
-that you need that degree of freedom as well. This does not change
-anything fundamental about how to use the Kohn-Sham equation.
-
-We have reached the end-goal: using the Born-Oppenheimer
-approximation, with an appropriate choice of functional, we use the
-Kohn-Sham equations to find the ground state energy and electronic
-density of a system of interacting electrons and ions. This
-combination of approximations and techniques is called {\em density
-functional theory} (DFT).
-
-Despite is sometimes shaky assumptions, DFT turned out to be a
-resounding success. A large majority of crystalline materials, many
-molecules and molecular structures have been explained using
-DFT. Walter Kohn -- the man who was involved in both the
-Hohenberg-Kohn theory and the Kohn-Sham equations -- received the
-Nobel Prize for DFT in 1998. Mainly because of this success, I assume,
-you want to learn DFT in this ToolBoX.
-
-However, let me briefly shed some clouds over DFT's success.
-
-o A major limitation of DFT is that it is impossible to tell you the size of the errors that exist due to the assumptions. If you get a self-consistent solution, that is nice, but only a comparison with the experimental system will tell you whether it is a good solution.
-o The electronic properties of many materials can be described using band theory, meaning for every quasimomentum ${\bf k}$ we have a set of energies $\epsilon_n ({\bf k})$. The solutions of the Kohn-Sham equation are commonly interpreted as these electronic bands. However, it is important to bear in mind that in principle there is no connection to the {\em actual} electronic energy levels in a material. It just turns out that, in many materials, the Kohn-Sham energies happens to be a good approximation.
-o As a corollary to the previous limitation: when using DFT for an insulator or semiconductor, you can also compute the Kohn-Sham energy gap between the highest occupied and lowest unoccupied state. This is {\em not} the actual gap of the semiconductor or insulator. In practice, it turns out that DFT typically underestimates the real gap.
-o Note that even if we had the exact functional, solving the corresponding Kohn-Sham equations would not give you the exact solution for the ground state energy.
-o Because the Kohn-Sham equations describe non-interacting electrons, many materials with strong correlations cannot be described using DFT. In general, this is true for materials with partially filled $d$ or $f$-orbitals; or materials with localized electrons. In particular, applying DFT to the class of high-temperature superconductors such as cuprates, pnictides, and heavy fermions is relatively unsuccessful.
-o Materials with ground state degeneracy -- for example in the case of spontaneous symmetry breaking -- are known to be difficult to compute using DFT.
-o There is some subtlety involved in choosing the right functional. Commonly, functionals become widely accepted because of a good overlap with experiments.
-
-
-DFT as introduced in the last section is a numerical technique --
-there are no analytical expansions or solutions. And like many modern
-numerical techniques, it is better to use an existing developed code
-than to write your own. There are numerous DFT software packages, both
-open source and payed. In this section we will outline the most
-important choices we need to make in order to start running some code.
-
-
-The core of any code consists of computing the solutions to the
-Kohn-Sham equation. Because this is a linear differential equation, we
-need to choose a {\em basis} over which we can expand the Kohn-Sham
-equation. In this way, we transformed the continuum differential
-equation into a matrix equation, for which there are many known
-techniques for diagonalizing it.
-
-The two most popular choices of basis are {\em plane waves} (PW) and
-{\em Gaussian type orbitals} (GTO). If you are interested in the
-structure of molecules, the most logical basis set is GTO where you
-take a certain set of polynomials multiplied by a Gaussian envelope,
-to make sure the electronic density remains close to the ions.
-
-For crystals, on the other hand, the most logical basis set is plane
-waves $\psi({\bf k}) = e^{i {\bf k} \cdot {\bf r}}$ in a box with
-periodic boundary conditions. Because this course is aimed at
-condensed matter physicists, we will use a plane-wave code.
 
