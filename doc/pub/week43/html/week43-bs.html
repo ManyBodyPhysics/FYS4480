@@ -8,8 +8,8 @@ doconce format html week43.do.txt --html_style=bootstrap --pygments_html_style=d
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="DocOnce: https://github.com/doconce/doconce/" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Week 43: Electron gas in three dimensions and links with Density functional theory">
-<title>Week 43: Electron gas in three dimensions and links with Density functional theory</title>
+<meta name="description" content="Week 43: Density Functional Theory and start Many-body Perturbation Theory">
+<title>Week 43: Density Functional Theory and start Many-body Perturbation Theory</title>
 <!-- Bootstrap style: bootstrap -->
 <!-- doconce format html week43.do.txt --html_style=bootstrap --pygments_html_style=default --html_admon=bootstrap_panel --html_output=week43-bs --no_mako -->
 <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
@@ -36,24 +36,57 @@ doconce format html week43.do.txt --html_style=bootstrap --pygments_html_style=d
 
 <!-- tocinfo
 {'highest level': 2,
- 'sections': [('Week 43, October 23-27, 2023',
+ 'sections': [('Week 43, October 21-25, 2024',
                2,
                None,
-               'week-43-october-23-27-2023'),
-              ('Hartree-Fock single-particle solution for the electron gas',
-               2,
-               None,
-               'hartree-fock-single-particle-solution-for-the-electron-gas'),
-              ('Hartree-Fock ground state energy for the  electron gas in '
-               'three dimensions',
-               2,
-               None,
-               'hartree-fock-ground-state-energy-for-the-electron-gas-in-three-dimensions'),
+               'week-43-october-21-25-2024'),
               ('Density functional theory',
                2,
                None,
                'density-functional-theory'),
-              ('More reading', 3, None, 'more-reading')]}
+              ('Functional of density', 2, None, 'functional-of-density'),
+              ('The many-particle equation',
+               2,
+               None,
+               'the-many-particle-equation'),
+              ('Born-Oppenheimer approximation',
+               2,
+               None,
+               'born-oppenheimer-approximation'),
+              ('Time-independent equation',
+               2,
+               None,
+               'time-independent-equation'),
+              ('Potential term', 2, None, 'potential-term'),
+              ('The one-body density', 2, None, 'the-one-body-density'),
+              ('One-body density', 2, None, 'one-body-density'),
+              ('Energy as function of the density',
+               2,
+               None,
+               'energy-as-function-of-the-density'),
+              ('Hohenberg-Kohn theory', 2, None, 'hohenberg-kohn-theory'),
+              ('Energy functional', 2, None, 'energy-functional'),
+              ('How to find the functional',
+               2,
+               None,
+               'how-to-find-the-functional'),
+              ('Approximating the functional',
+               2,
+               None,
+               'approximating-the-functional'),
+              ('Using the results from the HEG',
+               2,
+               None,
+               'using-the-results-from-the-heg'),
+              ('Hartree term to the energy',
+               2,
+               None,
+               'hartree-term-to-the-energy'),
+              ('Final functional', 2, None, 'final-functional'),
+              ('Kohn-Sham equation', 2, None, 'kohn-sham-equation'),
+              ('Kohn-Sham equations', 2, None, 'kohn-sham-equations'),
+              ('The equations', 2, None, 'the-equations'),
+              ('Numerical solution', 2, None, 'numerical-solution')]}
 end of tocinfo -->
 
 <body>
@@ -63,7 +96,7 @@ end of tocinfo -->
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
   TeX: {
-     equationNumbers: {  autoNumber: "none"  },
+     equationNumbers: {  autoNumber: "AMS"  },
      extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
   }
 });
@@ -81,18 +114,34 @@ MathJax.Hub.Config({
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="week43-bs.html">Week 43: Electron gas in three dimensions and links with Density functional theory</a>
+    <a class="navbar-brand" href="week43-bs.html">Week 43: Density Functional Theory and start Many-body Perturbation Theory</a>
   </div>
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contents <b class="caret"></b></a>
         <ul class="dropdown-menu">
-     <!-- navigation toc: --> <li><a href="._week43-bs001.html#week-43-october-23-27-2023" style="font-size: 80%;"><b>Week 43, October 23-27, 2023</b></a></li>
-     <!-- navigation toc: --> <li><a href="._week43-bs001.html#hartree-fock-single-particle-solution-for-the-electron-gas" style="font-size: 80%;"><b>Hartree-Fock single-particle solution for the electron gas</b></a></li>
-     <!-- navigation toc: --> <li><a href="._week43-bs001.html#hartree-fock-ground-state-energy-for-the-electron-gas-in-three-dimensions" style="font-size: 80%;"><b>Hartree-Fock ground state energy for the  electron gas in three dimensions</b></a></li>
-     <!-- navigation toc: --> <li><a href="._week43-bs001.html#density-functional-theory" style="font-size: 80%;"><b>Density functional theory</b></a></li>
-     <!-- navigation toc: --> <li><a href="._week43-bs001.html#more-reading" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;More reading</a></li>
+     <!-- navigation toc: --> <li><a href="#week-43-october-21-25-2024" style="font-size: 80%;">Week 43, October 21-25, 2024</a></li>
+     <!-- navigation toc: --> <li><a href="#density-functional-theory" style="font-size: 80%;">Density functional theory</a></li>
+     <!-- navigation toc: --> <li><a href="#functional-of-density" style="font-size: 80%;">Functional of density</a></li>
+     <!-- navigation toc: --> <li><a href="#the-many-particle-equation" style="font-size: 80%;">The many-particle equation</a></li>
+     <!-- navigation toc: --> <li><a href="#born-oppenheimer-approximation" style="font-size: 80%;">Born-Oppenheimer approximation</a></li>
+     <!-- navigation toc: --> <li><a href="#time-independent-equation" style="font-size: 80%;">Time-independent equation</a></li>
+     <!-- navigation toc: --> <li><a href="#potential-term" style="font-size: 80%;">Potential term</a></li>
+     <!-- navigation toc: --> <li><a href="#the-one-body-density" style="font-size: 80%;">The one-body density</a></li>
+     <!-- navigation toc: --> <li><a href="#one-body-density" style="font-size: 80%;">One-body density</a></li>
+     <!-- navigation toc: --> <li><a href="#energy-as-function-of-the-density" style="font-size: 80%;">Energy as function of the density</a></li>
+     <!-- navigation toc: --> <li><a href="#hohenberg-kohn-theory" style="font-size: 80%;">Hohenberg-Kohn theory</a></li>
+     <!-- navigation toc: --> <li><a href="#energy-functional" style="font-size: 80%;">Energy functional</a></li>
+     <!-- navigation toc: --> <li><a href="#how-to-find-the-functional" style="font-size: 80%;">How to find the functional</a></li>
+     <!-- navigation toc: --> <li><a href="#approximating-the-functional" style="font-size: 80%;">Approximating the functional</a></li>
+     <!-- navigation toc: --> <li><a href="#using-the-results-from-the-heg" style="font-size: 80%;">Using the results from the HEG</a></li>
+     <!-- navigation toc: --> <li><a href="#hartree-term-to-the-energy" style="font-size: 80%;">Hartree term to the energy</a></li>
+     <!-- navigation toc: --> <li><a href="#final-functional" style="font-size: 80%;">Final functional</a></li>
+     <!-- navigation toc: --> <li><a href="#kohn-sham-equation" style="font-size: 80%;">Kohn-Sham equation</a></li>
+     <!-- navigation toc: --> <li><a href="#kohn-sham-equations" style="font-size: 80%;">Kohn-Sham equations</a></li>
+     <!-- navigation toc: --> <li><a href="#the-equations" style="font-size: 80%;">The equations</a></li>
+     <!-- navigation toc: --> <li><a href="#numerical-solution" style="font-size: 80%;">Numerical solution</a></li>
 
         </ul>
       </li>
@@ -102,11 +151,10 @@ MathJax.Hub.Config({
 </div> <!-- end of navigation bar -->
 <div class="container">
 <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p> <!-- add vertical space -->
-<a name="part0000"></a>
 <!-- ------------------- main content ---------------------- -->
 <div class="jumbotron">
 <center>
-<h1>Week 43: Electron gas in three dimensions and links with Density functional theory</h1>
+<h1>Week 43: Density Functional Theory and start Many-body Perturbation Theory</h1>
 </center>  <!-- document title -->
 
 <!-- author(s): Morten Hjorth-Jensen -->
@@ -122,24 +170,373 @@ MathJax.Hub.Config({
 </center>
 <br>
 <center>
-<h4>Week 43, October 23-27</h4>
+<h4>Week 43, October 21-25</h4>
 </center> <!-- date -->
 <br>
 
-
-
-<p><a href="._week43-bs001.html" class="btn btn-primary btn-lg">Read &raquo;</a></p>
-
-
+<!-- potential-jumbotron-button -->
 </div> <!-- end jumbotron -->
 
-<p>
-<!-- navigation buttons at the bottom of the page -->
-<ul class="pagination">
-  <li class="active"><a href="._week43-bs000.html">1</a></li>
-  <li><a href="._week43-bs001.html">2</a></li>
-  <li><a href="._week43-bs001.html">&raquo;</a></li>
-</ul>
+<!-- !split -->
+<h2 id="week-43-october-21-25-2024" class="anchor">Week 43, October 21-25, 2024 </h2>
+<div class="panel panel-default">
+<div class="panel-body">
+<!-- subsequent paragraphs come in larger fonts, so start with a paragraph -->
+<ol>
+<li> Thursday:
+<ol type="a"></li>
+ <li> Density functional theory, the Hohenberg-Kohn theorems</li>
+ <li> Kohn-Sham equations</li>
+ <li> <a href="https://www.youtube.com/" target="_self">Video of lecture at</a></li>
+</ol>
+<li> Friday:
+<ol type="a"></li>
+ <li> Kohn-Sham equations and the local density approximation and links with Hartree-Fock theory</li>
+ <li> Start many-body perturbation theory</li>
+ <li> "Video of lecture TBA":"https:/"</li>
+</ol>
+<li> 8th  exercise set at <a href="https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek43.pdf" target="_self"><tt>https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek43.pdf</tt></a></li>
+</ol>
+</div>
+</div>
+
+
+<!-- !split -->
+<h2 id="density-functional-theory" class="anchor">Density functional theory </h2>
+
+<p>Hohenberg and Kohn proved that the total energy of a system including
+that of the many-body effects of electrons (exchange and correlation)
+in the presence of static external potential (for example, the atomic
+nuclei) is a unique functional of the charge density. The minimum
+value of the total energy functional is the ground state energy of the
+system. The electronic charge density which yields this minimum is
+then the exact single particle ground state energy.
+</p>
+
+<!-- !split -->
+<h2 id="functional-of-density" class="anchor">Functional of density  </h2>
+
+<p>The electronic energy \( E \) is said to be a functional of the
+electronic density, \( E[\rho] \), in the sense that for a given function
+\( \rho(r) \), there is a single corresponding energy. The
+Hohenberg-Kohn theorems (two) confirms that such a functional exists,
+but does not tell us the form of the functional.
+</p>
+
+<p>Density functional theory has turned out to be a resounding success. A
+large majority of crystalline materials, many molecules and molecular
+structures have been explained using DFT. Walter Kohn, involved in
+both the Hohenberg-Kohn theory and development of the Kohn-Sham
+equations, received the Nobel Prize in Chemistry for DFT and
+computational chemistry in 1998.  DFT is used in a broad spectrum of
+disciplines, including quantum chemistry, materials science, condensed
+matter physics and low-energy nuclear physics
+</p>
+
+<!-- !split -->
+<h2 id="the-many-particle-equation" class="anchor">The many-particle equation </h2>
+
+<p>Any material on earth, whether in crystals, amorphous solids,
+molecules or yourself, consists of nothing else than a bunch of atoms,
+ions and electrons bound together by electric forces. All these
+possible forms of matter can be explained by virtue of one simple
+equation: the many-particle Schr\"{o}dinger equation,
+</p>
+
+$$
+\begin{equation}
+	i \hbar \frac{\partial}{\partial t} \Phi( \boldsymbol{r} ; t) = 
+	\left( - \sum_{i}^N \frac{\hbar^2}{2m_i} \frac{\partial^2}{\partial \boldsymbol{r}_i^2}
+	+ \sum_{i < j}^N \frac{e^2 Z_i Z_j }{ | \boldsymbol{r}_i - \boldsymbol{r}_j| } \right)  \Phi( \boldsymbol{r} ; t).
+\label{_auto1}
+\end{equation}
+$$
+
+<p>Here \( \Phi(\boldsymbol{r} ; t) \) is the many-body wavefunction for \( N \) particles, where each particle has its own mass \( m_i \), charge \( Z_i \) and position \( \boldsymbol{r}_i \). The only interaction is the Coulomb interaction \( e^2/r \). </p>
+
+<!-- !split -->
+<h2 id="born-oppenheimer-approximation" class="anchor">Born-Oppenheimer approximation </h2>
+
+<p>In atomic and molecular physics, materials science and quantum chemsitry, the Born-Oppenheimer  approximation arises from the physical problem we want to
+study: the ground state of a collection of interacting ions and
+electrons. Because even the lightest ion is more than a thousand times
+heavier than an electron, we approximate our Hamiltonian  to not include  the dynamics of the
+ions all-together. This is known as the <b>Born-Oppenheimer</b>
+approximation.
+</p>
+
+<!-- !split -->
+<h2 id="time-independent-equation" class="anchor">Time-independent equation </h2>
+
+<p>We then write the time-independent Schr\"{o}dinger
+equation for a collection of \( N \) electrons subject to the
+electric potential created by the fixed ions, labeled \( v_{\mathrm{ext}}(\boldsymbol{r}) \),
+</p>
+
+$$
+	\left( \sum_{i}^N \left( - \frac{\hbar^2}{2m} \frac{\partial^2}{\partial \boldsymbol{r}_i^2}
+	+ v_{\mathrm{ext}}(\boldsymbol{r}_i) \right)
+	 + \sum_{i < j}^N \frac{e^2}{|\boldsymbol{r}_i - \boldsymbol{r}_j|} \right) \Psi(\boldsymbol{r}) = E_0  \Psi( \boldsymbol{r} ),
+$$
+
+<p>where \( \boldsymbol{r}_i \) are the positions of the electrons.</p>
+
+<p>We can replace the explicit Coulomb repulsion with a generic two-body interaction</p>
+$$
+	\sum_{i}^N \left( - \frac{\hbar^2}{2m} \frac{\partial^2}{\partial \boldsymbol{r}_i^2}
+	+ v_{\mathrm{ext}}(\boldsymbol{r}_i) \right)
+	 + \sum_{i < j}^N v(r_{ij})( = E_0  \Psi( \boldsymbol{r} ),
+$$
+
+<p>where \( r_{ij}=\vert \boldsymbol{r}_i-\boldsymbol{r}_j\vert \). </p>
+
+<!-- !split -->
+<h2 id="potential-term" class="anchor">Potential term </h2>
+<p>The potential
+\( v_{\mathrm{ext}}(\boldsymbol{r}_i) \) is created by the charged ions,
+</p>
+$$
+	v_{\mathrm{ext}}(\boldsymbol{r}_i) = - \sum_j \frac{e^2 Z_j}{| \boldsymbol{r}_i - \boldsymbol{R}_j|}
+$$
+
+<p>where \( \boldsymbol{R} \) is the (static) positions of the ions and \( Z_j \) their
+charge.
+</p>
+
+<!-- !split -->
+<h2 id="the-one-body-density" class="anchor">The one-body density </h2>
+<p>The one-body reduced density matrix of a many-body system at zero
+temperature gives direct access to many observables, such as the charge density,
+kinetic energy and occupation numbers. In a coordinate representation it is defined as
+as the expectation value of the number operator
+</p>
+$$
+\hat{n}(\boldsymbol{r})=\sum_{i=1}^N\delta(\boldsymbol{r}-\boldsymbol{r}_i),
+$$
+
+<p>resulting in </p>
+$$
+n(\boldsymbol{r})=\frac{\langle \Psi \vert \hat{n}(\boldsymbol{r}) \vert \Psi \rangle}{\langle \Psi\vert \Psi \rangle}.
+$$
+
+<p>Here \( \Psi \) can be any state. In the equations that follow we assume it has been normalized properly.</p>
+
+<!-- !split -->
+<h2 id="one-body-density" class="anchor">One-body density  </h2>
+
+<p>The one-body or just electronic density here, is thus obtained by integrating out all electron
+degrees of freedom except one, that is (setting \( \boldsymbol{r}=\boldsymbol{r}_1 \))
+</p>
+$$
+	n(\boldsymbol{r})=n(\boldsymbol{r}_1) = \int d^3 \boldsymbol{r}_2 \cdots d^3 \boldsymbol{r}_N
+		\left| \Psi (\boldsymbol{r}_1 \cdots \boldsymbol{r}_n) \right|^2.
+$$
+
+<p>If \( \Psi \) is a single reference Slater determinant defined in terms of the single-particle functions \( \psi_i \), then we have </p>
+$$
+	n(\boldsymbol{r})=\sum_{i=1}^N\vert \psi_i(\boldsymbol{r})\vert^2,
+$$
+
+<p>as derived earlier. </p>
+
+<!-- !split -->
+<h2 id="energy-as-function-of-the-density" class="anchor">Energy as function of the density </h2>
+
+<p>Text to come here.</p>
+
+<!-- !split -->
+<h2 id="hohenberg-kohn-theory" class="anchor">Hohenberg-Kohn theory </h2>
+
+<p>Assume we found a solution for the Hamiltonian from the Born-Oppenheimer approximation, with
+ground state energy \( E_0 \) and a certain electronic density
+\( n(\boldsymbol{r}) \). The strength of the Coulomb interaction and the mass of an
+electron are constants of nature, so the only input that can possibly
+influence the electronic density \( n(\boldsymbol{r}) \) and the energy \( E_0 \) of our
+ground state is our choice of potential \( v_{\mathrm{ext}}(\boldsymbol{r}) \). In other words, the
+ground state energy is a {\em functional} of the input potential,
+</p>
+
+$$
+E_0 [v_{\mathrm{ext}}(\boldsymbol{r})] = \mathcal{F}_E[ v_{\mathrm{ext}}(\boldsymbol{r}) ]
+$$
+
+
+<!-- !split -->
+<h2 id="energy-functional" class="anchor">Energy functional </h2>
+<p>A functional is nothing else than a function whose input is another
+function; in this case the functional \( \mathcal{F} \) takes as input the
+electric potential generated by the ions and outputs the ground state
+energy based on thr Born-Oppenheimer approximation.
+</p>
+
+<p>At first this results seems counterintuitive. After all, the ground
+state energy clearly contains the kinetic energy \( T \), the interaction
+energy \( U \) and the potential energy. Only the latter term 
+explicitly depends on the potential. We can thus write the ground
+state energy in terms of a separate functional for the kinetic and
+interaction energy, and the potential energy
+</p>
+
+<!-- !split -->
+<h2 id="how-to-find-the-functional" class="anchor">How to find the functional </h2>
+<p>Knowing this functional, for any given potential \( V(\boldsymbol{r}) \) we minimize
+the right hand side by checking all possible electronic density
+distributions.
+</p>
+
+<p>There are only two minor problems. We don't know what this functional
+looks like. And even if we did, we don't know how to find the right
+electronic density.
+</p>
+
+<!-- !split -->
+<h2 id="approximating-the-functional" class="anchor">Approximating the functional </h2>
+
+<p>The unknown functional \( \mathcal{F}[n(\boldsymbol{r})] \) should describe the
+kinetic and interaction energy of a system described by
+for example the Born-Oppenheimer approximation. Even though we cannot find its exact
+shape, we can look at its shape in some limiting cases that we can
+solve.
+</p>
+
+<p>We know that a free homogeneous electron gas (HEG) with density \( n \) has a
+ground state energy of
+</p>
+$$
+E_0 = \frac{3 \hbar^2 \left( 3 \pi^2 \right)^{2/3}}{10 m} n_0^{5/3}.
+$$
+
+
+<!-- !split -->
+<h2 id="using-the-results-from-the-heg" class="anchor">Using the results from the HEG </h2>
+
+<p>For a slowly varying electronic density, we can approximate the
+kinetic energy contribution to the full functional
+\( \mathcal{F}[n(\boldsymbol{r})] \) as the energy evaluated
+at each point separately,
+</p>
+
+$$
+	\mathcal{T}_0 [n(\boldsymbol{r})] =
+	 \frac{3 \hbar^2 \left( 3 \pi^2 \right)^{2/3}}{10 m} \int  d^3\boldsymbol{r} ( n(\boldsymbol{r}) )^{5/3}.
+$$
+
+
+<!-- !split -->
+<h2 id="hartree-term-to-the-energy" class="anchor">Hartree term to the energy </h2>
+
+<p>We have also earlier derived that the simplest 
+energy contribution from Coulomb interactions is given by the Hartree
+term
+</p>
+
+$$
+	\mathcal{U}_{\mathrm{H}} [n(\boldsymbol{r})] = 
+		\frac{e^2}{2} \int d^3\boldsymbol{r} d^3\boldsymbol{r}' \, \frac{n(\boldsymbol{r}) n(\boldsymbol{r}')}{|\boldsymbol{r} - \boldsymbol{r}'|}.
+$$
+
+
+<!-- !split -->
+<h2 id="final-functional" class="anchor">Final functional </h2>
+
+<p>It is natural to write out the full functional as containing the
+homogeneous electron gas term and the Hartree term. The remaining
+terms, though still unknown, should be small. This unknown part is
+conventionally called the {\em exchange-correlation potential}
+\( E_{xc}[n(\boldsymbol{r})] \). The full Hohenberg-Kohn functional, including the
+potential energy, is thus
+</p>
+
+$$
+	\mathcal{E}_{\mathrm{HK}}[n(\boldsymbol{r})] = 
+		\mathcal{T}_0 [n(\boldsymbol{r})]
+		 + \int d^3 \boldsymbol{r} v_{\mathrm{ext}}(r) n(\boldsymbol{r})
+		 + \mathcal{U}_{\mathrm{H}} [n(\boldsymbol{r})]
+		 + E_{xc} [ n(\boldsymbol{r})].
+$$
+
+
+<!-- !split -->
+<h2 id="kohn-sham-equation" class="anchor">Kohn-Sham equation </h2>
+
+<p>We replaced an intractable problem with the task of minimizing an unknown
+functional \( \mathcal{F}[n(\boldsymbol{r})] \) over infinitely many possible
+electronic densities \( n(\boldsymbol{r}) \). In the previous section we already gave
+some first suggestions for the functional. But once we found it, how
+to find the right electronic density \( n(\boldsymbol{r}) \)?
+</p>
+
+<p>Because the correct density minimizes the functional, we can find the
+functional by setting it's derivative to zero,
+</p>
+
+$$
+	\frac{\delta \mathcal{F}[n(\boldsymbol{r})] }{\delta n(\boldsymbol{r})} = 0.
+$$
+
+
+<!-- !split -->
+<h2 id="kohn-sham-equations" class="anchor">Kohn-Sham equations </h2>
+<p>Using the functional Eq(insert), we write
+out
+</p>
+
+<!-- \footnote{There is a small subtlety included in this equation: the -->
+<!-- kinetic component of the functional \( \mathcal{T} [n(\boldsymbol{r})] \) should not -->
+<!-- be the one obtained for the free homogeneous noninteracting electron -->
+<!-- gas, but the one for a noninteracting gas subject -->
+<!-- to the Kohn-Sham potential.} -->
+
+$$
+	\frac{\delta \mathcal{T}[n(\boldsymbol{r})] }{\delta n(\boldsymbol{r})}
+	+ v_{\mathrm{ext}}(\boldsymbol{r})
+	+ \int \frac{n(\boldsymbol{r}')}{|\boldsymbol{r}-\boldsymbol{r}'|}d^3 \boldsymbol{r}'
+	+ \frac{\delta E_{xc} [n(\boldsymbol{r})] }{\delta n(\boldsymbol{r})}
+	=0.
+$$
+
+
+<!-- !split -->
+<h2 id="the-equations" class="anchor">The equations </h2>
+<p>The idea of Kohn and Sham was to treat this as if it
+is a single-particle problem. The first term represents the
+kinetic energy, and the remaining terms form the Kohn-Sham potential
+</p>
+
+$$
+	V_{\mathrm{KS}}(\boldsymbol{r}) = V(\boldsymbol{r})
+	+ \int \frac{n(\boldsymbol{r}')}{|\boldsymbol{r}-\boldsymbol{r}'|}d^3 \boldsymbol{r}'
+	+ \frac{\delta E_{xc} [n(\boldsymbol{r})] }{\delta n(\boldsymbol{r})}.
+$$
+
+<p>The Kohn-Sham equation is the single-particle Schr\"{o}dinger
+equation with the potential given by the last equation,
+</p>
+
+$$
+	\left( - \frac{\hbar^2}{2m} \frac{\partial^2}{\partial \boldsymbol{r}^2} + V_{\mathrm{KS}}(\boldsymbol{r}) \right) \psi_i(\boldsymbol{r}) = \epsilon_i \psi_i (\boldsymbol{r}).
+$$
+
+
+<!-- !split -->
+<h2 id="numerical-solution" class="anchor">Numerical solution </h2>
+
+<p>The Kohn-Sham equations have to be solved numerically. As with our
+discussions of Hartree-Fock theory, this is tractable because the
+equations are just given by a set of coupled differential
+equation. The electronic density is obtained by occupying the \( N \)
+solutions \( \psi_i(\boldsymbol{r}) \) with the lowest energy,
+</p>
+
+$$
+	n(\boldsymbol{r}) = \sum_{i=1}^N |\psi_i (\boldsymbol{r}) |^2.
+$$
+
+<p>Now the electronic density obtained this way can be used to calculate
+a new Kohn-Sham potential. We
+continue this iterative procedure until we reach convergence.
+</p>
+
 <!-- ------------------- end of main content --------------- -->
 </div>  <!-- end container -->
 <!-- include javascript, jQuery *first* -->
@@ -151,7 +548,7 @@ MathJax.Hub.Config({
 </footer>
 -->
 <center style="font-size:80%">
-<!-- copyright --> &copy; 1999-2023, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
+<!-- copyright --> &copy; 1999-2024, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
 </center>
 </body>
 </html>
