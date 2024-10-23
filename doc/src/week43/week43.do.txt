@@ -787,67 +787,71 @@ is \emph{universal} ($F_{HK}\neq F_{HK}[\hat{V_{0}}]$)
 The classic Kohn-Sham scheme:
 !bt
 \[
-         \left(-\frac{\hbar^{2}}{2m}\nabla^{2}+v_{s,0}(\mathbf{r})\right)\phi_{i,0}(\mathbf{r})=\varepsilon_{i}\phi_{i,0}(\mathbf{r}), \qquad \varepsilon_{1}\geq \varepsilon_{2} \geq \dots \;, \nonumber
+\left(-\frac{\hbar^{2}}{2m}\nabla^{2}+v_{s,0}(\mathbf{r})\right)\phi_{i,0}(\mathbf{r})=\varepsilon_{i}\phi_{i,0}(\mathbf{r}), \qquad \varepsilon_{1}\geq \varepsilon_{2} \geq \dots, 
 \]
 !et
-      where
-      \begin{equation}
-        v_{s,0}(\mathbf{r})=v_{0}(\mathbf{r})+\int d^{3}r' w(\mathbf{r},\mathbf{r}')\rho_{0}(\mathbf{r}')+v_{\mathrm{XC}}([\rho_{0}];\mathbf{r}) \nonumber 
-      \end{equation}
-      The density calculated as 
-      \begin{equation}
-        \rho_{0}(\mathbf{r})=\sum_{i=1}^{N}\vert \phi_{i,0}(\mathbf{r})\vert^{2}, \nonumber
-      \end{equation}
-      Equation \alert{solved selfconsistently} 
+where
+!bt
+\[
+  v_{s,0}(\mathbf{r})=v_{0}(\mathbf{r})+\int d^{3}r' w(\mathbf{r},\mathbf{r}')\rho_{0}(\mathbf{r}')+v_{\mathrm{XC}}([\rho_{0}];\mathbf{r})
+\]
+!et
+The density is calculated as
+!bt
+\[
+  \rho_{0}(\mathbf{r})=\sum_{i=1}^{N}\vert \phi_{i,0}(\mathbf{r})\vert^{2}.
+\]
+!et
+The equation is solved selfconsistently.
+The total energy
+!bt
+\[
+E=\sum_{i=1}^{N}\varepsilon_{i}-\frac{1}{2}\int d^{3}r d^{3}r'\rho(\mathbf{r})w(\mathbf{r},\mathbf{r}')\rho(\mathbf{r}')+E_{\mathrm{XC}}[\rho]-\int d^{3}r v_{\mathrm{XC}}([\rho];\mathbf{r})\rho(\mathbf{r})
+\]
+!et
 
-      Total energy: 
-      \begin{equation}
-        E=\sum_{i=1}^{N}\varepsilon_{i}-\frac{1}{2}\int d^{3}r d^{3}r'\rho(\mathbf{r})w(\mathbf{r},\mathbf{r}')\rho(\mathbf{r}')+E_{\mathrm{XC}}[\rho]-\int d^{3}r v_{\mathrm{XC}}([\rho];\mathbf{r})\rho(\mathbf{r}) \nonumber
-      \end{equation}
+
 
 !split
 ===== Exchange Energy and Correlation Energy =====
 
-      \structure{Hartree-Fock} equation:
+!bblock The Hartree-Fock equation
+!bt
       \begin{align}
         \left(-\frac{\hbar^{2}}{2m}\nabla^{2}+v_{0}(\mathbf{r})+\int d^{3}r'w(\mathbf{r},\mathbf{r}')\rho(\mathbf{r}')\right)\phi_{k}(\mathbf{r})& \nonumber \\
         \underbrace{-\sum_{l=1}^{N}\int d^{3}r'\phi_{l}^{*}(\mathbf{r}')w(\mathbf{r},\mathbf{r}')\phi_{k}(\mathbf{r}')\phi_{l}(\mathbf{r})}_{\text{exchange term}}
         &=\varepsilon_{k}\phi_{k}(\mathbf{r}), \nonumber
       \end{align}
-      
-      %\begin{itemize}
-      $\qquad \qquad $ \alert{Non-local} exchange term (Pauli exclusion principle)
-      %\end{itemize}
-
-      \vspace{5mm}     
-      \structure{Kohn-Sham} equation:
-
-      \begin{equation}
+!et      
+!eblock
+!bblock Kohn-Sham equation:
+!bt
+\[
          \left(-\frac{\hbar^{2}}{2m}\nabla^{2}+v_{0}(\mathbf{r})
            +\int d^{3}r'w(\mathbf{r},\mathbf{r}')\rho(\mathbf{r}')
            +\underbrace{v_{\mathrm{XC}}([\rho];\mathbf{r})}_{\text{exchange + correlation}}
-         \right)\phi_{k}(\mathbf{r})=\varepsilon_{k}\phi_{k}(\mathbf{r}), \nonumber
-       \end{equation}
-       %\begin{itemize}
-       $\qquad \qquad $  \alert{Local} exchange-correlation term
-       %\end{itemize}
+         \right)\phi_{k}(\mathbf{r})=\varepsilon_{k}\phi_{k}(\mathbf{r}).
+\]
+!et
       
 !split
 ===== Computing $E_{XC}$ from {\em ab initio} calculations =====
 
 
-      Exchange-correlation energy $=$ \structure{Exchange energy} $+$ \alert{Correlation energy}
-      \begin{equation}
+the exchange-correlation energy $=$ \structure{Exchange energy} $+$ \alert{Correlation energy}
+!bt
+\begin{equation}
         E_{\mathrm{XC}}[\rho]=E_{x}[\rho]+E_{c}[\rho] \nonumber
-      \end{equation}
-      From earlier: 
-      \begin{equation}
-        E_{\mathrm{XC}}[\rho]=F_{L}[\rho]-T_{s}[\rho]-\frac{1}{2}\iint d^{3}r d^{3}r' \rho(\mathbf{r})w(\mathbf{r},\mathbf{r}')\rho(\mathbf{r}') \nonumber
-      \end{equation}
-      \vspace{10mm}
-      \begin{center}
-        We want to show: $\quad $$E_{c}[\rho]\leq 0$
-      \end{center}
+\end{equation}
+!et
+
+From earlier: 
+!bt
+\[
+   E_{\mathrm{XC}}[\rho]=F_{L}[\rho]-T_{s}[\rho]-\frac{1}{2}\iint d^{3}r d^{3}r' \rho(\mathbf{r})w(\mathbf{r},\mathbf{r}')\rho(\mathbf{r}').
+\]
+!et
+We want to show: $\quad $$E_{c}[\rho]\leq 0$
 
 !split
 ===== Computing $E_{XC}$ from {\em ab initio} calculations =====
