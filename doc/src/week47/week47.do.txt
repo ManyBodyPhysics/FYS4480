@@ -47,7 +47,7 @@ reference is the Hartree-Fock state, but that is not necessary as discussed thro
 
 After we introduced the particle-hole formalism, we have opted for a convention
 where the indices $i,j,k,\ldots$ run over hole states,
-i.e. orbitals occupied in the reference state (ref{HFref}), while
+i.e. orbitals occupied in the reference state, while
 $a,b,c,\ldots$ run over particle states, i.e. unoccupied
 orbitals. Indices $p,q,r,s$ can identify any orbital.  Let $n_u$ be
 the number of unoccupied states, and $N$ is of course the number of
@@ -71,7 +71,7 @@ a^\dagger_pa^\dagger_q a_sa_r
 !split
 ===== The reference state =====
 
-The reference state (ref{HFref}) is a non-trivial vacuum of our theory. 
+The reference state is a non-trivial vacuum of our theory. 
 We normal order this Hamiltonian with respect to the nontrivial vacuum
 state given by the Hartree-Fock reference and obtain the
 normal-ordered Hamiltonian
@@ -96,9 +96,9 @@ Here,
 !et
 
 is the Fock matrix. We note that the Fock matrix is diagonal in the
-Hartree-Fock basis. The brackets $\{\cdots\}$ in Eq. (ref{HN}) denote
+Hartree-Fock basis. The brackets $\{\cdots\}$ denote
 normal ordering, i.e. all operators that annihilate the nontrivial
-vaccum (ref{HFref}) are to the right of those operators that create
+vaccum are to the right of those operators that create
 with respect to that vaccum. Normal ordering implies that $\langle
 \Phi_0\vert H_N\vert \Phi_0\rangle = 0$.
 
@@ -123,7 +123,7 @@ Which results of the Hartree-Fock computation will inform you?
 
 
 Once the Hartree-Fock equations are solved, the Fock matrix
-(ref{Fock}) becomes diagonal, and its diagonal elements can be viewed
+becomes diagonal, and its diagonal elements can be viewed
 as single-particle energies. Hopefully, there is a clear gap in the
 single-particle spectrum at the Fermi surface, i.e. after $N$ orbitals
 are filled.
@@ -163,6 +163,189 @@ potential to address questions regarding these nuclei, and in a
 several cases was used to make predictions before experimental data
 was available. In addition, the method can be used to compute
 neighbors of nuclei with closed subshells.
+
+
+!split
+===== An FCI reminder to link with coupled-cluster theory (and MBPT) =====
+
+We had
+!bt
+\[
+(\hat{H} -E)|\Psi_0\rangle = (\hat{H} -E)\sum_{P'H'}C_{H'}^{P'}|\Phi_{H'}^{P'} \rangle=0. 
+\]
+!et
+
+
+As stated previously, one solves this equation normally by
+diagonalization. If we are able to solve this equation exactly (that
+is numerically exactly) in a large Hilbert space (it will be truncated
+in terms of the number of single-particle states included in the
+definition of Slater determinants), it can then serve as a benchmark
+for other many-body methods which approximate the correlation operator
+$\hat{C}$.
+
+
+!split
+===== Rewriting the equations =====
+For reasons to come (link with Coupled-Cluster theory and Many-Body perturbation theory), 
+we will rewrite the full FCI equation as a set of coupled non-linear equations in terms of the unknown coefficients $C_H^P$. 
+
+To see this, we look at $ \langle \Phi_H^P | = \langle \Phi_0 |$, that is we multiply with $\langle \Phi_0 |$
+from the left in
+!bt
+\[
+(\hat{H} -E)\sum_{P'H'}C_{H'}^{P'}|\Phi_{H'}^{P'} \rangle=0, 
+\]
+!et
+and we assume that we have a two-body operator at most.  Using Slater's rule gives then and equation for the 
+correlation energy in terms of $C_i^a$ and $C_{ij}^{ab}$.  We get then
+!bt
+\[
+\langle \Phi_0 | \hat{H} -E| \Phi_0\rangle + \sum_{ai}\langle \Phi_0 | \hat{H} -E|\Phi_{i}^{a} \rangle C_{i}^{a}+
+\sum_{abij}\langle \Phi_0 | \hat{H} -E|\Phi_{ij}^{ab} \rangle C_{ij}^{ab}=0,
+\]
+!et
+or
+!bt
+\[
+E-E_0 =\Delta E=\sum_{ai}\langle \Phi_0 | \hat{H}|\Phi_{i}^{a} \rangle C_{i}^{a}+
+\sum_{abij}\langle \Phi_0 | \hat{H}|\Phi_{ij}^{ab} \rangle C_{ij}^{ab},
+\]
+!et
+where the $E_0$ is the reference energy and $\Delta E$ becomes the correlation energy.
+We have already computed the expectation values $\langle \Phi_0 | \hat{H}|\Phi_{i}^{a} $ and $\langle \Phi_0 | \hat{H}|\Phi_{ij}^{ab}\rangle$.
+
+
+!split
+===== Slight rewrite =====
+
+We can rewrite
+!bt
+\[
+E-E_0 =\Delta E=\sum_{ai}\langle \Phi_0 | \hat{H}|\Phi_{i}^{a} \rangle C_{i}^{a}+
+\sum_{abij}\langle \Phi_0 | \hat{H}|\Phi_{ij}^{ab} \rangle C_{ij}^{ab},
+\]
+!et
+as
+!bt
+\[
+\Delta E=\sum_{ai}\langle i| \hat{f}|a \rangle C_{i}^{a}+
+\sum_{abij}\langle ij | \hat{v}| ab \rangle C_{ij}^{ab}.
+\]
+!et
+
+
+!split
+===== Equations for the coeffficients =====
+
+This equation determines the correlation energy but not the coefficients $C$. 
+We need more equations. Our next step is to set up
+!bt
+\[
+\langle \Phi_i^a | \hat{H} -E| \Phi_0\rangle + \sum_{bj}\langle \Phi_i^a | \hat{H} -E|\Phi_{j}^{b} \rangle C_{j}^{b}+
+\sum_{bcjk}\langle \Phi_i^a | \hat{H} -E|\Phi_{jk}^{bc} \rangle C_{jk}^{bc}+
+\sum_{bcdjkl}\langle \Phi_i^a | \hat{H} -E|\Phi_{jkl}^{bcd} \rangle C_{jkl}^{bcd}=0,
+\]
+!et
+as this equation will allow us to find an expression for the coefficents $C_i^a$ since we can rewrite this equation as 
+
+!bt
+\[
+\langle i | \hat{f}| a\rangle +\langle \Phi_i^a | \hat{H}-E|\Phi_{i}^{a} \rangle C_{i}^{a}+ \sum_{bj\ne ai}\langle \Phi_i^a | \hat{H}|\Phi_{j}^{b} \rangle C_{j}^{b}+
+\sum_{bcjk}\langle \Phi_i^a | \hat{H}|\Phi_{jk}^{bc} \rangle C_{jk}^{bc}+
+\sum_{bcdjkl}\langle \Phi_i^a | \hat{H}|\Phi_{jkl}^{bcd} \rangle C_{jkl}^{bcd}=0.
+\]
+!et
+
+!split
+===== Iterative solutions =====
+
+We rewrite this equation as
+!bt
+\[
+C_{i}^{a}=-(\langle \Phi_i^a | \hat{H}-E|\Phi_{i}^{a})^{-1}\left(\langle i | \hat{f}| a\rangle+ \sum_{bj\ne ai}\langle \Phi_i^a | \hat{H}|\Phi_{j}^{b} \rangle C_{j}^{b}+\sum_{bcjk}\langle \Phi_i^a | \hat{H}|\Phi_{jk}^{bc} \rangle C_{jk}^{bc}+
+\sum_{bcdjkl}\langle \Phi_i^a | \hat{H}|\Phi_{jkl}^{bcd} \rangle C_{jkl}^{bcd}\right).
+\]
+!et
+
+
+!split
+===== Coefficients for single excitations  =====
+Since these equations are solved iteratively ( that is we can start with a guess for the coefficients $C_i^a$), it is common to start the  iteration 
+by setting
+!bt
+\[
+ C_{i}^{a}=-\frac{\langle i | \hat{f}| a\rangle}{\langle \Phi_i^a | \hat{H}-E|\Phi_{i}^{a}\rangle},
+\]
+!et
+and the denominator can be written as
+!bt
+\[
+  C_{i}^{a}=\frac{\langle i | \hat{f}| a\rangle}{\langle i | \hat{f}| i\rangle-\langle a | \hat{f}| a\rangle+\langle ai | \hat{v}| ai\rangle-E}.
+\]
+!et
+The observant reader will however see that we need an equation for $C_{jk}^{bc}$ and $C_{jkl}^{bcd}$ as well.
+To find equations for these coefficients we need then to continue our multiplications from the left with the various
+$\Phi_{H}^P$ terms. 
+
+
+!split
+===== Double excitations =====
+For $C_{jk}^{bc}$ we need then
+!bt
+\[
+\langle \Phi_{ij}^{ab} | \hat{H} -E| \Phi_0\rangle + \sum_{kc}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{k}^{c} \rangle C_{k}^{c}+
+\sum_{cdkl}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{kl}^{cd} \rangle C_{kl}^{cd}+
+\]
+!et
+!bt
+\[
+\sum_{cdeklm}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{klm}^{cde} \rangle C_{klm}^{cde}+\sum_{cdefklmn}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{klmn}^{cdef} \rangle C_{klmn}^{cdef}=0,
+\]
+!et
+and we can isolate the coefficients $C_{kl}^{cd}$ in a similar way as we did for the coefficients $C_{i}^{a}$. 
+
+!split
+===== $n$-coupled excitations =====
+
+At the end we can rewrite our solution of the Schr\"odinger equation in terms of $n$ coupled equations for the coefficients $C_H^P$.
+This is a very cumbersome way of solving the equation. However, by using this iterative scheme we can illustrate how we can compute the
+various terms in the wave operator or correlation operator $\hat{C}$. We will later identify the calculation of the various terms $C_H^P$
+as parts of different many-body approximations to full CI. In particular, we will relate this non-linear scheme with Coupled Cluster theory and
+many-body perturbation theory.
+
+If we use a Hartree-Fock basis, how can one   simplify the equation
+!bt
+\[
+\Delta E=\sum_{ai}\langle i| \hat{f}|a \rangle C_{i}^{a}+
+\sum_{abij}\langle ij | \hat{v}| ab \rangle C_{ij}^{ab}?
+\]
+!et
+
+!split
+===== And what about? =====
+
+!bt
+\[
+\langle \Phi_i^a | \hat{H} -E| \Phi_0\rangle + \sum_{bj}\langle \Phi_i^a | \hat{H} -E|\Phi_{j}^{b} \rangle C_{j}^{b}+
+\sum_{bcjk}\langle \Phi_i^a | \hat{H} -E|\Phi_{jk}^{bc} \rangle C_{jk}^{bc}+
+\sum_{bcdjkl}\langle \Phi_i^a | \hat{H} -E|\Phi_{jkl}^{bcd} \rangle C_{jkl}^{bcd}=0,
+\]
+!et
+and
+!bt
+\[
+\langle \Phi_{ij}^{ab} | \hat{H} -E| \Phi_0\rangle + \sum_{kc}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{k}^{c} \rangle C_{k}^{c}+
+\sum_{cdkl}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{kl}^{cd} \rangle C_{kl}^{cd}+
+\]
+!et
+!bt
+\[
+\sum_{cdeklm}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{klm}^{cde} \rangle C_{klm}^{cde}+\sum_{cdefklmn}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{klmn}^{cdef} \rangle C_{klmn}^{cdef}=0?
+\]
+!et
+
+
 
 
 
@@ -411,7 +594,6 @@ Baker-Campbell-Hausdorff expansion
 
 !bt
 \begin{align}
-\label{BCH}
 \overline{H_N} &= e^{-T} H_N e^T \\
 &=H_N + \left[ H_N, T\right]+ \frac{1}{2!}\left[ \left[ H_N, T\right], T\right]
 + \frac{1}{3!}\left[\left[ \left[ H_N, T\right], T\right], T\right] +\ldots .
@@ -427,7 +609,7 @@ operator (ref{Top}) consists of sums of terms that consist of particle
 creation and hole annihilation operators (but no particle annihilation
 or hole creation operators). Thus, all terms that enter $T$ commute
 with each other. This means that the commutators in the
-Baker-Campbell-Hausdorff expansion (ref{BCH}) can only be non-zero
+Baker-Campbell-Hausdorff expansion  can only be non-zero
 because each $T$ must connect to $H_N$ (but no $T$ with another
 $T$). Thus, the expansion is finite.
 
@@ -782,4 +964,6 @@ for iter in range(niter):
     print("iter=", iter, "erg=", erg)
     t2 = 0.5 * (t2_new + t2) 
 !ec
+
+
 
