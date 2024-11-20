@@ -528,9 +528,46 @@ H = \delta \sum_{p=1}^\Omega (p-1)\left(a^\dagger_{p+}a_{p+} + a^\dagger_{p-}a_{
 \end{align}
 !et
 
-#"Click for IPython notebook for FCI and CCD solutions": "https://github.com/NuclearTalent/ManyBody2018/tree/master/doc/Programs/Python/PairingModel"
+!split
+===== Exact diagonalization =====
 
-#@@@CODE Programs/CCD_PairingModel.py
+!bc pycod
+#!/usr/bin/python
+from sympy import *
+from pylab import *
+import matplotlib.pyplot as plt
+
+
+ga = linspace(-1,1,20)
+e1 = []
+
+for g_val in ga:
+    H1 = matrix([[2-g_val , -g_val/2.,  -g_val/2., -g_val/2., -g_val/2.,     0],
+                         [-g_val/2.,   4-g_val,  -g_val/2., -g_val/2.,    0., -g_val/2.],
+                         [-g_val/2., -g_val/2.,    6-g_val,     0, -g_val/2., -g_val/2.],
+                 [-g_val/2., -g_val/2.,      0,   6-g_val, -g_val/2., -g_val/2.],
+                 [-g_val/2.,     0,  -g_val/2., -g_val/2.,   8-g_val, -g_val/2.],
+                 [0    , -g_val/2.,  -g_val/2., -g_val/2., -g_val/2.,  10-g_val]])
+
+    u1, v1 = linalg.eig(H1)
+    e1.append(min(u1))
+exact = e1 - (2-ga)
+print(exact)
+
+plt.axis([-1,1,-0.5,0.05])
+plt.xlabel(r'Interaction strength, $g$', fontsize=16)
+plt.ylabel(r'Correlation energy', fontsize=16)
+exact = plt.plot(ga, exact,'b-*',linewidth = 2.0, label = 'Exact')
+plt.legend()
+plt.savefig('pairing.pdf', format='pdf')
+plt.show()
+
+!ec
+
+
+
+    
+
 
 
 !split
@@ -734,7 +771,7 @@ erg = ccd_energy(v_pphh,t2)
 
 # Exact MBPT2 for comparison, see last equation on page 365 
 exact_mbpt2 = -0.25*g**2*(1.0/(2.0+g) + 2.0/(4.0+g) + 1.0/(6.0+g))
-print("MBPT2 energy =", erg, ", compared to exact:", exact_mbpt2)
+print("MBPT2 energy =", erg, ", compared to exact MBPT(2):", exact_mbpt2)
     
     
 # iterate CCD equations niter times

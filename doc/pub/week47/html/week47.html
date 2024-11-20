@@ -199,6 +199,7 @@ div.toc p,a {
                2,
                None,
                'solving-the-ccd-equations-for-the-pairing-problem'),
+              ('Exact diagonalization', 2, None, 'exact-diagonalization'),
               ('Python code', 2, None, 'python-code')]}
 end of tocinfo -->
 
@@ -785,9 +786,61 @@ H = \delta \sum_{p=1}^\Omega (p-1)\left(a^\dagger_{p+}a_{p+} + a^\dagger_{p-}a_{
 $$
 
 
-<!-- <a href="https://github.com/NuclearTalent/ManyBody2018/tree/master/doc/Programs/Python/PairingModel" target="_blank">Click for IPython notebook for FCI and CCD solutions</a> -->
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="exact-diagonalization">Exact diagonalization </h2>
 
-<!-- @@@CODE Programs/CCD_PairingModel.py -->
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="cell border-box-sizing code_cell rendered">
+  <div class="input">
+    <div class="inner_cell">
+      <div class="input_area">
+        <div class="highlight" style="background: #f8f8f8">
+  <pre style="line-height: 125%;"><span style="color: #408080; font-style: italic">#!/usr/bin/python</span>
+<span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">sympy</span> <span style="color: #008000; font-weight: bold">import</span> <span style="color: #666666">*</span>
+<span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">pylab</span> <span style="color: #008000; font-weight: bold">import</span> <span style="color: #666666">*</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">matplotlib.pyplot</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">plt</span>
+
+
+ga <span style="color: #666666">=</span> linspace(<span style="color: #666666">-1</span>,<span style="color: #666666">1</span>,<span style="color: #666666">20</span>)
+e1 <span style="color: #666666">=</span> []
+
+<span style="color: #008000; font-weight: bold">for</span> g_val <span style="color: #AA22FF; font-weight: bold">in</span> ga:
+    H1 <span style="color: #666666">=</span> matrix([[<span style="color: #666666">2-</span>g_val , <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,     <span style="color: #666666">0</span>],
+                         [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,   <span style="color: #666666">4-</span>g_val,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,    <span style="color: #666666">0.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                         [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,    <span style="color: #666666">6-</span>g_val,     <span style="color: #666666">0</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                 [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,      <span style="color: #666666">0</span>,   <span style="color: #666666">6-</span>g_val, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                 [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,     <span style="color: #666666">0</span>,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,   <span style="color: #666666">8-</span>g_val, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                 [<span style="color: #666666">0</span>    , <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,  <span style="color: #666666">10-</span>g_val]])
+
+    u1, v1 <span style="color: #666666">=</span> linalg<span style="color: #666666">.</span>eig(H1)
+    e1<span style="color: #666666">.</span>append(<span style="color: #008000">min</span>(u1))
+exact <span style="color: #666666">=</span> e1 <span style="color: #666666">-</span> (<span style="color: #666666">2-</span>ga)
+<span style="color: #008000">print</span>(exact)
+
+plt<span style="color: #666666">.</span>axis([<span style="color: #666666">-1</span>,<span style="color: #666666">1</span>,<span style="color: #666666">-0.5</span>,<span style="color: #666666">0.05</span>])
+plt<span style="color: #666666">.</span>xlabel(<span style="color: #BA2121">r&#39;Interaction strength, $g$&#39;</span>, fontsize<span style="color: #666666">=16</span>)
+plt<span style="color: #666666">.</span>ylabel(<span style="color: #BA2121">r&#39;Correlation energy&#39;</span>, fontsize<span style="color: #666666">=16</span>)
+exact <span style="color: #666666">=</span> plt<span style="color: #666666">.</span>plot(ga, exact,<span style="color: #BA2121">&#39;b-*&#39;</span>,linewidth <span style="color: #666666">=</span> <span style="color: #666666">2.0</span>, label <span style="color: #666666">=</span> <span style="color: #BA2121">&#39;Exact&#39;</span>)
+plt<span style="color: #666666">.</span>legend()
+plt<span style="color: #666666">.</span>savefig(<span style="color: #BA2121">&#39;pairing.pdf&#39;</span>, <span style="color: #008000">format</span><span style="color: #666666">=</span><span style="color: #BA2121">&#39;pdf&#39;</span>)
+plt<span style="color: #666666">.</span>show()
+</pre>
+</div>
+      </div>
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output">
+      <div class="output_area">
+        <div class="output_subarea output_stream output_stdout output_text">          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <!-- !split --><br><br><br><br><br><br><br><br><br><br>
 <h2 id="python-code">Python code </h2>
@@ -995,7 +1048,7 @@ erg <span style="color: #666666">=</span> ccd_energy(v_pphh,t2)
 
 <span style="color: #408080; font-style: italic"># Exact MBPT2 for comparison, see last equation on page 365 </span>
 exact_mbpt2 <span style="color: #666666">=</span> <span style="color: #666666">-0.25*</span>g<span style="color: #666666">**2*</span>(<span style="color: #666666">1.0/</span>(<span style="color: #666666">2.0+</span>g) <span style="color: #666666">+</span> <span style="color: #666666">2.0/</span>(<span style="color: #666666">4.0+</span>g) <span style="color: #666666">+</span> <span style="color: #666666">1.0/</span>(<span style="color: #666666">6.0+</span>g))
-<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;MBPT2 energy =&quot;</span>, erg, <span style="color: #BA2121">&quot;, compared to exact:&quot;</span>, exact_mbpt2)
+<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;MBPT2 energy =&quot;</span>, erg, <span style="color: #BA2121">&quot;, compared to exact MBPT(2):&quot;</span>, exact_mbpt2)
     
     
 <span style="color: #408080; font-style: italic"># iterate CCD equations niter times</span>
