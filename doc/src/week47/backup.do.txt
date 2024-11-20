@@ -103,16 +103,69 @@ with respect to that vaccum. Normal ordering implies that $\langle
 \Phi_0\vert H_N\vert \Phi_0\rangle = 0$.
 
 
+!split
+===== Short repetition: Practice in normal ordering =====
+
+Normal order the expression $\sum\limits_{pq}\varepsilon_q^p a^\dagger_p a_q$.
+
+
+!bt
+\begin{align}
+\sum_{pq}\langle p \vert h_0\vert q \rangle a^\dagger_p a_q
+=\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
++\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
++\sum_{ai}\varepsilon_a^i a^\dagger_i a_a   
++\sum_{ij}\varepsilon_j^i a^\dagger_i a_j
+\end{align}
+!et
+
+
+!split
+===== Answer =====
+
+We have to move all operators that annihilate the reference state to the right of those that create on the reference state. Thus,
+!bt
+\begin{align}
+\sum_{pq}\langle p \vert h_0\vert q \rangle a^\dagger_p a_q
+&=\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
++\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
++\sum_{ai}\varepsilon_a^i a^\dagger_i a_a
++\sum_{ij}\varepsilon_j^i a^\dagger_i a_j\\
+&=\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
++\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
++\sum_{ai}\varepsilon_a^i a^\dagger_i a_a
++\sum_{ij}\varepsilon_j^i \left(-a_ja^\dagger_i +\delta_i^j\right)\\
+&=\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
++\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
++\sum_{ai}\varepsilon_a^i a^\dagger_i a_a
+-\sum_{ij}\varepsilon_j^i a_ja^\dagger_i +\sum_i \varepsilon_i^i\\
+&=\sum_{pq}\langle p \vert h_0\vert q \rangle \left\{a^\dagger_p a_q\right\} +\sum_i \varepsilon_i^i
+\end{align}
+!et
+
+
+===== =====
+
+
+!split
+=====  Hartree-Fock again =====
+We note that $H = E_{HF} + H_N$, where
+
+!bt
+\begin{align}
+E_{HF} &\equiv \langle\Phi_0\vert H\vert \Phi_0\rangle = \sum_{i} \varepsilon^i_i +\frac{1}{2}\sum_{ij}\langle ij\vert V\vert ij\rangle
+\end{align}
+!et
+
+is the Hartree-Fock energy.
+The coupled-cluster method is a very efficient tool to compute nuclei
+when a ``good'' reference state is available. Let us assume that the
+reference state results from a Hartree-Fock calculation.
 
 
 
 !split
 ===== What does ``good'' mean? =====
-
-The coupled-cluster method is a very efficient tool to compute properties of many-particle systems
-when a ``good'' reference state is available. Let us assume that the
-reference state results from a Hartree-Fock calculation.
-
 
 How do you know whether a Hartree-Fock state is a ``good'' reference?
 Which results of the Hartree-Fock computation will inform you?
@@ -130,14 +183,12 @@ are filled.
 
 
 
-
-!split
-===== To nuclear physics aficionadoss: How many nuclei are accessible with the coupled cluster method based on spherical mean fields? =====
-
 If symmetry-restricted Hartree-Fock is used, one is limited to compute
 systems  with closed subshells for neutrons and for protons. On a first
 view, this might seem as a severe limitation. But is it? 
 
+!split
+===== To nuclear physics aficionadoss: How many nuclei are accessible with the coupled cluster method based on spherical mean fields? =====
 
 If one limits oneself to nuclei with mass number up to
 mass number $A=60$, how many nuclei can potentially be described with
@@ -182,26 +233,25 @@ correlated state as
 \end{equation}
 !et
 
-See whiteboard notes for derivation of the exponential ansatz.
 
 !split
 ===== Clusters of excited states =====
 
 Here, $T$ is an operator that induces correlations. We can now demand
 that the correlate state (ref{psi}) becomes and eigenstate of the
-Hamiltonian $H_N$, i.e.  $H\vert \Psi\rangle = E\vert \Psi\rangle$. This view,
+Hamiltonian $H_N$, i.e.  $H_N\vert \Psi\rangle = E\vert \Psi\rangle$. This view,
 while correct, is not the most productive one.  Instead, we
 left-multiply the Schroedinger equation with $e^{-T}$ and find
 
 !bt
 \begin{equation}
 \label{Schroedinger}
-\overline{H_N}\vert \Phi_0\rangle = \Delta E \vert \Phi_0\rangle . 
+\overline{H_N}\vert \Phi_0\rangle = E_c \vert \Phi_0\rangle . 
 \end{equation}
 !et
 
-Here, $\Delta E$ is the correlation energy, and the total energy is
-$E=\Delta E+E_{0}^{\mathrm{ref}}$.
+Here, $E_c$ is the correlation energy, and the total energy is
+$E=E_c+E_{HF}$.
 
 
 !split
@@ -303,6 +353,31 @@ Thus, the operator (ref{Top}) induces particle-hole (p-h)
 excitations with respect to the reference. In general, $T$ generates
 up to $Ap-Ah$ excitations, and the unknown parameters are the cluster amplitides
 $t_i^a$, $t_{ij}^{ab}$, ..., $t_{i_1,\ldots,i_A}^{a_1,\ldots,a_A}$.
+
+
+!split
+===== How many unknowns? =====
+
+Show that the number of unknowns is as large as the FCI dimension of
+the problem, using the numbers $A$ and $n_u$.
+
+
+
+!split
+===== Answer =====
+
+We have to sum up all $np-nh$ excitations, and there are
+$\binom{n_u}{n}$ particle states and $\binom{A}{A-n}$ hole states for
+each $n$. Thus, we have for the total number
+
+!bt
+\begin{align}
+\sum_{n=0}^A \binom{n_u}{n} \binom{A}{A-n}= \binom{A+n_u}{A} .
+\end{align}
+!et
+
+The right hand side are obviously all ways to distribute $A$ fermions over $n_0+A$ orbitals.
+
 
 !split
 ===== Full clutser operator =====
@@ -431,6 +506,20 @@ Baker-Campbell-Hausdorff expansion (ref{BCH}) can only be non-zero
 because each $T$ must connect to $H_N$ (but no $T$ with another
 $T$). Thus, the expansion is finite.
 
+!split
+===== When does CCSD truncate? =====
+
+In CCSD and for two-body Hamiltonians, how many nested
+commutators yield nonzero results? Where does the
+Baker-Campbell-Hausdorff expansion terminate? What is the (many-body) rank of the resulting $\overline{H_N}$? 
+
+
+
+CCSD truncates for two-body operators at four-fold nested commutators,
+because each of the four annihilation and creation operators in
+$\overline{H_N}$ can be knocked out with one term of $T$.
+
+
 
 !split
 ===== Non-hermitian Hamiltonian =====
@@ -438,7 +527,10 @@ $T$). Thus, the expansion is finite.
 We see that the (disadvantage of having a) non-Hermitian Hamiltonian
 $\overline{H_N}$ leads to the advantage that the
 Baker-Campbell-Hausdorff expansion is finite, thus leading to the
-possibility to compute $\overline{H_N}$ exactly.
+possibility to compute $\overline{H_N}$ exactly. In contrast, the
+IMSRG deals with a Hermitian Hamiltonian throughout, and the infinite
+Baker-Campbell-Hausdorff expansion is truncated at a high order when
+terms become very small.
 
 !split
 ===== Similarity transformed Hamiltonian =====
@@ -458,9 +550,107 @@ with
 \end{align}
 !et
 
-If we truncate the operator $T$ at the level of singles and doubles,
-the CCSD Eqs.~(ref{ccsd}) for the amplitudes can be written as
+Thus, the CCSD Eqs.~(ref{ccsd}) for the amplitudes can be written as
 $\overline{H}_i^a = 0$ and $\overline{H}_{ij}^{ab}=0$.
+
+!split
+===== Compute the matrix element $\overline{H}_{ab}^{ij}\equiv \langle ij\vert \overline{H_N}\vert ab\rangle$ =====
+
+
+
+This is a simple task. This matrix element is part of the operator
+$\overline{H}_{ab}^{ij}a^\dagger_ia^\dagger_ja_ba_a$, i.e. particles
+are annihilated and holes are created. Thus, no contraction of the
+Hamiltonian $H$ with any cluster operator $T$ (remember that $T$
+annihilates holes and creates particles) can happen, and we simply
+have $\overline{H}_{ab}^{ij} = \langle ij\vert V\vert ab\rangle$.
+
+
+
+!split
+=====  Algebraic manipulations =====
+
+We need to work out the similarity-transformed Hamiltonian of
+Eq. (ref{BCH}). To do this, we write $T=T_1 +T_2$ and $H_N= F +V$,
+where $T_1$ and $F$ are one-body operators, and $T_2$ and $V$ are
+two-body operators.
+
+
+!split
+===== Example: The contribution of $[F, T_2]$ to $\overline{H_N}$ ===== 
+
+The commutator $[F, T_2]$ consists of two-body and one-body terms. Let
+us compute first the two-body term, as it results from a single
+contraction (i.e. a single application of $[a_p, a^\dagger_q] =
+\delta_p^q$). We denote this as $[F, T_2]_{2b}$ and find
+
+!bt
+\begin{align*}
+[F, T_2]_{2b} &= \frac{1}{4}\sum_{pq}\sum_{rsuv} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\left[a^\dagger_q a_p, a^\dagger_a a^\dagger_b a_j a_i \right]_{2b} \\
+&= \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_p^a a^\dagger_q a^\dagger_b a_j a_i  \\
+&- \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_p^b a^\dagger_q a^\dagger_a a_j a_i  \\
+&- \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_q^j a^\dagger_a a^\dagger_b a_p a_i  \\
+&+ \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_q^i a^\dagger_a a^\dagger_b a_p a_j  \\
+&= \frac{1}{4}\sum_{qbij}\left(\sum_{a} f_a^q t_{ij}^{ab}\right)a^\dagger_q a^\dagger_b a_j a_i  \\
+&- \frac{1}{4}\sum_{qaij}\left(\sum_{b} f_b^q t_{ij}^{ab}\right)a^\dagger_q a^\dagger_a a_j a_i  \\
+&- \frac{1}{4}\sum_{pabi}\left(\sum_{j} f_p^j t_{ij}^{ab}\right)a^\dagger_a a^\dagger_b a_p a_i  \\
+&+ \frac{1}{4}\sum_{pabj}\left(\sum_{i} f_p^i t_{ij}^{ab}\right)a^\dagger_a a^\dagger_b a_p a_j  \\
+&= \frac{1}{2}\sum_{qbij}\left(\sum_{a} f_a^q t_{ij}^{ab}\right)a^\dagger_q a^\dagger_b a_j a_i  \\
+&- \frac{1}{2}\sum_{pabi}\left(\sum_{j} f_p^j t_{ij}^{ab}\right)a^\dagger_a a^\dagger_b a_p a_i  .
+\end{align*}
+!et
+
+!split
+===== Antisymmetry =====
+
+Here we exploited the antisymmetry $t_{ij}^{ab} = -t_{ji}^{ab} =
+-t_{ij}^{ba} = t_{ji}^{ba}$ in the last step. Using $a^\dagger_q a^\dagger_b a_j a_i = -a^\dagger_b a^\dagger_q a_j a_i $ and $a^\dagger_a a^\dagger_b a_p a_i = a^\dagger_a a^\dagger_b a_i a_p$, we can make the expression 
+manifest antisymmetric, i.e.
+
+!bt
+\begin{align*}
+[F, T_2]_{2b}
+&= \frac{1}{4}\sum_{qbij}\left[\sum_{a} \left(f_a^q t_{ij}^{ab}-f_a^b t_{ij}^{qa}\right)\right]a^\dagger_q a^\dagger_b a_j a_i  \\
+&- \frac{1}{4}\sum_{pabi}\left[\sum_{j} \left(f_p^j t_{ij}^{ab}-f_i^j t_{pj}^{ab}\right)\right]a^\dagger_a a^\dagger_b a_p a_i  .
+\end{align*}
+!et
+
+!split
+===== Final contribution =====
+Thus, the contribution of $[F, T_2]_{2b}$ to the matrix element $\overline{H}_{ij}^{ab}$ is  
+!bt
+\begin{align*}
+\overline{H}_{ij}^{ab} \leftarrow  \sum_{c} \left(f_c^a t_{ij}^{cb}-f_c^b t_{ij}^{ac}\right) - \sum_{k} \left(f_j^k t_{ik}^{ab}-f_i^k t_{jk}^{ab}\right)
+\end{align*}
+!et
+
+Here we used an arrow to indicate that this is just one contribution
+to this matrix element.  We see that the derivation straight forward,
+but somewhat tedious. As no one likes to commute too much (neither in
+this example nor when going to and from work), and so we need a better
+approach. This is where diagramms come in handy.
+
+
+!split
+===== Assign the correct matrix element $\langle pq\vert V\vert rs\rangle$ to each of the following diagrams of the interaction =====
+
+Remember: $\langle\rm{left-out, right-out}\vert V\vert \rm{left-in, right-in}\rangle$.
+
+#FIGURE: [figslides/Diagrams-V1.png, width=400 frac=0.8] 
+
+
+
+$\langle ab\vert V\vert cd\rangle + \langle ij\vert V\vert kl\rangle + \langle ia\vert V\vert bj\rangle$
+
+
+#FIGURE: [figslides/Diagrams-V2.png, width=400 frac=0.8] 
+
+$\langle ai\vert V\vert bc\rangle + \langle ij\vert V\vert ka\rangle + \langle ab\vert V\vert ci\rangle$
+
+
+#FIGURE: [figslides/Diagrams-V3.png, width=400 frac=0.8] 
+
+$\langle ia\vert V\vert jk\rangle + \langle ab\vert V\vert ij\rangle + \langle ij\vert V\vert ab\rangle$
 
 !split
 ===== CCD Approximation =====
@@ -500,14 +690,144 @@ We start systematically and  consider all combinations of $F$ and $V$ diagrams w
 \end{align*}
 !et
 
+!split
+===== Computational cost of a CCD computation =====
 
+For each of the diagrams in (add fig) write down the
+computational cost in terms of the number of occupied $A$ and the
+number of unoccupied $n_u$ orbitals.
+
+
+The cost is $A^2 n_u^2$, $A^2 n_u^3$, $A^3 n_u^2$,
+$A^2 n_u^4$, $A^4 n_u^2$, $A^3 n_u^3$,
+$A^4 n_u^4$, $A^4 n_u^4$,
+$A^4 n_u^4$, and $A^4 n_u^4$ for the respective diagrams.
+
+
+!split
+===== Additional details =====
+
+Note that $n_u\gg A$ in general. In textbooks, one reads that CCD (and
+CCSD) cost only $A^2n_u^4$. Our most expensive diagrams, however are
+$A^4n_u^4$. What is going on?
+
+To understand this puzzle, let us consider the last diagram of
+Figure xx . We break up the computation into two steps,
+computing first the intermediate
+!bt
+\begin{align}
+\chi_{ij}^{kl}\equiv {1\over 2} \sum_{cd} \langle kl\vert V\vert cd\rangle t_{ij}^{cd}
+\end{align}
+!et
+at a cost of $A^4n_u^2$, and then 
+!bt
+\begin{align}
+{1\over 2} \sum_{kl} \chi_{ij}^{kl} t_{kl}^{ab}  
+\end{align}
+!et
+at a cost of $A^4n_u^2$. This is affordable. The price to pay is the
+storage of the intermediate $\chi_{ij}^{kl}$, i.e. we traded
+memory for computational cycles. This trick is known as _factorization_.
+
+
+!split
+===== Factorizing the remaining diagrams of the CCD equation =====
+
+Diagrams 7, 8, and 9 of Fig. xx also need to be factorized. 
+
+For diagram number 7, we compute
+!bt
+\begin{align}
+\chi_{id}^{al}\equiv\sum_{kc} \langle kl\vert V\vert cd\rangle t_{ik}^{ac}
+\end{align}
+!et
+at a cost of $A^3 n_u^3$ and then compute
+!bt
+\begin{align}
+{1\over 2} P(ij)P(ab) \sum_{ld} \chi_{id}^{al} t_{lj}^{db} 
+\end{align}
+!et
+at the cost of $A^3 n_u^3$.
+
+!split
+===== Diagram 8 =====
+For diagram number 8, we compute
+!bt
+\begin{align}
+\chi_{i}^{l}\equiv -{1\over 2} \sum_{kcd} \langle kl\vert V\vert cd\rangle t_{ik}^{cd}
+\end{align}
+!et
+at a cost of $A^3 n_u^2$, and then compute
+!bt
+\begin{align}
+-P(ij) \sum_l \chi_i^l t_{lj}^{ab}
+\end{align}
+!et
+at the cost of $A^3 n_u^2$.
+
+!split
+===== Diagram 9 =====
+For diagram number 9, we compute
+!bt
+\begin{align}
+\chi_d^a\equiv{1\over 2} \sum_{kcl} \langle kl\vert V\vert cd\rangle t_{kl}^{ac}
+\end{align}
+!et
+at a cost of $A^2 n_u^3$ and then compute
+!bt
+\begin{align}
+P(ab)\sum_d \chi_d^a t_{ij}^{db}
+\end{align}
+!et
+at the cost of $A^3 n_u^3$.
+
+
+!split
+===== Solving the CCD equations =====
+
+The CCD equations, depicted in Fig xx, are nonlinear in the
+cluster amplitudes. How do we solve $\overline{H}_{ij}^{ab}=0$? We
+subtract $(f_a^a +f_b^b -f_i^i -f_j^j)t_{ij}^{ab}$ from both sides of
+$\overline{H}_{ij}^{ab}=0$ (because this term is contained in
+$\overline{H}_{ij}^{ab}$) and find
+
+!bt
+\begin{align*}
+(f_i^i +f_j^j -f_a^a -f_b^b)t_{ij}^{ab} &= (f_i^i +f_j^j -f_a^a -f_b^b)t_{ij}^{ab} +\overline{H}_{ij}^{ab}
+\end{align*}
+!et
+
+!split
+===== More manipulations =====
+Dividing by $(f_i^i +f_j^j -f_a^a -f_b^b)$ yields
+!bt
+\begin{align}
+t_{ij}^{ab} &= t_{ij}^{ab} + \frac{\overline{H}_{ij}^{ab}}{f_i^i +f_j^j -f_a^a -f_b^b}
+\label{iter}
+\end{align}
+!et
+
+This equation is of the type $t=f(t)$, and we solve it by iteration,
+i.e. we start with a guess $t_0$ and iterate $t_{n+1}=f(t_n)$, and
+hope that this will converge to a solution. We take the perturbative result
+!bt
+\begin{align}
+\label{pert}
+\left(t_{ij}^{ab}\right)_0 = \frac{\langle ab\vert V\vert ij\rangle}{f_i^i +f_j^j -f_a^a -f_b^b}
+\end{align}
+!et
+
+as a starting point, compute $\overline{H}_{ij}^{ab}$, and find a new
+$t_{ij}^{ab}$ from the right-hand side of Eq. (ref{iter}). We repeat
+this process until the amplitudes (or the CCD energy) converge.
 
 
 !split
 ===== CCD for the pairing Hamiltonian =====
 
 
-You learned about the pairing Hamiltonian earlier in the second midterm. Convince yourself that this Hamiltonian does not induce any
+You learned about the pairing Hamiltonian earlier in this
+school. Convince yourself that this Hamiltonian does not induce any
 1p-1h excitations. Let us solve the CCD equations for this
 problem. This consists of the following steps
 
@@ -515,8 +835,11 @@ o Write a function that compute the potential, i.e. it returns a four-indexed ar
 
 o Write a function that computes the Fock matrix, i.e. a two-indexed array. We only need $f_a^b$ and $f_i^j$. Why? 
 
-o Initialize the cluster amplitudes according and solve the equations for the amplitues itereatively. 
+o Initialize the cluster amplitudes according to Eq. (ref{pert}), and solve Eq. (ref{iter}) by iteration. The cluster amplitudes $T_1$ and $T_2$ are two- and four-indexed arrays, respectively.
 
+Please note that the contraction of tensors (i.e. the summation over
+common indices in products of tensors) is very user friendly and
+elegant in python when `numpy.einsum` is used.
 
 !split
 ===== Solving the CCD equations for the pairing problem =====
