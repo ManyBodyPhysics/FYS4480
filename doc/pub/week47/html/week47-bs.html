@@ -8,8 +8,8 @@ doconce format html week47.do.txt --html_style=bootstrap --pygments_html_style=d
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="DocOnce: https://github.com/doconce/doconce/" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Week 47, Coupled Cluster theory">
-<title>Week 47, Coupled Cluster theory</title>
+<meta name="description" content="Week 47, Coupled-Cluster theory">
+<title>Week 47, Coupled-Cluster theory</title>
 <!-- Bootstrap style: bootstrap -->
 <!-- doconce format html week47.do.txt --html_style=bootstrap --pygments_html_style=default --html_admon=bootstrap_panel --html_output=week47-bs --no_mako -->
 <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
@@ -193,7 +193,7 @@ MathJax.Hub.Config({
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="week47-bs.html">Week 47, Coupled Cluster theory</a>
+    <a class="navbar-brand" href="week47-bs.html">Week 47, Coupled-Cluster theory</a>
   </div>
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav navbar-right">
@@ -268,7 +268,7 @@ MathJax.Hub.Config({
 <!-- ------------------- main content ---------------------- -->
 <div class="jumbotron">
 <center>
-<h1>Week 47, Coupled Cluster theory</h1>
+<h1>Week 47, Coupled-Cluster theory</h1>
 </center>  <!-- document title -->
 
 <!-- author(s): Morten Hjorth-Jensen -->
@@ -293,14 +293,14 @@ MathJax.Hub.Config({
 <ol>
 <li> Thursday:
 <ol type="a"></li>
- <li> Introduction to coupled cluster theory and basic equations</li>
+ <li> Introduction to coupled-cluster theory  and basic equations</li>
 </ol>
 <li> Friday:
 <ol type="a"></li>
  <li> Derivation of doubles excitation equation</li> 
  <li> Applications to the pairing model from the second midterm</li>
 </ol>
-<li> Lecture material: Lecture notes (these notes) and chpater 9 of Shavitt and Bartlett</li>
+<li> Lecture material: Lecture notes (these notes) and chapter 9 of Shavitt and Bartlett, in particular sections 9-1-9.3</li>
 </ol>
 <!-- !split -->
 <h2 id="introduction" class="anchor">Introduction </h2>
@@ -313,6 +313,11 @@ full configuration interaction (FCI)
 exhibits an exponential cost and is therefore limited to systems with few degrees of freedom.
 </p>
 
+<p>For some  recent applications see</p>
+<ol>
+<li> <b>Nuclear Physics</b>: see <a href="https://www.nature.com/articles/s41567-022-01715-8" target="_self"><tt>https://www.nature.com/articles/s41567-022-01715-8</tt></a></li>
+<li> <b>Quantum chemistry</b>: see <a href="https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.79.291" target="_self"><tt>https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.79.291</tt></a></li>
+</ol>
 <!-- !split -->
 <h2 id="the-normal-ordered-hamiltonian" class="anchor">The normal-ordered Hamiltonian </h2>
 
@@ -326,18 +331,19 @@ $$
 $$
 
 <p>for the description of a system  with \( N \) particles.  Usually, this
-reference is the Hartree-Fock state, but that is not necessary.
+reference is the Hartree-Fock state, but that is not necessary as discussed throughout this course.
 </p>
 
 <!-- !split -->
 <h2 id="notations-again" class="anchor">Notations again </h2>
-<p>Here and in what
-follows, the indices \( i,j,k,\ldots \) run over hole states,
+
+<p>After we introduced the particle-hole formalism, we have opted for a convention
+where the indices \( i,j,k,\ldots \) run over hole states,
 i.e. orbitals occupied in the reference state \eqref{HFref}, while
 \( a,b,c,\ldots \) run over particle states, i.e. unoccupied
 orbitals. Indices \( p,q,r,s \) can identify any orbital.  Let \( n_u \) be
 the number of unoccupied states, and \( N \) is of course the number of
-occupied states. 
+particles, which is also the number of occupied states used to define the ansatz for the ground state. 
 </p>
 
 <!-- !split -->
@@ -347,8 +353,8 @@ occupied states.
 $$
 \begin{equation}
 \label{Ham} H =
-\sum_{pq} \varepsilon^p_q a^\dagger_p a_q +
-\frac{1}{4}\sum_{pqrs}\langle pq\vert V\vert rs\rangle
+\sum_{pq} \langle p\vert h_0\vert q \rangle a^\dagger_p a_q +
+\frac{1}{4}\sum_{pqrs}\langle pq\vert v\vert rs\rangle
 a^\dagger_pa^\dagger_q a_sa_r
 \end{equation}
 $$
@@ -366,7 +372,7 @@ normal-ordered Hamiltonian
 $$
 \begin{equation}
 \label{HN}
-H_N = \sum_{pq} f_{pq} \left\{a^\dagger_p a_q\right\} + \frac{1}{4}\sum_{pqrs}\langle pq\vert V\vert rs\rangle \left\{a^\dagger_pa^\dagger_q a_sa_r\right\}.
+H_N = \sum_{pq} \langle p\vert f\vert q \rangle \left\{a^\dagger_p a_q\right\} + \frac{1}{4}\sum_{pqrs}\langle pq\vert V\vert rs\rangle \left\{a^\dagger_pa^\dagger_q a_sa_r\right\}.
 \end{equation}
 $$
 
@@ -378,7 +384,7 @@ $$
 $$
 \begin{equation}
 \label{Fock}
-f^p_q = \varepsilon^p_q + \sum_i \langle pi\vert V\vert qi\rangle
+\langle p\vert f\vert q \rangle = \langle p\vert h_0\vert q \rangle + \sum_i \langle pi\vert V\vert qi\rangle
 \end{equation}
 $$
 
@@ -397,7 +403,7 @@ with respect to that vaccum. Normal ordering implies that \( \langle
 
 $$
 \begin{align}
-\sum_{pq}\varepsilon_q^p a^\dagger_p a_q
+\sum_{pq}\langle p \vert h_0\vert q \rangle a^\dagger_p a_q
 =\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
 +\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
 +\sum_{ai}\varepsilon_a^i a^\dagger_i a_a   
@@ -413,7 +419,7 @@ $$
 <p>We have to move all operators that annihilate the reference state to the right of those that create on the reference state. Thus,</p>
 $$
 \begin{align}
-\sum_{pq}\varepsilon_q^p a^\dagger_p a_q
+\sum_{pq}\langle p \vert h_0\vert q \rangle a^\dagger_p a_q
 &=\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
 +\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
 +\sum_{ai}\varepsilon_a^i a^\dagger_i a_a
@@ -429,7 +435,7 @@ $$
 +\sum_{ai}\varepsilon_a^i a^\dagger_i a_a
 -\sum_{ij}\varepsilon_j^i a_ja^\dagger_i +\sum_i \varepsilon_i^i
 \label{_auto4}\\
-&=\sum_{pq}\varepsilon_q^p \left\{a^\dagger_p a_q\right\} +\sum_i \varepsilon_i^i
+&=\sum_{pq}\langle p \vert h_0\vert q \rangle \left\{a^\dagger_p a_q\right\} +\sum_i \varepsilon_i^i
 \label{_auto5}
 \end{align}
 $$
@@ -891,11 +897,11 @@ contraction (i.e. a single application of \( [a_p, a^\dagger_q] =
 
 $$
 \begin{align*}
-[F, T_2]_{2b} &= \frac{1}{4}\sum_{pq}\sum_{rsuv} f_p^q t_{ij}^{ab}\left[a^\dagger_q a_p, a^\dagger_a a^\dagger_b a_j a_i \right]_{2b} \\
-&= \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_p^a a^\dagger_q a^\dagger_b a_j a_i  \\
-&- \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_p^b a^\dagger_q a^\dagger_a a_j a_i  \\
-&- \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_q^j a^\dagger_a a^\dagger_b a_p a_i  \\
-&+ \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_q^i a^\dagger_a a^\dagger_b a_p a_j  \\
+[F, T_2]_{2b} &= \frac{1}{4}\sum_{pq}\sum_{rsuv} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\left[a^\dagger_q a_p, a^\dagger_a a^\dagger_b a_j a_i \right]_{2b} \\
+&= \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_p^a a^\dagger_q a^\dagger_b a_j a_i  \\
+&- \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_p^b a^\dagger_q a^\dagger_a a_j a_i  \\
+&- \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_q^j a^\dagger_a a^\dagger_b a_p a_i  \\
+&+ \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_q^i a^\dagger_a a^\dagger_b a_p a_j  \\
 &= \frac{1}{4}\sum_{qbij}\left(\sum_{a} f_a^q t_{ij}^{ab}\right)a^\dagger_q a^\dagger_b a_j a_i  \\
 &- \frac{1}{4}\sum_{qaij}\left(\sum_{b} f_b^q t_{ij}^{ab}\right)a^\dagger_q a^\dagger_a a_j a_i  \\
 &- \frac{1}{4}\sum_{pabi}\left(\sum_{j} f_p^j t_{ij}^{ab}\right)a^\dagger_a a^\dagger_b a_p a_i  \\

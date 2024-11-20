@@ -5,7 +5,7 @@ DATE: November 18-22, 2024
 !split
 =====  Week 47, November 18-22, 2024 =====
 o Thursday:
-  o Introduction to coupled-cluster theory (CC-theory) and basic equations
+  o Introduction to coupled-cluster theory  and basic equations
 o Friday:
   o Derivation of doubles excitation equation 
   o Applications to the pairing model from the second midterm
@@ -22,6 +22,10 @@ with mass numbers about $A\approx 208$ (which corresponds to lead) with this met
 full configuration interaction (FCI)
 exhibits an exponential cost and is therefore limited to systems with few degrees of freedom.
 
+For some  recent applications see
+o _Nuclear Physics_: see URL:"https://www.nature.com/articles/s41567-022-01715-8"
+o _Quantum chemistry_: see URL:"https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.79.291"
+
 !split
 ===== The normal-ordered Hamiltonian =====
 
@@ -35,18 +39,19 @@ We start from the reference state
 !et
 
 for the description of a system  with $N$ particles.  Usually, this
-reference is the Hartree-Fock state, but that is not necessary.
+reference is the Hartree-Fock state, but that is not necessary as discussed throughout this course.
 
 
 !split
 ===== Notations again =====
-Here and in what
-follows, the indices $i,j,k,\ldots$ run over hole states,
+
+After we introduced the particle-hole formalism, we have opted for a convention
+where the indices $i,j,k,\ldots$ run over hole states,
 i.e. orbitals occupied in the reference state (ref{HFref}), while
 $a,b,c,\ldots$ run over particle states, i.e. unoccupied
 orbitals. Indices $p,q,r,s$ can identify any orbital.  Let $n_u$ be
 the number of unoccupied states, and $N$ is of course the number of
-occupied states. 
+particles, which is also the number of occupied states used to define the ansatz for the ground state. 
 
 
 !split
@@ -56,8 +61,8 @@ We consider the Hamiltonian
 !bt
 \begin{equation}
 \label{Ham} H =
-\sum_{pq} \varepsilon^p_q a^\dagger_p a_q +
-\frac{1}{4}\sum_{pqrs}\langle pq\vert V\vert rs\rangle
+\sum_{pq} \langle p\vert h_0\vert q \rangle a^\dagger_p a_q +
+\frac{1}{4}\sum_{pqrs}\langle pq\vert v\vert rs\rangle
 a^\dagger_pa^\dagger_q a_sa_r
 \end{equation}
 !et
@@ -74,7 +79,7 @@ normal-ordered Hamiltonian
 !bt
 \begin{equation}
 \label{HN}
-H_N = \sum_{pq} f_{pq} \left\{a^\dagger_p a_q\right\} + \frac{1}{4}\sum_{pqrs}\langle pq\vert V\vert rs\rangle \left\{a^\dagger_pa^\dagger_q a_sa_r\right\}.
+H_N = \sum_{pq} \langle p\vert f\vert q \rangle \left\{a^\dagger_p a_q\right\} + \frac{1}{4}\sum_{pqrs}\langle pq\vert V\vert rs\rangle \left\{a^\dagger_pa^\dagger_q a_sa_r\right\}.
 \end{equation}
 !et
 
@@ -86,7 +91,7 @@ Here,
 !bt
 \begin{equation}
 \label{Fock}
-f^p_q = \varepsilon^p_q + \sum_i \langle pi\vert V\vert qi\rangle
+\langle p\vert f\vert q \rangle = \langle p\vert h_0\vert q \rangle + \sum_i \langle pi\vert V\vert qi\rangle
 \end{equation}
 !et
 
@@ -106,7 +111,7 @@ Normal order the expression $\sum\limits_{pq}\varepsilon_q^p a^\dagger_p a_q$.
 
 !bt
 \begin{align}
-\sum_{pq}\varepsilon_q^p a^\dagger_p a_q
+\sum_{pq}\langle p \vert h_0\vert q \rangle a^\dagger_p a_q
 =\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
 +\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
 +\sum_{ai}\varepsilon_a^i a^\dagger_i a_a   
@@ -121,7 +126,7 @@ Normal order the expression $\sum\limits_{pq}\varepsilon_q^p a^\dagger_p a_q$.
 We have to move all operators that annihilate the reference state to the right of those that create on the reference state. Thus,
 !bt
 \begin{align}
-\sum_{pq}\varepsilon_q^p a^\dagger_p a_q
+\sum_{pq}\langle p \vert h_0\vert q \rangle a^\dagger_p a_q
 &=\sum_{ab}\varepsilon_b^a a^\dagger_a a_b
 +\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
 +\sum_{ai}\varepsilon_a^i a^\dagger_i a_a
@@ -134,7 +139,7 @@ We have to move all operators that annihilate the reference state to the right o
 +\sum_{ai}\varepsilon_i^a a^\dagger_a a_i
 +\sum_{ai}\varepsilon_a^i a^\dagger_i a_a
 -\sum_{ij}\varepsilon_j^i a_ja^\dagger_i +\sum_i \varepsilon_i^i\\
-&=\sum_{pq}\varepsilon_q^p \left\{a^\dagger_p a_q\right\} +\sum_i \varepsilon_i^i
+&=\sum_{pq}\langle p \vert h_0\vert q \rangle \left\{a^\dagger_p a_q\right\} +\sum_i \varepsilon_i^i
 \end{align}
 !et
 
@@ -581,11 +586,11 @@ contraction (i.e. a single application of $[a_p, a^\dagger_q] =
 
 !bt
 \begin{align*}
-[F, T_2]_{2b} &= \frac{1}{4}\sum_{pq}\sum_{rsuv} f_p^q t_{ij}^{ab}\left[a^\dagger_q a_p, a^\dagger_a a^\dagger_b a_j a_i \right]_{2b} \\
-&= \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_p^a a^\dagger_q a^\dagger_b a_j a_i  \\
-&- \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_p^b a^\dagger_q a^\dagger_a a_j a_i  \\
-&- \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_q^j a^\dagger_a a^\dagger_b a_p a_i  \\
-&+ \frac{1}{4}\sum_{pq}\sum_{abij} f_p^q t_{ij}^{ab}\delta_q^i a^\dagger_a a^\dagger_b a_p a_j  \\
+[F, T_2]_{2b} &= \frac{1}{4}\sum_{pq}\sum_{rsuv} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\left[a^\dagger_q a_p, a^\dagger_a a^\dagger_b a_j a_i \right]_{2b} \\
+&= \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_p^a a^\dagger_q a^\dagger_b a_j a_i  \\
+&- \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_p^b a^\dagger_q a^\dagger_a a_j a_i  \\
+&- \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_q^j a^\dagger_a a^\dagger_b a_p a_i  \\
+&+ \frac{1}{4}\sum_{pq}\sum_{abij} \langle q \vert f \vert p \rangle  t_{ij}^{ab}\delta_q^i a^\dagger_a a^\dagger_b a_p a_j  \\
 &= \frac{1}{4}\sum_{qbij}\left(\sum_{a} f_a^q t_{ij}^{ab}\right)a^\dagger_q a^\dagger_b a_j a_i  \\
 &- \frac{1}{4}\sum_{qaij}\left(\sum_{b} f_b^q t_{ij}^{ab}\right)a^\dagger_q a^\dagger_a a_j a_i  \\
 &- \frac{1}{4}\sum_{pabi}\left(\sum_{j} f_p^j t_{ij}^{ab}\right)a^\dagger_a a^\dagger_b a_p a_i  \\
