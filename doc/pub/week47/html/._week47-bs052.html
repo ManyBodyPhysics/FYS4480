@@ -1,0 +1,529 @@
+<!--
+HTML file automatically generated from DocOnce source
+(https://github.com/doconce/doconce/)
+doconce format html week47.do.txt --html_style=bootstrap --pygments_html_style=default --html_admon=bootstrap_panel --html_output=week47-bs --no_mako
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/doconce/doconce/" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Week 47: Coupled Cluster theory">
+<title>Week 47: Coupled Cluster theory</title>
+<!-- Bootstrap style: bootstrap -->
+<!-- doconce format html week47.do.txt --html_style=bootstrap --pygments_html_style=default --html_admon=bootstrap_panel --html_output=week47-bs --no_mako -->
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<!-- not necessary
+<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+-->
+<style type="text/css">
+/* Add scrollbar to dropdown menus in bootstrap navigation bar */
+.dropdown-menu {
+   height: auto;
+   max-height: 400px;
+   overflow-x: hidden;
+}
+/* Adds an invisible element before each target to offset for the navigation
+   bar */
+.anchor::before {
+  content:"";
+  display:block;
+  height:50px;      /* fixed header height for style bootstrap */
+  margin:-50px 0 0; /* negative fixed header height */
+}
+</style>
+</head>
+
+<!-- tocinfo
+{'highest level': 2,
+ 'sections': [('Week 47, November 18-22, 2024',
+               2,
+               None,
+               'week-47-november-18-22-2024'),
+              ('Introduction', 2, None, 'introduction'),
+              ('The normal-ordered Hamiltonian',
+               2,
+               None,
+               'the-normal-ordered-hamiltonian'),
+              ('Hamiltonian', 2, None, 'hamiltonian'),
+              ('The reference state', 2, None, 'the-reference-state'),
+              ('Hartree-Fock basis', 2, None, 'hartree-fock-basis'),
+              ('Short repetition: Practice in normal ordering',
+               2,
+               None,
+               'short-repetition-practice-in-normal-ordering'),
+              ('Answer', 2, None, 'answer'),
+              ('', 2, None, ''),
+              ('Hartree-Fock again', 2, None, 'hartree-fock-again'),
+              ("What does ``good'' mean?", 2, None, 'what-does-good-mean'),
+              ('Answer', 2, None, 'answer'),
+              ('To nuclear physics aficionadoss: How many nuclei are '
+               'accessible with the coupled cluster method based on spherical '
+               'mean fields?',
+               2,
+               None,
+               'to-nuclear-physics-aficionadoss-how-many-nuclei-are-accessible-with-the-coupled-cluster-method-based-on-spherical-mean-fields'),
+              ('Answer', 2, None, 'answer'),
+              ('The similarity transformed Hamiltonian',
+               2,
+               None,
+               'the-similarity-transformed-hamiltonian'),
+              ('Clusters of excited states',
+               2,
+               None,
+               'clusters-of-excited-states'),
+              ('Similarity transformation',
+               2,
+               None,
+               'similarity-transformation'),
+              ('What $T$ leads to Hermitian $\\overline{H_N}$ ?',
+               2,
+               None,
+               'what-t-leads-to-hermitian-overline-h-n'),
+              ('Answer', 2, None, 'answer'),
+              ('Understanding (non-unitary) similarity transformations',
+               2,
+               None,
+               'understanding-non-unitary-similarity-transformations'),
+              ('Answer', 2, None, 'answer'),
+              ('Non-hermitian operator', 2, None, 'non-hermitian-operator'),
+              ('More formalism', 2, None, 'more-formalism'),
+              ('Particle-hole excitations',
+               2,
+               None,
+               'particle-hole-excitations'),
+              ('How many unknowns?', 2, None, 'how-many-unknowns'),
+              ('Answer', 2, None, 'answer'),
+              ('Full clutser operator', 2, None, 'full-clutser-operator'),
+              ('Unknown aplitudes', 2, None, 'unknown-aplitudes'),
+              ('Correlation energy', 2, None, 'correlation-energy'),
+              ('Good reference state', 2, None, 'good-reference-state'),
+              ('Exercise 1: Why is CCD not exact?',
+               2,
+               None,
+               'exercise-1-why-is-ccd-not-exact'),
+              ('Computing the similarity-transformed Hamiltonian',
+               2,
+               None,
+               'computing-the-similarity-transformed-hamiltonian'),
+              ('The cluster operator', 2, None, 'the-cluster-operator'),
+              ('When does CCSD truncate?', 2, None, 'when-does-ccsd-truncate'),
+              ('Non-hermitian Hamiltonian',
+               2,
+               None,
+               'non-hermitian-hamiltonian'),
+              ('Similarity transformed Hamiltonian',
+               2,
+               None,
+               'similarity-transformed-hamiltonian'),
+              ('Compute the matrix element $\\overline{H}_{ab}^{ij}\\equiv '
+               '\\langle ij\\vert \\overline{H_N}\\vert ab\\rangle$',
+               2,
+               None,
+               'compute-the-matrix-element-overline-h-ab-ij-equiv-langle-ij-vert-overline-h-n-vert-ab-rangle'),
+              ('Algebraic manipulations', 2, None, 'algebraic-manipulations'),
+              ('Example: The contribution of $[F, T_2]$ to $\\overline{H_N}$',
+               2,
+               None,
+               'example-the-contribution-of-f-t-2-to-overline-h-n'),
+              ('Antisymmetry', 2, None, 'antisymmetry'),
+              ('Final contribution', 2, None, 'final-contribution'),
+              ('Assign the correct matrix element $\\langle pq\\vert V\\vert '
+               'rs\\rangle$ to each of the following diagrams of the '
+               'interaction',
+               2,
+               None,
+               'assign-the-correct-matrix-element-langle-pq-vert-v-vert-rs-rangle-to-each-of-the-following-diagrams-of-the-interaction'),
+              ('CCD Approximation', 2, None, 'ccd-approximation'),
+              ('Deriving the CCD equations',
+               2,
+               None,
+               'deriving-the-ccd-equations'),
+              ('The algebraic expression', 2, None, 'the-algebraic-expression'),
+              ('Computational cost of a CCD computation',
+               2,
+               None,
+               'computational-cost-of-a-ccd-computation'),
+              ('Additional details', 2, None, 'additional-details'),
+              ('Factorizing the remaining diagrams of the CCD equation',
+               2,
+               None,
+               'factorizing-the-remaining-diagrams-of-the-ccd-equation'),
+              ('Diagram 8', 2, None, 'diagram-8'),
+              ('Diagram 9', 2, None, 'diagram-9'),
+              ('Solving the CCD equations',
+               2,
+               None,
+               'solving-the-ccd-equations'),
+              ('More manipulations', 2, None, 'more-manipulations'),
+              ('CCD for the pairing Hamiltonian',
+               2,
+               None,
+               'ccd-for-the-pairing-hamiltonian'),
+              ('Solving the CCD equations for the pairing problem',
+               2,
+               None,
+               'solving-the-ccd-equations-for-the-pairing-problem'),
+              ('Python code', 2, None, 'python-code')]}
+end of tocinfo -->
+
+<body>
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: {
+     equationNumbers: {  autoNumber: "none"  },
+     extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "color.js"]
+  }
+});
+</script>
+<script type="text/javascript" async
+ src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- Bootstrap navigation bar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="week47-bs.html">Week 47: Coupled Cluster theory</a>
+  </div>
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contents <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+     <!-- navigation toc: --> <li><a href="._week47-bs001.html#week-47-november-18-22-2024" style="font-size: 80%;">Week 47, November 18-22, 2024</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs002.html#introduction" style="font-size: 80%;">Introduction</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs003.html#the-normal-ordered-hamiltonian" style="font-size: 80%;">The normal-ordered Hamiltonian</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs004.html#hamiltonian" style="font-size: 80%;">Hamiltonian</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs005.html#the-reference-state" style="font-size: 80%;">The reference state</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs006.html#hartree-fock-basis" style="font-size: 80%;">Hartree-Fock basis</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs006.html#short-repetition-practice-in-normal-ordering" style="font-size: 80%;">Short repetition: Practice in normal ordering</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs024.html#answer" style="font-size: 80%;">Answer</a></li>
+     <!-- navigation toc: --> <li><a href="#" style="font-size: 80%;"></a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs008.html#hartree-fock-again" style="font-size: 80%;">Hartree-Fock again</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs009.html#what-does-good-mean" style="font-size: 80%;">What does ``good'' mean?</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs024.html#answer" style="font-size: 80%;">Answer</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs011.html#to-nuclear-physics-aficionadoss-how-many-nuclei-are-accessible-with-the-coupled-cluster-method-based-on-spherical-mean-fields" style="font-size: 80%;">To nuclear physics aficionadoss: How many nuclei are accessible with the coupled cluster method based on spherical mean fields?</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs024.html#answer" style="font-size: 80%;">Answer</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs013.html#the-similarity-transformed-hamiltonian" style="font-size: 80%;">The similarity transformed Hamiltonian</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs014.html#clusters-of-excited-states" style="font-size: 80%;">Clusters of excited states</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs015.html#similarity-transformation" style="font-size: 80%;">Similarity transformation</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs016.html#what-t-leads-to-hermitian-overline-h-n" style="font-size: 80%;">What \( T \) leads to Hermitian \( \overline{H_N} \) ?</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs024.html#answer" style="font-size: 80%;">Answer</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs018.html#understanding-non-unitary-similarity-transformations" style="font-size: 80%;">Understanding (non-unitary) similarity transformations</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs024.html#answer" style="font-size: 80%;">Answer</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs020.html#non-hermitian-operator" style="font-size: 80%;">Non-hermitian operator</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs021.html#more-formalism" style="font-size: 80%;">More formalism</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs022.html#particle-hole-excitations" style="font-size: 80%;">Particle-hole excitations</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs023.html#how-many-unknowns" style="font-size: 80%;">How many unknowns?</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs024.html#answer" style="font-size: 80%;">Answer</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs025.html#full-clutser-operator" style="font-size: 80%;">Full clutser operator</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs026.html#unknown-aplitudes" style="font-size: 80%;">Unknown aplitudes</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs027.html#correlation-energy" style="font-size: 80%;">Correlation energy</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs028.html#good-reference-state" style="font-size: 80%;">Good reference state</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs029.html#exercise-1-why-is-ccd-not-exact" style="font-size: 80%;">Exercise 1: Why is CCD not exact?</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs030.html#computing-the-similarity-transformed-hamiltonian" style="font-size: 80%;">Computing the similarity-transformed Hamiltonian</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs031.html#the-cluster-operator" style="font-size: 80%;">The cluster operator</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs032.html#when-does-ccsd-truncate" style="font-size: 80%;">When does CCSD truncate?</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs033.html#non-hermitian-hamiltonian" style="font-size: 80%;">Non-hermitian Hamiltonian</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs034.html#similarity-transformed-hamiltonian" style="font-size: 80%;">Similarity transformed Hamiltonian</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs035.html#compute-the-matrix-element-overline-h-ab-ij-equiv-langle-ij-vert-overline-h-n-vert-ab-rangle" style="font-size: 80%;">Compute the matrix element \( \overline{H}_{ab}^{ij}\equiv \langle ij\vert \overline{H_N}\vert ab\rangle \)</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs036.html#algebraic-manipulations" style="font-size: 80%;">Algebraic manipulations</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs037.html#example-the-contribution-of-f-t-2-to-overline-h-n" style="font-size: 80%;">Example: The contribution of \( [F, T_2] \) to \( \overline{H_N} \)</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs038.html#antisymmetry" style="font-size: 80%;">Antisymmetry</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs039.html#final-contribution" style="font-size: 80%;">Final contribution</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs040.html#assign-the-correct-matrix-element-langle-pq-vert-v-vert-rs-rangle-to-each-of-the-following-diagrams-of-the-interaction" style="font-size: 80%;">Assign the correct matrix element \( \langle pq\vert V\vert rs\rangle \) to each of the following diagrams of the interaction</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs041.html#ccd-approximation" style="font-size: 80%;">CCD Approximation</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs041.html#deriving-the-ccd-equations" style="font-size: 80%;">Deriving the CCD equations</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs042.html#the-algebraic-expression" style="font-size: 80%;">The algebraic expression</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs043.html#computational-cost-of-a-ccd-computation" style="font-size: 80%;">Computational cost of a CCD computation</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs044.html#additional-details" style="font-size: 80%;">Additional details</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs045.html#factorizing-the-remaining-diagrams-of-the-ccd-equation" style="font-size: 80%;">Factorizing the remaining diagrams of the CCD equation</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs046.html#diagram-8" style="font-size: 80%;">Diagram 8</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs047.html#diagram-9" style="font-size: 80%;">Diagram 9</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs048.html#solving-the-ccd-equations" style="font-size: 80%;">Solving the CCD equations</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs049.html#more-manipulations" style="font-size: 80%;">More manipulations</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs050.html#ccd-for-the-pairing-hamiltonian" style="font-size: 80%;">CCD for the pairing Hamiltonian</a></li>
+     <!-- navigation toc: --> <li><a href="._week47-bs051.html#solving-the-ccd-equations-for-the-pairing-problem" style="font-size: 80%;">Solving the CCD equations for the pairing problem</a></li>
+     <!-- navigation toc: --> <li><a href="#python-code" style="font-size: 80%;">Python code</a></li>
+
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+</div> <!-- end of navigation bar -->
+<div class="container">
+<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p> <!-- add vertical space -->
+<a name="part0052"></a>
+<!-- !split -->
+<h2 id="python-code" class="anchor">Python code </h2>
+
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="cell border-box-sizing code_cell rendered">
+  <div class="input">
+    <div class="inner_cell">
+      <div class="input_area">
+        <div class="highlight" style="background: #f8f8f8">
+  <pre style="line-height: 125%;"><span style="color: #408080; font-style: italic">## Coupled clusters in CCD approximation</span>
+<span style="color: #408080; font-style: italic">## Implemented for the pairing model of Lecture Notes in Physics 936, Chapter 8.</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">numpy</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">np</span>
+
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">init_pairing_v</span>(g,pnum,hnum):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    returns potential matrices of the pairing model in three relevant channels</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param g: strength of the pairing interaction, as in Eq. (8.42)</span>
+<span style="color: #BA2121; font-style: italic">    param pnum: number of particle states</span>
+<span style="color: #BA2121; font-style: italic">    param hnum: number of hole states</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return v_pppp, v_pphh, v_hhhh: np.array(pnum,pnum,pnum,pnum), </span>
+<span style="color: #BA2121; font-style: italic">                                   np.array(pnum,pnum,hnum,hnum), </span>
+<span style="color: #BA2121; font-style: italic">                                   np.array(hnum,hnum,hnum,hnum), </span>
+<span style="color: #BA2121; font-style: italic">                                   The interaction as a 4-indexed tensor in three channels.</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    v_pppp<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((pnum,pnum,pnum,pnum))
+    v_pphh<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((pnum,pnum,hnum,hnum))
+    v_hhhh<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((hnum,hnum,hnum,hnum))
+    
+    gval<span style="color: #666666">=-0.5*</span>g
+    <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+        <span style="color: #008000; font-weight: bold">for</span> b <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+            v_pppp[a,a<span style="color: #666666">+1</span>,b,b<span style="color: #666666">+1</span>]<span style="color: #666666">=</span>gval
+            v_pppp[a<span style="color: #666666">+1</span>,a,b,b<span style="color: #666666">+1</span>]<span style="color: #666666">=-</span>gval
+            v_pppp[a,a<span style="color: #666666">+1</span>,b<span style="color: #666666">+1</span>,b]<span style="color: #666666">=-</span>gval
+            v_pppp[a<span style="color: #666666">+1</span>,a,b<span style="color: #666666">+1</span>,b]<span style="color: #666666">=</span>gval
+            
+    <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+        <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+            v_pphh[a,a<span style="color: #666666">+1</span>,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=</span>gval
+            v_pphh[a<span style="color: #666666">+1</span>,a,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=-</span>gval
+            v_pphh[a,a<span style="color: #666666">+1</span>,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=-</span>gval
+            v_pphh[a<span style="color: #666666">+1</span>,a,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=</span>gval
+    
+    <span style="color: #008000; font-weight: bold">for</span> j <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+        <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+            v_hhhh[j,j<span style="color: #666666">+1</span>,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=</span>gval
+            v_hhhh[j<span style="color: #666666">+1</span>,j,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=-</span>gval
+            v_hhhh[j,j<span style="color: #666666">+1</span>,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=-</span>gval
+            v_hhhh[j<span style="color: #666666">+1</span>,j,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=</span>gval
+        
+    <span style="color: #008000; font-weight: bold">return</span> v_pppp, v_pphh, v_hhhh
+    
+    
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">init_pairing_fock</span>(delta,g,pnum,hnum):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    initializes the Fock matrix of the pairing model</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param delta: Single-particle spacing, as in Eq. (8.41)</span>
+<span style="color: #BA2121; font-style: italic">    param g: pairing strength, as in eq. (8.42)</span>
+<span style="color: #BA2121; font-style: italic">    param pnum: number of particle states</span>
+<span style="color: #BA2121; font-style: italic">    param hnum: number of hole states</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return f_pp, f_hh: The Fock matrix in two channels as numpy arrays np.array(pnum,pnum), np.array(hnum,hnum). </span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+<span style="color: #408080; font-style: italic"># the Fock matrix for the pairing model. No f_ph needed, because we are in Hartree-Fock basis </span>
+    deltaval<span style="color: #666666">=0.5*</span>delta
+    gval<span style="color: #666666">=-0.5*</span>g
+    f_pp <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((pnum,pnum))
+    f_hh <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((hnum,hnum))
+
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+        f_hh[i  ,i  ] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>i<span style="color: #666666">+</span>gval
+        f_hh[i<span style="color: #666666">+1</span>,i<span style="color: #666666">+1</span>] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>i<span style="color: #666666">+</span>gval
+        
+    <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+        f_pp[a  ,a  ] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>(hnum<span style="color: #666666">+</span>a)
+        f_pp[a<span style="color: #666666">+1</span>,a<span style="color: #666666">+1</span>] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>(hnum<span style="color: #666666">+</span>a)
+    
+    <span style="color: #008000; font-weight: bold">return</span> f_pp, f_hh
+
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">init_t2</span>(v_pphh,f_pp,f_hh):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    Initializes t2 amlitudes as in MBPT2, see first equation on page 345</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param v_pphh: pairing tensor in pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    param f_pp:   Fock matrix in pp channel</span>
+<span style="color: #BA2121; font-style: italic">    param f_hh:   Fock matrix in hh channel</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return t2: numpy array in pphh format, 4-indices tensor</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    pnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_pp)
+    hnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_hh)
+    t2_new <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((pnum,pnum,hnum,hnum))
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+        <span style="color: #008000; font-weight: bold">for</span> j <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+            <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                <span style="color: #008000; font-weight: bold">for</span> b <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                    t2_new[a,b,i,j] <span style="color: #666666">=</span> v_pphh[a,b,i,j] <span style="color: #666666">/</span> (f_hh[i,i]<span style="color: #666666">+</span>f_hh[j,j]<span style="color: #666666">-</span>f_pp[a,a]<span style="color: #666666">-</span>f_pp[b,b])
+    <span style="color: #008000; font-weight: bold">return</span> t2_new
+
+
+<span style="color: #408080; font-style: italic"># CCD equations. Note that the &quot;-&gt;abij&quot; assignment is redundant, because indices are ordered alphabetically.</span>
+<span style="color: #408080; font-style: italic"># Nevertheless, we retain it for transparency.</span>
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">ccd_iter</span>(v_pppp,v_pphh,v_hhhh,f_pp,f_hh,t2):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    Performs one iteration of the CCD equations (8.34), using also intermediates for the nonliniar terms</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param v_pppp: pppp-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param v_pphh: pphh-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param v_hhhh: hhhh-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param f_pp: Fock matrix in pp channel</span>
+<span style="color: #BA2121; font-style: italic">    param f_hh: Fock matrix in hh channel</span>
+<span style="color: #BA2121; font-style: italic">    param t2: Initial t2 amplitude, tensor in form of pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return t2_new: new t2 amplitude, tensor in form of pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    pnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_pp)
+    hnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_hh)
+    Hbar_pphh <span style="color: #666666">=</span> (  v_pphh 
+                 <span style="color: #666666">+</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bc,acij-&gt;abij&#39;</span>,f_pp,t2) 
+                 <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;ac,bcij-&gt;abij&#39;</span>,f_pp,t2) 
+                 <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abik,kj-&gt;abij&#39;</span>,t2,f_hh)
+                 <span style="color: #666666">+</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abjk,ki-&gt;abij&#39;</span>,t2,f_hh)
+                 <span style="color: #666666">+</span> <span style="color: #666666">0.5*</span>np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abcd,cdij-&gt;abij&#39;</span>,v_pppp,t2) 
+                 <span style="color: #666666">+</span> <span style="color: #666666">0.5*</span>np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abkl,klij-&gt;abij&#39;</span>,t2,v_hhhh)
+                )
+
+    <span style="color: #408080; font-style: italic"># hh intermediate, see (8.47)</span>
+    chi_hh <span style="color: #666666">=</span> <span style="color: #666666">0.5*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,cdjl-&gt;kj&#39;</span>,v_pphh,t2)
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">-</span> (  np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abik,kj-&gt;abij&#39;</span>,t2,chi_hh) 
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abik,kj-&gt;abji&#39;</span>,t2,chi_hh) )
+
+    <span style="color: #408080; font-style: italic"># pp intermediate, see (8.46)</span>
+    chi_pp <span style="color: #666666">=</span> <span style="color: #666666">-0.5*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,bdkl-&gt;cb&#39;</span>,v_pphh,t2)
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">+</span> (  np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;acij,cb-&gt;abij&#39;</span>,t2,chi_pp) 
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;acij,cb-&gt;baij&#39;</span>,t2,chi_pp) )
+
+    <span style="color: #408080; font-style: italic"># hhhh intermediate, see (8.48)</span>
+    chi_hhhh <span style="color: #666666">=</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,cdij-&gt;klij&#39;</span>,v_pphh,t2)
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">+</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abkl,klij-&gt;abij&#39;</span>,t2,chi_hhhh)
+
+    <span style="color: #408080; font-style: italic"># phph intermediate, see (8.49)</span>
+    chi_phph<span style="color: #666666">=</span> <span style="color: #666666">+</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,dblj-&gt;bkcj&#39;</span>,v_pphh,t2)
+
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">+</span> (  np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;abij&#39;</span>,chi_phph,t2)
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;baij&#39;</span>,chi_phph,t2)
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;abji&#39;</span>,chi_phph,t2)
+                             <span style="color: #666666">+</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;baji&#39;</span>,chi_phph,t2) )
+                 
+    t2_new<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((pnum,pnum,hnum,hnum))
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+        <span style="color: #008000; font-weight: bold">for</span> j <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+            <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                <span style="color: #008000; font-weight: bold">for</span> b <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                    t2_new[a,b,i,j] <span style="color: #666666">=</span> (  t2[a,b,i,j] 
+                                       <span style="color: #666666">+</span> Hbar_pphh[a,b,i,j] <span style="color: #666666">/</span> (f_hh[i,i]<span style="color: #666666">+</span>f_hh[j,j]<span style="color: #666666">-</span>f_pp[a,a]<span style="color: #666666">-</span>f_pp[b,b]) )
+
+    <span style="color: #008000; font-weight: bold">return</span> t2_new
+
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">ccd_energy</span>(v_pphh,t2):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    Computes CCD energy. Call as </span>
+<span style="color: #BA2121; font-style: italic">    energy = ccd_energy(v_pphh,t2)</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param v_pphh: pphh-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param t2: t2 amplitude, tensor in form of pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return energy: CCD correlation energy</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    erg <span style="color: #666666">=</span> <span style="color: #666666">0.25*</span>np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abij,abij&#39;</span>,v_pphh,t2)
+    <span style="color: #008000; font-weight: bold">return</span> erg
+
+<span style="color: #408080; font-style: italic">###############################</span>
+<span style="color: #408080; font-style: italic">######## Main Program</span>
+
+<span style="color: #408080; font-style: italic"># set parameters as for model</span>
+pnum <span style="color: #666666">=</span> <span style="color: #666666">4</span> <span style="color: #408080; font-style: italic"># number of particle states</span>
+hnum <span style="color: #666666">=</span> <span style="color: #666666">4</span> <span style="color: #408080; font-style: italic"># number of hole states</span>
+delta <span style="color: #666666">=</span> <span style="color: #666666">1.0</span>
+
+g <span style="color: #666666">=</span> <span style="color: #666666">1.0</span>
+
+<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;parameters&quot;</span>)
+<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;delta =&quot;</span>, delta, <span style="color: #BA2121">&quot;, g =&quot;</span>, g)
+
+
+<span style="color: #408080; font-style: italic"># Initialize pairing matrix elements and Fock matrix</span>
+v_pppp, v_pphh, v_hhhh <span style="color: #666666">=</span> init_pairing_v(g,pnum,hnum)
+f_pp, f_hh <span style="color: #666666">=</span> init_pairing_fock(delta,g,pnum,hnum)
+
+<span style="color: #408080; font-style: italic"># Initialize T2 amplitudes from MBPT2</span>
+t2 <span style="color: #666666">=</span> init_t2(v_pphh,f_pp,f_hh)
+erg <span style="color: #666666">=</span> ccd_energy(v_pphh,t2)
+
+<span style="color: #408080; font-style: italic"># Exact MBPT2 for comparison, see last equation on page 365 </span>
+exact_mbpt2 <span style="color: #666666">=</span> <span style="color: #666666">-0.25*</span>g<span style="color: #666666">**2*</span>(<span style="color: #666666">1.0/</span>(<span style="color: #666666">2.0+</span>g) <span style="color: #666666">+</span> <span style="color: #666666">2.0/</span>(<span style="color: #666666">4.0+</span>g) <span style="color: #666666">+</span> <span style="color: #666666">1.0/</span>(<span style="color: #666666">6.0+</span>g))
+<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;MBPT2 energy =&quot;</span>, erg, <span style="color: #BA2121">&quot;, compared to exact:&quot;</span>, exact_mbpt2)
+    
+    
+<span style="color: #408080; font-style: italic"># iterate CCD equations niter times</span>
+niter<span style="color: #666666">=60</span>
+<span style="color: #008000; font-weight: bold">for</span> <span style="color: #008000">iter</span> <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(niter):
+    t2_new <span style="color: #666666">=</span> ccd_iter(v_pppp,v_pphh,v_hhhh,f_pp,f_hh,t2)
+    erg <span style="color: #666666">=</span> ccd_energy(v_pphh,t2_new)
+    <span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;iter=&quot;</span>, <span style="color: #008000">iter</span>, <span style="color: #BA2121">&quot;erg=&quot;</span>, erg)
+    t2 <span style="color: #666666">=</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> (t2_new <span style="color: #666666">+</span> t2) 
+</pre>
+</div>
+      </div>
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output">
+      <div class="output_area">
+        <div class="output_subarea output_stream output_stdout output_text">          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p>
+<!-- navigation buttons at the bottom of the page -->
+<ul class="pagination">
+<li><a href="._week47-bs051.html">&laquo;</a></li>
+  <li><a href="._week47-bs000.html">1</a></li>
+  <li><a href="">...</a></li>
+  <li><a href="._week47-bs044.html">45</a></li>
+  <li><a href="._week47-bs045.html">46</a></li>
+  <li><a href="._week47-bs046.html">47</a></li>
+  <li><a href="._week47-bs047.html">48</a></li>
+  <li><a href="._week47-bs048.html">49</a></li>
+  <li><a href="._week47-bs049.html">50</a></li>
+  <li><a href="._week47-bs050.html">51</a></li>
+  <li><a href="._week47-bs051.html">52</a></li>
+  <li class="active"><a href="._week47-bs052.html">53</a></li>
+</ul>
+<!-- ------------------- end of main content --------------- -->
+</div>  <!-- end container -->
+<!-- include javascript, jQuery *first* -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<!-- Bootstrap footer
+<footer>
+<a href="https://..."><img width="250" align=right src="https://..."></a>
+</footer>
+-->
+<center style="font-size:80%">
+<!-- copyright only on the titlepage -->
+</center>
+</body>
+</html>
+

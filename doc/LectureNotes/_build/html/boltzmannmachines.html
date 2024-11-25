@@ -1,562 +1,421 @@
 
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" data-content_root="./" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>13. Boltzmann Machines &#8212; Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</title>
-    
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
-    
-      
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
-    
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
-    
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
-
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/clipboard.min.js"></script>
-    <script src="_static/copybutton.js"></script>
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'boltzmannmachines';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="14. Optimization and Vectorization" href="vectorization.html" />
     <link rel="prev" title="12. Resampling Techniques, Bootstrap and Blocking" href="resamplingmethods.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+  
+  <dialog id="pst-search-dialog">
     
-        <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="_static/logo.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
-        <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="intro.html">
-   Quantum mechanics for many-particle systems
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  About the course
- </span>
-</p>
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="schedule.html">
-   Schedule
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="teachers.html">
-   Instructor information
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="textbooks.html">
-   Textbooks
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Schedule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Basics of Many-Body Physics
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Basics of Many-Body Physics</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="notation.html">
-   1. Introduction to many-body physics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="secondquant.html">
-   2. Introduction to  second quantization
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="fci.html">
-   3. Full configuration interaction theory
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="hfock.html">
-   4. Hartree-Fock theory
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="notation.html">1. Introduction to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secondquant.html">2. Introduction to  second quantization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fci.html">3. Full configuration interaction theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hfock.html">4. Hartree-Fock theory</a></li>
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Post Hartree-Fock Methods
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock Methods</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="mbpt.html">
-   6. Many-body perturbation theory
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="cc.html">
-   7. The Coupled Cluster Method
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="mbpt.html">6. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cc.html">7. The Coupled Cluster Method</a></li>
+
+
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Stochastic Methods
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Stochastic Methods</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="vmcdmc.html">
-   10. Variational Monte Carlo methods
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="gradientmethods.html">
-   11. Gradient Methods
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="resamplingmethods.html">
-   12. Resampling Techniques, Bootstrap and Blocking
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="vmcdmc.html">10. Variational Monte Carlo methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradientmethods.html">11. Gradient Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resamplingmethods.html">12. Resampling Techniques, Bootstrap and Blocking</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Deep Learning methods
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning methods</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   13. Boltzmann Machines
-  </a>
- </li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">13. Boltzmann Machines</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Computational Aspects
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Computational Aspects</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="vectorization.html">
-   14. Optimization and Vectorization
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="parallelization.html">
-   15. Parallelization with MPI and OpenMPI
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="vectorization.html">14. Optimization and Vectorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallelization.html">15. Parallelization with MPI and OpenMPI</a></li>
 </ul>
 
     </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
-</div>
-
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/boltzmannmachines.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+</nav></div>
     </div>
-</div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
 
-            <!-- Source interaction buttons -->
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
-    <div class="dropdown-buttons">
-        
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/boltzmannmachines.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
-                data-placement="left"><img class="binder-button-logo"
-                    src="_static/images/logo_binder.svg"
-                    alt="Interact on binder">Binder</button></a>
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
         
         
-        
-        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
     </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/boltzmannmachines.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
-        </div>
 
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/boltzmannmachines.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Boltzmann Machines</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
             
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
+            <div>
+                <h2> Contents </h2>
             </div>
-            <nav id="bd-toc-nav" aria-label="Page">
+            <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-network">
-   13.1. The network
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#joint-distribution">
-     13.1.1. Joint distribution
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#network-elements-the-energy-function">
-     13.1.2. Network Elements, the energy function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#defining-different-types-of-rbms">
-     13.1.3. Defining different types of RBMs
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#cost-function">
-     13.1.4. Cost function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#optimization-training">
-     13.1.5. Optimization / Training
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#kullback-leibler-relative-entropy">
-     13.1.6. Kullback-Leibler relative entropy
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#setting-up-for-gradient-descent-calculations">
-   13.2. Setting up for gradient descent calculations
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#rbms-for-the-quantum-many-body-problem">
-   13.3. RBMs for the quantum many body problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#representing-the-wave-function">
-   13.4. Representing the wave function
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#choose-the-cost-function">
-   13.5. Choose the cost function
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mathematical-details">
-     13.5.1. Mathematical details
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#marginal-probability-density-functions">
-     13.5.2. Marginal Probability Density Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#conditional-probability-density-functions">
-     13.5.3. Conditional Probability Density Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#gaussian-binary-restricted-boltzmann-machines">
-     13.5.4. Gaussian-Binary Restricted Boltzmann Machines
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#joint-probability-density-function">
-     13.5.5. Joint Probability Density Function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id1">
-     13.5.6. Marginal Probability Density Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id2">
-     13.5.7. Conditional Probability Density Functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neural-quantum-states">
-   13.6. Neural Quantum States
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     13.6.1. Cost function
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#python-version-for-the-two-non-interacting-particles">
-   13.7. Python version for the two non-interacting particles
-  </a>
- </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-network">13.1. The network</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#joint-distribution">13.1.1. Joint distribution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#network-elements-the-energy-function">13.1.2. Network Elements, the energy function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-different-types-of-rbms">13.1.3. Defining different types of RBMs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cost-function">13.1.4. Cost function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-training">13.1.5. Optimization / Training</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kullback-leibler-relative-entropy">13.1.6. Kullback-Leibler relative entropy</a></li>
 </ul>
-
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-for-gradient-descent-calculations">13.2. Setting up for gradient descent calculations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rbms-for-the-quantum-many-body-problem">13.3. RBMs for the quantum many body problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#representing-the-wave-function">13.4. Representing the wave function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-the-cost-function">13.5. Choose the cost function</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-details">13.5.1. Mathematical details</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#marginal-probability-density-functions">13.5.2. Marginal Probability Density Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditional-probability-density-functions">13.5.3. Conditional Probability Density Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian-binary-restricted-boltzmann-machines">13.5.4. Gaussian-Binary Restricted Boltzmann Machines</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#joint-probability-density-function">13.5.5. Joint Probability Density Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">13.5.6. Marginal Probability Density Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">13.5.7. Conditional Probability Density Functions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-quantum-states">13.6. Neural Quantum States</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">13.6.1. Cost function</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-version-for-the-two-non-interacting-particles">13.7. Python version for the two non-interacting particles</a></li>
+</ul>
             </nav>
         </div>
     </div>
 </div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Boltzmann Machines</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-network">
-   13.1. The network
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#joint-distribution">
-     13.1.1. Joint distribution
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#network-elements-the-energy-function">
-     13.1.2. Network Elements, the energy function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#defining-different-types-of-rbms">
-     13.1.3. Defining different types of RBMs
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#cost-function">
-     13.1.4. Cost function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#optimization-training">
-     13.1.5. Optimization / Training
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#kullback-leibler-relative-entropy">
-     13.1.6. Kullback-Leibler relative entropy
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#setting-up-for-gradient-descent-calculations">
-   13.2. Setting up for gradient descent calculations
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#rbms-for-the-quantum-many-body-problem">
-   13.3. RBMs for the quantum many body problem
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#representing-the-wave-function">
-   13.4. Representing the wave function
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#choose-the-cost-function">
-   13.5. Choose the cost function
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#mathematical-details">
-     13.5.1. Mathematical details
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#marginal-probability-density-functions">
-     13.5.2. Marginal Probability Density Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#conditional-probability-density-functions">
-     13.5.3. Conditional Probability Density Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#gaussian-binary-restricted-boltzmann-machines">
-     13.5.4. Gaussian-Binary Restricted Boltzmann Machines
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#joint-probability-density-function">
-     13.5.5. Joint Probability Density Function
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id1">
-     13.5.6. Marginal Probability Density Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id2">
-     13.5.7. Conditional Probability Density Functions
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neural-quantum-states">
-   13.6. Neural Quantum States
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     13.6.1. Cost function
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#python-version-for-the-two-non-interacting-particles">
-   13.7. Python version for the two non-interacting particles
-  </a>
- </li>
-</ul>
 
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            
-              <div>
+              
                 
-  <div class="tex2jax_ignore mathjax_ignore section" id="boltzmann-machines">
-<h1><span class="section-number">13. </span>Boltzmann Machines<a class="headerlink" href="#boltzmann-machines" title="Permalink to this headline">¶</a></h1>
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="boltzmann-machines">
+<h1><span class="section-number">13. </span>Boltzmann Machines<a class="headerlink" href="#boltzmann-machines" title="Link to this heading">#</a></h1>
 <p>Why use a generative model rather than the more well known discriminative deep neural networks (DNN)?</p>
 <ul class="simple">
 <li><p>Discriminitave methods have several limitations: They are mainly supervised learning methods, thus requiring labeled data. And there are tasks they cannot accomplish, like drawing new examples from an unknown probability distribution.</p></li>
@@ -565,7 +424,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p>a. A model for images could learn to draw new examples of cats and dogs, given a training dataset of images of cats and dogs.</p>
 <p>b. Generate a sample of an ordered or disordered Ising model phase, having been given samples of such phases.</p>
 <p>c. Model the trial function for Monte Carlo calculations</p>
-<ol class="simple">
+<ol class="arabic simple" start="4">
 <li><p>Both use gradient-descent based learning procedures for minimizing cost functions</p></li>
 <li><p>Energy based models don’t use backpropagation and automatic differentiation for computing gradients, instead turning to Markov Chain Monte Carlo methods.</p></li>
 <li><p>DNNs often have several hidden layers. A restricted Boltzmann machine has only one hidden layer, however several RBMs can be stacked to make up Deep Belief Networks, of which they constitute the building blocks.</p></li>
@@ -589,28 +448,28 @@ Here we take away all lateral connections between nodes in the visible layer as 
 <!-- dom:FIGURE: [figures/RBM.png, width=800 frac=1.0] -->
 <!-- begin figure -->
 <p><img src="figures/RBM.png" width=800><p style="font-size: 0.9em"><i>Figure 1: </i></p><!-- end figure --></p>
-<div class="section" id="the-network">
-<h2><span class="section-number">13.1. </span>The network<a class="headerlink" href="#the-network" title="Permalink to this headline">¶</a></h2>
+<section id="the-network">
+<h2><span class="section-number">13.1. </span>The network<a class="headerlink" href="#the-network" title="Link to this heading">#</a></h2>
 <p><strong>The network layers</strong>:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>A function <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> that represents the visible layer, a vector of <span class="math notranslate nohighlight">\(M\)</span> elements (nodes). This layer represents both what the RBM might be given as training input, and what we want it to be able to reconstruct. This might for example be the pixels of an image, the spin values of the Ising model, or coefficients representing speech.</p></li>
 <li><p>The function <span class="math notranslate nohighlight">\(\mathbf{h}\)</span> represents the hidden, or latent, layer. A vector of <span class="math notranslate nohighlight">\(N\)</span> elements (nodes). Also called “feature detectors”.</p></li>
 </ol>
 <p>The goal of the hidden layer is to increase the model’s expressive power. We encode complex interactions between visible variables by introducing additional, hidden variables that interact with visible degrees of freedom in a simple manner, yet still reproduce the complex correlations between visible degrees in the data once marginalized over (integrated out).</p>
 <p>Examples of this trick being employed in physics:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>The Hubbard-Stratonovich transformation</p></li>
 <li><p>The introduction of ghost fields in gauge theory</p></li>
 <li><p>Shadow wave functions in Quantum Monte Carlo simulations</p></li>
 </ol>
 <p><strong>The network parameters, to be optimized/learned</strong>:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><span class="math notranslate nohighlight">\(\mathbf{a}\)</span> represents the visible bias, a vector of same length as <span class="math notranslate nohighlight">\(\mathbf{x}\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(\mathbf{b}\)</span> represents the hidden bias, a vector of same lenght as <span class="math notranslate nohighlight">\(\mathbf{h}\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(W\)</span> represents the interaction weights, a matrix of size <span class="math notranslate nohighlight">\(M\times N\)</span>.</p></li>
 </ol>
-<div class="section" id="joint-distribution">
-<h3><span class="section-number">13.1.1. </span>Joint distribution<a class="headerlink" href="#joint-distribution" title="Permalink to this headline">¶</a></h3>
+<section id="joint-distribution">
+<h3><span class="section-number">13.1.1. </span>Joint distribution<a class="headerlink" href="#joint-distribution" title="Link to this heading">#</a></h3>
 <p>The restricted Boltzmann machine is described by a Bolztmann distribution</p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto1"></div>
@@ -632,18 +491,18 @@ Here we take away all lateral connections between nodes in the visible layer as 
 \end{equation}
 \]</div>
 <p>It is common to ignore <span class="math notranslate nohighlight">\(T_0\)</span> by setting it to one.</p>
-</div>
-<div class="section" id="network-elements-the-energy-function">
-<h3><span class="section-number">13.1.2. </span>Network Elements, the energy function<a class="headerlink" href="#network-elements-the-energy-function" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="network-elements-the-energy-function">
+<h3><span class="section-number">13.1.2. </span>Network Elements, the energy function<a class="headerlink" href="#network-elements-the-energy-function" title="Link to this heading">#</a></h3>
 <p>The function <span class="math notranslate nohighlight">\(E(\mathbf{x},\mathbf{h})\)</span> gives the <strong>energy</strong> of a
 configuration (pair of vectors) <span class="math notranslate nohighlight">\((\mathbf{x}, \mathbf{h})\)</span>. The lower
 the energy of a configuration, the higher the probability of it. This
 function also depends on the parameters <span class="math notranslate nohighlight">\(\mathbf{a}\)</span>, <span class="math notranslate nohighlight">\(\mathbf{b}\)</span> and
 <span class="math notranslate nohighlight">\(W\)</span>. Thus, when we adjust them during the learning procedure, we are
 adjusting the energy function to best fit our problem.</p>
-</div>
-<div class="section" id="defining-different-types-of-rbms">
-<h3><span class="section-number">13.1.3. </span>Defining different types of RBMs<a class="headerlink" href="#defining-different-types-of-rbms" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="defining-different-types-of-rbms">
+<h3><span class="section-number">13.1.3. </span>Defining different types of RBMs<a class="headerlink" href="#defining-different-types-of-rbms" title="Link to this heading">#</a></h3>
 <p>There are different variants of RBMs, and the differences lie in the types of visible and hidden units we choose as well as in the implementation of the energy function <span class="math notranslate nohighlight">\(E(\mathbf{x},\mathbf{h})\)</span>. The connection between the nodes in the two layers is given by the weights <span class="math notranslate nohighlight">\(w_{ij}\)</span>.</p>
 <p><strong>Binary-Binary RBM:</strong></p>
 <p>RBMs were first developed using binary units in both the visible and hidden layer. The corresponding energy function is defined as follows:</p>
@@ -668,20 +527,20 @@ adjusting the energy function to best fit our problem.</p>
 \label{_auto4} \tag{4}
 \end{equation}
 \]</div>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>RBMs are Useful when we model continuous data (i.e., we wish <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> to be continuous)</p></li>
 <li><p>Requires a smaller learning rate, since there’s no upper bound to the value a component might take in the reconstruction</p></li>
 </ol>
 <p>Other types of units include:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Softmax and multinomial units</p></li>
 <li><p>Gaussian visible and hidden units</p></li>
 <li><p>Binomial units</p></li>
 <li><p>Rectified linear units</p></li>
 </ol>
-</div>
-<div class="section" id="cost-function">
-<h3><span class="section-number">13.1.4. </span>Cost function<a class="headerlink" href="#cost-function" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="cost-function">
+<h3><span class="section-number">13.1.4. </span>Cost function<a class="headerlink" href="#cost-function" title="Link to this heading">#</a></h3>
 <p>When working with a training dataset, the most common training approach is maximizing the log-likelihood of the training data. The log likelihood characterizes the log-probability of generating the observed data using our generative model. Using this method our cost function is chosen as the negative log-likelihood. The learning then consists of trying to find parameters that maximize the probability of the dataset, and is known as Maximum Likelihood Estimation (MLE).
 Denoting the parameters as <span class="math notranslate nohighlight">\(\boldsymbol{\theta} = a_1,...,a_M,b_1,...,b_N,w_{11},...,w_{MN}\)</span>, the log-likelihood is given by</p>
 <!-- Equation labels as ordinary links -->
@@ -704,9 +563,9 @@ Denoting the parameters as <span class="math notranslate nohighlight">\(\boldsym
 \]</div>
 <p>where we used that the normalization constant does not depend on the data, <span class="math notranslate nohighlight">\(\langle \text{log} Z(\{ \theta_i\}) \rangle = \text{log} Z(\{ \theta_i\})\)</span>
 Our cost function is the negative log-likelihood, <span class="math notranslate nohighlight">\(\mathcal{C}(\{ \theta_i \}) = - \mathcal{L}(\{ \theta_i \})\)</span></p>
-</div>
-<div class="section" id="optimization-training">
-<h3><span class="section-number">13.1.5. </span>Optimization / Training<a class="headerlink" href="#optimization-training" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="optimization-training">
+<h3><span class="section-number">13.1.5. </span>Optimization / Training<a class="headerlink" href="#optimization-training" title="Link to this heading">#</a></h3>
 <p>The training procedure of choice often is Stochastic Gradient Descent (SGD). It consists of a series of iterations where we update the parameters according to the equation</p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto7"></div>
@@ -803,9 +662,9 @@ their probability).</p>
 \end{equation}
 \]</div>
 <p>To get the expectation values with respect to the <em>data</em>, we set the visible units to each of the observed samples in the training data, then update the hidden units according to the conditional probability found before. We then average over all samples in the training data to calculate expectation values with respect to the data.</p>
-</div>
-<div class="section" id="kullback-leibler-relative-entropy">
-<h3><span class="section-number">13.1.6. </span>Kullback-Leibler relative entropy<a class="headerlink" href="#kullback-leibler-relative-entropy" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="kullback-leibler-relative-entropy">
+<h3><span class="section-number">13.1.6. </span>Kullback-Leibler relative entropy<a class="headerlink" href="#kullback-leibler-relative-entropy" title="Link to this heading">#</a></h3>
 <p>When the goal of the training is to approximate a probability
 distribution, as it is in generative modeling, another relevant
 measure is the <strong>Kullback-Leibler divergence</strong>, also known as the
@@ -893,10 +752,10 @@ case we have</p>
 \end{equation}
 \]</div>
 <p>Here <span class="math notranslate nohighlight">\(\langle \cdot \rangle_{model}\)</span> is the expectation value over the model probability distribution <span class="math notranslate nohighlight">\(p(\boldsymbol{x}| \boldsymbol{\theta})\)</span>.</p>
-</div>
-</div>
-<div class="section" id="setting-up-for-gradient-descent-calculations">
-<h2><span class="section-number">13.2. </span>Setting up for gradient descent calculations<a class="headerlink" href="#setting-up-for-gradient-descent-calculations" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="setting-up-for-gradient-descent-calculations">
+<h2><span class="section-number">13.2. </span>Setting up for gradient descent calculations<a class="headerlink" href="#setting-up-for-gradient-descent-calculations" title="Link to this heading">#</a></h2>
 <p>Using the previous relationship we can express the gradient of the cost function as</p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto23"></div>
@@ -952,9 +811,9 @@ it is limited to the training data. Hence, in unsupervised training as
 well it is important to prevent overfitting to the training data. Thus
 it is common to add regularizers to the cost function in the same
 manner as we discussed for say linear regression.</p>
-</div>
-<div class="section" id="rbms-for-the-quantum-many-body-problem">
-<h2><span class="section-number">13.3. </span>RBMs for the quantum many body problem<a class="headerlink" href="#rbms-for-the-quantum-many-body-problem" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="rbms-for-the-quantum-many-body-problem">
+<h2><span class="section-number">13.3. </span>RBMs for the quantum many body problem<a class="headerlink" href="#rbms-for-the-quantum-many-body-problem" title="Link to this heading">#</a></h2>
 <p>The idea of applying RBMs to quantum many body problems was presented by G. Carleo and M. Troyer, working with ETH Zurich and Microsoft Research.</p>
 <p>Some of their motivation included</p>
 <ul class="simple">
@@ -969,9 +828,9 @@ manner as we discussed for say linear regression.</p>
 <li><p>Want to understand whether an artifical neural network may adapt to describe a quantum system.</p></li>
 </ul>
 <p>Carleo and Troyer applied the RBM to the quantum mechanical spin lattice systems of the Ising model and Heisenberg model, with encouraging results. Our goal is to test the method on systems of moving particles. For the spin lattice systems it was natural to use a binary-binary RBM, with the nodes taking values of 1 and -1. For moving particles, on the other hand, we want the visible nodes to be continuous, representing position coordinates. Thus, we start by choosing a Gaussian-binary RBM, where the visible nodes are continuous and hidden nodes take on values of 0 or 1. If eventually we would like the hidden nodes to be continuous as well the rectified linear units seem like the most relevant choice.</p>
-</div>
-<div class="section" id="representing-the-wave-function">
-<h2><span class="section-number">13.4. </span>Representing the wave function<a class="headerlink" href="#representing-the-wave-function" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="representing-the-wave-function">
+<h2><span class="section-number">13.4. </span>Representing the wave function<a class="headerlink" href="#representing-the-wave-function" title="Link to this heading">#</a></h2>
 <p>The wavefunction should be a probability amplitude depending on
 <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>. The RBM model is given by the joint distribution of
 <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{h}\)</span></p>
@@ -1050,9 +909,9 @@ _i w_{ij}}{\sigma^2}}).
 \label{_auto33} \tag{33}
 \end{equation}
 \]</div>
-</div>
-<div class="section" id="choose-the-cost-function">
-<h2><span class="section-number">13.5. </span>Choose the cost function<a class="headerlink" href="#choose-the-cost-function" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="choose-the-cost-function">
+<h2><span class="section-number">13.5. </span>Choose the cost function<a class="headerlink" href="#choose-the-cost-function" title="Link to this heading">#</a></h2>
 <p>Now we don’t necessarily have training data (unless we generate it by using some other method). However, what we do have is the variational principle which allows us to obtain the ground state wave function by minimizing the expectation value of the energy of a trial wavefunction (corresponding to the untrained NQS). Similarly to the traditional variational Monte Carlo method then, it is the local energy we wish to minimize. The gradient to use for the stochastic gradient descent procedure is</p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto34"></div>
@@ -1074,8 +933,8 @@ _i w_{ij}}{\sigma^2}}).
 \label{_auto35} \tag{35}
 \end{equation}
 \]</div>
-<div class="section" id="mathematical-details">
-<h3><span class="section-number">13.5.1. </span>Mathematical details<a class="headerlink" href="#mathematical-details" title="Permalink to this headline">¶</a></h3>
+<section id="mathematical-details">
+<h3><span class="section-number">13.5.1. </span>Mathematical details<a class="headerlink" href="#mathematical-details" title="Link to this heading">#</a></h3>
 <p>Because we are restricted to potential functions which are positive it
 is convenient to express them as exponentials, so that</p>
 <!-- Equation labels as ordinary links -->
@@ -1329,9 +1188,9 @@ a more natural choice. We will here use 0 and 1.</p>
 \label{_auto49} \tag{49}
 \end{equation}
 \]</div>
-</div>
-<div class="section" id="marginal-probability-density-functions">
-<h3><span class="section-number">13.5.2. </span>Marginal Probability Density Functions<a class="headerlink" href="#marginal-probability-density-functions" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="marginal-probability-density-functions">
+<h3><span class="section-number">13.5.2. </span>Marginal Probability Density Functions<a class="headerlink" href="#marginal-probability-density-functions" title="Link to this heading">#</a></h3>
 <p>In order to find the probability of any configuration of the visible units we derive the marginal probability density function.</p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto50"></div>
@@ -1386,9 +1245,9 @@ a more natural choice. We will here use 0 and 1.</p>
 \label{_auto52} \tag{52}
 \end{equation}
 \]</div>
-</div>
-<div class="section" id="conditional-probability-density-functions">
-<h3><span class="section-number">13.5.3. </span>Conditional Probability Density Functions<a class="headerlink" href="#conditional-probability-density-functions" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="conditional-probability-density-functions">
+<h3><span class="section-number">13.5.3. </span>Conditional Probability Density Functions<a class="headerlink" href="#conditional-probability-density-functions" title="Link to this heading">#</a></h3>
 <p>We derive the probability of the hidden units given the visible units using Bayes’ rule</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1495,9 +1354,9 @@ p_{BB} (\boldsymbol{h}|\boldsymbol{x}) = \frac{p_{BB} (\boldsymbol{x}, \boldsymb
 \label{_auto61} \tag{61}
 \end{equation}
 \]</div>
-</div>
-<div class="section" id="gaussian-binary-restricted-boltzmann-machines">
-<h3><span class="section-number">13.5.4. </span>Gaussian-Binary Restricted Boltzmann Machines<a class="headerlink" href="#gaussian-binary-restricted-boltzmann-machines" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="gaussian-binary-restricted-boltzmann-machines">
+<h3><span class="section-number">13.5.4. </span>Gaussian-Binary Restricted Boltzmann Machines<a class="headerlink" href="#gaussian-binary-restricted-boltzmann-machines" title="Link to this heading">#</a></h3>
 <p>Inserting into the expression for <span class="math notranslate nohighlight">\(E_{RBM}(\boldsymbol{x},\boldsymbol{h})\)</span> in equation  results in the energy</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1515,9 +1374,9 @@ E_{GB}(\boldsymbol{x}, \boldsymbol{h}) = \sum_i^M \frac{(x_i - a_i)^2}{2\sigma_i
 \label{_auto62} \tag{62}
 \end{equation}
 \]</div>
-</div>
-<div class="section" id="joint-probability-density-function">
-<h3><span class="section-number">13.5.5. </span>Joint Probability Density Function<a class="headerlink" href="#joint-probability-density-function" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="joint-probability-density-function">
+<h3><span class="section-number">13.5.5. </span>Joint Probability Density Function<a class="headerlink" href="#joint-probability-density-function" title="Link to this heading">#</a></h3>
 <div class="math notranslate nohighlight">
 \[
 p_{GB} (\boldsymbol{x}, \boldsymbol{h}) = \frac{1}{Z_{GB}} e^{-\vert\vert\frac{\boldsymbol{x} -\boldsymbol{a}}{2\boldsymbol{\sigma}}\vert\vert^2 + \boldsymbol{b}^T \boldsymbol{h} 
@@ -1551,9 +1410,9 @@ p_{GB} (\boldsymbol{x}, \boldsymbol{h}) = \frac{1}{Z_{GB}} e^{-\vert\vert\frac{\
 \label{_auto64} \tag{64}
 \end{equation}
 \]</div>
-</div>
-<div class="section" id="id1">
-<h3><span class="section-number">13.5.6. </span>Marginal Probability Density Functions<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id1">
+<h3><span class="section-number">13.5.6. </span>Marginal Probability Density Functions<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>We proceed to find the marginal probability densitites of the
 Gaussian-binary RBM. We first marginalize over the binary hidden units
 to find <span class="math notranslate nohighlight">\(p_{GB} (\boldsymbol{x})\)</span></p>
@@ -1650,9 +1509,9 @@ p_{GB} (\boldsymbol{h}) = \int p_{GB} (\tilde{\boldsymbol{x}}, \boldsymbol{h}) d
 \label{_auto66} \tag{66}
 \end{equation}
 \]</div>
-</div>
-<div class="section" id="id2">
-<h3><span class="section-number">13.5.7. </span>Conditional Probability Density Functions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id2">
+<h3><span class="section-number">13.5.7. </span>Conditional Probability Density Functions<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>We finish by deriving the conditional probabilities.</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1772,10 +1631,10 @@ p_{GB} (\boldsymbol{x}|\boldsymbol{h})
 that the conditional probability of <span class="math notranslate nohighlight">\(x_i\)</span> given <span class="math notranslate nohighlight">\(\boldsymbol{h}\)</span> is a normal
 distribution with mean <span class="math notranslate nohighlight">\(b_i + \boldsymbol{w}_{i\ast}^T \boldsymbol{h}\)</span> and variance
 <span class="math notranslate nohighlight">\(\sigma_i^2\)</span>.</p>
-</div>
-</div>
-<div class="section" id="neural-quantum-states">
-<h2><span class="section-number">13.6. </span>Neural Quantum States<a class="headerlink" href="#neural-quantum-states" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="neural-quantum-states">
+<h2><span class="section-number">13.6. </span>Neural Quantum States<a class="headerlink" href="#neural-quantum-states" title="Link to this heading">#</a></h2>
 <p>The wavefunction should be a probability amplitude depending on <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span>. The RBM model is given by the joint distribution of <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{h}\)</span></p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto72"></div>
@@ -1941,8 +1800,8 @@ the conditional probabilities.</p>
 \label{_auto88} \tag{88}
 \end{equation}
 \]</div>
-<div class="section" id="id3">
-<h3><span class="section-number">13.6.1. </span>Cost function<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<section id="id3">
+<h3><span class="section-number">13.6.1. </span>Cost function<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p>This is where we deviate from what is common in machine
 learning. Rather than defining a cost function based on some dataset,
 our cost function is the energy of the quantum mechanical system. From
@@ -2187,10 +2046,10 @@ the expected local energy with respect to the RBM parameters
 \end{equation}
 \]</div>
 <p>The difference between this equation and the previous one is that we multiply by a factor <span class="math notranslate nohighlight">\(1/2\)</span>.</p>
-</div>
-</div>
-<div class="section" id="python-version-for-the-two-non-interacting-particles">
-<h2><span class="section-number">13.7. </span>Python version for the two non-interacting particles<a class="headerlink" href="#python-version-for-the-two-non-interacting-particles" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="python-version-for-the-two-non-interacting-particles">
+<h2><span class="section-number">13.7. </span>Python version for the two non-interacting particles<a class="headerlink" href="#python-version-for-the-two-non-interacting-particles" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -2455,72 +2314,97 @@ the expected local energy with respect to the RBM parameters
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.2616589395123157
-Energy: 3.250328623538633
-Energy: 3.210096688088389
-Energy: 3.2616162121215706
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.2684046836825242
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.2601523514477346
-Energy: 3.2569803619031514
-Energy: 3.27515114735846
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.290566840394456
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.226532626427531
-Energy: 3.2479229142962693
-Energy: 3.2405790551148295
-Energy: 3.339269450372016
-Energy: 3.292985914196608
-Energy: 3.2734831269767466
-Energy: 3.468371242428862
-Energy: 3.2814210399238766
-Energy: 3.2714197897886885
-Energy: 3.2193959772791
-Energy: 3.2912864812817935
-Energy: 3.2423803253014007
-Energy: 3.1928143709455195
-Energy: 3.2146899252942056
-Energy: 3.2999210822323337
-Energy: 3.2811059647446417
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.248670631398425
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.221709384120671
-Energy: 3.2201117261448933
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.196461454216011
+Energy: 3.2144867257969905
+Energy: 3.219716062647666
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.2411631395541476
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.220800801551698
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.274908669413067
+Energy: 3.258790506080658
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.1961692523819534
+Energy: 3.286682467638795
+Energy: 3.2571553776923565
+Energy: 3.2548093205611743
+Energy: 3.2560001325210695
+Energy: 3.2415868055768087
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.264652037548338
+Energy: 3.2763272475308987
+Energy: 3.2567484982406483
+Energy: 3.307708960581488
+Energy: 3.2951147311898676
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.2686010237525798
+Energy: 3.235155211309001
+Energy: 3.2142196314696623
+Energy: 3.260299595919089
+Energy: 3.360050958708752
+Energy: 3.2521497865034728
+Energy: 3.2656755355394473
+Energy: 3.2706811269166742
+Energy: 3.211389934537995
+Energy: 3.1746774580237913
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy: 3.2169641741874773
+Energy: 3.2779574007924777
+Energy: 3.215204292549719
 </pre></div>
 </div>
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 234&gt;</span><span class="nt">()</span>
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">235</span>
 <span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">EnergyDerivatives2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">MaxIterations</span><span class="p">)</span>
 <span class="g g-Whitespace">    </span><span class="mi">234</span> <span class="k">while</span> <span class="nb">iter</span> <span class="o">&lt;</span> <span class="n">MaxIterations</span><span class="p">:</span>
 <span class="ne">--&gt; </span><span class="mi">235</span>     <span class="n">Energy</span><span class="p">,</span> <span class="n">EDerivative</span> <span class="o">=</span> <span class="n">EnergyMinimization</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
 <span class="g g-Whitespace">    </span><span class="mi">236</span>     <span class="n">agradient</span> <span class="o">=</span> <span class="n">EDerivative</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="g g-Whitespace">    </span><span class="mi">237</span>     <span class="n">bgradient</span> <span class="o">=</span> <span class="n">EDerivative</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="nn">Input In [1],</span> in <span class="ni">EnergyMinimization</span><span class="nt">(a, b, w)</span>
+<span class="nn">Cell In[1], line 161,</span> in <span class="ni">EnergyMinimization</span><span class="nt">(a, b, w)</span>
+<span class="g g-Whitespace">    </span><span class="mi">158</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
 <span class="g g-Whitespace">    </span><span class="mi">159</span>     <span class="n">PositionNew</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">PositionOld</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">normalvariate</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span><span class="o">*</span><span class="n">sqrt</span><span class="p">(</span><span class="n">TimeStep</span><span class="p">)</span><span class="o">+</span>\
 <span class="g g-Whitespace">    </span><span class="mi">160</span>                            <span class="n">QuantumForceOld</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">TimeStep</span><span class="o">*</span><span class="n">D</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span> <span class="n">wfnew</span> <span class="o">=</span> <span class="n">WaveFunction</span><span class="p">(</span><span class="n">PositionNew</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">162</span> <span class="n">QuantumForceNew</span> <span class="o">=</span> <span class="n">QuantumForce</span><span class="p">(</span><span class="n">PositionNew</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">161</span> <span class="n">wfnew</span> <span class="o">=</span> <span class="n">WaveFunction</span><span class="p">(</span><span class="n">PositionNew</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">162</span> <span class="n">QuantumForceNew</span> <span class="o">=</span> <span class="n">QuantumForce</span><span class="p">(</span><span class="n">PositionNew</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
 <span class="g g-Whitespace">    </span><span class="mi">164</span> <span class="n">GreensFunction</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="g g-Whitespace">    </span><span class="mi">165</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
 
-<span class="nn">Input In [1],</span> in <span class="ni">QuantumForce</span><span class="nt">(r, a, b, w)</span>
-<span class="g g-Whitespace">     </span><span class="mi">99</span> <span class="k">for</span> <span class="n">ih</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NumberHidden</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span>     <span class="n">sum1</span> <span class="o">+=</span> <span class="n">w</span><span class="p">[:,:,</span><span class="n">ih</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Q</span><span class="p">[</span><span class="n">ih</span><span class="p">]))</span>
-<span class="ne">--&gt; </span><span class="mi">102</span> <span class="n">qforce</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="n">sig2</span> <span class="o">+</span> <span class="n">sum1</span><span class="o">/</span><span class="n">sig2</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span> <span class="k">return</span> <span class="n">qforce</span>
+<span class="nn">Cell In[1], line 25,</span> in <span class="ni">WaveFunction</span><span class="nt">(r, a, b, w)</span>
+<span class="g g-Whitespace">     </span><span class="mi">23</span> <span class="n">Psi1</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="n">Psi2</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="ne">---&gt; </span><span class="mi">25</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">Qfac</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">27</span> <span class="k">for</span> <span class="n">iq</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NumberParticles</span><span class="p">):</span>
+<span class="g g-Whitespace">     </span><span class="mi">28</span>     <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
+
+<span class="nn">Cell In[1], line 111,</span> in <span class="ni">Qfac</span><span class="nt">(r, b, w)</span>
+<span class="g g-Whitespace">    </span><span class="mi">108</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">NumberHidden</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">110</span> <span class="k">for</span> <span class="n">ih</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NumberHidden</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">111</span>     <span class="n">temp</span><span class="p">[</span><span class="n">ih</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">w</span><span class="p">[:,:,</span><span class="n">ih</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">113</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">temp</span>
+<span class="g g-Whitespace">    </span><span class="mi">115</span> <span class="k">return</span> <span class="n">Q</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
 </div>
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -2534,7 +2418,7 @@ Energy: 3.2201117261448933
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./."
         },
         predefinedOutput: true
@@ -2542,44 +2426,130 @@ Energy: 3.2201117261448933
     </script>
     <script>kernelName = 'python3'</script>
 
-              </div>
+                </article>
               
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="resamplingmethods.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">12. </span>Resampling Techniques, Bootstrap and Blocking</p>
-        </div>
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="resamplingmethods.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">12. </span>Resampling Techniques, Bootstrap and Blocking</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="vectorization.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="vectorization.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title"><span class="section-number">14. </span>Optimization and Vectorization</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
+                </footer>
+              
+            </div>
             
-        </div>
-    </div>
-    <footer class="footer">
-  <p>
-    
-      By Morten Hjorth-Jensen<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-      </div>
-    </div>
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-network">13.1. The network</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#joint-distribution">13.1.1. Joint distribution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#network-elements-the-energy-function">13.1.2. Network Elements, the energy function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#defining-different-types-of-rbms">13.1.3. Defining different types of RBMs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cost-function">13.1.4. Cost function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-training">13.1.5. Optimization / Training</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kullback-leibler-relative-entropy">13.1.6. Kullback-Leibler relative entropy</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-for-gradient-descent-calculations">13.2. Setting up for gradient descent calculations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rbms-for-the-quantum-many-body-problem">13.3. RBMs for the quantum many body problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#representing-the-wave-function">13.4. Representing the wave function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-the-cost-function">13.5. Choose the cost function</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-details">13.5.1. Mathematical details</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#marginal-probability-density-functions">13.5.2. Marginal Probability Density Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditional-probability-density-functions">13.5.3. Conditional Probability Density Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian-binary-restricted-boltzmann-machines">13.5.4. Gaussian-Binary Restricted Boltzmann Machines</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#joint-probability-density-function">13.5.5. Joint Probability Density Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">13.5.6. Marginal Probability Density Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">13.5.7. Conditional Probability Density Functions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-quantum-states">13.6. Neural Quantum States</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">13.6.1. Cost function</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-version-for-the-two-non-interacting-particles">13.7. Python version for the two non-interacting particles</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
   
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
 
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
