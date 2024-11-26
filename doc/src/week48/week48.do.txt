@@ -1,6 +1,6 @@
 TITLE: Week 48: Coupled cluster theory and summary of course 
 AUTHOR: Morten Hjorth-Jensen  {copyright, 1999-present|CC BY-NC} at Department of Physics and Center for Computing in Science Education, University of Oslo, Norway
-DATE: Week 48, November 25-29
+DATE: November 25-29, 2024
 
 !split
 =====  Week 48, November 25-29, 2024 =====
@@ -8,7 +8,64 @@ o Thursday:
   o Short repetition from last week
   o How to write your own coupled-cluster theory code, pairing model example
   o Coupled cluster theory, singles and doubles excitations, diagrammatic expansion
-o Firday:
+o Friday:
   o Coupled cluster theory  for singles and doubles excitations using a diagrammatic derivation
   o Summary of course and discussion of final oral exam
 o Lecture material: Lecture notes and Shavitt and Bartlett chapters 9 and 10. See also slides at URL:"https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/pub/week48/pdf/cc.pdf"
+
+
+!split
+===== CCSD with twobody Hamiltonian =====
+
+Truncating the cluster operator $\hat{T}$ at the $n=2$ level, defines
+CCSD approximation to the Coupled Cluster wavefunction.  The
+coupled cluster wavefunction is now given by
+
+!bt
+\begin{equation*}
+            \vert \Psi_{CC}\rangle = e^{\hat{T}_1 + \hat{T}_2} \vert \Phi_0\rangle,
+\end{equation*}
+!et
+where 
+!bt
+\begin{align*}
+            \hat{T}_1 &= 
+            \sum_{ia}
+                t_{i}^{a} a_{a}^\dagger a_i \\
+            \hat{T}_2 &= \frac{1}{4} 
+            \sum_{ijab}
+                t_{ij}^{ab} a_{a}^\dagger a_{b}^\dagger a_{j} a_{i}.
+\end{align*}
+!et
+
+!split
+===== Two-body normal-ordered Hamiltonian =====
+
+!bt
+\begin{align*}
+            \hat{H} &= \sum_{pq} f_q^p\left\{ a_p^\dagger a_q \right\} + 
+                \frac{1}{4} \sum_{pqrs} \langle pq \vert \hat{v} \vert rs \rangle  \left\{ a_p^\dagger a_q^\dagger a_s a_r \right\} \\
+                & \quad + \mathrm{E}_0 \\
+                &= \hat{F}_N + \hat{V}_N  + \mathrm{E}_0 
+                = \hat{H}_N  + \mathrm{E}_0,
+\end{align*}
+!et
+where
+!bt
+\begin{align*}
+            f_q^p &= \langle p\vert \hat{t} \vert q\rangle + \sum_i \langle pi\vert \hat{v} \vert qi\rangle \\
+            \langle pq \vert  \vert rs \rangle  &= \langle pq \vert  \hat{v} \vert rs \rangle  \\
+            \mathrm{E}_0 &= \sum_i \langle i\vert \hat{t} \vert i\rangle + \frac{1}{2} \sum_{ij} \langle ij\vert  \hat{v} \vert ij\rangle.
+\end{align*}
+!et
+
+#%\input{src/ccsd_summary02}
+#%\input{src/ccsd_summary03}
+
+#\include{src/ccsd_H2diagrams}
+#\include{src/ccsd_barh_expansion}
+#\include{src/ccsd_factoring}
+#\include{src/ccsd_algorithm}
+
+
+    
