@@ -48,20 +48,7 @@ div.toc p,a {
               ('Two-body normal-ordered Hamiltonian',
                2,
                None,
-               'two-body-normal-ordered-hamiltonian'),
-              ('Diagram equations - Derivation',
-               2,
-               None,
-               'diagram-equations-derivation'),
-              ('Diagram rules', 2, None, 'diagram-rules'),
-              ('CCSD $\\hat{T}_1$ amplitude equation',
-               2,
-               None,
-               'ccsd-hat-t-1-amplitude-equation'),
-              ('CCSD $\\hat{T}_2$ amplitude equation',
-               2,
-               None,
-               'ccsd-hat-t-2-amplitude-equation')]}
+               'two-body-normal-ordered-hamiltonian')]}
 end of tocinfo -->
 
 <body>
@@ -108,6 +95,8 @@ MathJax.Hub.Config({
  <li> Short repetition from last week</li>
  <li> How to write your own coupled-cluster theory code, pairing model example</li>
  <li> Coupled cluster theory, singles and doubles excitations, diagrammatic expansion</li>
+ <li> Video of lecture at <a href="https://youtu.be/wVbJ82zpHsU" target="_blank"><tt>https://youtu.be/wVbJ82zpHsU</tt></a></li>
+ <li> Whiteboard notes at <a href="https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember28.pdf" target="_blank"><tt>https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember28.pdf</tt></a></li>         
 </ol>
 <li> Friday:
 <ol type="a"></li>
@@ -164,89 +153,6 @@ $$
 \end{align*}
 $$
 
-
-<!-- !split --><br><br><br><br><br><br><br><br><br><br>
-<h2 id="diagram-equations-derivation">Diagram equations - Derivation </h2>
-
-<ol>
-<li> Contract \( \hat{H}_N \) with \( \hat{T} \) in all possible unique combinations that satisfy a given form. The diagram equation is the sum of all these diagrams.</li>
-<li> Contract one \( \hat{H}_N \) element with \( 0,1 \) or multiple \( \hat{T} \) elements.</li> 
-<li> All \( \hat{T} \) elements must have \alert{atleast} one contraction with \( \hat{H}_N \).</li>
-<li> No contractions between \( \hat{T} \) elements are allowed.</li> 
-<li> A single \( \hat{T} \) element can contract with a single element of \( \hat{H}_N \) in different ways.</li>
-</ol>
-<!-- !split --><br><br><br><br><br><br><br><br><br><br>
-<h2 id="diagram-rules">Diagram rules </h2>
-<ol>
-<li> Label all lines.</li>
-<li> Sum over all internal indices.</li> 
-<li> Extract matrix elements.</li> 
-<li> Extract cluster amplitudes with indices in the order left to right. Incoming lines are subscripts, while outgoing lines are superscripts. (\( t_{\mathrm{in}}^{\mathrm{out}} \), \( t^{\mathrm{lout, rout}}_{\mathrm{lin, rin}} \))</li>
-<li> Calculate the phase: \( (-1)^{\mathrm{holelines} + \mathrm{loops}} \)</li> 
-<li> Multiply by a factor of \( \frac{1}{2} \) for each equivalent line and each ecuivalent vertex.</li>
-<li> Antisymmetrize a pair of external particle/hole line that does not connect to the same operator.</li>	
-</ol>
-<!-- !split --><br><br><br><br><br><br><br><br><br><br>
-<h2 id="ccsd-hat-t-1-amplitude-equation">CCSD \( \hat{T}_1 \) amplitude equation </h2>
-
-$$
-\begin{align*}
-    0 &= f_{i}^a + f_{e}^a t_i^e - f_{i}^mt_m^a + \langle ma\vert\hat{v}\vert ei\rangle  t_m^e 
-        + f_{e}^m t_{im}^{ae} + \frac{1}{2} \langle am\vert\hat{v}\vert ef\rangle  t_{im}^{ef} 
-        &- \frac{1}{2} \langle mn\vert\hat{v}\vert ei\rangle  t_{mn}^{ea} - f_{e}^m t_i^e t_m^a
-        + \langle am\vert \hat{v}\vert ef\rangle t_i^e t_m^f - \langle mn\vert\hat{v}\vert ei\rangle  t_m^e t_n^a 
-        & \quad + \langle mn\vert\hat{v}\vert ef\rangle t_m^e t_{ni}^{fa}
-        - \frac{1}{2} \langle mn\vert\hat{v}\vert ef\rangle  t_i^e t_{mn}^{af}
-        - \frac{1}{2} \langle mn\vert\hat{v}\vert ef\rangle  t_n^a t_{mi}^{ef}
-        & \quad  - \langle mn\vert\hat{v}\vert ef\rangle  t_i^e t_m^a t_n^f
-\end{align*}
-$$
-
-
-<!-- !split --><br><br><br><br><br><br><br><br><br><br>
-<h2 id="ccsd-hat-t-2-amplitude-equation">CCSD \( \hat{T}_2 \) amplitude equation </h2>
-
-$$
-\begin{align*}
-    0 &= 
-        \langle ab\vert \hat{v} \vert ij\rangle
-        + P(ij) \langle ab\vert\hat{v}\vert ej\rangle  t_i^e
-        - P(ab) \langle am\vert\hat{v} \vert ij\rangle  t_m^b
-        + P(ab) f_{e}^b t_{ij}^{ae}
-        - P(ij) f_{i}^m t_{mj}^{ab}
-        & +\frac{1}{2} \langle ab\vert\hat{v}\vert ef\rangle  t_{ij}^{ef}
-        + \frac{1}{2} \langle mn\vert\hat{v}\vert ij\rangle  t_{mn}^{ab}
-        + P(ij) P(ab) \langle mb\vert\hat{v}\vert ej\rangle  t_{im}^{ae}
-        & +\frac{1}{2} P(ij) \langle ab\vert\hat{v}\vert ef\rangle  t_i^e t_j^f
-        + \frac{1}{2} P(ab) \langle mn\vert\hat{v}\vert ij\rangle  t_m^a t_n^b
-        - P(ij) P(ab) \langle mb\vert\hat{v}\vert ej\rangle  t_i^e t_m^a
-        & +\frac{1}{4} \langle mn\vert\hat{v}\vert ef\rangle  t_{ij}^{ef} t_{mn}^{ab}
-        + \frac{1}{2} P(ij) P(ab) \langle mn\vert\hat{v}\vert ef\rangle t_{im}^{ae} t_{nj}^{fb}
-        - \frac{1}{2} P(ab) \langle mn\vert\hat{v}\vert ef\rangle  t_{ij}^{ae} t_{mn}^{bf}
-        & -\frac{1}{2} P(ij) \langle mn\vert\hat{v}\vert ef\rangle  t_{mi}^{ef} t_{nj}^{ab}
-        - P(ij) f_{e}^m t_i^e t_{mj}^{ab}
-        - P(ab) f_{e}^m t_{ij}^{ae} t_m^b
-        & +P(ij) P(ab) \langle am\vert\hat{v}\vert ef\rangle  t_i^e t_{mj}^{fb}
-        - \frac{1}{2} P(ab) \langle am\vert\hat{v}\vert ef\rangle  t_{ij}^{ef} t_m^b
-        + P(ab) \langle bm\vert\hat{v}\vert ef\rangle  t_{ij}^{ae} t_m^f
-        & -P(ij) P(ab) \langle mn\vert\hat{v} \vert ej\rangle  t_{im}^{ae} t_n^b
-        + \frac{1}{2} P(ij) \langle mn\vert\hat{v}\vert ej\rangle  t_i^e t_{mn}^{ab}
-        -P(ij) \langle mn\vert\hat{v}\vert ei\rangle  t_m^e t_{nj}^{ab}
-        & -\frac{1}{2} P(ij) P(ab) \langle am\vert\hat{v}\vert ef\rangle  t_i^e t_j^f t_m^b
-        + \frac{1}{2} P(ij) P(ab) \langle mn\vert\hat{v}\vert ej\rangle t_i^e t_m^a t_n^b
-        & + \frac{1}{4} P(ij) \langle mn\vert\hat{v}\vert ef\rangle  t_i^e t_{mn}^{ab} t_j^f
-        - P(ij) P(ab) \langle mn\vert\hat{v}\vert ef\rangle t_i^e t_m^a t_{nj}^{fb}
-        & + \frac{1}{4} P(ab) \langle mn\vert\hat{v}\vert ef\rangle t_m^a t_{ij}^{ef} t_n^b
-        - P(ij) \langle mn\vert\hat{v}\vert ef\rangle t_m^e t_i^f t_{nj}^{ab}
-        - P(ab) \langle mn\vert\hat{v}\vert ef\rangle t_{ij}^{ae} t_m^b t_n^f
-        & + \frac{1}{4} P(ij) P(ab) \langle mn\vert\hat{v}\vert ef\rangle t_i^e t_m^a t_j^f t_n^b
-\end{align*}
-$$
-
-
-<!-- \include{src/ccsd_barh_expansion} -->
-<!-- \include{src/ccsd_factoring} -->
-<!-- \include{src/ccsd_algorithm} -->
 
 <!-- ------------------- end of main content --------------- -->
 <center style="font-size:80%">
