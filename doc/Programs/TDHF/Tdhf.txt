@@ -1,0 +1,140 @@
+
+Time-Dependent Hartree-Fock Implementation in Python
+
+
+
+Overview of TDHF Method
+
+
+Time-Dependent Hartree-Fock (TDHF) is the real-time extension of the Hartree-Fock method, where the one-particle density matrix P(t) is propagated in time according to the time-dependent Hartree-Fock equations. In TDHF, the orbitals (or the density matrix) evolve under the Fock operator such that iℏ ∂P/∂t = [F(P), P] .  Here F(P) is the time-dependent Fock matrix (which depends on the instantaneous density), and the right-hand side is the commutator [F, P] = F P - P F. We use atomic units (ℏ = 1) for simplicity, so the equation becomes:
+
+i \frac{dP}{dt} = [F(P),\,P]
+
+This TDHF equation means the density matrix evolves unitarily under the Fock operator, similar to a Liouville–von Neumann equation for the quantum density . If the system starts in the ground-state density P^{(0)} (idempotent and commutes with F^{(0)}), it remains stationary . To observe dynamics, we can either start from a non-stationary initial condition or apply a time-dependent perturbation. In our implementation, we start from an approximate Hartree-Fock ground state (to introduce a slight initial non-stationarity) and propagate in real time with no external perturbation.
+
+
+Implementation Outline
+
+
+To develop a flexible TDHF code using NumPy/SciPy (with no specialized quantum chemistry packages), we proceed with the following steps:
+
+Generate a Random Molecular Hamiltonian: We construct a model Hamiltonian defined by random one-electron and two-electron integrals. The one-electron integrals h_{pq} (core Hamiltonian) are generated as a random Hermitian matrix (we ensure h_{pq} = h_{qp}). The two-electron integrals g_{pqrs} are generated as a random 4-index array and then symmetrized to mimic the antisymmetry of electron repulsion integrals. In particular, we enforce the typical index symmetries: symmetric under exchange of the first two indices (p,q), symmetric under exchange of the last two (r,s), and symmetric under swapping the pair (pq) with (rs). This ensures that any constructed Fock matrix will be Hermitian as well. (In quantum chemistry, the antisymmetrized two-electron integrals \langle p q \|\; r s\rangle = (p q | r s) - (p q | s r) are Hermitian in the appropriate index pairs , but here we simply ensure the underlying tensor has the necessary symmetry.)
+Flexible Orbital/Electron Setup: We allow the number of basis orbitals (N) and number of electrons (N_e) to be specified. The code will work for any N and any valid N_e ≤ N. For simplicity, we treat each orbital as a spin-orbital (occupancy 0 or 1), so N_e is the number of occupied spin-orbitals. (For a closed-shell system with doubly occupied spatial orbitals, one could interpret N as including spin degeneracy and N_e as twice the number of occupied spatial orbitals, but the implementation does not explicitly enforce spin pairing.)
+Initial Ground-State Density Matrix: We initialize P(0) in a Hartree-Fock-like manner by using the core Hamiltonian guess. We diagonalize the one-electron Hamiltonian h_{pq} and fill the lowest N_e orbitals to build an idempotent density matrix . This means if C is the matrix of eigenvectors of h and we take the N_e lowest eigenvectors, we form P_{ij} = \sum_{a \in \text{occ}} C_{i a} C_{j a}. This is a common starting point in SCF calculations (e.g., CORE guess which uses the diagonalization of the core Hamiltonian to obtain initial molecular orbitals ). The initial density P(0) is thus an N×N Hermitian matrix with eigenvalues 1 (occupied) or 0 (virtual). Note that this P(0) is generally not the exact HF ground-state density for the full Hamiltonian if two-electron terms are nonzero (because we ignored electron-electron interactions in this guess). Therefore, P(0) will not commute with the initial Fock matrix of the interacting system, i.e. F(P(0))\,P(0) - P(0)\,F(P(0)) \neq 0. This ensures non-trivial time evolution even without an external perturbation.
+Fock Matrix Construction: At each time step, we need to build the Fock matrix F(P) from the current density P. For a general Hartree-Fock Hamiltonian, the Fock matrix elements are: F_{pq} = h_{pq} + \sum_{r,s} P_{rs}\,\Big[(p q \vert r s) - (p r \vert s q)\Big] \ , where (p q | r s) are two-electron (Coulomb) integrals and (p r | s q) are exchange integrals . The term in brackets is often written as \langle p q \| r s \rangle, the antisymmetrized two-electron integral. In our code, we will compute this as a Coulomb term minus an exchange term. We denote by g_{pqrs} = (p q | r s) the symmetric two-electron integral tensor. Then we construct: 
+The Coulomb matrix J_{pq} = \sum_{r,s} P_{rs}\, g_{p q r s}. This is the classical Coulomb potential from the density.
+The Exchange matrix K_{pq} = \sum_{r,s} P_{rs}\, g_{p r s q}. This term arises from the antisymmetry of the fermionic wavefunction (exchange interaction).
+ Then F_{pq} = h_{pq} + J_{pq} - K_{pq}. This ensures F is Hermitian given the symmetry of g and P. We will implement these sums efficiently using NumPy’s tensor operations (avoiding explicit four-index loops).
+Time Integration Scheme: We propagate P(t) by solving i\,dP/dt = [F(P), P]. This is a first-order ordinary matrix differential equation. We adopt a numerical integration method to evolve P over small time steps dt. A simple explicit method like Euler’s would be unstable for the unitary evolution (it would violate the idempotency and energy conservation severely). Instead, we use a 4th-order Runge-Kutta (RK4) method for better stability . RK4 computes intermediate k-values (slopes) for sub-steps and achieves O(dt^4) accuracy per step, which is well-suited for time-dependent Schrödinger-type equations . This method will approximately preserve the orthonormality of orbitals and the Hermiticity of P for sufficiently small dt. (One could also use the midpoint (second-order) method or more specialized unitary propagators, but RK4 offers a good balance of simplicity and accuracy .)
+Real-Time Propagation: Starting from P(0), we iteratively update P -> P + dP over many small time steps. At each step, we: 
+Compute the Fock matrix F = F(P).
+Compute the commutator C = F P - P F.
+Use RK4 to update P by a combination of commutators (k1…k4). In formula form, the RK4 update for our equation dP/dt = -i [F,P] is: 
+k_1 = -\,i\,[F(P_n),\,P_n]
+k_2 = -\,i\,[F(P_n + \frac{dt}{2}k_1),\, (P_n + \frac{dt}{2}k_1)]
+k_3 = -\,i\,[F(P_n + \frac{dt}{2}k_2),\, (P_n + \frac{dt}{2}k_2)]
+k_4 = -\,i\,[F(P_n + dt\,k_3),\, (P_n + dt\,k_3)]
+Then P_{n+1} = P_n + \frac{dt}{6}(k_1 + 2k_2 + 2k_3 + k_4).
+
+This loop is repeated for the desired total simulation time. We use complex arithmetic for P and F since off-diagonal elements of P can become complex during time evolution (phases develop). The density matrix P(t) should remain Hermitian (the imaginary parts of diagonal elements remain ~0 and off-diagonals come in complex-conjugate pairs).
+
+Observables and Output: We monitor the total energy of the system as a function of time as a check. The Hartree-Fock energy can be computed from the density and Fock matrices as: E_{\text{HF}} = \mathrm{Tr}(P h) + \frac{1}{2}\sum_{p q r s} P_{p q} P_{r s}\,\Big[(p q | r s) - (p q | s r)\Big] \ , which simplifies to E = \frac{1}{2}\mathrm{Tr}[P\,(h + F)] . This formula accounts for the one-electron energy plus half the two-electron (Coulomb minus exchange) energy (the 1/2 avoids double-counting each pair interaction) . In a closed, time-independent system, energy should be conserved over time. Our simulation will print out the energy at each time step (or at intervals) to verify this. Small numerical deviations in energy indicate the integration error; we expect RK4 with small dt to conserve energy very well. We can also output other observables if needed (e.g., orbital occupations or dipole moment if a position operator is defined), but for this task we focus on total energy.
+
+
+Below is the full Python code implementing the above steps. The code is written as a self-contained script with detailed inline comments explaining each part of the process:
+
+
+Full Python Code Implementation
+
+import numpy as np
+
+# 1. System parameters (adjustable for flexibility)
+N = 6         # Number of orbitals (basis functions)
+N_e = 3       # Number of electrons (occupied spin-orbitals, <= N)
+dt = 0.01     # Time step for propagation
+n_steps = 100 # Number of time steps to propagate
+
+# 2. Generate random one-electron (h) and two-electron (g) integrals
+np.random.seed(42)  # for reproducibility (optional)
+# Generate a random symmetric matrix for one-electron integrals
+h = np.random.rand(N, N) - 0.5
+h = 0.5 * (h + h.T)  # make it Hermitian (symmetric real matrix)
+
+# Generate a random 4D array for two-electron integrals and enforce symmetry
+g = np.random.rand(N, N, N, N) - 0.5
+# Impose physicochemical symmetries: symmetric in (p<->q), (r<->s), and (pq<->rs)
+g = 0.5 * (g + g.transpose(1, 0, 2, 3))   # swap p and q
+g = 0.5 * (g + g.transpose(0, 1, 3, 2))   # swap r and s
+g = 0.5 * (g + g.transpose(2, 3, 0, 1))   # swap pair (pr) with (qs)
+# Now g[p,q,r,s] = g[q,p,r,s] = g[p,q,s,r] = g[r,s,p,q], ensuring Hermitian properties in Fock build.
+
+# 3. Initialize density matrix from Hartree-Fock-like ground state (core Hamiltonian guess)
+# Diagonalize the one-electron Hamiltonian h to get molecular orbital energies and orbitals
+eigvals, eigvecs = np.linalg.eigh(h)            # eigen-decomposition of h (since h is symmetric)
+idx = np.argsort(eigvals)                       # sort eigenvalues (ascending)
+eigvecs = eigvecs[:, idx]                       # sort eigenvectors correspondingly
+# Build density matrix by occupying the lowest N_e eigenstates
+P = np.zeros((N, N), dtype=float)
+for i in range(N_e):
+    v = eigvecs[:, i]
+    P += np.outer(v, v)       # add |v><v| for each occupied orbital
+# P is now an idempotent projector of rank N_e (approximately the HF ground-state density guess).
+
+# 4. Define a function to build the Fock matrix F(P) given density P
+def build_fock(P):
+    """Construct Fock matrix F = h + J - K from density matrix P."""
+    # Coulomb term: J_{pq} = sum_{r,s} P_{rs} * g_{p,q,r,s}
+    J = np.einsum('pqrs,rs->pq', g, P, optimize=True)
+    # Exchange term: K_{pq} = sum_{r,s} P_{rs} * g_{p,r,s,q}
+    K = np.einsum('prsq,rs->pq', g, P, optimize=True)
+    F = h + J - K
+    return F
+
+# 5. Function to compute total energy for monitoring (E = 0.5 * Tr[P*(h+F)])
+def compute_energy(P, F):
+    # Use trace formula: E = 0.5 * trace(P (h + F))
+    return 0.5 * np.trace(P.dot(h + F)).real
+
+# 6. Time-propagation using 4th-order Runge-Kutta (RK4)
+# Convert P to complex type for time evolution (to allow complex off-diagonals)
+P = P.astype(complex)
+energies = []  # to record total energy at each time step
+times = []     # to record time points
+
+for step in range(n_steps):
+    t = step * dt
+    # Compute Fock matrix and energy at current time
+    F = build_fock(P)
+    E = compute_energy(P, F)
+    energies.append(E)
+    times.append(t)
+    # Print or log the energy (optional, can be commented out to reduce output)
+    print(f"Step {step:3d}, Time {t:.3f}: Total Energy = {E:.6f}")
+    # Evaluate RK4 derivatives
+    # k1
+    dP1 = -1j * (F.dot(P) - P.dot(F))
+    # k2: evaluate at P + 0.5*dt*k1
+    P2 = P + 0.5 * dt * dP1
+    F2 = build_fock(P2)
+    dP2 = -1j * (F2.dot(P2) - P2.dot(F2))
+    # k3: evaluate at P + 0.5*dt*k2
+    P3 = P + 0.5 * dt * dP2
+    F3 = build_fock(P3)
+    dP3 = -1j * (F3.dot(P3) - P3.dot(F3))
+    # k4: evaluate at P + dt*k3
+    P4 = P + dt * dP3
+    F4 = build_fock(P4)
+    dP4 = -1j * (F4.dot(P4) - P4.dot(F4))
+    # RK4 update: combine derivatives to update P
+    P = P + (dt/6.0) * (dP1 + 2*dP2 + 2*dP3 + dP4)
+
+# After propagation, print final results
+F_final = build_fock(P)
+E_final = compute_energy(P, F_final)
+print(f"Final Time {n_steps*dt:.3f}: Total Energy = {E_final:.6f}")
+# (Energy should remain nearly constant over time if the integration is accurate and no external perturbation.)
+Explanation of Output: The script prints the total energy at each time step. In an ideal TDHF propagation (with no external time-dependent fields), the total energy is expected to be conserved . Using the RK4 integrator with a sufficiently small dt, the energy should remain nearly constant. For example, you might see an output where the energy fluctuates only on the order of machine precision. This verifies both the correctness of the TDHF equations and the stability of the integration scheme. The final print statement shows the energy at the final time, which should closely match the initial energy (indicating energy conservation).
+
+Since we started from an approximate ground state (core Hamiltonian guess), the density was not exactly stationary for the full interacting Hamiltonian. Therefore, the density matrix P(t) will oscillate in time (small-amplitude collective oscillations, sometimes interpreted as TDHF oscillations or prompt electronic response). The energy remains constant during these oscillations (as there is no dissipative mechanism). One could analyze the time-dependent density or orbital coefficients further to see the nature of these oscillations (e.g., by projecting onto the initial orbital basis), but that is beyond the scope of this implementation.
+
+Note: This code uses only NumPy for matrix operations (and could optionally use SciPy for linear algebra routines if needed). No quantum chemistry libraries are used. The system is kept simple (random Hamiltonian) for demonstration purposes. In a real application, one would replace the random integrals with actual molecular integrals, and possibly include a time-dependent perturbation (like an external electric field) to drive dynamics. The structure here, however, is general and can handle any number of orbitals and electrons within available memory, showcasing a flexible TDHF real-time propagation.
