@@ -29,14 +29,11 @@ depending on the background and interests of the participants.
 * _Email_: morten.hjorth-jensen@fys.uio.no
 * _Phone_: +47-48257387
 * _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ470
-* _Name_: Ruben Guevara
-* _Email_: ruben.guevara@fys.uio.no
-* _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ375
 
 ## Practicalities
 
-1. Four lectures per week, Fall semester, 10 ECTS. Thursday 1015am-12pm and Friday 1015-12pm FØ434 The lectures will be recorded and linked to this site;
-2. Two hours of exercise sessions for work on projects and exercises, Friday 1215pm-2pm, FØ434;
+1. Four lectures per week, Fall semester, 10 ECTS. Thursday 1215pm-2pm and Friday 1015-12pm FØ257 The lectures will be recorded and linked to this site;
+2. Two hours of exercise sessions for work on projects and exercises, Friday 1215pm-2pm, FØ257;
 3. Two projects which are graded and count 30% each of the final grade and a final oral exam that counts 40% of the final grade;
 4. Weekly assignments which are not graded;
 5. The course is offered as a so-called _cloned_ course,  FYS4480 at the Master of Science level and FYS9480 as a PhD course;
@@ -93,11 +90,11 @@ There are many good textbooks on many-body physics. In addition to to ourn own c
      - Derivation of equations for singles and doubles, reminder on unitary transformations
      - Unitary coupled cluster theory
 - Green's function theory and parquet theory
-- SRG and IMSRG
+- Similarity renormalization theory
 - Monte Carlo methods
-     - Taught in FYS4411
+     - Taught in FYS4411/9411
 - Quantum computing
-     - VQE and unitary CC
+     - VQE and unitary CC, taught in FYS5419/9419
 - Time-dependent many-body theory
 - Applications to different systems like the electron gass, Lipkin model, Pairing model, infinite nuclear matter, and more
 
