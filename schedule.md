@@ -1,22 +1,17 @@
 # Quantum mechanics for many-particle systems
-## Teaching schedule with links to material (Note that material will be added during July and August 2024)
+## Teaching schedule with links to material (Note that material will be added during July and August 2025)
 
-###  Week 34, August 19-23
+###  Week 34, August 18-22
 
 - Topics to be covered
   - Thursday: Introduction to many-body physics, notations and definitions
-    - Video of lecture https://youtu.be/AIbnm_sBtqA
+    - Video of TBA lecture https://youtu.be/
   - Friday: Discussion of notations and important properties in many-body physics
-    - Video of lecture https://youtu.be/so-Cn5nb1Uk
-    - Whiteboard notes for week 34 at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesWeek34.pdf
+    - Video of TBA lecture https://youtu.be/
 - Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week34, see either jupyter-notebook or pdf file
 - First exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek34.pdf
 
-Video of lecture TBA at URL:"
-  o "
-
-
-###  Week 35, August 26-30
+###  Week 35, August 25-29
 
 - Topics to be covered
   - Thursday: Fermion and boson state functions and computation of expectation values in first quantization
@@ -26,12 +21,11 @@ Video of lecture TBA at URL:"
 - Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week35, see either jupyter-notebook or pdf file
 - Second exercise set at https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2024/ExercisesWeek35.pdf
 
-### Week 36, September 2-6
+### Week 36, September 1-5
 
 - Topics to be covered
   - Thursday: Second quantization, operators in second quantization and diagrammatic representation
   - Video of lecture https://youtu.be/
-  - Whiteboard	notes https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/LectureSeptember7.pdf
   - Friday: Second quantization and Wick's theorem
   - Video of lecture TBA https://youtu.be/
 - Lecture Material: https://github.com/ManyBodyPhysics/FYS4480/tree/master/doc/pub/week36, see either jupyter-notebook or pdf file
