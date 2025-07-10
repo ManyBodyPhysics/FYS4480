@@ -1,0 +1,157 @@
+\documentclass[prc]{revtex4}
+\usepackage[dvips]{graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+\usepackage{lscape}
+
+\usepackage{epic,eepic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[dvips]{epsfig}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{bezier}
+\usepackage{pstricks}
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+%\usepackage{braket}
+\usepackage[dvips]{graphicx}
+\usepackage{pst-plot}
+
+\newcommand{\One}{\hat{\mathbf{1}}}
+\newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle}
+\newcommand{\element}[3]
+    {\bra{#1}#2\ket{#3}}
+
+\newcommand{\normord}[1]{
+    \left\{#1\right\}
+}
+
+\usepackage{amsmath}
+\begin{document}
+
+\title{Exercises FYS4480, week 37, September 9-13, 2024}
+%\author{}
+\maketitle
+\subsection*{Exercise 1}
+
+We will study a schematic model (the Lipkin model, Nucl.
+Phys. {\bf 62} (1965) 188) for the interaction among  $4$
+fermions that can occupy two different energy levels. Each levels has degeneration $d=4$. The two levels have quantum numbers $\sigma=\pm 1$,
+with the upper level having  $\sigma=+1$ and energy
+$\varepsilon_{1}=
+\varepsilon/2$. The lower level  has $\sigma=-1$ and energy
+$\varepsilon_{2}=-\varepsilon/2$. 
+In addition, the substates  of each level are characterized  
+by the quantum numbers $p=1,2,3,4$.
+
+We define the single-particle states
+\[
+\ket{u_{\sigma =-1,p}}=a_{-p}^{\dagger}\ket{0}
+\hspace{1cm}
+\ket{u_{\sigma =1,p}}=a_{+p}^{\dagger}\ket{0}.
+\]
+The single-particle states span an orthonormal basis.
+The Hamiltonian of the system is given by
+\[
+\begin{array}{ll}
+\hat{H}=&\hat{H}_{0}+\hat{H}_{1}+\hat{H}_{2}\\
+&\\
+\hat{H}_{0}=&\frac{1}{2}\varepsilon\sum_{\sigma ,p}\sigma
+a_{\sigma,p}^{\dagger}a_{\sigma ,p}\\
+&\\
+\hat{H}_{1}=&\frac{1}{2}V\sum_{\sigma ,p,p'}
+a_{\sigma,p}^{\dagger}a_{\sigma ,p'}^{\dagger}
+a_{-\sigma ,p'}a_{-\sigma ,p}\\
+&\\
+\hat{H}_{2}=&\frac{1}{2}W\sum_{\sigma ,p,p'}
+a_{\sigma,p}^{\dagger}a_{-\sigma ,p'}^{\dagger}
+a_{\sigma ,p'}a_{-\sigma ,p}\\
+&\\
+\end{array}
+\]
+where $V$ and $W$ are constants. The operator 
+$H_{1}$ can move pairs of fermions as shown in the left part of the fugure (a).
+while $H_{2}$ is a spin-exchange term.
+As shown in (b),
+$H_{2}$ moves a pair of fermions from a state $(p\sigma ,p' -\sigma)$ to a state
+$(p-\sigma ,p'\sigma)$.
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=.6\textwidth]{lipkin.png}
+\end{figure}
+
+We will encounter this model again in our analysis of mean field methods like
+the Hartree-fock method and full configuration interaction theory. It is a model which has been used widely in many-body physics and recently also in quantum computing, see for example \url{https://journals.aps.org/prc/abstract/10.1103/PhysRevC.104.024305}.
+
+
+\paragraph{Quasispin operators}
+Introduce the quasispin operators
+\[
+\begin{array}{ll}
+\hat{J}_{+}=&\sum_{p}
+a_{p+}^{\dagger}a_{p-}\\
+&\\
+\hat{J}_{-}=&\sum_{p}
+a_{p-}^{\dagger}a_{p+}\\
+&\\
+\hat{J}_{z}=&\frac{1}{2}\sum_{p\sigma}\sigma
+a_{p\sigma}^{\dagger}a_{p\sigma}\\
+&\\
+\hat{J}^{2}=&J_{+}J_{-}+J_{z}^{2}-J_{z}\\
+&\\
+\end{array}
+\]
+Show that these operators obey the commutation relations for angular momentum.
+\paragraph{Number operator}
+Express $\hat{H}$ in terms of the above quasispin operators and the number operator
+\[
+\hat{N}=\sum_{p\sigma}
+a_{p\sigma}^{\dagger}a_{p\sigma}.
+\]
+\paragraph{Commutation relations}
+Show that $\hat{H}$ commutes with $J^{2}$, viz., $J$ is a good quantum number. Does it commute with $J_z$?
+\paragraph{Wick's theorem}
+Consider thereafter a state with all four fermions in the lowest level (see the above figure).
+We can write this state as
+\[
+\ket{\Phi_0}=\ket{\Phi_{J_z=-2}} =a_{1-}^{\dagger}a_{2-}^{\dagger}
+a_{3-}^{\dagger}a_{4-}^{\dagger}\ket{0}.
+\]
+
+This state has $J_{z}=-2$ (convince yourself about this) and belongs
+to the set of possible projections of $J=2$.  We introduce the
+shorthand notation $\ket{J,J_z}$ for states with different values of
+spin $J$ and its projection $J_z$.  We can think of this as our
+computational basis for $J=2$ and all five projections $J_z$.  We will
+also assume that the state $\Phi_0$ can be considered as an ansatz for
+the ground state of the system.
+
+
+Use Wick's theorem to calculate the expectation values of
+\[
+\bra{\Phi_0}\hat{N}\ket{\Phi_0},
+\]
+and
+\[
+\bra{\Phi_0}\hat{H}\ket{\Phi_0}.
+\]
+Comment your results.
+\paragraph{Using quasispin operators}
+Show that you can obtain the same result for
+\[
+\bra{\Phi_0}\hat{H}\ket{\Phi_0}.
+\]
+using the quasispin representation of the Hamiltonian (plus the number operator). 
+Comment your results.
+
+\end{document}
+
