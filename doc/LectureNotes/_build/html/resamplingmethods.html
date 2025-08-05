@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>12. Resampling Techniques, Bootstrap and Blocking &#8212; Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</title>
+    <title>Resampling Techniques, Bootstrap and Blocking &#8212; Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</title>
   
   
   
@@ -16,33 +16,30 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
@@ -65,11 +62,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'resamplingmethods';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="13. Boltzmann Machines" href="boltzmannmachines.html" />
-    <link rel="prev" title="11. Gradient Methods" href="gradientmethods.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -85,8 +79,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -94,6 +99,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -101,8 +107,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -118,8 +124,9 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -149,17 +156,21 @@
     
     
     <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -172,7 +183,6 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="schedule.html">Schedule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
 </ul>
@@ -190,21 +200,6 @@
 <li class="toctree-l1"><a class="reference internal" href="cc.html">7. The Coupled Cluster Method</a></li>
 
 
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Stochastic Methods</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vmcdmc.html">10. Variational Monte Carlo methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradientmethods.html">11. Gradient Methods</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">12. Resampling Techniques, Bootstrap and Blocking</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning methods</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="boltzmannmachines.html">13. Boltzmann Machines</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Computational Aspects</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vectorization.html">14. Optimization and Vectorization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallelization.html">15. Parallelization with MPI and OpenMPI</a></li>
 </ul>
 
     </div>
@@ -343,16 +338,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -376,33 +379,33 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-resampling-methods">12.1. Why resampling methods ?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-analysis">12.2. Statistical analysis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-wrapping-up-from-last-week">12.3. Statistics, wrapping up from last week</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-final-expression">12.4. Statistics, final expression</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-effective-number-of-correlations">12.5. Statistics, effective number of correlations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-we-understand-this-time-auto-correlation-function">12.6. Can we understand this? Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-auto-correlation-function">12.7. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">12.8. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">12.9. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">12.10. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">12.11. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-time">12.12. Correlation Time</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-and-bootstrap">12.13. Resampling methods: Jackknife and Bootstrap</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife">12.14. Resampling methods: Jackknife</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-estimator">12.15. Resampling methods: Jackknife estimator</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jackknife-code-example">12.16. Jackknife code example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap">12.17. Resampling methods: Bootstrap</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-background">12.18. Resampling methods: Bootstrap background</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-more-bootstrap-background">12.19. Resampling methods: More Bootstrap background</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-approach">12.20. Resampling methods: Bootstrap approach</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-steps">12.21. Resampling methods: Bootstrap steps</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-the-bootstrap-method">12.22. Code example for the Bootstrap method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-blocking">12.23. Resampling methods: Blocking</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations">12.24. Blocking Transformations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">12.25. Blocking Transformations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-getting-there">12.26. Blocking Transformations, getting there</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-final-expressions">12.27. Blocking Transformations, final expressions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-resampling-methods">Why resampling methods ?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-analysis">Statistical analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-wrapping-up-from-last-week">Statistics, wrapping up from last week</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-final-expression">Statistics, final expression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-effective-number-of-correlations">Statistics, effective number of correlations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-we-understand-this-time-auto-correlation-function">Can we understand this? Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-auto-correlation-function">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-time">Correlation Time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-and-bootstrap">Resampling methods: Jackknife and Bootstrap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife">Resampling methods: Jackknife</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-estimator">Resampling methods: Jackknife estimator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jackknife-code-example">Jackknife code example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap">Resampling methods: Bootstrap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-background">Resampling methods: Bootstrap background</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-more-bootstrap-background">Resampling methods: More Bootstrap background</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-approach">Resampling methods: Bootstrap approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-steps">Resampling methods: Bootstrap steps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-the-bootstrap-method">Code example for the Bootstrap method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-blocking">Resampling methods: Blocking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations">Blocking Transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Blocking Transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-getting-there">Blocking Transformations, getting there</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-final-expressions">Blocking Transformations, final expressions</a></li>
 </ul>
             </nav>
         </div>
@@ -415,9 +418,9 @@
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="resampling-techniques-bootstrap-and-blocking">
-<h1><span class="section-number">12. </span>Resampling Techniques, Bootstrap and Blocking<a class="headerlink" href="#resampling-techniques-bootstrap-and-blocking" title="Link to this heading">#</a></h1>
+<h1>Resampling Techniques, Bootstrap and Blocking<a class="headerlink" href="#resampling-techniques-bootstrap-and-blocking" title="Link to this heading">#</a></h1>
 <section id="why-resampling-methods">
-<h2><span class="section-number">12.1. </span>Why resampling methods ?<a class="headerlink" href="#why-resampling-methods" title="Link to this heading">#</a></h2>
+<h2>Why resampling methods ?<a class="headerlink" href="#why-resampling-methods" title="Link to this heading">#</a></h2>
 <p><strong>Statistical analysis.</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>* Our simulations can be treated as *computer experiments*. This is particularly the case for Monte Carlo methods
 
@@ -428,7 +431,7 @@
 </div>
 </section>
 <section id="statistical-analysis">
-<h2><span class="section-number">12.2. </span>Statistical analysis<a class="headerlink" href="#statistical-analysis" title="Link to this heading">#</a></h2>
+<h2>Statistical analysis<a class="headerlink" href="#statistical-analysis" title="Link to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>* As in other experiments, many numerical  experiments have two classes of errors:
 
   * Statistical errors
@@ -443,7 +446,7 @@
 </div>
 </section>
 <section id="statistics-wrapping-up-from-last-week">
-<h2><span class="section-number">12.3. </span>Statistics, wrapping up from last week<a class="headerlink" href="#statistics-wrapping-up-from-last-week" title="Link to this heading">#</a></h2>
+<h2>Statistics, wrapping up from last week<a class="headerlink" href="#statistics-wrapping-up-from-last-week" title="Link to this heading">#</a></h2>
 <p>Let us analyze the problem by splitting up the correlation term into
 partial sums of the form:</p>
 <div class="math notranslate nohighlight">
@@ -469,7 +472,7 @@ by <span class="math notranslate nohighlight">\(\mathrm{var}(x)\)</span>, we arr
 starting always at <span class="math notranslate nohighlight">\(1\)</span> for <span class="math notranslate nohighlight">\(d=0\)</span>.</p>
 </section>
 <section id="statistics-final-expression">
-<h2><span class="section-number">12.4. </span>Statistics, final expression<a class="headerlink" href="#statistics-final-expression" title="Link to this heading">#</a></h2>
+<h2>Statistics, final expression<a class="headerlink" href="#statistics-final-expression" title="Link to this heading">#</a></h2>
 <p>The sample error can now be
 written in terms of the autocorrelation function:</p>
 <div class="math notranslate nohighlight">
@@ -507,7 +510,7 @@ correction factor the <em>autocorrelation time</em>:</p>
 \]</div>
 </section>
 <section id="statistics-effective-number-of-correlations">
-<h2><span class="section-number">12.5. </span>Statistics, effective number of correlations<a class="headerlink" href="#statistics-effective-number-of-correlations" title="Link to this heading">#</a></h2>
+<h2>Statistics, effective number of correlations<a class="headerlink" href="#statistics-effective-number-of-correlations" title="Link to this heading">#</a></h2>
 <p>For a correlation free experiment, <span class="math notranslate nohighlight">\(\tau\)</span>
 equals 1.</p>
 <p>We can interpret a sequential
@@ -525,7 +528,7 @@ autocorrelation time poses an efficiency problem if the set of
 measurements is very large.</p>
 </section>
 <section id="can-we-understand-this-time-auto-correlation-function">
-<h2><span class="section-number">12.6. </span>Can we understand this? Time Auto-correlation Function<a class="headerlink" href="#can-we-understand-this-time-auto-correlation-function" title="Link to this heading">#</a></h2>
+<h2>Can we understand this? Time Auto-correlation Function<a class="headerlink" href="#can-we-understand-this-time-auto-correlation-function" title="Link to this heading">#</a></h2>
 <p>The so-called time-displacement autocorrelation <span class="math notranslate nohighlight">\(\phi(t)\)</span> for a quantity <span class="math notranslate nohighlight">\(\mathbf{M}\)</span> is given by</p>
 <div class="math notranslate nohighlight">
 \[
@@ -550,7 +553,7 @@ set of computed values <span class="math notranslate nohighlight">\(\mathbf{M}(t
 \]</div>
 </section>
 <section id="time-auto-correlation-function">
-<h2><span class="section-number">12.7. </span>Time Auto-correlation Function<a class="headerlink" href="#time-auto-correlation-function" title="Link to this heading">#</a></h2>
+<h2>Time Auto-correlation Function<a class="headerlink" href="#time-auto-correlation-function" title="Link to this heading">#</a></h2>
 <p>One should be careful with times close to <span class="math notranslate nohighlight">\(t_{\mathrm{max}}\)</span>, the upper limit of the sums
 becomes small and we end up integrating over a rather small time interval. This means that the statistical
 error in <span class="math notranslate nohighlight">\(\phi(t)\)</span> due to the random nature of the fluctuations in <span class="math notranslate nohighlight">\(\mathbf{M}(t)\)</span> can become large.</p>
@@ -565,7 +568,7 @@ the different values of <span class="math notranslate nohighlight">\(\mathbf{M}\
 uncorrelated and <span class="math notranslate nohighlight">\(\phi(t)\)</span> should be zero.</p>
 </section>
 <section id="id1">
-<h2><span class="section-number">12.8. </span>Time Auto-correlation Function<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>Time Auto-correlation Function<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>We can derive the correlation time by observing that our Metropolis algorithm is based on a random
 walk in the space of all  possible spin configurations.
 Our probability
@@ -592,7 +595,7 @@ We can always expand <span class="math notranslate nohighlight">\(\mathbf{\hat{w
 the eigenvector <span class="math notranslate nohighlight">\(\mathbf{\hat{v}}_i\)</span>.</p>
 </section>
 <section id="id2">
-<h2><span class="section-number">12.9. </span>Time Auto-correlation Function<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>Time Auto-correlation Function<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>If we assume that <span class="math notranslate nohighlight">\(\lambda_0\)</span> is the largest eigenvector we see that in the limit <span class="math notranslate nohighlight">\(t\rightarrow \infty\)</span>,
 <span class="math notranslate nohighlight">\(\mathbf{\hat{w}}(t)\)</span> becomes proportional to the corresponding eigenvector
 <span class="math notranslate nohighlight">\(\mathbf{\hat{v}}_0\)</span>. This is our steady state or final distribution.</p>
@@ -612,7 +615,7 @@ can write the expectation values as</p>
 various microstates <span class="math notranslate nohighlight">\(\mu\)</span>.</p>
 </section>
 <section id="id3">
-<h2><span class="section-number">12.10. </span>Time Auto-correlation Function<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>Time Auto-correlation Function<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>We rewrite this relation  as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -645,7 +648,7 @@ the largest eigenvalue <span class="math notranslate nohighlight">\(\lambda_0\)<
 \]</div>
 </section>
 <section id="id4">
-<h2><span class="section-number">12.11. </span>Time Auto-correlation Function<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>Time Auto-correlation Function<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p>The quantities <span class="math notranslate nohighlight">\(\tau_i\)</span> are the correlation times for the system. They control also the auto-correlation function
 discussed above.  The longest correlation time is obviously given by the second largest
 eigenvalue <span class="math notranslate nohighlight">\(\tau_1\)</span>, which normally defines the correlation time discussed above. For large times, this is the
@@ -667,7 +670,7 @@ to <span class="math notranslate nohighlight">\( \langle \mathbf{M}(\infty) \ran
 <p>which is appropriate for all times.</p>
 </section>
 <section id="correlation-time">
-<h2><span class="section-number">12.12. </span>Correlation Time<a class="headerlink" href="#correlation-time" title="Link to this heading">#</a></h2>
+<h2>Correlation Time<a class="headerlink" href="#correlation-time" title="Link to this heading">#</a></h2>
 <p>If the correlation function decays exponentially</p>
 <div class="math notranslate nohighlight">
 \[
@@ -691,7 +694,7 @@ to <span class="math notranslate nohighlight">\( \langle \mathbf{M}(\infty) \ran
 <p>called the integrated correlation time.</p>
 </section>
 <section id="resampling-methods-jackknife-and-bootstrap">
-<h2><span class="section-number">12.13. </span>Resampling methods: Jackknife and Bootstrap<a class="headerlink" href="#resampling-methods-jackknife-and-bootstrap" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Jackknife and Bootstrap<a class="headerlink" href="#resampling-methods-jackknife-and-bootstrap" title="Link to this heading">#</a></h2>
 <p>Two famous
 resampling methods are the <strong>independent bootstrap</strong> and <strong>the jackknife</strong>.</p>
 <p>The jackknife is a special case of the independent bootstrap. Still, the jackknife was made
@@ -706,7 +709,7 @@ variance of <span class="math notranslate nohighlight">\(\overline{X}\)</span> (
 need for bootstrapping.</p>
 </section>
 <section id="resampling-methods-jackknife">
-<h2><span class="section-number">12.14. </span>Resampling methods: Jackknife<a class="headerlink" href="#resampling-methods-jackknife" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Jackknife<a class="headerlink" href="#resampling-methods-jackknife" title="Link to this heading">#</a></h2>
 <p>The Jackknife works by making many replicas of the estimator <span class="math notranslate nohighlight">\(\widehat{\theta}\)</span>.
 The jackknife is a resampling method, we explained that this happens by scrambling the data in some way. When using the jackknife, this is done by systematically leaving out one observation from the vector of observed values <span class="math notranslate nohighlight">\(\hat{x} = (x_1,x_2,\cdots,X_n)\)</span>.
 Let <span class="math notranslate nohighlight">\(\hat{x}_i\)</span> denote the vector</p>
@@ -720,7 +723,7 @@ number <span class="math notranslate nohighlight">\(i\)</span> is left out. Usin
 <span class="math notranslate nohighlight">\(\widehat{\theta}\)</span> computed using <span class="math notranslate nohighlight">\(\vec{X}_i\)</span>.</p>
 </section>
 <section id="resampling-methods-jackknife-estimator">
-<h2><span class="section-number">12.15. </span>Resampling methods: Jackknife estimator<a class="headerlink" href="#resampling-methods-jackknife-estimator" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Jackknife estimator<a class="headerlink" href="#resampling-methods-jackknife-estimator" title="Link to this heading">#</a></h2>
 <p>To get an estimate for the bias and
 standard error of <span class="math notranslate nohighlight">\(\widehat{\theta}\)</span>, use the following
 estimators for each component of <span class="math notranslate nohighlight">\(\widehat{\theta}\)</span></p>
@@ -730,7 +733,7 @@ estimators for each component of <span class="math notranslate nohighlight">\(\w
 \]</div>
 </section>
 <section id="jackknife-code-example">
-<h2><span class="section-number">12.16. </span>Jackknife code example<a class="headerlink" href="#jackknife-code-example" title="Link to this heading">#</a></h2>
+<h2>Jackknife code example<a class="headerlink" href="#jackknife-code-example" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="o">*</span>
@@ -765,17 +768,17 @@ estimators for each component of <span class="math notranslate nohighlight">\(\w
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Runtime: 0.12092 sec
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Runtime: 0.138923 sec
 Jackknife Statistics :
 original           bias      std. error
- 99.6409        99.6309        0.149314
+ 100.123        100.113        0.150177
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="resampling-methods-bootstrap">
-<h2><span class="section-number">12.17. </span>Resampling methods: Bootstrap<a class="headerlink" href="#resampling-methods-bootstrap" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Bootstrap<a class="headerlink" href="#resampling-methods-bootstrap" title="Link to this heading">#</a></h2>
 <p>Bootstrapping is a nonparametric approach to statistical inference
 that substitutes computation for more traditional distributional
 assumptions and asymptotic results. Bootstrapping offers a number of
@@ -788,7 +791,7 @@ advantages:</p>
 </ol>
 </section>
 <section id="resampling-methods-bootstrap-background">
-<h2><span class="section-number">12.18. </span>Resampling methods: Bootstrap background<a class="headerlink" href="#resampling-methods-bootstrap-background" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Bootstrap background<a class="headerlink" href="#resampling-methods-bootstrap-background" title="Link to this heading">#</a></h2>
 <p>Since <span class="math notranslate nohighlight">\(\widehat{\theta} = \widehat{\theta}(\hat{X})\)</span> is a function of random variables,
 <span class="math notranslate nohighlight">\(\widehat{\theta}\)</span> itself must be a random variable. Thus it has
 a pdf, call this function <span class="math notranslate nohighlight">\(p(\hat{t})\)</span>. The aim of the bootstrap is to
@@ -800,7 +803,7 @@ estimate all the interesting parameters of <span class="math notranslate nohighl
 estimators.</p>
 </section>
 <section id="resampling-methods-more-bootstrap-background">
-<h2><span class="section-number">12.19. </span>Resampling methods: More Bootstrap background<a class="headerlink" href="#resampling-methods-more-bootstrap-background" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: More Bootstrap background<a class="headerlink" href="#resampling-methods-more-bootstrap-background" title="Link to this heading">#</a></h2>
 <p>In the case that <span class="math notranslate nohighlight">\(\widehat{\theta}\)</span> has
 more than one component, and the components are independent, we use the
 same estimator on each component separately.  If the probability
@@ -816,7 +819,7 @@ idea is to use the relative frequency of <span class="math notranslate nohighlig
 (think of a histogram) as an estimate of <span class="math notranslate nohighlight">\(p(\hat{t})\)</span>.</p>
 </section>
 <section id="resampling-methods-bootstrap-approach">
-<h2><span class="section-number">12.20. </span>Resampling methods: Bootstrap approach<a class="headerlink" href="#resampling-methods-bootstrap-approach" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Bootstrap approach<a class="headerlink" href="#resampling-methods-bootstrap-approach" title="Link to this heading">#</a></h2>
 <p>But
 unless there is enough information available about the process that
 generated <span class="math notranslate nohighlight">\(X_1,X_2,\cdots,X_n\)</span>, <span class="math notranslate nohighlight">\(p(x)\)</span> is in general
@@ -831,7 +834,7 @@ frequency of the observation <span class="math notranslate nohighlight">\(X_i\)<
 <span class="math notranslate nohighlight">\(\hat{X}\)</span>.</p>
 </section>
 <section id="resampling-methods-bootstrap-steps">
-<h2><span class="section-number">12.21. </span>Resampling methods: Bootstrap steps<a class="headerlink" href="#resampling-methods-bootstrap-steps" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Bootstrap steps<a class="headerlink" href="#resampling-methods-bootstrap-steps" title="Link to this heading">#</a></h2>
 <p>The independent bootstrap works like this:</p>
 <ol class="arabic simple">
 <li><p>Draw with replacement <span class="math notranslate nohighlight">\(n\)</span> numbers for the observed variables <span class="math notranslate nohighlight">\(\hat{x} = (x_1,x_2,\cdots,x_n)\)</span>.</p></li>
@@ -842,7 +845,7 @@ frequency of the observation <span class="math notranslate nohighlight">\(X_i\)<
 <p>When you are done, you can draw a histogram of the relative frequency of <span class="math notranslate nohighlight">\(\widehat \theta^*\)</span>. This is your estimate of the probability distribution <span class="math notranslate nohighlight">\(p(t)\)</span>. Using this probability distribution you can estimate any statistics thereof. In principle you never draw the histogram of the relative frequency of <span class="math notranslate nohighlight">\(\widehat{\theta}^*\)</span>. Instead you use the estimators corresponding to the statistic of interest. For example, if you are interested in estimating the variance of <span class="math notranslate nohighlight">\(\widehat \theta\)</span>, apply the etsimator <span class="math notranslate nohighlight">\(\widehat \sigma^2\)</span> to the values <span class="math notranslate nohighlight">\(\widehat \theta ^*\)</span>.</p>
 </section>
 <section id="code-example-for-the-bootstrap-method">
-<h2><span class="section-number">12.22. </span>Code example for the Bootstrap method<a class="headerlink" href="#code-example-for-the-bootstrap-method" title="Link to this heading">#</a></h2>
+<h2>Code example for the Bootstrap method<a class="headerlink" href="#code-example-for-the-bootstrap-method" title="Link to this heading">#</a></h2>
 <p>The following code starts with a Gaussian distribution with mean value <span class="math notranslate nohighlight">\(\mu =100\)</span> and variance <span class="math notranslate nohighlight">\(\sigma=15\)</span>. We use this to generate the data used in the bootstrap analysis. The bootstrap analysis returns a data set after a given number of bootstrap operations (as many as we have data points). This data set consists of estimated mean values for each bootstrap operation. The histogram generated by the bootstrap method shows that the distribution for these mean values is also a Gaussian, centered around the mean value <span class="math notranslate nohighlight">\(\mu=100\)</span> but with standard deviation <span class="math notranslate nohighlight">\(\sigma/\sqrt{n}\)</span>, where <span class="math notranslate nohighlight">\(n\)</span> is the number of bootstrap samples (in this case the same as the number of original data points). The value of the standard deviation is what we expect from the central limit theorem.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -900,18 +903,18 @@ frequency of the observation <span class="math notranslate nohighlight">\(X_i\)<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Runtime: 1.24637 sec
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Runtime: 1.23226 sec
 Bootstrap Statistics :
 original           bias      std. error
- 100.139  15.0535        100.139         0.15117
+ 100.143  15.1234        100.143        0.151293
 </pre></div>
 </div>
-<img alt="_images/5826f1a71607753e6e6d0e1cd7f268d69c85eab5339d735ab68c75526ab6ab51.png" src="_images/5826f1a71607753e6e6d0e1cd7f268d69c85eab5339d735ab68c75526ab6ab51.png" />
+<img alt="_images/5568a96d138e59fc9d8568c178ecdb71a9c3688f7191125f038cb5a8dc2f5fb0.png" src="_images/5568a96d138e59fc9d8568c178ecdb71a9c3688f7191125f038cb5a8dc2f5fb0.png" />
 </div>
 </div>
 </section>
 <section id="resampling-methods-blocking">
-<h2><span class="section-number">12.23. </span>Resampling methods: Blocking<a class="headerlink" href="#resampling-methods-blocking" title="Link to this heading">#</a></h2>
+<h2>Resampling methods: Blocking<a class="headerlink" href="#resampling-methods-blocking" title="Link to this heading">#</a></h2>
 <p>The blocking method was made popular by <a class="reference external" href="https://aip.scitation.org/doi/10.1063/1.457480">Flyvbjerg and Pedersen (1989)</a>
 and has become one of the standard ways to estimate
 <span class="math notranslate nohighlight">\(V(\widehat{\theta})\)</span> for exactly one <span class="math notranslate nohighlight">\(\widehat{\theta}\)</span>, namely
@@ -930,7 +933,7 @@ bootstrapping scales poorly, but the blocking method does not,
 moreover, it becomes more accurate the larger <span class="math notranslate nohighlight">\(n\)</span> is.</p>
 </section>
 <section id="blocking-transformations">
-<h2><span class="section-number">12.24. </span>Blocking Transformations<a class="headerlink" href="#blocking-transformations" title="Link to this heading">#</a></h2>
+<h2>Blocking Transformations<a class="headerlink" href="#blocking-transformations" title="Link to this heading">#</a></h2>
 <p>We now define
 blocking transformations. The idea is to take the mean of subsequent
 pair of elements from <span class="math notranslate nohighlight">\(\vec{X}\)</span> and form a new vector
@@ -966,7 +969,7 @@ elements of <span class="math notranslate nohighlight">\(\vec{X}_i\)</span> and 
 <span class="math notranslate nohighlight">\(\vec{X}_i\)</span>. It follows by induction that <span class="math notranslate nohighlight">\(n_i = n/2^i\)</span>.</p>
 </section>
 <section id="id5">
-<h2><span class="section-number">12.25. </span>Blocking Transformations<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<h2>Blocking Transformations<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <p>Using the
 definition of the blocking transformation and the distributive
 property of the covariance, it is clear that since <span class="math notranslate nohighlight">\(h =|i-j|\)</span>
@@ -1000,7 +1003,7 @@ we can define</p>
 <p>The quantity <span class="math notranslate nohighlight">\(\hat{X}\)</span> is asymptotic uncorrelated by assumption, <span class="math notranslate nohighlight">\(\hat{X}_k\)</span> is also asymptotic uncorrelated. Let’s turn our attention to the variance of the sample mean <span class="math notranslate nohighlight">\(V(\overline{X})\)</span>.</p>
 </section>
 <section id="blocking-transformations-getting-there">
-<h2><span class="section-number">12.26. </span>Blocking Transformations, getting there<a class="headerlink" href="#blocking-transformations-getting-there" title="Link to this heading">#</a></h2>
+<h2>Blocking Transformations, getting there<a class="headerlink" href="#blocking-transformations-getting-there" title="Link to this heading">#</a></h2>
 <p>We have</p>
 <!-- Equation labels as ordinary links -->
 <div id="_auto5"></div>
@@ -1024,7 +1027,7 @@ e_k = \frac{2}{n_k} \sum_{h=1}^{n_k-1}\left( 1 - \frac{h}{n_k} \right)\gamma_k(h
 <p>We can show that <span class="math notranslate nohighlight">\(V(\overline{X}_i) = V(\overline{X}_j)\)</span> for all <span class="math notranslate nohighlight">\(0 \leq i \leq d-1\)</span> and <span class="math notranslate nohighlight">\(0 \leq j \leq d-1\)</span>.</p>
 </section>
 <section id="blocking-transformations-final-expressions">
-<h2><span class="section-number">12.27. </span>Blocking Transformations, final expressions<a class="headerlink" href="#blocking-transformations-final-expressions" title="Link to this heading">#</a></h2>
+<h2>Blocking Transformations, final expressions<a class="headerlink" href="#blocking-transformations-final-expressions" title="Link to this heading">#</a></h2>
 <p>We can then wrap up</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1089,24 +1092,6 @@ It means we can apply blocking transformations until
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="gradientmethods.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">11. </span>Gradient Methods</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="boltzmannmachines.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">13. </span>Boltzmann Machines</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -1114,8 +1099,7 @@ It means we can apply blocking transformations until
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1124,33 +1108,33 @@ It means we can apply blocking transformations until
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-resampling-methods">12.1. Why resampling methods ?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-analysis">12.2. Statistical analysis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-wrapping-up-from-last-week">12.3. Statistics, wrapping up from last week</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-final-expression">12.4. Statistics, final expression</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-effective-number-of-correlations">12.5. Statistics, effective number of correlations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-we-understand-this-time-auto-correlation-function">12.6. Can we understand this? Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-auto-correlation-function">12.7. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">12.8. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">12.9. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">12.10. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">12.11. Time Auto-correlation Function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-time">12.12. Correlation Time</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-and-bootstrap">12.13. Resampling methods: Jackknife and Bootstrap</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife">12.14. Resampling methods: Jackknife</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-estimator">12.15. Resampling methods: Jackknife estimator</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jackknife-code-example">12.16. Jackknife code example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap">12.17. Resampling methods: Bootstrap</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-background">12.18. Resampling methods: Bootstrap background</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-more-bootstrap-background">12.19. Resampling methods: More Bootstrap background</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-approach">12.20. Resampling methods: Bootstrap approach</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-steps">12.21. Resampling methods: Bootstrap steps</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-the-bootstrap-method">12.22. Code example for the Bootstrap method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-blocking">12.23. Resampling methods: Blocking</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations">12.24. Blocking Transformations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">12.25. Blocking Transformations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-getting-there">12.26. Blocking Transformations, getting there</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-final-expressions">12.27. Blocking Transformations, final expressions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-resampling-methods">Why resampling methods ?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-analysis">Statistical analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-wrapping-up-from-last-week">Statistics, wrapping up from last week</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-final-expression">Statistics, final expression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistics-effective-number-of-correlations">Statistics, effective number of correlations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#can-we-understand-this-time-auto-correlation-function">Can we understand this? Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-auto-correlation-function">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Time Auto-correlation Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#correlation-time">Correlation Time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-and-bootstrap">Resampling methods: Jackknife and Bootstrap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife">Resampling methods: Jackknife</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-jackknife-estimator">Resampling methods: Jackknife estimator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jackknife-code-example">Jackknife code example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap">Resampling methods: Bootstrap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-background">Resampling methods: Bootstrap background</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-more-bootstrap-background">Resampling methods: More Bootstrap background</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-approach">Resampling methods: Bootstrap approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-bootstrap-steps">Resampling methods: Bootstrap steps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-the-bootstrap-method">Code example for the Bootstrap method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-methods-blocking">Resampling methods: Blocking</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations">Blocking Transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Blocking Transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-getting-there">Blocking Transformations, getting there</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#blocking-transformations-final-expressions">Blocking Transformations, final expressions</a></li>
 </ul>
   </nav></div>
 
@@ -1199,8 +1183,8 @@ By Morten Hjorth-Jensen
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

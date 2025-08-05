@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>11. Gradient Methods &#8212; Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</title>
+    <title>Gradient Methods &#8212; Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</title>
   
   
   
@@ -16,33 +16,30 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
@@ -65,11 +62,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'gradientmethods';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="12. Resampling Techniques, Bootstrap and Blocking" href="resamplingmethods.html" />
-    <link rel="prev" title="10. Variational Monte Carlo methods" href="vmcdmc.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -85,8 +79,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -94,6 +99,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -101,8 +107,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -118,8 +124,9 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -149,17 +156,21 @@
     
     
     <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -172,7 +183,6 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="schedule.html">Schedule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
 </ul>
@@ -190,21 +200,6 @@
 <li class="toctree-l1"><a class="reference internal" href="cc.html">7. The Coupled Cluster Method</a></li>
 
 
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Stochastic Methods</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vmcdmc.html">10. Variational Monte Carlo methods</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">11. Gradient Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="resamplingmethods.html">12. Resampling Techniques, Bootstrap and Blocking</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning methods</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="boltzmannmachines.html">13. Boltzmann Machines</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Computational Aspects</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vectorization.html">14. Optimization and Vectorization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallelization.html">15. Parallelization with MPI and OpenMPI</a></li>
 </ul>
 
     </div>
@@ -343,16 +338,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -376,62 +379,62 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-down-start">11.1. Top-down start</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">11.2. Motivation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-and-demonstration">11.3. Simple example and demonstration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">11.4. Simple example and demonstration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-find-the-local-energy-for-the-harmonic-oscillator">11.5. Exercise 1: Find the local energy for the harmonic oscillator</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-in-the-simple-model">11.6. Variance in the simple model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-the-derivatives">11.7. Computing the derivatives</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expressions-for-finding-the-derivatives-of-the-local-energy">11.8. Expressions for finding the derivatives of the local energy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivatives-of-the-local-energy">11.9. Derivatives of the local energy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-general-expression-for-the-derivative-of-the-energy">11.10. Exercise 2: General expression for the derivative of the energy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-program-for-2-electrons-in-2-dimensions">11.11. Python program for 2-electrons in 2 dimensions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-broyden-s-algorithm-in-scipy">11.12. Using Broyden’s algorithm in scipy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-reminder-on-newton-raphson-s-method">11.13. Brief reminder on Newton-Raphson’s method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-equations">11.14. The equations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-geometric-interpretation">11.15. Simple geometric interpretation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-to-more-than-one-variable">11.16. Extending to more than one variable</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent">11.17. Steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-steepest-descent">11.18. More on Steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ideal">11.19. The ideal</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sensitiveness-of-the-gradient-descent">11.20. The sensitiveness of the gradient descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-functions">11.21. Convex functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-function">11.22. Convex function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conditions-on-convex-functions">11.23. Conditions on convex functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-convex-functions">11.24. More on convex functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-simple-problems">11.25. Some simple problems</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-steepest-descent">11.26. Standard steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-method">11.27. Gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-method">11.28. Steepest descent  method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">11.29. Steepest descent  method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-expressions">11.30. Final expressions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-examples-for-steepest-descent">11.31. Code examples for steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-codes-for-steepest-descent-and-conjugate-gradient-using-a-2-times-2-matrix-in-c-python-code-to-come">11.32. Simple codes for  steepest descent and conjugate gradient using a <span class="math notranslate nohighlight">\(2\times 2\)</span> matrix, in c++, Python code to come</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-routine-for-the-steepest-descent-method">11.33. The routine for the steepest descent method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-example">11.34. Steepest descent example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method">11.35. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">11.36. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">11.37. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">11.38. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method-and-iterations">11.39. Conjugate gradient method and iterations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">11.40. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">11.41. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">11.42. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-implementation-of-the-conjugate-gradient-algorithm">11.43. Simple implementation of the Conjugate gradient algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#broydenfletchergoldfarbshanno-algorithm">11.44. Broyden–Fletcher–Goldfarb–Shanno algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-descent">11.45. Stochastic Gradient Descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computation-of-gradients">11.46. Computation of gradients</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-example">11.47. SGD example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-step">11.48. The gradient step</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-code">11.49. Simple example code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-do-we-stop">11.50. When do we stop?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slightly-different-approach">11.51. Slightly different approach</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#program-for-stochastic-gradient">11.52. Program for stochastic gradient</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-gradient-descent-methods-limitations">11.53. Using gradient descent methods, limitations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#codes-from-numerical-recipes">11.54. Codes from numerical recipes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-minimum-of-the-harmonic-oscillator-model-in-one-dimension">11.55. Finding the minimum of the harmonic oscillator model in one dimension</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions-to-observe">11.56. Functions to observe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-down-start">Top-down start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-and-demonstration">Simple example and demonstration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Simple example and demonstration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-find-the-local-energy-for-the-harmonic-oscillator">Exercise 1: Find the local energy for the harmonic oscillator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-in-the-simple-model">Variance in the simple model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-the-derivatives">Computing the derivatives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expressions-for-finding-the-derivatives-of-the-local-energy">Expressions for finding the derivatives of the local energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivatives-of-the-local-energy">Derivatives of the local energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-general-expression-for-the-derivative-of-the-energy">Exercise 2: General expression for the derivative of the energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-program-for-2-electrons-in-2-dimensions">Python program for 2-electrons in 2 dimensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-broyden-s-algorithm-in-scipy">Using Broyden’s algorithm in scipy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-reminder-on-newton-raphson-s-method">Brief reminder on Newton-Raphson’s method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-equations">The equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-geometric-interpretation">Simple geometric interpretation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-to-more-than-one-variable">Extending to more than one variable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent">Steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-steepest-descent">More on Steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ideal">The ideal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sensitiveness-of-the-gradient-descent">The sensitiveness of the gradient descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-functions">Convex functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-function">Convex function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conditions-on-convex-functions">Conditions on convex functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-convex-functions">More on convex functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-simple-problems">Some simple problems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-steepest-descent">Standard steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-method">Gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-method">Steepest descent  method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Steepest descent  method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-expressions">Final expressions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-examples-for-steepest-descent">Code examples for steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-codes-for-steepest-descent-and-conjugate-gradient-using-a-2-times-2-matrix-in-c-python-code-to-come">Simple codes for  steepest descent and conjugate gradient using a <span class="math notranslate nohighlight">\(2\times 2\)</span> matrix, in c++, Python code to come</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-routine-for-the-steepest-descent-method">The routine for the steepest descent method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-example">Steepest descent example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method-and-iterations">Conjugate gradient method and iterations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-implementation-of-the-conjugate-gradient-algorithm">Simple implementation of the Conjugate gradient algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#broydenfletchergoldfarbshanno-algorithm">Broyden–Fletcher–Goldfarb–Shanno algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-descent">Stochastic Gradient Descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computation-of-gradients">Computation of gradients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-example">SGD example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-step">The gradient step</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-code">Simple example code</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-do-we-stop">When do we stop?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slightly-different-approach">Slightly different approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#program-for-stochastic-gradient">Program for stochastic gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-gradient-descent-methods-limitations">Using gradient descent methods, limitations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#codes-from-numerical-recipes">Codes from numerical recipes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-minimum-of-the-harmonic-oscillator-model-in-one-dimension">Finding the minimum of the harmonic oscillator model in one dimension</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions-to-observe">Functions to observe</a></li>
 </ul>
             </nav>
         </div>
@@ -444,9 +447,9 @@
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="gradient-methods">
-<h1><span class="section-number">11. </span>Gradient Methods<a class="headerlink" href="#gradient-methods" title="Link to this heading">#</a></h1>
+<h1>Gradient Methods<a class="headerlink" href="#gradient-methods" title="Link to this heading">#</a></h1>
 <section id="top-down-start">
-<h2><span class="section-number">11.1. </span>Top-down start<a class="headerlink" href="#top-down-start" title="Link to this heading">#</a></h2>
+<h2>Top-down start<a class="headerlink" href="#top-down-start" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>We will start with a top-down view, with a simple harmonic oscillator problem in one dimension as case.</p></li>
 <li><p>Thereafter we continue with implementing the simplest possible steepest descent approach to our two-electron problem with an electrostatic (Coulomb) interaction. Our code includes also importance sampling. The simple Python code here illustrates the basic elements which need to be included in our own code.</p></li>
@@ -454,7 +457,7 @@
 </ul>
 </section>
 <section id="motivation">
-<h2><span class="section-number">11.2. </span>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
 <p>Our aim with this part of the project is to be able to</p>
 <ul class="simple">
 <li><p>find an optimal value for the variational parameters using only some few Monte Carlo cycles</p></li>
@@ -466,7 +469,7 @@ Alternatively, you can always use Newton’s method. In particular, since we wil
 Newton’s method can be easily used in finding the minimum of the local energy.</p>
 </section>
 <section id="simple-example-and-demonstration">
-<h2><span class="section-number">11.3. </span>Simple example and demonstration<a class="headerlink" href="#simple-example-and-demonstration" title="Link to this heading">#</a></h2>
+<h2>Simple example and demonstration<a class="headerlink" href="#simple-example-and-demonstration" title="Link to this heading">#</a></h2>
 <p>Let us illustrate what is needed in our calculations using a simple example, the harmonic oscillator in one dimension.
 For the harmonic oscillator in one-dimension we have a  trial wave function and probability</p>
 <div class="math notranslate nohighlight">
@@ -485,7 +488,7 @@ For the harmonic oscillator in one-dimension we have a  trial wave function and 
 \]</div>
 </section>
 <section id="id1">
-<h2><span class="section-number">11.4. </span>Simple example and demonstration<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>Simple example and demonstration<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>The derivative of the energy with respect to <span class="math notranslate nohighlight">\(\alpha\)</span> gives</p>
 <div class="math notranslate nohighlight">
 \[
@@ -505,7 +508,7 @@ For the harmonic oscillator in one-dimension we have a  trial wave function and 
 <!-- --- begin exercise --- -->
 </section>
 <section id="exercise-1-find-the-local-energy-for-the-harmonic-oscillator">
-<h2><span class="section-number">11.5. </span>Exercise 1: Find the local energy for the harmonic oscillator<a class="headerlink" href="#exercise-1-find-the-local-energy-for-the-harmonic-oscillator" title="Link to this heading">#</a></h2>
+<h2>Exercise 1: Find the local energy for the harmonic oscillator<a class="headerlink" href="#exercise-1-find-the-local-energy-for-the-harmonic-oscillator" title="Link to this heading">#</a></h2>
 <p><strong>a)</strong>
 Derive the local energy for the harmonic oscillator in one dimension and find its expectation value.</p>
 <p><strong>b)</strong>
@@ -515,7 +518,7 @@ Repeat the above steps in two dimensions for <span class="math notranslate nohig
 <!-- --- end exercise --- -->
 </section>
 <section id="variance-in-the-simple-model">
-<h2><span class="section-number">11.6. </span>Variance in the simple model<a class="headerlink" href="#variance-in-the-simple-model" title="Link to this heading">#</a></h2>
+<h2>Variance in the simple model<a class="headerlink" href="#variance-in-the-simple-model" title="Link to this heading">#</a></h2>
 <p>We can also minimize the variance. In our simple model the variance is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -524,7 +527,7 @@ Repeat the above steps in two dimensions for <span class="math notranslate nohig
 <p>which yields a second derivative which is always positive.</p>
 </section>
 <section id="computing-the-derivatives">
-<h2><span class="section-number">11.7. </span>Computing the derivatives<a class="headerlink" href="#computing-the-derivatives" title="Link to this heading">#</a></h2>
+<h2>Computing the derivatives<a class="headerlink" href="#computing-the-derivatives" title="Link to this heading">#</a></h2>
 <p>In general we end up computing the expectation value of the energy in terms
 of some parameters <span class="math notranslate nohighlight">\(\alpha_0,\alpha_1,\dots,\alpha_n\)</span>
 and we search for a minimum in this multi-variable parameter space.<br />
@@ -535,7 +538,7 @@ How can we can then obtain the derivatives of the energy with respect to the var
 to resort to expensive numerical derivations?</p>
 </section>
 <section id="expressions-for-finding-the-derivatives-of-the-local-energy">
-<h2><span class="section-number">11.8. </span>Expressions for finding the derivatives of the local energy<a class="headerlink" href="#expressions-for-finding-the-derivatives-of-the-local-energy" title="Link to this heading">#</a></h2>
+<h2>Expressions for finding the derivatives of the local energy<a class="headerlink" href="#expressions-for-finding-the-derivatives-of-the-local-energy" title="Link to this heading">#</a></h2>
 <p>To find the derivatives of the local energy expectation value as function of the variational parameters, we can use the chain rule and the hermiticity of the Hamiltonian.</p>
 <p>Let us define</p>
 <div class="math notranslate nohighlight">
@@ -551,7 +554,7 @@ We define also the derivative of the trial function (skipping the subindex <span
 \]</div>
 </section>
 <section id="derivatives-of-the-local-energy">
-<h2><span class="section-number">11.9. </span>Derivatives of the local energy<a class="headerlink" href="#derivatives-of-the-local-energy" title="Link to this heading">#</a></h2>
+<h2>Derivatives of the local energy<a class="headerlink" href="#derivatives-of-the-local-energy" title="Link to this heading">#</a></h2>
 <p>The elements of the gradient of the local energy are then (using the chain rule and the hermiticity of the Hamiltonian)</p>
 <div class="math notranslate nohighlight">
 \[
@@ -570,7 +573,7 @@ We define also the derivative of the trial function (skipping the subindex <span
 <!-- --- begin exercise --- -->
 </section>
 <section id="exercise-2-general-expression-for-the-derivative-of-the-energy">
-<h2><span class="section-number">11.10. </span>Exercise 2: General expression for the derivative of the energy<a class="headerlink" href="#exercise-2-general-expression-for-the-derivative-of-the-energy" title="Link to this heading">#</a></h2>
+<h2>Exercise 2: General expression for the derivative of the energy<a class="headerlink" href="#exercise-2-general-expression-for-the-derivative-of-the-energy" title="Link to this heading">#</a></h2>
 <p><strong>a)</strong>
 Show that</p>
 <div class="math notranslate nohighlight">
@@ -582,7 +585,7 @@ Find the corresponding expression for the variance.</p>
 <!-- --- end exercise --- -->
 </section>
 <section id="python-program-for-2-electrons-in-2-dimensions">
-<h2><span class="section-number">11.11. </span>Python program for 2-electrons in 2 dimensions<a class="headerlink" href="#python-program-for-2-electrons-in-2-dimensions" title="Link to this heading">#</a></h2>
+<h2>Python program for 2-electrons in 2 dimensions<a class="headerlink" href="#python-program-for-2-electrons-in-2-dimensions" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -734,15 +737,15 @@ Find the corresponding expression for the variance.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0093055820596215 0.3183237978738018
-3.003745476729142 -0.045299488495945894 -0.07301881641295527
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.008285327834003 0.3173539157947184
+3.00072644076599 -0.05027447341452618 -0.08344915250745633
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="using-broyden-s-algorithm-in-scipy">
-<h2><span class="section-number">11.12. </span>Using Broyden’s algorithm in scipy<a class="headerlink" href="#using-broyden-s-algorithm-in-scipy" title="Link to this heading">#</a></h2>
+<h2>Using Broyden’s algorithm in scipy<a class="headerlink" href="#using-broyden-s-algorithm-in-scipy" title="Link to this heading">#</a></h2>
 <p>The following function uses the above described BFGS algorithm. Here we have defined a function which calculates the energy and a function which computes the first derivative.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -939,11 +942,11 @@ Find the corresponding expression for the variance.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>         Current function value: 2.998429
-         Iterations: 5
-         Function evaluations: 33
-         Gradient evaluations: 22
-[0.99433674 0.41647206]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>         Current function value: 2.995488
+         Iterations: 4
+         Function evaluations: 31
+         Gradient evaluations: 16
+[0.97292882 0.43366273]
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/scipy/optimize/_minimize.py:705: OptimizeWarning: Desired error not necessarily achieved due to precision loss.
@@ -955,7 +958,7 @@ Find the corresponding expression for the variance.</p>
 <p>Note that the <strong>minimize</strong> function returns the finale values for the variable <span class="math notranslate nohighlight">\(\alpha=x0[0]\)</span> and <span class="math notranslate nohighlight">\(\beta=x0[1]\)</span> in the array <span class="math notranslate nohighlight">\(x\)</span>.</p>
 </section>
 <section id="brief-reminder-on-newton-raphson-s-method">
-<h2><span class="section-number">11.13. </span>Brief reminder on Newton-Raphson’s method<a class="headerlink" href="#brief-reminder-on-newton-raphson-s-method" title="Link to this heading">#</a></h2>
+<h2>Brief reminder on Newton-Raphson’s method<a class="headerlink" href="#brief-reminder-on-newton-raphson-s-method" title="Link to this heading">#</a></h2>
 <p>Let us quickly remind ourselves how we derive the above method.</p>
 <p>Perhaps the most celebrated of all one-dimensional root-finding
 routines is Newton’s method, also called the Newton-Raphson
@@ -966,7 +969,7 @@ numerically and/or your function is not of the smooth type, we
 normally discourage the use of this method.</p>
 </section>
 <section id="the-equations">
-<h2><span class="section-number">11.14. </span>The equations<a class="headerlink" href="#the-equations" title="Link to this heading">#</a></h2>
+<h2>The equations<a class="headerlink" href="#the-equations" title="Link to this heading">#</a></h2>
 <p>The Newton-Raphson formula consists geometrically of extending the
 tangent line at a current point until it crosses zero, then setting
 the next guess to the abscissa of that zero-crossing.  The mathematics
@@ -997,7 +1000,7 @@ x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}.
 \]</div>
 </section>
 <section id="simple-geometric-interpretation">
-<h2><span class="section-number">11.15. </span>Simple geometric interpretation<a class="headerlink" href="#simple-geometric-interpretation" title="Link to this heading">#</a></h2>
+<h2>Simple geometric interpretation<a class="headerlink" href="#simple-geometric-interpretation" title="Link to this heading">#</a></h2>
 <p>The above is Newton-Raphson’s method. It has a simple geometric
 interpretation, namely <span class="math notranslate nohighlight">\(x_{n+1}\)</span> is the point where the tangent from
 <span class="math notranslate nohighlight">\((x_n,f(x_n))\)</span> crosses the <span class="math notranslate nohighlight">\(x\)</span>-axis.  Close to the solution,
@@ -1011,7 +1014,7 @@ guess near such a local extremum, so that the first derivative nearly
 vanishes, then Newton-Raphson may fail totally</p>
 </section>
 <section id="extending-to-more-than-one-variable">
-<h2><span class="section-number">11.16. </span>Extending to more than one variable<a class="headerlink" href="#extending-to-more-than-one-variable" title="Link to this heading">#</a></h2>
+<h2>Extending to more than one variable<a class="headerlink" href="#extending-to-more-than-one-variable" title="Link to this heading">#</a></h2>
 <p>Newton’s method can be generalized to systems of several non-linear equations
 and variables. Consider the case with two equations</p>
 <div class="math notranslate nohighlight">
@@ -1059,7 +1062,7 @@ arise in case <span class="math notranslate nohighlight">\(\hat{J}\)</span> is n
 more than two non-linear equations. In our case, the Jacobian matrix is given by the Hessian that represents the second derivative of cost function.</p>
 </section>
 <section id="steepest-descent">
-<h2><span class="section-number">11.17. </span>Steepest descent<a class="headerlink" href="#steepest-descent" title="Link to this heading">#</a></h2>
+<h2>Steepest descent<a class="headerlink" href="#steepest-descent" title="Link to this heading">#</a></h2>
 <p>The basic idea of gradient descent is
 that a function <span class="math notranslate nohighlight">\(F(\mathbf{x})\)</span>,
 <span class="math notranslate nohighlight">\(\mathbf{x} \equiv (x_1,\cdots,x_n)\)</span>, decreases fastest if one goes from <span class="math notranslate nohighlight">\(\bf {x}\)</span> in the
@@ -1075,7 +1078,7 @@ F(\mathbf{x}_k)\)</span>. This means that for a sufficiently small <span class="
 we are always moving towards smaller function values, i.e a minimum.</p>
 </section>
 <section id="more-on-steepest-descent">
-<h2><span class="section-number">11.18. </span>More on Steepest descent<a class="headerlink" href="#more-on-steepest-descent" title="Link to this heading">#</a></h2>
+<h2>More on Steepest descent<a class="headerlink" href="#more-on-steepest-descent" title="Link to this heading">#</a></h2>
 <p>The previous observation is the basis of the method of steepest
 descent, which is also referred to as just gradient descent (GD). One
 starts with an initial guess <span class="math notranslate nohighlight">\(\mathbf{x}_0\)</span> for a minimum of <span class="math notranslate nohighlight">\(F\)</span> and
@@ -1088,7 +1091,7 @@ computes new approximations according to</p>
 the learning rate within the context of Machine Learning.</p>
 </section>
 <section id="the-ideal">
-<h2><span class="section-number">11.19. </span>The ideal<a class="headerlink" href="#the-ideal" title="Link to this heading">#</a></h2>
+<h2>The ideal<a class="headerlink" href="#the-ideal" title="Link to this heading">#</a></h2>
 <p>Ideally the sequence <span class="math notranslate nohighlight">\(\{\mathbf{x}_k \}_{k=0}\)</span> converges to a global
 minimum of the function <span class="math notranslate nohighlight">\(F\)</span>. In general we do not know if we are in a
 global or local minimum. In the special case when <span class="math notranslate nohighlight">\(F\)</span> is a convex
@@ -1106,7 +1109,7 @@ sensitive to the chosen initial condition.</p>
 (x_1,\cdots,x_n)\)</span> which makes it expensive to compute numerically.</p>
 </section>
 <section id="the-sensitiveness-of-the-gradient-descent">
-<h2><span class="section-number">11.20. </span>The sensitiveness of the gradient descent<a class="headerlink" href="#the-sensitiveness-of-the-gradient-descent" title="Link to this heading">#</a></h2>
+<h2>The sensitiveness of the gradient descent<a class="headerlink" href="#the-sensitiveness-of-the-gradient-descent" title="Link to this heading">#</a></h2>
 <p>The gradient descent method
 is sensitive to the choice of learning rate <span class="math notranslate nohighlight">\(\gamma_k\)</span>. This is due
 to the fact that we are only guaranteed that <span class="math notranslate nohighlight">\(F(\mathbf{x}_{k+1}) \leq
@@ -1119,7 +1122,7 @@ randomness. One such method is that of Stochastic Gradient Descent
 (SGD), see below.</p>
 </section>
 <section id="convex-functions">
-<h2><span class="section-number">11.21. </span>Convex functions<a class="headerlink" href="#convex-functions" title="Link to this heading">#</a></h2>
+<h2>Convex functions<a class="headerlink" href="#convex-functions" title="Link to this heading">#</a></h2>
 <p>Ideally we want our cost/loss function to be convex(concave).</p>
 <p>First we give the definition of a convex set: A set <span class="math notranslate nohighlight">\(C\)</span> in
 <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> is said to be convex if, for all <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> in <span class="math notranslate nohighlight">\(C\)</span> and
@@ -1131,11 +1134,11 @@ connecting <span class="math notranslate nohighlight">\(x\)</span> and <span cla
 regular polygons (triangles, rectangles, pentagons, etc…).</p>
 </section>
 <section id="convex-function">
-<h2><span class="section-number">11.22. </span>Convex function<a class="headerlink" href="#convex-function" title="Link to this heading">#</a></h2>
+<h2>Convex function<a class="headerlink" href="#convex-function" title="Link to this heading">#</a></h2>
 <p><strong>Convex function</strong>: Let <span class="math notranslate nohighlight">\(X \subset \mathbb{R}^n\)</span> be a convex set. Assume that the function <span class="math notranslate nohighlight">\(f: X \rightarrow \mathbb{R}\)</span> is continuous, then <span class="math notranslate nohighlight">\(f\)</span> is said to be convex if $<span class="math notranslate nohighlight">\(f(tx_1 + (1-t)x_2) \leq tf(x_1) + (1-t)f(x_2) \)</span><span class="math notranslate nohighlight">\( for all \)</span>x_1, x_2 \in X<span class="math notranslate nohighlight">\( and for all \)</span>t \in [0,1]<span class="math notranslate nohighlight">\(. If \)</span>\leq<span class="math notranslate nohighlight">\( is replaced with a strict inequaltiy in the definition, we demand \)</span>x_1 \neq x_2<span class="math notranslate nohighlight">\( and \)</span>t\in(0,1)<span class="math notranslate nohighlight">\( then \)</span>f<span class="math notranslate nohighlight">\( is said to be strictly convex. For a single variable function, convexity means that if you draw a straight line connecting \)</span>f(x_1)<span class="math notranslate nohighlight">\( and \)</span>f(x_2)<span class="math notranslate nohighlight">\(, the value of the function on the interval \)</span>[x_1,x_2]$ is always below the line as illustrated below.</p>
 </section>
 <section id="conditions-on-convex-functions">
-<h2><span class="section-number">11.23. </span>Conditions on convex functions<a class="headerlink" href="#conditions-on-convex-functions" title="Link to this heading">#</a></h2>
+<h2>Conditions on convex functions<a class="headerlink" href="#conditions-on-convex-functions" title="Link to this heading">#</a></h2>
 <p>In the following we state first and second-order conditions which
 ensures convexity of a function <span class="math notranslate nohighlight">\(f\)</span>. We write <span class="math notranslate nohighlight">\(D_f\)</span> to denote the
 domain of <span class="math notranslate nohighlight">\(f\)</span>, i.e the subset of <span class="math notranslate nohighlight">\(R^n\)</span> where <span class="math notranslate nohighlight">\(f\)</span> is defined. For more
@@ -1159,7 +1162,7 @@ everywhere.</p>
 <p>This condition is particularly useful since it gives us an procedure for determining if the function under consideration is convex, apart from using the definition.</p>
 </section>
 <section id="more-on-convex-functions">
-<h2><span class="section-number">11.24. </span>More on convex functions<a class="headerlink" href="#more-on-convex-functions" title="Link to this heading">#</a></h2>
+<h2>More on convex functions<a class="headerlink" href="#more-on-convex-functions" title="Link to this heading">#</a></h2>
 <p>The next result is of great importance to us and the reason why we are
 going on about convex functions. In machine learning we frequently
 have to minimize a loss/cost function in order to find the best
@@ -1175,7 +1178,7 @@ is minimal, where <span class="math notranslate nohighlight">\(f\)</span> is con
 <p>This result means that if we know that the cost/loss function is convex and we are able to find a minimum, we are guaranteed that it is a global minimum.</p>
 </section>
 <section id="some-simple-problems">
-<h2><span class="section-number">11.25. </span>Some simple problems<a class="headerlink" href="#some-simple-problems" title="Link to this heading">#</a></h2>
+<h2>Some simple problems<a class="headerlink" href="#some-simple-problems" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
 <li><p>Show that <span class="math notranslate nohighlight">\(f(x)=x^2\)</span> is convex for <span class="math notranslate nohighlight">\(x \in \mathbb{R}\)</span> using the definition of convexity. Hint: If you re-write the definition, <span class="math notranslate nohighlight">\(f\)</span> is convex if the following holds for all <span class="math notranslate nohighlight">\(x,y \in D_f\)</span> and any <span class="math notranslate nohighlight">\(\lambda \in [0,1]\)</span> <span class="math notranslate nohighlight">\(\lambda f(x)+(1-\lambda)f(y)-f(\lambda x + (1-\lambda) y ) \geq 0\)</span>.</p></li>
 <li><p>Using the second order condition show that the following functions are convex on the specified domain.</p></li>
@@ -1196,7 +1199,7 @@ is minimal, where <span class="math notranslate nohighlight">\(f\)</span> is con
 <p>Using the definition of convexity, try to show that a function satisfying the properties above is convex (the third condition is not needed to show this).</p>
 </section>
 <section id="standard-steepest-descent">
-<h2><span class="section-number">11.26. </span>Standard steepest descent<a class="headerlink" href="#standard-steepest-descent" title="Link to this heading">#</a></h2>
+<h2>Standard steepest descent<a class="headerlink" href="#standard-steepest-descent" title="Link to this heading">#</a></h2>
 <p>Before we proceed, we would like to discuss the approach called the
 <strong>standard Steepest descent</strong>, which again leads to us having to be able
 to compute a matrix. It belongs to the class of Conjugate Gradient methods (CG).</p>
@@ -1218,7 +1221,7 @@ algebra of the type</p>
 <p>When we have found the exact solution, <span class="math notranslate nohighlight">\(\hat{r}=0\)</span>.</p>
 </section>
 <section id="gradient-method">
-<h2><span class="section-number">11.27. </span>Gradient method<a class="headerlink" href="#gradient-method" title="Link to this heading">#</a></h2>
+<h2>Gradient method<a class="headerlink" href="#gradient-method" title="Link to this heading">#</a></h2>
 <p>The residual is zero when we reach the minimum of the quadratic equation</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1228,7 +1231,7 @@ P(\hat{x})=\frac{1}{2}\hat{x}^T\hat{A}\hat{x} - \hat{x}^T\hat{b},
 symmetric.  This defines also the Hessian and we want it to be  positive definite.</p>
 </section>
 <section id="steepest-descent-method">
-<h2><span class="section-number">11.28. </span>Steepest descent  method<a class="headerlink" href="#steepest-descent-method" title="Link to this heading">#</a></h2>
+<h2>Steepest descent  method<a class="headerlink" href="#steepest-descent-method" title="Link to this heading">#</a></h2>
 <p>We denote the initial guess for <span class="math notranslate nohighlight">\(\hat{x}\)</span> as <span class="math notranslate nohighlight">\(\hat{x}_0\)</span>.
 We can assume without loss of generality that</p>
 <div class="math notranslate nohighlight">
@@ -1243,7 +1246,7 @@ We can assume without loss of generality that</p>
 <p>instead.</p>
 </section>
 <section id="id2">
-<h2><span class="section-number">11.29. </span>Steepest descent  method<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>Steepest descent  method<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>One can show that the solution <span class="math notranslate nohighlight">\(\hat{x}\)</span> is also the unique minimizer of the quadratic form</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1260,7 +1263,7 @@ which equals</p>
 <span class="math notranslate nohighlight">\(\hat{x}_0=0\)</span> it is equal <span class="math notranslate nohighlight">\(-\hat{b}\)</span>.</p>
 </section>
 <section id="final-expressions">
-<h2><span class="section-number">11.30. </span>Final expressions<a class="headerlink" href="#final-expressions" title="Link to this heading">#</a></h2>
+<h2>Final expressions<a class="headerlink" href="#final-expressions" title="Link to this heading">#</a></h2>
 <p>We can compute the residual iteratively as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1288,10 +1291,10 @@ which equals</p>
 \]</div>
 </section>
 <section id="code-examples-for-steepest-descent">
-<h2><span class="section-number">11.31. </span>Code examples for steepest descent<a class="headerlink" href="#code-examples-for-steepest-descent" title="Link to this heading">#</a></h2>
+<h2>Code examples for steepest descent<a class="headerlink" href="#code-examples-for-steepest-descent" title="Link to this heading">#</a></h2>
 </section>
 <section id="simple-codes-for-steepest-descent-and-conjugate-gradient-using-a-2-times-2-matrix-in-c-python-code-to-come">
-<h2><span class="section-number">11.32. </span>Simple codes for  steepest descent and conjugate gradient using a <span class="math notranslate nohighlight">\(2\times 2\)</span> matrix, in c++, Python code to come<a class="headerlink" href="#simple-codes-for-steepest-descent-and-conjugate-gradient-using-a-2-times-2-matrix-in-c-python-code-to-come" title="Link to this heading">#</a></h2>
+<h2>Simple codes for  steepest descent and conjugate gradient using a <span class="math notranslate nohighlight">\(2\times 2\)</span> matrix, in c++, Python code to come<a class="headerlink" href="#simple-codes-for-steepest-descent-and-conjugate-gradient-using-a-2-times-2-matrix-in-c-python-code-to-come" title="Link to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    #include &lt;cmath&gt;
     #include &lt;iostream&gt;
     #include &lt;fstream&gt;
@@ -1321,7 +1324,7 @@ which equals</p>
 </div>
 </section>
 <section id="the-routine-for-the-steepest-descent-method">
-<h2><span class="section-number">11.33. </span>The routine for the steepest descent method<a class="headerlink" href="#the-routine-for-the-steepest-descent-method" title="Link to this heading">#</a></h2>
+<h2>The routine for the steepest descent method<a class="headerlink" href="#the-routine-for-the-steepest-descent-method" title="Link to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    Vector SteepestDescent(Matrix A, Vector b, Vector x0){
       int IterMax, i;
       int dim = x0.Dimension();
@@ -1347,7 +1350,7 @@ which equals</p>
 </div>
 </section>
 <section id="steepest-descent-example">
-<h2><span class="section-number">11.34. </span>Steepest descent example<a class="headerlink" href="#steepest-descent-example" title="Link to this heading">#</a></h2>
+<h2>Steepest descent example<a class="headerlink" href="#steepest-descent-example" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1437,7 +1440,7 @@ which equals</p>
 </div>
 </section>
 <section id="conjugate-gradient-method">
-<h2><span class="section-number">11.35. </span>Conjugate gradient method<a class="headerlink" href="#conjugate-gradient-method" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method<a class="headerlink" href="#conjugate-gradient-method" title="Link to this heading">#</a></h2>
 <p>In the CG method we define so-called conjugate directions and two vectors
 <span class="math notranslate nohighlight">\(\hat{s}\)</span> and <span class="math notranslate nohighlight">\(\hat{t}\)</span>
 are said to be
@@ -1456,7 +1459,7 @@ of our vectors <span class="math notranslate nohighlight">\(\hat{x}_i\)</span> o
 this inner product. Being conjugate is a symmetric relation: if <span class="math notranslate nohighlight">\(\hat{s}\)</span> is conjugate to <span class="math notranslate nohighlight">\(\hat{t}\)</span>, then <span class="math notranslate nohighlight">\(\hat{t}\)</span> is conjugate to <span class="math notranslate nohighlight">\(\hat{s}\)</span>.</p>
 </section>
 <section id="id3">
-<h2><span class="section-number">11.36. </span>Conjugate gradient method<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>An example is given by the eigenvectors of the matrix</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1465,7 +1468,7 @@ this inner product. Being conjugate is a symmetric relation: if <span class="mat
 <p>which is zero unless <span class="math notranslate nohighlight">\(i=j\)</span>.</p>
 </section>
 <section id="id4">
-<h2><span class="section-number">11.37. </span>Conjugate gradient method<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p>Assume now that we have a symmetric positive-definite matrix <span class="math notranslate nohighlight">\(\hat{A}\)</span> of size
 <span class="math notranslate nohighlight">\(n\times n\)</span>. At each iteration <span class="math notranslate nohighlight">\(i+1\)</span> we obtain the conjugate direction of a vector</p>
 <div class="math notranslate nohighlight">
@@ -1481,7 +1484,7 @@ Then the <span class="math notranslate nohighlight">\(\hat{p}_{i}\)</span>  form
 \]</div>
 </section>
 <section id="id5">
-<h2><span class="section-number">11.38. </span>Conjugate gradient method<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <p>The coefficients are given by</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1499,7 +1502,7 @@ Then the <span class="math notranslate nohighlight">\(\hat{p}_{i}\)</span>  form
 \]</div>
 </section>
 <section id="conjugate-gradient-method-and-iterations">
-<h2><span class="section-number">11.39. </span>Conjugate gradient method and iterations<a class="headerlink" href="#conjugate-gradient-method-and-iterations" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method and iterations<a class="headerlink" href="#conjugate-gradient-method-and-iterations" title="Link to this heading">#</a></h2>
 <p>If we choose the conjugate vectors <span class="math notranslate nohighlight">\(\hat{p}_k\)</span> carefully,
 then we may not need all of them to obtain a good approximation to the solution
 <span class="math notranslate nohighlight">\(\hat{x}\)</span>.
@@ -1520,7 +1523,7 @@ We can assume without loss of generality that</p>
 <p>instead.</p>
 </section>
 <section id="id6">
-<h2><span class="section-number">11.40. </span>Conjugate gradient method<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <p>One can show that the solution <span class="math notranslate nohighlight">\(\hat{x}\)</span> is also the unique minimizer of the quadratic form</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1539,7 +1542,7 @@ The other vectors in the basis will be conjugate to the gradient,
 hence the name conjugate gradient method.</p>
 </section>
 <section id="id7">
-<h2><span class="section-number">11.41. </span>Conjugate gradient method<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>Let  <span class="math notranslate nohighlight">\(\hat{r}_k\)</span> be the residual at the <span class="math notranslate nohighlight">\(k\)</span>-th step:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1558,7 +1561,7 @@ This gives the following expression</p>
 \]</div>
 </section>
 <section id="id8">
-<h2><span class="section-number">11.42. </span>Conjugate gradient method<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<h2>Conjugate gradient method<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <p>We can also  compute the residual iteratively as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1581,7 +1584,7 @@ This gives the following expression</p>
 \]</div>
 </section>
 <section id="simple-implementation-of-the-conjugate-gradient-algorithm">
-<h2><span class="section-number">11.43. </span>Simple implementation of the Conjugate gradient algorithm<a class="headerlink" href="#simple-implementation-of-the-conjugate-gradient-algorithm" title="Link to this heading">#</a></h2>
+<h2>Simple implementation of the Conjugate gradient algorithm<a class="headerlink" href="#simple-implementation-of-the-conjugate-gradient-algorithm" title="Link to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      Vector ConjugateGradient(Matrix A, Vector b, Vector x0){
       int dim = x0.Dimension();
       const double tolerance = 1.0e-14;
@@ -1610,7 +1613,7 @@ This gives the following expression</p>
 </div>
 </section>
 <section id="broydenfletchergoldfarbshanno-algorithm">
-<h2><span class="section-number">11.44. </span>Broyden–Fletcher–Goldfarb–Shanno algorithm<a class="headerlink" href="#broydenfletchergoldfarbshanno-algorithm" title="Link to this heading">#</a></h2>
+<h2>Broyden–Fletcher–Goldfarb–Shanno algorithm<a class="headerlink" href="#broydenfletchergoldfarbshanno-algorithm" title="Link to this heading">#</a></h2>
 <p>The optimization problem is to minimize <span class="math notranslate nohighlight">\(f(\mathbf {x} )\)</span> where <span class="math notranslate nohighlight">\(\mathbf {x}\)</span>  is a vector in <span class="math notranslate nohighlight">\(R^{n}\)</span>, and <span class="math notranslate nohighlight">\(f\)</span> is a differentiable scalar function. There are no constraints on the values that  <span class="math notranslate nohighlight">\(\mathbf {x}\)</span>  can take.</p>
 <p>The algorithm begins at an initial estimate for the optimal value <span class="math notranslate nohighlight">\(\mathbf {x}_{0}\)</span> and proceeds iteratively to get a better estimate at each stage.</p>
 <p>The search direction <span class="math notranslate nohighlight">\(p_k\)</span> at stage <span class="math notranslate nohighlight">\(k\)</span> is given by the solution of the analogue of the Newton equation</p>
@@ -1631,7 +1634,7 @@ f(\mathbf {x}_{k}+\alpha \mathbf {p}_{k}),
 <p>over the scalar <span class="math notranslate nohighlight">\(\alpha &gt; 0\)</span>.</p>
 </section>
 <section id="stochastic-gradient-descent">
-<h2><span class="section-number">11.45. </span>Stochastic Gradient Descent<a class="headerlink" href="#stochastic-gradient-descent" title="Link to this heading">#</a></h2>
+<h2>Stochastic Gradient Descent<a class="headerlink" href="#stochastic-gradient-descent" title="Link to this heading">#</a></h2>
 <p>Stochastic gradient descent (SGD) and variants thereof address some of
 the shortcomings of the Gradient descent method discussed above.</p>
 <p>The underlying idea of SGD comes from the observation that a given
@@ -1644,7 +1647,7 @@ C(\mathbf{\beta}) = \sum_{i=1}^n c_i(\mathbf{x}_i,
 \]</div>
 </section>
 <section id="computation-of-gradients">
-<h2><span class="section-number">11.46. </span>Computation of gradients<a class="headerlink" href="#computation-of-gradients" title="Link to this heading">#</a></h2>
+<h2>Computation of gradients<a class="headerlink" href="#computation-of-gradients" title="Link to this heading">#</a></h2>
 <p>This in turn means that the gradient can be
 computed as a sum over <span class="math notranslate nohighlight">\(i\)</span>-gradients</p>
 <div class="math notranslate nohighlight">
@@ -1659,7 +1662,7 @@ minibatches. We denote these minibatches by <span class="math notranslate nohigh
 <span class="math notranslate nohighlight">\(k=1,\cdots,n/M\)</span>.</p>
 </section>
 <section id="sgd-example">
-<h2><span class="section-number">11.47. </span>SGD example<a class="headerlink" href="#sgd-example" title="Link to this heading">#</a></h2>
+<h2>SGD example<a class="headerlink" href="#sgd-example" title="Link to this heading">#</a></h2>
 <p>As an example, suppose we have <span class="math notranslate nohighlight">\(10\)</span> data points <span class="math notranslate nohighlight">\((\mathbf{x}_1,\cdots, \mathbf{x}_{10})\)</span>
 and we choose to have <span class="math notranslate nohighlight">\(M=5\)</span> minibathces,
 then each minibatch contains two data points. In particular we have
@@ -1680,7 +1683,7 @@ c_i(\mathbf{x}_i, \mathbf{\beta}).
 \]</div>
 </section>
 <section id="the-gradient-step">
-<h2><span class="section-number">11.48. </span>The gradient step<a class="headerlink" href="#the-gradient-step" title="Link to this heading">#</a></h2>
+<h2>The gradient step<a class="headerlink" href="#the-gradient-step" title="Link to this heading">#</a></h2>
 <p>Thus a gradient descent step now looks like</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1694,7 +1697,7 @@ typical to choose a number of epochs and for each epoch iterate over
 the number of minibatches, as exemplified in the code below.</p>
 </section>
 <section id="simple-example-code">
-<h2><span class="section-number">11.49. </span>Simple example code<a class="headerlink" href="#simple-example-code" title="Link to this heading">#</a></h2>
+<h2>Simple example code<a class="headerlink" href="#simple-example-code" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
@@ -1724,7 +1727,7 @@ cheaper since we sum over the datapoints in the <span class="math notranslate no
 all <span class="math notranslate nohighlight">\(n\)</span> datapoints.</p>
 </section>
 <section id="when-do-we-stop">
-<h2><span class="section-number">11.50. </span>When do we stop?<a class="headerlink" href="#when-do-we-stop" title="Link to this heading">#</a></h2>
+<h2>When do we stop?<a class="headerlink" href="#when-do-we-stop" title="Link to this heading">#</a></h2>
 <p>A natural question is when do we stop the search for a new minimum?
 One possibility is to compute the full gradient after a given number
 of epochs and check if the norm of the gradient is smaller than some
@@ -1737,7 +1740,7 @@ compare the values of the cost function and keep the <span class="math notransla
 gave the lowest value.</p>
 </section>
 <section id="slightly-different-approach">
-<h2><span class="section-number">11.51. </span>Slightly different approach<a class="headerlink" href="#slightly-different-approach" title="Link to this heading">#</a></h2>
+<h2>Slightly different approach<a class="headerlink" href="#slightly-different-approach" title="Link to this heading">#</a></h2>
 <p>Another approach is to let the step length <span class="math notranslate nohighlight">\(\gamma_j\)</span> depend on the
 number of epochs in such a way that it becomes very small after a
 reasonable time such that we do not move at all.</p>
@@ -1779,7 +1782,7 @@ function.</p>
 </div>
 </section>
 <section id="program-for-stochastic-gradient">
-<h2><span class="section-number">11.52. </span>Program for stochastic gradient<a class="headerlink" href="#program-for-stochastic-gradient" title="Link to this heading">#</a></h2>
+<h2>Program for stochastic gradient<a class="headerlink" href="#program-for-stochastic-gradient" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Importing various packages</span>
@@ -1854,7 +1857,7 @@ function.</p>
 </div>
 </section>
 <section id="using-gradient-descent-methods-limitations">
-<h2><span class="section-number">11.53. </span>Using gradient descent methods, limitations<a class="headerlink" href="#using-gradient-descent-methods-limitations" title="Link to this heading">#</a></h2>
+<h2>Using gradient descent methods, limitations<a class="headerlink" href="#using-gradient-descent-methods-limitations" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>Gradient descent (GD) finds local minima of our function</strong>. Since the GD algorithm is deterministic, if it converges, it will converge to a local minimum of our energy function. Because in ML we are often dealing with extremely rugged landscapes with many local minima, this can lead to poor performance.</p></li>
 <li><p><strong>GD is sensitive to initial conditions</strong>. One consequence of the local nature of GD is that initial conditions matter. Depending on where one starts, one will end up at a different local minima. Therefore, it is very important to think about how one initializes the training process. This is true for GD as well as more complicated variants of GD.</p></li>
@@ -1865,7 +1868,7 @@ function.</p>
 </ul>
 </section>
 <section id="codes-from-numerical-recipes">
-<h2><span class="section-number">11.54. </span>Codes from numerical recipes<a class="headerlink" href="#codes-from-numerical-recipes" title="Link to this heading">#</a></h2>
+<h2>Codes from numerical recipes<a class="headerlink" href="#codes-from-numerical-recipes" title="Link to this heading">#</a></h2>
 <p>You can however use codes we have adapted from the text <a class="reference external" href="http://www.nr.com/">Numerical Recipes in C++</a>, see chapter 10.7.<br />
 Here we present a program, which you also can find at the webpage of the course we use the functions <strong>dfpmin</strong> and <strong>lnsrch</strong>.  This is a variant of the Broyden et al algorithm discussed in the previous slide.</p>
 <ul class="simple">
@@ -1875,7 +1878,7 @@ Here we present a program, which you also can find at the webpage of the course 
 <p>Below we show only excerpts from the main program. For the full program, see the above link.</p>
 </section>
 <section id="finding-the-minimum-of-the-harmonic-oscillator-model-in-one-dimension">
-<h2><span class="section-number">11.55. </span>Finding the minimum of the harmonic oscillator model in one dimension<a class="headerlink" href="#finding-the-minimum-of-the-harmonic-oscillator-model-in-one-dimension" title="Link to this heading">#</a></h2>
+<h2>Finding the minimum of the harmonic oscillator model in one dimension<a class="headerlink" href="#finding-the-minimum-of-the-harmonic-oscillator-model-in-one-dimension" title="Link to this heading">#</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    //   Main function begins here
     int main()
     {
@@ -1901,7 +1904,7 @@ Here we present a program, which you also can find at the webpage of the course 
 </div>
 </section>
 <section id="functions-to-observe">
-<h2><span class="section-number">11.56. </span>Functions to observe<a class="headerlink" href="#functions-to-observe" title="Link to this heading">#</a></h2>
+<h2>Functions to observe<a class="headerlink" href="#functions-to-observe" title="Link to this heading">#</a></h2>
 <p>The functions <strong>Efunction</strong> and <strong>dEfunction</strong> compute the expectation value of the energy and its derivative.
 They use the the quasi-Newton method of <a class="reference external" href="https://www.springer.com/it/book/9780387303031">Broyden, Fletcher, Goldfarb, and Shanno (BFGS)</a>
 It uses the first derivatives only. The BFGS algorithm has proven good performance even for non-smooth optimizations.
@@ -1957,24 +1960,6 @@ After roughly 10-20 iterations I got a converged result in terms of <span class=
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="vmcdmc.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">10. </span>Variational Monte Carlo methods</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="resamplingmethods.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">12. </span>Resampling Techniques, Bootstrap and Blocking</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -1982,8 +1967,7 @@ After roughly 10-20 iterations I got a converged result in terms of <span class=
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -1992,62 +1976,62 @@ After roughly 10-20 iterations I got a converged result in terms of <span class=
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-down-start">11.1. Top-down start</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">11.2. Motivation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-and-demonstration">11.3. Simple example and demonstration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">11.4. Simple example and demonstration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-find-the-local-energy-for-the-harmonic-oscillator">11.5. Exercise 1: Find the local energy for the harmonic oscillator</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-in-the-simple-model">11.6. Variance in the simple model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-the-derivatives">11.7. Computing the derivatives</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expressions-for-finding-the-derivatives-of-the-local-energy">11.8. Expressions for finding the derivatives of the local energy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivatives-of-the-local-energy">11.9. Derivatives of the local energy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-general-expression-for-the-derivative-of-the-energy">11.10. Exercise 2: General expression for the derivative of the energy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-program-for-2-electrons-in-2-dimensions">11.11. Python program for 2-electrons in 2 dimensions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-broyden-s-algorithm-in-scipy">11.12. Using Broyden’s algorithm in scipy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-reminder-on-newton-raphson-s-method">11.13. Brief reminder on Newton-Raphson’s method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-equations">11.14. The equations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-geometric-interpretation">11.15. Simple geometric interpretation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-to-more-than-one-variable">11.16. Extending to more than one variable</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent">11.17. Steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-steepest-descent">11.18. More on Steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ideal">11.19. The ideal</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sensitiveness-of-the-gradient-descent">11.20. The sensitiveness of the gradient descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-functions">11.21. Convex functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-function">11.22. Convex function</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conditions-on-convex-functions">11.23. Conditions on convex functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-convex-functions">11.24. More on convex functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-simple-problems">11.25. Some simple problems</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-steepest-descent">11.26. Standard steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-method">11.27. Gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-method">11.28. Steepest descent  method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">11.29. Steepest descent  method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-expressions">11.30. Final expressions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-examples-for-steepest-descent">11.31. Code examples for steepest descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-codes-for-steepest-descent-and-conjugate-gradient-using-a-2-times-2-matrix-in-c-python-code-to-come">11.32. Simple codes for  steepest descent and conjugate gradient using a <span class="math notranslate nohighlight">\(2\times 2\)</span> matrix, in c++, Python code to come</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-routine-for-the-steepest-descent-method">11.33. The routine for the steepest descent method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-example">11.34. Steepest descent example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method">11.35. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">11.36. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">11.37. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">11.38. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method-and-iterations">11.39. Conjugate gradient method and iterations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">11.40. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">11.41. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">11.42. Conjugate gradient method</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-implementation-of-the-conjugate-gradient-algorithm">11.43. Simple implementation of the Conjugate gradient algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#broydenfletchergoldfarbshanno-algorithm">11.44. Broyden–Fletcher–Goldfarb–Shanno algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-descent">11.45. Stochastic Gradient Descent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computation-of-gradients">11.46. Computation of gradients</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-example">11.47. SGD example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-step">11.48. The gradient step</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-code">11.49. Simple example code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-do-we-stop">11.50. When do we stop?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slightly-different-approach">11.51. Slightly different approach</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#program-for-stochastic-gradient">11.52. Program for stochastic gradient</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-gradient-descent-methods-limitations">11.53. Using gradient descent methods, limitations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#codes-from-numerical-recipes">11.54. Codes from numerical recipes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-minimum-of-the-harmonic-oscillator-model-in-one-dimension">11.55. Finding the minimum of the harmonic oscillator model in one dimension</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions-to-observe">11.56. Functions to observe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-down-start">Top-down start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-and-demonstration">Simple example and demonstration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Simple example and demonstration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-find-the-local-energy-for-the-harmonic-oscillator">Exercise 1: Find the local energy for the harmonic oscillator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variance-in-the-simple-model">Variance in the simple model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computing-the-derivatives">Computing the derivatives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#expressions-for-finding-the-derivatives-of-the-local-energy">Expressions for finding the derivatives of the local energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derivatives-of-the-local-energy">Derivatives of the local energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-general-expression-for-the-derivative-of-the-energy">Exercise 2: General expression for the derivative of the energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-program-for-2-electrons-in-2-dimensions">Python program for 2-electrons in 2 dimensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-broyden-s-algorithm-in-scipy">Using Broyden’s algorithm in scipy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#brief-reminder-on-newton-raphson-s-method">Brief reminder on Newton-Raphson’s method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-equations">The equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-geometric-interpretation">Simple geometric interpretation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-to-more-than-one-variable">Extending to more than one variable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent">Steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-steepest-descent">More on Steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ideal">The ideal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sensitiveness-of-the-gradient-descent">The sensitiveness of the gradient descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-functions">Convex functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convex-function">Convex function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conditions-on-convex-functions">Conditions on convex functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-on-convex-functions">More on convex functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#some-simple-problems">Some simple problems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-steepest-descent">Standard steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-method">Gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-method">Steepest descent  method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Steepest descent  method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-expressions">Final expressions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-examples-for-steepest-descent">Code examples for steepest descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-codes-for-steepest-descent-and-conjugate-gradient-using-a-2-times-2-matrix-in-c-python-code-to-come">Simple codes for  steepest descent and conjugate gradient using a <span class="math notranslate nohighlight">\(2\times 2\)</span> matrix, in c++, Python code to come</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-routine-for-the-steepest-descent-method">The routine for the steepest descent method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steepest-descent-example">Steepest descent example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conjugate-gradient-method-and-iterations">Conjugate gradient method and iterations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Conjugate gradient method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-implementation-of-the-conjugate-gradient-algorithm">Simple implementation of the Conjugate gradient algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#broydenfletchergoldfarbshanno-algorithm">Broyden–Fletcher–Goldfarb–Shanno algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-descent">Stochastic Gradient Descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computation-of-gradients">Computation of gradients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sgd-example">SGD example</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-step">The gradient step</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-example-code">Simple example code</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-do-we-stop">When do we stop?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slightly-different-approach">Slightly different approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#program-for-stochastic-gradient">Program for stochastic gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-gradient-descent-methods-limitations">Using gradient descent methods, limitations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#codes-from-numerical-recipes">Codes from numerical recipes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-the-minimum-of-the-harmonic-oscillator-model-in-one-dimension">Finding the minimum of the harmonic oscillator model in one dimension</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions-to-observe">Functions to observe</a></li>
 </ul>
   </nav></div>
 
@@ -2096,8 +2080,8 @@ By Morten Hjorth-Jensen
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

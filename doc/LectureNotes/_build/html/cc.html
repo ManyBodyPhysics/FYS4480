@@ -16,33 +16,30 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
@@ -65,11 +62,9 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'cc';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="10. Variational Monte Carlo methods" href="vmcdmc.html" />
     <link rel="prev" title="6. Many-body perturbation theory" href="mbpt.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -85,8 +80,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -94,6 +100,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -101,8 +108,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -118,8 +125,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -149,17 +155,21 @@
     
     
     <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -172,7 +182,6 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="schedule.html">Schedule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
 </ul>
@@ -190,21 +199,6 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">7. The Coupled Cluster Method</a></li>
 
 
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Stochastic Methods</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vmcdmc.html">10. Variational Monte Carlo methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradientmethods.html">11. Gradient Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="resamplingmethods.html">12. Resampling Techniques, Bootstrap and Blocking</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning methods</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="boltzmannmachines.html">13. Boltzmann Machines</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Computational Aspects</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vectorization.html">14. Optimization and Vectorization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallelization.html">15. Parallelization with MPI and OpenMPI</a></li>
 </ul>
 
     </div>
@@ -343,16 +337,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -1715,13 +1717,11 @@ iter= 39 erg= -0.43407895701178667 myeps= 2.08982684650241e-05
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 40 erg= -0.43408646460614353 myeps= 1.729515884276886e-05
 iter= 41 erg= -0.4340926779492775 myeps= 1.4313402297628368e-05
+iter= 42 erg= -0.4340978201905307 myeps= 1.1845812197343312e-05
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 42 erg= -0.4340978201905307 myeps= 1.1845812197343312e-05
-iter= 43 erg= -0.43410207599766415 myeps= 9.803701407424543e-06
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 44 erg= -0.4341055981945805 myeps= 8.113686925482528e-06
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 43 erg= -0.43410207599766415 myeps= 9.803701407424543e-06
+iter= 44 erg= -0.4341055981945805 myeps= 8.113686925482528e-06
 iter= 45 erg= -0.43410851325371014 myeps= 6.715047138304284e-06
 </pre></div>
 </div>
@@ -1742,48 +1742,46 @@ iter= 54 erg= -0.4341199600672291 myeps= 1.2235217292978426e-06
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 55 erg= -0.4341203996786241 myeps= 1.012648554028702e-06
 iter= 56 erg= -0.43412076352439366 myeps= 8.381210947268386e-07
+iter= 57 erg= -0.4341210646630742 myeps= 6.936744264669387e-07
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 57 erg= -0.4341210646630742 myeps= 6.936744264669387e-07
-iter= 58 erg= -0.43412131390237374 myeps= 5.741236183312693e-07
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 59 erg= -0.43412152018716577 myeps= 4.75177530791271e-07
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 58 erg= -0.43412131390237374 myeps= 5.741236183312693e-07
+iter= 59 erg= -0.43412152018716577 myeps= 4.75177530791271e-07
 iter= 60 erg= -0.43412169092059416 myeps= 3.9328472169422255e-07
-iter= 61 erg= -0.43412183222982187 myeps= 3.2550592303140516e-07
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 62 erg= -0.43412194918596947 myeps= 2.6940851025684355e-07
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 61 erg= -0.43412183222982187 myeps= 3.2550592303140516e-07
+iter= 62 erg= -0.43412194918596947 myeps= 2.6940851025684355e-07
 iter= 63 erg= -0.43412204598613835 myeps= 2.2297915937601343e-07
-iter= 64 erg= -0.43412212610405826 myeps= 1.8455156991990885e-07
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 65 erg= -0.43412219241476757 myeps= 1.5274664707545314e-07
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 64 erg= -0.43412212610405826 myeps= 1.8455156991990885e-07
+iter= 65 erg= -0.43412219241476757 myeps= 1.5274664707545314e-07
 iter= 66 erg= -0.4341222472978008 myeps= 1.2642299161312937e-07
-iter= 67 erg= -0.4341222927225912 myeps= 1.0463593124585968e-07
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 68 erg= -0.43412233031915237 myeps= 8.660361048457761e-08
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 67 erg= -0.4341222927225912 myeps= 1.0463593124585968e-07
+iter= 68 erg= -0.43412233031915237 myeps= 8.660361048457761e-08
 iter= 69 erg= -0.4341223614365778 myeps= 7.16789278285526e-08
-iter= 70 erg= -0.43412238719145646 myeps= 5.9326308511289724e-08
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 71 erg= -0.4341224085079444 myeps= 4.910248249319024e-08
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 70 erg= -0.43412238719145646 myeps= 5.9326308511289724e-08
+iter= 71 erg= -0.4341224085079444 myeps= 4.910248249319024e-08
 iter= 72 erg= -0.4341224261509296 myeps= 4.064057537950126e-08
-iter= 73 erg= -0.43412244075348105 myeps= 3.3636942196453457e-08
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 74 erg= -0.4341224528395664 myeps= 2.7840267822341936e-08
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 73 erg= -0.43412244075348105 myeps= 3.3636942196453457e-08
+iter= 74 erg= -0.4341224528395664 myeps= 2.7840267822341936e-08
 iter= 75 erg= -0.43412246284285466 myeps= 2.304254930229631e-08
-iter= 76 erg= -0.43412247112227875 myeps= 1.9071632181026577e-08
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 77 erg= -0.4341224779749146 myeps= 1.578502886931811e-08
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 76 erg= -0.43412247112227875 myeps= 1.9071632181026577e-08
+iter= 77 erg= -0.4341224779749146 myeps= 1.578502886931811e-08
 iter= 78 erg= -0.43412248364664213 myeps= 1.306480946214148e-08
-iter= 79 erg= -0.434122488340968 myeps= 1.0813367191382213e-08
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Energy =  -0.4341224922263279
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>iter= 79 erg= -0.434122488340968 myeps= 1.0813367191382213e-08
+Energy =  -0.4341224922263279
 </pre></div>
 </div>
 </div>
@@ -3095,38 +3093,260 @@ Phys. Rev. C 89, 014319 (2014)].</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">227</span>
-<span class="g g-Whitespace">    </span><span class="mi">217</span>     <span class="k">return</span> <span class="n">erg</span>
-<span class="g g-Whitespace">    </span><span class="mi">220</span> <span class="c1">########################################################################################</span>
-<span class="g g-Whitespace">    </span><span class="mi">221</span> <span class="c1"># Functions for CCD of neutron matter</span>
-<span class="g g-Whitespace">    </span><span class="mi">222</span> <span class="c1"># Implementation uses only pp and hh ladders</span>
-<span class="g g-Whitespace">    </span><span class="mi">223</span> <span class="c1"># </span>
-<span class="g g-Whitespace">    </span><span class="mi">224</span> <span class="c1">########################################################################################</span>
-<span class="ne">--&gt; </span><span class="mi">227</span> <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span>  
-<span class="g g-Whitespace">    </span><span class="mi">228</span> <span class="c1"># compile a few functions to gain speed; should probably done in Fortran or C++, </span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span> <span class="c1"># and called from Python</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span> <span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="k">def</span> <span class="nf">minnesota_nn</span><span class="p">(</span><span class="n">p_out</span><span class="p">,</span><span class="n">s1_out</span><span class="p">,</span><span class="n">s2_out</span><span class="p">,</span><span class="n">p_in</span><span class="p">,</span><span class="n">s1_in</span><span class="p">,</span><span class="n">s2_in</span><span class="p">,</span><span class="n">Lbox</span><span class="p">):</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:269: NumbaDeprecationWarning: <span class=" -Color -Color-Bold">The &#39;nopython&#39; keyword argument was not supplied to the &#39;numba.jit&#39; decorator. The implicit default value for this argument is currently False, but it will be changed to True in Numba 0.59.0. See https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit for details.</span>
+  def spin_of_index(i):
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:279: NumbaDeprecationWarning: <span class=" -Color -Color-Bold">The &#39;nopython&#39; keyword argument was not supplied to the &#39;numba.jit&#39; decorator. The implicit default value for this argument is currently False, but it will be changed to True in Numba 0.59.0. See https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit for details.</span>
+  def spin2spinor(s):
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:293: NumbaDeprecationWarning: <span class=" -Color -Color-Bold">The &#39;nopython&#39; keyword argument was not supplied to the &#39;numba.jit&#39; decorator. The implicit default value for this argument is currently False, but it will be changed to True in Numba 0.59.0. See https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit for details.</span>
+  def Tkin(pvec):
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:310: NumbaDeprecationWarning: <span class=" -Color -Color-Bold">The &#39;nopython&#39; keyword argument was not supplied to the &#39;numba.jit&#39; decorator. The implicit default value for this argument is currently False, but it will be changed to True in Numba 0.59.0. See https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit for details.</span>
+  def compute_total_Tkin(Nocc,sp_basis,dk):
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:327: NumbaDeprecationWarning: <span class=" -Color -Color-Bold">The &#39;nopython&#39; keyword argument was not supplied to the &#39;numba.jit&#39; decorator. The implicit default value for this argument is currently False, but it will be changed to True in Numba 0.59.0. See https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit for details.</span>
+  def Fock(pvec,s,sp_basis,Nocc,dk,Lbox):
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:512: NumbaDeprecationWarning: <span class=" -Color -Color-Bold">The &#39;nopython&#39; keyword argument was not supplied to the &#39;numba.jit&#39; decorator. The implicit default value for this argument is currently False, but it will be changed to True in Numba 0.59.0. See https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit for details.</span>
+  def make_diagram(obj1,obj2,fac):
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>chosen N = 14
+magic numbers [2, 14, 38]
+number of s.p. states: 54
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:309: NumbaWarning: 
+<span class=" -Color -Color-Bold">Compilation is falling back to object mode WITH looplifting enabled because Function &quot;compute_total_Tkin&quot; failed type inference due to: No implementation of function Function(&lt;built-in function array&gt;) found for signature:</span>
+<span class=" -Color -Color-Bold"> </span>
+<span class=" -Color -Color-Bold"> &gt;&gt;&gt; array(array(int64, 1d, C))</span>
+<span class=" -Color -Color-Bold"> </span>
+<span class=" -Color -Color-Bold">There are 2 candidate implementations:</span>
+<span class=" -Color -Color-Bold">  - Of which 2 did not match due to:</span>
+<span class=" -Color -Color-Bold">  Overload in function &#39;impl_np_array&#39;: File: numba/np/arrayobj.py: Line 5242.</span>
+<span class=" -Color -Color-Bold">    With argument(s): &#39;(array(int64, 1d, C))&#39;:</span>
+<span class=" -Color -Color-Bold">   Rejected as the implementation raised a specific error:</span>
+<span class=" -Color -Color-Bold">     TypingError: Failed in nopython mode pipeline (step: nopython frontend)</span>
+<span class=" -Color -Color-Bold">   No implementation of function Function(&lt;intrinsic np_array&gt;) found for signature:</span>
+<span class=" -Color -Color-Bold">    </span>
+<span class=" -Color -Color-Bold">    &gt;&gt;&gt; np_array(array(int64, 1d, C), none)</span>
+<span class=" -Color -Color-Bold">    </span>
+<span class=" -Color -Color-Bold">   There are 2 candidate implementations:</span>
+<span class=" -Color -Color-Bold">         - Of which 2 did not match due to:</span>
+<span class=" -Color -Color-Bold">         Intrinsic in function &#39;np_array&#39;: File: numba/np/arrayobj.py: Line 5216.</span>
+<span class=" -Color -Color-Bold">           With argument(s): &#39;(array(int64, 1d, C), none)&#39;:</span>
+   <span class=" -Color -Color-Bold">       Rejected as the implementation raised a specific error:</span>
+<span class=" -Color -Color-Bold">            TypingError: array(int64, 1d, C) not allowed in a homogeneous sequence</span>
+     raised from /Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/typing/npydecl.py:482
+   
+   <span class=" -Color -Color-Bold">During: resolving callee type: Function(&lt;intrinsic np_array&gt;)</span>
+   <span class=" -Color -Color-Bold">During: typing of call at /Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/np/arrayobj.py (5253)</span>
+<span class=" -Color -Color-Bold">   </span>
+   
+<span class=" -Color -Color-Bold">   File &quot;../../../../miniforge3/envs/myenv/lib/python3.9/site-packages/numba/np/arrayobj.py&quot;, line 5253:</span>
+   <span class=" -Color -Color-Bold">    def impl(object, dtype=None):</span>
+<span class=" -Color -Color-Bold">           return np_array(object, dtype)</span>
+<span class=" -Color -Color-Bold">   </span>        <span class=" -Color -Color-Bold">^</span>
 
-<span class="n">File</span> <span class="o">~/</span><span class="n">miniforge3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">myenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.9</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numba</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">55</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span>             <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Numba requires SciPy version 1.0 or greater. Got SciPy &quot;</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">52</span>             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">55</span> <span class="n">_ensure_critical_deps</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">56</span> <span class="c1"># END DO NOT MOVE</span>
-<span class="g g-Whitespace">     </span><span class="mi">57</span> <span class="c1"># ---------------------- WARNING WARNING WARNING ----------------------------</span>
-<span class="g g-Whitespace">     </span><span class="mi">60</span> <span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
+  raised from /Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/typeinfer.py:1086
 
-<span class="nn">File ~/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/__init__.py:42,</span> in <span class="ni">_ensure_critical_deps</span><span class="nt">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">40</span>     <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">41</span> <span class="k">elif</span> <span class="n">numpy_version</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">42</span>     <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Numba needs NumPy 1.24 or less&quot;</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span> <span class="k">try</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span>     <span class="kn">import</span> <span class="nn">scipy</span>
+<span class=" -Color -Color-Bold">During: resolving callee type: Function(&lt;built-in function array&gt;)</span>
+<span class=" -Color -Color-Bold">During: typing of call at /var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py (319)</span>
 
-<span class="ne">ImportError</span>: Numba needs NumPy 1.24 or less
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 319:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  @jit
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:309: NumbaWarning: 
+<span class=" -Color -Color-Bold">Compilation is falling back to object mode WITHOUT looplifting enabled because Function &quot;compute_total_Tkin&quot; failed type inference due to: Cannot determine Numba type of &lt;class &#39;numba.core.dispatcher.LiftedLoop&#39;&gt;</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 317:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  @jit
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:151: NumbaWarning: <span class=" -Color -Color-Bold">Function &quot;compute_total_Tkin&quot; was compiled in object mode without forceobj=True, but has lifted loops.</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 309:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaWarning(warn_msg,
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:161: NumbaDeprecationWarning: 
+<span class=" -Color -Color-Bold">Fall-back from the nopython compilation path to the object mode compilation path has been detected. This is deprecated behaviour that will be removed in Numba 0.59.0.</span>
+
+<span class=" -Color -Color-Bold">For more information visit https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 309:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaDeprecationWarning(msg,
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:309: NumbaWarning: 
+<span class=" -Color -Color-Bold">Compilation is falling back to object mode WITHOUT looplifting enabled because Function &quot;compute_total_Tkin&quot; failed type inference due to: No implementation of function Function(&lt;built-in function array&gt;) found for signature:</span>
+<span class=" -Color -Color-Bold"> </span>
+<span class=" -Color -Color-Bold"> &gt;&gt;&gt; array(array(int64, 1d, C))</span>
+<span class=" -Color -Color-Bold"> </span>
+<span class=" -Color -Color-Bold">There are 2 candidate implementations:</span>
+<span class=" -Color -Color-Bold">    - Of which 2 did not match due to:</span>
+<span class=" -Color -Color-Bold">    Overload in function &#39;impl_np_array&#39;: File: numba/np/arrayobj.py: Line 5242.</span>
+<span class=" -Color -Color-Bold">      With argument(s): &#39;(array(int64, 1d, C))&#39;:</span>
+<span class=" -Color -Color-Bold">     Rejected as the implementation raised a specific error:</span>
+<span class=" -Color -Color-Bold">       TypingError: Failed in nopython mode pipeline (step: nopython frontend)</span>
+<span class=" -Color -Color-Bold">     No implementation of function Function(&lt;intrinsic np_array&gt;) found for signature:</span>
+<span class=" -Color -Color-Bold">      </span>
+<span class=" -Color -Color-Bold">      &gt;&gt;&gt; np_array(array(int64, 1d, C), none)</span>
+<span class=" -Color -Color-Bold">      </span>
+<span class=" -Color -Color-Bold">     There are 2 candidate implementations:</span>
+<span class=" -Color -Color-Bold">           - Of which 2 did not match due to:</span>
+<span class=" -Color -Color-Bold">           Intrinsic in function &#39;np_array&#39;: File: numba/np/arrayobj.py: Line 5216.</span>
+<span class=" -Color -Color-Bold">             With argument(s): &#39;(array(int64, 1d, C), none)&#39;:</span>
+     <span class=" -Color -Color-Bold">       Rejected as the implementation raised a specific error:</span>
+<span class=" -Color -Color-Bold">              TypingError: array(int64, 1d, C) not allowed in a homogeneous sequence</span>
+       raised from /Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/typing/npydecl.py:482
+     
+     <span class=" -Color -Color-Bold">During: resolving callee type: Function(&lt;intrinsic np_array&gt;)</span>
+     <span class=" -Color -Color-Bold">During: typing of call at /Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/np/arrayobj.py (5253)</span>
+<span class=" -Color -Color-Bold">     </span>
+     
+<span class=" -Color -Color-Bold">     File &quot;../../../../miniforge3/envs/myenv/lib/python3.9/site-packages/numba/np/arrayobj.py&quot;, line 5253:</span>
+     <span class=" -Color -Color-Bold">    def impl(object, dtype=None):</span>
+<span class=" -Color -Color-Bold">             return np_array(object, dtype)</span>
+<span class=" -Color -Color-Bold">     </span>        <span class=" -Color -Color-Bold">^</span>
+
+  raised from /Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/typeinfer.py:1086
+
+<span class=" -Color -Color-Bold">During: resolving callee type: Function(&lt;built-in function array&gt;)</span>
+<span class=" -Color -Color-Bold">During: typing of call at /var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py (319)</span>
+
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 319:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  @jit
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:151: NumbaWarning: <span class=" -Color -Color-Bold">Function &quot;compute_total_Tkin&quot; was compiled in object mode without forceobj=True.</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 317:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaWarning(warn_msg,
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:161: NumbaDeprecationWarning: 
+<span class=" -Color -Color-Bold">Fall-back from the nopython compilation path to the object mode compilation path has been detected. This is deprecated behaviour that will be removed in Numba 0.59.0.</span>
+
+<span class=" -Color -Color-Bold">For more information visit https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 317:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaDeprecationWarning(msg,
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>total Tkin per particle = 22.42755311959275
+Fermi momentum = 1.3330210137859975
+Energy per neutron of infinite free Fermi gas 22.10817470276664
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>HF energy per neutron = 10.349801450196432
+hh channels= 25
+pp channels= 25
+hh number of total combinations 182
+pp number of total combinations 656
+get v_hhhh, v_pphh, v_pppp
+what a hog! 0.056717292000000086 seconds
+compute energy denominator
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/ir_utils.py:2149: NumbaPendingDeprecationWarning: 
+<span class=" -Color -Color-Bold">Encountered the use of a type that is scheduled for deprecation: type &#39;reflected list&#39; found for argument &#39;sp_basis&#39; of function &#39;Fock&#39;.</span>
+
+<span class=" -Color -Color-Bold">For more information visit https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-reflection-for-list-and-set-types</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 326:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(NumbaPendingDeprecationWarning(msg, loc=loc))
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>that&#39;s faster 0.2597697090000004 seconds
+Initialize T2 from MBPT2
+MBPT2 correlation energy per neutron = -0.17553785744804082
+start CCD iterations ...
+time of making Hbar: 0.17124212499999913 seconds
+iter= 0 Correlation energy per neutron= -0.20550292085394894 , epsilon= 1.0
+time of making Hbar: 0.0002475000000004002 seconds
+iter= 1 Correlation energy per neutron= -0.2107009003533346 , epsilon= 0.024669944412524628
+time of making Hbar: 0.000236250000000382 seconds
+iter= 2 Correlation energy per neutron= -0.2116672343138936 , epsilon= 0.004565345050646539
+time of making Hbar: 0.00022845800000048655 seconds
+iter= 3 Correlation energy per neutron= -0.21184820867906343 , epsilon= 0.0008542643164097731
+time of making Hbar: 0.00022629200000068295 seconds
+iter= 4 Correlation energy per neutron= -0.21188227228364806 , epsilon= 0.00016076665696240967
+time of making Hbar: 0.0002254169999993394 seconds
+iter= 5 Correlation energy per neutron= -0.21188870821702438 , epsilon= 3.0374121539822725e-05
+time of making Hbar: 0.00022479100000083463 seconds
+iter= 6 Correlation energy per neutron= -0.21188992798649683 , epsilon= 5.756618467265144e-06
+time of making Hbar: 0.0002257500000002466 seconds
+iter= 7 Correlation energy per neutron= -0.211890159780636 , epsilon= 1.093935364400894e-06
+time of making Hbar: 0.00022320799999953067 seconds
+iter= 8 Correlation energy per neutron= -0.21189020393325292 , epsilon= 2.0837497962657972e-07
+time of making Hbar: 0.00022429100000032065 seconds
+iter= 9 Correlation energy per neutron= -0.21189021236156144 , epsilon= 3.9776771344709894e-08
+time of making Hbar: 0.00022174999999968747 seconds
+Correlation energy per neutron=  -0.2118902139735854
+total time in seconds 1.4405627919999997
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:511: NumbaWarning: 
+<span class=" -Color -Color-Bold">Compilation is falling back to object mode WITH looplifting enabled because Function &quot;make_diagram&quot; failed type inference due to: Use of unsupported NumPy function &#39;numpy.matmul&#39; or unsupported use of the function.</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 521:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+<span class=" -Color -Color-Bold">During: typing of get attribute at /var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py (521)</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 521:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  @jit
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:511: NumbaWarning: 
+<span class=" -Color -Color-Bold">Compilation is falling back to object mode WITHOUT looplifting enabled because Function &quot;make_diagram&quot; failed type inference due to: Cannot determine Numba type of &lt;class &#39;numba.core.dispatcher.LiftedLoop&#39;&gt;</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 518:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  @jit
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:151: NumbaWarning: <span class=" -Color -Color-Bold">Function &quot;make_diagram&quot; was compiled in object mode without forceobj=True, but has lifted loops.</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 511:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaWarning(warn_msg,
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:161: NumbaDeprecationWarning: 
+<span class=" -Color -Color-Bold">Fall-back from the nopython compilation path to the object mode compilation path has been detected. This is deprecated behaviour that will be removed in Numba 0.59.0.</span>
+
+<span class=" -Color -Color-Bold">For more information visit https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 511:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaDeprecationWarning(msg,
+/var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py:511: NumbaWarning: 
+<span class=" -Color -Color-Bold">Compilation is falling back to object mode WITHOUT looplifting enabled because Function &quot;make_diagram&quot; failed type inference due to: non-precise type pyobject</span>
+<span class=" -Color -Color-Bold">During: typing of argument at /var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py (518)</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 518:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  @jit
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:151: NumbaWarning: <span class=" -Color -Color-Bold">Function &quot;make_diagram&quot; was compiled in object mode without forceobj=True.</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 518:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaWarning(warn_msg,
+/Users/mhjensen/miniforge3/envs/myenv/lib/python3.9/site-packages/numba/core/object_mode_passes.py:161: NumbaDeprecationWarning: 
+<span class=" -Color -Color-Bold">Fall-back from the nopython compilation path to the object mode compilation path has been detected. This is deprecated behaviour that will be removed in Numba 0.59.0.</span>
+
+<span class=" -Color -Color-Bold">For more information visit https://numba.readthedocs.io/en/stable/reference/deprecation.html#deprecation-of-object-mode-fall-back-behaviour-when-using-jit</span>
+
+<span class=" -Color -Color-Bold">File &quot;../../../../../../var/folders/td/3yk470mj5p931p9dtkk0y6jw0000gn/T/ipykernel_70705/2479038418.py&quot;, line 518:</span>
+<span class=" -Color -Color-Bold">&lt;source missing, REPL/exec in use?&gt;</span>
+
+  warnings.warn(errors.NumbaDeprecationWarning(msg,
 </pre></div>
 </div>
 </div>
@@ -3439,15 +3659,6 @@ IMSRG or Self-Consistent Green’s Function methods could also be used.</p>
         <p class="prev-next-title"><span class="section-number">6. </span>Many-body perturbation theory</p>
       </div>
     </a>
-    <a class="right-next"
-       href="vmcdmc.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">10. </span>Variational Monte Carlo methods</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -3455,8 +3666,7 @@ IMSRG or Self-Consistent Green’s Function methods could also be used.</p>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -3562,8 +3772,8 @@ By Morten Hjorth-Jensen
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

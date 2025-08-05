@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>10. Variational Monte Carlo methods &#8212; Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</title>
+    <title>Variational Monte Carlo methods &#8212; Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning</title>
   
   
   
@@ -16,33 +16,30 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!-- 
-    this give us a css class that will be invisible only if js is disabled 
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
@@ -65,11 +62,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'vmcdmc';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="11. Gradient Methods" href="gradientmethods.html" />
-    <link rel="prev" title="7. The Coupled Cluster Method" href="cc.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -85,8 +79,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -94,6 +99,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -101,8 +107,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -118,8 +124,9 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -149,17 +156,21 @@
     
     
     <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning - Home"/>`);</script>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -172,7 +183,6 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="schedule.html">Schedule</a></li>
 <li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
 </ul>
@@ -190,21 +200,6 @@
 <li class="toctree-l1"><a class="reference internal" href="cc.html">7. The Coupled Cluster Method</a></li>
 
 
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Stochastic Methods</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">10. Variational Monte Carlo methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradientmethods.html">11. Gradient Methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="resamplingmethods.html">12. Resampling Techniques, Bootstrap and Blocking</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning methods</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="boltzmannmachines.html">13. Boltzmann Machines</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Computational Aspects</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="vectorization.html">14. Optimization and Vectorization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallelization.html">15. Parallelization with MPI and OpenMPI</a></li>
 </ul>
 
     </div>
@@ -343,16 +338,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -376,23 +379,23 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">10.1. Quantum Monte Carlo Motivation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">10.1.1. Quantum Monte Carlo: hydrogen atom</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">10.1.2. A simple Python code that solves the two-boson or two-fermion case in two-dimensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">Quantum Monte Carlo Motivation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">Quantum Monte Carlo: hydrogen atom</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">A simple Python code that solves the two-boson or two-fermion case in two-dimensions</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">10.2. Quantum Monte Carlo: the helium atom</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-metropolis-algorithm">10.3. The Metropolis algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">10.4. Importance sampling</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-program-elements">10.5. Importance sampling, program elements</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">10.6. Importance sampling, Fokker-Planck and Langevin equations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">10.7. Code example for two electrons in a quantum dots</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bringing-the-gradient-optmization">10.7.1. Bringing the gradient optmization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">Quantum Monte Carlo: the helium atom</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-metropolis-algorithm">The Metropolis algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">Importance sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-program-elements">Importance sampling, program elements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">Importance sampling, Fokker-Planck and Langevin equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">Code example for two electrons in a quantum dots</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bringing-the-gradient-optmization">Bringing the gradient optmization</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">10.8. VMC for fermions: Efficient calculation of Slater determinants</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">10.8.1. The gradient and the Laplacian</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">10.8.2. Expectation value of the kinetic energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">VMC for fermions: Efficient calculation of Slater determinants</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">The gradient and the Laplacian</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">Expectation value of the kinetic energy</a></li>
 </ul>
 </li>
 </ul>
@@ -408,9 +411,9 @@
                   
   <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
 doconce format html vmcdmc.do.txt  --><section class="tex2jax_ignore mathjax_ignore" id="variational-monte-carlo-methods">
-<h1><span class="section-number">10. </span>Variational Monte Carlo methods<a class="headerlink" href="#variational-monte-carlo-methods" title="Link to this heading">#</a></h1>
+<h1>Variational Monte Carlo methods<a class="headerlink" href="#variational-monte-carlo-methods" title="Link to this heading">#</a></h1>
 <section id="quantum-monte-carlo-motivation">
-<h2><span class="section-number">10.1. </span>Quantum Monte Carlo Motivation<a class="headerlink" href="#quantum-monte-carlo-motivation" title="Link to this heading">#</a></h2>
+<h2>Quantum Monte Carlo Motivation<a class="headerlink" href="#quantum-monte-carlo-motivation" title="Link to this heading">#</a></h2>
 <p>We start with the variational principle.
 Given a hamiltonian <span class="math notranslate nohighlight">\(H\)</span> and a trial wave function <span class="math notranslate nohighlight">\(\Psi_T\)</span>, the variational principle states that the expectation value of <span class="math notranslate nohighlight">\(\langle H \rangle\)</span>, defined through</p>
 <div class="math notranslate nohighlight">
@@ -520,7 +523,7 @@ E[H(\boldsymbol{\alpha})]=\int P(\boldsymbol{R})E_L(\boldsymbol{R}) d\boldsymbol
 <p>Observe that the jumping in space is governed by the variable <em>step</em>. This is Called brute-force sampling.
 Need importance sampling to get more relevant sampling, see lectures below.</p>
 <section id="quantum-monte-carlo-hydrogen-atom">
-<h3><span class="section-number">10.1.1. </span>Quantum Monte Carlo: hydrogen atom<a class="headerlink" href="#quantum-monte-carlo-hydrogen-atom" title="Link to this heading">#</a></h3>
+<h3>Quantum Monte Carlo: hydrogen atom<a class="headerlink" href="#quantum-monte-carlo-hydrogen-atom" title="Link to this heading">#</a></h3>
 <p>The radial Schroedinger equation for the hydrogen atom can be
 written as</p>
 <div class="math notranslate nohighlight">
@@ -684,7 +687,7 @@ function is</p>
 \end{split}\]</div>
 </section>
 <section id="a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">
-<h3><span class="section-number">10.1.2. </span>A simple Python code that solves the two-boson or two-fermion case in two-dimensions<a class="headerlink" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions" title="Link to this heading">#</a></h3>
+<h3>A simple Python code that solves the two-boson or two-fermion case in two-dimensions<a class="headerlink" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -809,12 +812,17 @@ function is</p>
 <span class="g g-Whitespace">     </span><span class="mi">92</span> <span class="c1"># Prepare for plots</span>
 <span class="g g-Whitespace">     </span><span class="mi">93</span> <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
-<span class="nn">Cell In[1], line 63,</span> in <span class="ni">MonteCarloSampling</span><span class="nt">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">61</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NumberParticles</span><span class="p">):</span>
+<span class="nn">Cell In[1], line 64,</span> in <span class="ni">MonteCarloSampling</span><span class="nt">()</span>
 <span class="g g-Whitespace">     </span><span class="mi">62</span>     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">63</span>         <span class="n">PositionNew</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">PositionOld</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">StepSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">.5</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">64</span> <span class="n">wfnew</span> <span class="o">=</span> <span class="n">WaveFunction</span><span class="p">(</span><span class="n">PositionNew</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">63</span>         <span class="n">PositionNew</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">PositionOld</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">StepSize</span> <span class="o">*</span> <span class="p">(</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">.5</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">64</span> <span class="n">wfnew</span> <span class="o">=</span> <span class="n">WaveFunction</span><span class="p">(</span><span class="n">PositionNew</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">)</span>
 <span class="g g-Whitespace">     </span><span class="mi">66</span> <span class="c1">#Metropolis test to see whether we accept the move</span>
+<span class="g g-Whitespace">     </span><span class="mi">67</span> <span class="k">if</span> <span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">wfnew</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">wfold</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+
+<span class="nn">Cell In[1], line 19,</span> in <span class="ni">WaveFunction</span><span class="nt">(r, alpha, beta)</span>
+<span class="g g-Whitespace">     </span><span class="mi">17</span> <span class="n">r12</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="n">deno</span> <span class="o">=</span> <span class="n">r12</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">beta</span><span class="o">*</span><span class="n">r12</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">19</span> <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">alpha</span><span class="o">*</span><span class="p">(</span><span class="n">r1</span><span class="o">+</span><span class="n">r2</span><span class="p">)</span><span class="o">+</span><span class="n">deno</span><span class="p">)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
@@ -824,7 +832,7 @@ function is</p>
 </section>
 </section>
 <section id="quantum-monte-carlo-the-helium-atom">
-<h2><span class="section-number">10.2. </span>Quantum Monte Carlo: the helium atom<a class="headerlink" href="#quantum-monte-carlo-the-helium-atom" title="Link to this heading">#</a></h2>
+<h2>Quantum Monte Carlo: the helium atom<a class="headerlink" href="#quantum-monte-carlo-the-helium-atom" title="Link to this heading">#</a></h2>
 <p>The helium atom consists of two electrons and a nucleus with
 charge <span class="math notranslate nohighlight">\(Z=2\)</span>.
 The contribution<br />
@@ -1017,7 +1025,7 @@ the <span class="math notranslate nohighlight">\(2s\)</span> hydrogen-orbital  (
 <p>With some practice this allows one to be able to check one’s own calculation and translate automatically into code lines.</p>
 </section>
 <section id="the-metropolis-algorithm">
-<h2><span class="section-number">10.3. </span>The Metropolis algorithm<a class="headerlink" href="#the-metropolis-algorithm" title="Link to this heading">#</a></h2>
+<h2>The Metropolis algorithm<a class="headerlink" href="#the-metropolis-algorithm" title="Link to this heading">#</a></h2>
 <p>The Metropolis algorithm , see <a class="reference external" href="http://scitation.aip.org/content/aip/journal/jcp/21/6/10.1063/1.1699114">the original article</a> was invented by Metropolis et. al
 and is often simply called the Metropolis algorithm.
 It is a method to sample a normalized probability
@@ -1114,7 +1122,7 @@ to this result, we must show that <span class="math notranslate nohighlight">\(M
 magnitude, and all other eigenvalues are smaller.</p>
 </section>
 <section id="importance-sampling">
-<h2><span class="section-number">10.4. </span>Importance sampling<a class="headerlink" href="#importance-sampling" title="Link to this heading">#</a></h2>
+<h2>Importance sampling<a class="headerlink" href="#importance-sampling" title="Link to this heading">#</a></h2>
 <p>We need to replace the brute force
 Metropolis algorithm with a walk in coordinate space biased by the trial wave function.
 This approach is based on the Fokker-Planck equation and the Langevin equation for generating a trajectory in coordinate space.  The link between the Fokker-Planck equation and the Langevin equations are explained, only partly, in the slides below.
@@ -1179,7 +1187,7 @@ q(y,x) = \frac{G(x,y,\Delta t)|\Psi_T(y)|^2}{G(y,x,\Delta t)|\Psi_T(x)|^2}
 \]</div>
 </section>
 <section id="importance-sampling-program-elements">
-<h2><span class="section-number">10.5. </span>Importance sampling, program elements<a class="headerlink" href="#importance-sampling-program-elements" title="Link to this heading">#</a></h2>
+<h2>Importance sampling, program elements<a class="headerlink" href="#importance-sampling-program-elements" title="Link to this heading">#</a></h2>
 <p>The general derivative formula of the Jastrow factor is (the subscript <span class="math notranslate nohighlight">\(C\)</span> stands for Correlation)</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1374,7 +1382,7 @@ we have</p>
 \]</div>
 </section>
 <section id="importance-sampling-fokker-planck-and-langevin-equations">
-<h2><span class="section-number">10.6. </span>Importance sampling, Fokker-Planck and Langevin equations<a class="headerlink" href="#importance-sampling-fokker-planck-and-langevin-equations" title="Link to this heading">#</a></h2>
+<h2>Importance sampling, Fokker-Planck and Langevin equations<a class="headerlink" href="#importance-sampling-fokker-planck-and-langevin-equations" title="Link to this heading">#</a></h2>
 <p>A stochastic process is simply a function of two variables, one is the time,
 the other is a stochastic variable <span class="math notranslate nohighlight">\(X\)</span>, defined by specifying</p>
 <ul class="simple">
@@ -1729,7 +1737,7 @@ D= \frac{kT}{m\xi }
 <p>where we have used <span class="math notranslate nohighlight">\(\langle (\mathbf{r}(t)-\mathbf{r}_{0})^{2}\rangle =6Dt\)</span>.</p>
 </section>
 <section id="code-example-for-two-electrons-in-a-quantum-dots">
-<h2><span class="section-number">10.7. </span>Code example for two electrons in a quantum dots<a class="headerlink" href="#code-example-for-two-electrons-in-a-quantum-dots" title="Link to this heading">#</a></h2>
+<h2>Code example for two electrons in a quantum dots<a class="headerlink" href="#code-example-for-two-electrons-in-a-quantum-dots" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 2-electron VMC code for 2dim quantum dot with importance sampling</span>
@@ -1886,7 +1894,7 @@ D= \frac{kT}{m\xi }
 </div>
 </div>
 <section id="bringing-the-gradient-optmization">
-<h3><span class="section-number">10.7.1. </span>Bringing the gradient optmization<a class="headerlink" href="#bringing-the-gradient-optmization" title="Link to this heading">#</a></h3>
+<h3>Bringing the gradient optmization<a class="headerlink" href="#bringing-the-gradient-optmization" title="Link to this heading">#</a></h3>
 <p>The simple one-particle case in a harmonic oscillator trap</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2048,7 +2056,7 @@ D= \frac{kT}{m\xi }
 </section>
 </section>
 <section id="vmc-for-fermions-efficient-calculation-of-slater-determinants">
-<h2><span class="section-number">10.8. </span>VMC for fermions: Efficient calculation of Slater determinants<a class="headerlink" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants" title="Link to this heading">#</a></h2>
+<h2>VMC for fermions: Efficient calculation of Slater determinants<a class="headerlink" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants" title="Link to this heading">#</a></h2>
 <p>The potentially most time-consuming part is the
 evaluation of the gradient and the Laplacian of an <span class="math notranslate nohighlight">\(N\)</span>-particle  Slater
 determinant.</p>
@@ -2232,7 +2240,7 @@ out that differentiating the Slater determinant with respect
 to the coordinates of a single particle  <span class="math notranslate nohighlight">\(\mathbf{r}_i\)</span> changes only the
 <em>i</em>-th row of the corresponding Slater matrix.</p>
 <section id="the-gradient-and-the-laplacian">
-<h3><span class="section-number">10.8.1. </span>The gradient and the Laplacian<a class="headerlink" href="#the-gradient-and-the-laplacian" title="Link to this heading">#</a></h3>
+<h3>The gradient and the Laplacian<a class="headerlink" href="#the-gradient-and-the-laplacian" title="Link to this heading">#</a></h3>
 <p>The gradient and the Laplacian can therefore be calculated as follows:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -2388,7 +2396,7 @@ With the updating algorithm we need only to invert the Slater
 determinant matrix once. This can be done by standard LU decomposition methods.</p>
 </section>
 <section id="expectation-value-of-the-kinetic-energy">
-<h3><span class="section-number">10.8.2. </span>Expectation value of the kinetic energy<a class="headerlink" href="#expectation-value-of-the-kinetic-energy" title="Link to this heading">#</a></h3>
+<h3>Expectation value of the kinetic energy<a class="headerlink" href="#expectation-value-of-the-kinetic-energy" title="Link to this heading">#</a></h3>
 <p>The expectation value of the kinetic energy expressed in atomic units for electron <span class="math notranslate nohighlight">\(i\)</span> is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -2563,24 +2571,6 @@ need to do is to maintain the inverse matrix
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="cc.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">7. </span>The Coupled Cluster Method</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="gradientmethods.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">11. </span>Gradient Methods</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -2588,8 +2578,7 @@ need to do is to maintain the inverse matrix
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -2598,23 +2587,23 @@ need to do is to maintain the inverse matrix
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">10.1. Quantum Monte Carlo Motivation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">10.1.1. Quantum Monte Carlo: hydrogen atom</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">10.1.2. A simple Python code that solves the two-boson or two-fermion case in two-dimensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-motivation">Quantum Monte Carlo Motivation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-hydrogen-atom">Quantum Monte Carlo: hydrogen atom</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-simple-python-code-that-solves-the-two-boson-or-two-fermion-case-in-two-dimensions">A simple Python code that solves the two-boson or two-fermion case in two-dimensions</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">10.2. Quantum Monte Carlo: the helium atom</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-metropolis-algorithm">10.3. The Metropolis algorithm</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">10.4. Importance sampling</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-program-elements">10.5. Importance sampling, program elements</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">10.6. Importance sampling, Fokker-Planck and Langevin equations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">10.7. Code example for two electrons in a quantum dots</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bringing-the-gradient-optmization">10.7.1. Bringing the gradient optmization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-monte-carlo-the-helium-atom">Quantum Monte Carlo: the helium atom</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-metropolis-algorithm">The Metropolis algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">Importance sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-program-elements">Importance sampling, program elements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling-fokker-planck-and-langevin-equations">Importance sampling, Fokker-Planck and Langevin equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-example-for-two-electrons-in-a-quantum-dots">Code example for two electrons in a quantum dots</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bringing-the-gradient-optmization">Bringing the gradient optmization</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">10.8. VMC for fermions: Efficient calculation of Slater determinants</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">10.8.1. The gradient and the Laplacian</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">10.8.2. Expectation value of the kinetic energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vmc-for-fermions-efficient-calculation-of-slater-determinants">VMC for fermions: Efficient calculation of Slater determinants</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-and-the-laplacian">The gradient and the Laplacian</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expectation-value-of-the-kinetic-energy">Expectation value of the kinetic energy</a></li>
 </ul>
 </li>
 </ul>
@@ -2665,8 +2654,8 @@ By Morten Hjorth-Jensen
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
