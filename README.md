@@ -96,7 +96,7 @@ There are many excellent textbooks on many-body physics. In addition to to ourn 
 - Quantum computing
      - VQE and unitary CC, taught in FYS5419/9419
 - Time-dependent many-body theory
-- Applications to different systems like the electron gass, Lipkin model, Pairing model, infinite nuclear matter, and more
+- Applications to different systems like the electron gas, Lipkin model, Pairing model, infinite nuclear matter, and more
 
 
 
