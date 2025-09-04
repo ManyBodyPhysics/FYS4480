@@ -329,16 +329,13 @@
 
 % ----------------- author(s) -------------------------
 
-\author{Morten Hjorth-Jensen\inst{1,2}}
-\institute{Department of Physics and Center for Computing in Science Education, University of Oslo, Norway\inst{1}
-\and
-Department of Physics and Astronomy and Facility for Rare Isotope Beams, Michigan State University, USA\inst{2}}
-% ----------------- end author(s) -------------------------
+\author{Morten Hjorth-Jensen}
+\institute{Department of Physics and Center for Computing in Science Education, University of Oslo, Norway}
 
-\date{Week 36, September 2-6, 2024
+\date{Week 36, September 1-5, 2025
 % <optional titlepage figure>
 \ \\ 
-{\tiny \copyright\ 1999-2024, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license}
+{\tiny \copyright\ 1999-2025, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license}
 }
 
 \begin{frame}[plain,fragile]
@@ -353,9 +350,9 @@ Department of Physics and Astronomy and Facility for Rare Isotope Beams, Michiga
 \begin{enumerate}
 
  \item Thursday: Second quantization, operators in second quantization and diagrammatic representation
- \item \href{{https://youtu.be/KDzugYQabuY}}{Video of lecture}
+% \item \href{{https://youtu.be/KDzugYQabuY}}{Video of lecture}
 
- \item \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesSeptember5.pdf}}{Whiteboard notes}
+% \item \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesSeptember5.pdf}}{Whiteboard notes}
  \item Friday: Second quantization and Wick's theorem
 % o \href{{https://youtu.be/agI_pf7-iTY}}{Video of lecture}
 % o \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2023/LectureSeptember8.pdf}}{Whiteboard  notes}
@@ -365,7 +362,7 @@ Department of Physics and Astronomy and Facility for Rare Isotope Beams, Michiga
 \noindent
 \item Lecture Material: These slides, handwritten notes and	Szabo and Ostlund sections 2.3 and 2.4.
 
-\item \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2023/ExercisesWeek36.pdf}}{Third exercise set}
+\item \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2025/ExercisesWeek36.pdf}}{Third exercise set}
 \end{itemize}
 
 \noindent
@@ -992,6 +989,451 @@ Wick's theorem provides us with an algebraic method for easy determination of th
 \end{small}
 }
 
+
+
+
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+In a more compact notation (using $:AB\dots XZ:$ for normalordering and dropping hats for operators)
+\[
+ABCD =:ABCD: + \sum_{\text{singles}} :ABCD: + \sum_{\text{doubles}} :ABCD: + \cdots,
+\]
+and similarly for any longer string.
+
+In general, if $n$ is even the final term will be the full contraction (product of $n/2$ contraction pairs, yielding a c-number), and if $n$ is odd the last term will contain one unpaired operator (which remains in the normal-ordered form) . All possible distinct contraction pairings are included in the expansion, with appropriate sign factors for fermionic operators (each contraction effectively corresponds to commuting an annihilation past a creation operator).
+
+
+}
+\end{small}
+}
+
+
 \end{document}
 
 
+
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+  Base Case ($n=2$): For two operators the statement is directly verified by the definition of contraction. Given any two operators $A$ and $B$, we have 
+\[
+AB = :AB: + \big(AB - :AB:\big) = :AB: + AB.
+\]
+
+This is exactly Wick’s theorem for $n=2$, since there is only one possible contraction pair .
+
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+
+{\bf Inductive Hypothesis:} Assume Wick’s theorem holds for any product of $n-1$ operators. In other words, for any string $ABC \dots  E$ of $n-1$ operators, we can expand it as 
+\[
+ABC\cdots E = :ABC\cdots E: + \text{(terms with contractions)},
+\]
+
+where the contraction terms include all possible ways of contracting
+pairs among those $n-1$ operators (by the induction assumption).
+
+}
+\end{small}
+}
+
+
+
+\frame
+{
+\frametitle{Wick’s Theorem, Inductive Step ($n \to n+1$)}
+\begin{small}
+{\scriptsize
+
+Now consider a product of $n+1$ operators.
+
+We write it as
+\[
+A(B C \cdots E),
+\]
+where $A$ is the leftmost operator and $B\cdots E$ is the remaining product of $n$ operators to its right. We need to show $A B C \cdots E$ can be expanded in the required form.
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Wick’s Theorem, $A$ is a Creation Operator}
+\begin{small}
+{\scriptsize
+
+
+We distinguish two cases for the leftmost operator $A$: 
+\begin{itemize}
+\item In this case, $A$ commutes (or anticommutes) with all other creation operators and already stands to the left of any annihilation operators in the product. This means the entire product $A B C\cdots E$ is already normal-ordered, because $A$ being a creator does not disrupt the normal ordering of the $B\cdots E$ part . Moreover, any contraction involving $A$ would require an annihilation operator to its left, which cannot occur since $A$ is at the leftmost position. All contraction terms with $A$ therefore vanish . Thus, in this case Wick’s theorem holds trivially: $A,B,C\cdots E$ is already equal to its normal-ordered form (with no additional contraction terms needed).
+\end{itemize}
+}
+\end{small}
+}
+
+
+
+
+\frame
+{
+\frametitle{Wick’s Theorem, $A$ is an Annihilation Operator}
+\begin{small}
+{\scriptsize
+
+After swapping $A$ through one position, we get a sum of two terms:
+one term where $A$ and $X$ have been exchanged (contributing a factor
+$:A X:$) and one term where $A$ and $X$ are contracted
+(${A}^{\dagger}{X}^{\dagger}$) . We repeat this process, pushing $A$
+step by step to the right. Eventually $A$ reaches the far right, and
+the product becomes fully normal-ordered.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Wick’s Theorem, $A$ is an Annihilation Operator}
+\begin{small}
+{\scriptsize
+
+
+After swapping $A$ through one position, we get a sum of two terms:
+one term where $A$ and $X$ have been exchanged (contributing a factor
+$:A X:$) and one term where $A$ and $X$ are contracted
+(${A}^{\dagger}{X}^{\dagger}$) . We repeat this process, pushing $A$
+step by step to the right. Eventually $A$ reaches the far right, and
+the product becomes fully normal-ordered.
+
+}
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+Crucially, in doing so we have generated all terms where $A$ is
+contracted with one of the other operators. For each operator $X$ that
+$A$ passes, one contraction $A^{\dagger}X^{\dagger}$ is produced
+. Therefore, after $A$ has been moved through the entire string, we
+have:  One term where $A$ ends up on the far right and the product is
+completely normal-ordered ($N[A B C\cdots E] = :A B C\cdots E:$).  }
+\end{small}
+}
+
+
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+
+Plus additional terms, each containing one contraction between $A$ and
+some specific operator from ${B,\ldots,E}$, with the rest of the
+operators remaining normal-ordered . (If $A$ had to swap past $k$
+operators, $k$ such contraction terms will appear, accounting for $A$
+contracting with each of the $k$ operators to its right in the
+original order.)
+
+}
+\end{small}
+}
+
+
+
+
+
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+ At this point, $A B C\cdots E$ has been expressed as the sum of a fully normal-ordered term and all single-contraction terms involving $A$. Now we invoke the inductive hypothesis on the remaining $n$ operators (the string $B C\cdots E$): each of the terms above that still contains an $n$-operator product (normal-ordered or partially contracted) can be further expanded into normal-ordered plus contractions among $B,\ldots,E$. In practice, the normal-ordered term $:A B C\cdots E:$ is already in the desired form, and each term where $A$ is contracted with one $X$ becomes $A^{\dagger}X^{\dagger}$ times the expansion of the remaining $n-1$ operators.
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+ By the induction hypothesis, those remaining operators can be written as normal-ordered plus all their contractions. Thus each term with one contraction (involving $A$) will produce sub-terms with additional contractions among the other operators. Collecting all these contributions, we obtain exactly the full Wick expansion for $n+1$ operators: one fully normal-ordered term, plus every possible term with one contraction, two contractions, …, up to $n/2$ contractions (if $n+1$ is even, the maximum number of pairs is $\frac{n+1}{2}$, leaving one unpaired operator) . All terms generated align with the theorem’s statement, and no term is missing or overcounted.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+In summary, if $A$ is a creator the theorem is trivially satisfied, and if $A$ is an annihilator we generate all needed terms by commuting it through the string. This completes the induction step . Since the base case is true and the inductive step holds, Wick’s theorem is proven for bosonic operators in this formalism. The extension to fermionic operators follows the same induction, with careful bookkeeping of minus signs: each time two fermionic operators swap order, a sign flip occurs, which is exactly accounted for by the anticommutation relations and the definition of contraction for fermions . Thus, Wick’s theorem holds for both bosonic and fermionic creation/annihilation operators as an exact operator identity.
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+
+}
+\end{small}
+}
+\frame
+{
+\frametitle{Wick’s Theorem (Time-Independent) – Formal Proof in Many-Body Theory}
+\begin{small}
+{\scriptsize
+
+
+}
+\end{small}
+}
+
+
+
+
+
+
+
+
+
+Example: Illustration with Contraction Diagrams
+
+
+To see Wick’s theorem in action, consider a specific string of four operators $A,B,C,D$ (for instance, $A$ and $C$ could be annihilation operators, and $B$ and $D$ creation operators, in some many-body state basis). Wick’s theorem tells us that this product can be expanded into normal-ordered terms plus contracted terms. Below we illustrate two representative terms in this expansion, along with contraction diagrams:
+
+Diagram: A single contraction in the product $A,B,C,D$. Here $A$ (leftmost) is contracted with $B$ (next in sequence), indicated by the blue arc connecting them. This corresponds to the term $:!A^{\dagger},B^{\dagger},C,D!:$, in which $A$ and $B$ have been replaced by their contraction (a c-number) and the remaining operators $C D$ stay in normal order . Such terms are called “single contraction” terms and there are as many of them as ways to pick one pair out of four.
+
+Diagram: A double contraction (full contraction) for the product $A,B,C,D$. Here $A$ is contracted with $D$ (blue arc) and simultaneously $B$ is contracted with $C$ (red arc). This corresponds to the term $:!A^{\dagger},D^{\dagger},B^{\dagger},C^{\dagger}!:$, in which both pairs $(A,D)$ and $(B,C)$ are contracted and removed, leaving no operators – just the product of two c-numbers . This is one of the possible full contraction terms (for four operators there are three distinct ways to pair them up).
+
+Each contraction removes two operators from the normal-ordered product and contributes a scalar factor (such as a Kronecker delta $\delta_{ij}$ if $A=a_i$ and $B=a_j^\dagger$). Uncontracted operators in any term remain in normal order. By enumerating all possible contraction pairings (like those shown above) and summing the contributions, we reconstruct the original operator product $A B C D$ exactly. Wick’s theorem thus provides a powerful bookkeeping device: it guarantees that the sum of all these contracted terms equals the original product. This formalism is invaluable in many-body physics and quantum field theory, as it allows one to systematically evaluate operator products (or time-ordered products) by reducing them to sums of easier-to-evaluate normal-ordered terms and known contraction values (propagators or two-point correlators).
+
+Sources: The definition and proof are adapted from standard operator algebra approaches to Wick’s theorem , with contraction diagram examples for illustration. The full formal proof by induction and further details can be found in many-body theory texts .
+
+
+
+\section{Overview and Context}
+
+In many-body quantum mechanics and quantum field theory, one frequently encounters products of creation and annihilation operators that need to be simplified. \textbf{Wick's theorem} provides a powerful method to rewrite such operator products in terms of \emph{normal-ordered} forms plus all necessary correction terms (contractions). This theorem was first formulated by Gian Carlo Wick in 1950 as a systematic way to expand time-ordered products of field operators, greatly simplifying the derivation of Feynman's diagrammatic rules in perturbation theory [oai_citation:0‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=In%20a%20many%20particle%20theory,diagrammatic%20rules%20of%20perturbation%20theory). In essence, Wick's theorem allows one to reduce an arbitrary time-ordered product of operators into a sum of normal-ordered terms with certain pairs of operators replaced by $c$-numbers (these $c$-numbers are vacuum expectation values called \emph{contractions}). This reduction is extremely useful in many-body theory and quantum field theory [oai_citation:1‡en.wikipedia.org](https://en.wikipedia.org/wiki/Wick%27s_theorem#:~:text=Wick%27s%20theorem%20is%20a%20method,theory%20%20is%20%2052), since it factorizes higher $n$-point correlation functions into combinations of two-point functions (propagators) and thereby underpins diagrammatic expansions.
+
+Before presenting the formal statement and proof of Wick's theorem, we recall two key concepts: \emph{normal ordering} of operators and \emph{contractions}. We work in the operator formalism of second quantization, with a chosen reference state $|\Phi_0\rangle$ (often the vacuum or a many-body ground state) relative to which normal ordering is defined. Creation and annihilation operators will be denoted generically by symbols like $a^\dagger_i$ and $a_j$ (which may carry quantum labels or spacetime arguments). We assume these operators satisfy canonical (anti)commutation relations (bosonic or fermionic) so that their commutator or anticommutator yields a $c$-number (for example, $[a_i,\,a_j^\dagger] = \delta_{ij}$ for bosons, or $\{a_i,\,a_j^\dagger\} = \delta_{ij}$ for fermions [oai_citation:2‡en.wikipedia.org](https://en.wikipedia.org/wiki/Wick%27s_theorem#:~:text=bosonic%20%20operators%20satisfying%20the,280)). This property ensures that any out-of-order pair of creation/annihilation operators can be swapped at the cost of a well-defined $c$-number term. With these preliminaries in place, we now define normal ordering and contractions precisely.
+
+\section{Normal Ordering and Contractions}
+
+\subsection*{Normal-Ordered Operators}
+
+\noindent \textbf{Definition (Normal Ordering):} A product of operators is said to be \emph{normal ordered} (with respect to the reference state $|\Phi_0\rangle$) if all creation operators ($a^\dagger$) appear to the left of all annihilation operators ($a$) in the product [oai_citation:3‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=A%20product%20of%20operators%20is,right%20of%20the%20factors). Equivalently, in a normal-ordered string, no annihilation operator stands to the left of any creation operator. We denote the normal ordering of an operator product by enclosing it in colons. For example, given four operators, a normal-ordered arrangement would be written as 
+\[ : a_1^\dagger\, a_2^\dagger\, a_3\, a_4 : \,,\] 
+meaning $a_1^\dagger$ and $a_2^\dagger$ (creators) are placed to the left of $a_3$ and $a_4$ (annihilators). Normal ordering does \emph{not} otherwise alter the order among the creation operators themselves or among the annihilation operators themselves (it only reorders creation vs.~annihilation) [oai_citation:4‡imperial.ac.uk](https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/theoretical-physics/msc/current/qft/handouts/qftwickstheorem.pdf#:~:text=Equivalently%2C%20the%20normal%20order%20of,unchanged%20from%20the%20original%20product). For fermionic operators, each transposition needed to achieve the normal order contributes a factor of $(-1)$ (due to anticommutation) so that 
+\[ :a_{i_1}^\dagger a_{i_2}^\dagger \cdots a_{j_1} a_{j_2}\cdots : \;=\; (\pm 1)\,a_{i_1}^\dagger a_{i_2}^\dagger \cdots a_{j_1} a_{j_2}\cdots ,\] 
+with the sign equal to $(-1)^P$ where $P$ is the parity of the permutation required to move all $a^\dagger$'s to the left [oai_citation:5‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=). For bosonic operators, all such permutations commute (no sign change).
+
+The utility of normal ordering lies in the fact that the reference state $|\Phi_0\rangle$ (chosen so that $a_i|\Phi_0\rangle = 0$ for all annihilators $a_i$) has a very simple relationship with normal-ordered operators: any normal-ordered operator has zero expectation value in $|\Phi_0\rangle$.  In formula,
+\[ \langle \Phi_0|\, : \mathcal{O}:\, |\Phi_0\rangle = 0 \,, \] 
+for \emph{any} normal-ordered product $\mathcal{O}$ of creation and annihilation operators [oai_citation:6‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=In%20particular%2C%20a%20product%20of,ordered%20operator%20is%20always%20zero). This property holds because in a normal-ordered product, every term has at least one annihilation operator acting directly on the bra $\langle \Phi_0|$ (from the right) or one creation operator acting on the ket $|\Phi_0\rangle$ (from the left), yielding zero. Normal ordering thus isolates the ``interesting'' part of operator products (the part that contributes to nonzero vacuum correlators) from the trivial part that annihilates the reference state and gives zero expectation.
+
+Every arbitrary product of operators can be expressed as a sum of normal-ordered terms. In principle, one can achieve this by repeatedly commuting/anticommuting creation and annihilation operators to reorder them, at the cost of introducing $c$-number commutator/anticommutator terms along the way [oai_citation:7‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=It%20is%20clear%20that%20any,we%20need%20some%20technical%20tools). Doing this by brute force is tedious; Wick's theorem provides a systematic shortcut. The key idea is that each time one commutes an annihilation operator past a creation operator, one picks up a $c$-number (a contraction), effectively reducing the number of operators in the product by two [oai_citation:8‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=Wick%E2%80%99s%20theorem%20gives%20the%20practical,by%20two%20the%20operator%20content). We formalize this next by defining the notion of a contraction.
+
+\subsection*{Contractions}
+
+\noindent \textbf{Definition (Contraction):} Given two operators $A$ and $B$, their \emph{contraction}, denoted by $(A\,B)$ or sometimes $A^\bullet B^\bullet$, is defined as the $c$-number obtained by taking the difference between their ordinary product and their normal-ordered product [oai_citation:9‡en.wikipedia.org](https://en.wikipedia.org/wiki/Wick%27s_theorem#:~:text=For%20two%20operators%20Image%3A%20,define%20their%20contraction%20to%20be):
+\[ (A\,B) \;\equiv\; A\,B \;-\; :A\,B: \,. \]
+In other words, the contraction $(A\,B)$ is the $c$-number term that arises when one reorders $A$ and $B$ into the opposite order (placing any creation operator to the left of any annihilation operator). For canonical creation/annihilation operators, this $c$-number is just the (anti)commutator of $A$ and $B$. For example, if $A$ is an annihilation operator $a_i$ and $B$ a creation operator $a_j^\dagger$, then 
+\[ (a_i\, a_j^\dagger) \;=\; a_i\,a_j^\dagger \;-\; :a_i\,a_j^\dagger: \;=\; a_i\,a_j^\dagger - a_j^\dagger a_i \;=\; [a_i,\,a_j^\dagger] \,. \] 
+For bosons this equals $\delta_{ij}$, and for fermions $(a_i\,a_j^\dagger) = \{a_i,\,a_j^\dagger\} = \delta_{ij}$ as well (note the anticommutator in the fermion case) [oai_citation:10‡en.wikipedia.org](https://en.wikipedia.org/wiki/Wick%27s_theorem#:~:text=,1%7D) [oai_citation:11‡en.wikipedia.org](https://en.wikipedia.org/wiki/Wick%27s_theorem#:~:text=Suppose%20Image%3A%20,operators%20satisfying%20the%20%20280). If $A$ and $B$ are of the same type (both creation or both annihilation), then $:A B: = A B$ (they commute or anticommute without a $c$-number) so their contraction is zero [oai_citation:12‡en.wikipedia.org](https://en.wikipedia.org/wiki/Wick%27s_theorem#:~:text=Image%3A%20%7B%5Cdisplaystyle%20%7B%5Chat%20%7Ba%7D%7D_%7Bi%7D,mathopen%20%7B%3A%7D%7D%5C%2C%7B%5Chat%20%7Ba%7D%7D_%7Bi%7D%5E%7B%5Cdagger%20%7D%5C%2C%7B%5Chat%20%7Ba%7D%7D_%7Bj%7D%5C%2C%7B%5Cmathclose). Thus, only an annihilation operator paired with a creation operator can yield a nonzero contraction.
+
+More generally, in a string of operators, we define the contraction of two operators $A$ and $B$ \emph{within a larger product} as follows: First, bring $A$ and $B$ next to each other, reordering operators in between if necessary (and including any sign factors for fermions). Then replace the pair $A B$ by the $c$-number $(A B)$ and leave the rest of the operators in their places. The result is a term where $A$ and $B$ have been removed (contracted into a $c$-number) and all other operators remain in their original order. Equivalently, one can think of evaluating $A$ and $B$ as a contraction and then normal-ordering the remaining operators around that $c$-number [oai_citation:13‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=The%20following%20definition%20extends%20the,product%20of%20operators%20in%20between). For example, 
+\[ (A_1\,A_3)\; A_2 \;=\; A_1\,A_2\,A_3 \;-\; :A_1\,A_2\,A_3: \,, \] 
+where $A_1$ and $A_3$ are contracted while $A_2$ stays as an operator in between.
+
+An important property of contractions is that they directly correspond to expectation values in the reference state. Because $:A B:$ has zero expectation value in $|\Phi_0\rangle$, it follows that 
+\[ \langle \Phi_0|\,A\,B\,|\Phi_0\rangle \;=\; \langle \Phi_0|\,A B - :A B:\,|\Phi_0\rangle \;=\; (A B) \,. \] 
+In words, the contraction $(A B)$ is equal to the vacuum expectation value of the product $A B$ [oai_citation:14‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=The%20last%20term%20is%20a,a%20bracket%2C%20of%20two%20operators). For instance, using the vacuum $|0\rangle$, one has $(a_i\,a_j^\dagger) = \langle 0|\,a_i\,a_j^\dagger\,|0\rangle = \delta_{ij}$ (for bosons or fermions in an appropriate convention). In a time-dependent context, a \textit{time-ordered} contraction will similarly correspond to a two-point Green's function (propagator). 
+
+\subsection*{Time Ordering and Time-Ordered Contractions}
+
+In dynamical problems, operators carry time arguments (Heisenberg-picture or interaction-picture operators). The \textbf{time-ordering operator $T$} is defined such that it rearranges a product of time-dependent operators in order of descending time (later times to the left, earlier times to the right) [oai_citation:15‡imperial.ac.uk](https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/theoretical-physics/msc/current/qft/handouts/qftwickstheorem.pdf#:~:text=is%20unchanged%20from%20the%20original,T%20%10). For two operators $A(t)$ and $B(t')$, for example, one has:
+\[ 
+T\{A(t)\,B(t')\} \;=\; 
+\begin{cases}
+A(t)\,B(t'), & \text{if } t > t', \\
+\pm\,B(t')\,A(t), & \text{if } t' > t ~,
+\end{cases} 
+\] 
+where the $\pm$ is $+$ for bosonic operators and $-$ for fermionic operators (the minus sign accounts for exchanging two fermions). In operator notation this can be written using the Heaviside step function $\Theta$: 
+\[ T\{A(t) B(t')\} = \Theta(t-t')\,A(t)B(t') \pm \Theta(t'-t)\,B(t')A(t) \,. \]
+
+We can now combine time-ordering with the earlier notions. A \emph{time-ordered contraction} (often called a $T$-contraction) between two operators $A(t_i)$ and $B(t_j)$ is defined analogously as 
+\[ (A(t_i)\,B(t_j))_T \;\equiv\; T\{A(t_i)\,B(t_j)\} \;-\; :A(t_i)\,B(t_j): ~. \] 
+This is just the time-ordered product of $A$ and $B$ minus their normal-ordered product [oai_citation:16‡imperial.ac.uk](https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/theoretical-physics/msc/current/qft/handouts/qftwickstheorem.pdf#:~:text=A%20Contraction%20For%20bosonic%20fields%2C,%282). For bosonic fields, $T\{A(t) B(t')\} - :A(t) B(t'): = [A(t),\,B(t')]$ (weighted by the appropriate $\Theta$-function for time ordering), whereas for fermionic fields it would be $T\{A B\} - :A B: = -\{A,\,B\}$ with a sign. In either case, $(A\,B)_T$ yields the two-point function (propagator) of $A$ and $B$ in the reference state. For example, if $a_i(t)$ annihilates a particle in state $i$ at time $t$ and $a_j^\dagger(t')$ creates one in state $j$ at time $t'$, then 
+\[ (a_i(t)\,a_j^\dagger(t'))_T \;=\; \langle \Phi_0|\,T\{a_i(t)\,a_j^\dagger(t')\}\,|\Phi_0\rangle ~, \] 
+which is the time-ordered two-point Green's function $G_{ij}(t-t')$ for the free (or reference) theory. In the special case of the vacuum $|0\rangle$ and creation/annihilation operators of free particles, $(a_i(t)\,a_j^\dagger(t'))_T$ would equal $\delta_{ij}\,\Theta(t-t')\,e^{-i\omega (t-t')}$ (for bosons, or include a minus sign for fermions as appropriate), but we will not need the explicit form here---only the fact that $T$-contractions are known $c$-number functions.
+
+We are now ready to state Wick's theorem in its general (time-ordered) form.
+
+\section{Wick's Theorem (Time-Ordered Form)}
+
+Consider any product of $n$ time-dependent operators $A_1(t_1) A_2(t_2)\cdots A_n(t_n)$, arranged inside a time-ordering $T\{\cdots\}$. Wick's theorem states that this time-ordered product can be expanded into a sum of normal-ordered products with all possible contractions among the operators. More formally:
+
+\medskip
+\noindent \textbf{Wick's Theorem (with Time-Ordering):} *For any collection of field operators (or creation/annihilation operators) $A_1(t_1), A_2(t_2), \ldots, A_n(t_n)$, the time-ordered product can be expressed as* 
+\begin{equation}\label{Wick-expansion}
+T\{A_1(t_1)\,A_2(t_2)\cdots A_n(t_n)\} \;=\; :A_1(t_1)\,A_2(t_2)\cdots A_n(t_n): \;+\; \sum_{\text{1 contraction}} :(\!A_i A_j\!)_T\,A_{others}: 
+\;+\; \sum_{\text{2 contractions}} :(\!A_i A_j\!)_T(\!A_k A_\ell\!)_T\,A_{others}: \;+\; \cdots 
+\end{equation}
+*That is, the result is the sum of all terms in which one takes an even number of pairwise $T$-contractions among the $A$'s (including the possibility of zero contractions), with each contraction replaced by its $c$-number value and the remaining operators written in normal order* [oai_citation:17‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=For%20the%20time,The%20statement%20is). Each term in the expansion contains a certain number $m$ of contractions (with $0 \le m \le \lfloor n/2 \rfloor$), and $n-2m$ operators that remain uncontracted, which are arranged in normal order. The first term (with $m=0$) is just the fully normal-ordered product with no contractions. The next term (with one contraction) has one pair of operators contracted and the rest normal-ordered, and so on. If $n$ is even, the final term in the sum is a product of $n/2$ contractions (and no remaining operators); if $n$ is odd, the final term will have one unpaired operator in normal order, which will vanish if we take the expectation value in $|\Phi_0\rangle$ (since a normal-ordered string with a single annihilator or creator gives zero expectation) [oai_citation:18‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=The%20first%20sum%20runs%20on,see%20examples) [oai_citation:19‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=double%20contractions%2C%20and%20so%20on,see%20examples).
+
+Each distinct way of choosing $m$ pairs of operators to contract yields one term in the sum. In practice, one can think of Wick's theorem as saying: "Take all possible ways of contracting pairs of operators inside the time-ordered product. For each such pairing, write a term where those pairs are replaced by their contraction (a $c$-number), and the remaining uncontracted operators are written in normal order (and remain in the time-ordered sequence). Sum over all such terms." It is understood that if any contraction is between two operators that originally have specific times $t_i$ and $t_j$, the contraction itself carries a step-function enforcing the time-order ($T$-contraction). 
+
+Wick's theorem applies under the condition that the reference state $|\Phi_0\rangle$ is such that the contractions are well-defined $c$-numbers (this is true for the vacuum or any fixed Slater determinant, etc., as long as the commutators/anticommutators of the creation/annihilation operators give $c$-numbers). It is an operator identity, meaning it holds as an equality of operators (not just inside matrix elements) for the specified class of operators. Each contraction reduces the number of operators by two, so the expansion terminates after at most $n/2$ contractions when all operators have been pairwise contracted [oai_citation:20‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=Wick%E2%80%99s%20theorem%20gives%20the%20practical,by%20two%20the%20operator%20content). For instance, if $n$ is odd, one cannot contract all operators, and there will be terms with one operator remaining; if one is interested in vacuum expectation values, those terms will not contribute, but the operator identity itself is still valid (it can be applied even off-vacuum).
+
+To illustrate the structure with a small $n$, Wick's theorem for $n=2$ gives:
+\[ T\{A_1 A_2\} = :A_1 A_2: + (\!A_1 A_2\!)_T ~, \] 
+which is just the definition of the $T$-contraction. For $n=3$:
+\[ T\{A_1 A_2 A_3\} = :A_1 A_2 A_3: + (\!A_1 A_2\!)_T :A_3: + (\!A_1 A_3\!)_T :A_2: + (\!A_2 A_3\!)_T :A_1: ~, \] 
+where each term has one contraction and the remaining operator in normal order. If we take the expectation value $\langle \Phi_0|\cdots|\Phi_0\rangle$, the fully normal-ordered term vanishes, as do any terms with a single uncontracted operator (since $\langle \Phi_0| :A_i: |\Phi_0\rangle = 0$), leaving only terms with either 0 or 2 contractions contributing. This yields $\langle \Phi_0|T\{A_1 A_2 A_3\}|\Phi_0\rangle = 0$ if $n=3$ (all contributions cancel or vanish).
+
+Wick's theorem thus provides a complete reduction of time-ordered products to sums of normal products. We now proceed to prove this theorem by induction.
+
+\section{Proof of Wick's Theorem (Operator Induction)}
+
+We prove Wick's theorem for time-ordered products by induction on the number of operators $n$. The outline is: (1) establish the base cases ($n=1$ and $n=2$); (2) assume the theorem holds for $n$ operators; (3) prove it for $n+1$ operators by inserting one additional operator and using the induction hypothesis along with the (anti)commutation relations.
+
+\subsection*{Base Cases: $n=1$ and $n=2$.} 
+
+For $n=1$, the statement is trivial: $T\{A_1(t_1)\} = A_1(t_1) = :A_1(t_1):$ since a single operator is by itself already normal-ordered. There are no contractions possible for a single operator.
+
+For $n=2$, consider $T\{A_1(t_1) A_2(t_2)\}$. Without loss of generality, suppose $t_1 \ge t_2$ so that time-ordering yields $T\{A_1(t_1)A_2(t_2)\} = A_1(t_1)\,A_2(t_2)$ (if the times were opposite, the argument is similar up to exchanging labels and a minus sign for fermions). Now, if $A_1$ and $A_2$ are already in normal order (i.e. if $A_1$ is a creation and $A_2$ an annihilation, or both are creation, or both annihilation), then $A_1 A_2$ is itself normal-ordered and there is no contraction term. If they are not in normal order (meaning $A_1$ is an annihilation operator and $A_2$ a creation operator so that $A_1$ stands to the left of $A_2$), then we can rewrite $A_1 A_2 = :A_1 A_2: + (A_1 A_2)$ by definition of contraction. In either case, we have 
+\[ T\{A_1 A_2\} = :A_1 A_2: + (A_1 A_2)_T ~, \] 
+which is exactly Wick's theorem for two operators. Here $(A_1 A_2)_T$ equals $(A_1 A_2)$ if $t_1>t_2$ (or $(A_2 A_1)$ if $t_2>t_1$ with a sign for fermions), consistent with the definition of $T$-contraction.
+
+Thus the property holds for $n=1,2$. Now assume it holds for any product of $n$ operators, and consider a product of $n+1$ operators.
+
+\subsection*{Inductive Step: From $n$ to $n+1$.}
+
+Assume that for any set of $n$ operators $A_1(t_1),\dots,A_n(t_n)$, we have the expansion given by Wick's theorem (equation \eqref{Wick-expansion}). We will show it then holds for a product of $n+1$ operators $A_1(t_1) A_2(t_2)\cdots A_n(t_n) A_{n+1}(t_{n+1})$.
+
+Let us label the operators such that $t_{n+1}$ is the \emph{latest time} among all $t_1,\dots,t_{n+1}$ (i.e. $A_{n+1}(t_{n+1})$ occurs last chronologically). Then by definition of time-ordering, $A_{n+1}$ will appear at the \emph{leftmost end} of the time-ordered product. We can therefore factor it out of the time-ordering of the rest:
+\[ 
+T\{A_1(t_1)\cdots A_n(t_n)\,A_{n+1}(t_{n+1})\} \;=\; A_{n+1}(t_{n+1}) \;T\{A_1(t_1)\cdots A_n(t_n)\} ~,
+\] 
+since $A_{n+1}$ has a later time than all other operators [oai_citation:21‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=The%20proof%20is%20by%20induction,omit%20the%20specification%20of%20time). (For fermions, $T$ ensures that any required minus sign for permuting $A_{n+1}$ past the others by time is already accounted for by the definition of $T$, so we can safely pull it out to the left without extra sign.) Now we apply the induction hypothesis to the $T\{A_1\cdots A_n\}$ part, which by assumption can be expanded as a sum of normal-ordered terms with contractions. Denote the full Wick expansion (right-hand side of \eqref{Wick-expansion}) for $n$ operators by $\mathcal{W}_n = \sum_{m=0}^{\lfloor n/2\rfloor} \sum_{\text{contractions}} :A_1\cdots A_n:$ (with $m$ contractions in each term). Then:
+\[ A_{n+1}\;T\{A_1\cdots A_n\} \;=\; A_{n+1}\;\mathcal{W}_n ~. \]
+
+We now need to reorder $A_{n+1}$ (which sits to the left of the normal-ordered terms in $\mathcal{W}_n$) so that each term is fully normal-ordered including $A_{n+1}$. Let us consider an arbitrary term in $\mathcal{W}_n$: it has the form 
+\[ A_{n+1}\, :A_{i_1}\cdots A_{i_{n-2m}}: \,(A_{j_1}A_{k_1})_T\,(A_{j_2}A_{k_2})_T\cdots (A_{j_m}A_{k_m})_T ~, \] 
+where $:A_{i_1}\cdots A_{i_{n-2m}}:$ is a normal-ordered string of the $n-2m$ uncontracted operators in that term, and $(A_{j_r}A_{k_r})_T$ are the $m$ contraction $c$-numbers in that term (each contraction pairing two of the original $n$ operators). The $c$-number contractions commute with all operators, so we can focus on reordering $A_{n+1}$ with the normal-ordered operator string $:A_{i_1}\cdots A_{i_{n-2m}}:$.
+
+There are two cases to consider for each term, depending on the nature of $A_{n+1}$:
+
+- If $A_{n+1}$ is a \textbf{creation operator}, then $A_{n+1}$ should appear to the left of all annihilation operators in the final normal order. Since it is currently at the far left, and the string $:A_{i_1}\cdots A_{i_{n-2m}}:$ already has all its creation operators on the left side, $A_{n+1}$ will simply join those creation operators at the leftmost position. Importantly, $A_{n+1}$ commutes or anticommutes with any creation operators in the string (being itself a creation, two creators either commute or anticommute without $c$-number), and thus does not produce any new contraction when brought next to them (their commutator is zero). It may anticommute past them (introducing a sign for fermions if necessary), but no $c$-number term arises because like-type operators do not contract. Therefore, if $A_{n+1}$ is a creation operator, we end up with 
+\[ A_{n+1}\, :A_{i_1}\cdots A_{i_{n-2m}}: \;=\; :A_{n+1}\,A_{i_1}\cdots A_{i_{n-2m}}:~, \] 
+with no extra contraction terms generated. 
+
+- If $A_{n+1}$ is an \textbf{annihilation operator}, then in the final normal order it must appear to the \emph{right} of all creation operators present in the string $:A_{i_1}\cdots A_{i_{n-2m}}:$. In the current product $A_{n+1}\, :A_{i_1}\cdots A_{i_{n-2m}}:$, $A_{n+1}$ is to the left of a normal-ordered string which has, say, all its creation operators $C_1, C_2, \ldots, C_r$ at the left and annihilation operators $D_1, D_2, \ldots, D_s$ at the right. So we have 
+\[ A_{n+1}\, :(\underbrace{C_1 \cdots C_r}_{\text{creations}}\;\underbrace{D_1 \cdots D_s}_{\text{annihilations}}): ~. \] 
+Here $A_{n+1}$ is an annihilation operator $D_0$ that precedes creators $C_1,\dots,C_r$. We must move $D_0$ (which is $A_{n+1}$) to the right of all the $C$'s to achieve normal order. We do this step by step: commute or anticommute $D_0$ to the right of $C_1$, then $C_2$, and so on until $D_0$ is immediately to the right of $C_r$. Each time we swap $D_0$ past a creation operator $C_i$, we use the (anti)commutation relation. For bosons $[D_0, C_i] = (D_0\,C_i)$, for fermions $\{D_0, C_i\} = 0$ (since one is creation, one annihilation, the anticommutator equals the contraction). In either case, the exchange produces a $c$-number term equal to the contraction $(D_0\,C_i)_T$. After swapping $D_0$ past $C_i$, $D_0$ moves one position to the right and a term $(D_0\,C_i)_T$ is generated. Repeating this for each of $C_1,\dots,C_r$, we have:
+\[ 
+A_{n+1}\,:\!(C_1\cdots C_r\,D_1\cdots D_s)\!: \;=\; :\!(C_1\cdots C_r\,D_0\,D_1\cdots D_s)\!: \;+\; \sum_{i=1}^r (D_0\,C_i)_T \;:\!(C_1\cdots \widehat{C_i}\cdots C_r\,D_1\cdots D_s)\!: ~,
+\] 
+where $D_0 = A_{n+1}$ now sits to the right of all $C$'s (and hence $D_0$ is in its correct normal position, rightmost among creation operators). The notation $\widehat{C_i}$ means that $C_i$ is omitted from the normal-ordered string (because it has been contracted with $D_0$). Each term in the summation corresponds to contracting $A_{n+1}$ with one of the creation operators $C_i$ from the $n$-operator term. These contraction terms $(D_0 C_i)_T = (A_{n+1} C_i)_T$ are $c$-numbers, and the remaining operators form a normal-ordered string with $C_i$ removed (since it was contracted) and $D_0$ now in the annihilator part of the ordering. After this reordering, $A_{n+1}$ (which is $D_0$) is properly placed in normal order at the right of all creation operators. Note that no further reordering is needed with the other annihilation operators $D_1,\dots,D_s$ in the string, because $D_0$ is a like-type operator with them and commutes or anticommutes without generating additional contractions (moving an annihilator past another annihilator yields no $c$-number). Thus, we obtain:
+\[ A_{n+1}\, :A_{i_1}\cdots A_{i_{n-2m}}: \;=\; :A_{i_1}\cdots A_{i_{n-2m}}\,A_{n+1}: \;+\; \sum_{C_i\,\in\,\{\text{creators in term}\}} (A_{n+1}\,C_i)_T \;:\!A_{i_1}\cdots \widehat{C_i}\cdots A_{i_{n-2m}}\!: ~. \]
+
+In summary, whether $A_{n+1}$ is a creator or annihilator, the process of normal ordering $A_{n+1}$ with a given term from $\mathcal{W}_n$ yields a fully normal-ordered term $:A_1\cdots A_{n+1}:$ (with $A_{n+1}$ inserted in the correct position), plus additional terms where $A_{n+1}$ is contracted with one of the previously uncontracted operators from that term [oai_citation:22‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=Now%20use%20Lemma%20IV,each). Repeating this reasoning for \emph{every} normal-ordered term in $\mathcal{W}_n$, we generate:
+
+1. One term which is completely normal-ordered with no new contraction: this is $:A_1 A_2 \cdots A_n A_{n+1}:$, coming from either the case where $A_{n+1}$ was a creation (no reordering needed) or an annihilation that we successfully moved to the far right.
+
+2. Terms where $A_{n+1}$ is contracted with one of the $n$ original operators. Each such single contraction yields a term of the form 
+\[ (A_{n+1}\,A_j)_T :A_1 \cdots \widehat{A_j}\cdots A_n: ~, \] 
+for some $j$ (with $A_j$ removed from the normal-ordered string and replaced by the contraction). These account for all possible ways to contract $A_{n+1}$ with one of the original $A_j$.
+
+3. Terms where $A_{n+1}$ is not only contracted with one operator, but the original term from $\mathcal{W}_n$ itself had some number $m$ of contractions among $A_1,\dots,A_n$. In those cases, the contractions from the original term remain, and $A_{n+1}$ may either be uncontracted or contracted with one of the $n-2m$ unpaired operators from that term. In effect, if the original term had $m$ contractions, after including $A_{n+1}$ and contracting it with one of the unpaired operators, the new term will have $m+1$ contractions. If $A_{n+1}$ remains uncontracted in that term, then the term has $m$ contractions but now $n+1-2m$ operators (including $A_{n+1}$) in normal order.
+
+Collecting all contributions, we see that we obtain exactly the Wick expansion for $n+1$ operators: all terms with 0, 1, ..., up to $\lfloor (n+1)/2\rfloor$ contractions appear exactly once. The fully normal-ordered term ($0$ contractions) is the first case above. The terms with exactly 1 contraction come partly from contracting $A_{n+1}$ with one of the original $A_j$ while the original had 0 contractions, and partly from the scenario where the original $n$-operator term had 1 contraction and $A_{n+1}$ remains uncontracted (these two scenarios actually produce distinct sets of terms that together exhaust all 1-contraction possibilities for $n+1$ operators). Similarly, terms with $m$ contractions for the $n+1$ case arise either from an $m$-contraction original plus $A_{n+1}$ uncontracted, or an $(m-1)$-contraction original plus $A_{n+1}$ contracted with one of those unpaired operators. In each case the contributions match up and sum to the correct coefficient for each term in the final expansion [oai_citation:23‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=Now%20use%20Lemma%20IV,each) [oai_citation:24‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=It%20is%20,%E2%88%8E). We will not belabor the bookkeeping further, but the important point is that no term is missed and no term is overcounted: the induction procedure generates each distinct contraction pattern exactly once. Therefore, the resulting sum is precisely 
+\[ T\{A_1 A_2 \cdots A_n A_{n+1}\} = :A_1 A_2 \cdots A_n A_{n+1}: + \sum_{\text{all possible contractions}} (\cdots)_T \,:\cdots:~, \] 
+which is the Wick's theorem formula for $n+1$ operators. This completes the inductive proof. $\square$
+
+\medskip
+
+In summary, the induction shows that if the theorem holds for $n$ operators, inserting one more operator $A_{n+1}$ with the latest time $t_{n+1}$ yields a correct expansion for $n+1$ operators. Thus, by induction, Wick's theorem is proven for all $n$. The proof crucially relied on the facts that (i) time-ordering allows us to isolate one operator either on the far left or far right of the product, and (ii) commutation or anticommutation of that operator through a normal-ordered string yields only $c$-number contraction terms, systematically accounting for each new pairing.
+
+\section{Examples of Applying Wick's Theorem}
+
+We now illustrate Wick's theorem with a few examples, demonstrating how vacuum expectation values of operator products are computed by reducing to two-point functions.
+
+\subsection*{Example 1: Two-Point Function (Propagator)}
+
+As a simplest example, take a single creation and annihilation operator. Let $a_i(t)$ be an annihilation operator for state $i$ at time $t$, and $a_j^\dagger(t')$ a creation operator for state $j$ at time $t'$. The time-ordered product of these two is 
+\[ T\{a_i(t)\,a_j^\dagger(t')\} = :a_i(t)\,a_j^\dagger(t'): + (a_i(t)\,a_j^\dagger(t'))_T ~.\] 
+If we evaluate this between the vacuum, $\langle 0|\cdots|0\rangle$, the normal-ordered part vanishes (since $\langle 0|:a_i(t)a_j^\dagger(t'):|0\rangle=0$) and we obtain 
+\[ \langle 0|\,T\{a_i(t)\,a_j^\dagger(t')\}\,|0\rangle = (a_i(t)\,a_j^\dagger(t'))_T ~. \]
+But as noted earlier, this contraction is by definition the two-point correlator: $(a_i(t)\,a_j^\dagger(t'))_T = \langle 0|\,T\{a_i(t)\,a_j^\dagger(t')\}\,|0\rangle$. In practice, for free particles this equals $\delta_{ij}\,\Theta(t-t')$ times a phase (for bosons) or the same with an extra minus sign for fermions, reflecting that a particle created at $t'$ is found at a later time $t$ in the same state $j=i$ [oai_citation:25‡imperial.ac.uk](https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/theoretical-physics/msc/current/qft/handouts/qftwickstheorem.pdf#:~:text=A%20Contraction%20For%20bosonic%20fields%2C,%282). This simple case is essentially the definition of a propagator or Green's function.
+
+\subsection*{Example 2: Four-Operator Vacuum Expectation Value}
+
+Consider a product of four operators: two annihilations $a_i(t_1), a_j(t_2)$ and two creations $a_k^\dagger(t_3), a_l^\dagger(t_4)$, with times ordered (for instance) $t_1 > t_2 > t_3 > t_4$. We wish to compute the vacuum expectation $\langle 0| T\{a_i(t_1)\,a_j(t_2)\,a_k^\dagger(t_3)\,a_l^\dagger(t_4)\}|0\rangle$. Using Wick's theorem, we expand the time-ordered product into normal-ordered terms. There will be a number of terms, but most will vanish upon taking $\langle 0|...|0\rangle$ because they have uncontracted operators. The only surviving contributions will be those where all operators are paired in contractions (since any uncontracted creation or annihilation yields zero with the vacuum). Thus, effectively, the vacuum expectation value factorizes into a sum of products of two-point contractions.
+
+According to Wick's theorem, all possible distinct pairings of an annihilation with a creation contribute. In this case, the pairings can be: $a_i$ contracts with $a_k^\dagger$ and $a_j$ contracts with $a_l^\dagger$, or $a_i$ contracts with $a_l^\dagger$ and $a_j$ with $a_k^\dagger$. Graphically, we can draw contractions connecting $i$ to $k$ and $j$ to $l$, or $i$ to $l$ and $j$ to $k$. No other pairings are possible because an annihilation must contract with a creation. Therefore:
+\begin{equation*}
+\begin{split}
+\langle 0|\,T\{a_i(t_1)\,a_j(t_2)\,a_k^\dagger(t_3)\,a_l^\dagger(t_4)\}\,|0\rangle 
+&=\; (a_i(t_1)\,a_k^\dagger(t_3))_T\;\,(a_j(t_2)\,a_l^\dagger(t_4))_T \\
+&\quad\;\pm\; (a_i(t_1)\,a_l^\dagger(t_4))_T\;\,(a_j(t_2)\,a_k^\dagger(t_3))_T~,
+\end{split}
+\end{equation*}
+where the $\pm$ sign will be $+$ for bosonic operators and $-$ for fermionic operators. The minus sign for fermions arises because exchanging the roles of $a_k^\dagger$ and $a_l^\dagger$ (or equivalently exchanging two identical fermion operators during the pairing) entails a sign flip, meaning the second pairing is subtracted rather than added [oai_citation:26‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=where%20is%20the%20permutation%20,of%20the%20matrix%20%2C). Each contraction here is a two-point vacuum Green's function: for instance, $(a_i(t_1)\,a_k^\dagger(t_3))_T = \langle0|T\{a_i(t_1)\,a_k^\dagger(t_3)\}|0\rangle$, which would typically be nonzero only if $i=k$ (and similarly $(a_j(t_2)\,a_l^\dagger(t_4))_T$ is nonzero for $j=l$). So in more concrete terms, assuming orthonormal single-particle states, we have 
+\[ \langle 0|\,T\{a_i(t_1)\,a_j(t_2)\,a_k^\dagger(t_3)\,a_l^\dagger(t_4)\}\,|0\rangle 
+= \delta_{ik}\,\delta_{jl}\,\Theta(t_1-t_3)\Theta(t_2-t_4) \;\pm\; \delta_{il}\,\delta_{jk}\,\Theta(t_1-t_4)\Theta(t_2-t_3) ~, \] 
+where we inserted representative step-functions for time-ordering in the contractions (the exact time dependence will depend on the free propagators). The key point is that the four-point function has been expressed as a sum of products of two-point functions. The structure of the result for bosons is a symmetric sum (plus sign), whereas for fermions it is an antisymmetric combination (minus sign) – this corresponds to the fact that for bosons one sums over all Wick pairings (the resulting four-point function is like a \emph{permanent} of the two-point function matrix), while for fermions one sums with alternating sign (yielding a \emph{determinant}) [oai_citation:27‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=where%20is%20the%20permutation%20,of%20the%20matrix%20%2C). 
+
+This example explicitly shows how Wick's theorem enables the computation of higher-order correlators: the four-operator expectation value factorizes into either $\langle a_i a_k^\dagger\rangle\langle a_j a_l^\dagger\rangle \pm \langle a_i a_l^\dagger\rangle\langle a_j a_k^\dagger\rangle$. In diagrammatic language, these two terms correspond to the two distinct ways of connecting (contracting) the four external points into two propagators.
+
+\subsection*{Example 3: Wick's Theorem in Operator Algebra (Static Version)}
+
+For contrast, we give a simpler example in the static (equal-time) operator setting. Take four operators $b_1^\dagger, b_2^\dagger$ (creators) and $b_1, b_2$ (annihilators) with the reference state being the vacuum. Consider the unordered product $b_1^\dagger\,b_1\,b_2^\dagger\,b_2$. Let us apply Wick's theorem as an operator identity (the static version corresponds to the time-ordered formula without step functions, since all operators are at equal time). According to Wick's theorem (static form), we can write:
+\[ b_1^\dagger b_1\, b_2^\dagger b_2 \;=\; :b_1^\dagger b_1 b_2^\dagger b_2: \;+\; (b_1\,b_2^\dagger)\, :b_1^\dagger b_2: \;+\; (b_1^\dagger b_2)\, :b_1\,b_2^\dagger: \;+\; (b_1\,b_2^\dagger)\,(b_1^\dagger b_2)~. \] 
+Here $(b_1\,b_2^\dagger)$ is a contraction between $b_1$ and $b_2^\dagger$, and $(b_1^\dagger b_2)$ is a contraction between $b_1^\dagger$ and $b_2$. If $[b_i, b_j^\dagger] = \delta_{ij}$ (bosonic), then $(b_1\,b_2^\dagger)=0$ (since $i\ne j$) and $(b_1^\dagger b_2)=0$ as well, so most terms vanish and we simply get $b_1^\dagger b_1 b_2^\dagger b_2 = :b_1^\dagger b_1 b_2^\dagger b_2:$ in this case. However, if we take expectation in vacuum, only the fully contracted term survives anyway:
+\[ \langle 0|\,b_1^\dagger b_1\, b_2^\dagger b_2\,|0\rangle = (b_1\,b_2^\dagger)\,(b_1^\dagger b_2) ~,\] 
+which is nonzero only if those contractions themselves are nonzero. If we had instead $i=j$ somewhere, e.g. $\langle 0| b_1 b_1^\dagger |0\rangle$, Wick's theorem would recover the familiar result $b_1 b_1^\dagger = :b_1 b_1^\dagger: + (b_1 b_1^\dagger)$, and $\langle 0|b_1 b_1^\dagger|0\rangle = (b_1 b_1^\dagger)$ which equals 1 for bosons [oai_citation:28‡en.wikipedia.org](https://en.wikipedia.org/wiki/Wick%27s_theorem#:~:text=).
+
+These examples confirm that Wick's theorem correctly reproduces the known results: vacuum correlators of an even number of operators decompose into sums of products of two-point correlators (with appropriate symmetry factors). In general, Wick's theorem implies that all $n$-point functions (for $n$ even) are determined completely by the two-point function, a fact that is the foundation of Gaussian (free-particle) theories [oai_citation:29‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=) [oai_citation:30‡ar5iv.org](https://ar5iv.org/pdf/1710.09248#:~:text=). In many-body physics, this means that once we know the propagator or pair correlation $\langle \Phi_0|a_i(t)a_j^\dagger(t')|\Phi_0\rangle$, we can build up any higher-order Green's function by summing over Wick contractions. This dramatically simplifies calculations in perturbation theory and beyond.
