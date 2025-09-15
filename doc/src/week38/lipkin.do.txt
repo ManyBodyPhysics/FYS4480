@@ -1,0 +1,746 @@
+TITLE: Solution to exercises week 37 and 38, Lipkin model
+AUTHOR: Morten Hjorth-Jensen {copyright, 1999-present|CC BY-NC} at Department of Physics, University of Oslo
+DATE: March 5, 2025
+
+
+!split
+===== Lipkin model =====
+
+We will study a schematic model (the Lipkin model, see Nuclear
+Physics _62_ (1965) 188), for the interaction among  $2$ and more 
+fermions that can occupy two different energy levels.
+
+
+In project 1 we consider a two-fermion case and a four-fermion case.
+
+For four fermions, the case we consider in the examples  here, each levels has
+degeneration $d=4$, leading to different total spin values.  The two
+levels have quantum numbers $\sigma=\pm 1$, with the upper level
+having $2\sigma=+1$ and energy $\varepsilon_{1}= \varepsilon/2$. The
+lower level has $2\sigma=-1$ and energy
+$\varepsilon_{2}=-\varepsilon/2$. That is, the lowest single-particle
+level has negative spin projection (or spin down), while the upper
+level has spin up.  In addition, the substates of each level are
+characterized by the quantum numbers $p=1,2,3,4$.
+
+
+!split
+===== Four fermion case =====
+
+We define the single-particle states (for the four fermion case which we will work on here)
+!bt
+\[
+\vert u_{\sigma =-1,p}\rangle=a_{-p}^{\dagger}\vert 0\rangle
+\hspace{1cm}
+\vert u_{\sigma =1,p}\rangle=a_{+p}^{\dagger}\vert 0\rangle.
+\]
+!et
+The single-particle states span an orthonormal basis.
+
+!split
+===== Hamiltonian =====
+
+The Hamiltonian of the system is given by
+
+!bt
+\[
+\begin{array}{ll}
+\hat{H}=&\hat{H}_{0}+\hat{H}_{1}+\hat{H}_{2}\\
+&\\
+\hat{H}_{0}=&\frac{1}{2}\varepsilon\sum_{\sigma ,p}\sigma
+a_{\sigma,p}^{\dagger}a_{\sigma ,p}\\
+&\\
+\hat{H}_{1}=&\frac{1}{2}V\sum_{\sigma ,p,p'}
+a_{\sigma,p}^{\dagger}a_{\sigma ,p'}^{\dagger}
+a_{-\sigma ,p'}a_{-\sigma ,p}\\
+&\\
+\hat{H}_{2}=&\frac{1}{2}W\sum_{\sigma ,p,p'}
+a_{\sigma,p}^{\dagger}a_{-\sigma ,p'}^{\dagger}
+a_{\sigma ,p'}a_{-\sigma ,p}\\
+&\\
+\end{array}
+\]
+!et
+where $V$ and $W$ are constants. The operator 
+$H_{1}$ can move pairs of fermions
+while $H_{2}$ is a spin-exchange term. The latter
+moves a pair of fermions from a state $(p\sigma ,p' -\sigma)$ to a state
+$(p-\sigma ,p'\sigma)$.
+
+!split
+===== Quasispin operators =====
+
+We are going to rewrite the above Hamiltonian in terms of so-called  quasispin operators
+!bt
+\[
+\begin{array}{ll}
+\hat{J}_{+}=&\sum_{p}
+a_{p+}^{\dagger}a_{p-}\\
+&\\
+\hat{J}_{-}=&\sum_{p}
+a_{p-}^{\dagger}a_{p+}\\
+&\\
+\hat{J}_{z}=&\frac{1}{2}\sum_{p\sigma}\sigma
+a_{p\sigma}^{\dagger}a_{p\sigma}\\
+&\\
+\hat{J}^{2}=&J_{+}J_{-}+J_{z}^{2}-J_{z}\\
+&\\
+\end{array}
+\]
+!et
+We show here that these operators obey the commutation relations for angular momentum.
+
+
+!split
+===== Including the number operator =====
+
+We can in turn express $\hat{H}$ in terms of the above quasispin operators and the number operator
+!bt
+\[
+\hat{N}=\sum_{p\sigma}
+a_{p\sigma}^{\dagger}a_{p\sigma}.
+\]
+!et
+
+We have the following quasispin operators
+!bt
+\begin{align}
+J_{\pm} = \sum_p a_{p\pm}^\dagger a_{p\mp},
+label{eq:Jpm} \\
+J_{z} = \frac{1}{2}\sum_{p,\sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma},
+label{eq:Jz} \\
+J^{2} = J_+ J_- + J_z^2 - J_z,
+label{eq:J2}
+\end{align}
+!et
+and we want to compute the commutators
+!bt
+\[
+[J_z,J_\pm], \quad [J_+,J_-], \quad [J^2,J_\pm] \quad \text{og} \quad 
+[J^2,J_z].
+\]
+!et
+
+!split
+===== Angular momentum magics I =====
+Let us start with the first one and inserting for  $J_z$ and $J_\pm$ given by the equations (ref{eq:Jz}) and (ref{eq:Jpm}), respectively, we obtain
+!bt
+\begin{align*}
+[J_z,J_\pm] &= J_z J_\pm - J_\pm J_z \\
+%
+&= \left( \frac{1}{2}\sum_{p,\sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma} \right)
+\left( \sum_{p'} a_{p'\pm}^\dagger a_{p'\mp} \right) -
+\left( \sum_{p'} a_{p'\pm}^\dagger a_{p'\mp} \right)
+\left( \frac{1}{2}\sum_{p,\sigma} \sigma a_{p\sigma}^\dagger a_{p\sigma} \right) \\
+&= \frac{1}{2} \sum_{p,p',\sigma} \sigma \left( a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} - a_{p'\pm}^\dagger a_{p'\mp} a_{p\sigma}^\dagger a_{p\sigma} \right).
+\end{align*}
+!et
+
+!split
+===== Angular momentum magics II =====
+
+Using the commutation relations for the creation and annihilation operators
+!bt
+\begin{align}
+\{ a_l,a_k \} &= 0, label{eq:al,ak} \\
+\{ a_l^\dagger , a_k^\dagger \} &= 0, label{eq:ald,akd} \\
+\{ a_l^\dagger , a_k \} &= \delta_{lk}, label{eq:ald,ak}
+\end{align}
+!et
+in order to move the operators in the right product to be in the same order as those in the lefthand product
+!bt
+\begin{align*}
+[J_z,J_\pm] &= \frac{1}{2} \sum_{p,p',\sigma} \sigma \left(
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} -
+a_{p'\pm}^\dagger \left( \delta_{p' p} \delta_{\mp \sigma} - a_{p\sigma}^\dagger a_{p'\mp} \right) a_{p\sigma} \right) \\
+&= \frac{1}{2} \sum_{p,p',\sigma} \sigma \left(
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} -
+a_{p'\pm}^\dagger \delta_{p' p} \delta_{\mp \sigma} a_{p\sigma} +
+a_{p'\pm}^\dagger a_{p\sigma}^\dagger a_{p'\mp} a_{p\sigma} \right). \\
+\end{align*}
+!et
+
+!split
+===== Angular momentum magics III =====
+It  results in
+!bt
+\begin{align*}
+[J_z,J_\pm]
+&= \frac{1}{2} \sum_{p,p',\sigma} \sigma \left(
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} -
+a_{p'\pm}^\dagger \delta_{pp'} \delta_{\mp \sigma} a_{p\sigma} +
+a_{p\sigma}^\dagger a_{p'\pm}^\dagger a_{p\sigma} a_{p'\mp} \right) \\
+&= \frac{1}{2} \sum_{p,p',\sigma} \sigma \left(
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} -
+a_{p'\pm}^\dagger \delta_{pp'} \delta_{\mp \sigma} a_{p\sigma} +
+a_{p\sigma}^\dagger \left( \delta_{pp'} \delta_{\pm \sigma} - a_{p\sigma} a_{p'\pm}^\dagger \right) a_{p'\mp} \right) \\
+&= \frac{1}{2} \sum_{p,p',\sigma} \sigma \left(
+a_{p\sigma}^\dagger \delta_{pp'} \delta_{\pm \sigma} a_{p'\mp} -
+a_{p'\pm}^\dagger \delta_{pp'} \delta_{\mp \sigma} a_{p\sigma} \right). \\
+\end{align*}
+!et
+
+!split
+===== Angular momentum magics IV =====
+
+The last equality leads to
+!bt
+\begin{align*}
+[J_z,J_\pm] &= \frac{1}{2} \sum_p \left(
+(\pm 1) a_{p\pm}^\dagger a_{p\mp} - (\mp 1)
+a_{p\pm}^\dagger a_{p\mp} \right) =
+\pm \frac{1}{2} \sum_p \left(
+a_{p\pm}^\dagger a_{p\mp} + (\pm 1)
+a_{p\pm}^\dagger a_{p\mp} \right) \\
+&= \pm \sum_p a_{p\pm}^\dagger a_{p\mp} = \pm J_\pm,
+\end{align*}
+!et
+where the last results follows from comparing with Eq.~(ref{eq:Jpm}).
+
+!split
+===== Angular momentum magics V =====
+
+We can then continue with the next commutation relation, using Eq.~(ref{eq:Jpm}),
+!bt
+\begin{align*}
+[J_+,J_-] &= J_+ J_- - J_- J_+ \\
+&= \left( \sum_p a_{p'+}^\dagger a_{p-} \right)
+\left( \sum_{p'} a_{p'-}^\dagger a_{p'+} \right) -
+\left( \sum_{p'} a_{p'-}^\dagger a_{p'+} \right)
+\left( \sum_p a_{p+}^\dagger a_{p-} \right) \\
+&= \sum_{p,p'} \left(
+a_{p'+}^\dagger a_{p-} a_{p'-}^\dagger a_{p'+} -
+a_{p'-}^\dagger a_{p'+} a_{p+}^\dagger a_{p-} \right) \\
+&= \sum_{p,p'} \left(
+a_{p'+}^\dagger a_{p-} a_{p'-}^\dagger a_{p'+} -
+a_{p'-}^\dagger \left( \delta_{++} \delta_{pp'} -
+a_{p+}^\dagger a_{p'+} \right) a_{p-} \right) \\
+&= \sum_{p,p'} \left(
+a_{p'+}^\dagger a_{p-} a_{p'-}^\dagger a_{p'+} -
+a_{p'-}^\dagger \delta_{pp'} a_{p-} +
+a_{p'-}^\dagger a_{p+}^\dagger a_{p'+} a_{p-} \right) \\
+&= \sum_{p,p'} \left(
+a_{p'+}^\dagger a_{p-} a_{p'-}^\dagger a_{p'+} -
+a_{p'-}^\dagger \delta_{pp'} a_{p-} +
+a_{p+}^\dagger a_{p'-}^\dagger a_{p-} a_{p'+} \right) \\
+&= \sum_{p,p'} \left(
+a_{p'+}^\dagger a_{p-} a_{p'-}^\dagger a_{p'+} -
+a_{p'-}^\dagger \delta_{pp'} a_{p-} +
+a_{p+}^\dagger \left( \delta_{--} \delta_{pp'} -
+a_{p-} a_{p'-}^\dagger \right) a_{p'+} \right) \\
+&= \sum_{p,p'} \left(
+a_{p+}^\dagger \delta_{pp'} a_{p'+} -
+a_{p'-}^\dagger \delta_{pp'} a_{p-} \right), \\
+\end{align*}
+!et
+
+!split
+===== Angular momentum magics VI =====
+
+Which results in
+!bt
+\[
+[J_+,J_-] = \sum_p \left(
+a_{p+}^\dagger a_{p+} -
+a_{p-}^\dagger a_{p-} \right) = 2J_z,
+\]
+!et
+It is straightforward to show that
+!bt
+\[
+[J^2, J_\pm] = [J_+ J_- + J_z^2 - J_z, J_\pm] =
+[J_+ J_-, J_\pm] + [J_z^2, J_\pm] - [J_z, J_\pm].
+\]
+!et
+
+!split
+===== Angular momentum magics VII =====
+
+Using the relations
+!bt
+\begin{align}
+[AB,C] &= A[B,C] + [A,C]B, label{eq:ab,c} \\
+[A,BC] &= [A,B]C + B[A,C], label{eq:a,bc}
+\end{align}
+!et
+we obtain
+!bt
+\[
+[J^2, J_\pm] =
+J_+ [J_-,J_\pm] + [J_+,J_\pm] J_- + J_z [J_z,J_\pm] + [J_z,J_\pm] J_z - [J_z,J_\pm].
+\]
+!et
+
+!split
+===== Angular momentum magics VIII =====
+
+Finally, from the above it follows that
+!bt
+\begin{align*}
+[J^2, J_+] &= -2J_+ J_z + J_z [J_z,J_+] + [J_z,J_+] J_z - [J_z,J_+] \\
+&= -2J_+ J_z + J_z J_+ + J_+ J_z - J_+ \\
+&= -2J_+ J_z + J_+ + J_+ J_z + J_+ J_z - J_+ = 0,
+\end{align*}
+!et
+and
+!bt
+\begin{align*}
+[J^2, J_-] &= 2J_z J_- + J_z [J_z,J_-] + [J_z,J_-] J_z - [J_z,J_-] \\
+&= 2J_z J_- - J_z J_- - J_- J_z + J_- \\
+&= J_z J_- - (J_z J_- + J_-) + J_- = 0.
+\end{align*}
+!et
+
+!split
+===== Angular momentum magics IX =====
+
+Our last commutator is given by
+!bt
+\begin{align*}
+[J^2,J_z] &= [J_+ J_- + J_z^2 - J_z, J_z] \\
+&= [J_+ J_-, J_z] + [J_z^2, J_z] - [J_z, J_z] \\
+&= J_+ [J_-, J_z] + [J_+,J_z] J_- \\
+&= J_+ J_- - J_+ J_- = 0
+\end{align*}
+!et
+
+!split
+===== Angular momentum magics X =====
+
+Summing up we have
+!bt
+\begin{align}
+[J_z, J_\pm] &= \pm J_\pm, label{eq:kJzJpm} \\
+[J_+, J_-] &= 2J_z, label{eq:kJpJm} \\
+[J^2, J_\pm] &= 0, label{eq:kJ2Jpm} \\
+[J^2,J_z] &= 0, label{eq:kJ2Jz}
+\end{align}
+!et
+which are the standard commutation relations for angular (or orbital) momentum $L_\pm$, $L_z$ og $L^2$.
+
+!split
+===== Rewriting the Hamiltonian =====
+
+We wrote the above Hamiltonian as
+
+!bt
+\[
+H = H_0 + H_1 +H_2,
+\]
+!et
+with 
+!bt
+\[
+H_0 = \frac{1}{2} \varepsilon \sum_{p\sigma}\sigma a_{p\sigma}^{\dagger}a_{p\sigma},
+\]
+!et
+and
+!bt
+\[
+H_1 = \frac{1}{2} V \sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p'\sigma}^\dagger a_{p'-\sigma} a_{p-\sigma},
+\]
+!et
+and
+!bt
+\[
+H_{2} = \frac{1}{2} W \sum_{p,p',\sigma}a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p'\sigma}a_{p-\sigma}.
+\]
+!et
+
+!split
+===== Hamiltonian and angular momentum  magics I =====
+
+We will now rewrite the Hamiltonian in terms of the above quasi-spin operators and the number operator 
+!bt
+\begin{equation}
+N = \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma}.
+label{eq:N}
+\end{equation}
+!et
+Going through each term of the Hamiltonian and using the expressions for the quasi-spin operators we obtain
+!bt
+\begin{equation}
+H_0 = \varepsilon J_z.
+label{eq:H0ny}
+\end{equation}
+!et
+!split
+===== Hamiltonian and angular momentum  magics II =====
+
+Moving over to $H_1$ and using the anti-commutation relations (ref{eq:al,ak}) through (ref{eq:ald,ak}) we obtain
+!bt
+\begin{align*}
+H_1 &= \frac{1}{2} V \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p'\sigma}^\dagger a_{p'-\sigma} a_{p-\sigma} \\
+&= \frac{1}{2} V \sum_{p,p',\sigma}
+-a_{p\sigma}^\dagger a_{p'\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma} \\
+&= \frac{1}{2} V \sum_{p,p',\sigma}
+-a_{p\sigma}^\dagger \left( \delta_{pp'} \delta_{\sigma -\sigma} - a_{p-\sigma} a_{p'\sigma}^\dagger \right) a_{p'-\sigma} \\
+&= \frac{1}{2} V \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p-\sigma} a_{p'\sigma}^\dagger a_{p'-\sigma} \\
+\end{align*}
+!et
+
+!split
+===== Hamiltonian and angular momentum  magics III =====
+
+Rewriting the sum  over $\sigma$ we arrive at
+!bt
+\begin{align*}
+H_1 &= \frac{1}{2} V\sum_{p,p'}
+a_{p+}^\dagger a_{p-} a_{p'+}^\dagger a_{p'-} +
+a_{p-}^\dagger a_{p+} a_{p'-}^\dagger a_{p'+} \\
+&= \frac{1}{2} V \left[ \sum_p \left( a_{p+}^\dagger a_{p-} \right)
+\sum_{p'} \left( a_{p'+}^\dagger a_{p'-} \right) +
+\sum_p \left( a_{p-}^\dagger a_{p+} \right)
+\sum_{p'} \left( a_{p'-}^\dagger a_{p'+} \right) \right] \\
+&= \frac{1}{2} V \left[ J_+ J_+ + J_- J_- \right] = \frac{1}{2} V \left[ J_+^2 + J_-^2 \right] ,
+\end{align*}
+!et
+which leads to
+!bt
+\begin{equation}
+H_1 = \frac{1}{2} V \left( J_+^2 + J_-^2 \right).
+label{eq:H1ny}
+\end{equation}
+!et
+
+!split
+===== Hamiltonian and angular momentum  magics IV =====
+
+Finally, we rewrite the last term
+!bt
+\begin{align*}
+H_2 &= \frac{1}{2} W \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p'\sigma} a_{p-\sigma} \\
+&= \frac{1}{2} W \sum_{p,p',\sigma}
+-a_{p\sigma}^\dagger a_{p'-\sigma}^\dagger a_{p-\sigma} a_{p'\sigma} \\
+&= \frac{1}{2} W \sum_{p,p',\sigma}
+-a_{p\sigma}^\dagger \left( \delta_{pp'} \delta_{-\sigma -\sigma} -
+a_{p-\sigma} a_{p'-\sigma}^\dagger \right) a_{p'\sigma} \\
+&= \frac{1}{2} W \sum_{p,p',\sigma}
+-a_{p\sigma}^\dagger \delta_{pp'} a_{p'\sigma} +
+a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \\
+&= \frac{1}{2} W \left( -\sum_{p,\sigma}
+a_{p\sigma}^\dagger a_{p\sigma} +
+\sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma} \right) \\
+\end{align*}
+!et
+
+!split
+===== Hamiltonian and angular momentum  magics V =====
+
+Using the expression for the number operator we obtain
+!bt
+\begin{align*}
+\sum_{p,p',\sigma} a_{p\sigma}^\dagger a_{p-\sigma} a_{p'-\sigma}^\dagger a_{p'\sigma}
+&= \sum_{p,p'} a_{p+}^\dagger a_{p-} a_{p'-}^\dagger a_{p'+} +
+a_{p-}^\dagger a_{p+} a_{p'+}^\dagger a_{p'-} \\
+&= \sum_p \left( a_{p+}^\dagger a_{p-} \right)
+\sum_{p'} \left( a_{p'-}^\dagger a_{p'+} \right) +
+\sum_p \left( a_{p-}^\dagger a_{p+} \right)
+\sum_{p'} \left( a_{p'+}^\dagger a_{p'-} \right) \\
+&= J_+ J_- + J_- J_+,
+\end{align*}
+!et
+resulting in
+!bt
+\begin{equation}
+H_2 = \frac{1}{2} W \left( -N + J_+ J_- + J_- J_+ \right).
+label{eq:H2ny}
+\end{equation}
+!et
+We have thus expressed the Hamiltonian in term of the quasi-spin operators.
+Below, we will show how we can rewrite these expressions in terms of Pauli $X$, $Y$ and $Z$ matrices.
+
+!split
+===== Commutation relations for the Hamiltonian =====
+
+
+The above expressions can in turn be used to show that the Hamiltonian
+commutes with the various quasi-spin operators. This leads to quantum
+numbers which are conserved.  Let us first show that $[H,J^2]=0$,
+which means that $J$ is a so-called *good* quantum number and that the
+total spin is a conserved quantum number.
+
+We have
+!bt
+\begin{align*}
+[H,J^2] &= [H_0 + H_1 + H_2,J^2] \\
+&= [H_0,J^2] + [H_1,J^2] + [H_2,J^2] \\
+&= \varepsilon [J_z,J^2] + \frac{1}{2} V [J_+^2 + J_-^2,J^2] +
+\frac{1}{2} W [-N + J_+ J_- + J_- J_+,J^2]. \\
+\end{align*}
+!et
+
+!split
+===== Hamiltonian and commutators =====
+
+We have previously shown that
+!bt
+\[
+[H,J^2] = \frac{1}{2} V \left( [J_+^2,J^2] + [J_-^2,J^2] \right) +
+\frac{1}{2} W \left( -[N,J^2] + [J_+ J_-,J^2] + [J_- J_+, J^2] \right)
+\]
+!et
+Using that $[J_\pm,J^2] = 0$, it follows that $[J_\pm^2,J^2] = 0$. We can then see that $[J_+ J_-,J^2] = 0$ and $[J_- J_+, J^2] = 0$ which leads to
+!bt
+\begin{align*}
+[H,J^2] &= -\frac{1}{2} W [N,J^2] \\
+&= \frac{1}{2} W \left( -[N,J_+ J_-] - [N,J_z^2] + [N,J_z] \right) \\
+&= \frac{1}{2} W \left( -[N,J_+]J_- - J_+[N,J_-] - [N,J_z]J_z - J_z[N,J_z] + [N,J_z] \right).
+\end{align*}
+!et
+
+!split
+===== Including the number operator  =====
+
+Combining with the number operator we have
+!bt
+\begin{align*}
+[N,J_\pm] &= N J_\pm - J_\pm N \\
+&= \left( \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right)
+\left( \sum_{p'} a_{p'\pm}^\dagger a_{p'\mp} \right) -
+\left( \sum_{p'} a_{p'\pm}^\dagger a_{p'\mp} \right)
+\left( \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right) \\
+&= \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} -
+a_{p'\pm}^\dagger a_{p'\mp} a_{p\sigma}^\dagger a_{p\sigma} \\
+&= \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} -
+a_{p'\pm}^\dagger \left( \delta_{\mp \sigma} \delta_{pp'} - a_{p\sigma}^\dagger a_{p'\mp} \right) a_{p\sigma} \\
+&= \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} -
+a_{p'\pm}^\dagger \delta_{\mp \sigma} \delta_{pp'} a_{p\sigma} +
+a_{p'\pm}^\dagger a_{p\sigma}^\dagger a_{p'\mp} a_{p\sigma} \\
+&= \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} +
+a_{p\sigma}^\dagger a_{p'\pm}^\dagger a_{p\sigma} a_{p'\mp} -
+\sum_{p} a_{p\pm}^\dagger  a_{p\mp} \\
+&= \sum_{p,p',\sigma}
+a_{p\sigma}^\dagger a_{p\sigma} a_{p'\pm}^\dagger a_{p'\mp} +
+a_{p\sigma}^\dagger \left( \delta_{pp'} \delta_{\pm \sigma} -
+a_{p\sigma} a_{p'\pm}^\dagger \right) a_{p'\mp} -
+\sum_{p} a_{p\pm}^\dagger  a_{p\mp} \\
+&= \sum_p a_{p\pm}^\dagger a_{p\mp} -
+\sum_{p} a_{p\pm}^\dagger  a_{p\mp} = 0. \\
+\end{align*}
+!et
+
+!split
+===== Hamiltonian and angular momentum commutators =====
+
+We obtain then
+!bt
+\begin{align*}
+[N,J_z] &= N J_z - J_z N \\
+&= \left( \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right)
+\left( \frac{1}{2}\sum_{p',\sigma} \sigma a_{p'\sigma}^\dagger a_{p'\sigma} \right) -
+\left( \frac{1}{2}\sum_{p',\sigma} \sigma a_{p'\sigma}^\dagger a_{p'\sigma} \right)
+\left( \sum_{p,\sigma} a_{p\sigma}^\dagger a_{p\sigma} \right) \\
+&= \sum_{p,p',\sigma} 
+\sigma a_{p\sigma}^\dagger a_{p\sigma} a_{p'\sigma}^\dagger a_{p'\sigma} -
+\sigma a_{p'\sigma}^\dagger a_{p'\sigma} a_{p\sigma}^\dagger a_{p\sigma} = 0,
+\end{align*}
+!et
+which leads to
+!bt
+\begin{equation}
+[H,J^2] = 0,
+label{eq:kHJ2}
+\end{equation}
+!et
+and $J$ is a good quantum number.
+
+!split
+===== Constructing the Hamiltonian matrix for $J=2$ =====
+
+We start with the state (unique) where all spins point down
+!bt
+\begin{equation}
+\vert 2,-2\rangle = a_{1-}^{\dagger} a_{2-}^{\dagger}
+a_{3-}^{\dagger} a_{4-}^{\dagger} \vert 0\rangle
+label{eq:2,-2}
+\end{equation}
+!et
+which is a state with  $J_z = -2$ and $J = 2$. (we label the states as $\vert J,J_z\rangle$). For $J = 2$ we have the spin projections $J_z = -2,-1,0,1,2$.
+We can use the lowering and raising operators for spin in order to define the other states
+!bt
+\begin{align}
+J_+ \vert J,J_z\rangle &= \sqrt{J(J+1) - J_z(J_z + 1)} \vert J,J_z + 1\rangle,
+label{eq:J+ket} \\
+J_- \vert J,J_z\rangle &= \sqrt{J(J+1) - J_z(J_z - 1)} \vert J,J_z - 1\rangle.
+label{eq:J-ket}
+\end{align}
+!et
+
+!split
+===== Constructing the Hamiltonian matrix for the other states =====
+
+We can then construct all other states with $J=2$ using the raising operator
+$J_+$ on $\vert 2,-2\rangle$
+!bt
+\[
+J_+ \vert 2,-2\rangle = \sqrt{2(2+1) - (-2)(-2+1)} \vert 2,-2+1\rangle =\sqrt{6 - 2} \vert 2,-1\rangle = 2\vert 2,-1\rangle,
+\]
+!et
+which gives
+!bt
+\begin{align}
+\vert 2,-1\rangle &= \frac{1}{2} J_+ \vert 2,-2\rangle \notag \\
+&= \frac{1}{2} \sum_p a_{p+}^\dagger a_{p-} a_{1-}^{\dagger} a_{2-}^{\dagger}
+a_{3-}^{\dagger} a_{4-}^{\dagger} \vert 0\rangle \notag \\
+&= \frac{1}{2} \left(
+a_{1+}^{\dagger} a_{2-}^{\dagger} a_{3-}^{\dagger} a_{4-}^{\dagger} +
+a_{1-}^{\dagger} a_{2+}^{\dagger} a_{3-}^{\dagger} a_{4-}^{\dagger} +
+a_{1-}^{\dagger} a_{2-}^{\dagger} a_{3+}^{\dagger} a_{4-}^{\dagger} +
+a_{1-}^{\dagger} a_{2-}^{\dagger} a_{3-}^{\dagger} a_{4+}^{\dagger}
+\right) \vert 0\rangle. label{eq:2,-1}
+\end{align}
+!et
+
+!split
+===== Constructing the Hamiltonian matrix =====
+
+We can construct all the other states in the same way. That is
+!bt
+\[
+J_+ \vert 2,-1\rangle = \sqrt{2(2+1) - (-1)(-1+1)} \vert 2,-1+1\rangle = \sqrt{6} \vert 2,0\rangle,
+\]
+!et
+which results in
+!bt
+\begin{equation}
+\begin{aligned}
+\vert 2,0\rangle &= \frac{1}{\sqrt{6}} \left(
+a_{1+}^{\dagger} a_{2+}^{\dagger} a_{3-}^{\dagger} a_{4-}^{\dagger} +
+a_{1+}^{\dagger} a_{2-}^{\dagger} a_{3+}^{\dagger} a_{4-}^{\dagger} +
+a_{1+}^{\dagger} a_{2-}^{\dagger} a_{3-}^{\dagger} a_{4+}^{\dagger} +
+a_{1-}^{\dagger} a_{2+}^{\dagger} a_{3+}^{\dagger} a_{4-}^{\dagger} + \right. \\
+&\quad\,\, \left.
+a_{1-}^{\dagger} a_{2+}^{\dagger} a_{3-}^{\dagger} a_{4+}^{\dagger} +
+a_{1-}^{\dagger} a_{2-}^{\dagger} a_{3+}^{\dagger} a_{4+}^{\dagger} \right) \vert 0\rangle
+\end{aligned}
+label{eq:2,0}
+\end{equation}
+!et
+
+!split
+===== Constructing the Hamiltonian matrix, last two states =====
+
+The two remaining states are
+!bt
+\begin{equation}
+\vert2,1\rangle  = \frac{1}{2} \left(
+a_{1+}^{\dagger} a_{2+}^{\dagger} a_{3+}^{\dagger} a_{4-}^{\dagger} +
+a_{1+}^{\dagger} a_{2+}^{\dagger} a_{3-}^{\dagger} a_{4+}^{\dagger} +
+a_{1+}^{\dagger} a_{2-}^{\dagger} a_{3+}^{\dagger} a_{4+}^{\dagger} +
+a_{1-}^{\dagger} a_{2+}^{\dagger} a_{3+}^{\dagger} a_{4+}^{\dagger}
+ \right).
+label{eq:2,1}
+\end{equation}
+!et
+and
+!bt
+\begin{equation}
+\vert 2,2\rangle  = a_{1+}^{\dagger} a_{2+}^{\dagger} a_{3+}^{\dagger} a_{4+}^{\dagger} \vert 0\rangle.
+label{eq:2,2}
+\end{equation}
+!et
+
+
+!split
+===== Final Hamiltonian matrix =====
+These five states can in turn be used as computational basis states in
+order to define the Hamiltonian matrix to be diagonalized.
+The matrix elements are given by $\langle J,J_z \vert H \vert J',J_z' \rangle$.
+The
+Hamiltonian is hermitian and we obtain after all this labor of ours
+
+!bt
+\begin{equation}
+H_{J = 2} =
+\begin{bmatrix}
+-2\varepsilon & 0 & \sqrt{6}V & 0 & 0 \\
+0 & -\varepsilon + 3W & 0 & 3V & 0 \\
+\sqrt{6}V & 0 & 4W & 0 & \sqrt{6}V \\
+0 & 3V & 0 & \varepsilon + 3W & 0 \\
+0 & 0 & \sqrt{6}V & 0 & 2\varepsilon
+\end{bmatrix}
+label{eq:HJ=2}
+\end{equation}
+!et
+
+
+!split
+===== Comparing with standard diagonalization =====
+We can now select a set of parameters and diagonalize the above matrix. We select $\epsilon = 2$, $V = -1/3$, $W = -1/4$ and our matrix becoes
+!bt
+\[ H_{J=2}^{(1)} =
+\begin{bmatrix}
+-4 & 0 & -\sqrt{6}/3 & 0 & 0 \\
+0 & -2 - 3/4 & 0 & -1 & 0 \\
+-\sqrt{6}/3 & 0 & -1 & 0 & -\sqrt{6}/3 \\
+0 & -1 & 0 & 2 + -3/4 & 0 \\
+0 & 0 & -\sqrt{6}/3 & 0 & 4
+\end{bmatrix}, \]
+!et
+which gives the eigenvalue
+!bt
+\[ D = \begin{bmatrix}
+-4.21288 &  0 &  0 &  0 &  0 \\
+0 & -2.98607  & 0  & 0  & 0 \\
+0 &  0 & -0.91914  & 0  & 0 \\
+0 &  0 & 0   & 1.48607  & 0 \\
+0 &  0  & 0  & 0  & 4.13201
+\end{bmatrix}. \]
+!et
+The lowest state has an admixture of basis states given by
+!bt
+\[ \vert \psi_0\rangle = 0.96735\vert2,-2\rangle + 0.25221\vert 2,0\rangle + 0.02507\vert 2,2\rangle,
+\]
+!et
+with energy $E_0 = -4.21288$.
+!split
+===== Comparing with standard diagonalization, other parameters =====
+
+We can now change the parameters to
+$\varepsilon = 2$, $V = -4/3$, $W = -1$. Our matrix reads then
+!bt
+\[ H_{J=2}^{(2)} =
+\begin{bmatrix}
+-4 & 0 & -4\sqrt{6}/3 & 0 & 0 \\
+0 & -5 & 0 & -4 & 0 \\
+-4\sqrt{6}/3 & 0 & -4 & 0 & -4\sqrt{6}/3 \\
+0 & -4 & 0 & -1 & 0 \\
+0 & 0 & -4\sqrt{6}/3 & 0 & 4
+\end{bmatrix}, \]
+!et
+with the following eigenvalues
+!bt
+\[ D = \begin{bmatrix}
+-7.75122 &  0 &  0 &  0  & 0 \\
+0 & -7.47214  & 0  & 0  & 0 \\
+0 &  0  & -1.55581 &  0  & 0 \\
+0 &  0  & 0  & 1.47214  & 0 \\
+0 &  0  & 0  & 0  & 5.30704
+\end{bmatrix}. \]
+!et
+The new ground state (lowest state) has the following admixture of computational basis states
+!bt
+\[ \vert \psi_0\rangle = 0.64268\vert 2,-2\rangle + 0.73816\vert 2,0\rangle + 0.20515 \vert 2,2\rangle, \]
+!et
+with energy $E_0 = -7.75122$.
+
+
+!split
+===== Analysis =====
+For the first set of parameters, the likelihood for observing the
+system in the computational basis state $\vert 2,-2 \rangle$ is rather
+large. This is expected since the interaction matrix elements are
+smaller than the single-particle energies.  For the second case, with
+larger matrix elements, we see a much stronger mixing of the other
+states, again as expected due to the ratio of the interaction matrix
+elements and the single-particle energies.
+
+
