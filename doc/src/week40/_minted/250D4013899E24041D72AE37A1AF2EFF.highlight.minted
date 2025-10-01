@@ -1,0 +1,47 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k}{class}\PYG{+w}{ }\PYG{n+nc}{HartreeFock}\PYG{p}{:}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf+fm}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{num\PYGZus{}electrons}\PYG{p}{,} \PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}electrons} \PYG{o}{=} \PYG{n}{num\PYGZus{}electrons}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals} \PYG{o}{=} \PYG{n}{num\PYGZus{}orbitals}
+	\PYG{c+c1}{\PYGZsh{} You would need to replace these by proper integrals}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{h} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{rand}\PYG{p}{(}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{,} \PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} One\PYGZhy{}electron integrals}
+        \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{coulomb} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{rand}\PYG{p}{(}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{,} \PYG{n}{num\PYGZus{}orbitals}\PYG{p}{,} \PYG{n}{num\PYGZus{}orbitals}\PYG{p}{,} \PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} Two\PYGZhy{}electron integrals}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{build\PYGZus{}fock\PYGZus{}matrix}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{density\PYGZus{}matrix}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{fock\PYGZus{}matrix} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{h}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{(}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}\PYG{p}{:}
+            \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}\PYG{p}{:}
+                \PYG{n}{fock\PYGZus{}matrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]} \PYG{o}{+}\PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{density\PYGZus{}matrix} \PYG{o}{*} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{coulomb}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{]}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{fock\PYGZus{}matrix}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{build\PYGZus{}density\PYGZus{}matrix}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{coefficients}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{density\PYGZus{}matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}electrons}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{density\PYGZus{}matrix} \PYG{o}{+}\PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{outer}\PYG{p}{(}\PYG{n}{coefficients}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{n}{i}\PYG{p}{]}\PYG{p}{,} \PYG{n}{coefficients}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{n}{i}\PYG{p}{]}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{density\PYGZus{}matrix}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{diagonalize}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{fock\PYGZus{}matrix}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{energy}\PYG{p}{,} \PYG{n}{coefficients} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{eigh}\PYG{p}{(}\PYG{n}{fock\PYGZus{}matrix}\PYG{p}{)}
+        \PYG{k}{return} \PYG{n}{energy}\PYG{p}{,} \PYG{n}{coefficients}
+    \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{run}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,} \PYG{n}{max\PYGZus{}iter}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{tol}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}6}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{coeffs} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}electrons}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{density\PYGZus{}matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{,} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{iteration} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{max\PYGZus{}iter}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{fock\PYGZus{}matrix} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{build\PYGZus{}fock\PYGZus{}matrix}\PYG{p}{(}\PYG{n}{density\PYGZus{}matrix}\PYG{p}{)}
+            \PYG{n}{energies}\PYG{p}{,} \PYG{n}{coeffs} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{diagonalize}\PYG{p}{(}\PYG{n}{fock\PYGZus{}matrix}\PYG{p}{)}
+
+            \PYG{n}{new\PYGZus{}density\PYGZus{}matrix} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{build\PYGZus{}density\PYGZus{}matrix}\PYG{p}{(}\PYG{n}{coeffs}\PYG{p}{)}
+            \PYG{k}{if} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{norm}\PYG{p}{(}\PYG{n}{new\PYGZus{}density\PYGZus{}matrix} \PYG{o}{\PYGZhy{}} \PYG{n}{density\PYGZus{}matrix}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{n}{tol}\PYG{p}{:}
+                \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Converged in }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{iteration}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ iterations}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+                \PYG{k}{break}
+            \PYG{n}{density\PYGZus{}matrix} \PYG{o}{=} \PYG{n}{new\PYGZus{}density\PYGZus{}matrix}
+        \PYG{k}{return} \PYG{n}{energies}\PYG{p}{,} \PYG{n}{coeffs}
+\PYG{c+c1}{\PYGZsh{} Example usage}
+\PYG{k}{if} \PYG{n+nv+vm}{\PYGZus{}\PYGZus{}name\PYGZus{}\PYGZus{}} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZus{}\PYGZus{}main\PYGZus{}\PYGZus{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}
+    \PYG{n}{num\PYGZus{}electrons} \PYG{o}{=} \PYG{l+m+mi}{2}
+    \PYG{n}{num\PYGZus{}orbitals} \PYG{o}{=} \PYG{l+m+mi}{4}
+    \PYG{n}{hf} \PYG{o}{=} \PYG{n}{HartreeFock}\PYG{p}{(}\PYG{n}{num\PYGZus{}electrons}\PYG{p}{,} \PYG{n}{num\PYGZus{}orbitals}\PYG{p}{)}
+    \PYG{n}{energies}\PYG{p}{,} \PYG{n}{coefficients} \PYG{o}{=} \PYG{n}{hf}\PYG{o}{.}\PYG{n}{run}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Final energies:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{energies}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Final coefficients:}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{coefficients}\PYG{p}{)}
+
+
+\end{MintedVerbatim}
