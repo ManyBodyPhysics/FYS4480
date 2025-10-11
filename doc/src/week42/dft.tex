@@ -1,386 +1,0 @@
-!split
-===== Many-Electron Problem & Hohenberg–Kohn Theorems =====
-
-
-_Theorem I (HK1):_ For any many-electron system in an external potential $V_{\rm ext}(\mathbf{r})$, the potential is uniquely determined (up to an additive constant) by the ground-state electron density $n(\mathbf{r})$. Equivalently, the mapping $V_{\rm ext}(\mathbf{r}) \mapsto n(\mathbf{r})$ is one-to-one (for non-degenerate ground states) . This means no two different external potentials can yield the same ground-state density. As a corollary, the ground-state density $n(\mathbf{r})$ uniquely determines the full Hamiltonian (up to constant shift in energy) and thus all properties of the system .
-
-_Theorem II (HK2):_ There exists a universal functional $F[n]$ such that for any $N$-electron density $n(\mathbf{r})$, the energy can be written as
-!bt
-\[
-E[n] = F[n] + \int d^3r\,V_{\rm ext}(\mathbf{r})\,n(\mathbf{r}),
-\]
-!et
-and the true ground-state density minimizes this energy functional. In other words,
-!bt
-\[
-F[n] = T[n] + V_{\rm int}[n],
-\]
-!et
-is a universal functional (the same for all systems, independent of $V_{\rm ext}$), and for the correct ground-state density $n_0(\mathbf{r})$, $E[n_0]$ is the global minimum of $E[n]$ . The minimum value equals the ground-state energy $E_0$.
-
-_Corollary:_ The functional $E[n]$ is sufficient to obtain the exact ground-state energy and density . Excited states, however, are not obtained from this ground-state functional and must be accessed by other means (e.g. time-dependent DFT or other methods).
-
-!split
-===== Discussion: Consequences of HK Theorems =====
-
-DFT exists in principle: HK1 establishes that the ground-state density is as fundamental as the wavefunction – it encapsulates all the information needed to determine the system’s Hamiltonian and thus all ground-state observables. This is a remarkable reduction: instead of a complicated wavefunction $\Psi$, we can work with $n(\mathbf{r})$.
-Energy as a functional of density: HK2 guarantees an energy functional $E[n]$ exists. However, the theorems themselves do not provide an explicit form for $F[n] = T[n] + V_{\rm int}[n]$. They are existence theorems. The challenge of DFT (and much of this course) is how to approximate $F[n]$ in practice, especially the many-body terms hidden in it.
-Variational principle: Given HK2, one can variationally obtain the ground state: if we had the exact $E[n]$ functional, minimizing $E[n]$ with respect to $n(\mathbf{r})$ (subject to $\int n(\mathbf{r}) d^3r = N$) yields the true ground-state density and energy. In formal terms, $\delta {E[n] - \mu(\int n - N)} / \delta n(\mathbf{r}) = 0$ leads to a condition $\frac{\delta E[n]}{\delta n(\mathbf{r})}\big|_{n=n_0} = \mu$ (constant Fermi level $\mu$ for the ground state).
-Proof sketch of HK Theorem I: It’s instructive to see why two different potentials cannot give the same density. Suppose $V_{\rm ext}^{(1)}(\mathbf{r})$ and $V_{\rm ext}^{(2)}(\mathbf{r})$ yield the same ground-state density $n(\mathbf{r})$ but different ground-state wavefunctions $\Psi^{(1)}$ and $\Psi^{(2)}$. Let $E^{(1)}$ and $E^{(2)}$ be their ground-state energies. Without loss of generality, assume $E^{(1)} < E^{(2)}$. Then, using $\Psi^{(2)}$ in Hamiltonian 1: $E^{(1)} < \langle \Psi^{(2)}|\hat{H}^{(1)}|\Psi^{(2)}\rangle = \langle \Psi^{(2)}|\hat{H}^{(2)}|\Psi^{(2)}\rangle + \int [V_{\rm ext}^{(1)}(\mathbf{r})-V_{\rm ext}^{(2)}(\mathbf{r})],n(\mathbf{r}),d^3r = E^{(2)} + \int [V_{\rm ext}^{(1)}-V_{\rm ext}^{(2)}] n(\mathbf{r})$ . Similarly, exchanging 1↔2 leads to $E^{(2)} < E^{(1)} + \int [V_{\rm ext}^{(2)}-V_{\rm ext}^{(1)}] n(\mathbf{r})$ . Adding these two inequalities yields $E^{(1)} + E^{(2)} < E^{(1)} + E^{(2)}$, a contradiction. Thus $V_{\rm ext}^{(1)}$ and $V_{\rm ext}^{(2)}$ cannot produce the same $n(\mathbf{r})$. This proves the uniqueness (HK1).
-Domain and $v$-representability: Not every arbitrary $n(\mathbf{r})$ is a valid ground-state density of some physical $V_{\rm ext}$ (this is the issue of $v$-representability). HK theorems assume $n(\mathbf{r})$ comes from some ground state of a Hamiltonian. Modern proofs (Levy–Lieb constrained search) circumvent some $v$-representability issues by considering minimization over all wavefunctions yielding a density $n$.
-Implications: The ground-state energy can be obtained in principle by minimizing $E[n]$. However, without an expression for $F[n]$, one cannot perform this minimization in practice. Enter the Kohn–Sham approach (see below), which provides a clever way to approximate $F[n]$ using orbitals. 
-
-!split
-===== Example: Thomas–Fermi Approximation (Historical Perspective) =====
-
-Before rigorous DFT, the Thomas–Fermi (TF) model (1927) was an early density-based theory. It modeled the kinetic energy of electrons in a homogeneous way: T_{\rm TF}[n] = \frac{3}{10}(3\pi^2)^{2/3} \int n^{5/3}(\mathbf{r})\,d^3r\,, and the electron–electron interaction via a Hartree term $E_{\rm H}[n] = \frac{e^2}{2}\int d^3r,d^3r’ ,\frac{n(\mathbf{r}),n(\mathbf{r}’)}{|\mathbf{r}-\mathbf{r}’|}$. The total TF energy functional: E_{\rm TF}[n] = T_{\rm TF}[n] + E_{\rm H}[n] + \int V_{\rm ext} n(\mathbf{r})\,d^3r\,. Minimizing $E_{\rm TF}[n]$ for atoms gives a rough electron density profile. However, TF theory neglects shell structure and chemical bonding entirely (no exchange or true fermionic kinetic energy oscillations).
-Significance: TF theory does not produce bound molecules (it predicts atoms just barely unbound) , indicating that the simplistic functional misses important physics (exchange and quantum oscillations). Nonetheless, it was a foundation that showed the promise of using $n(\mathbf{r})$ and inspired the development of DFT.
-Modern DFT vs. TF: The Kohn–Sham method can be viewed as incorporating the missing quantum effects by using an effective single-particle approach (coming next). In effect, Kohn–Sham splits $F[n]$ into a large known part (non-interacting kinetic energy + Hartree) and a smaller unknown remainder (exchange-correlation) that can be approximated.
-Preview of next lecture: How can we find the correct density without knowing the exact $F[n]$? The answer is the Kohn–Sham scheme, which introduces a fictitious non-interacting system that reproduces the same density. This yields tractable equations for orbitals, which, when solved self-consistently, give the ground-state density and energy.
-
-!split
-===== Kohn–Sham Formalism, the ansatz =====
-
-
-Challenge: The HK theorems ensure an energy functional exists but don’t tell us its form. Direct use of $E[n]$ is impractical without approximations for $F[n] = T[n] + V_{\rm int}[n]$. Early attempts (like Thomas–Fermi) were too crude. We need a more accurate scheme to handle the kinetic and interaction energies.
-Kohn–Sham idea (1965): Instead of trying to directly approximate the many-body kinetic energy $T[n]$ for interacting electrons, Kohn and Sham proposed to replace the real interacting system by an auxiliary non-interacting system of electrons that yields the same density $n(\mathbf{r})$ as the true system  . This fictitious system is easier to solve (since non-interacting electrons just occupy orbitals).
-We introduce $N$ single-particle orbitals ${\psi_i(\mathbf{r})}$ (for $i=1,\dots,N$ for a spin-unpolarized system; we will generalize to spin later) such that n(\mathbf{r}) = \sum_{i=1}^N |\psi_i(\mathbf{r})|^2\,, where each $\psi_i(\mathbf{r})$ is an orbital in the auxiliary system  . We assume these $N$ orbitals can be chosen as orthonormal and occupy the lowest $N$ energy levels of some effective single-particle Hamiltonian.
-Non-interacting kinetic energy: We can exactly compute a kinetic energy for these orbitals: T_s[n] \equiv T_{\rm eff}[n] = -\frac{\hbar^2}{2m} \sum_{i=1}^N \int \psi_i^*(\mathbf{r})\,\nabla^2\,\psi_i(\mathbf{r})\,d^3r\,, which is the kinetic energy of non-interacting electrons with density $n(\mathbf{r})$ . $T_s[n]$ is generally not equal to the true kinetic energy $T[n]$ of the interacting system, but it will be the major part of it.
-Decomposing the energy functional: We then write the total energy functional as E[n] = T_s[n] + E_{\rm H}[n] + E_{\rm xc}[n] + \int V_{\rm ext}(\mathbf{r})\,n(\mathbf{r})\,d^3r\,. Here $E_{\rm H}[n] = \frac{1}{2}\int!\int \frac{n(\mathbf{r}),n(\mathbf{r’})}{|\mathbf{r}-\mathbf{r’}|} d^3r,d^3r’$ is the classical Hartree (Coulomb) energy of the electron distribution, and $E_{\rm xc}[n]$ is defined as the exchange–correlation energy, which by construction includes all the many-body effects not captured by $T_s$ and $E_{\rm H}$【28†match】 (see below for formal definition).
-Essentially, $E_{\rm xc}[n]$ is a correction term: E_{\rm xc}[n] \equiv (T[n] - T_s[n]) + (V_{\rm int}[n] - E_{\rm H}[n])\,, i.e. it contains the difference between the true kinetic energy and the non-interacting kinetic energy plus the difference between the true electron–electron interaction energy and the simple Hartree term . In this way, if $E_{\rm xc}[n]$ were known exactly, DFT would be exact. All approximation difficulty is shoved into $E_{\rm xc}$. 
-
-!split
-===== Derivation of the Kohn–Sham Equations (Variational Method) =====
-
-We now minimize the energy functional $E[n]$ with respect to the orbitals $\psi_i(\mathbf{r})$, subject to the constraint that $\int |\psi_i|^2 = 1$ (orthonormality for different $i$). This is equivalent to minimizing w.r.t. $n(\mathbf{r})$ but using the orbital representation ensures $n(\mathbf{r})$ is $v$-representable by some non-interacting system.
-The Kohn–Sham energy functional (including all terms) can be written as: E[n] = T_s[n] + \int V_{\rm ext}(r)\,n(r)\,dr + E_{\rm H}[n] + E_{\rm xc}[n]\,, where we treat $E_{\rm H}$ and $E_{\rm xc}$ as explicit functionals of $n$ (and thus implicit of ${\psi_i}$). For brevity, denote E_{\rm other}[n] \equiv \int V_{\rm ext} n\,dr + E_{\rm H}[n] + E_{\rm xc}[n]\,.
-We impose orthonormality via Lagrange multipliers $\epsilon_j$ (which will turn out to be the orbital energies). The Euler–Lagrange equation for minimizing $E[{\psi_i}] = T_s[{\psi_i}] + E_{\rm other}[n]$ is: \frac{\delta}{\delta \psi_i^(r)} \Big\{ T_s[\{\psi\}] + E_{\rm other}[n] - \sum_{j}\epsilon_j (\langle\psi_j|\psi_j\rangle - 1)\Big\} = 0\,, for each $i$. Varying $\psi_i^$ yields: \frac{\delta T_s}{\delta \psi_i^(r)} + \int d^3r’\, \frac{\delta E_{\rm other}}{\delta n(r’)} \frac{\delta n(r’)}{\delta \psi_i^(r)} = \epsilon_i\,\psi_i(r)\,. Now, $\delta T_s/\delta \psi_i^* = -\frac{\hbar^2}{2m}\nabla^2 \psi_i(r)$ (like a kinetic operator acting on $\psi_i$), and $\frac{\delta E_{\rm other}}{\delta n(r’)} = V_{\rm ext}(r’) + \frac{\delta E_{\rm H}}{\delta n(r’)} + \frac{\delta E_{\rm xc}}{\delta n(r’)}$.
-Note $\frac{\delta E_{\rm H}}{\delta n(r’)} = \int d^3r’’, \frac{n(r’’)}{|r’-r’’|} = V_{\rm H}(r’)$, the Hartree potential, and by definition $\frac{\delta E_{\rm xc}}{\delta n(r’)} = V_{\rm xc}(r’)$, the exchange–correlation potential. Also, $\frac{\delta n(r’)}{\delta \psi_i^*(r)} = \psi_i(r)\delta(r-r’)$ (since $n = \sum_j |\psi_j|^2$). So the variational equation becomes: -\frac{\hbar^2}{2m}\nabla^2\psi_i(r) + \Big[V_{\rm ext}(r) + V_{\rm H}(r) + V_{\rm xc}(r)\Big]\psi_i(r) = \epsilon_i\, \psi_i(r)\,. This is the Kohn–Sham equation  , which has the form of a one-particle Schrödinger equation: \hat{H}{\rm KS}\psi_i(r) = \epsilon_i \psi_i(r)\,, where $\hat{H}{\rm KS} = -\frac{\hbar^2}{2m}\nabla^2 + V_{\rm eff}(r)$ and V_{\rm eff}(r) = V_{\rm ext}(r) + V_{\rm H}n + V_{\rm xc}n\,. This effective potential $V_{\rm eff}(r)$ depends on the density $n(r)$ through $V_{\rm H}$ and $V_{\rm xc}$ .
-We have obtained a set of $N$ coupled one-particle equations. The couplings are implicit: all orbitals $\psi_i$ feel the same $V_{\rm eff}[n]$, and $V_{\rm eff}$ in turn depends on all $\psi_i$ via $n(r) = \sum_{j}|\psi_j|^2$. Thus, the KS equations must be solved self-consistently. 
-
-!split
-===== Interpreting the Kohn–Sham Equations =====
-
-Self-consistent field (SCF): The KS equations $(-\frac{\hbar^2}{2m}\nabla^2 + V_{\rm eff}n)\psi_i = \epsilon_i\psi_i$ look like independent-particle Schrödinger equations. However, $V_{\rm eff}(r)$ depends on $n(r)$, which in turn depends on all ${\psi_i}$. Solving them requires a self-consistent cycle: guess a density (or orbitals) $\rightarrow$ compute $V_{\rm eff}$ $\rightarrow$ solve for new $\psi_i$ $\rightarrow$ update $n(r)$ $\rightarrow$ repeat until convergence. (We will detail this algorithm in Lecture 4.)
-Exchange–correlation potential: $V_{\rm xc}(r) = \delta E_{\rm xc}/\delta n(r)$ plays a central role. It includes all many-body effects such as exchange (Pauli exclusion) and electron correlation. In practice, $E_{\rm xc}[n]$ must be approximated. But if $E_{\rm xc}$ were known exactly, $V_{\rm xc}(r)$ ensures that the KS orbitals yield the correct $n(r)$ and energy.
-Total energy expression: Once the KS equations are solved for the orbitals and eigenvalues, one can compute the total energy as E[n] = \sum_{i=1}^N \epsilon_i \;-\; \frac{1}{2}\int d^3r\, V_{\rm H}(r)\,n(r)\;+\; E_{\rm xc}[n] \;-\; \int d^3r\, n(r)\,V_{\rm xc}(r)\,. This formula corrects for the fact that $\sum_i \epsilon_i$ counts the Hartree energy and $E_{\rm xc}$ contributions in a non-double-counting way . It can be derived from the variation result and ensures adding $V_{\rm xc}$ term did not overcount those energies.
-Physical meaning of $\epsilon_i$: The KS eigenvalues $\epsilon_i$ do not strictly equal the true excitation energies of the system (except in special cases). They are Lagrange multipliers to enforce orbital orthonormality. However, the highest occupied KS eigenvalue $\epsilon_{\rm HOMO}$ (for exact XC) equals the negative of the ionization energy by Janak’s theorem and the Koopmans’ theorem analogue in DFT. Also, differences $\epsilon_{i}-\epsilon_{j}$ often resemble quantum excitation energies (and in practice KS band structures often qualitatively match measured band structures, with notable systematic errors like band gap underestimation – more in Lecture 5).
-Spin-generalization: Real systems have electron spin. Spin-DFT (or LSDA) extends KS to two densities: $n_\uparrow(r)$ and $n_\downarrow(r)$ for spin-up and spin-down electrons. The HK theorems generalize to spin densities, and one defines $E[n_\uparrow,n_\downarrow]$ with exchange-correlation functional $E_{\rm xc}[n_\uparrow,n_\downarrow]$. In practice, one often uses local spin-density approximation (LSDA) where $E_{\rm xc}$ depends on $n_\uparrow$ and $n_\downarrow$ locally. The KS equations split for each spin channel with their own $V_{\rm xc}^\uparrow$ and $V_{\rm xc}^\downarrow$. Exchange energy, for example, is computed separately for each spin as it involves like-spin correlations .
-Summary: The Kohn–Sham formulation reduces the interacting $N$-electron problem to $N$ one-electron equations, provided we have a good approximation for $E_{\rm xc}[n]$. This was a monumental shift – it allows using basis sets and algorithms from one-particle quantum mechanics (like plane waves, etc.) to handle many-electron systems with reasonable cost. 
-
-!split
-===== Example: Hydrogen and Helium in Kohn–Sham DFT =====
-
-One-electron system (H atom): Consider a single hydrogen atom (one electron in the Coulomb potential of a proton). In this case, the KS approach is exact: if $N=1$, there is no electron–electron repulsion. The KS equation becomes $[-\frac{\hbar^2}{2m}\nabla^2 + V_{\rm ext}(r)]\psi_1 = \epsilon_1 \psi_1$, which is just the real Schrödinger equation for hydrogen. The ground-state density is $n(r)=|\psi_{1s}(r)|^2$. Here, $V_{\rm H}=0$ (no two electrons) and the exact $E_{\rm xc}$ for one electron is zero (no exchange or correlation needed for a single electron). Indeed, $V_{\rm xc}(r)=0$ in this case. The KS orbital $\psi_{1s}(r)$ is the true 1s orbital, and $\epsilon_{1s} = -13.6$ eV equals the ionization energy. This illustrates that for one-electron cases, DFT can be made exact with trivial XC functional.
-Two-electron system (He atom): The helium atom (two electrons in 1s orbital) is a simple case with electron–electron interaction. The exact ground-state energy of He is about $-79.0$ eV. A Hartree–Fock calculation (which includes exchange exactly but no true correlation) yields about $-77.5$ eV (missing the small correlation energy). Kohn–Sham DFT with a reasonable approximation (like the simplest LSDA) typically gives an energy around $-79$ eV, very close to the exact, illustrating that DFT can capture correlation effects efficiently through the XC functional. The KS orbitals in He end up similar to the HF 1s orbital; $V_{\rm xc}(r)$ for helium (within LDA) is a negative potential in the shell region that effectively mimics the inter-electron repulsion reduction.
-Molecule example (H$_2$): In the H$_2$ molecule, two electrons form a covalent bond. KS DFT at the LDA or GGA level can predict a reasonable H–H bond length and binding energy (with small errors, e.g. LDA often slightly overbinds). The two 1s electrons are put into KS orbitals (bonding and anti-bonding). The KS HOMO–LUMO gap is not exactly the true H$_2$ excitation energy but is related. We will revisit how different functionals perform for molecules in Lecture 5.
-These simple examples show that Kohn–Sham’s division of the energy (and inclusion of an approximate $E_{\rm xc}$) can recover a large portion of the missing many-body effects. The accuracy depends on the quality of $E_{\rm xc}[n]$. We now turn to exploring common choices for $E_{\rm xc}$ in the next lecture.
-
-!split
-===== Exercises: Kohn–Sham Derivations and Concepts ====
-
-Derive the KS Equations: Starting from the energy functional $E[{\psi_i}] = T_s[{\psi}] + \int V_{\rm ext} n,dr + E_{\rm H}[n] + E_{\rm xc}[n]$ with the constraint $\langle \psi_i|\psi_j\rangle = \delta_{ij}$, perform the functional derivative with respect to $\psi_i^*(r)$ and show all steps leading to the Kohn–Sham eigenvalue equation \Big(-\frac{\hbar^2}{2m}\nabla^2 + V_{\rm ext}(r) + \int \frac{n(r’)}{|r-r’|}dr’ + V_{\rm xc}(r)\Big)\psi_i(r) = \epsilon_i\,\psi_i(r)\,. (Hint: Treat $E_{\rm xc}$ as an unknown functional but its functional derivative is $V_{\rm xc}$.)
-Single Electron Case: For an $N=1$ electron system, argue why $E_{\rm H}=0$ and $E_{\rm xc}=0$ for the exact functional. Verify that the KS equation then reduces to the single-particle Schrödinger equation. What does this imply about the KS potential $V_{\rm eff}(r)$ relative to $V_{\rm ext}(r)$ for one electron?
-KS Orbitals vs. Real Orbitals: Kohn–Sham orbitals are often similar to Hartree–Fock orbitals. Conceptually, how would you explain the difference between a KS orbital and the true many-body wavefunction? Why can we often interpret KS orbitals as “orbitals” of the system even though they are fictitious? (Think about how the charge density and qualitative shape of orbitals reflect real electron distributions.)
-Spin DFT: How would you modify the KS equations for a spin-polarized system? Write down the separate KS equations for spin-up and spin-down electrons, and define the spin-dependent $V_{\rm xc}^\uparrow$, $V_{\rm xc}^\downarrow$ in terms of the functional $E_{\rm xc}[n_\uparrow, n_\downarrow]$. (No detailed derivation needed, just the final form.)
-
-
-
-
-!split
-===== The Exchange–Correlation Functional $E_{\xc}[n]$ =====
-
-$E_{\xc}[n]$ is the heart of DFT approximations. It encodes all the many-body quantum effects beyond the simple Hartree picture and non-interacting kinetic energy. By definition: \[ E_{\xc}[n] = (T[n] - T_s[n]) + (V_{\rm int}[n] - E_{\rm H}[n])\,, \] which includes: – Exchange energy $E_x[n]$: the part arising from Pauli exclusion (present even in Hartree–Fock). – Correlation energy $E_c[n]$: the remaining part due to electron-electron dynamical correlations (not captured by a single Slater determinant).
-The exact $E_{\xc}[n]$ is unknown except for simple model systems. We rely on approximate forms. Despite the word “exchange-correlation”, standard DFT approximations do not treat exchange and correlation separately; rather $E_{\xc}$ is an integrated functional typically constructed with certain properties in mind (sum rules, known limits, etc.).
-Key properties of $E_{\xc}[n]$ (exact functional): 
-$E_{\xc}$ is typically negative (exchange is negative, lowering energy; correlation usually negative as well for bound systems).
-It has a corresponding potential $V_{\xc}(\mathbf{r}) = \delta E_{\xc}/\delta n(\mathbf{r})$. This $V_{\xc}$ ensures the KS orbitals yield the correct $n(\mathbf{r})$.
-$E_{\xc}$ accounts for things like the exchange hole (the reduced probability of finding another electron near a given electron due to Pauli principle) and the correlation hole (avoidance due to Coulomb repulsion).
-There is an important sum rule: the exchange hole integrated over space gives $-1$ electron (each electron excludes one charge of same-spin density around it).
-
-Because the exact functional is intractable, we build approximations in a systematic way (sometimes called “Jacob’s ladder” of DFT approximations, from simplest to more complex forms).
-
-
-!split
-===== Local Density Approximation (LDA) =====
-
-LDA formulation: The local density approximation is the first and simplest rung of approximations. In LDA, one assumes the XC energy at point $\mathbf{r}$ depends only on the local density $n(\mathbf{r})$. Specifically, \[ E_{\xc}^{\rm LDA}[n] = \int d^3r\, n(\mathbf{r})\, \varepsilon_{\xc}\!\big(n(\mathbf{r})\big)\,, \] where $\varepsilon_{\xc}(n)$ is the XC energy per electron of a uniform electron gas of density $n$. So essentially, LDA treats each point in the material as if it were part of a homogeneous electron gas with that local density.
-Origin: The homogeneous electron gas (HEG) is one of the rare many-body systems we can solve (with quantum Monte Carlo, etc.). For a given uniform density $n$, the exchange energy per electron is known analytically (Dirac, 1930): \varepsilon_x(n) = -\frac{3}{4}\left(\frac{3}{\pi}\right)^{1/3} \frac{e^2 n^{1/3}}{4\pi\epsilon_0} \quad \text{(in SI units, or = $-0.458\, r_s^{-1}$ Ry in atomic units)}. The correlation energy per electron $\varepsilon_c(n)$ was tabulated via Monte Carlo by Ceperley and Alder (1980) and fit by Perdew–Zunger (1981) – providing a practical formula for $\varepsilon_c(n)$ for all densities.
-Successes of LDA: In the 1970s–80s, LDA proved surprisingly successful for solids and simple metals. It tends to give reasonably good electron densities and total energies, often canceling errors between exchange and correlation. For many solids, LDA predicts lattice constants within a few percent of experiment and bulk modulus within ~10%. For example, LDA for silicon gives a lattice constant slightly smaller than experiment (overbinding), but within ~1-2% .
-Systematic errors: LDA, however, is not very accurate for molecules (it overbinds molecules by about 1 eV per bond on average ). It also underestimates bond lengths (making them too short) and overestimates vibrational frequencies. In extended systems, LDA typically underestimates band gaps of semiconductors (often giving 30-50% smaller gaps or even falsely predicting a metallic state for some insulators).
-Why LDA works or fails: LDA has no knowledge of density gradients or molecule-specific effects. It works best when the system’s density varies slowly or is close to homogeneous (like simple metals). It fails when density is highly inhomogeneous or when delicate bonding/angle preferences occur (where gradients matter) or in systems where long-range correlation (van der Waals) is important, since a uniform-gas approximation can’t capture those. 
-
-!split
-===== Generalized Gradient Approximation (GGA) =====
-
-Inclusion of density gradients: The next rung beyond LDA are GGA functionals. These include dependence not only on $n(\mathbf{r})$ but also on its gradient $\nabla n(\mathbf{r})$. The general form is: \[ E_{\xc}^{\rm GGA}[n] = \int f\big(n(\mathbf{r}), \nabla n(\mathbf{r})\big)\, d^3r\,, \] where $f$ is some chosen function designed to satisfy known physical constraints. GGAs effectively recognize that the electron density varies in space and attempt to correct LDA by including gradient information (e.g., regions where density is rapidly changing like in molecular bonds or surfaces).
-Popular GGA functionals: One prominent example is the Perdew–Burke–Ernzerhof (PBE) GGA (1996) which is a non-empirical functional built to satisfy certain exact constraints and known limits. Others include BLYP (Becke exchange + Lee-Yang-Parr correlation) which is popular in quantum chemistry, PW91 (an earlier Perdew–Wang 1991 GGA), etc. In GGA, the exchange energy density is modified from the LDA form by a factor depending on the gradient $ = |\nabla n|/(2k_F n)$ (reduced gradient), and similarly correlation gets a gradient correction.
-Improvements with GGA: GGAs generally improve upon LDA for molecules and complex materials: 
-Molecular bonds: GGA (like PBE or BLYP) typically gives better bond energies and lengths than LDA. For example, LDA’s overbinding is reduced; GGAs give bond lengths usually within 1$\%$ of experiment and correct the overbinding by a significant amount . Hydrogen bonds and weak interactions are still not perfect, but better than LDA .
-Solids: GGA often over-corrects LDA’s tendencies: if LDA lattice constant was too small, GGA gives a slightly too large lattice constant. It’s observed that experimental lattice constants often lie between LDA (too low) and GGA (too high) . Bulk moduli are slightly underestimated in GGA (since the volume is larger).
-Cohesive energies: GGA improves cohesive energy calculations for molecules and solids; LDA might overestimate cohesive energies (overbinding) while GGA brings them closer to experiment .
-
-GGA limitations: 
-They still miss long-range van der Waals forces (since those arise from non-local correlation, not captured by a semilocal functional). GGAs can err badly for systems like layered materials (graphite) or molecular crystals where dispersion is key.
-They often still underestimate band gaps (though sometimes marginally better than LDA by a small amount).
-Strongly correlated electron systems (e.g. Mott insulators, some transition metal oxides) are still poorly described (GGA often predicts them metallic unless an empirical $U$ correction is added).
-
-Spin in LDA/GGA: In spin-polarized cases, one uses LSDA or GGA that are functions of $n_\uparrow, n_\downarrow$ (often constructed by applying LDA/GGA for each spin channel). This allows treatment of magnetism. For example, LSDA correctly predicts an exchange splitting in iron and a ferromagnetic ground state, though it may overestimate the magnetic moments slightly. 
-
-!split
-===== Beyond GGA: Meta-GGA and Hybrid Functionals =====
-
-Meta-GGAs: These are functionals that include second derivatives or kinetic energy densities. For instance, a meta-GGA may use $n(\mathbf{r})$, $\nabla n$, and also the KS kinetic energy density $\tau(\mathbf{r}) = \sum_i \frac{\hbar^2}{2m}|\nabla \psi_i|^2$ or $\nabla^2 n$. Including $\tau$ helps the functional distinguish regions like bond versus slowly varying electron gas more effectively. An example is the SCAN functional (Strongly Constrained and Appropriately Normed, 2015) which is a meta-GGA that satisfies many known constraints and often achieves higher accuracy across diverse systems than typical GGA.
-Hybrid functionals: These functionals mix a portion of exact exchange (from Hartree–Fock theory) with GGA exchange-correlation. The rationale is to mitigate the self-interaction error and correct the underestimated repulsion in LDA/GGA exchange. A general form: \[ E_{\xc}^{\rm hybrid} = E_{\xc}^{\rm GGA} + a \,(E_x^{\rm HF} - E_x^{\rm GGA})\,, \] where $E_x^{\rm HF}$ is the exact exchange energy from the KS orbitals (non-local), and $a$ is a mixing coefficient (commonly 20-2$5\%$). B3LYP is a famous hybrid in chemistry (with $a\approx 0.2$ plus some empirical parameters in correlation), and PBE0 is a hybrid with $a=0.25$ (25$\%$ exact exchange) based on PBE. Hybrids significantly improve molecular properties: they give much better reaction energy barriers, atomization energies, and often better equilibrium structures.
-Why hybrids help: By adding exact exchange, hybrids correct the tendency of LDA/GGA to over-stabilize electron-rich regions. They also open up band gaps for insulators/semiconductors compared to LDA/GGA. For example, PBE (a GGA) predicts Si band gap ~0.6 eV while experiment is 1.1 eV; a hybrid like HSE (screened hybrid) or PBE0 might predict ~0.9–1.2 eV, much closer . In fact, the popular B3LYP functional was one reason DFT became widely used in quantum chemistry – it achieves “chemical accuracy” (~0.1 eV error) for many thermochemical properties  .
-Cost of hybrids: The inclusion of exact exchange makes calculations more expensive (scaling roughly like Hartree–Fock, $O(N^4)$ with system size, rather than $O(N^3)$ for pure DFT). In extended systems (3D solids), exact exchange is particularly costly, though screened hybrids (like HSE06) make it more tractable by damping long-range exchange.
-Empirical vs non-empirical: Some functionals (like B3LYP) had parameters fit to a training set of molecules, whereas PBE, SCAN, etc., are “non-empirical” (built from known physical constraints). Both approaches exist; empirical functionals can sometimes be very accurate for the types of systems they were fit to but might be less transferable.
-Functional performance: Over the decades, improvement is incremental. For instance, GGA significantly improved over LDA by late 1980s ; hybrids in the 1990s improved further. Yet some problems remain challenging (van der Waals, strong correlation). Many newer functionals aim at specialized fixes (like DFT-D for dispersion, DFT+U for correlations – to be discussed below).
-
-
-!split
-===== Exchange-Correlation Functional Theory =====
-
-Functional Derivative Practice: Suppose an approximate XC functional is given by \[ E_{\xc}[n] = \int d^3r\, A\,[n(\mathbf{r})]^\alpha\,, \] where $A$ and $\alpha$ are constants. Derive an expression for the exchange-correlation potential $V_{\xc}(r) = \delta E_{\xc}/\delta n(r)$. (Check: for $E_x$ of a uniform gas, $\alpha = 4/3$ and $A$ is negative, yielding $V_x(r) \propto n^{1/3}(r)$.)
-LDA vs GGA Trends: Give one example of a material or property where LDA is known to significantly over-bind or under-bind (or otherwise fail), and describe qualitatively how GGA addresses this. For instance, consider the binding energy of the graphite layers (interlayer cohesion in graphite) or the dissociation of the $\text{H}_2$ molecule at large separation. Why is LDA inadequate in your chosen case?
-Exchange Hole Visualization: (Conceptual) The exchange-correlation hole $n_{\xc}(\mathbf{r}, \mathbf{r}’)$ represents the deficit of probability of finding an electron at $\mathbf{r}’$ given one at $\mathbf{r}$. For a uniform electron gas, this hole is spherical. Explain how LDA uses the exchange hole concept in an averaged way. Why is it reasonable to use the homogeneous electron gas as a reference for solids but less so for, say, a sparse molecule?
-Hybrid Functional Effect: Hybrid functionals incorporate a fraction of exact exchange. Consider a small gap semiconductor or an atom where self-interaction error is significant. How does adding exact exchange improve the description? What is one drawback of using hybrid functionals in large systems?
-
-
-
-
-!split
-===== Basis Sets for Solving the Kohn–Sham Equations =====
-
-Why a basis? The KS equations are differential equations that generally have no closed-form solution except for the simplest systems. To solve them on a computer, we choose a basis set to expand the KS orbitals $\psi_i(\mathbf{r})$. Common basis choices: 
-Plane-wave basis: $\displaystyle \psi_i(\mathbf{r}) = \sum_{\mathbf{G}} c_{i,\mathbf{G}}, e^{i\mathbf{G}\cdot \mathbf{r}}$. Here $\mathbf{G}$ are reciprocal lattice vectors (for a periodic system, plane waves naturally incorporate Bloch’s theorem). We use plane waves especially in solid-state calculations with periodic boundary conditions. Plane waves are an unbiased, orthonormal basis covering the whole space  . A plane-wave basis doesn’t depend on atomic positions (no basis set superposition error), and forces can be computed easily using Hellmann–Feynman (no Pulay forces) . We include all plane waves up to a kinetic energy cutoff $E_{\rm cut} = \frac{\hbar^2}{2m}|\mathbf{G}|^2_{\max}$. This single parameter controls basis completeness .
-Atomic-like orbitals: e.g. Gaussian functions or numerical atomic orbitals centered on atoms. Common in quantum chemistry, e.g. Gaussian-type orbitals (GTOs) – basis functions of form $\chi_{\mu}(\mathbf{r}) = x^l y^m z^n e^{-\alpha r^2}$, which are localized around atoms. These are efficient for molecules (fewer basis functions than plane waves for isolated systems) but require careful choice (basis sets of increasing size: double-zeta, triple-zeta, etc. to approach completeness).
-Augmented / others: Augmented plane waves (APW, LAPW), wavelets, real-space grids, etc. Linearized APW+lo and similar methods mix local functions with plane waves for better convergence on all-electron problems.
-
-All-electron vs. valence-only: Plane waves are poorly suited to representing the rapid oscillations of core electron wavefunctions near nuclei (would require extremely high $E_{\rm cut}$). Similarly, including core states in molecular calculations can be unnecessary (they don’t participate in bonding significantly). This leads to the use of pseudopotentials or effective core potentials to remove core electrons from consideration.
-Basis set convergence: In any method, we must converge results with respect to basis size. Plane waves have a clear parameter $E_{\rm cut}$ to increase; atomic orbitals have to go to higher zeta levels and include polarization/diffuse functions. An incomplete basis can introduce errors (variational principle ensures energy is above true minimum for exact functional). For plane waves, completeness is systematically improvable by raising $E_{\rm cut}$ .
-Comparison: Plane waves treat periodic systems uniformly and are convenient for solids. Local orbitals are very efficient for molecules (much fewer basis functions required typically). Plane waves plus pseudopotentials have become the standard in materials science due to ease of achieving convergence and automating calculations.
-
-!split
-===== Pseudopotentials and Treating Core Electrons =====
-
-Purpose of pseudopotentials: In a heavy atom, core electrons occupy small, tightly bound orbitals with many nodes (oscillations). Including them in a plane-wave calculation would demand an extremely high cutoff to resolve those oscillations  . Yet core electrons hardly affect chemical bonding (they’re essentially inert, providing just an effective nuclear charge for valence). Pseudopotentials allow us to replace the strong nuclear + core potential with a gentler effective potential that acts on valence electrons: 
-Removes core electrons: They are not explicitly included; one uses a frozen core approximation. The number of electrons $N$ in the KS equations is then just the valence count.
-Smooths valence wavefunctions: The valence orbitals are forced to have no radial nodes inside a chosen cutoff radius. The pseudopotential is constructed so that outside the core radius, the pseudo-wavefunction matches the real all-electron wavefunction .
-
-How it’s done: A pseudopotential $V_{\rm PS}(r)$ is generated (often by solving an atomic all-electron problem, then smoothing the potential inside). It typically comes in forms: 
-Norm-conserving pseudopotentials: ensure that the integrated charge of pseudo vs all-electron wavefunction matches inside the cutoff radius. These require higher cutoffs for first-row elements and transition metals often.
-Ultrasoft pseudopotentials: allow partial norm violation but include correction terms; this permits even softer (lower cutoff) potentials.
-Projector Augmented Wave (PAW) method: a modern approach that is effectively an all-electron + pseudopotential hybrid. PAW reconstructs the all-electron wavefunction via linear combination of smooth partial waves and atom-centered corrections.
-
-Benefits: Using pseudopotentials drastically reduces the plane-wave basis size required . For example, a carbon atom with all-electron 1s core needs maybe 1000 eV plane-wave cutoff to capture 1s oscillation, but with a pseudopotential, one can use ~400 eV and omit the 1s entirely. It also simplifies the Hamiltonian by removing core-core interactions (which just become a constant reference energy).
-Transferability: A good pseudopotential reproduces scattering properties of the true potential for valence electrons in different environments. Pseudopotentials are tested on isolated atoms and sometimes fitted slightly to known properties (non-empirical ones are derived to match atomic spectra).
-In practice: Codes like VASP, Quantum ESPRESSO, ABINIT, etc., rely on plane-wave + pseudopotential. Chemistry codes (Gaussian, ORCA) typically use all-electron atomic bases for lighter elements, but for very heavy elements might use effective core potentials (ECPs, similar concept to pseudopotential).
-Example: For Si (with core [Ne]), a typical norm-conserving pseudopotential treats 4 valence electrons (3s²3p²) explicitly. The 1s, 2s, 2p are frozen in the potential. This yields excellent accuracy for bonding in silicon while using a moderate basis. If one tried all-electron with plane waves, it would be extremely inefficient. 
-
-!split
-===== Self-Consistent Field (SCF) Procedure =====
-
-Solving KS equations requires a self-consistent field approach because $V_{\rm eff}[n]$ depends on $n$. The standard SCF loop: 
-Initial guess: Start with an initial electron density $n^{(0)}(\mathbf{r})$. This could be a superposition of atomic densities or uniform electron gas or even random (in practice, educated guesses help convergence).
-Build Hamiltonian: Compute $V_{\rm H}n^{(k)}$ from the current density (solve Poisson’s equation) and $V_{\xc}n^{(k)}$ from the chosen functional. Form the effective potential $V_{\rm eff}^{(k)}(r) = V_{\rm ext}(r) + V_{\rm H}^{(k)}(r) + V_{\xc}^{(k)}(r)$.
-Solve KS equations: Solve $\big(-\frac{\hbar^2}{2m}\nabla^2 + V_{\rm eff}^{(k)}(r)\big)\psi_i^{(k)}(r) = \epsilon_i^{(k)} \psi_i^{(k)}(r)$ for the orbitals. In practice, this means diagonalizing the Hamiltonian matrix in the chosen basis (e.g. plane-wave basis yields a matrix eigenvalue problem). Obtain a new set of orbitals ${\psi_i^{(k)}}$.
-Update density: Compute new density $n^{(k+1)}(r) = \sum_{i \in \text{occupied}} |\psi_i^{(k)}(r)|^2$. For zero-temperature calculations, we fill the lowest $N$ orbitals (or use Fermi-Dirac occupation if metals/finite-$T$).
-Mixing: The new density $n^{(k+1)}$ might not be used directly; typically one mixes it with the old density to damp oscillations: n^{(k+1)} \leftarrow n^{(k)} + \alpha\big(n_{\text{new}}^{(k+1)} - n^{(k)}\big)\,, where $\alpha$ is a mixing parameter (e.g. 0.2). More sophisticated schemes (Pulay’s DIIS method, Broyden mixing) construct an optimized mix of several previous iterations to accelerate convergence  .
-Convergence check: Compare $n^{(k+1)}(r)$ with $n^{(k)}(r)$ (or total energies or potentials). If the change (error) is below a set threshold (e.g. $10^{-5}$), the SCF cycle has converged to self-consistency. If not, go back to step 2 with $k \leftarrow k+1$.
-
-Convergence behavior: SCF is essentially a fixed-point iteration for $n = D[V(n)]$, where $D$ is the operation “solve KS and get new $n$” . Convergence is not always trivial: for insulating systems it’s usually straightforward, for metals or problematic cases one may need small $\alpha$ or special mixing (because of charge sloshing or near-instabilities). Mathematically, the mixing scheme seeks to ensure the error $e_{n+1} = e_n - \alpha P^{-1}(D(V(n)) - n)$ gets smaller  , where $P$ is a preconditioner (e.g. weighting Fourier components of density to damp low-frequency oscillations that cause charge sloshing).
-SCF algorithms: Common methods include simple linear mixing (as above), Anderson mixing (Pulay’s method) which builds a linear combination of past updates that minimizes residual, and more advanced ones like convergence acceleration by damping high-frequency components or using Kerker preconditioning for plane waves (which addresses the divergence of Coulomb interaction at $q\to0$ for metals).
-Output of SCF: Once converged, we have the self-consistent $n(r)$ and $V_{\rm eff}(r)$. We then compute the final energy $E_{\rm KS}[n]$, and we can also compute forces on atoms via the Hellmann–Feynman theorem (with corrections if basis not exactly complete, like Pulay forces for incomplete basis sets).
-
-!split
-===== Computational Scaling and Practical Considerations =====
-
-Scaling with system size: The main cost is solving for eigenstates of the Hamiltonian. If we have $M$ basis functions (size of Hamiltonian matrix), diagonalization naïvely costs $O(M^3)$ operations. In plane-wave codes, $M$ grows roughly linearly with volume and as the cube of the cutoff (for 3D), and linearly with number of $k$-points (for Brillouin zone sampling). Modern methods like iterative diagonalization (Davidson or Lanczos) target only the lowest $N$ eigenstates and exploit sparsity or FFTs for applying $H$. Still, overall solving KS scales ~ $O(N \cdot M^2)$ or so in practice, which is typically $O(N^3)$ scaling with number of electrons $N$ if $M \propto N$.
-Memory and parallelization: Plane-wave codes use FFTs to switch between real-space (to apply $V_{\rm eff}(r)$ multiplication) and reciprocal space (to apply $-\nabla^2$ easily as multiplication by $-|\mathbf{G}|^2$). These FFTs and linear algebra (BLAS/LAPACK) operations parallelize well. Large-scale DFT can handle hundreds to thousands of atoms using supercomputers, but memory and CPU time can become limiting for extremely large cells.
-Integral evaluation in localized basis: In all-electron codes (Gaussian basis), the bottleneck is often computing two-electron integrals and Fock matrix formation, which can scale $O(N^4)$ with naive algorithms (though density fitting and other tricks can reduce this). KS-DFT in Gaussian basis is usually faster than HF because we avoid the $N^4$ exchange integral calculation by using density functionals (which scale as $N^2$ or $N^3$).
-Accuracy vs speed: One often must choose convergence parameters carefully: 
-Plane-wave cutoff: choose high enough that total energy is converged to say < meV/atom. For ultrasoft pseudopotentials or PAW, one may also need an augmentation charge grid.
-$k$-point sampling: for periodic solids, integrate over Brillouin zone; metals need finer $k$ meshes or smearing of occupations (Methfessel-Paxton, Gaussian smearing) to achieve SCF convergence and accurate partial occupancies.
-Basis set superposition error (BSSE): in local basis, ghost atom functions can cause overbinding errors in molecules (can be corrected with counterpoise method if needed). Plane waves don’t have BSSE by construction.
-
-Force and stress calculations: Once SCF converged, forces $-dE/d\mathbf{R}$ are computed. With complete basis or with Pulay corrections for incomplete basis, one can relax atomic positions. The stress tensor can be computed for variable-cell relaxation (important for finding equilibrium lattice parameters).
-DFT software examples: VASP, Quantum ESPRESSO, ABINIT (plane-wave + pseudopotential), WIEN2k (APW all-electron), Gaussian, ORCA, NWChem (molecular Gaussian basis all-electron), SIESTA, OpenMX (localized numerical orbitals + pseudopotentials), CP2K (mixed Gaussian & plane-wave), etc. All implement the SCF loop and differ mainly in how they represent orbitals and handle integrals. 
-
-
-!split
-===== Summary of Applications =====
-
-We have seen:  DFT for materials: predicting lattice constants,
-cohesive energies, and band structures (as in Si), as well as phase
-stability. DFT is crucial in designing new alloys, semiconductors,
-etc., thanks to its reliability in ground-state energies.  DFT for
-strongly correlated materials (with extensions): NiO showed the need
-for beyond-PBE approaches like DFT+U or hybrids to handle
-correlation. Modern DFT workflows for materials often include turning
-on a +U for specific correlated orbitals if standard DFT fails
-(e.g. for $f$-electron systems like CeO$_2$, or Fe oxides).  DFT in
-chemistry: for reaction thermodynamics, transition states, and
-molecular spectroscopy. The ammonia example highlights geometry and
-barrier predictions. DFT has enabled computational catalysis and
-enzyme mechanism studies by providing reasonably accurate potential
-energy surfaces for reactions.  Limits of DFT: Each example also
-highlighted limitations – band gap underestimation (and how hybrids/GW
-fix it), missing correlation in NiO (fixed by +U or DMFT), and missing
-dispersion or static correlation in molecules (sometimes fixed by
-adding dispersion corrections or multi-reference methods).
-
-DFT results vs experiment: Often, DFT can be viewed as providing about
-5-10$\%$ accuracy in structural properties, 0.1–0.2 eV accuracy in
-energy differences for well-behaved systems with proper functionals
-. However, “chemical accuracy” (1 kcal/mol = 0.043 eV) is a stretch
-for standard GGA in complex cases – hybrids or specialized functionals
-are needed.  Example of success: The 1998 Nobel Prize cited Kohn for
-DFT and Pople for computational quantum chemistry. Today, tens of
-thousands of papers annually use DFT . DFT was instrumental, for
-instance, in the discovery of new battery materials and catalysts by
-screening many compounds in silico.  Verification and calibration:
-It’s standard practice to compare different functionals and, if
-possible, benchmark small models with higher-level methods. For
-example, a chemist might compare DFT reaction energies with
-coupled-cluster results for a small molecule to ensure the functional
-is adequate. In materials, one might compare DFT prediction of a new
-phase’s stability with whatever experimental data exists or known
-similar systems.  In summary, DFT, when applied knowledgeably
-(choosing the right functional, basis, etc.), provides a powerful lens
-to examine both quantitative and qualitative aspects of electronic
-structure in materials and molecules. 
-
-
-!split
-===== Time-Dependent DFT (TDDFT) – Excited States and Dynamics =====
-
-Motivation: Ground-state DFT (HK theorem) handles only ground-state properties. To study optical excitations, electron dynamics, or excited states, we turn to Time-Dependent DFT. TDDFT extends DFT to the time domain for evolving an interacting system in a time-dependent potential $V_{\rm ext}(\mathbf{r}, t)$.
-Runge–Gross Theorem (1984): The TDDFT analog of HK: For a given initial many-body state $\Psi_0$ at $t=0$, the time-dependent density $n(\mathbf{r},t)$ uniquely determines the time-dependent external potential $V_{\rm ext}(\mathbf{r},t)$ (up to an additive purely time-dependent function) . This means all time-dependent observables are functionals of $n(\mathbf{r},t)$. It establishes existence of a map $n(\mathbf{r},t) \to \Psi(t)$ in principle.
-Kohn–Sham TDDFT: Similar spirit to ground-state, we use a fictitious non-interacting system of orbitals ${\phi_i(\mathbf{r},t)}$ that reproduce the time-dependent density $n(\mathbf{r},t) = \sum_i |\phi_i(r,t)|^2$. These obey TD Kohn–Sham equations: \[ i\hbar \frac{\partial}{\partial t}\phi_i(\mathbf{r},t) = \Big(-\frac{\hbar^2}{2m}\nabla^2 + V_{\rm ext}(r,t) + V_{\rm H}n + V_{\xc}n\Big)\phi_i(\mathbf{r},t)\,. \] Here $V_{\xc}n$ is the time-dependent XC potential, which must be approximated (with memory of past densities in general).
-Linear response and excitation energies: The most common use of TDDFT is linear response theory to compute excitation spectra. One perturbs the system with a small time-dependent field and finds how $n(\mathbf{r},t)$ responds. This leads to the Casida equations for excitation energies: basically an eigenvalue equation in the space of orbital transitions: (E_{j} - E_{i})\delta_{ij} + 2\sqrt{(f_i - f_j)(f_a - f_b)} K_{ij,ab} X_{ab} = \Omega X_{ij}\,, where $\Omega$ is an excitation energy (eigenvalue) and $K$ includes derivatives of $V_{\xc}$ (the XC kernel). Practically, codes take Kohn–Sham single-particle transitions (differences of KS orbital energies) and correct them via the electron–hole interaction mediated by the Hartree + XC kernel to get true excitation energies.
-
-Successes: TDDFT (with common approximations like adiabatic LDA/GGA
-kernel) does well for many systems’ optical spectra, especially for
-valence excitations in molecules – often within 0.2–0.3 eV of
-high-level methods for lowest excited states. It’s much cheaper than,
-say, CI or equation-of-motion coupled cluster, scaling similar to
-ground-state DFT plus solving a matrix of size
-$O(N_{\text{transitions}})$.  Limitations: The approximate XC kernels
-used (like ALDA) lack frequency dependence and multi-excitation
-effects. So TDDFT can struggle with: 
-
-Charge-transfer excitations: tends to underestimate their energy
-because semilocal XC has wrong long-range behavior.  Double
-excitations: standard TDDFT can’t properly capture states where two
-electrons are simultaneously excited, because adiabatic approximations
-don’t include that physics.  Strong field dynamics: If the system is
-driven far from ground state, the validity of simple approximations is
-tested; memory dependence may matter.
-
-Nonetheless, TDDFT has become a go-to for electronic absorption
-spectra of complex systems, excited-state potential energy surfaces
-(for photochemistry), and even real-time electron dynamics (like
-electrons in strong laser fields). Real-time propagation TDDFT can
-simulate femtosecond charge dynamics in large systems (with thousands
-of atoms in linear-scaling implementations). 
-
-!split
-===== Beyond Standard DFT: Advanced Functionals and Methods =====
-
-Limitations of LDA/GGA/Hybrid: As highlighted, standard functionals
-have known problems: e.g., no van der Waals, self-interaction errors,
-failure in strongly correlated systems, etc. The community
-continuously develops new functionals:  Van der Waals DFT: Incorporate
-dispersion forces. One approach: add an empirical $-C_6/R^6$ pairwise
-correction (Grimme DFT-D schemes). Another: use nonlocal correlation
-functionals, e.g. vdW-DF by Dion et al., which adds a term $E_c^{\rm
-  nl}[n]$ that is a double integral over $n(\mathbf{r})$ and
-$n(\mathbf{r’})$ with a kernel that decays as a function of
-$|\mathbf{r}-\mathbf{r’}|$. These allow DFT to capture bonding in
-rare-gas crystals, layered materials (like graphite) and organic
-molecular crystals.  Meta-GGAs: SCAN (2015) was mentioned: it is a
-meta-GGA that has shown broad accuracy improvement (often reaching
-chemical accuracy in diverse data sets, better handling of
-intermediate-range correlation and diverse bond types).
-Self-interaction correction (SIC): Approaches that explicitly remove
-the spurious interaction of an electron with itself in approximate
-functionals (e.g., Perdew-Zunger SIC). These can improve properties
-like Rydberg state energies and dissociation of charged systems.
-Orbital functionals: Instead of explicit $E_{\xc}[n]$, some methods
-make $E_{\xc}$ depend explicitly on orbitals (like HF does). Examples:
-OOT (Optimized Effective Potential) methods or meta-functionals that
-include exact exchange fully (called EXX or OEP). These can be
-computationally heavier.
-
-DFT + Many-Body Techniques: In strongly correlated electron systems,
-one strategy is combining DFT with beyond-DFT:  DFT+U: We discussed –
-a simple additive correction for localized orbitals.  DFT+DMFT:
-Dynamical Mean-Field Theory combined with DFT. DFT provides the band
-structure, DMFT adds frequency-dependent self-energy for correlated
-orbitals to treat local quantum fluctuations. This has been very
-successful for materials like Plutonium, transition metal oxides’
-finite-temperature properties, etc., capturing Mott transitions and
-Kondo physics.  GW and beyond: The $GW$ approximation (from many-body
-perturbation theory) computes the self-energy $\Sigma = G W$
-(convolution of Green’s function $G$ and screened Coulomb $W$) to
-correct particle energies. A common practice: do a DFT (usually PBE)
-calculation, then apply a single-shot $G_0W_0$ correction to band
-energies. $GW$ often yields band gaps within ~0.1 eV of experiment for
-many semiconductors where DFT was off by 30-50$\%$. It’s more
-expensive than DFT (scales $N^4$ or $N^3$ with better algorithms, and
-with a large prefactor) but still feasible for moderately sized cells.
-BSE (Bethe-Salpeter Equation): On top of $GW$, BSE treats
-electron-hole interactions to yield optical spectra (including exciton
-binding energies in insulators, which plain DFT misses). BSE can
-accurately predict optical absorption peaks in solids and molecules,
-at significant computational cost.
-
-Machine-learning in DFT: A cutting-edge frontier is to use ML to
-create new density functionals or to bypass solving KS
-equations. E.g., neural network potentials trained on DFT data (like
-ANI, or Gaussian approximation potentials) allow near DFT accuracy at
-much lower cost for large molecular systems (though those are
-effectively force fields, not directly density functionals). Another
-approach: use ML to fit the functional form $E_{\xc}[n]$ by training
-on high-level quantum data – aiming to systematically improve on
-human-designed functional forms.  Relativistic DFT: For heavy elements
-(where electrons move fast), one uses scalar-relativistic Hamiltonians
-or fully relativistic 4-component DFT (including spin-orbit
-coupling). This is vital for elements like gold or uranium where
-spin-orbit splitting significantly affects chemistry.
-
-Open challenges: Despite immense success, DFT still cannot solve
-everything. For example, describing multi-reference systems (like bond
-breaking, transition states of some reactions) is tricky. How to
-include missing physics systematically (like double excitations in
-TDDFT, or long-range correlation) is an ongoing research. And bridging
-finite-temperature DFT (Mermin functional for electrons at nonzero T)
-with classical molecular dynamics allows for ab initio molecular
-dynamics (AIMD), but the cost and accuracy trade-offs are active
-topics (especially for deep potential energy surfaces). 
-
-!split
-===== Example: van der Waals Complex and Machine-Learned Functional =====
-
-van der Waals complex: Consider the interaction of two benzene molecules (π–π stacking). LDA or PBE will predict almost no binding (it might even show a very slight repulsion) because they miss dispersion. However, an approach like DFT-D (PBE+D3 by Grimme) adds empirical $C_6/r^6$ terms and yields a binding energy ~2 kcal/mol at a certain separation, roughly in line with high-level calculations. Nonlocal vdW-DF functionals (like vdW-DF2) also predict a binding, though often bond lengths and energies can be off by 10-20$\%$. Still, this was a huge step forward to treat, e.g., layered materials: using vdW-DF, one can get the correct layer separation of graphite, whereas PBE would predict the layers unbound or much too far apart.
-SCAN functional performance: SCAN meta-GGA has been shown to improve a lot of energetic and structural predictions: e.g., it can simultaneously give good lattice constants (like PBE level) and good atomization energies (like hybrid level) for molecules, and even handle intermediate spin states better. For water, SCAN yields more accurate hydrogen bond strengths than PBE, improving the structure of liquid water in molecular dynamics. However, meta-GGAs can be sensitive (convergence issues) and sometimes overfit certain cases (some crystalline phase diagrams show slight anomalies with SCAN).
-Machine-learned functional (example): Recently, functionals like DeepMind’s DM21 combine a neural network with physical constraints to approximate $E_{\xc}$. They train on a database of molecular energies including difficult cases (like stretched bonds). Preliminary results show improvement in challenging cases (like getting correct dissociation curves where standard DFT fails). Another example is Delta-learning: starting from a baseline functional and having ML predict the correction to energies. These functionals are just emerging, and while promising, need broad testing to ensure they don’t break known exact constraints or behave erratically outside the training set.
-Quantum computing and DFT: A speculative frontier – using quantum computers to solve for the electron density or for parts of the problem. There’s research into quantum algorithms for linear response of DFT or embedding a small strongly-correlated part on a quantum device (quantum-classical hybrid).
-Summary of Lecture Series: We began with the theoretical bedrock (HK theorems, KS scheme), moved through practical approximations (LDA, GGA, etc.), learned how calculations are set up and run (basis, SCF), and saw examples of DFT’s power and pitfalls. Finally, we see DFT is not static – it’s an evolving field. Improvements in functional design and integrations with other methods continue to extend the reach of DFT, tackling new problems and increasing accuracy for the challenging ones. Armed with this knowledge, one can critically use DFT in research, understanding when it will likely succeed and when caution or beyond-DFT methods are required. 
-
-
-
-!split
-===== References and Further Reading =====
-
-o P. Hohenberg and W. Kohn, “Inhomogeneous Electron Gas,” Phys. Rev. 136, B864 (1964). (Foundational paper proving the Hohenberg–Kohn theorems of DFT)
-o W. Kohn and L. J. Sham, “Self-Consistent Equations Including Exchange and Correlation Effects,” Phys. Rev. 140, A1133 (1965). (Derives the Kohn–Sham equations and introduces the KS formalism)
-o R. M. Dreizler and E. K. U. Gross, Density Functional Theory, Springer (1990). (Advanced textbook covering formal theory of DFT and extensions)
-o R. O. Jones, “Density functional theory: Its origins, rise to prominence, and future,” Rev. Mod. Phys. 87, 897 (2015). (A review of the history and status of DFT, accessible overview)
-o K. Burke, “Perspective on density functional theory,” J. Chem. Phys. 136, 150901 (2012) – A readable perspective on DFT’s successes, failures, and challenges  .
-o J. P. Perdew, “Jacob’s ladder of density functional approximations for the exchange-correlation energy,” in AIP Conference Proceedings 577, 1 (2001). (Conceptual article describing systematic improvement of functionals from LDA upwards)
-o E. Runge and E. K. U. Gross, “Density Functional Theory for Time-Dependent Systems,” Phys. Rev. Lett. 52, 997 (1984). (Runge–Gross theorem establishing TDDFT formalism)
-o G. Onida, L. Reining, and A. Rubio, “Electronic excitations: density-functional versus many-body Green’s-function approaches,” Rev. Mod. Phys. 74, 601 (2002). (Review on excited-state methods including TDDFT and GW/BSE)
-o Selected software manuals: VASP (plane-wave DFT), Quantum ESPRESSO (plane-wave DFT), NWChem (Gaussian-basis DFT) – for practical aspects of implementations.
-
