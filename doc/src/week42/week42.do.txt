@@ -394,7 +394,7 @@ and comment your results.
 
 
 Hohenberg and Kohn proved that the total energy of a system including
-that of the many-body effects of electrons (exchange and correlation)
+vthat of the many-body effects of electrons (exchange and correlation)
 in the presence of static external potential (for example, the atomic
 nuclei) is a unique functional of the charge density. The minimum
 value of the total energy functional is the ground state energy of the
@@ -527,36 +527,45 @@ degrees of freedom except one, that is (setting $\bm{r}=\bm{r}_1$)
 \]
 !et
 
-If $\Psi$ is a single reference Slater determinant defined in terms of the single-particle functions $\psi_i$, then we have 
+If $\Psi$ is a single reference Slater determinant defined in terms of
+the single-particle functions $\psi_i$, then we have
 !bt
 \[
-	n(\bm{r})=\sum_{i=1}^N\vert \psi_i(\bm{r})\vert^2,
+	n(\bm{r})=\sum_{i=1}^N\vert \psi_i(\bm{r})\vert^2.
 \]
 !et
-as derived earlier. 
-
 
 !split
-===== One-body density matrix in many-fermion systems =====
+===== More general definitions =====
 
-
-In an $N$-particle quantum system (pure state $|\Psi_N\rangle$ with wavefunction $\Psi(x_1,\dots,x_N)$), the one-body reduced density matrix $\rho^{(1)}$ is obtained by tracing out (integrating over) $N-1$ particles. In bra-ket notation or coordinates, it can be written as:
-
-One-body density matrix:
+In an $N$-particle quantum system with wavefunction
+$\Psi(x_1,\dots,x_N)$, the one-body reduced density matrix
+$\rho^{(1)}$ is obtained by tracing out (integrating over) $N-1$
+particles. It is defined as
 !bt
 \[
-\rho^{(1)}(x’;x) = N \int dx_2,dx_3\cdots dx_N,\Psi^*(x_2,\dots,x_N, x’),\Psi(x_2,\dots,x_N, x). 
+\rho^{(1)}(x';x) = N\int dx_2,dx_3\cdots dx_N,\Psi^*(x_2,\dots,x_N, x’),\Psi(x_2,\dots,x_N, x). 
 \]
 !et
 
-Here $x$ denotes the combined spatial (and spin) coordinate of a single particle.
+Here $x$ denotes the combined spatial and spin coordinates of a single particle.
 
-Intuitively, $\rho^{(1)}(x’;x)$ gives the amplitude for a particle at $x$ to be found at $x’$; its diagonal
+!split
+===== What does the one-body density represents  =====
+
+Intuitively, $\rho^{(1)}(x’,x)$ gives the amplitude for a particle at $x$ to be found at $x’$.
+Its diagonal
 !bt
-n(x)=\rho^{(1)}(x;x)
+\[
+n(x)=\rho^{(1)}(x,x)
 \]
 !et
-is the one-body density (the probability density of finding a particle at $x$) . The one-body density matrix is Hermitian, and for fermions it is often normalized such that $\int n(x)dx = N$.
+is the one-body density (the probability density of finding a particle at $x$) . The one-body density matrix is hermitian, and for fermions it is often normalized such that
+!bt
+\[
+\int n(x)dx = N.
+\]
+!et
 
 !split
 ===== Two-body density matrix in many-fermion systems =====
@@ -565,19 +574,22 @@ is the one-body density (the probability density of finding a particle at $x$) .
 Two-body density matrix:
 !bt
 \[
-\rho^{(2)}(x_1,x_2; y_1,y_2) = \frac{N(N-1)}{2}\int dx_3\cdots dx_N,\Psi^*(x_3,\dots,x_N,;y_1,y_2),\Psi(x_3,\dots,x_N,;x_1,x_2). 
+\rho^{(2)}(x_1,x_2,y_1,y_2) = \frac{N(N-1)}{2}\int dx_3\cdots dx_N,\Psi^*(x_3,\dots,x_N,,y_1,y_2),\Psi(x_3,\dots,x_N,,x_1,x_2). 
 \]
 !et
 
 This two-body reduced density matrix is a function of two coordinate pairs $(x_1,x_2)$ and $(y_1,y_2)$. Its diagonal part
 !bt
 \[
-\rho^{(2)}(x_1,x_2)\equiv \rho^{(2)}(x_1,x_2;x_1,x_2)
+\rho^{(2)}(x_1,x_2)\equiv \rho^{(2)}(x_1,x_2,x_1,x_2)
 \]
 !et
 gives the joint probability density of finding one particle at $x_1$ and another at $x_2$.
 
-The factor $N(N-1)/2$ ensures proper normalization (since there are $N(N-1)/2$ distinct pairs) .
+The factor $N(N-1)/2$ ensures proper normalization (since there are $N(N-1)/2$ distinct pairs).
+
+!split
+===== In other words =====
 
 In words, $\rho^{(2)}(x_1,x_2)$ is essentially the two-particle
 distribution function. It encodes two-body correlations and contains
@@ -613,7 +625,7 @@ for two fermions to be at the same point with the same spin).
 More generally, the antisymmetry imposes that the two-body density matrix changes sign upon exchanging the two particles’ coordinates:
 !bt
 \[
-\rho^{(2)}(x_1,x_2; y_1,y_2) = -,\rho^{(2)}(x_2,x_1; y_1,y_2),
+\rho^{(2)}(x_1,x_2; y_1,y_2) = -\rho^{(2)}(x_2,x_1; y_1,y_2),
 \]
 !et
 (and similarly for exchanging $y_1\leftrightarrow y_2$ in the bra indices).
@@ -660,11 +672,10 @@ correlations beyond the statistical (exchange) effects, so
 $\rho^{(2)}$ can be expressed in terms of $\rho^{(1)}$ alone. The
 explicit form is obtained by applying the Slater determinant expansion
 or using Wick’s theorem for fermion creation/annihilation
-operators. The result is:
-
+operators. The result is
 !bt
 \[
-\rho^{(2)}(x_1,x_2; y_1,y_2) = \rho^{(1)}(x_1; y_1)\,\rho^{(1)}(x_2; y_2)\;-\;\rho^{(1)}(x_1; y_2)\,\rho^{(1)}(x_2; y_1).
+\rho^{(2)}(x_1,x_2; y_1,y_2) = \rho^{(1)}(x_1; y_1)\,\rho^{(1)}(x_2; y_2)-\rho^{(1)}(x_1; y_2)\rho^{(1)}(x_2; y_1).
 \]
 !et
 
@@ -680,14 +691,14 @@ Hartree–Fock approximation for $\rho^{(2)}$) is in fact exact for any
 Slater determinant state. Each term has a clear meaning:
 !bt
 \[
-\rho^{(1)}(x_1;y_1),\rho^{(1)}(x_2;y_2)
+\rho^{(1)}(x_1;y_1)\rho^{(1)}(x_2;y_2)
 \]
 !et
 is the naive product of
 one-body densities (as if the particles were independent), while
 !bt
 \[
-\rho^{(1)}(x_1;y_2),\rho^{(1)}(x_2;y_1)
+\rho^{(1)}(x_1;y_2)\rho^{(1)}(x_2;y_1)
 \]
 !et
 is the exchange term that
@@ -696,7 +707,7 @@ This exchange term is essential to satisfy the antisymmetry of the
 wavefunction.
 
 !split
-==== The diagonal term =====
+===== The diagonal term =====
 
 Taking the diagonal $y_1=x_1$ and $y_2=x_2$ in the above formula
 yields the factorization for the two-body density (pair density) in a
@@ -749,31 +760,6 @@ Slater determinant, the equation for the two-body density is exact and no additi
 terms are needed.
 
 !split
-===== Interacting case =====
-
-However, in interacting many-fermion systems, the true ground state is
-generally not a single Slater determinant; it contains additional
-correlations beyond the antisymmetry requirement. In such cases, the
-two-body density matrix cannot be exactly factorized into a functional
-of $\rho^{(1)}$ alone – any attempt to express $\rho^{(2)}$ solely as
-products of one-body densities must include further correction terms
-for the inter-particle correlations (often called correlation or
-exchange-correlation terms in many-body theory) . For example, in a
-highly entangled state or a multi-determinant wavefunction,
-$\rho^{(2)}$ will differ from the Hartree–Fock form by correlation
-holes in addition to the Pauli exchange hole. These correlation
-effects account for particles avoiding each other due to dynamical
-interaction correlations (as opposed to just Pauli exclusion). In
-practice, one sometimes writes $\rho^{(2)} = \rho^{(2)}{\text{HF}} +
-\Delta \rho^{(2)}$, where $\rho^{(2)}{\text{HF}}$ is the
-Slater-determinant form (product minus exchange) and $\Delta
-\rho^{(2)}$ is a correction term capturing the extra correlations. For
-distinguishable or non-identical particles, the exchange term would
-vanish, and $\rho^{(2)}$ could in principle factorize if there are no
-interactions; but for identical fermions the exchange term is
-unavoidable.
-
-!split
 ===== Summarizing densities =====
 
 In summary, the two-body density matrix can be written as a product of
@@ -792,18 +778,13 @@ factorized into one-body pieces; additional two-particle exchange and
 correlation terms must be included to accurately describe the
 physics. Such terms ensure that both the Pauli principle and
 interaction-induced correlations are respected in
-$\rho^{(2)}$. Researchers in quantum chemistry and physics have
-developed reduced density matrix functional theories to approximate
-$\rho^{(2)}$ in terms of $\rho^{(1)}$ with exchange-correlation
-corrections , but finding exact conditions (the $N$-representability
-conditions) for a two-body density matrix to derive from a given
-$\rho^{(1)}$ is a non-trivial problem .
+$\rho^{(2)}$.
 
 
 !split
 ===== Hohenberg-Kohn theory =====
 
-Assume we found a solution for the Hamiltonian from the Born-Oppenheimer approximation, with
+Assume we found a solution for our Hamiltonian of interest with
 ground state energy $E_0$ and a certain electronic density
 $n(\bm{r})$. The strength of the Coulomb interaction and the mass of an
 electron are constants of nature, so the only input that can possibly
@@ -813,9 +794,10 @@ ground state energy is a {\em functional} of the input potential,
 
 !bt
 \[
-E_0 [v_{\mathrm{ext}}(\bm{r})] = \mathcal{F}_E[ v_{\mathrm{ext}}(\bm{r}) ]
+E_0 [v_{\mathrm{ext}}(\bm{r})] = \mathcal{F}_E[ v_{\mathrm{ext}}(\bm{r}) ].
 \]
 !et
+We have dropped the spin degrees of freedom here.
 
 
 !split
