@@ -1,0 +1,462 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{amsmath,amssymb,amsfonts,physics,bm,braket,mathtools}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,calc}
+
+\title[Diagram Rules for Fermions]{Diagram Rules for Fermions in Many-Body Theory:\\
+Time-Independent Perturbation Theory in Second Quantization}
+\author{FYS4480/9480}
+\institute{Addition to lecture notes week 44}
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+
+
+%--------------------------------------------------
+\begin{frame}{Reminder on fermionic Creation and Annihilation Operators}
+We work in second quantization with a chosen single-particle basis
+$\{ \phi_p(\mathbf{x}) \}$.
+\begin{align}
+    \hat{a}^\dagger_p &: \text{creates a fermion in state } \phi_p, \\
+    \hat{a}_p &: \text{annihilates a fermion in state } \phi_p.
+\end{align}
+They satisfy canonical anticommutation relations
+\begin{equation}
+    \{ \hat{a}_p, \hat{a}_q^\dagger \} = \delta_{pq}, \qquad
+    \{ \hat{a}_p, \hat{a}_q \} = 0, \qquad
+    \{ \hat{a}^\dagger_p, \hat{a}^\dagger_q \} = 0.
+\end{equation}
+A generic $A$-particle Slater determinant (Fermi sea, reference, etc.) is
+\begin{equation}
+    \ket{\Phi_0} = \prod_{i \in \text{occ}} \hat{a}^\dagger_i \ket{0},
+\end{equation}
+where $\text{occ}$ labels occupied single-particle states in the reference.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Hamiltonian in Second Quantization}
+We split the Hamiltonian into an unperturbed part $\hat{H}_0$ and an interaction $\hat{V}$:
+\begin{equation}
+    \hat{H} = \hat{H}_0 + \hat{V}.
+\end{equation}
+A common choice:
+\begin{align}
+    \hat{H}_0 &= \sum_{pq} t_{pq} \, \hat{a}^\dagger_p \hat{a}_q, \\
+    \hat{V} &= \frac{1}{4} \sum_{pqrs} \bar{v}_{pqrs} \,
+        \hat{a}^\dagger_p \hat{a}^\dagger_q \hat{a}_s \hat{a}_r,
+\end{align}
+where $\bar{v}_{pqrs}$ are antisymmetrized two-body matrix elements
+\[
+\bar{v}_{pqrs} = \matrixel{pq}{\hat{v}}{rs}
+- \matrixel{pq}{\hat{v}}{sr}.
+\]
+We treat $\hat{H}_0$ as solvable and $\hat{V}$ as the perturbation.
+The reference state $\ket{\Phi_0}$ is usually an eigenstate of $\hat{H}_0$.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Normal Ordering (Wick Setup)}
+\textbf{Normal ordering} $:\,\cdots\,:$ means: move all creation operators
+to the left of all annihilation operators \emph{with a sign} for each fermionic swap.
+
+For example,
+\begin{equation}
+    : \hat{a}^\dagger_p \hat{a}_q : \;=\; \hat{a}^\dagger_p \hat{a}_q,
+\qquad
+    : \hat{a}_q \hat{a}^\dagger_p :
+    \;=\; - \hat{a}^\dagger_p \hat{a}_q.
+\end{equation}
+
+Important subtlety: normal ordering must be defined with respect to a
+reference state. In many-body theory we \emph{do not} always normal order
+relative to the true vacuum $\ket{0}$, but often relative to a filled Fermi
+sea $\ket{\Phi_0}$.
+
+We denote normal ordering with respect to $\ket{\Phi_0}$ by
+$N[ \cdots ]$ when we need to stress it.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Contractions (Fermions)}
+Given two fermionic operators $\hat{A}$ and $\hat{B}$, their
+\textbf{contraction} with respect to $\ket{\Phi_0}$ is defined as
+\begin{equation}
+    \contraction{}{\hat{A}}{}{\hat{B}}
+    \hat{A}\hat{B}
+    \;\equiv\;
+    \langle \Phi_0 | \, T(\hat{A}\hat{B}) \, | \Phi_0 \rangle
+    - \langle \Phi_0 | \, N[\hat{A}\hat{B}] \, | \Phi_0 \rangle,
+\end{equation}
+where $T$ is an ordering operation appropriate to the context.
+
+For \textbf{time-independent} perturbation theory,
+we typically consider static (equal-time) operators in products like
+$\hat{V}\hat{V}\cdots\hat{V}$.
+Then the contraction between $\hat{a}_p$ and $\hat{a}^\dagger_q$ is
+\begin{equation}
+    \contraction{}{\hat{a}_p}{}{\hat{a}^\dagger_q}
+    \hat{a}_p \hat{a}^\dagger_q
+    \;=\;
+    \langle \Phi_0 | \hat{a}_p \hat{a}^\dagger_q | \Phi_0 \rangle
+    =
+    \delta_{pq} \times
+    \begin{cases}
+        1, & p \text{ unoccupied in } \ket{\Phi_0}, \\
+        0, & p \text{ occupied in } \ket{\Phi_0}.
+    \end{cases}
+\end{equation}
+Similarly,
+\begin{equation}
+    \contraction{}{\hat{a}^\dagger_p}{}{\hat{a}_q}
+    \hat{a}^\dagger_p \hat{a}_q
+    \;=\;
+    \langle \Phi_0 | \hat{a}^\dagger_p \hat{a}_q | \Phi_0 \rangle
+    =
+    \delta_{pq} \times
+    \begin{cases}
+        1, & p \text{ occupied in } \ket{\Phi_0}, \\
+        0, & p \text{ unoccupied in } \ket{\Phi_0}.
+    \end{cases}
+\end{equation}
+
+In words: a contraction ``projects'' whether an index is occupied
+(hole line) or unoccupied (particle line) in $\ket{\Phi_0}$.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Wick's Theorem (Static Form)}
+\textbf{Wick's theorem} for fermions states:
+
+Any product of fermionic creation and annihilation operators can be written
+as a sum of
+\begin{itemize}
+    \item a normal-ordered product $N[\cdots]$ (with respect to $\ket{\Phi_0}$),
+    \item plus all possible normal-ordered products with one contraction,
+    \item plus all with two contractions,
+    \item etc.,
+    \item up to the fully contracted term(s).
+\end{itemize}
+
+Symbolically,
+\begin{equation}
+    \hat{A}_1 \hat{A}_2 \cdots \hat{A}_n
+    =
+    N[\hat{A}_1 \hat{A}_2 \cdots \hat{A}_n]
+    + \sum_{\text{1 contraction}} N[\cdots]
+    + \sum_{\text{2 contractions}} N[\cdots]
+    + \cdots
+\end{equation}
+with appropriate fermionic signs for each reordering needed to realize
+the contractions.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Expectation Values and Full Contractions}
+Take the expectation value in $\ket{\Phi_0}$.
+Because all normal-ordered terms annihilate $\ket{\Phi_0}$ on the right
+(or $\bra{\Phi_0}$ on the left), only \emph{fully contracted} terms survive:
+\begin{equation}
+    \mel{\Phi_0}{\hat{A}_1 \hat{A}_2 \cdots \hat{A}_n}{\Phi_0}
+    =
+    \sum_{\text{all complete pairings}}
+    (\pm)\,
+    \prod_{\text{pairs }(i,j)} 
+        \contraction{}{\hat{A}_i}{}{\hat{A}_j}
+        \hat{A}_i \hat{A}_j .
+\end{equation}
+Key point:
+\begin{itemize}
+    \item The sum runs over all distinct ways of pairing operators
+    into contractions.
+    \item Each pairing comes with a fermionic sign determined by how many
+    swaps are needed to bring operators next to each other.
+\end{itemize}
+
+This is the algebraic origin of Feynman- or Goldstone-like diagrams:
+each full contraction pattern $\leftrightarrow$ one diagram.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Many-Body Perturbation Theory (Energy)}
+For a non-degenerate reference state $\ket{\Phi_0}$ with unperturbed
+energy $E_0^{(0)}$,
+the Rayleigh--Schr\"odinger perturbation series for the ground-state
+energy is
+\begin{equation}
+    E_0 = E_0^{(0)} + E_0^{(1)} + E_0^{(2)} + \cdots 
+\end{equation}
+with
+\begin{align}
+    E_0^{(1)} &= \mel{\Phi_0}{\hat{V}}{\Phi_0}, \\
+    E_0^{(2)} &= 
+        \sum_{n\neq 0}
+        \frac{
+        \abs{\mel{\Phi_n}{\hat{V}}{\Phi_0}}^2
+        }{
+        E_0^{(0)} - E_n^{(0)}
+        }, \quad \text{etc.}
+\end{align}
+In second quantization, these matrix elements are operator strings of
+$\hat{a}^\dagger \hat{a}^\dagger \hat{a}\hat{a}$ etc.
+
+\textbf{Wick’s theorem} reduces them to sums of complete contractions,
+with denominators from intermediate states. Each such contraction
+pattern corresponds to one diagram in the standard diagrammatic
+expansion of the ground-state energy.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Short summary}
+\begin{itemize}
+    \item Fermionic operators anticommute, and states are built as Slater determinants.
+    \item The Hamiltonian is expressed in normal-ordered two-body form.
+    \item Contractions encode occupied/unoccupied structure of the reference state.
+    \item Wick's theorem rewrites any operator product as a sum over
+    normal-ordered pieces plus contractions.
+    \item Only fully contracted pieces survive in expectation values,
+    and each full contraction $\leftrightarrow$ a diagram.
+\end{itemize}
+
+\bigskip
+Next  we will prove the \textbf{diagram rules}: how to translate any
+fully contracted term into a sign, symmetry factor, energy denominator,
+and algebraic expression.
+\end{itemize}
+\end{frame}
+
+
+%--------------------------------------------------
+\begin{frame}{From Contractions to Lines}
+Consider a two-body interaction vertex from $\hat{V}$:
+\begin{equation}
+    \hat{V} = \frac{1}{4} \sum_{pqrs} \bar{v}_{pqrs} \,
+    \hat{a}^\dagger_p \hat{a}^\dagger_q \hat{a}_s \hat{a}_r.
+\end{equation}
+A single insertion of $\hat{V}$ acting on $\ket{\Phi_0}$ can
+\emph{excite} two particles from occupied (hole) states $i,j$ to
+unoccupied (particle) states $a,b$.
+Schematically:
+\[
+    \hat{a}^\dagger_a \hat{a}^\dagger_b \hat{a}_j \hat{a}_i \ket{\Phi_0}
+    \quad \Rightarrow \quad
+    \ket{\Phi_{ij}^{ab}}.
+\]
+In diagrams:
+\begin{itemize}
+    \item Each $\hat{a}^\dagger$ corresponds to an outgoing particle line.
+    \item Each $\hat{a}$ corresponds to an incoming hole line.
+\end{itemize}
+A contraction between $\hat{a}_i$ in one vertex and $\hat{a}^\dagger_a$
+in another vertex becomes a \textbf{line} connecting two vertices.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Sign Structure: Fermionic Minus Signs}
+When we evaluate a string like
+\[
+\hat{a}^\dagger_{p_1} \hat{a}^\dagger_{p_2} \hat{a}_{q_2} \hat{a}_{q_1}
+\hat{a}^\dagger_{r_1} \hat{a}^\dagger_{r_2} \hat{a}_{s_2} \hat{a}_{s_1}
+\cdots
+\]
+we must bring operators next to each other to form contractions.
+Every swap of two fermionic operators contributes a factor $(-1)$.
+
+\textbf{Result:} Each complete contraction pattern produces
+\begin{equation}
+(\text{sign}) = (-1)^{N_{\text{perm}}},
+\end{equation}
+where $N_{\text{perm}}$ is the number of permutations needed to realize
+that pairing.
+
+\textbf{Diagrammatically}: following standard fermionic diagram
+conventions, internal lines that ``cross'' encode these permutations.
+Thus, the sign of a diagram is the sign of the underlying antisymmetry
+of the many-body wave function.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Energy Denominators (Time-Independent PT)}
+In ordinary Rayleigh--Schr\"odinger perturbation theory, an $n$th-order
+energy correction involves $n$ insertions of $\hat{V}$ and $(n-1)$
+sums over intermediate states:
+\begin{equation}
+E_0^{(n)} =
+\sum_{\text{int. states}}
+\frac{
+\mel{\Phi_0}{\hat{V}}{\Phi_{1}}
+\mel{\Phi_{1}}{\hat{V}}{\Phi_{2}}
+\cdots
+\mel{\Phi_{n-1}}{\hat{V}}{\Phi_0}
+}{
+(E_0^{(0)}-E_1^{(0)})
+(E_0^{(0)}-E_2^{(0)})
+\cdots
+(E_0^{(0)}-E_{n-1}^{(0)})
+}.
+\label{eq:EnPert}
+\end{equation}
+
+Each intermediate state $\ket{\Phi_k}$ is a Slater determinant with
+some set of particle-hole excitations. Its unperturbed energy
+$E_k^{(0)}$ is just the sum of single-particle energies of occupied
+orbitals in that determinant.
+
+\textbf{Diagram rule:}
+Every diagram at order $n$ carries a product of denominators,
+one for each ``time slice'' (or intermediate configuration) in which a
+set of particle-hole excitations propagates.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Putting It Together: Generic Fermion Diagram Rule}
+For ground-state energy corrections in time-independent MBPT:
+
+\textbf{Rule 1: Vertices.}
+Each interaction vertex contributes a factor
+$\bar{v}_{pqrs}$ with two incoming (hole) lines and two outgoing
+(particle) lines, summed over all internal indices.
+
+\textbf{Rule 2: Lines.}
+Each internal line corresponds to a contraction and implies
+\begin{itemize}
+    \item a Kronecker delta enforcing index matching,
+    \item whether that index is a particle (unoccupied in $\ket{\Phi_0}$)
+    or a hole (occupied in $\ket{\Phi_0}$),
+    \item an energy associated with that orbital.
+\end{itemize}
+
+\textbf{Rule 3: Signs.}
+Include a global factor $(-1)^{N_{\text{perm}}}$ coming from the
+reordering of fermion operators needed to realize the contraction pattern.
+Equivalently: track the number of fermionic line exchanges.
+
+\textbf{Rule 4: Denominators.}
+For an $n$th-order diagram, write down the sequence of intermediate
+Slater determinants generated as you ``move through'' the vertices.
+For each nontrivial intermediate determinant, include a denominator
+$[E_0^{(0)}-E_{\text{int}}^{(0)}]^{-1}$.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Example: Second-Order Correlation Energy}
+Consider the standard second-order (MP2-like) correlation energy.
+Occupied indices: $i,j$.
+Unoccupied (virtual) indices: $a,b$.
+
+The algebra from Eq.~\eqref{eq:EnPert} gives
+\begin{equation}
+E_0^{(2)} =
+\frac{1}{4}
+\sum_{ijab}
+\frac{
+\abs{ \bar{v}_{ijab} }^2
+}{
+\epsilon_i + \epsilon_j - \epsilon_a - \epsilon_b
+},
+\end{equation}
+where $\epsilon_p$ are single-particle energies from $\hat{H}_0$.
+
+\bigskip
+Diagrammatically:
+\begin{itemize}
+    \item One vertex excites $ij \to ab$,
+    \item The other vertex de-excites $ab \to ij$,
+    \item Internal lines connect $i\leftrightarrow i$, $j\leftrightarrow j$,
+    $a\leftrightarrow a$, $b\leftrightarrow b$,
+    \item The denominator is the energy difference of the intermediate
+    $2p$--$2h$ excitation,
+    \item The sign is $+$ for this canonical ordering.
+\end{itemize}
+This diagram encodes the full sum over $(ijab)$.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Symmetry / Combinatorial Factors}
+In higher orders, multiple distinct contraction patterns may generate
+the \emph{same} topological diagram.
+
+\textbf{Rule 5 (Symmetry factor).}
+If $m$ different full contraction patterns reduce to the same
+topological diagram, that diagram receives a prefactor $m$ (possibly
+with signs already accounted for).
+
+Example:
+\begin{itemize}
+    \item Two vertices with identical structure can sometimes be interchanged
+    without changing the topology.
+    \item Then both orderings appear separately in Wick expansions,
+    so the diagram gains an extra factor $2$.
+\end{itemize}
+
+This is how purely algebraic counting in Wick's theorem becomes
+combinatorics of diagrams.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Final Recipe (Ground-State Energy Diagrams)}
+To evaluate an $n$th-order fermionic diagram contributing to the
+ground-state energy:
+\begin{enumerate}
+    \item Assign indices ($i,j,\dots$ for occupied/hole,
+          $a,b,\dots$ for unoccupied/particle) to each line.
+    \item For each vertex, write a matrix element $\bar{v}_{pqrs}$
+          with appropriate indices from attached lines.
+    \item Multiply by the sign $(-1)^{N_{\text{perm}}}$ determined by
+          fermion line permutations.
+    \item Sum over all internal indices (Einstein-like summation).
+    \item Include one energy denominator for every intermediate
+          particle-hole configuration.
+    \item Multiply by the symmetry/combinatorial factor for that
+          topological diagram.
+\end{enumerate}
+
+\bigskip
+\textbf{Claim:} These rules are \emph{exactly} what you get by
+applying Wick’s theorem to $\hat{V}^n$ between Slater determinants,
+collecting only fully contracted terms, and organizing them by
+topology.
+\end{frame}
+
+%--------------------------------------------------
+\begin{frame}{Conceptual Proof Structure (Why This Works)}
+\begin{itemize}
+    \item Wick's theorem ensures: only full contractions survive in
+    $\mel{\Phi_0}{\hat{V}^n}{\Phi_0}$.
+    \item Each full contraction uniquely pairs annihilators with
+    creators across the $n$ interaction insertions.
+    \item Each such pairing defines:
+        \begin{itemize}
+            \item which particle-hole excitations appear,
+            \item in which order they propagate,
+            \item and how they recombine to $\ket{\Phi_0}$.
+        \end{itemize}
+    \item The fermionic anticommutation algebra enforces the correct sign.
+    \item The intermediate-state sums naturally generate the
+    denominators in Rayleigh--Schr\"odinger perturbation theory.
+    \item Grouping algebraically equivalent contraction patterns
+    gives topological diagrams plus symmetry factors.
+\end{itemize}
+
+Therefore, the diagram rules are not assumptions --- they are a compact
+repackaging of Wick's theorem and standard many-body perturbation theory.
+\end{frame}
+
+
+\end{document}
+
