@@ -1,0 +1,388 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% Minimal, clean beamer setup
+\usetheme{default}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Packages
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{physics}
+\usepackage{bm}
+\usepackage{mathtools, amsmath, amssymb}
+\usepackage{cancel}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathmorphing,positioning}
+
+% Handy macros
+\newcommand{\NO}[1]{:\!#1\!:}                         % normal ordering
+\newcommand{\con}{\;\;\raisebox{0.2ex}{\tiny$\contraction{}{}{}{}$}\;} % visual contraction hint (optional)
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Hn}{H_0}
+\newcommand{\V}{V}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Qcal}{\mathcal{Q}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Wop}{W}
+\newcommand{\Wopb}{\bar{W}}
+\newcommand{\Order}{\mathcal{T}}                       % (time) ordering symbol placeholder
+\newcommand{\ketPhi}{\ket{\Phi}}                      % reference (Slater) determinant
+\newcommand{\braPhi}{\bra{\Phi}}
+\newcommand{\Egs}{E}
+\newcommand{\Z}{\mathcal{Z}}
+\newcommand{\C}{\mathrm{C}}                           % connected
+\DeclareMathOperator{\Tr}{Tr}
+
+% Title
+\title{\Large The Linked Diagram Theorem in Time-Independent Many-Body Theory}
+\author{MHJ, old notes}
+\date{}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% =======================
+% LECTURE 1
+% =======================
+\section*{Lecture 1: Statement, Setup, and Diagrammatics}
+
+\begin{frame}{Roadmap: Two 45-minute Lectures}
+\textbf{Lecture 1 (foundations)}\vspace{0.3em}
+\begin{itemize}
+  \item Setup: $\Hn$, $\V$, reference $\ketPhi$, projectors $\Pcal,\Qcal$
+  \item Rayleigh--Schr\"odinger (RS) MBPT and vacuum-to-vacuum amplitude
+  \item Diagrammatics for ground-state energy corrections
+  \item \textbf{Statement of the Linked Diagram (Linked-Cluster) Theorem}
+\end{itemize}
+\textbf{Lecture 2 (derivation)}\vspace{0.3em}
+\begin{itemize}
+  \item Proof via cumulants / logarithm of the vacuum amplitude
+  \item Cancellation of unlinked diagrams and normalization
+  \item Explicit low-order examples (up to 3rd order)
+  \item Practical notes: algorithmic generation and bookkeeping
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hamiltonian Partition and Reference State}
+We consider
+\[
+H=\Hn+\V,\qquad \Hn\ket{\Phi}=E_0\ket{\Phi},
+\]
+with $\ket{\Phi}$ a Slater determinant (closed-shell, non-degenerate). Define projection operators
+\[
+\Pcal=\ketPhi\braPhi,\qquad \Qcal=1-\Pcal.
+\]
+\smallskip
+\textbf{Goal:} Compute the exact ground-state energy $\Egs$ as an expansion in $\V$ centered at $\ketPhi$.
+\end{frame}
+
+\begin{frame}{RS Energy Expansion (Time-Independent MBPT)}
+Let $\ket{\Psi}$ be the exact ground state, normalized as $\braket{\Phi}{\Psi}=1$ (intermediate normalization). Then
+\[
+\Egs = E_0 + \Delta E, \qquad \Delta E = \sum_{n\ge 1} E^{(n)}.
+\]
+Standard RS formulas (compactly):
+\[
+E^{(1)}=\matrixel{\Phi}{\V}{\Phi},\qquad
+E^{(2)}=\sum_{\nu\neq 0}\frac{\abs{\matrixel{\Phi}{\V}{\nu}}^2}{E_0-E_\nu^{(0)}},\quad \dots
+\]
+\textbf{Diagrammatically:} each term $\leftrightarrow$ collection of Goldstone diagrams (closed, vacuum diagrams) built from $\V$ and $\Hn$ lines/propagators.
+\end{frame}
+
+\begin{frame}{Normal Ordering and Contractions (Assumed Known)}
+Write (w.r.t.\ $\ketPhi$):
+\[
+\V=\NO{\V} + \underbrace{\wick{\c1 a^\dagger \c1 a}}_{\text{contractions}} + \cdots
+\]
+Wick's theorem (time-independent version) reduces expectation values to sums of products of contractions.\medskip
+
+\textbf{Diagram rules (Goldstone):} vertices for $\V$, lines for particle/hole propagators, symmetry factors $S$, energy denominators from ordered integrals / resolvents.
+\end{frame}
+
+\begin{frame}{Vacuum-to-Vacuum Amplitude and Generating Picture}
+Introduce a bookkeeping parameter $\lambda$:
+\[
+H(\lambda)=\Hn+\lambda \V.
+\]
+Define the (adiabatic) vacuum-to-vacuum amplitude
+\[
+\Z(\lambda) \equiv \braPhi \Omega(\lambda) \ketPhi,
+\]
+where $\Omega(\lambda)$ denotes the M\o ller wave operator that maps $\ketPhi$ to the interacting state in the adiabatic limit.
+\smallskip
+
+\textbf{Heuristic:} Many-body \emph{vacuum diagrams} (closed diagrams) contribute to $\Z$. \emph{Connected} vacuum diagrams contribute to $\log\Z$.
+\end{frame}
+
+\begin{frame}{Statement: Linked Diagram (Linked-Cluster) Theorem}
+\textbf{Theorem.} \emph{For time-independent MBPT with intermediate normalization, the ground-state energy correction $\Delta E$ is given by the sum of \emph{linked} (connected) vacuum diagrams only. Unlinked (disconnected) vacuum diagrams cancel order by order due to normalization and exponentiation.}
+\[
+\boxed{\;\Delta E = \sum_{\text{connected vacuum diagrams}} \text{(value of diagram)}\;}
+\]
+Equivalently: if $\Z$ is the sum of all (linked and unlinked) vacuum diagrams,
+\[
+\log \Z = \sum_{\text{connected vacuum diagrams}},
+\]
+and the energy shift follows from the $\lambda$-derivative of $\log\Z$ at $\lambda=1$ (or from standard RS expressions).
+\end{frame}
+
+\begin{frame}{Connected vs.\ Unlinked: A Visual Reminder}
+\centering
+\begin{tikzpicture}[scale=1.0, every node/.style={font=\small}]
+% Connected bubble
+\draw[thick] (0,0) circle (0.7);
+\node at (0,-1.1){Connected};
+
+% Unlinked pair
+\draw[thick] (4,0.3) circle (0.5);
+\draw[thick] (5.2,-0.3) circle (0.5);
+\node at (4.6,-1.1){Unlinked (disconnected)};
+\end{tikzpicture}
+
+\smallskip
+In algebra: products of lower-order \emph{connected} contributions generate \emph{unlinked} composites; these are precisely removed by the logarithm/normalization.
+\end{frame}
+
+\begin{frame}{Goldstone Diagrams for Energy: Examples}
+\begin{columns}
+\column{0.55\textwidth}
+\textbf{Second order}
+\[
+E^{(2)} = \sum_{\substack{ab \\ ij}} 
+\frac{\abs{\matrixel{ij}{\V}{ab}}^2}{\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b}
+\]
+(one connected bubble)
+\medskip
+
+\textbf{Third order}
+\[
+E^{(3)} = \sum \frac{\matrixel{\Phi}{\V}{\nu}\matrixel{\nu}{\V}{\mu}\matrixel{\mu}{\V}{\Phi}}
+{(E_0-E_\nu^{(0)})(E_0-E_\mu^{(0)})}
+\]
+(topologies: ring, ladder, crossed-ladder)
+\column{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.9]
+% Simple bubble
+\draw[thick] (0,0) circle (0.9);
+\draw[thick] (-0.5,0.6) -- (0.5,-0.6);
+\draw[thick] (-0.5,-0.6) -- (0.5,0.6);
+\node at (0,-1.3){2nd order};
+\end{tikzpicture}
+
+\medskip
+
+\begin{tikzpicture}[scale=0.9]
+% Ring-like
+\draw[thick] (0,0) circle (1.0);
+\foreach \a in {30,150,270}
+  \fill (\a:1.0) circle (2pt);
+\draw[thick] (30:1.0) -- (150:1.0);
+\draw[thick] (150:1.0) -- (270:1.0);
+\draw[thick] (270:1.0) -- (30:1.0);
+\node at (0,-1.4){3rd order (ring)};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Key Takeaways from Lecture 1}
+\begin{itemize}
+  \item Energies in RS-MBPT are sums over vacuum (closed) diagrams built from $\V$.
+  \item \textbf{Linked-Cluster Theorem:} only connected vacuum diagrams contribute to $\Delta E$.
+  \item The mechanism is combinatorial: unlinked diagrams exponentiate and cancel against normalization; \(\log \Z\) generates connected clusters.
+\end{itemize}
+Next: formal derivation via cumulant (connected) expansion.
+\end{frame}
+
+% =======================
+% LECTURE 2
+% =======================
+\section*{Lecture 2: Derivation and Examples}
+
+\begin{frame}{Plan for Lecture 2}
+\begin{enumerate}
+  \item Define the vacuum functional $\Z(\lambda)$ and its perturbative expansion
+  \item Show: $\log \Z(\lambda)$ collects only connected vacuum diagrams
+  \item Extract $\Delta E$ from $\log \Z$
+  \item Work through explicit 2nd and 3rd order to see cancellation of unlinked pieces
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Vacuum Functional and Expansion}
+Introduce an adiabatic regulator (formal):
+\[
+\Z(\lambda)=\frac{\braPhi \Omega(\lambda)\ketPhi}{\braket{\Phi}{\Phi}}
+= \sum_{n=0}^{\infty}\frac{\lambda^n}{n!}\,\braPhi \V^n \ketPhi_{\text{connected+disconnected}},
+\]
+where Wick reduces $\braPhi \V^n \ketPhi$ to sums of complete contractions.
+\smallskip
+
+\textbf{Cluster decomposition:} any complete contraction decomposes uniquely into a product of \emph{connected} contractions (clusters).
+\end{frame}
+
+\begin{frame}{Combinatorics of Clusters $\Rightarrow$ Exponentiation}
+Let $C_n$ denote the sum of all connected vacuum contractions with $n$ vertices of $\V$. Then every disconnected contraction is a product of connected pieces:
+\[
+\Z(\lambda)= 1 + \sum_{n\ge 1} \frac{\lambda^n}{n!}\Big(\text{all contractions}\Big)
+= \exp\!\left(\sum_{n\ge 1}\frac{\lambda^n}{n!}\, C_n\right).
+\]
+\textbf{Thus,}
+\[
+\boxed{\log\Z(\lambda)=\sum_{n\ge 1}\frac{\lambda^n}{n!}\, C_n \equiv \sum_{\text{connected vacuum diagrams}}.}
+\]
+This is the \emph{linked-cluster (connected) expansion}.
+\end{frame}
+
+\begin{frame}{Extracting the Energy from $\log \Z$}
+With intermediate normalization ($\braket{\Phi}{\Psi}=1$) one can show
+\[
+\Delta E = \left.\frac{d}{d\lambda}\log\Z(\lambda)\right|_{\lambda=1}.
+\]
+Expanded:
+\[
+\Delta E = \sum_{n\ge 1}\frac{1}{n!}\, C_n,
+\]
+where $C_n$ are the $n$-th order \emph{connected} (linked) vacuum diagrams evaluated with the usual Goldstone rules (including symmetry factors, energy denominators).
+\end{frame}
+
+\begin{frame}{Sketch of the Proof (1): Wick and Cumulants}
+\textbf{Idea:} Write $\Z=\exp W$ with $W=\log\Z$, and interpret $W$ as the \emph{cumulant} generating functional of vacuum contractions.
+\begin{itemize}
+  \item Introduce sources $J$ linearly coupled to $\V$ or to field bilinears, expand $\Z[J]$.
+  \item Cumulants (derivatives of $W[J]$ at $J=0$) pick out \emph{connected} correlation functions only.
+  \item Setting $J$-structure to reproduce insertions of $\V$ yields $C_n$ as the $n$-point connected vacuum objects.
+\end{itemize}
+This establishes $\log \Z = \sum \text{connected}$ non-constructively but generally.
+\end{frame}
+
+\begin{frame}{Sketch of the Proof (2): Direct Counting}
+Alternatively, count how many times a product of connected pieces appears in $\Z$ vs.\ $\log\Z$:
+\[
+\Z = \sum_{\{m_k\}}\prod_{k\ge 1}\frac{1}{m_k!}\Big(\frac{C_k}{k!}\Big)^{m_k},
+\]
+where $m_k$ is the multiplicity of $k$-vertex connected components and $\sum_k k\,m_k=n$ at $n$-th order.
+\[
+\log\Z = \sum_{k\ge 1} \frac{C_k}{k!},
+\]
+which follows from the exponential formula in combinatorics (the set-partition theorem). Hence only connected contributions survive in $\log\Z$.
+\end{frame}
+
+\begin{frame}{Cancellation of Unlinked Diagrams in Energy}
+Energy from RS can also be written as
+\[
+\Egs = \frac{\braPhi H \ket{\Psi}}{\braket{\Phi}{\Psi}}
+= E_0 + \frac{\braPhi \V \ket{\Psi}}{\braket{\Phi}{\Psi}}.
+\]
+Expanding numerator and denominator in $\lambda$:
+\[
+\frac{N(\lambda)}{D(\lambda)}=\frac{\sum_n \lambda^n N_n}{1+\sum_{m\ge 1}\lambda^m D_m}
+= \sum_{r\ge 0} \lambda^r \Big(N_r - \sum_{m=1}^r D_m N_{r-m} + \cdots\Big),
+\]
+and one finds precisely that terms factorizing into products of lower-order vacuum pieces cancel against the denominator. The survivors are the \emph{linked} contributions, reproducing $\dv{\lambda}\log\Z$.
+\end{frame}
+
+\begin{frame}{Goldstone Rules Refresher (for Energy Diagrams)}
+\begin{itemize}
+  \item Place $n$ interaction vertices $\V$; connect lines respecting fermionic statistics.
+  \item Assign particle/hole propagators; each closed fermion loop $\Rightarrow$ a factor $(-1)$.
+  \item Symmetry factor $S$: divide by automorphisms that leave the diagram invariant.
+  \item Energy denominator: product over intermediate-state energy differences (or via resolvent method).
+  \item Sum over all internal indices (spin, orbitals); overall factor $1/n!$ from perturbative expansion cancels overcountings.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Explicit 2nd Order: Linked Only}
+For a two-body $\V=\tfrac{1}{4}\sum \bar{v}_{pqrs} a_p^\dagger a_q^\dagger a_s a_r$,
+\[
+E^{(2)} = \frac{1}{4}\sum_{ijab} \frac{\abs{\bar{v}_{ijab}}^2}{\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b},
+\]
+which corresponds to the single \emph{connected} bubble diagram.\medskip
+
+Any attempt to form products of first-order pieces is null because $E^{(1)}$ for normal-ordered $V$ vanishes in a Hartree–Fock reference (or is absorbed in $\Hn$), illustrating the absence/cancellation of unlinked composites at this order.
+\end{frame}
+
+\begin{frame}{Explicit 3rd Order: Topologies and Cancellations}
+At third order, connected topologies include (schematically): ring, ladder, and crossed-ladder. Their analytical expressions (one example):
+\[
+E^{(3)}_{\text{lad}}=\frac{1}{8}\sum_{\substack{ijab\\kc}}
+\frac{\bar{v}_{ijab}\,\bar{v}_{bk cj}\,\bar{v}_{ci ka}}
+{(\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b)\,(\varepsilon_i+\varepsilon_k-\varepsilon_a-\varepsilon_c)}.
+\]
+Unlinked structures (products of a connected 2nd-order bubble with a disconnected 1st-order tadpole, etc.) cancel once the denominator normalization (or $\log\Z$) is accounted for.
+\end{frame}
+
+\begin{frame}{Diagram Placeholders You Can Extend}
+\centering
+\begin{tikzpicture}[x=1.2cm,y=1.2cm]
+% Ladder-like sketch
+\draw[thick] (-1,1) -- (1,1);
+\draw[thick] (-1,-1) -- (1,-1);
+\draw[thick] (-0.6,1) -- (-0.6,-1);
+\draw[thick] (0.6,1) -- (0.6,-1);
+\node at (0,-1.5){Ladder (connected)};
+\end{tikzpicture}
+\hspace{1cm}
+\begin{tikzpicture}[x=1.2cm,y=1.2cm]
+% Unlinked: two bubbles
+\draw[thick] (-0.6,0) circle (0.5);
+\draw[thick] (0.6,0) circle (0.5);
+\node at (0,-1.1){Unlinked (cancels)};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Alternative Derivation Route: Bloch Equation}
+Let $\Omega$ be the wave operator, $\ket{\Psi}=\Omega\ketPhi$, with the Bloch equation
+\[
+[\Omega,\Hn]\Pcal = \Qcal(\V\Omega - \Omega \Wop)\Pcal,\qquad
+\Wop \equiv \Pcal H \Omega \Pcal.
+\]
+Expanding $\Omega=\sum_{n\ge 0}\Omega^{(n)}$ and $\Wop$ order by order, one can show algebraically that the $\Wop$ (energy) receives only \emph{connected} contributions, because the disconnected pieces generated in $\Omega$ cancel in $\Wop$ through $\Pcal$-projection and the commutator structure. This is equivalent to the cumulant proof.
+\end{frame}
+
+\begin{frame}{Summary of the Derivation}
+\begin{itemize}
+  \item Write the vacuum functional $\Z$ as a sum over all vacuum diagrams.
+  \item Use cluster decomposition $\Rightarrow$ $\Z=\exp\big(\sum \text{connected}\big)$.
+  \item Take $\log$ and differentiate: $\Delta E = \eval{\dv{\lambda}\log \Z(\lambda)}_{\lambda=1}$.
+  \item Hence $\Delta E$ equals the sum of values of \emph{connected} vacuum diagrams only.
+\end{itemize}
+This holds to all orders and underpins size-extensivity and additivity for noninteracting fragments.
+\end{frame}
+
+\begin{frame}{Practical Notes for Calculations}
+\begin{itemize}
+  \item Prefer normal-ordered Hamiltonians; $E^{(1)}$ often vanishes for HF reference.
+  \item Automate diagram generation: enumerate topologies, compute symmetry factors, energy denominators, and index sums.
+  \item Check size-extensivity: only linked diagrams ensure correct scaling with particle number.
+  \item Cross-validate: numerical MBPT vs.\ coupled-cluster (which sums linked \emph{connected} diagrams to infinite order via exponentiation of the cluster operator).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Worked Exercise (for Students)}
+\textbf{Task:} For a two-body interaction in an HF basis, derive $E^{(3)}_{\text{ring}}$ explicitly:
+\begin{enumerate}
+  \item Draw the connected ring topology and assign indices.
+  \item Write the algebraic expression using antisymmetrized matrix elements $\bar{v}_{pqrs}$.
+  \item Derive the energy denominators from intermediate-state energies.
+  \item Verify that any product of a 2nd-order connected and a 1st-order tadpole cancels in the normalized expression.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Take-Home Messages}
+\begin{itemize}
+  \item The linked (connected) nature of contributing diagrams to $\Delta E$ follows from general combinatorics (cumulants).
+  \item Unlinked diagrams exponentiate and cancel via normalization $\Rightarrow$ size-extensive energies.
+  \item The theorem guides practical many-body methods (MBPT, CC, MBPT-derived effective interactions).
+\end{itemize}
+\end{frame}
+
+
+\end{document}
