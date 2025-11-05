@@ -384,5 +384,126 @@ This holds to all orders and underpins size-extensivity and additivity for nonin
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Overview}
+  \begin{itemize}
+    \item \textbf{Fermion antisymmetry and sign}: How the Pauli principle and antisymmetric wavefunctions lead to sign factors in many-body perturbation theory.
+    \item \textbf{Goldstone diagram sign rules}: Derivation of the $(-1)$ sign rules using fermion permutation symmetry and Wick's theorem.
+    \item \textbf{Closed hole lines and loops}: Understanding the sign associated with each closed hole line and each closed loop in a Goldstone diagram.
+    \item \textbf{Equivalent lines and symmetry factors}: Role of equivalent line pairs (identical propagators) and how they contribute to the overall sign (and symmetry factor) of a diagram.
+    \item \textbf{Examples and proofs}: Step-by-step evaluation of example diagrams, with mathematical proofs of the sign rules and schematic diagrams illustrating the concepts.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Fermion Permutation Symmetry and Sign}
+  \textbf{Antisymmetric wavefunctions:} Fermionic $N$-particle states are antisymmetric under particle exchange. If two fermions are swapped, the many-body wavefunction gains a minus sign:
+  $$\Psi(\ldots, r_i, \ldots, r_j, \ldots) = -\,\Psi(\ldots, r_j, \ldots, r_i, \ldots).$$ 
+  In second quantization, creation/annihilation operators obey anticommutation: $a_p a_q^\dagger + a_q^\dagger a_p = \delta_{pq}$. This means exchanging the order of two fermion operators introduces a factor $-1$.
+  
+  \vspace{0.5em}
+  \textbf{Operator reordering:} Any term in a perturbation expansion involves a string of creation ($a^\dagger$) and annihilation ($a$) operators acting on the Fermi vacuum $|Φ_0\rangle$. The sign of a term is determined by the parity of the permutations required to rearrange these operators into a standard (normal-ordered) form 
+  \[
+    (-1)^P,\qquad P = \text{number of transpositions needed to reorder operators 
+  \]
+  
+  \textbf{Implication:} The need to swap fermion operators arises whenever we bring annihilation operators past creation operators or swap identical particles. This is the origin of sign rules in diagrammatic expansions.
+\end{frame}
+\end{document}
+
+
+\begin{frame}{Derivation of Sign Rules from Antisymmetry}
+  Consider a simple two-particle excitation from a closed-shell reference $|Φ_0\rangle$ (with occupied orbitals $i,j$ and virtual orbitals $a,b$). The second-quantized operator for this double excitation might appear as:
+  \[
+    a_a^\dagger a_b^\dagger\,a_j\,a_i\,,
+  \] 
+  acting on $|Φ_0\rangle$. To evaluate this, we must move the annihilation operators $a_i, a_j$ to the right to act on $|Φ_0\rangle$. Each commutation (anticommutation) of fermion operators yields a $-1$:
+  \begin{itemize}
+    \item $a_i$ acting on $|Φ_0\rangle$ (which is $a_1^\dagger a_2^\dagger\cdots a_N^\dagger|0\rangle$) must be anticommuted past the creation operators $a_1^\dagger,\ldots,a_{i-1}^\dagger$ that were created before it in $|Φ_0\rangle$. This introduces $(-1)^{i-1}$.
+    \item Similarly, $a_j$ (with $j>i$ for example) must pass the remaining $a_1^\dagger,\ldots,a_{j-1}^\dagger$ (excluding $a_i^\dagger$ which was removed), introducing another $(-1)^{j-2}$.
+  \end{itemize}
+  The overall sign from reordering $a_a^\dagger a_b^\dagger a_j a_i$ to normal order $a_1^\dagger\cdots a_N^\dagger a_i a_j$ is the product of such factors. In this example:
+  \[
+    (-1)^{\,i-1} \times (-1)^{\,j-2} = (-1)^{\,i+j-3}\,,
+  \] 
+  which is a single $-1$ if $i+j-3$ is odd (i.e., if the permutation is odd). This matches the expectation that exchanging two fermions (or performing an odd number of swaps) yields a minus sign.
+  
+  \vspace{0.5em}
+  More generally, Wick’s theorem pairs up creation and annihilation operators (contractions). The sign of each Wick contraction term is $(-1)^P$ where $P$ counts the operator swaps needed to achieve those pairings [oai_citation:2‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=5,%CB%86). Rather than counting each swap manually, we can deduce a general rule based on diagram topology.
+\end{frame}
+
+\begin{frame}{Goldstone Diagram Sign Rule: $(-1)^{h+l}$}
+  In Goldstone diagrams (time-ordered many-body perturbation diagrams), we can determine the sign directly from the diagram’s structure:
+  \[
+    \text{Sign}(D) \;=\; (-1)^{\,h + l}\,,
+  \] 
+  where 
+  \begin{itemize}
+    \item $h$ = number of \textbf{hole lines} (internal lines associated with occupied states in the reference), and 
+    \item $l$ = number of \textbf{closed loops} in the diagram [oai_citation:3‡physics.mff.cuni.cz](https://physics.mff.cuni.cz/kchfo/burda/QCh/14_MBPT.pdf#:~:text=c,is%20number%20of%20closed%20loops).
+  \end{itemize}
+  \textbf{Each hole line contributes a factor of $-1$, and each closed loop of fermion lines contributes a factor of $-1$ to the overall sign [oai_citation:4‡physics.mff.cuni.cz](https://physics.mff.cuni.cz/kchfo/burda/QCh/14_MBPT.pdf#:~:text=c,is%20number%20of%20closed%20loops) [oai_citation:5‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=Fermion%20sign%20of%20a%20single,38).} This rule emerges from the antisymmetry considerations:
+  \begin{itemize}
+    \item A \emph{hole line} represents an annihilation from the Fermi sea and a later creation (filling the hole). Removing an occupied particle requires swapping that annihilation operator past all other occupied operators, yielding $-1$ per hole.
+    \item A \emph{closed loop} (a cycle of propagators returning to the starting point) effectively introduces an additional exchange among fermions. In field-theoretic terms, a closed fermion loop carries a $-1$ sign. Graphically in Goldstone diagrams, each independent loop adds one more $-1$ factor [oai_citation:6‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=is%20however%20no%20change%20of,38).
+  \end{itemize}
+  \textbf{Example:} A second-order energy diagram with two hole lines ($h=2$) and forming one closed loop ($l=1$) has $\text{Sign} = (-1)^{2+1} = (-1)^3 = -1$ [oai_citation:7‡physics.mff.cuni.cz](https://physics.mff.cuni.cz/kchfo/burda/QCh/14_MBPT.pdf#:~:text=Since%20we%20have%20two%20holes,1%293%20Ex). (Indeed, the second-order correlation energy in a fermionic system comes in with a negative sign.)
+\end{frame}
+
+\begin{frame}{Closed Hole Lines and Closed Loops}
+  \textbf{Closed hole line:} In a Goldstone diagram, a hole line begins and ends at the Fermi vacuum (ground state). Such a line corresponds to an excitation out of the Fermi sea and the eventual return of that particle to the sea. Because the fermion was removed and reinserted, the operation entails an exchange with the Fermi sea. Each closed hole line contributes one minus sign. Equivalently, an internal occupied propagator (hole) yields $-1$ [oai_citation:8‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=is%20however%20no%20change%20of,38).
+  
+  \textbf{Closed loop:} A closed loop is a cycle of connected propagators and vertices that forms a ring. For example, two hole lines $i,j$ interacting with two particle lines $a,b$ (in a ring-like topology) form one loop. Such a loop can be seen as an exchange cycle involving multiple fermions. A closed loop contributes an additional $-1$ on top of the individual hole contributions [oai_citation:9‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=is%20however%20no%20change%20of,38). This is analogous to the well-known result that a closed fermion loop in Feynman diagrams yields a $-1$ factor.
+  
+  \textbf{Multiple loops:} If a diagram has multiple disjoint loops, each loop contributes $-1$. The total sign is therefore the product of $-1$ for each hole line and each loop, i.e. $(-1)^{h+l}$. For instance, adding one extra hole line \emph{and} one extra loop to a diagram introduces two additional minus signs, which multiply to give a positive contribution [oai_citation:10‡indico.ictp.it](https://indico.ictp.it/event/a14246/session/25/contribution/40/material/1/0.pdf#:~:text=match%20at%20L969%20%EF%80%AD%20one,and%20singles%20in%20solids%2054). (Quote: “one more loop, one more hole gives positive Fermion sign” [oai_citation:11‡indico.ictp.it](https://indico.ictp.it/event/a14246/session/25/contribution/40/material/1/0.pdf#:~:text=match%20at%20L969%20%EF%80%AD%20one,and%20singles%20in%20solids%2054), meaning $(-1)\times(-1)=+1$ in that case.)
+  
+  \vspace{0.3em}
+  \textit{Aside:} For the purpose of counting $l$, note that even a non-propagating hole (a contracted hole pair created and annihilated at the same interaction) counts as a hole line, and if it forms its own closed cycle it also contributes as a loop [oai_citation:12‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=Fermion%20sign%20of%20a%20single,38). 
+\end{frame}
+
+\begin{frame}{Equivalent Line Pairs and Symmetry Factors}
+  Not all diagram permutations lead to distinct terms. \textbf{Equivalent lines} are multiple propagator lines that connect the same two vertices in the same way. For example, two identical particle lines connecting the same pair of interaction vertices are considered equivalent. Exchanging such equivalent lines does not produce a new diagram; it corresponds to the same term counted twice.
+  
+  \textbf{Symmetry factor for equivalent lines:} For each set of $n$ equivalent lines in a diagram, one must divide by $n!$ to correct for overcounting. In most common cases, this appears as a factor of $\frac{1}{2}$ for each pair of equivalent lines [oai_citation:13‡esqc.org](https://www.esqc.org/lectures/Crawford_ESQC22_CC2.pdf#:~:text=5,V%20%CC%82%20N%20T%20%CC%82). This factor is \emph{not a new source of a minus sign}, but it reduces the diagram’s weight to account for identical permutations. 
+  
+  \textbf{Example:} If an interaction connects two fermions via two parallel identical paths (say two identical interaction lines between the same states), those two lines are equivalent. Swapping them does not change the topology. We therefore include a factor $\frac{1}{2}$ in the algebraic expression of that diagram to avoid double-counting its contribution [oai_citation:14‡esqc.org](https://www.esqc.org/lectures/Crawford_ESQC22_CC2.pdf#:~:text=5,V%20%CC%82%20N%20T%20%CC%82). For $n=3$ equivalent lines (rare in simple MBPT), a factor $1/3! = 1/6$ would be included, and so on.
+  
+  \vspace{0.3em}
+  \textit{Note:} A related symmetry factor arises if a diagram has a mirror symmetry (e.g. two identical halves). This is effectively another way of saying there are equivalent sets of lines or vertices. Including the $\frac{1}{2}$ (or appropriate $1/n!$) ensures each unique diagram is counted only once.
+\end{frame}
+
+\begin{frame}{Example: Evaluating a Goldstone Diagram}
+  \textbf{Second-Order Energy Diagram:} Consider the second-order Goldstone diagram for correlation energy involving two holes $i,j$ and two particles $a,b$. One possible topology is a ring (often drawn as two hole lines going up from the Fermi sea, interacting with two particle lines coming down, with two interaction vertices linking them). In one interaction, hole $i$ scatters into particle $a$ and in the other, hole $j$ scatters into particle $b$ (direct term). Schematically:
+  \[
+    i \uparrow \-- V \-- a \downarrow \qquad j \uparrow \-- V \-- b \downarrow
+  \] 
+  (with $i,j$ starting at the Fermi sea and $a,b$ ending at high energy, and the dashed $V$ lines representing the two-body interactions).
+  
+  For this diagram:
+  \begin{itemize}
+    \item Number of hole lines $h = 2$ ($i$ and $j$ are two distinct hole propagators).
+    \item Number of loops $l = 1$ (the diagram forms one closed cycle connecting $i$ and $j$ through the two interactions and back to the Fermi sea).
+    \item \textbf{Sign} $= (-1)^{h+l} = (-1)^{2+1} = -1$ [oai_citation:15‡physics.mff.cuni.cz](https://physics.mff.cuni.cz/kchfo/burda/QCh/14_MBPT.pdf#:~:text=Since%20we%20have%20two%20holes,1%293%20Ex).
+  \end{itemize}
+  The algebraic contribution of this diagram (using Møller-Plesset perturbation theory notation) would be:
+  \[
+    E^{(2)}_{\text{dir}} = -\sum_{ijab}\frac{V_{ij}^{ab}\,V_{ij}^{ab}}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}\,,
+  \] 
+  where the minus sign corresponds to $(-1)^{3}=-1$ as derived. Here $V_{ij}^{ab} = \langle ij||ab\rangle$ is an antisymmetrized two-electron integral (symmetric in exchanging $i\leftrightarrow j$ or $a\leftrightarrow b$, and with implicit antisymmetry $V_{ij}^{ab}=-V_{ji}^{ab}$).
+  
+  \textbf{Exchange term:} Another second-order diagram has the two interactions crossed (hole $i$ goes to particle $b$, and $j$ to particle $a$). This exchange diagram also has $h=2$, $l=1$, giving sign $-1$. Its algebraic contribution is proportional to $\langle ij||ba\rangle$ which carries an additional minus relative to the direct term integrals, reflecting the same exchange antisymmetry. The diagrammatic $-1$ sign and the antisymmetric matrix element together ensure the correct overall sign.
+\end{frame}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item Fermion antisymmetry (Pauli exclusion principle) is the fundamental source of sign factors in many-body perturbation theory. Terms corresponding to an odd permutation of fermion operators pick up a negative sign [oai_citation:16‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=5,%CB%86).
+    \item In Goldstone diagrams, a clear rule encapsulates these sign factors: $\displaystyle \text{Sign} = (-1)^{\,h + l}$ [oai_citation:17‡physics.mff.cuni.cz](https://physics.mff.cuni.cz/kchfo/burda/QCh/14_MBPT.pdf#:~:text=c,is%20number%20of%20closed%20loops). One $-1$ arises for each hole line ($h$) and one for each independent closed loop ($l$) [oai_citation:18‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=Fermion%20sign%20of%20a%20single,38).
+    \item A “hole line” represents the removal and reinsertion of a fermion from the Fermi sea (an internal occupied propagator), and each such removal yields a $-1$ sign. A “closed loop” of fermion propagators adds another $-1$, analogous to a closed fermion loop in Feynman diagrams [oai_citation:19‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=is%20however%20no%20change%20of,38).
+    \item When evaluating diagrams, one must also account for \textbf{equivalent lines}. Identical propagator lines connecting the same vertices lead to symmetry factors (like $1/2$ for a pair) to avoid double counting [oai_citation:20‡esqc.org](https://www.esqc.org/lectures/Crawford_ESQC22_CC2.pdf#:~:text=5,V%20%CC%82%20N%20T%20%CC%82). These factors adjust the magnitude (and are often discussed alongside sign rules) but do not themselves introduce negative signs.
+    \item We included examples (second-order diagrams) to illustrate how to apply these rules in practice. By following the $(-1)^{h+l}$ rule and including symmetry factors for equivalent lines, one can confidently determine the sign and weight of any Goldstone diagram term, ensuring the perturbation expansion respects the antisymmetry of fermions and avoids overcounting.
+  \end{itemize}
+\end{frame}
 
 \end{document}
+
+
