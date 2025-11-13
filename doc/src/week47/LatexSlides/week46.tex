@@ -1,0 +1,317 @@
+\documentclass[compress]{beamer}
+
+
+% Try the class options [notes], [notes=only], [trans], [handout],
+% [red], [compress], [draft], [class=article] and see what happens!
+
+% For a green structure color use:
+%\colorlet{structure}{green!50!black}
+
+\mode<article> % only for the article version
+{
+  \usepackage{beamerbasearticle}
+  \usepackage{fullpage}
+  \usepackage{hyperref}
+}
+
+\beamertemplateshadingbackground{red!10}{blue!10}
+
+%\beamertemplateshadingbackground{red!10}{blue!10}
+\beamertemplatetransparentcovereddynamic
+%\usetheme{Hannover}
+
+\setbeamertemplate{footline}[page number]
+
+
+%\usepackage{beamerthemeshadow}
+
+%\usepackage{beamerthemeshadow}
+\usepackage{ucs}
+
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{graphicx}
+\usepackage{simplewick}
+\usepackage{amsmath,amssymb}
+\usepackage[latin1]{inputenc}
+\usepackage{colortbl}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{shadow}
+\lstset{language=c++}
+\lstset{alsolanguage=[90]Fortran}
+\lstset{basicstyle=\small}
+%\lstset{backgroundcolor=\color{white}}
+%\lstset{frame=single}
+\lstset{stringstyle=\ttfamily}
+%\lstset{keywordstyle=\color{red}\bfseries}
+%\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+\usepackage{times}
+
+% Use some nice templates
+\beamertemplatetransparentcovereddynamic
+
+% own commands
+\newcommand*{\cre}[1]{a^{\dagger}_{#1}}
+\newcommand*{\an}[1]{a_{#1}}
+\newcommand*{\crequasi}[1]{b^{\dagger}_{#1}}
+\newcommand*{\anquasi}[1]{b_{#1}}
+\newcommand*{\for}[3]{\langle#1|#2|#3\rangle}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand*{\kpr}[1]{\left\{#1\right\}}
+\newcommand*{\ket}[1]{|#1\rangle}
+\newcommand*{\bra}[1]{\langle#1|}
+%\newcommand{\bra}[1]{\left\langle #1 \right|}
+%\newcommand{\ket}[1]{\left| # \right\rangle}
+\newcommand{\braket}[2]{\left\langle #1 \right| #2 \right\rangle}
+\newcommand{\OP}[1]{{\bf\widehat{#1}}}
+\newcommand{\matr}[1]{{\bf \cal{#1}}}
+\newcommand{\beN}{\begin{equation*}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\beaN}{\begin{eqnarray*}}
+\newcommand{\eeN}{\end{equation*}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\eeaN}{\end{eqnarray*}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\bsubeqs}{\begin{subequations}}
+\newcommand*{\fpr}[1]{\left[#1\right]}
+\newcommand{\esubeqs}{\end{subequations}}
+\newcommand*{\pr}[1]{\left(#1\right)}
+\newcommand{\element}[3]
+        {\bra{#1}#2\ket{#3}}
+
+\newcommand{\md}{\mathrm{d}}
+\newcommand{\e}[1]{\times 10^{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\gvec}[1]{\boldsymbol{#1}}
+\newcommand{\dr}{\, \mathrm d^3 \vec r}
+\newcommand{\dk}{\, \mathrm d^3 \vec k}
+\def\psii{\psi_{i}}
+\def\psij{\psi_{j}}
+\def\psiij{\psi_{ij}}
+\def\psisq{\psi^2}
+\def\psisqex{\langle \psi^2 \rangle}
+\def\psiR{\psi({\bf R})}
+\def\psiRk{\psi({\bf R}_k)}
+\def\psiiRk{\psi_{i}(\Rveck)}
+\def\psijRk{\psi_{j}(\Rveck)}
+\def\psiijRk{\psi_{ij}(\Rveck)}
+\def\ranglep{\rangle_{\psisq}}
+\def\Hpsibypsi{{H \psi \over \psi}}
+\def\Hpsiibypsi{{H \psii \over \psi}}
+\def\HmEpsibypsi{{(H-E) \psi \over \psi}}
+\def\HmEpsiibypsi{{(H-E) \psii \over \psi}}
+\def\HmEpsijbypsi{{(H-E) \psij \over \psi}}
+\def\psiibypsi{{\psii \over \psi}}
+\def\psijbypsi{{\psij \over \psi}}
+\def\psiijbypsi{{\psiij \over \psi}}
+\def\psiibypsiRk{{\psii(\Rveck) \over \psi(\Rveck)}}
+\def\psijbypsiRk{{\psij(\Rveck) \over \psi(\Rveck)}}
+\def\psiijbypsiRk{{\psiij(\Rveck) \over \psi(\Rveck)}}
+\def\EL{E_{\rm L}}
+\def\ELi{E_{{\rm L},i}}
+\def\ELj{E_{{\rm L},j}}
+\def\ELRk{E_{\rm L}(\Rveck)}
+\def\ELiRk{E_{{\rm L},i}(\Rveck)}
+\def\ELjRk{E_{{\rm L},j}(\Rveck)}
+\def\Ebar{\bar{E}}
+\def\Ei{\Ebar_{i}}
+\def\Ej{\Ebar_{j}}
+\def\Ebar{\bar{E}}
+\def\Rvec{{\bf R}}
+\def\Rveck{{\bf R}_k}
+\def\Rvecl{{\bf R}_l}
+\def\NMC{N_{\rm MC}}
+\def\sumMC{\sum_{k=1}^{\NMC}}
+\def\MC{Monte Carlo}
+\def\adiag{a_{\rm diag}}
+\def\tcorr{T_{\rm corr}}
+\def\intR{{\int {\rm d}^{3N}\!\!R\;}}
+
+\def\ul{\underline}
+\def\beq{\begin{eqnarray}}
+\def\eeq{\end{eqnarray}}
+
+\newcommand{\eqbrace}[4]{\left\{
+\begin{array}{ll}
+#1 & #2 \\[0.5cm]
+#3 & #4
+\end{array}\right.}
+\newcommand{\eqbraced}[4]{\left\{
+\begin{array}{ll}
+#1 & #2 \\[0.5cm]
+#3 & #4
+\end{array}\right\}}
+\newcommand{\eqbracetriple}[6]{\left\{
+\begin{array}{ll}
+#1 & #2 \\
+#3 & #4 \\
+#5 & #6
+\end{array}\right.}
+\newcommand{\eqbracedtriple}[6]{\left\{
+\begin{array}{ll}
+#1 & #2 \\
+#3 & #4 \\
+#5 & #6
+\end{array}\right\}}
+
+\newcommand{\mybox}[3]{\mbox{\makebox[#1][#2]{$#3$}}}
+\newcommand{\myframedbox}[3]{\mbox{\framebox[#1][#2]{$#3$}}}
+
+%% Infinitesimal (and double infinitesimal), useful at end of integrals
+%\newcommand{\ud}[1]{\mathrm d#1}
+\newcommand{\ud}[1]{d#1}
+\newcommand{\udd}[1]{d^2\!#1}
+
+%% Operators, algebraic matrices, algebraic vectors
+
+%% Operator (hat, bold or bold symbol, whichever you like best):
+\newcommand{\op}[1]{\widehat{#1}}
+%\newcommand{\op}[1]{\mathbf{#1}}
+%\newcommand{\op}[1]{\boldsymbol{#1}}
+
+%% Vector:
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+
+%% Matrix symbol:
+%\newcommand{\matr}[1]{\boldsymbol{#1}}
+%\newcommand{\bb}[1]{\mathbb{#1}}
+
+%% Determinant symbol:
+\renewcommand{\det}[1]{|#1|}
+
+%% Means (expectation values) of varius sizes
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\newcommand{\meanb}[1]{\big\langle #1 \big\rangle}
+\newcommand{\meanbb}[1]{\Big\langle #1 \Big\rangle}
+\newcommand{\meanbbb}[1]{\bigg\langle #1 \bigg\rangle}
+\newcommand{\meanbbbb}[1]{\Bigg\langle #1 \Bigg\rangle}
+
+%% Shorthands for text set in roman font
+\newcommand{\prob}[0]{\mathrm{Prob}} %probability
+\newcommand{\cov}[0]{\mathrm{Cov}}   %covariance
+\newcommand{\var}[0]{\mathrm{Var}}   %variancd
+
+%% Big-O (typically for specifying the speed scaling of an algorithm)
+\newcommand{\bigO}{\mathcal{O}}
+
+%% Real value of a complex number
+\newcommand{\real}[1]{\mathrm{Re}\!\left\{#1\right\}}
+
+%% Quantum mechanical state vectors and matrix elements (of different sizes)
+%\newcommand{\bra}[1]{\langle #1 |}
+\newcommand{\brab}[1]{\big\langle #1 \big|}
+\newcommand{\brabb}[1]{\Big\langle #1 \Big|}
+\newcommand{\brabbb}[1]{\bigg\langle #1 \bigg|}
+\newcommand{\brabbbb}[1]{\Bigg\langle #1 \Bigg|}
+%\newcommand{\ket}[1]{| #1 \rangle}
+\newcommand{\ketb}[1]{\big| #1 \big\rangle}
+\newcommand{\ketbb}[1]{\Big| #1 \Big\rangle}
+\newcommand{\ketbbb}[1]{\bigg| #1 \bigg\rangle}
+\newcommand{\ketbbbb}[1]{\Bigg| #1 \Bigg\rangle}
+%\newcommand{\overlap}[2]{\langle #1 | #2 \rangle}
+\newcommand{\overlapb}[2]{\big\langle #1 \big| #2 \big\rangle}
+\newcommand{\overlapbb}[2]{\Big\langle #1 \Big| #2 \Big\rangle}
+\newcommand{\overlapbbb}[2]{\bigg\langle #1 \bigg| #2 \bigg\rangle}
+\newcommand{\overlapbbbb}[2]{\Bigg\langle #1 \Bigg| #2 \Bigg\rangle}
+\newcommand{\bracket}[3]{\langle #1 | #2 | #3 \rangle}
+\newcommand{\bracketb}[3]{\big\langle #1 \big| #2 \big| #3 \big\rangle}
+\newcommand{\bracketbb}[3]{\Big\langle #1 \Big| #2 \Big| #3 \Big\rangle}
+\newcommand{\bracketbbb}[3]{\bigg\langle #1 \bigg| #2 \bigg| #3 \bigg\rangle}
+\newcommand{\bracketbbbb}[3]{\Bigg\langle #1 \Bigg| #2 \Bigg| #3 \Bigg\rangle}
+\newcommand{\projection}[2]
+{| #1 \rangle \langle  #2 |}
+\newcommand{\projectionb}[2]
+{\big| #1 \big\rangle \big\langle #2 \big|}
+\newcommand{\projectionbb}[2]
+{ \Big| #1 \Big\rangle \Big\langle #2 \Big|}
+\newcommand{\projectionbbb}[2]
+{ \bigg| #1 \bigg\rangle \bigg\langle #2 \bigg|}
+\newcommand{\projectionbbbb}[2]
+{ \Bigg| #1 \Bigg\rangle \Bigg\langle #2 \Bigg|}
+
+
+%% If you run out of greek symbols, here's another one you haven't
+%% thought of:
+\newcommand{\Feta}{\hspace{0.6ex}\begin{turn}{180}
+        {\raisebox{-\height}{\parbox[c]{1mm}{F}}}\end{turn}}
+\newcommand{\feta}{\hspace{-1.6ex}\begin{turn}{180}
+        {\raisebox{-\height}{\parbox[b]{4mm}{f}}}\end{turn}}
+
+\title{Week 46: Many-body perturbation theory and start Coupled Cluster theory}
+
+\author{Morten Hjorth-Jensen\inst{1}}
+\institute{Department of Physics and Center for Computing in Science Education, University of Oslo, Norway\inst{1}}
+
+\date{Week 46, November 10-14
+% <optional titlepage figure>
+\ \\ 
+{\tiny \copyright\ 1999-2025, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license}
+}
+
+\begin{document}
+\include{commands}
+
+\begin{frame}[plain,fragile]
+\titlepage
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Week 46, November 10-14, 2025}
+
+\begin{block}{Thursday: }
+\begin{enumerate}
+\item Linked and unlinked diagrams, Linked diagram theorem  and diagram rules, summary
+
+\item Start coupled cluster theory
+
+\item Second midterm  at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2025/SecondMidterm2025.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2025/SecondMidterm2025.pdf}}
+% o Video of lecture at \href{{https://youtu.be/Qw-5Ar8BVUY}}{\nolinkurl{https://youtu.be/Qw-5Ar8BVUY}}
+% `  o Whiteboard notes at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember14.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember14.pdf}}
+\end{enumerate}
+
+\noindent
+\end{block}
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Friday's lecture}
+
+\begin{block}{Friday: }
+\begin{enumerate}
+\item Presentation and discussion of second midterm
+
+\item Coupled Cluster theory
+% o Video of lecture at \href{{https://youtu.be/-2opFiQcZDk}}{\nolinkurl{https://youtu.be/-2opFiQcZDk}}
+% o Whiteboard notes at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember15.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember15.pdf}}
+
+\item Relevant reading for the lectures: Shavitt abd Bartlett chapters 6 and 7 on linked and unlinked diagrams. For coupled cluster theory chapter 9 is the most relevant one. The lectures follow to a large extent the material covered in these chapters.
+\end{enumerate}
+
+\noindent
+\end{block}
+\end{frame}
+
+
+
+
+\section{Coupled Cluster theory}
+
+
+\include{src/ccsd_H2summary}
+\include{src/ccsd_H2diagrams}
+
+
+
+\end{document}
+
+\include{src/ccsd_barh_expansion}
+\include{src/ccsd_factoring01}
+\include{src/ccsd_algorithm}
+
