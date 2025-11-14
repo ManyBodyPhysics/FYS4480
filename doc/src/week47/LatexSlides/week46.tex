@@ -1,12 +1,4 @@
 \documentclass[compress]{beamer}
-
-
-% Try the class options [notes], [notes=only], [trans], [handout],
-% [red], [compress], [draft], [class=article] and see what happens!
-
-% For a green structure color use:
-%\colorlet{structure}{green!50!black}
-
 \mode<article> % only for the article version
 {
   \usepackage{beamerbasearticle}
@@ -244,6 +236,8 @@
 \newcommand{\feta}{\hspace{-1.6ex}\begin{turn}{180}
         {\raisebox{-\height}{\parbox[b]{4mm}{f}}}\end{turn}}
 
+
+
 \title{Week 46: Many-body perturbation theory and start Coupled Cluster theory}
 
 \author{Morten Hjorth-Jensen\inst{1}}
@@ -272,9 +266,12 @@
 \item Start coupled cluster theory
 
 \item Second midterm  at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2025/SecondMidterm2025.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/Exercises/2025/SecondMidterm2025.pdf}}
-% o Video of lecture at \href{{https://youtu.be/Qw-5Ar8BVUY}}{\nolinkurl{https://youtu.be/Qw-5Ar8BVUY}}
-% `  o Whiteboard notes at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember14.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember14.pdf}}
+\item Video of lecture at \href{{https://youtu.be/x9kJ_o9exLM}}{\nolinkurl{https://youtu.be/x9kJ_o9exLM}}
+\item  Whiteboard notes at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember14.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2025/FYS4480November13.pdf}}
 \end{enumerate}
+
+
+
 
 \noindent
 \end{block}
@@ -288,8 +285,8 @@
 \item Presentation and discussion of second midterm
 
 \item Coupled Cluster theory
-% o Video of lecture at \href{{https://youtu.be/-2opFiQcZDk}}{\nolinkurl{https://youtu.be/-2opFiQcZDk}}
-% o Whiteboard notes at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember15.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember15.pdf}}
+\item Video of lecture at \href{{https://youtu.be/KvM0vCI_8HU}}{\nolinkurl{https://youtu.be/KvM0vCI_8HU}}
+\item Whiteboard notes at \href{{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2024/NotesNovember15.pdf}}{\nolinkurl{https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/HandwrittenNotes/2025/FYS4480November14.pdf}}
 
 \item Relevant reading for the lectures: Shavitt abd Bartlett chapters 6 and 7 on linked and unlinked diagrams. For coupled cluster theory chapter 9 is the most relevant one. The lectures follow to a large extent the material covered in these chapters.
 \end{enumerate}
@@ -298,20 +295,76 @@
 \end{block}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
 
+    \begin{block}{Twobody Hamiltonian}
+    \begin{align*}
+        \hat{H}_N &= 
+            \frac{1}{4} \sum_{pqrs} \bra{pq}\hat{v}\ket{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} 
+            + \sum_{pq} f_q^p \normord{a^\dagger_p a_q} \\
+        &= \hat{V}_N + \hat{F}_N
+    \end{align*}
+    where
+    \begin{subequations}
+    \begin{align*}
+        \hat{F}_N &= \sum_{pq} f_q^p \normord{a^\dagger_p a_q} \\
+        \hat{V}_N &= \frac{1}{4} \sum_{pqrs} \bra{pq}\hat{v}\ket{rs} \normord{a^\dagger_p a^\dagger_q a_s  a_r} \\
+    \end{align*}
+    \end{subequations}
+    \end{block}
+\end{frame}
 
+\begin{frame}[fragile]
+    \frametitle{Definitions}
+    \framesubtitle{The basics, Normal ordered Hamiltonian}
 
-\section{Coupled Cluster theory}
-
+    \small
+    \begin{block}{Twobody Hamiltonian}
+    The amplitudes are given by
+    \begin{subequations}
+    \begin{align*}
+        f_q^p &= \element{p}{\hat{h}_0}{q} + \sum_i \element{pi}{\hat{v}}{qi} \\
+        \bra{pq}\ket{rs} &= \element{pq}{\hat{v}}{rs}
+    \end{align*}
+    \end{subequations}
+    In relation to the Hamiltonian, $\hat{H}_N$ is given by
+    \begin{align*}
+        \hat{H}_N &= \hat{H} - E_0 \\
+        E_0 &= \element{\Phi_0}{\hat{H}}{\Phi_0} \\
+            &= \sum_i \element{i}{\hat{h}_0}{i}
+                + \frac{1}{2} \sum_{ij} \element{ij}{\hat{v}}{ij}
+    \end{align*}
+    where $E_0$ is the energy expectation value between reference states.
+    \end{block}
+\end{frame}
 
 \include{src/ccsd_H2summary}
 \include{src/ccsd_H2diagrams}
+
+\end{document}
+
+
+ 
+
+
+
+
+
+
+
+
+
+\include{src/ccsd_barh_expansion}
+\include{src/ccsd_factoring}
+\include{src/ccsd_algorithm}
 
 
 
 \end{document}
 
-\include{src/ccsd_barh_expansion}
-\include{src/ccsd_factoring01}
-\include{src/ccsd_algorithm}
+
+
+
 
