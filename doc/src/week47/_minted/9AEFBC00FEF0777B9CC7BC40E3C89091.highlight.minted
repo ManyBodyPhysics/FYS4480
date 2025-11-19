@@ -1,0 +1,209 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Coupled clusters in CCD approximation}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Implemented for the pairing model of Lecture Notes in Physics 936, Chapter 8.}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{init\PYGZus{}pairing\PYGZus{}v}\PYG{p}{(}\PYG{n}{g}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    returns potential matrices of the pairing model in three relevant channels}
+
+\PYG{l+s+sd}{    param g: strength of the pairing interaction, as in Eq. (8.42)}
+\PYG{l+s+sd}{    param pnum: number of particle states}
+\PYG{l+s+sd}{    param hnum: number of hole states}
+
+\PYG{l+s+sd}{    return v\PYGZus{}pppp, v\PYGZus{}pphh, v\PYGZus{}hhhh: np.array(pnum,pnum,pnum,pnum),}
+\PYG{l+s+sd}{                                   np.array(pnum,pnum,hnum,hnum),}
+\PYG{l+s+sd}{                                   np.array(hnum,hnum,hnum,hnum),}
+\PYG{l+s+sd}{                                   The interaction as a 4\PYGZhy{}indexed tensor in three channels.}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{v\PYGZus{}pppp}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{v\PYGZus{}pphh}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{v\PYGZus{}hhhh}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{hnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{)}
+
+    \PYG{n}{gval}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{g}
+    \PYG{k}{for} \PYG{n}{a} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{b} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{v\PYGZus{}pppp}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{b}\PYG{p}{,}\PYG{n}{b}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{=}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}pppp}\PYG{p}{[}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{a}\PYG{p}{,}\PYG{n}{b}\PYG{p}{,}\PYG{n}{b}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}pppp}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{b}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{b}\PYG{p}{]}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}pppp}\PYG{p}{[}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{a}\PYG{p}{,}\PYG{n}{b}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{b}\PYG{p}{]}\PYG{o}{=}\PYG{n}{gval}
+
+    \PYG{k}{for} \PYG{n}{a} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{v\PYGZus{}pphh}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{=}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}pphh}\PYG{p}{[}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{a}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}pphh}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}pphh}\PYG{p}{[}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{a}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{gval}
+
+    \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{v\PYGZus{}hhhh}\PYG{p}{[}\PYG{n}{j}\PYG{p}{,}\PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{=}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}hhhh}\PYG{p}{[}\PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{j}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}hhhh}\PYG{p}{[}\PYG{n}{j}\PYG{p}{,}\PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{n}{gval}
+            \PYG{n}{v\PYGZus{}hhhh}\PYG{p}{[}\PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{j}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{p}{]}\PYG{o}{=}\PYG{n}{gval}
+
+    \PYG{k}{return} \PYG{n}{v\PYGZus{}pppp}\PYG{p}{,} \PYG{n}{v\PYGZus{}pphh}\PYG{p}{,} \PYG{n}{v\PYGZus{}hhhh}
+
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{init\PYGZus{}pairing\PYGZus{}fock}\PYG{p}{(}\PYG{n}{delta}\PYG{p}{,}\PYG{n}{g}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    initializes the Fock matrix of the pairing model}
+
+\PYG{l+s+sd}{    param delta: Single\PYGZhy{}particle spacing, as in Eq. (8.41)}
+\PYG{l+s+sd}{    param g: pairing strength, as in eq. (8.42)}
+\PYG{l+s+sd}{    param pnum: number of particle states}
+\PYG{l+s+sd}{    param hnum: number of hole states}
+
+\PYG{l+s+sd}{    return f\PYGZus{}pp, f\PYGZus{}hh: The Fock matrix in two channels as numpy arrays np.array(pnum,pnum), np.array(hnum,hnum).}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{c+c1}{\PYGZsh{} the Fock matrix for the pairing model. No f\PYGZus{}ph needed, because we are in Hartree\PYGZhy{}Fock basis}
+    \PYG{n}{deltaval}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{delta}
+    \PYG{n}{gval}\PYG{o}{=}\PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{g}
+    \PYG{n}{f\PYGZus{}pp} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{f\PYGZus{}hh} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{hnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{)}
+
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{f\PYGZus{}hh}\PYG{p}{[}\PYG{n}{i}  \PYG{p}{,}\PYG{n}{i}  \PYG{p}{]} \PYG{o}{=} \PYG{n}{deltaval}\PYG{o}{*}\PYG{n}{i}\PYG{o}{+}\PYG{n}{gval}
+        \PYG{n}{f\PYGZus{}hh}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{deltaval}\PYG{o}{*}\PYG{n}{i}\PYG{o}{+}\PYG{n}{gval}
+
+    \PYG{k}{for} \PYG{n}{a} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{f\PYGZus{}pp}\PYG{p}{[}\PYG{n}{a}  \PYG{p}{,}\PYG{n}{a}  \PYG{p}{]} \PYG{o}{=} \PYG{n}{deltaval}\PYG{o}{*}\PYG{p}{(}\PYG{n}{hnum}\PYG{o}{+}\PYG{n}{a}\PYG{p}{)}
+        \PYG{n}{f\PYGZus{}pp}\PYG{p}{[}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{a}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{deltaval}\PYG{o}{*}\PYG{p}{(}\PYG{n}{hnum}\PYG{o}{+}\PYG{n}{a}\PYG{p}{)}
+
+    \PYG{k}{return} \PYG{n}{f\PYGZus{}pp}\PYG{p}{,} \PYG{n}{f\PYGZus{}hh}
+
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{init\PYGZus{}t2}\PYG{p}{(}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{f\PYGZus{}pp}\PYG{p}{,}\PYG{n}{f\PYGZus{}hh}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    Initializes t2 amlitudes as in MBPT2, see first equation on page 345}
+
+\PYG{l+s+sd}{    param v\PYGZus{}pphh: pairing tensor in pphh channel}
+\PYG{l+s+sd}{    param f\PYGZus{}pp:   Fock matrix in pp channel}
+\PYG{l+s+sd}{    param f\PYGZus{}hh:   Fock matrix in hh channel}
+
+\PYG{l+s+sd}{    return t2: numpy array in pphh format, 4\PYGZhy{}indices tensor}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{pnum} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{f\PYGZus{}pp}\PYG{p}{)}
+    \PYG{n}{hnum} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{f\PYGZus{}hh}\PYG{p}{)}
+    \PYG{n}{t2\PYGZus{}new} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{:}
+            \PYG{k}{for} \PYG{n}{a} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{)}\PYG{p}{:}
+                \PYG{k}{for} \PYG{n}{b} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{)}\PYG{p}{:}
+                    \PYG{n}{t2\PYGZus{}new}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{b}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{n}{v\PYGZus{}pphh}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{b}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{/} \PYG{p}{(}\PYG{n}{f\PYGZus{}hh}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{i}\PYG{p}{]}\PYG{o}{+}\PYG{n}{f\PYGZus{}hh}\PYG{p}{[}\PYG{n}{j}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{n}{f\PYGZus{}pp}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{a}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{n}{f\PYGZus{}pp}\PYG{p}{[}\PYG{n}{b}\PYG{p}{,}\PYG{n}{b}\PYG{p}{]}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{t2\PYGZus{}new}
+
+
+\PYG{c+c1}{\PYGZsh{} CCD equations. Note that the \PYGZdq{}\PYGZhy{}\PYGZgt{}abij\PYGZdq{} assignment is redundant, because indices are ordered alphabetically.}
+\PYG{c+c1}{\PYGZsh{} Nevertheless, we retain it for transparency.}
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{ccd\PYGZus{}iter}\PYG{p}{(}\PYG{n}{v\PYGZus{}pppp}\PYG{p}{,}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{v\PYGZus{}hhhh}\PYG{p}{,}\PYG{n}{f\PYGZus{}pp}\PYG{p}{,}\PYG{n}{f\PYGZus{}hh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    Performs one iteration of the CCD equations (8.34), using also intermediates for the nonliniar terms}
+
+\PYG{l+s+sd}{    param v\PYGZus{}pppp: pppp\PYGZhy{}channel pairing tensor, numpy array}
+\PYG{l+s+sd}{    param v\PYGZus{}pphh: pphh\PYGZhy{}channel pairing tensor, numpy array}
+\PYG{l+s+sd}{    param v\PYGZus{}hhhh: hhhh\PYGZhy{}channel pairing tensor, numpy array}
+\PYG{l+s+sd}{    param f\PYGZus{}pp: Fock matrix in pp channel}
+\PYG{l+s+sd}{    param f\PYGZus{}hh: Fock matrix in hh channel}
+\PYG{l+s+sd}{    param t2: Initial t2 amplitude, tensor in form of pphh channel}
+
+\PYG{l+s+sd}{    return t2\PYGZus{}new: new t2 amplitude, tensor in form of pphh channel}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{pnum} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{f\PYGZus{}pp}\PYG{p}{)}
+    \PYG{n}{hnum} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{f\PYGZus{}hh}\PYG{p}{)}
+    \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{=} \PYG{p}{(}  \PYG{n}{v\PYGZus{}pphh}
+                 \PYG{o}{+} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bc,acij\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{f\PYGZus{}pp}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+                 \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{ac,bcij\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{f\PYGZus{}pp}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+                 \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abik,kj\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{f\PYGZus{}hh}\PYG{p}{)}
+                 \PYG{o}{+} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abjk,ki\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{f\PYGZus{}hh}\PYG{p}{)}
+                 \PYG{o}{+} \PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abcd,cdij\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{v\PYGZus{}pppp}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+                 \PYG{o}{+} \PYG{l+m+mf}{0.5}\PYG{o}{*}\PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abkl,klij\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{v\PYGZus{}hhhh}\PYG{p}{)}
+                \PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} hh intermediate, see (8.47)}
+    \PYG{n}{chi\PYGZus{}hh} \PYG{o}{=} \PYG{l+m+mf}{0.5}\PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{cdkl,cdjl\PYGZhy{}\PYGZgt{}kj}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+
+    \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{=} \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{\PYGZhy{}} \PYG{p}{(}  \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abik,kj\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{chi\PYGZus{}hh}\PYG{p}{)}
+                             \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abik,kj\PYGZhy{}\PYGZgt{}abji}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{chi\PYGZus{}hh}\PYG{p}{)} \PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} pp intermediate, see (8.46)}
+    \PYG{n}{chi\PYGZus{}pp} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.5}\PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{cdkl,bdkl\PYGZhy{}\PYGZgt{}cb}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+
+    \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{=} \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{+} \PYG{p}{(}  \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{acij,cb\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{chi\PYGZus{}pp}\PYG{p}{)}
+                             \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{acij,cb\PYGZhy{}\PYGZgt{}baij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{chi\PYGZus{}pp}\PYG{p}{)} \PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} hhhh intermediate, see (8.48)}
+    \PYG{n}{chi\PYGZus{}hhhh} \PYG{o}{=} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{cdkl,cdij\PYGZhy{}\PYGZgt{}klij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+
+    \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{=} \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{+} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abkl,klij\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{,}\PYG{n}{chi\PYGZus{}hhhh}\PYG{p}{)}
+
+    \PYG{c+c1}{\PYGZsh{} phph intermediate, see (8.49)}
+    \PYG{n}{chi\PYGZus{}phph}\PYG{o}{=} \PYG{o}{+} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{cdkl,dblj\PYGZhy{}\PYGZgt{}bkcj}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+
+
+    \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{=} \PYG{n}{Hbar\PYGZus{}pphh} \PYG{o}{+} \PYG{p}{(}  \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bkcj,acik\PYGZhy{}\PYGZgt{}abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{chi\PYGZus{}phph}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+                             \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bkcj,acik\PYGZhy{}\PYGZgt{}baij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{chi\PYGZus{}phph}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+                             \PYG{o}{\PYGZhy{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bkcj,acik\PYGZhy{}\PYGZgt{}abji}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{chi\PYGZus{}phph}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+                             \PYG{o}{+} \PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{bkcj,acik\PYGZhy{}\PYGZgt{}baji}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{chi\PYGZus{}phph}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)} \PYG{p}{)}
+
+    \PYG{n}{t2\PYGZus{}new}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{hnum}\PYG{p}{)}\PYG{p}{:}
+            \PYG{k}{for} \PYG{n}{a} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{)}\PYG{p}{:}
+                \PYG{k}{for} \PYG{n}{b} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{pnum}\PYG{p}{)}\PYG{p}{:}
+                    \PYG{n}{t2\PYGZus{}new}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{b}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}  \PYG{n}{t2}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{b}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]}
+                                       \PYG{o}{+} \PYG{n}{Hbar\PYGZus{}pphh}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{b}\PYG{p}{,}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]} \PYG{o}{/} \PYG{p}{(}\PYG{n}{f\PYGZus{}hh}\PYG{p}{[}\PYG{n}{i}\PYG{p}{,}\PYG{n}{i}\PYG{p}{]}\PYG{o}{+}\PYG{n}{f\PYGZus{}hh}\PYG{p}{[}\PYG{n}{j}\PYG{p}{,}\PYG{n}{j}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{n}{f\PYGZus{}pp}\PYG{p}{[}\PYG{n}{a}\PYG{p}{,}\PYG{n}{a}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{n}{f\PYGZus{}pp}\PYG{p}{[}\PYG{n}{b}\PYG{p}{,}\PYG{n}{b}\PYG{p}{]}\PYG{p}{)} \PYG{p}{)}
+
+    \PYG{k}{return} \PYG{n}{t2\PYGZus{}new}
+
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{ccd\PYGZus{}energy}\PYG{p}{(}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    Computes CCD energy. Call as}
+\PYG{l+s+sd}{    energy = ccd\PYGZus{}energy(v\PYGZus{}pphh,t2)}
+
+\PYG{l+s+sd}{    param v\PYGZus{}pphh: pphh\PYGZhy{}channel pairing tensor, numpy array}
+\PYG{l+s+sd}{    param t2: t2 amplitude, tensor in form of pphh channel}
+
+\PYG{l+s+sd}{    return energy: CCD correlation energy}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{erg} \PYG{o}{=} \PYG{l+m+mf}{0.25}\PYG{o}{*}\PYG{n}{np}\PYG{o}{.}\PYG{n}{einsum}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{abij,abij}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{erg}
+
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{}\PYGZsh{} Main Program}
+
+\PYG{c+c1}{\PYGZsh{} set parameters as for model}
+\PYG{n}{pnum} \PYG{o}{=} \PYG{l+m+mi}{4} \PYG{c+c1}{\PYGZsh{} number of particle states}
+\PYG{n}{hnum} \PYG{o}{=} \PYG{l+m+mi}{4} \PYG{c+c1}{\PYGZsh{} number of hole states}
+\PYG{n}{delta} \PYG{o}{=} \PYG{l+m+mf}{1.0}
+
+\PYG{n}{g} \PYG{o}{=} \PYG{l+m+mf}{1.0}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{parameters}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{delta =}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{delta}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{, g =}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{g}\PYG{p}{)}
+
+
+\PYG{c+c1}{\PYGZsh{} Initialize pairing matrix elements and Fock matrix}
+\PYG{n}{v\PYGZus{}pppp}\PYG{p}{,} \PYG{n}{v\PYGZus{}pphh}\PYG{p}{,} \PYG{n}{v\PYGZus{}hhhh} \PYG{o}{=} \PYG{n}{init\PYGZus{}pairing\PYGZus{}v}\PYG{p}{(}\PYG{n}{g}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}
+\PYG{n}{f\PYGZus{}pp}\PYG{p}{,} \PYG{n}{f\PYGZus{}hh} \PYG{o}{=} \PYG{n}{init\PYGZus{}pairing\PYGZus{}fock}\PYG{p}{(}\PYG{n}{delta}\PYG{p}{,}\PYG{n}{g}\PYG{p}{,}\PYG{n}{pnum}\PYG{p}{,}\PYG{n}{hnum}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Initialize T2 amplitudes from MBPT2}
+\PYG{n}{t2} \PYG{o}{=} \PYG{n}{init\PYGZus{}t2}\PYG{p}{(}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{f\PYGZus{}pp}\PYG{p}{,}\PYG{n}{f\PYGZus{}hh}\PYG{p}{)}
+\PYG{n}{erg} \PYG{o}{=} \PYG{n}{ccd\PYGZus{}energy}\PYG{p}{(}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZsh{} Exact MBPT2 for comparison, see last equation on page 365}
+\PYG{n}{exact\PYGZus{}mbpt2} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.25}\PYG{o}{*}\PYG{n}{g}\PYG{o}{*}\PYG{o}{*}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{p}{(}\PYG{l+m+mf}{1.0}\PYG{o}{/}\PYG{p}{(}\PYG{l+m+mf}{2.0}\PYG{o}{+}\PYG{n}{g}\PYG{p}{)} \PYG{o}{+} \PYG{l+m+mf}{2.0}\PYG{o}{/}\PYG{p}{(}\PYG{l+m+mf}{4.0}\PYG{o}{+}\PYG{n}{g}\PYG{p}{)} \PYG{o}{+} \PYG{l+m+mf}{1.0}\PYG{o}{/}\PYG{p}{(}\PYG{l+m+mf}{6.0}\PYG{o}{+}\PYG{n}{g}\PYG{p}{)}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{MBPT2 energy =}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{erg}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{, compared to exact MBPT(2):}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{exact\PYGZus{}mbpt2}\PYG{p}{)}
+
+
+\PYG{c+c1}{\PYGZsh{} iterate CCD equations niter times}
+\PYG{n}{niter}\PYG{o}{=}\PYG{l+m+mi}{60}
+\PYG{k}{for} \PYG{n+nb}{iter} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{niter}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{t2\PYGZus{}new} \PYG{o}{=} \PYG{n}{ccd\PYGZus{}iter}\PYG{p}{(}\PYG{n}{v\PYGZus{}pppp}\PYG{p}{,}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{v\PYGZus{}hhhh}\PYG{p}{,}\PYG{n}{f\PYGZus{}pp}\PYG{p}{,}\PYG{n}{f\PYGZus{}hh}\PYG{p}{,}\PYG{n}{t2}\PYG{p}{)}
+    \PYG{n}{erg} \PYG{o}{=} \PYG{n}{ccd\PYGZus{}energy}\PYG{p}{(}\PYG{n}{v\PYGZus{}pphh}\PYG{p}{,}\PYG{n}{t2\PYGZus{}new}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{iter=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n+nb}{iter}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{erg=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{erg}\PYG{p}{)}
+    \PYG{n}{t2} \PYG{o}{=} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{p}{(}\PYG{n}{t2\PYGZus{}new} \PYG{o}{+} \PYG{n}{t2}\PYG{p}{)}
+
+\end{MintedVerbatim}
