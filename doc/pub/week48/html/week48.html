@@ -118,14 +118,106 @@ div.toc p,a {
                2,
                None,
                'week-48-november-24-28-2025'),
-              ('CCSD with twobody Hamiltonian',
+              ('Introduction', 2, None, 'introduction'),
+              ('The normal-ordered Hamiltonian',
                2,
                None,
-               'ccsd-with-twobody-hamiltonian'),
-              ('Two-body normal-ordered Hamiltonian',
+               'the-normal-ordered-hamiltonian'),
+              ('Notations again', 2, None, 'notations-again'),
+              ('Hamiltonian', 2, None, 'hamiltonian'),
+              ('The reference state', 2, None, 'the-reference-state'),
+              ('Hartree-Fock basis', 2, None, 'hartree-fock-basis'),
+              ("What does ``good'' mean?", 2, None, 'what-does-good-mean'),
+              ('Answer', 2, None, 'answer'),
+              ('To nuclear physics aficionados: How many nuclei are accessible '
+               'with the coupled cluster method based on spherical mean '
+               'fields?',
                2,
                None,
-               'two-body-normal-ordered-hamiltonian'),
+               'to-nuclear-physics-aficionados-how-many-nuclei-are-accessible-with-the-coupled-cluster-method-based-on-spherical-mean-fields'),
+              ('Answer', 2, None, 'answer'),
+              ('An FCI reminder to link with coupled-cluster theory and MBPT',
+               2,
+               None,
+               'an-fci-reminder-to-link-with-coupled-cluster-theory-and-mbpt'),
+              ('Rewriting the equations', 2, None, 'rewriting-the-equations'),
+              ('Slight rewrite', 2, None, 'slight-rewrite'),
+              ('Equations for the coeffficients',
+               2,
+               None,
+               'equations-for-the-coeffficients'),
+              ('Iterative solutions', 2, None, 'iterative-solutions'),
+              ('Coefficients for single excitations',
+               2,
+               None,
+               'coefficients-for-single-excitations'),
+              ('Double excitations', 2, None, 'double-excitations'),
+              ('$n$-coupled excitations', 2, None, 'n-coupled-excitations'),
+              ('The similarity transformed Hamiltonian',
+               2,
+               None,
+               'the-similarity-transformed-hamiltonian'),
+              ('Clusters of excited states',
+               2,
+               None,
+               'clusters-of-excited-states'),
+              ('Similarity transformation',
+               2,
+               None,
+               'similarity-transformation'),
+              ('What $T$ leads to Hermitian $\\overline{H_N}$ ?',
+               2,
+               None,
+               'what-t-leads-to-hermitian-overline-h-n'),
+              ('Answer', 2, None, 'answer'),
+              ('Understanding (non-unitary) similarity transformations',
+               2,
+               None,
+               'understanding-non-unitary-similarity-transformations'),
+              ('Answer', 2, None, 'answer'),
+              ('Non-hermitian operator', 2, None, 'non-hermitian-operator'),
+              ('More formalism', 2, None, 'more-formalism'),
+              ('Particle-hole excitations',
+               2,
+               None,
+               'particle-hole-excitations'),
+              ('Full clutser operator', 2, None, 'full-clutser-operator'),
+              ('Unknown aplitudes', 2, None, 'unknown-aplitudes'),
+              ('Correlation energy', 2, None, 'correlation-energy'),
+              ('Good reference state', 2, None, 'good-reference-state'),
+              ('Exercise 1: Why is CCD not exact?',
+               2,
+               None,
+               'exercise-1-why-is-ccd-not-exact'),
+              ('Computing the similarity-transformed Hamiltonian',
+               2,
+               None,
+               'computing-the-similarity-transformed-hamiltonian'),
+              ('The cluster operator', 2, None, 'the-cluster-operator'),
+              ('Non-hermitian Hamiltonian',
+               2,
+               None,
+               'non-hermitian-hamiltonian'),
+              ('Similarity transformed Hamiltonian',
+               2,
+               None,
+               'similarity-transformed-hamiltonian'),
+              ('CCD Approximation', 2, None, 'ccd-approximation'),
+              ('Deriving the CCD equations',
+               2,
+               None,
+               'deriving-the-ccd-equations'),
+              ('The algebraic expression', 2, None, 'the-algebraic-expression'),
+              ('CCD for the pairing Hamiltonian',
+               2,
+               None,
+               'ccd-for-the-pairing-hamiltonian'),
+              ('Solving the CCD equations for the pairing problem',
+               2,
+               None,
+               'solving-the-ccd-equations-for-the-pairing-problem'),
+              ('Exact diagonalization', 2, None, 'exact-diagonalization'),
+              ('Python code', 2, None, 'python-code'),
               ('Diagrammatic and algebraic derivations of $T_1$ and $T_2$ '
                'amplitude equations',
                2,
@@ -187,58 +279,977 @@ MathJax.Hub.Config({
 <li> Lecture material: Lecture notes and Shavitt and Bartlett chapters 9 and 10. See also slides at <a href="https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/pub/week48/pdf/cc.pdf" target="_blank"><tt>https://github.com/ManyBodyPhysics/FYS4480/blob/master/doc/pub/week48/pdf/cc.pdf</tt></a></li>
 </ol>
 <!-- !split --><br><br><br><br><br><br><br><br><br><br>
-<h2 id="ccsd-with-twobody-hamiltonian">CCSD with twobody Hamiltonian </h2>
+<h2 id="introduction">Introduction </h2>
 
-<p>Truncating the cluster operator \( \hat{T} \) at the \( n=2 \) level, defines
-CCSD approximation to the Coupled Cluster wavefunction.  The
-coupled cluster wavefunction is now given by
+<p>The coupled-cluster method is an efficient tool to compute properties of many-body systems
+with an effort that grows polynomial with system size. While
+this might still be expensive, it is now possible to compute for example atomic nuclei
+with mass numbers about \( A\approx 208 \) (which corresponds to lead) with this method. Recall that
+full configuration interaction (FCI)
+exhibits an exponential cost and is therefore limited to systems with few degrees of freedom.
+</p>
+
+<p>For some  recent applications see</p>
+<ol>
+<li> <b>Nuclear Physics</b>: see <a href="https://www.nature.com/articles/s41567-022-01715-8" target="_blank"><tt>https://www.nature.com/articles/s41567-022-01715-8</tt></a></li>
+<li> <b>Quantum chemistry</b>: see <a href="https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.79.291" target="_blank"><tt>https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.79.291</tt></a></li>
+</ol>
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="the-normal-ordered-hamiltonian">The normal-ordered Hamiltonian </h2>
+
+<p>We start from the reference state</p>
+
+$$
+\begin{equation}
+\vert\Phi_0\rangle = \prod_{i=1}^N a^\dagger_i \vert 0\rangle 
+\label{_auto1}
+\end{equation}
+$$
+
+<p>for the description of a system  with \( N \) particles.  Usually, this
+reference is the Hartree-Fock state, but that is not necessary as discussed throughout this course.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="notations-again">Notations again </h2>
+
+<p>After we introduced the particle-hole formalism, we have opted for a convention
+where the indices \( i,j,k,\ldots \) run over hole states,
+i.e. orbitals occupied in the reference state, while
+\( a,b,c,\ldots \) run over particle states, i.e. unoccupied
+orbitals. Indices \( p,q,r,s \) can identify any orbital.  Let \( n_u \) be
+the number of unoccupied states, and \( N \) is of course the number of
+particles, which is also the number of occupied states used to define the ansatz for the ground state. 
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="hamiltonian">Hamiltonian </h2>
+
+<p>We consider the Hamiltonian</p>
+$$
+\begin{equation}
+\label{Ham} H =
+\sum_{pq} \langle p\vert h_0\vert q \rangle a^\dagger_p a_q +
+\frac{1}{4}\sum_{pqrs}\langle pq\vert v\vert rs\rangle
+a^\dagger_pa^\dagger_q a_sa_r
+\end{equation}
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="the-reference-state">The reference state </h2>
+
+<p>The reference state is a non-trivial vacuum of our theory. 
+We normal order this Hamiltonian with respect to the nontrivial vacuum
+state given by the Hartree-Fock reference and obtain the
+normal-ordered Hamiltonian
 </p>
 
 $$
-\begin{equation*}
-            \vert \Psi_{CC}\rangle = e^{\hat{T}_1 + \hat{T}_2} \vert \Phi_0\rangle,
-\end{equation*}
+\begin{equation}
+\label{HN}
+H_N = \sum_{pq} \langle p\vert f\vert q \rangle \left\{a^\dagger_p a_q\right\} + \frac{1}{4}\sum_{pqrs}\langle pq\vert V\vert rs\rangle \left\{a^\dagger_pa^\dagger_q a_sa_r\right\}.
+\end{equation}
 $$
 
-<p>where </p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="hartree-fock-basis">Hartree-Fock basis </h2>
+
+<p>Here,</p>
+$$
+\begin{equation}
+\label{Fock}
+\langle p\vert f\vert q \rangle = \langle p\vert h_0\vert q \rangle + \sum_i \langle pi\vert V\vert qi\rangle
+\end{equation}
+$$
+
+<p>is the Fock matrix. We note that the Fock matrix is diagonal in the
+Hartree-Fock basis. The brackets \( \{\cdots\} \) denote
+normal ordering, i.e. all operators that annihilate the nontrivial
+vaccum are to the right of those operators that create
+with respect to that vaccum. Normal ordering implies that \( \langle
+\Phi_0\vert H_N\vert \Phi_0\rangle = 0 \).
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="what-does-good-mean">What does &quot;good&quot; mean? </h2>
+
+<p>The coupled-cluster method is a very efficient tool to compute properties of many-particle systems
+when a &quot;good&quot; reference state is available. Let us assume that the
+reference state results from a Hartree-Fock calculation.
+</p>
+
+<p>How do you know whether a Hartree-Fock state is a &quot;good&quot; reference?
+Which results of the Hartree-Fock computation will inform you?
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="answer">Answer </h2>
+
+<p>Once the Hartree-Fock equations are solved, the Fock matrix
+becomes diagonal, and its diagonal elements can be viewed
+as single-particle energies. Hopefully, there is a clear gap in the
+single-particle spectrum at the Fermi surface, i.e. after \( N \) orbitals
+are filled.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="to-nuclear-physics-aficionados-how-many-nuclei-are-accessible-with-the-coupled-cluster-method-based-on-spherical-mean-fields">To nuclear physics aficionados: How many nuclei are accessible with the coupled cluster method based on spherical mean fields? </h2>
+
+<p>If symmetry-restricted Hartree-Fock is used, one is limited to compute
+systems  with closed subshells for neutrons and for protons. On a first
+view, this might seem as a severe limitation. But is it? 
+</p>
+
+<p>If one limits oneself to nuclei with mass number up to
+mass number \( A=60 \), how many nuclei can potentially be described with
+the coupled-cluster method? Which of these nuclei are potentially
+interesting? Why?
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="answer">Answer </h2>
+
+<p>Nuclear shell closures are at \( N,Z=2,8,20,28,50,82,126 \), and subshell
+closures at \( N,Z=2,6,8,14,16,20,28,32,34,40,50,\ldots \). 
+</p>
+
+<p>In the physics of nuclei, the evolution of nuclear structure as
+neutrons are added (or removed) from an isotope is a key
+</p>
+<!-- interest. Examples are the rare isotopes of helium (\( ^{8,10} \) He) -->
+<!-- oxygen (\( ^{22,24,28} \) O), calcium (\( ^{52,54,60} \) Ca), nickel (\( ^{78} \) -->
+<!-- Ni) and tin (\( ^{100,132} \) Sn). The coupled-cluster method has the -->
+<p>interest. Examples are the rare isotopes of helium (He-8,10)
+oxygen (O-22,24,28), calcium (Ca-52,54,60), nickel (Ni-78) and tin
+(Sn-100,132). The coupled-cluster method has the
+potential to address questions regarding these nuclei, and in a
+several cases was used to make predictions before experimental data
+was available. In addition, the method can be used to compute
+neighbors of nuclei with closed subshells.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="an-fci-reminder-to-link-with-coupled-cluster-theory-and-mbpt">An FCI reminder to link with coupled-cluster theory and MBPT </h2>
+
+<p>We had</p>
+$$
+(\hat{H} -E)|\Psi_0\rangle = (\hat{H} -E)\sum_{P'H'}C_{H'}^{P'}|\Phi_{H'}^{P'} \rangle=0. 
+$$
+
+<p>As stated previously, one solves this equation normally by
+diagonalization. If we are able to solve this equation exactly (that
+is numerically exactly) in a large Hilbert space (it will be truncated
+in terms of the number of single-particle states included in the
+definition of Slater determinants), it can then serve as a benchmark
+for other many-body methods which approximate the correlation operator
+\( \hat{C} \).
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="rewriting-the-equations">Rewriting the equations </h2>
+<p>For reasons to come (link with Coupled-Cluster theory and Many-Body perturbation theory), 
+we will rewrite the full FCI equation as a set of coupled non-linear equations in terms of the unknown coefficients \( C_H^P \). 
+</p>
+
+<p>To see this, we look at $ \langle \Phi_H^P | = \langle \Phi_0 |$, that is we multiply with \( \langle \Phi_0 | \)
+from the left in
+</p>
+$$
+(\hat{H} -E)\sum_{P'H'}C_{H'}^{P'}|\Phi_{H'}^{P'} \rangle=0, 
+$$
+
+<p>and we assume that we have a two-body operator at most.  Using the Condon-Slater rules gives then and equation for the 
+correlation energy in terms of \( C_i^a \) and \( C_{ij}^{ab} \).  We get then
+</p>
+$$
+\langle \Phi_0 | \hat{H} -E| \Phi_0\rangle + \sum_{ai}\langle \Phi_0 | \hat{H} -E|\Phi_{i}^{a} \rangle C_{i}^{a}+
+\sum_{abij}\langle \Phi_0 | \hat{H} -E|\Phi_{ij}^{ab} \rangle C_{ij}^{ab}=0,
+$$
+
+<p>or</p>
+$$
+E-E_0 =\Delta E=\sum_{ai}\langle \Phi_0 | \hat{H}|\Phi_{i}^{a} \rangle C_{i}^{a}+
+\sum_{abij}\langle \Phi_0 | \hat{H}|\Phi_{ij}^{ab} \rangle C_{ij}^{ab},
+$$
+
+<p>where the \( E_0 \) is the reference energy and \( \Delta E \) becomes the correlation energy.
+We have already computed the expectation values \( \langle \Phi_0 | \hat{H}|\Phi_{i}^{a}  \) and \( \langle \Phi_0 | \hat{H}|\Phi_{ij}^{ab}\rangle \).
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="slight-rewrite">Slight rewrite </h2>
+
+<p>We can rewrite</p>
+$$
+E-E_0 =\Delta E=\sum_{ai}\langle \Phi_0 | \hat{H}|\Phi_{i}^{a} \rangle C_{i}^{a}+
+\sum_{abij}\langle \Phi_0 | \hat{H}|\Phi_{ij}^{ab} \rangle C_{ij}^{ab},
+$$
+
+<p>as</p>
+$$
+\Delta E=\sum_{ai}\langle i| \hat{f}|a \rangle C_{i}^{a}+
+\sum_{abij}\langle ij | \hat{v}| ab \rangle C_{ij}^{ab}.
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="equations-for-the-coeffficients">Equations for the coeffficients </h2>
+
+<p>This equation determines the correlation energy but not the coefficients \( C \). 
+We need more equations. Our next step is to mulitply from the left with \( \Phi_i^a \)
+</p>
+$$
+\langle \Phi_i^a | \hat{H} -E| \Phi_0\rangle + \sum_{bj}\langle \Phi_i^a | \hat{H} -E|\Phi_{j}^{b} \rangle C_{j}^{b}+
+\sum_{bcjk}\langle \Phi_i^a | \hat{H} -E|\Phi_{jk}^{bc} \rangle C_{jk}^{bc}+
+\sum_{bcdjkl}\langle \Phi_i^a | \hat{H} -E|\Phi_{jkl}^{bcd} \rangle C_{jkl}^{bcd}=0,
+$$
+
+<p>as this equation will allow us to find an expression for the coefficents \( C_i^a \) since we can rewrite this equation as </p>
+
+$$
+\langle i | \hat{f}| a\rangle +\langle \Phi_i^a | \hat{H}-E|\Phi_{i}^{a} \rangle C_{i}^{a}+ \sum_{bj\ne ai}\langle \Phi_i^a | \hat{H}|\Phi_{j}^{b} \rangle C_{j}^{b}+
+\sum_{bcjk}\langle \Phi_i^a | \hat{H}|\Phi_{jk}^{bc} \rangle C_{jk}^{bc}+
+\sum_{bcdjkl}\langle \Phi_i^a | \hat{H}|\Phi_{jkl}^{bcd} \rangle C_{jkl}^{bcd}=0.
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="iterative-solutions">Iterative solutions </h2>
+
+<p>We rewrite this equation as</p>
+$$
+C_{i}^{a}=-(\langle \Phi_i^a | \hat{H}-E|\Phi_{i}^{a})^{-1}\left(\langle i | \hat{f}| a\rangle+ \sum_{bj\ne ai}\langle \Phi_i^a | \hat{H}|\Phi_{j}^{b} \rangle C_{j}^{b}+\sum_{bcjk}\langle \Phi_i^a | \hat{H}|\Phi_{jk}^{bc} \rangle C_{jk}^{bc}+
+\sum_{bcdjkl}\langle \Phi_i^a | \hat{H}|\Phi_{jkl}^{bcd} \rangle C_{jkl}^{bcd}\right).
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="coefficients-for-single-excitations">Coefficients for single excitations  </h2>
+
+<p>Since these equations are solved iteratively ( that is we can start with a guess for the coefficients \( C_i^a \)), it is common to start the  iteration 
+by setting
+</p>
+$$
+ C_{i}^{a}=-\frac{\langle i | \hat{f}| a\rangle}{\langle \Phi_i^a | \hat{H}-E|\Phi_{i}^{a}\rangle},
+$$
+
+<p>and the denominator can be written as</p>
+$$
+  C_{i}^{a}=\frac{\langle i | \hat{f}| a\rangle}{\langle i | \hat{f}| i\rangle-\langle a | \hat{f}| a\rangle+\langle ai | \hat{v}| ai\rangle-E}.
+$$
+
+<p>The observant reader will however see that we need an equation for \( C_{jk}^{bc} \) and \( C_{jkl}^{bcd} \) as well.
+To find equations for these coefficients we need then to continue our multiplications from the left with the various
+\( \Phi_{H}^P \) terms. 
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="double-excitations">Double excitations </h2>
+
+<p>For \( C_{jk}^{bc} \) we need then</p>
+$$
+\langle \Phi_{ij}^{ab} | \hat{H} -E| \Phi_0\rangle + \sum_{kc}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{k}^{c} \rangle C_{k}^{c}+
+\sum_{cdkl}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{kl}^{cd} \rangle C_{kl}^{cd}+
+$$
+
+$$
+\sum_{cdeklm}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{klm}^{cde} \rangle C_{klm}^{cde}+\sum_{cdefklmn}\langle \Phi_{ij}^{ab} | \hat{H} -E|\Phi_{klmn}^{cdef} \rangle C_{klmn}^{cdef}=0,
+$$
+
+<p>and we can isolate the coefficients \( C_{kl}^{cd} \) in a similar way as we did for the coefficients \( C_{i}^{a} \). </p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="n-coupled-excitations">\( n \)-coupled excitations </h2>
+
+<p>At the end we can rewrite our solution of the Schr\"odinger equation in terms of \( n \) coupled equations for the coefficients \( C_H^P \).
+This is a very cumbersome way of solving the equation. However, by using this iterative scheme we can illustrate how we can compute the
+various terms in the wave operator or correlation operator \( \hat{C} \). We will later identify the calculation of the various terms \( C_H^P \)
+as parts of different many-body approximations to full CI. In particular, we will relate this non-linear scheme with Coupled Cluster theory and
+many-body perturbation theory.
+</p>
+
+<p>If we use a Hartree-Fock basis, how can one   simplify the equation</p>
+$$
+\Delta E=\sum_{ai}\langle i| \hat{f}|a \rangle C_{i}^{a}+
+\sum_{abij}\langle ij | \hat{v}| ab \rangle C_{ij}^{ab}?
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="the-similarity-transformed-hamiltonian">The similarity transformed Hamiltonian </h2>
+
+<p>There are several ways to view and understand the coupled-cluster
+method. A first simple view of coupled-cluster theory is that the
+method induces correlations into the reference state by expressing a
+correlated state as
+</p>
+
+$$
+\begin{equation}
+\label{psi}
+\vert\Psi\rangle = e^T \vert\Phi_0\rangle ,
+\end{equation}
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="clusters-of-excited-states">Clusters of excited states </h2>
+
+<p>Here, \( T \) is an operator that induces correlations. We can now demand
+that the correlate state \eqref{psi} becomes and eigenstate of the
+Hamiltonian \( H_N \), i.e.  \( H\vert \Psi\rangle = E\vert \Psi\rangle \). This view,
+while correct, is not the most productive one.  Instead, we
+left-multiply the Schroedinger equation with \( e^{-T} \) and find
+</p>
+
+$$
+\begin{equation}
+\label{Schroedinger}
+\overline{H_N}\vert \Phi_0\rangle = \Delta E \vert \Phi_0\rangle . 
+\end{equation}
+$$
+
+<p>Here, \( \Delta E \) is the correlation energy, and the total energy is
+\( E=\Delta E+E_{0}^{\mathrm{ref}} \).
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="similarity-transformation">Similarity transformation </h2>
+
+<p>The similarity-transformed Hamiltonian is defined as</p>
+
+$$
+\begin{equation}
+\label{Hsim}
+\overline{H_N} \equiv e^{-T} H_N e^T .
+\end{equation}
+$$
+
+<p>A more productive view on coupled-cluster theory thus emerges: This
+method seeks a similarity transformation such that the uncorrelated
+reference state becomes an exact eigenstate of the
+similarity-transformed Hamiltonian \eqref{Hsim}.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="what-t-leads-to-hermitian-overline-h-n">What \( T \) leads to Hermitian \( \overline{H_N} \) ? </h2>
+
+<p>What are the conditions on \( T \) such that \( \overline{H_N} \) is Hermitian?</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="answer">Answer </h2>
+
+<p>For a Hermitian \( \overline{H_N} \), we need a unitary \( e^T \), i.e. an
+anti-Hermitian \( T \) with \( T = -T^\dagger \)
+</p>
+
+<p>As we will see below, coupld-cluster theory employs a non-Hermitian Hamiltonian.</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="understanding-non-unitary-similarity-transformations">Understanding (non-unitary) similarity transformations </h2>
+
+<p>Show that \( \overline{H_N} \) has the same eigenvalues as \( H_N \) for
+arbitrary \( T \). What is the spectral decomposition of a non-Hermitian
+\( \overline{H_N} \) ?
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="answer">Answer </h2>
+
+<p>Let \( H_N\vert E\rangle = E\vert E\rangle \). Thus</p>
+
 $$
 \begin{align*}
-            \hat{T}_1 &= 
-            \sum_{ia}
-                t_{i}^{a} a_{a}^\dagger a_i \\
-            \hat{T}_2 &= \frac{1}{4} 
-            \sum_{ijab}
-                t_{ij}^{ab} a_{a}^\dagger a_{b}^\dagger a_{j} a_{i}.
+H_N e^{T} e^{-T} \vert E\rangle &= E\vert E\rangle , \\
+\left(e^{-T} H_N e^T\right) e^{-T} \vert E\rangle &= Ee^{-T} \vert E\rangle , \\
+\overline{H_N} e^{-T} \vert E\rangle &= E e^{-T}\vert E\rangle .
+\end{align*}
+$$
+
+<p>Thus, if \( \vert E\rangle \) is an eigenstate of \( H_N \) with eigenvalue \( E \),
+then \( e^{-T}\vert E\rangle \) is eigenstate of \( \overline{H_N} \) with the same
+eigenvalue.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="non-hermitian-operator">Non-hermitian operator </h2>
+
+<p>A non-Hermitian \( \overline{H_N} \) has eigenvalues \( E_\alpha \)
+corresponding to left \( \langle L_\alpha\vert  \) and right \( \vert R_\alpha
+\rangle \) eigenstates. Thus
+</p>
+
+$$
+\begin{align}
+\overline{H_N} = \sum_\alpha \vert R_\alpha\rangle E_\alpha \langle L_\alpha \vert 
+\label{_auto2}
+\end{align}
+$$
+
+<p>with bi-orthonormal \( \langle L_\alpha\vert R_\beta\rangle = \delta_\alpha^\beta \). </p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="more-formalism">More formalism </h2>
+
+<p>To make progress, we have to specify the cluster operator \( T \). In
+coupled cluster theory, this operator is
+</p>
+
+$$
+\begin{equation}
+\label{Top}
+T \equiv \sum_{ia} t_i^a a^\dagger_a a_i + \frac{1}{4}\sum_{ijab}t_{ij}^{ab}
+a^\dagger_aa^\dagger_ba_ja_i + \cdots
++ \frac{1}{(N!)^2}\sum_{i_1\ldots i_N a_1 \ldots a_N}
+t_{i_1\ldots i_N}^{a_1\ldots a_N} a^\dagger_{a_1}\cdots a^\dagger_{a_N} a_{i_N}\cdots a_{i_1} .
+\end{equation}
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="particle-hole-excitations">Particle-hole excitations </h2>
+
+<p>Thus, the operator \eqref{Top} induces particle-hole (p-h)
+excitations with respect to the reference. In general, \( T \) generates
+up to \( Ap-Ah \) excitations, and the unknown parameters are the cluster amplitides
+\( t_i^a \), \( t_{ij}^{ab} \), ..., \( t_{i_1,\ldots,i_A}^{a_1,\ldots,a_A} \).
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="full-clutser-operator">Full clutser operator </h2>
+
+<p>Thus, the coupled-cluster method with the full cluster operator
+\eqref{Top} is exponentially expensive, just as FCI. To make progress,
+we need to make an approximation by truncating the operator. Here, we
+will use the CCSD (coupled clusters singles doubles) approximation,
+where
+</p>
+
+$$
+\begin{equation}
+\label{Tccsd}
+T \equiv \sum_{ia} t_i^a a^\dagger_a a_i + \frac{1}{4}\sum_{ijab}t_{ij}^{ab}
+a^\dagger_aa^\dagger_ba_ja_i .
+\end{equation}
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="unknown-aplitudes">Unknown aplitudes </h2>
+<p>We need to determine the unknown cluster amplitudes that enter in CCSD. Let</p>
+
+$$
+\begin{align}
+\vert\Phi_i^a\rangle &= a^\dagger_a a_i \vert \Phi_0\rangle , 
+\label{_auto3}\\
+\vert\Phi_{ij}^{ab}\rangle &= a^\dagger_a a^\dagger_b a_j a_i \vert \Phi_0\rangle
+\label{_auto4}
+\end{align}
+$$
+
+<p>be 1p-1h and 2p-2h excitations of the reference. Computing matrix
+elements of the Schroedinger Equation \eqref{Schroedinger} yields
+</p>
+
+$$
+\begin{align}
+\label{ccsd}
+\langle \Phi_0\vert \overline{H_N}\vert \Phi_0\rangle &= E_c , \\
+\langle \Phi_i^a\vert \overline{H_N}\vert \Phi_0\rangle &= 0 , 
+\label{_auto5}\\
+\langle \Phi_{ij}^{ab}\vert \overline{H_N}\vert \Phi_0\rangle &= 0 .
+\label{_auto6}
+\end{align}
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="correlation-energy">Correlation energy </h2>
+
+<p>The first equation states that the coupled-cluster correlation energy
+is an expectation value of the similarity-transformed Hamiltonian. The
+second and third equations state that the similarity-transformed
+Hamiltonian exhibits no 1p-1h and no 2p-2h excitations. These
+equations have to be solved to find the unknown amplitudes \( t_i^a \) and
+\( t_{ij}^{ab} \). Then one can use these amplitudes and compute the
+correlation energy from the first line of Eq. \eqref{ccsd}.
+</p>
+
+<p>We note that in the CCSD approximation the reference state is not an
+exact eigenstates. Rather, it is decoupled from simple states but
+\( \overline{H} \) still connects this state to 3p-3h, and 4p-4h states
+etc.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="good-reference-state">Good reference state </h2>
+
+<p>At this point, it is important to recall that we assumed starting from
+a &quot;good&quot; reference state. In such a case, we might reasonably expect
+that the inclusion of 1p-1h and 2p-2h excitations could result in an
+accurate approximation. Indeed, empirically one finds that CCSD
+accounts for about 90% of the corelation energy, i.e. of the
+difference between the exact energy and the Hartree-Fock energy. The
+inclusion of triples (3p-3h excitations) typically yields 99% of the
+correlation energy.
+</p>
+
+<p>We see that the coupled-cluster method in its CCSD approximation
+yields a similarity-transformed Hamiltonian that is of a two-body
+structure with respect to a non-trivial vacuum. When viewed in this
+light, the coupled-cluster method &quot;transforms&quot; an \( A \)-body problem
+(in CCSD) into a two-body problem, albeit with respect to a nontrivial
+vacuum.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+
+<!-- --- begin exercise --- -->
+<h2 id="exercise-1-why-is-ccd-not-exact">Exercise 1: Why is CCD not exact? </h2>
+
+<p>Above we argued that a similarity transformation preserves all eigenvalues. Nevertheless, the CCD correlation energy is not the exact correlation energy. Explain!</p>
+
+<p>The CCD approximation does not make \( \vert\Phi_0\rangle \) an exact
+eigenstate of \( \overline{H_N} \); it is only an eigenstate when the
+similarity-transformed Hamiltonian is truncated to at most 2p-2h
+states. The full \( \overline{H_N} \), with \( T=T_2 \), would involve
+six-body terms (do you understand this?), and this full Hamiltonian
+would reproduce the exact correlation energy. Thus CCD is a similarity
+transformation plus a truncation, which decouples the ground state only
+from 2p-2h states.
+</p>
+
+<!-- --- end exercise --- -->
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="computing-the-similarity-transformed-hamiltonian">Computing the similarity-transformed Hamiltonian </h2>
+
+<p>The solution of the CCSD equations, i.e. the second and third line of
+Eq. \eqref{ccsd}, and the computation of the correlation energy
+requires us to compute matrix elements of the similarity-transformed
+Hamiltonian \eqref{Hsim}. This can be done with the
+Baker-Campbell-Hausdorff expansion
+</p>
+
+$$
+\begin{align}
+\overline{H_N} &= e^{-T} H_N e^T 
+\label{_auto7}\\
+&=H_N + \left[ H_N, T\right]+ \frac{1}{2!}\left[ \left[ H_N, T\right], T\right]
++ \frac{1}{3!}\left[\left[ \left[ H_N, T\right], T\right], T\right] +\ldots .
+\label{_auto8}
+\end{align}
+$$
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="the-cluster-operator">The cluster operator </h2>
+
+<p>We now come to a key element of coupled-cluster theory: the cluster
+operator \eqref{Top} consists of sums of terms that consist of particle
+creation and hole annihilation operators (but no particle annihilation
+or hole creation operators). Thus, all terms that enter \( T \) commute
+with each other. This means that the commutators in the
+Baker-Campbell-Hausdorff expansion  can only be non-zero
+because each \( T \) must connect to \( H_N \) (but no \( T \) with another
+\( T \)). Thus, the expansion is finite.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="non-hermitian-hamiltonian">Non-hermitian Hamiltonian </h2>
+
+<p>We see that the (disadvantage of having a) non-Hermitian Hamiltonian
+\( \overline{H_N} \) leads to the advantage that the
+Baker-Campbell-Hausdorff expansion is finite, thus leading to the
+possibility to compute \( \overline{H_N} \) exactly.
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="similarity-transformed-hamiltonian">Similarity transformed Hamiltonian </h2>
+
+<p>We write the similarity-transformed Hamiltonian as</p>
+
+$$
+\begin{align}
+\overline{H_N}=\sum_{pq} \overline{H}^p_q a^\dagger_q a_p + {1\over 4} \sum_{pqrs} \overline{H}^{pq}_{rs} a^\dagger_p a^\dagger_q a_s a_r + \ldots
+\label{_auto9}
+\end{align}
+$$
+
+<p>with</p>
+$$
+\begin{align}
+\overline{H}^p_q &\equiv \langle p\vert \overline{H_N}\vert q\rangle , 
+\label{_auto10}\\
+\overline{H}^{pq}_{rs} &\equiv \langle pq\vert \overline{H_N}\vert rs\rangle .
+\label{_auto11}
+\end{align}
+$$
+
+<p>If we truncate the operator \( T \) at the level of singles and doubles,
+the CCSD Eqs.&nbsp;\eqref{ccsd} for the amplitudes can be written as
+\( \overline{H}_i^a = 0 \) and \( \overline{H}_{ij}^{ab}=0 \).
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="ccd-approximation">CCD Approximation </h2>
+
+<p>In what follows, we will consider the coupled cluster doubles (CCD)
+approximation. This approximation is valid in cases where the system
+cannot exhibit any particle-hole excitations (such as nuclear matter
+when formulated on a momentum-space grid) or for the pairing model (as
+the pairing interactions only excites pairs of particles). In this
+case \( t_i^a=0 \) for all \( i, a \), and \( \overline{H}_i^a=0 \). The CCD
+approximation is also of some sort of leading order approximation in
+the Hartree-Fock basis (as the Hartree-Fock Hamiltonian exhibits no
+particle-hole excitations).
+</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="deriving-the-ccd-equations">Deriving the CCD equations </h2>
+
+<p>Let us consider the matrix element \( \overline{H}_{ij}^{ab} \). Clearly,
+it consists of all diagrams (i.e. all combinations of \( T_2 \), and a
+single \( F \) or \( V \) that have two incoming hole lines and two outgoing
+particle lines. Write down all these diagrams.
+</p>
+
+<p>We start systematically and  consider all combinations of \( F \) and \( V \) diagrams with 0, 1, and 2 cluster amplitudes \( T_2 \).</p>
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="the-algebraic-expression">The algebraic expression  </h2>
+$$
+\begin{align*}
+\overline{H}_{ij}^{ab} &= \langle ab\vert V\vert ij\rangle + P(ab)\sum_c f_c^bt_{ij}^{ac} - P(ij)\sum_k f_j^k t_{ik}^{ab} \\
+&+ {1\over 2} \sum_{cd} \langle ab\vert V\vert cd\rangle t_{ij}^{cd}+ {1\over 2} \sum_{kl} \langle kl\vert V\vert ij\rangle t_{kl}^{ab} + P(ab)P(ij)\sum_{kc} \langle kb\vert V\vert cj \rangle t_{ik}^{ac} \\
+&+ {1\over 2} P(ij)P(ab)\sum_{kcld} \langle kl\vert V\vert cd\rangle t_{ik}^{ac}t_{lj}^{db} 
++ {1\over 2} P(ij)\sum_{kcld} \langle kl\vert V\vert cd\rangle t_{ik}^{cd}t_{lj}^{ab}\\
+&+ {1\over 2} P(ab)\sum_{kcld} \langle kl\vert V\vert cd\rangle t_{kl}^{ac}t_{ij}^{db}
++ {1\over 4} \sum_{kcld} \langle kl\vert V\vert cd\rangle t_{ij}^{cd}t_{kl}^{ab} . 
 \end{align*}
 $$
 
 
 <!-- !split --><br><br><br><br><br><br><br><br><br><br>
-<h2 id="two-body-normal-ordered-hamiltonian">Two-body normal-ordered Hamiltonian </h2>
+<h2 id="ccd-for-the-pairing-hamiltonian">CCD for the pairing Hamiltonian </h2>
 
+<p>You learned about the pairing Hamiltonian earlier in the second midterm. Convince yourself that this Hamiltonian does not induce any
+1p-1h excitations. Let us solve the CCD equations for this
+problem. This consists of the following steps
+</p>
+
+<ol>
+<li> Write a function that compute the potential, i.e. it returns a four-indexed array (or tensor). We need \( \langle ab\vert V\vert cd\rangle \), \( \langle ij\vert V\vert kl\rangle \), and \( \langle ab\vert V\vert ij\rangle \). Why is there no \( \langle ab\vert V\vert id\rangle \) or \( \langle ai\vert V\vert jb\rangle \) ?</li>
+<li> Write a function that computes the Fock matrix, i.e. a two-indexed array. We only need \( f_a^b \) and \( f_i^j \). Why?</li> 
+<li> Initialize the cluster amplitudes according and solve the equations for the amplitues itereatively.</li> 
+</ol>
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="solving-the-ccd-equations-for-the-pairing-problem">Solving the CCD equations for the pairing problem </h2>
+<p>The Hamiltonian is</p>
 $$
-\begin{align*}
-            \hat{H} &= \sum_{pq} \langle p\vert \hat{f} \vert q \rangle\left\{ a_p^\dagger a_q \right\} + 
-                \frac{1}{4} \sum_{pqrs} \langle pq \vert \hat{v} \vert rs \rangle  \left\{ a_p^\dagger a_q^\dagger a_s a_r \right\} \\
-                & \quad + \mathrm{E}_0 \\
-                &= \hat{F}_N + \hat{V}_N  + \mathrm{E}_0 
-                = \hat{H}_N  + \mathrm{E}_0,
-\end{align*}
+\begin{align}
+H = \delta \sum_{p=1}^\Omega (p-1)\left(a^\dagger_{p+}a_{p+} + a^\dagger_{p-}a_{p-}\right)
+-{g \over 2} \sum_{p, q=1}^\Omega a^\dagger_{p+}a^\dagger_{p-} a_{q-} a_{q+} .
+\label{_auto12}
+\end{align}
 $$
 
-<p>where</p>
-$$
-\begin{align*}
-            \langle p\vert \hat{f} \vert q \rangle &= \langle p\vert \hat{h}_0 \vert q\rangle + \sum_i \langle pi\vert \hat{v} \vert qi\rangle \\
-            \mathrm{E}_0 &= \sum_i \langle i\vert \hat{h}_0 \vert i\rangle + \frac{1}{2} \sum_{ij} \langle ij\vert  \hat{v} \vert ij\rangle.
-\end{align*}
-$$
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="exact-diagonalization">Exact diagonalization </h2>
+
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="cell border-box-sizing code_cell rendered">
+  <div class="input">
+    <div class="inner_cell">
+      <div class="input_area">
+        <div class="highlight" style="background: #f8f8f8">
+  <pre style="line-height: 125%;"><span style="color: #408080; font-style: italic">#!/usr/bin/python</span>
+<span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">sympy</span> <span style="color: #008000; font-weight: bold">import</span> <span style="color: #666666">*</span>
+<span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">pylab</span> <span style="color: #008000; font-weight: bold">import</span> <span style="color: #666666">*</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">matplotlib.pyplot</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">plt</span>
+
+
+ga <span style="color: #666666">=</span> linspace(<span style="color: #666666">-1</span>,<span style="color: #666666">1</span>,<span style="color: #666666">20</span>)
+e1 <span style="color: #666666">=</span> []
+
+<span style="color: #008000; font-weight: bold">for</span> g_val <span style="color: #AA22FF; font-weight: bold">in</span> ga:
+    H1 <span style="color: #666666">=</span> matrix([[<span style="color: #666666">2-</span>g_val , <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,     <span style="color: #666666">0</span>],
+                         [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,   <span style="color: #666666">4-</span>g_val,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,    <span style="color: #666666">0.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                         [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,    <span style="color: #666666">6-</span>g_val,     <span style="color: #666666">0</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                 [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,      <span style="color: #666666">0</span>,   <span style="color: #666666">6-</span>g_val, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                 [<span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,     <span style="color: #666666">0</span>,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,   <span style="color: #666666">8-</span>g_val, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>],
+                 [<span style="color: #666666">0</span>    , <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,  <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>, <span style="color: #666666">-</span>g_val<span style="color: #666666">/2.</span>,  <span style="color: #666666">10-</span>g_val]])
+
+    u1, v1 <span style="color: #666666">=</span> linalg<span style="color: #666666">.</span>eig(H1)
+    e1<span style="color: #666666">.</span>append(<span style="color: #008000">min</span>(u1))
+exact <span style="color: #666666">=</span> e1 <span style="color: #666666">-</span> (<span style="color: #666666">2-</span>ga)
+<span style="color: #008000">print</span>(exact)
+
+plt<span style="color: #666666">.</span>axis([<span style="color: #666666">-1</span>,<span style="color: #666666">1</span>,<span style="color: #666666">-0.5</span>,<span style="color: #666666">0.05</span>])
+plt<span style="color: #666666">.</span>xlabel(<span style="color: #BA2121">r&#39;Interaction strength, $g$&#39;</span>, fontsize<span style="color: #666666">=16</span>)
+plt<span style="color: #666666">.</span>ylabel(<span style="color: #BA2121">r&#39;Correlation energy&#39;</span>, fontsize<span style="color: #666666">=16</span>)
+exact <span style="color: #666666">=</span> plt<span style="color: #666666">.</span>plot(ga, exact,<span style="color: #BA2121">&#39;b-*&#39;</span>,linewidth <span style="color: #666666">=</span> <span style="color: #666666">2.0</span>, label <span style="color: #666666">=</span> <span style="color: #BA2121">&#39;Exact&#39;</span>)
+plt<span style="color: #666666">.</span>legend()
+plt<span style="color: #666666">.</span>savefig(<span style="color: #BA2121">&#39;pairing.pdf&#39;</span>, <span style="color: #008000">format</span><span style="color: #666666">=</span><span style="color: #BA2121">&#39;pdf&#39;</span>)
+plt<span style="color: #666666">.</span>show()
+</pre>
+</div>
+      </div>
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output">
+      <div class="output_area">
+        <div class="output_subarea output_stream output_stdout output_text">          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- !split --><br><br><br><br><br><br><br><br><br><br>
+<h2 id="python-code">Python code </h2>
+
+
+<!-- code=python (!bc pycod) typeset with pygments style "default" -->
+<div class="cell border-box-sizing code_cell rendered">
+  <div class="input">
+    <div class="inner_cell">
+      <div class="input_area">
+        <div class="highlight" style="background: #f8f8f8">
+  <pre style="line-height: 125%;"><span style="color: #408080; font-style: italic">## Coupled clusters in CCD approximation</span>
+<span style="color: #408080; font-style: italic">## Implemented for the pairing model of Lecture Notes in Physics 936, Chapter 8.</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">numpy</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">np</span>
+
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">init_pairing_v</span>(g,pnum,hnum):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    returns potential matrices of the pairing model in three relevant channels</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param g: strength of the pairing interaction, as in Eq. (8.42)</span>
+<span style="color: #BA2121; font-style: italic">    param pnum: number of particle states</span>
+<span style="color: #BA2121; font-style: italic">    param hnum: number of hole states</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return v_pppp, v_pphh, v_hhhh: np.array(pnum,pnum,pnum,pnum), </span>
+<span style="color: #BA2121; font-style: italic">                                   np.array(pnum,pnum,hnum,hnum), </span>
+<span style="color: #BA2121; font-style: italic">                                   np.array(hnum,hnum,hnum,hnum), </span>
+<span style="color: #BA2121; font-style: italic">                                   The interaction as a 4-indexed tensor in three channels.</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    v_pppp<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((pnum,pnum,pnum,pnum))
+    v_pphh<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((pnum,pnum,hnum,hnum))
+    v_hhhh<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((hnum,hnum,hnum,hnum))
+    
+    gval<span style="color: #666666">=-0.5*</span>g
+    <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+        <span style="color: #008000; font-weight: bold">for</span> b <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+            v_pppp[a,a<span style="color: #666666">+1</span>,b,b<span style="color: #666666">+1</span>]<span style="color: #666666">=</span>gval
+            v_pppp[a<span style="color: #666666">+1</span>,a,b,b<span style="color: #666666">+1</span>]<span style="color: #666666">=-</span>gval
+            v_pppp[a,a<span style="color: #666666">+1</span>,b<span style="color: #666666">+1</span>,b]<span style="color: #666666">=-</span>gval
+            v_pppp[a<span style="color: #666666">+1</span>,a,b<span style="color: #666666">+1</span>,b]<span style="color: #666666">=</span>gval
+            
+    <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+        <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+            v_pphh[a,a<span style="color: #666666">+1</span>,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=</span>gval
+            v_pphh[a<span style="color: #666666">+1</span>,a,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=-</span>gval
+            v_pphh[a,a<span style="color: #666666">+1</span>,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=-</span>gval
+            v_pphh[a<span style="color: #666666">+1</span>,a,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=</span>gval
+    
+    <span style="color: #008000; font-weight: bold">for</span> j <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+        <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+            v_hhhh[j,j<span style="color: #666666">+1</span>,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=</span>gval
+            v_hhhh[j<span style="color: #666666">+1</span>,j,i,i<span style="color: #666666">+1</span>]<span style="color: #666666">=-</span>gval
+            v_hhhh[j,j<span style="color: #666666">+1</span>,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=-</span>gval
+            v_hhhh[j<span style="color: #666666">+1</span>,j,i<span style="color: #666666">+1</span>,i]<span style="color: #666666">=</span>gval
+        
+    <span style="color: #008000; font-weight: bold">return</span> v_pppp, v_pphh, v_hhhh
+    
+    
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">init_pairing_fock</span>(delta,g,pnum,hnum):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    initializes the Fock matrix of the pairing model</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param delta: Single-particle spacing, as in Eq. (8.41)</span>
+<span style="color: #BA2121; font-style: italic">    param g: pairing strength, as in eq. (8.42)</span>
+<span style="color: #BA2121; font-style: italic">    param pnum: number of particle states</span>
+<span style="color: #BA2121; font-style: italic">    param hnum: number of hole states</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return f_pp, f_hh: The Fock matrix in two channels as numpy arrays np.array(pnum,pnum), np.array(hnum,hnum). </span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+<span style="color: #408080; font-style: italic"># the Fock matrix for the pairing model. No f_ph needed, because we are in Hartree-Fock basis </span>
+    deltaval<span style="color: #666666">=0.5*</span>delta
+    gval<span style="color: #666666">=-0.5*</span>g
+    f_pp <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((pnum,pnum))
+    f_hh <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((hnum,hnum))
+
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,hnum,<span style="color: #666666">2</span>):
+        f_hh[i  ,i  ] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>i<span style="color: #666666">+</span>gval
+        f_hh[i<span style="color: #666666">+1</span>,i<span style="color: #666666">+1</span>] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>i<span style="color: #666666">+</span>gval
+        
+    <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">0</span>,pnum,<span style="color: #666666">2</span>):
+        f_pp[a  ,a  ] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>(hnum<span style="color: #666666">+</span>a)
+        f_pp[a<span style="color: #666666">+1</span>,a<span style="color: #666666">+1</span>] <span style="color: #666666">=</span> deltaval<span style="color: #666666">*</span>(hnum<span style="color: #666666">+</span>a)
+    
+    <span style="color: #008000; font-weight: bold">return</span> f_pp, f_hh
+
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">init_t2</span>(v_pphh,f_pp,f_hh):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    Initializes t2 amlitudes as in MBPT2, see first equation on page 345</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param v_pphh: pairing tensor in pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    param f_pp:   Fock matrix in pp channel</span>
+<span style="color: #BA2121; font-style: italic">    param f_hh:   Fock matrix in hh channel</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return t2: numpy array in pphh format, 4-indices tensor</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    pnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_pp)
+    hnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_hh)
+    t2_new <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros((pnum,pnum,hnum,hnum))
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+        <span style="color: #008000; font-weight: bold">for</span> j <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+            <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                <span style="color: #008000; font-weight: bold">for</span> b <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                    t2_new[a,b,i,j] <span style="color: #666666">=</span> v_pphh[a,b,i,j] <span style="color: #666666">/</span> (f_hh[i,i]<span style="color: #666666">+</span>f_hh[j,j]<span style="color: #666666">-</span>f_pp[a,a]<span style="color: #666666">-</span>f_pp[b,b])
+    <span style="color: #008000; font-weight: bold">return</span> t2_new
+
+
+<span style="color: #408080; font-style: italic"># CCD equations. Note that the &quot;-&gt;abij&quot; assignment is redundant, because indices are ordered alphabetically.</span>
+<span style="color: #408080; font-style: italic"># Nevertheless, we retain it for transparency.</span>
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">ccd_iter</span>(v_pppp,v_pphh,v_hhhh,f_pp,f_hh,t2):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    Performs one iteration of the CCD equations (8.34), using also intermediates for the nonliniar terms</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param v_pppp: pppp-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param v_pphh: pphh-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param v_hhhh: hhhh-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param f_pp: Fock matrix in pp channel</span>
+<span style="color: #BA2121; font-style: italic">    param f_hh: Fock matrix in hh channel</span>
+<span style="color: #BA2121; font-style: italic">    param t2: Initial t2 amplitude, tensor in form of pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return t2_new: new t2 amplitude, tensor in form of pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    pnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_pp)
+    hnum <span style="color: #666666">=</span> <span style="color: #008000">len</span>(f_hh)
+    Hbar_pphh <span style="color: #666666">=</span> (  v_pphh 
+                 <span style="color: #666666">+</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bc,acij-&gt;abij&#39;</span>,f_pp,t2) 
+                 <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;ac,bcij-&gt;abij&#39;</span>,f_pp,t2) 
+                 <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abik,kj-&gt;abij&#39;</span>,t2,f_hh)
+                 <span style="color: #666666">+</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abjk,ki-&gt;abij&#39;</span>,t2,f_hh)
+                 <span style="color: #666666">+</span> <span style="color: #666666">0.5*</span>np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abcd,cdij-&gt;abij&#39;</span>,v_pppp,t2) 
+                 <span style="color: #666666">+</span> <span style="color: #666666">0.5*</span>np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abkl,klij-&gt;abij&#39;</span>,t2,v_hhhh)
+                )
+
+    <span style="color: #408080; font-style: italic"># hh intermediate, see (8.47)</span>
+    chi_hh <span style="color: #666666">=</span> <span style="color: #666666">0.5*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,cdjl-&gt;kj&#39;</span>,v_pphh,t2)
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">-</span> (  np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abik,kj-&gt;abij&#39;</span>,t2,chi_hh) 
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abik,kj-&gt;abji&#39;</span>,t2,chi_hh) )
+
+    <span style="color: #408080; font-style: italic"># pp intermediate, see (8.46)</span>
+    chi_pp <span style="color: #666666">=</span> <span style="color: #666666">-0.5*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,bdkl-&gt;cb&#39;</span>,v_pphh,t2)
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">+</span> (  np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;acij,cb-&gt;abij&#39;</span>,t2,chi_pp) 
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;acij,cb-&gt;baij&#39;</span>,t2,chi_pp) )
+
+    <span style="color: #408080; font-style: italic"># hhhh intermediate, see (8.48)</span>
+    chi_hhhh <span style="color: #666666">=</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,cdij-&gt;klij&#39;</span>,v_pphh,t2)
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">+</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abkl,klij-&gt;abij&#39;</span>,t2,chi_hhhh)
+
+    <span style="color: #408080; font-style: italic"># phph intermediate, see (8.49)</span>
+    chi_phph<span style="color: #666666">=</span> <span style="color: #666666">+</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;cdkl,dblj-&gt;bkcj&#39;</span>,v_pphh,t2)
+
+
+    Hbar_pphh <span style="color: #666666">=</span> Hbar_pphh <span style="color: #666666">+</span> (  np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;abij&#39;</span>,chi_phph,t2)
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;baij&#39;</span>,chi_phph,t2)
+                             <span style="color: #666666">-</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;abji&#39;</span>,chi_phph,t2)
+                             <span style="color: #666666">+</span> np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;bkcj,acik-&gt;baji&#39;</span>,chi_phph,t2) )
+                 
+    t2_new<span style="color: #666666">=</span>np<span style="color: #666666">.</span>zeros((pnum,pnum,hnum,hnum))
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+        <span style="color: #008000; font-weight: bold">for</span> j <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(hnum):
+            <span style="color: #008000; font-weight: bold">for</span> a <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                <span style="color: #008000; font-weight: bold">for</span> b <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(pnum):
+                    t2_new[a,b,i,j] <span style="color: #666666">=</span> (  t2[a,b,i,j] 
+                                       <span style="color: #666666">+</span> Hbar_pphh[a,b,i,j] <span style="color: #666666">/</span> (f_hh[i,i]<span style="color: #666666">+</span>f_hh[j,j]<span style="color: #666666">-</span>f_pp[a,a]<span style="color: #666666">-</span>f_pp[b,b]) )
+
+    <span style="color: #008000; font-weight: bold">return</span> t2_new
+
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">ccd_energy</span>(v_pphh,t2):
+    <span style="color: #BA2121; font-style: italic">&quot;&quot;&quot;</span>
+<span style="color: #BA2121; font-style: italic">    Computes CCD energy. Call as </span>
+<span style="color: #BA2121; font-style: italic">    energy = ccd_energy(v_pphh,t2)</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    param v_pphh: pphh-channel pairing tensor, numpy array</span>
+<span style="color: #BA2121; font-style: italic">    param t2: t2 amplitude, tensor in form of pphh channel</span>
+<span style="color: #BA2121; font-style: italic">    </span>
+<span style="color: #BA2121; font-style: italic">    return energy: CCD correlation energy</span>
+<span style="color: #BA2121; font-style: italic">    &quot;&quot;&quot;</span>
+    erg <span style="color: #666666">=</span> <span style="color: #666666">0.25*</span>np<span style="color: #666666">.</span>einsum(<span style="color: #BA2121">&#39;abij,abij&#39;</span>,v_pphh,t2)
+    <span style="color: #008000; font-weight: bold">return</span> erg
+
+<span style="color: #408080; font-style: italic">###############################</span>
+<span style="color: #408080; font-style: italic">######## Main Program</span>
+
+<span style="color: #408080; font-style: italic"># set parameters as for model</span>
+pnum <span style="color: #666666">=</span> <span style="color: #666666">4</span> <span style="color: #408080; font-style: italic"># number of particle states</span>
+hnum <span style="color: #666666">=</span> <span style="color: #666666">4</span> <span style="color: #408080; font-style: italic"># number of hole states</span>
+delta <span style="color: #666666">=</span> <span style="color: #666666">1.0</span>
+
+g <span style="color: #666666">=</span> <span style="color: #666666">1.0</span>
+
+<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;parameters&quot;</span>)
+<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;delta =&quot;</span>, delta, <span style="color: #BA2121">&quot;, g =&quot;</span>, g)
+
+
+<span style="color: #408080; font-style: italic"># Initialize pairing matrix elements and Fock matrix</span>
+v_pppp, v_pphh, v_hhhh <span style="color: #666666">=</span> init_pairing_v(g,pnum,hnum)
+f_pp, f_hh <span style="color: #666666">=</span> init_pairing_fock(delta,g,pnum,hnum)
+
+<span style="color: #408080; font-style: italic"># Initialize T2 amplitudes from MBPT2</span>
+t2 <span style="color: #666666">=</span> init_t2(v_pphh,f_pp,f_hh)
+erg <span style="color: #666666">=</span> ccd_energy(v_pphh,t2)
+
+<span style="color: #408080; font-style: italic"># Exact MBPT2 for comparison, see last equation on page 365 </span>
+exact_mbpt2 <span style="color: #666666">=</span> <span style="color: #666666">-0.25*</span>g<span style="color: #666666">**2*</span>(<span style="color: #666666">1.0/</span>(<span style="color: #666666">2.0+</span>g) <span style="color: #666666">+</span> <span style="color: #666666">2.0/</span>(<span style="color: #666666">4.0+</span>g) <span style="color: #666666">+</span> <span style="color: #666666">1.0/</span>(<span style="color: #666666">6.0+</span>g))
+<span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;MBPT2 energy =&quot;</span>, erg, <span style="color: #BA2121">&quot;, compared to exact MBPT(2):&quot;</span>, exact_mbpt2)
+    
+    
+<span style="color: #408080; font-style: italic"># iterate CCD equations niter times</span>
+niter<span style="color: #666666">=60</span>
+<span style="color: #008000; font-weight: bold">for</span> <span style="color: #008000">iter</span> <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(niter):
+    t2_new <span style="color: #666666">=</span> ccd_iter(v_pppp,v_pphh,v_hhhh,f_pp,f_hh,t2)
+    erg <span style="color: #666666">=</span> ccd_energy(v_pphh,t2_new)
+    <span style="color: #008000">print</span>(<span style="color: #BA2121">&quot;iter=&quot;</span>, <span style="color: #008000">iter</span>, <span style="color: #BA2121">&quot;erg=&quot;</span>, erg)
+    t2 <span style="color: #666666">=</span> <span style="color: #666666">0.5</span> <span style="color: #666666">*</span> (t2_new <span style="color: #666666">+</span> t2) 
+</pre>
+</div>
+      </div>
+    </div>
+  </div>
+  <div class="output_wrapper">
+    <div class="output">
+      <div class="output_area">
+        <div class="output_subarea output_stream output_stdout output_text">          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!-- !split --><br><br><br><br><br><br><br><br><br><br>
 <h2 id="diagrammatic-and-algebraic-derivations-of-t-1-and-t-2-amplitude-equations">Diagrammatic and algebraic derivations of \( T_1 \) and \( T_2 \) amplitude equations </h2>
 
 <p>See lecture material: Lecture notes and Shavitt and Bartlett chapters 9 and 10. See also slides at <a href="https://github.com/ManyBodyPhysi#cs/FYS4480/blob/master/doc/pub/week48/pdf/cc.pdf" target="_blank"><tt>https://github.com/ManyBodyPhysi#cs/FYS4480/blob/master/doc/pub/week48/pdf/cc.pdf</tt></a></p>
+
 <!-- ------------------- end of main content --------------- -->
 <center style="font-size:80%">
 <!-- copyright --> &copy; 1999-2025, Morten Hjorth-Jensen. Released under CC Attribution-NonCommercial 4.0 license
