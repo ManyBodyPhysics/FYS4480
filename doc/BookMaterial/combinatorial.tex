@@ -1,0 +1,348 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,physics,bm,graphicx,hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{authblk}
+
+\title{Combinatorial and Exponential Scaling in Many-Body Physics and Machine Learning}
+\author{Morten Hjorth-Jensen}
+\date{December 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+  We explore the interplay between combinatorial and exponential
+  scaling in quantum many-body physics and modern machine learning. By
+  examining paradigmatic models such as the Lipkin--Meshkov--Glick
+  model, the Hubbard model, and nuclear shell models, we illustrate
+  how combinatorial scaling often transitions to effective exponential
+  growth. We draw parallels with machine learning architectures,
+  including variational autoencoders, transformers, and neural-network
+  quantum states, and discuss expressivity bounds connecting many-body
+  bases and neural network representations. We also examine Quantum
+  Monte Carlo versus autoregressive models and provide rigorous
+  theoretical results on the expressivity of neural networks in
+  high-dimensional spaces.
+\end{abstract}
+
+\section{Introduction}
+
+The distinction between combinatorial and exponential scaling is
+crucial in understanding computational complexity in both physics and
+machine learning. While combinatorial growth arises from counting
+arguments, exponential scaling is intrinsic to tensor-product
+structures in state or hypothesis spaces. Both domains face challenges
+due to the rapid growth of effective configuration spaces, motivating
+compressed representations, structured ansatzes, and inductive biases.
+
+\section{Many-Body Physics Case Studies}
+
+\subsection{Lipkin–Meshkov–Glick Model}
+The Lipkin model describes $N$ fermions in two $N$-fold degenerate levels. The Hilbert space dimension is
+\begin{equation}
+  \dim \mathcal{H} = \binom{N}{N/2} \sim \frac{2^N}{\sqrt{N}},
+\end{equation}
+showing effective exponential growth despite its combinatorial origin.
+
+\subsection{Hubbard Model}
+A lattice with $L$ sites has a local Hilbert space dimension of four. The full Hilbert space scales as $4^L$, and fixing particle numbers gives a combinatorial expression
+\begin{equation}
+  \binom{L}{N_\uparrow} \binom{L}{N_\downarrow},
+\end{equation}
+which becomes exponential for large $L$ and extensive fillings.
+
+\subsection{Nuclear Shell Model}
+The nuclear shell model with $A$ valence nucleons in $N_{\text{sp}}$ orbitals has
+\begin{equation}
+  \dim \mathcal{H} = \binom{N_{\text{sp}}}{A}.
+\end{equation}
+Realistic scenarios with multiple shells and relaxed symmetry constraints show effective exponential scaling.
+
+\section{Tensor-Product Structure and Entanglement}
+Spin chains demonstrate intrinsic exponential scaling:
+\begin{equation}
+  \mathcal{H} = \bigotimes_{i=1}^L \mathbb{C}^2, \quad \dim \mathcal{H} = 2^L.
+\end{equation}
+Area-law entanglement allows polynomial representations; volume-law entanglement leads to exponential resources.
+
+\section{Tensor Networks as Compressed Representations}
+Matrix Product States (MPS):
+\begin{equation}
+  |\psi\rangle = \sum_{{s_i}} A^{s_1}_1 A^{s_2}_2 \cdots A^{s_L}_L |s_1 s_2 \dots s_L\rangle,
+\end{equation}
+with polynomial cost in bond dimension $D$ for area-law states.
+
+\section{Machine Learning Analogues}
+\subsection{Variational Autoencoders}
+
+Latent vector $z \in \mathbb{R}^d$, discretized into $k$ bins: $k^d$
+configurations. Smoothness and shared parameters ensure tractable
+training.
+
+\subsection{Attention Mechanisms}
+
+Transformers: attention cost $\mathcal{O}(L^2 d)$. Sparse and low-rank
+approximations parallel truncation in physics.
+
+\subsection{Quantum Monte Carlo vs. Autoregressive Models}
+QMC samples from the wavefunction; autoregressive models factorize probabilities:
+\begin{equation}
+  P(\sigma_1,\dots,\sigma_L) = \prod_{i=1}^L P(\sigma_i | \sigma_1,\dots,\sigma_{i-1}).
+\end{equation}
+Exact sampling replaces stochastic Monte Carlo with learned conditional structure.
+
+\subsection{Neural-Network Quantum States}
+
+RBMs and other networks represent wavefunctions
+implicitly. Exponential configuration spaces are compressed into
+polynomially parameterized networks.
+
+\section{Expressivity: Neural Networks versus Many-Body Bases}
+
+Exact diagonalization scales exponentially; truncated bases reduce
+this. Neural networks’ expressivity depends on depth, width, and
+inductive bias.
+
+\subsection{Rigorous Expressivity Theorems}
+
+For a feedforward neural network $f:\mathbb{R}^d \to \mathbb{R}$ with
+ReLU activations and $L$ layers of width $m$, the universal
+approximation theorem guarantees:
+
+\begin{equation}
+  \forall \epsilon>0, \exists f_{\theta} \text{ s.t. } |f - f_{\theta}|_{L^p([0,1]^d)} < \epsilon.
+\end{equation}
+
+Moreover, depth separation results imply functions requiring
+exponentially many neurons in shallow networks can be represented
+efficiently with deep networks, analogous to representing highly
+entangled many-body states efficiently with deep tensor networks.
+
+\section{Synthesis and Outlook}
+
+Combinatorial scaling transitions to exponential growth when extensive
+quantities scale together. Structured representations—tensor networks,
+autoregressive models, and deep networks—control this
+complexity. Connections between renormalization group and deep
+learning, Monte Carlo and generative models, and expressivity bounds
+between many-body physics and neural networks are fertile areas for
+future research.
+
+\end{document}~
+
+
+Perfect — I’ll resume seamlessly by continuing all three threads in parallel, keeping the structure coherent and lecture-note ready. I’ll assume the previous document already covered:
+	•	combinatorial vs exponential scaling (general discussion),
+	•	Lipkin model,
+	•	Hubbard model,
+	•	nuclear shell model (baseline),
+	•	and at least one ML example.
+
+Below is a clean continuation, starting after the nuclear shell model, and then extending both physics and ML case studies, while explicitly tying them together.
+
+⸻
+
+4. Beyond the Nuclear Shell Model: When Combinatorics Turns Exponential
+
+4.1 Configuration Interaction and Fock-Space Explosion
+
+In the nuclear shell model, the Hilbert-space dimension for a fixed number of valence nucleons A distributed among N_{\text{sp}} single-particle states is
+
+\dim \mathcal{H}
+= \binom{N_{\text{sp}}}{A}.
+
+For fixed A, this grows polynomially in N_{\text{sp}}.
+However, in realistic calculations:
+	•	A \propto N_{\text{sp}},
+	•	spin, isospin, and parity constraints are relaxed,
+	•	multi-shell excitations are included.
+
+In this regime,
+
+\binom{N}{\alpha N}
+\sim \frac{2^{N}}{\sqrt{N}},
+
+and the scaling becomes effectively exponential.
+
+Key lesson:
+
+A combinatorial formula can still imply exponential complexity when both the system size and particle number scale.
+
+This phenomenon is generic across many-body physics.
+
+⸻
+
+5. Tensor-Product Growth in Quantum Many-Body Systems
+
+5.1 Spin Chains and Local Hilbert Spaces
+
+Consider a spin-1/2 chain of length L:
+
+\mathcal{H} = \bigotimes_{i=1}^L \mathbb{C}^2,
+\qquad
+\dim \mathcal{H} = 2^L.
+
+This is strict exponential scaling, originating from the tensor-product structure.
+
+Even when symmetries reduce the space:
+	•	total S^z conservation,
+	•	translational invariance,
+
+the remaining subspaces still scale exponentially in L.
+
+⸻
+
+5.2 Entanglement as the True Bottleneck
+
+The practical difficulty is not the dimension alone, but entanglement entropy.
+
+For a bipartition A|B,
+
+S_A = -\mathrm{Tr}\,\rho_A \log \rho_A.
+	•	Area-law states → efficiently representable
+	•	Volume-law states → exponential resources required
+
+This distinction motivates tensor-network methods.
+
+⸻
+
+6. Tensor Networks: Controlled Escape from Exponential Scaling
+
+6.1 Matrix Product States (MPS)
+
+An MPS representation of a wavefunction:
+
+|\psi\rangle
+= \sum_{\{s_i\}}
+A^{s_1}_1 A^{s_2}_2 \cdots A^{s_L}_L
+|s_1 s_2 \cdots s_L\rangle
+
+has a computational cost scaling as
+
+\mathcal{O}(L D^3),
+
+where D is the bond dimension.
+	•	Exact representation → D \sim 2^{L/2}
+	•	Area-law states → small D
+
+Physics insight:
+Exponential Hilbert spaces can be compressed if entanglement is limited.
+
+⸻
+
+7. Machine Learning Case Studies (Continuation)
+
+7.1 Variational Autoencoders (VAEs) and Latent-Space Combinatorics
+
+In a VAE, a latent vector z \in \mathbb{R}^d defines a generative distribution
+
+p_\theta(x|z).
+
+Although z lives in a continuous space, discretizing each latent variable into k bins yields
+
+\text{number of configurations} = k^d,
+
+which grows exponentially in the latent dimension.
+
+Interpretation:
+	•	Expressive power grows exponentially,
+	•	Training remains tractable due to smoothness and shared parameters.
+
+This mirrors tensor-network compression of quantum states.
+
+⸻
+
+7.2 Attention Mechanisms and Quadratic Scaling
+
+For a transformer with sequence length L,
+
+\text{attention cost} \sim \mathcal{O}(L^2 d).
+
+While not exponential, this combinatorial pairwise interaction becomes prohibitive at scale.
+
+Recent ML developments (linear attention, low-rank kernels) play the same role as:
+	•	truncating Hilbert spaces,
+	•	limiting entanglement growth.
+
+⸻
+
+8. Neural-Network Quantum States (NNQS)
+
+8.1 Restricted Boltzmann Machines
+
+An RBM wavefunction:
+
+\psi(\sigma)
+= \sum_{h} \exp\left(
+\sum_i a_i \sigma_i
++ \sum_j b_j h_j
++ \sum_{ij} W_{ij} \sigma_i h_j
+\right)
+
+implicitly represents
+
+2^{N_h}
+
+hidden configurations.
+
+Yet evaluation and sampling scale polynomially.
+
+Crucial point:
+
+Exponential representational capacity does not imply exponential computational cost.
+
+⸻
+
+8.2 Comparison with Exact Diagonalization
+
+Method	Representation size	Practical scaling
+Exact diagonalization	Explicit 2^L	Exponential
+CI shell model	\binom{N}{A}	Often exponential
+Tensor networks	Compressed	Polynomial (area law)
+NNQS	Implicit exponential	Polynomial training
+
+
+⸻
+
+9. Synthesis: When Does Combinatorial Become Exponential?
+
+9.1 General Criterion
+
+Combinatorial scaling becomes effectively exponential when:
+	1.	Multiple extensive quantities scale together
+	2.	Constraints are relaxed
+	3.	Entanglement or correlations become volume-law
+	4.	Representations are explicit rather than implicit
+
+⸻
+
+9.2 Physics–ML Correspondence
+
+Physics	Machine Learning
+Hilbert space	Hypothesis space
+Entanglement	Feature correlations
+Tensor networks	Factorized neural architectures
+Variational ansatz	Inductive bias
+Truncation schemes	Regularization
+
+
+⸻
+
+10. Outlook (Natural Continuation)
+
+Logical next extensions would be:
+	•	Quantum Monte Carlo vs autoregressive models
+	•	PEPS and 2D scaling vs vision transformers
+	•	Renormalization group ↔ deep hierarchical networks
+	•	Expressivity bounds of neural networks vs many-body bases
+
+If you like, I can now:
+	•	re-integrate this cleanly into a LaTeX document,
+	•	add figures (tensor networks, attention graphs), or
+	•	turn this into lecture slides or a review-style section.
+
+Just tell me how you want to package it.
