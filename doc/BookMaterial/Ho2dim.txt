@@ -1,0 +1,199 @@
+
+Two-Particle Yukawa Integral Computation in a 2D Harmonic Oscillator Basis
+
+
+
+Overview and Basis Definition
+
+
+We work in a two-dimensional harmonic oscillator (HO) basis, using a product of 1D HO eigenfunctions for the $x$- and $y$-directions. A single-particle basis function is labeled by $(i_x, i_y)$, where $i_x$ and $i_y$ are the quantum numbers (nonnegative integers) for the 1D harmonic oscillator in $x$ and $y$, respectively. The 1D HO wavefunctions (physicist’s Hermite functions) are:
+
+\phi_n(x; b) = N_n \, H_n\!\Big(\frac{x}{b}\Big)\, \exp\!\Big(-\frac{x^2}{2b^2}\Big),
+
+where $H_n(\cdot)$ is the $n$th physicist’s Hermite polynomial, and $N_n$ is the normalization constant. For a given oscillator length $b$ (which sets the oscillator width in that dimension), the normalization is:
+
+N_n = \frac{1}{\sqrt{2^n\,n!\,\sqrt{\pi}\,b}}\,.
+
+This choice of $N_n$ makes $\phi_n(x;b)$ orthonormal, i.e. $\int_{-\infty}^{\infty}\phi_n(x)\phi_m(x),dx = \delta_{n,m}$ . The 2D basis functions are products: $\Phi_{i_x,i_y}(x,y) = \phi_{i_x}(x;b_x),\phi_{i_y}(y;b_y)$, using possibly different oscillator lengths $b_x$ and $b_y$ in the two directions (so the basis can be anisotropic if needed). These 2D functions are orthonormal on $\mathbb{R}^2$.
+
+Hermite Polynomials: The Hermite polynomials satisfy the recurrence $H_{n+1}(z) = 2z,H_n(z) - 2n,H_{n-1}(z)$ with $H_0=1$, $H_1=2z$ . We will use this recursion to evaluate $H_n$ efficiently at the quadrature points.
+
+
+Two-Particle Yukawa Interaction Integral
+
+
+We consider two particles interacting via a Yukawa-screened Coulomb potential in 2D. Labeling the particles’ coordinates as $\mathbf{r}_1=(x_1,y_1)$ and $\mathbf{r}_2=(x_2,y_2)$, the potential is
+
+V(\mathbf{r}_1,\mathbf{r}_2) \;=\; \frac{e^{-k\,|\mathbf{r}_1 - \mathbf{r}_2|}}{|\mathbf{r}_1 - \mathbf{r}_2|}\,,
+
+where $|\mathbf{r}_1 - \mathbf{r}_2| = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}$ and $k$ is the Yukawa screening parameter. For $k=0$ this reduces to the Coulomb potential $1/|\mathbf{r}_1-\mathbf{r}_2|$.
+
+We want to compute the two-particle interaction matrix elements in the 2D HO basis:
+
+I_{ij,kl} \;=\; \iint \Phi_{i}(x_1,y_1)\,\Phi_{j}(x_2,y_2)\;V(\mathbf{r}_1,\mathbf{r}_2)\;\Phi_{k}(x_1,y_1)\,\Phi_{l}(x_2,y_2)\;d^2r_1\,d^2r_2,
+
+where $i=(i_x,i_y)$, $j=(j_x,j_y)$, etc., label the 2D basis functions. This is a four-index object (a rank-4 tensor) indexed by $i,j,k,l$. Due to the symmetry of $V(\mathbf{r}_1,\mathbf{r}2)=V(\mathbf{r}2,\mathbf{r}1)$, one can show these integrals have the usual symmetries: for example, $I{ij,kl} = I{ji,lk} = I{kl,ij}$, etc., which can be used to check or reduce computations.
+
+
+Using Gauss-Hermite Quadrature for Integration
+
+
+Each basis function $\Phi_i$ includes Gaussian factors $\exp(-x^2/(2b_x^2))\exp(-y^2/(2b_y^2))$. The product of four such Gaussians from $\Phi_i\Phi_j\Phi_k\Phi_l$ yields an overall Gaussian $\exp![-(x_1^2+x_2^2)/(2b_x^2) - (y_1^2+y_2^2)/(2b_y^2)]$. This suggests using Gauss-Hermite quadrature for the integrations in $x_1, x_2, y_1, y_2$. Gauss-Hermite quadrature is designed to integrate functions of the form $e^{-u^2} f(u)$ on $(-\infty,\infty)$ exactly (up to a certain polynomial degree) by summing over appropriate nodes and weights . By scaling coordinates appropriately, we can leverage this for our integrals:
+
+Change of variables: Let $u_1 = x_1/b_x$, $u_2 = x_2/b_x$, $v_1 = y_1/b_y$, $v_2 = y_2/b_y$. In these dimensionless variables, the Gaussian parts become $\exp[-(u_1^2+u_2^2 + v_1^2+v_2^2)/2]$. The integration measure transforms as $dx_1,dx_2,dy_1,dy_2 = b_x^2,b_y^2,du_1,du_2,dv_1,dv_2$. The Hermite polynomials in the basis functions now appear as $H_{n}(u)$ or $H_{n}(v)$, and the weight for Gauss-Hermite quadrature is $\exp(-u^2)$ (note: the quadrature formula integrates $e^{-u^2} f(u)$, whereas our integrand has $e^{-u^2/2}$ per HO function; but since four HO functions contribute, the net exponent is $e^{-u_1^2 - u_2^2}$ for $x$ and similarly for $y$, matching the $e^{-u^2}$ weight in each variable).
+Gauss-Hermite in each variable: We perform a 4D integration as separate 1D integrals over $u_1, u_2, v_1, v_2$. Let ${x_i, w_i}{i=1}^M$ be the Gauss-Hermite nodes and weights for integrating $\int{-\infty}^{\infty} e^{-u^2} f(u),du$ (these nodes $x_i$ correspond to the roots of $H_M(x)$) . Then, the 4D integral can be approximated by a 4D sum over these nodes. Specifically, we have: I_{ij,kl} \;\approx\; b_x^2\,b_y^2 \sum_{a=1}^M \sum_{b=1}^M \sum_{c=1}^M \sum_{d=1}^M w_a\,w_b\,w_c\,w_d \;\; [H_{i_x}(x_a)H_{k_x}(x_a)] \;[H_{j_x}(x_b)H_{l_x}(x_b)]\; [H_{i_y}(x_c)H_{k_y}(x_c)] \;[H_{j_y}(x_d)H_{l_y}(x_d)]\; \frac{\exp[-\,k\,R_{abcd}]}{R_{abcd}}\!, where $R_{abcd} = \sqrt{,b_x^2(x_a - x_b)^2 + b_y^2(x_c - x_d)^2,}$ is the distance $|\mathbf{r}1-\mathbf{r}2|$ in scaled units for node combination $(a,b,c,d)$. The prefactor $b_x^2 b_y^2$ comes from the Jacobian of the $(u,v)$ change of variables, and the $H_n(x_i)$ factors come from the basis polynomials evaluated at the nodes. Multiplying by the normalization constants $N{i_x}N{i_y}\cdots N_{l_y}$ will be done at the end.
+Handling the singularity: When the two particles’ coordinates coincide, $R_{abcd}=0$ (this occurs in the summation when $a=b$ and $c=d$, i.e. $x_a=x_b$ and $x_c=x_d$). The Yukawa potential $\exp(-kR)/R$ has a removable singularity of type $1/R$ at $R=0$. In the continuous integral this singular point has measure zero (so it does not actually diverge the integral), but in the discrete sum it would cause a division-by-zero. We handle this by simply skipping or zeroing out that singular term in the sum. This is a valid approach because the contribution of a single quadrature node in a 4D sum is vanishingly small – effectively, we treat the $R=0$ term as the $R\to 0$ limit, which would be finite when integrated over a region. (For safety, our code will check for $R \approx 0$ and omit that term.)
+
+
+
+Implementation in Python
+
+
+Below is a Python script that performs these steps. It uses NumPy for vectorized operations and leverages numpy.polynomial.hermite.hermgauss to obtain Gauss-Hermite nodes and weights . The code computes all required integrals up to a maximum HO quantum number n in both $x$ and $y$ (so each of $i_x,i_y,j_x,\ldots$ ranges from 0 to $n$). The result is returned as a 4D NumPy array integrals[i,j,k,l], where each index corresponds to a 2D basis function (with some indexing convention for $(i_x,i_y)$ pairs, here taken as lexicographic ordering).
+
+Key steps in the code:
+
+Generate Gauss-Hermite nodes and weights for a given number of quadrature points M.
+Compute values of Hermite polynomials $H_m(x)$ up to order n at all node points (using the recursive definition for efficiency).
+Loop over the 4D indices (or use vectorized operations) to accumulate the integrals. The implementation below uses partial vectorization: it loops over two of the four integration variables and vectorizes the innermost two using NumPy arrays for speed.
+Apply the normalization constants $N_{i_x}N_{i_y}$ etc. to the result and include the Jacobian factor $b_x^2 b_y^2$.
+
+import numpy as np
+from numpy.polynomial.hermite import hermgauss
+
+def compute_yukawa_integrals(n, b_x, b_y, k, M=40):
+    """
+    Compute the 4D tensor of two-particle Yukawa integrals I_{ij,kl} 
+    for 2D harmonic oscillator basis functions up to quantum number n in x and y.
+    
+    Parameters:
+        n   (int): Maximum HO quantum number in each dimension (0..n in x and y).
+        b_x (float): HO length (oscillator width) in the x-direction.
+        b_y (float): HO length in the y-direction.
+        k   (float): Yukawa screening parameter.
+        M   (int): Number of Gauss-Hermite quadrature points (per dimension).
+        
+    Returns:
+        integrals (ndarray): A 4D array of shape [N, N, N, N] where N=(n+1)^2 
+                             (number of 2D basis functions). The element [i,j,k,l] 
+                             corresponds to basis functions i,j,k,l in lexicographic order.
+    """
+    # Number of basis functions in 2D
+    n_basis_1d = n + 1
+    N_basis = n_basis_1d ** 2  # total number of 2D basis states
+    
+    # Prepare an index mapping from a single index to (i_x, i_y)
+    # Here we choose lexicographic: index = i_x*(n+1) + i_y
+    idx_to_pair = [(ix, iy) for ix in range(n_basis_1d) for iy in range(n_basis_1d)]
+    
+    # Gauss-Hermite nodes and weights for integration (for weight function exp(-u^2))
+    nodes, weights = hermgauss(M)
+    # Convert to numpy arrays for broadcasting
+    nodes = np.array(nodes)
+    weights = np.array(weights)
+    
+    # Precompute Hermite polynomial values H_m(x) for m=0..n at all node points
+    # Using the recursion: H_0 = 1, H_1 = 2x, H_{m+1} = 2x H_m - 2m H_{m-1}
+    H_vals = np.zeros((n_basis_1d, M))
+    H_vals[0, :] = 1.0
+    if n >= 1:
+        H_vals[1, :] = 2 * nodes
+    for m in range(1, n):
+        H_vals[m+1, :] = 2 * nodes * H_vals[m, :] - 2 * m * H_vals[m-1, :]
+    
+    # Precompute normalization constants for each 1D HO state (for x and y)
+    # N_n = 1 / sqrt(2^n n! sqrt(pi) * b) 
+    # (We use math.factorial or scipy.special.factorial for n!, but n is small here)
+    from math import factorial, sqrt, pi
+    norm_x = [1.0/np.sqrt((np.sqrt(pi) * (2**m) * factorial(m)) * 1.0) / np.sqrt(b_x) 
+              for m in range(n_basis_1d)]
+    norm_y = [1.0/np.sqrt((np.sqrt(pi) * (2**m) * factorial(m)) * 1.0) / np.sqrt(b_y) 
+              for m in range(n_basis_1d)]
+    
+    # Initialize the result tensor
+    integrals = np.zeros((N_basis, N_basis, N_basis, N_basis))
+    
+    # Iterate over all basis function combinations
+    # We will map each basis index to (i_x,i_y) using idx_to_pair.
+    # For clarity, use four nested loops over the combined index. (This is O(N_basis^4) loops,
+    # which can be heavy for large n, but we assume n is small. One can use symmetries to reduce.)
+    for idx_i, (i_x, i_y) in enumerate(idx_to_pair):
+        # Use symmetry to skip some computations if desired (not done here for clarity)
+        for idx_j, (j_x, j_y) in enumerate(idx_to_pair):
+            for idx_k, (k_x, k_y) in enumerate(idx_to_pair):
+                for idx_l, (l_x, l_y) in enumerate(idx_to_pair):
+                    # Compute the integral (i,j | k,l)
+                    
+                    # We perform a double sum over Gauss-Hermite nodes for (x1,x2) and (y1,y2).
+                    # To optimize, do the inner two sums (over b and d indices) vectorized.
+                    total_val = 0.0
+                    # Loop over 'a' and 'c' (nodes for x1 and y1 integrals)
+                    for a in range(M):
+                        # Factors from x1 and y1 integrals for this node 'a' and 'c'
+                        H_ia = H_vals[i_x, a] * H_vals[k_x, a]  # H_{i_x}(u_a)*H_{k_x}(u_a)
+                        if H_ia == 0:  # skip if zero (saves work)
+                            continue
+                        # x1 weight factor:
+                        W_a = weights[a] * H_ia
+                        u_a = nodes[a]
+                        for c in range(M):
+                            H_ic = H_vals[i_y, c] * H_vals[k_y, c]  # H_{i_y}(v_c)*H_{k_y}(v_c)
+                            if H_ic == 0:
+                                continue
+                            # y1 weight factor:
+                            W_c = weights[c] * H_ic
+                            # Combine x1,y1 factors:
+                            outer_weight = W_a * W_c
+                            
+                            # Prepare vectorized inner sum over b (x2) and d (y2) nodes:
+                            u_diff = u_a - nodes       # vector of length M: (x_a - x_b) for all b
+                            v_diff = nodes[c] - nodes  # (v_c - v_d) for all d (here nodes used for y as well)
+                            
+                            # Compute distance matrix R for combinations of b and d:
+                            # R[b,d] = sqrt( b_x^2 * (u_a - u_b)^2  +  b_y^2 * (v_c - v_d)^2 ).
+                            # We can compute this efficiently using broadcasting.
+                            X_diff_sq = (b_x * u_diff)**2                        # shape (M,)
+                            Y_diff_sq = (b_y * v_diff)**2                        # shape (M,)
+                            # Use broadcasting to get an MxM matrix of R^2:
+                            R_sq_matrix = X_diff_sq[:, None] + Y_diff_sq[None, :]
+                            R_matrix = np.sqrt(R_sq_matrix)  # elementwise sqrt
+                            
+                            # Compute Yukawa potential values for each (b,d) pair:
+                            # Avoid division by zero by setting those entries manually.
+                            with np.errstate(divide='ignore', invalid='ignore'):
+                                pot_matrix = np.exp(-k * R_matrix) / R_matrix   # MxM matrix
+                            # Remove singular point if present (when b=a and d=c -> R=0):
+                            if b_x == 0 and b_y == 0:
+                                # trivial case (won't happen here as b_x,b_y > 0)
+                                pass
+                            else:
+                                pot_matrix[a, c] = 0.0
+                            
+                            # Now incorporate the x2, y2 basis factors and weights:
+                            # Compute vectors for b and d:
+                            H_jb = H_vals[j_x, :] * H_vals[l_x, :]    # length M: H_{j_x}(u_b)*H_{l_x}(u_b) for each b
+                            H_jd = H_vals[j_y, :] * H_vals[l_y, :]    # length M: H_{j_y}(v_d)*H_{l_y}(v_d) for each d
+                            # Weight vectors include Gauss-Hermite weights:
+                            W_b_vec = weights * H_jb   # length M
+                            W_d_vec = weights * H_jd   # length M
+                            
+                            # Perform the double sum over b,d as a matrix contraction:
+                            # inner_sum = sum_{b,d} W_b[b] * pot_matrix[b,d] * W_d[d]
+                            inner_sum = W_b_vec @ (pot_matrix @ W_d_vec)
+                            
+                            total_val += outer_weight * inner_sum
+                    # Multiply by normalization constants for i,j,k,l and Jacobian
+                    total_val *= (norm_x[i_x]*norm_y[i_y] * norm_x[j_x]*norm_y[j_y] *
+                                  norm_x[k_x]*norm_y[k_y] * norm_x[l_x]*norm_y[l_y] *
+                                  (b_x**2 * b_y**2))
+                    integrals[idx_i, idx_j, idx_k, idx_l] = total_val
+    return integrals
+
+# Example usage:
+integrals = compute_yukawa_integrals(n=1, b_x=1.0, b_y=1.0, k=0.5, M=40)
+print("Shape of integrals tensor:", integrals.shape)
+# The element [0,0,0,0] corresponds to (i_x=i_y=0, j_x=j_y=0, k_x=k_y=0, l_x=l_y=0).
+print("Integral (0,0;0,0 | 0,0;0,0) =", integrals[0, 0, 0, 0])
+In this implementation, we chose a lexicographic indexing for the 2D basis functions: index $p = i_x*(n+1) + i_y$ for $i_x,i_y \in {0,\ldots,n}$. Thus integrals[p,q,r,s] corresponds to matrix element $(i,j|k,l)$ with $p \to (i_x,i_y)$, $q \to (j_x,j_y)$, etc. The code uses partial vectorization for the inner sums over $b,d$ (Gauss-Hermite nodes for $x_2,y_2$) to accelerate the integration. The Gauss-Hermite quadrature order M can be adjusted for the desired accuracy (higher $M$ yields more accurate integrals, especially for larger $n$ or smaller $k$ where the $1/R$ Coulomb-like behavior is more pronounced).
+
+Note: The computation scales as $O(N_{\text{basis}}^4)$ if done naively. Exploiting symmetries can reduce the effort; for example, one can compute only cases with $i\le k, j\le l$ and use symmetry to fill the tensor. For moderate $n$ this is manageable, but for large $n$ the number of integrals grows quickly. The quadrature convergence should be checked by increasing $M$ until results stabilize (particularly important if $k$ is very small and the $1/r$ singularity is strong).
