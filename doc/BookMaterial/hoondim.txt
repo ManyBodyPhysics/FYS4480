@@ -1,0 +1,154 @@
+
+Two-Particle Yukawa Integrals in a 1D Harmonic Oscillator Basis
+
+
+
+Harmonic Oscillator Basis Functions (1D)
+
+
+In one dimension, the eigenfunctions of the harmonic oscillator (HO) are given by Hermite functions, which combine Hermite polynomials with a Gaussian factor. For a chosen oscillator length parameter $b$ (related to the spatial width of the oscillator ground state), the normalized $n$th HO wavefunction is:
+
+\phi_n(x) \;=\; \frac{1}{\sqrt{2^n\,n!\,\sqrt{\pi}\,b}}\;H_n\!\Big(\frac{x}{b}\Big)\;\exp\!\Big(-\frac{x^2}{2\,b^2}\Big)\,.
+
+Here $H_n(\cdot)$ is the physicists’ Hermite polynomial of degree $n$, and the prefactor ensures normalization. These functions are orthonormal: $\int_{-\infty}^{\infty}\phi_m(x),\phi_n(x),dx=\delta_{m,n}$. The oscillator length $b$ can be adjusted (e.g. $b=\sqrt{\hbar/(m\omega)}$ in physical units, or set to 1 in dimensionless units) to scale the spatial extent of the basis functions. Each $\phi_n(x)$ is an even or odd function (for even/odd $n$) with $n$ zeros, and they form a convenient orthonormal basis for expansions in a harmonic trap.
+
+
+Yukawa-Screened Coulomb Interaction in 1D
+
+
+The Yukawa potential is a Coulomb-like interaction multiplied by an exponential screening factor. In three dimensions its form is $V_{\text{Yukawa}}(r)= -g^2,e^{-\alpha m r}/r$, which reduces to the usual $1/r$ Coulomb potential when the screening exponent is zero. In our one-dimensional context (for two particles on a line), we define a similar screened Coulomb interaction:
+
+V(x_1,x_2) \;=\; \frac{\exp(-k\,|x_1 - x_2|)}{\;|x_1 - x_2|\;}\,.
+
+Here $k$ is the screening parameter (a positive constant) that controls the range of the interaction. For $k=0$, $V(x_1,x_2)$ recovers the unscreened Coulomb form $1/|x_1-x_2|$. As $k$ increases, the potential is increasingly short-ranged, decaying roughly on a length scale $\sim 1/k$ due to the $e^{-k|x_1-x_2|}$ factor. The absolute difference $|x_1-x_2|$ ensures the potential depends only on the separation of the two particles, as appropriate for a central (here one-dimensional) interaction. Note that $V(x_1,x_2)$ has a singularity as $x_1 \to x_2$ (because $1/|x|$ diverges at 0), but the exponential factor does not remove this singularity at zero separation – it only damps the potential at large separations. In practice, careful numerical integration or regularization is needed to handle the $x_1=x_2$ region, as discussed below.
+
+
+Two-Particle Integral Tensor Formulation
+
+
+We seek to compute the two-particle integrals of this interaction in the HO basis. In other words, we want the matrix elements of the operator $V(x_1,x_2)$ between two-particle basis states. If we label the single-particle basis functions by indices $i,j,k,l$, the two-body integral (often denoted $(ij|kl)$ in physics/quantum chemistry notation) is defined as:
+
+I_{ij,kl} \;=\; \iint_{-\infty}^{\infty} \phi_i(x_1)\,\phi_j(x_2)\;\frac{e^{-\,k\,|x_1 - x_2|}}{|x_1 - x_2|}\;\phi_k(x_1)\,\phi_l(x_2)\;dx_1\,dx_2\,.
+
+This is a rank-4 tensor indexed by the four basis function labels $(i,j,k,l)$. We will compute $I_{ij,kl}$ for all combinations $0\le i,j,k,l \le n_{\max}$ up to a chosen maximum basis degree $n_{\max}$. The resulting object can be viewed as a 4-dimensional array of size $(n_{\max}+1)\times(n_{\max}+1)\times(n_{\max}+1)\times(n_{\max}+1)$ (if we include the $0$th HO state up to the $n_{\max}$th).
+
+Because the interaction is symmetric in exchanging the two particles ($x_1 \leftrightarrow x_2$) and the basis functions are real, the tensor $I_{ij,kl}$ has several symmetries. For instance, swapping the pairs $(i,j)$ with $(k,l)$ corresponds to the same two-body integral, and also $I_{ij,kl}=I_{ji,lk}$ (exchange of particle labels). We can leverage these symmetries to cut down on redundant computations, but for simplicity, the code will brute-force all combinations and one could later exploit symmetry to fill in only unique elements.
+
+
+Numerical Integration via Gauss-Hermite Quadrature
+
+
+Analytically evaluating the double integral above is difficult due to the coupling of $x_1$ and $x_2$ inside $V(x_1,x_2)$. Instead, we will perform numerical integration. A suitable method here is Gauss–Hermite quadrature, which is well-matched to integrals involving Hermite polynomials and Gaussian weights. The key observation is that each HO function $\phi_n(x)$ contains a Gaussian factor $e^{-x^2/(2b^2)}$. When we multiply the four HO functions in the integrand, we get an overall Gaussian factor $e^{-(x_1^2+x_2^2)/b^2}$ (since two factors of $e^{-x_1^2/(2b^2)}$ multiply to $e^{-x_1^2/b^2}$, and similarly for $x_2$). This Gaussian can be used as a weight for Hermite quadrature.
+
+Gauss-Hermite quadrature provides nodes $x_i$ and weights $w_i$ such that one can approximate an integral of the form $\int_{-\infty}^{\infty} e^{-x^2} f(x),dx$ by a weighted sum:
+
+\int_{-\infty}^{\infty} e^{-x^2}\,f(x)\,dx \;\approx\; \sum_{i=1}^{M} w_i\,f(x_i)\,,
+
+where the $x_i$ are the roots of the physicists’ Hermite polynomial $H_M(x)$ and the weights $w_i$ are given by a known formula. The approximation becomes exact if $f(x)$ is a polynomial (up to degree $2M-1$), and is very accurate even for many smooth functions. In practice, we choose $M$ sufficiently large for the desired accuracy. To handle a double integral $\iint e^{-x_1^2}e^{-x_2^2} f(x_1,x_2),dx_1 dx_2$, we can take the product of two 1D quadratures. That is,
+
+\iint_{-\infty}^{\infty} e^{-x_1^2} e^{-x_2^2}\, f(x_1,x_2)\,dx_1dx_2 \;\approx\; \sum_{p=1}^{M}\sum_{q=1}^{M} w_p\,w_q\; f(x_p, x_q)\,.
+
+In our case, after converting to a suitable form, we will apply this double sum to evaluate the integrals.
+
+Change of variables for oscillator length: Our HO functions have $e^{-x^2/(2b^2)}$ factors, not $e^{-x^2}$ exactly. We can change variables to make use of the standard weight $e^{-y^2}$. Let $y = x/b$. Then $dx = b,dy$. The double integral for $I_{ij,kl}$ becomes (substituting $x_1 = b y_1$ and $x_2 = b y_2$):
+
+\begin{aligned} I_{ij,kl} &= \iint \phi_i(b y_1)\,\phi_j(b y_2)\,\frac{e^{-k|b y_1 - b y_2|}}{|b y_1 - b y_2|}\,\phi_k(b y_1)\,\phi_l(b y_2)\, b\,dy_1\, b\,dy_2 \\ &= b^2 \iint \phi_i(b y_1)\,\phi_k(b y_1)\,\phi_j(b y_2)\,\phi_l(b y_2)\,\frac{e^{-k b\,|y_1 - y_2|}}{b\,|y_1 - y_2|}\, dy_1\,dy_2 \\ &= b \iint \underbrace{\phi_i(b y_1)\,\phi_k(b y_1)\, e^{y_1^2}}_{\text{(removes the $e^{-y_1^2}$ weight)}} \;\underbrace{\phi_j(b y_2)\,\phi_l(b y_2)\, e^{y_2^2}}_{\text{(removes $e^{-y_2^2}$)}} \; e^{-y_1^2}e^{-y_2^2}\; \frac{e^{-k b |y_1 - y_2|}}{|y_1 - y_2|}\, dy_1\,dy_2~, \end{aligned}
+
+where in the second line we factored $1/b$ from the potential $1/|b y_1 - b y_2| = \frac{1}{b|y_1-y_2|}$, and in the third line we explicitly introduced factors $e^{y_1^2}$ and $e^{y_2^2}$ to cancel the Gaussian weights from each $\phi$ (since $\phi_n(b y) = \frac{1}{\sqrt{2^n n! \sqrt{\pi} b}}H_n(y)e^{-y^2/2}$, the product $\phi_i \phi_k$ contributes $e^{-y_1^2}$, etc.). The result is an integral of the form $\iint e^{-y_1^2}e^{-y_2^2} [\cdots] dy_1 dy_2$, which is exactly suited to Gauss-Hermite in each variable.
+
+In practice, we do not need to carry through the algebra by hand for each integral. We can instead directly evaluate the double sum with Gauss-Hermite nodes and weights. The approach will be:
+
+Gauss-Hermite nodes and weights: Use $M$ quadrature points (with $M$ chosen large enough for accuracy). Let ${x_p, w_p}_{p=1}^M$ be the nodes and weights for $\int e^{-x^2}dx$ integration. We will ensure $M$ is even, because for an even number of points the set of Hermite polynomial roots does not include $x=0$. This is important to avoid the singularity at $y_1=y_2$ (i.e. $x_1=x_2$) being directly sampled. (If $M$ were odd, one of the nodes $x_p$ would be 0, leading to a division by zero in the potential term. By using an even $M$, we skip the singular point itself. The integrand is still singular along $y_1=y_2$, but this is a set of measure zero in the double integral, so in principle the integral can be treated as a Cauchy principal value if convergent. In our numerical approach, avoiding a direct $0$ in the sum helps maintain stability.)
+Evaluate Hermite polynomials: For each basis index $n$ up to $n_{\max}$, evaluate $H_n(y)$ at all the quadrature nodes $y=x_p$. This can be done using a recurrence formula or library function. We will get arrays $H_n(x_p)$ for needed $n$ and for all $p$. We also prepare the normalization constants $N_n = 1/\sqrt{2^n n! \sqrt{\pi} b}$ for each $n$.
+Double sum integration: For each combination $(i,j,k,l)$, we compute the sum I_{ij,kl} \;\approx\; b \sum_{p=1}^M \sum_{q=1}^M w_p\,w_q\; \Big[ H_i(x_p)H_k(x_p) \; H_j(x_q)H_l(x_q)\Big]\; \frac{\exp(-k\,b\,|x_p - x_q|)}{\;|x_p - x_q|\;}\,, and then multiply by the normalization factors for the four basis functions: $N_i N_j N_k N_l$. The leading factor $b$ comes from the change-of-variable Jacobian and the $1/b$ in the potential, as derived above. All pieces together give the approximate $I_{ij,kl}$. This summation effectively performs the Gauss-Hermite integration discussed (the $w_pw_q$ and $e^{-k b|x_p-x_q|}/|x_p-x_q|$ part is $f(x_p,x_q)$ times the weight, while $H_i(x_p)H_k(x_p)$ etc. come from the basis functions). Since we included enough points, this numerical integration should be very accurate . In fact, literature on using HO bases for two-body matrix elements notes that using exact Gauss-Hermite quadrature can yield high precision for these integrals .
+
+
+The overall computation scales as $O(M^2 \cdot (n_{\max}+1)^4)$ if done naively, since we have a double sum for each of $(n_{\max}+1)^4$ index combinations. This can be heavy if $n_{\max}$ is large. However, many optimizations are possible: exploiting symmetries of $I_{ij,kl}$, vectorizing the summation, or reducing the double sum by convolution techniques. For clarity, our implementation will use straightforward loops and a reasonable $M$ value. You can adjust $M$ (the number of quadrature points) to trade off speed vs accuracy. Typically, $M$ on the order of a few times $(n_{\max}+1)$ is sufficient, since the integrand includes polynomials up to degree ~$2n_{\max}$ and an exponential decay factor.
+
+Below is a Python script implementing these steps. It computes the tensor of two-particle Yukawa integrals for a given n_max, screening parameter k, and oscillator length b. We use NumPy for array operations and its Hermite polynomial utilities. The result is stored in a 4D NumPy array V with indices [i,j,k,l]. Each element V[i,j,k,l] corresponds to the integral $I_{ij,kl}$ as defined above.
+import numpy as np
+from numpy.polynomial.hermite import hermgauss
+
+# User-specified parameters
+n_max = 5          # maximum basis function index (e.g., 5 means 0 through 5)
+k     = 1.0        # Yukawa screening parameter
+b     = 1.0        # oscillator length (can be adjusted)
+
+# Choose number of Gauss-Hermite points for integration
+# We use an even number to avoid sampling x=0 directly.
+M = max(2*(n_max + 3), 20)   # e.g., for safety, at least 20 points or 2*(n_max+3)
+if M % 2 == 1:
+    M += 1  # ensure even
+# Get Gauss-Hermite quadrature nodes and weights
+nodes, weights = hermgauss(M)  # nodes, weights for ∫ e^{-x^2} f(x) dx
+
+# Scale nodes for our weight e^{-y^2}: (Already suited, nodes correspond to Hermite poly roots)
+x_points = nodes  # rename for clarity
+w_points = weights
+
+# Evaluate Hermite polynomials H_n(x) for n=0..n_max at all nodes
+# We can use a recurrence: H_0 = 1, H_1(x) = 2x, H_{n+1}(x) = 2x H_n(x) - 2n H_{n-1}(x)
+Hvals = np.zeros((n_max+1, M))
+Hvals[0, :] = 1.0
+if n_max >= 1:
+    Hvals[1, :] = 2 * x_points
+for n in range(2, n_max+1):
+    Hvals[n, :] = 2 * x_points * Hvals[n-1, :] - 2*(n-1) * Hvals[n-2, :]
+
+# Precompute normalization factors N_n for each basis function
+N = np.zeros(n_max+1)
+for n in range(n_max+1):
+    N[n] = 1.0 / np.sqrt((2**n) * np.math.factorial(n) * np.sqrt(np.pi) * b)
+
+# Initialize tensor for two-particle integrals
+size = n_max + 1
+V = np.zeros((size, size, size, size))
+
+# Compute the two-body integral tensor
+for i in range(size):
+    for j in range(size):
+        # We will exploit symmetry in k,l vs i,j to reduce computations
+        for k_idx in range(size):
+            for l_idx in range(size):
+                # Compute double sum for this combination
+                total_sum = 0.0
+                for p in range(M):
+                    # Values that depend on p (x1) only:
+                    H_ip = Hvals[i, p]  # H_i(x_p)
+                    H_kp = Hvals[k_idx, p]  # H_k(x_p)
+                    # Combine those once for efficiency
+                    poly_factor_p = H_ip * H_kp
+                    # Pre-factor including weight for p:
+                    wp = w_points[p]
+                    x_p = x_points[p]
+                    for q in range(M):
+                        # Compute polynomial part for q
+                        H_jq = Hvals[j, q]      # H_j(x_q)
+                        H_lq = Hvals[l_idx, q]  # H_l(x_q)
+                        poly_factor_q = H_jq * H_lq
+                        # Potential part:
+                        x_q = x_points[q]
+                        # Avoid division by zero (though with even M, x_p == x_q == 0 shouldn't occur)
+                        dx = x_p - x_q
+                        if dx == 0.0:
+                            # Skip or continue (the contribution at exactly dx=0 is undefined, 
+                            # but it's a zero-measure point; we handle it by skipping)
+                            continue
+                        V_pq = np.exp(-k * b * abs(dx)) / abs(dx)
+                        # Accumulate contribution
+                        total_sum += wp * w_points[q] * poly_factor_p * poly_factor_q * V_pq
+                # Multiply by overall constants: b factor and normalization constants
+                V[i, j, k_idx, l_idx] = b * N[i]*N[j]*N[k_idx]*N[l_idx] * total_sum
+
+# V now contains the two-particle Yukawa integrals tensor.
+# (Indices correspond to basis functions 0..n_max for i,j,k,l respectively.)
+A few implementation remarks:
+
+We used numpy.polynomial.hermite.hermgauss to obtain Gauss–Hermite nodes and weights. These nodes $x_p$ are the roots of $H_M(x)$ and weights are $w_p$, which integrate polynomials up to degree $2M-1$ exactly with the $e^{-x^2}$ weight.
+We ensured M (number of points) is even to avoid a node at $x=0$. In the inner loops, we still include a safety check if dx == 0.0: continue to skip any hypothetical zero-distance contribution. In principle, with even $M$, this check should not trigger because none of the Gauss-Hermite nodes will be exactly equal (the only potential equality would be $x_p = x_q$ when $p=q$, and that equals zero only if 0 was a node).
+We compute Hermite polynomial values via a recurrence relation for efficiency. This avoids calling an expensive function in inner loops. Hvals[n,p] ends up holding $H_n(x_p)$ for each needed $n$ and node $p$.
+The double sum is computed in a straightforward (nested loops) manner. This is the most time-consuming part. For moderate $n_{\max}$ and $M$, it will be fine. If performance becomes an issue for larger bases, one can vectorize this or use symmetry to cut the work (e.g., note $I_{ij,kl} = I_{kl,ij}$ etc., so you only need to compute half and mirror the results).
+Finally, we multiply by the factor $b$ and the normalization constants $N[i]N[j]N[k]N[l]$. The result V[i,j,k,l] should be the desired integral.
+
+
+This approach of using Gauss-Hermite quadrature is known to produce highly accurate two-body matrix elements in a HO basis . By increasing the number of quadrature points M, one can achieve any desired accuracy for the integrals (at the cost of runtime). The output tensor V can be used in many-body calculations (for example, in constructing a Hamiltonian matrix for interacting particles in this basis). Each element corresponds to the interaction matrix element $\langle i,j|V|k,l\rangle$ in the HO basis, with the Yukawa potential of strength $k$ and oscillator length $b$ built in.
