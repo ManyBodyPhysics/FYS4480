@@ -1,0 +1,134 @@
+In this section we want to provide a derivation of the Hartree-Fock equations mainly referring to \cite{bransden}, in the special case of the ground state of a system populated by $N$ electrons. \\
+The hamiltonian that describes such a system is assumed to be 
+\begin{equation*}
+    \mathcal{H} = \mathcal{H}_1 + \mathcal{H}_2
+\end{equation*}
+where $\mathcal{H}_1$ is the single particle hamiltonian (or one body hamiltonian)
+\begin{equation*}
+    \mathcal{H}_1 = \sum_{i=1}^N h_i = \sum_{i=1}^N -\frac{1}{2}\nabla_{\ve{r}_i}^2 + V(r_i)
+\end{equation*}
+and $\mathcal{H}_2$ is the interaction term
+\begin{equation*}
+    \mathcal{H}_2 = \sum_{i<j,j=1}^N v(r_i, r_j)
+\end{equation*}
+Since we are dealing with a system of fermions, the wavefunction describing the ground state of the system $\Phi^*(q_1, \dots, q_N)$ must be antisymmetric under the action of the permutation operator $P$ so that
+\begin{gather*}
+    P_{ij} \Phi^*(q_1, \dots,q_i, \dots, q_j, \dots, q_N) = \\
+    = \Phi^*(q_1, \dots, q_j, \dots, q_i, \dots, q_N) = \\ 
+    = - \Phi^*(q_1, \dots, q_i, \dots, q_j, \dots, q_N) 
+\end{gather*}
+The central idea of the method consists in assuming that the ground state wavefunction $\Phi^*(q) \equiv \Phi^*(q_1, \dots, q_N)$ can be approximated by a Slater determinant of single particle wavefunctions
+\begin{equation*}
+    \Phi^*(q) \approx \Phi(q) \equiv \frac{1}{\sqrt{N!}} \ \begin{vmatrix} \phi_{\alpha}(q_1) \ \phi_{\beta}(q_1) \ \dots \ \phi_{\nu}(q_1) \\ 
+    \phi_{\alpha}(q_2) \ \phi_{\beta}(q_2) \ \dots \ \phi_{\nu}(q_2) \\
+    \dots \\
+    \dots \\
+    \dots \\
+    \phi_{\alpha}(q_N) \ \phi_{\beta}(q_N) \ \dots \ \phi_{\nu}(q_N)
+    \end{vmatrix}
+\end{equation*}
+and then make use of the variational principle
+\begin{equation}
+    \bracketOP{\Phi^*}{\Phi^*}{H} = \mathbb{E}[\Phi^*] \leq \mathbb{E}[\Phi] = \bracketOP{\Phi}{\Phi}{H}
+    \label{eq:en_ground_slater_1}
+\end{equation}
+to find the single particle function $\phi_{\alpha}, \dots \phi_{\nu}$ that minimize the expectation value of the energy $\mathbb{E}[\Phi]$. \\
+Each of the subscripts $\alpha, \beta, \dots, \nu$ used in the definition of $\Phi$ refers to a particular set of quantum numbers $(n, l, m_l, m_s)$ so that the notation $\phi_{\mu}(q_i)$ stands for the single electron orbital identified by the set of quantum numbers $\mu = (n^\mu, l^\mu, m_l^\mu, m_s^\mu)$ evaluated in the position of the particle $i$. \\
+We also require that ${\phi_{\mu}(q_i)}$ is an orthonormal basis set, so that $\langle \phi_{\mu}|\phi_{\lambda}\rangle =\delta_{\lambda, \mu} $ .\\
+The approximated wavefunction can be rewritten by making use of the antisymmetrizer operator $\mathcal{A}$:\footnote{The definition and all the properties of the antisymmetrizer operator can be found at \href{https://en.wikipedia.org/wiki/Antisymmetrizer}{https://en.wikipedia.org/wiki/Antisymmetrizer}}
+
+\begin{align*}
+    \Phi(q) &= \frac{1}{\sqrt{N!}}\bigg(\sum_P (-1)^P \hat{P} \bigg) \Phi_H(q) \\
+     &= \sqrt{N!} \, \mathcal{A} \, \Phi_H(q)
+\end{align*}
+where $\hat{P}$ indicates the permutation operator and $\Phi_H(q)$ is:
+\begin{equation*}
+    \Phi_H(q) = \phi_\alpha(q_1) \, \phi_\beta(q_2) \, \dots \, \phi_\nu(q_N)  
+\end{equation*}
+Using the variational principle one can estimate the energy of the ground state with the initial guess on $\Phi$.
+Starting from equation \ref{eq:en_ground_slater_1}
+\begin{align*}
+    \mathbb{E}[\Phi^*] &= \bracketOP{\Phi^*}{\Phi^*}{H} \\
+    &= \bracketOP{\Phi^*}{\Phi^*}{H_1} + \bracketOP{\Phi^*}{\Phi^*}{H_2}
+\end{align*}
+Let us study the $H_1$ term. Exploiting the fact that $[\mathcal{A}, H_1]=0$, one gets 
+\begin{align*}
+    \bracketOP{\Phi^*}{\Phi^*}{H_1} &= N! \bracketOP{\Phi_H}{\Phi_H}{\mathcal{A}H_1\mathcal{A}} \\
+    &= N! \bracketOP{\Phi_H}{\Phi_H}{H_1\mathcal{A}^2} \\
+    &= N! \bracketOP{\Phi_H}{\Phi_H}{H_1\mathcal{A}} \\
+    &= \sum_{i=1}^N \sum_P (-1)^P \bracketOP{\Phi_H}{\Phi_H}{h_i\hat{P}} \\
+\end{align*}
+In the last sum over the possible permutations, the only term that survives  is obtained when the permutation operator coincides with the identity operator. This happens because we choose an orthonormal basis set for $\psi_{\mu}(q)$, this yields to: 
+\begin{align*}
+    &= \sum_{i=1}^N  \bracketOP{\Phi_H}{\Phi_H}{h_i}
+\end{align*}
+Now one can rewrite the summation running over the N individual quantum states rather than particles. 
+This notation will be helpful in the derivation. 
+\begin{align*}
+    &= \sum_{\lambda} \bracketOP{\phi_\lambda}{\phi_\lambda}{h_i}\\
+    &= \sum_{\lambda} I_\lambda
+\end{align*}
+We indicated with $I_{\lambda}$ the average value of the individual hamiltonian $h_i$ relative to the spin orbital $\phi_{\lambda}$.
+Now focusing on the $H_2$ interaction term, exploiting the fact that $[\mathcal{A}, H_2]=0$
+\begin{align*}
+    \bracketOP{\Phi}{\Phi}{H_2} &= N! \bracketOP{\Phi_H}{\Phi_H}{\mathcal{A}H_2 \mathcal{A}} \\
+    &= N! \bracketOP{\Phi_H}{\Phi_H}{H_2 \mathcal{A}} \\
+    &= \sum_P (-1)^P  \bracketOP{\Phi_H}{\Phi_H}{H_2 P} \\
+    &= \sum_{i<j} \sum_P (-1)^P  \bracketOP{\Phi_H}{\Phi_H}{\frac{1}{v(r_{ij})} P}
+\end{align*}
+where $r_{ij}=|r_i -r_j|$. The orthonormality of the single-particle wavefunctions leads us to say that the only non-zero terms are those obtained when the operator $P$ coincides with the identity or when $P$ exchanges the index $i \leftrightarrow j$:   
+\begin{align*}
+    &= \sum_{i<j} \bracketOP{\Phi_H}{\Phi_H}{v(r_{ij})(1-P_{ij})}
+\end{align*}
+Again, the sum over $i<j$ can be rewritten as a sum over the individual quantum states, obtaining at the end
+\begin{align*}
+    &= \frac{1}{2} \sum_{\mu,\nu} \bigg\{ \bracketOP{\phi_\mu (q_1) \phi_\nu(q_2)}{\phi_\mu (q_1) \phi_\nu (q_2)}{v(r_{12})} - \\
+    & - \bracketOP{\phi_\mu (q_1) \phi_\nu(q_2)}{\phi_\mu (q_2) \phi_\nu (q_1)}{v(r_{12})} \bigg\} \\
+    &= \frac{1}{2} \sum_{\mu,\nu} \bigg\{ \bracketOP{\phi_\mu \phi_\nu}{\phi_\mu \phi_\nu }{v(r_{12})} - \bracketOP{\phi_\mu \phi_\nu}{\phi_\nu \phi_\mu }{v(r_{12})} \bigg\} \\
+    &= \frac{1}{2} \sum_{\mu,\nu} \bigg\{ \mathcal{F}_{\mu\nu} - \mathcal{K}_{\mu\nu} \bigg\}
+\end{align*}
+where $\mathcal{F}_{\mu\nu}$ and $\mathcal{K}_{\mu\nu}$ are defined respectively as the direct and exchange terms, the name deriving from the fact that $\mathcal{K}_{\mu\nu}$ implicitly contains a particle swap. Joining the results obtained up to now, one obtains that
+\begin{align*}
+    \mathcal{E}[\Phi^*] = \sum_\lambda I_\lambda + \frac{1}{2} \sum_{\mu,\nu} \mathcal{F}_{\mu\nu} - \mathcal{K}_{\mu\nu}
+\end{align*}
+
+At this point one can proceed with the minimization of the energy functional with respect to the single-particle states. The orthonormality condition for these functions is taken into account by introducing $N^2$ Lagrange multipliers, obtaining then
+\begin{align}
+    \delta E - \sum_{\mu\nu} \varepsilon_{\mu\nu} \delta \langle \phi_\mu \vert \phi_\nu \rangle = 0
+    \label{eq:lag_mult_interm_step}
+\end{align}
+We notice that the number of independent element inside the matrix of the Lagrange multipliers is actually reduced to N(N-1)/2, this due to the redundancy in the imposition of the same condition on $\langle \phi_\mu \vert \phi_\nu \rangle$ and $\langle \phi_\nu \vert \phi_\mu \rangle$. In particular, this leads to the hermiticity of the matrix, since $\varepsilon_{\mu\nu}^* = \varepsilon_{\nu\mu}$. It is known that a hermitian matrix can always be diagonalized through a proper basis change operated by a unitary matrix $U$, thus we shall assume that $\{\phi\}_\lambda$ actually corresponds to the so-obtained basis. We notice that this basis change does not influence the procedures described up to now, since the full wavefunction gains at most a phase factor. Eq.\,\ref{eq:lag_mult_interm_step} then reduces to
+\begin{align*}
+    \delta E - \sum_{\mu\nu} \varepsilon_{\mu} \delta_{\mu\nu} \delta \langle \phi_\mu \vert \phi_\nu \rangle = 0
+\end{align*}
+the result of which becomes a system of single particle equations, namely
+\begin{align*}
+    &h_i \phi_\lambda(q_i) + \bigg[ \sum_\mu \int dq_j \phi_\mu^*(q_j) v(r_{ij}) \phi_\mu(q_j) \bigg] \phi_\lambda (q_i) - \\
+    & - \sum_\mu \int dq_j \phi_\mu^*(q_j) v(r_{ij}) \phi_\lambda(q_j) \bigg] \phi_\mu (q_i) = \varepsilon_\lambda \phi_\lambda (q_i)
+\end{align*}
+The direct term appearing in each equation accounts for the fact that each particle is moving in the average potential generated by the presence of the others in the system. In this sense the Hartree-Fock methods is operating in a mean-field approximation. 
+
+From an operative point of view, one starts from an initial guess for each $\phi_\lambda$ and then proceeds by feeding at each step the equations just reported with the single particle wavefunctions obtained at the previous iteration. The procedure continues ideally until the self-consistency requirement has been fulfilled, namely up to the point in which the various $\phi_\lambda$ become the exact eigenstates of Hartree-Fock equations, with $\epsilon_\lambda$ being the corresponding eigenvalues. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

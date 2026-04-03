@@ -1,0 +1,176 @@
+\subsection{HARMONIC OSCILLATOR BASIS AND SPIN}
+The problem posed by the Hartree-Fock equations can be faced through the choice of a proper basis to represent the single-particle wavefunctions. For what concerns the radial part of the individual states, the presence of the harmonic oscillator term in the Hamiltonians of Eq.\,\ref{eq:hamiltonian_t_indep} and Eq.\,\ref{eq:hamiltonian_t_dip} suggests the employment of the corresponding harmonic oscillator eigenstates, namely
+\begin{align*}
+    &\hat{h} \chi_{\Tilde{\mu}} (x) = \left[ -\frac{1}{2} \frac{\partial^2}{\partial x^2} + \frac{1}{2} \Omega^2 x^2 \right] \chi_{\Tilde{\mu}}(x) = \varepsilon_{\Tilde{\mu}}^{ho} \chi_{\Tilde{\mu}}(x) \\
+    &\varepsilon_{\Tilde{\mu}} (x) = \left( \frac{\Omega}{\pi} \right)^{1/4} \frac{1}{\sqrt{2^{{\Tilde{\mu}}}  {\Tilde{\mu}}!}} H_\mu(\sqrt{\Omega}x) \\
+    &\varepsilon_{\Tilde{\mu}}^{ho} = \Omega \left( {\Tilde{\mu}} + \frac{1}{2} \right)
+\end{align*}
+where $H_{\Tilde{\mu}}(x)$ are the Hermite polynomials and ${\Tilde{\mu}}=1,\dots,l$, being $l$ the number of basis elements that we choose for the representation. 
+
+Since we are dealing with a system of fermions, the spin plays a fundamental role too and must be included in the treatment. While Zanghellini et al. employed the unrestricted representation, we opted for the general ansatz, namely the single particle wavefunction takes the form of a spinor \cite{state_of_art}. The basis elements then become
+\begin{align*}
+    \vert \psi_\mu \rangle = \vert \chi_{\mu//2} \rangle \otimes \vert \sigma \rangle
+\end{align*}
+where $\mu=1,\dots,2l$, since the introduction of spin components obviously doubled the number of basis elements. Calling $\alpha$ and $\beta$ respectively the spin-up and spin-down spinors, we precise that $\sigma=\alpha$ for even $\mu$ values, while $\sigma=\beta$ for odd $\mu$ values.
+
+In light of these facts, a single-particle state can be expanded as
+\begin{align*}
+    \vert \phi_i \rangle = \sum_{\mu=1}^{2l} C_{\mu,i} \vert \psi_\mu \rangle
+\end{align*}
+which in its extended form corresponds to 
+\begin{align}
+\begin{split}
+    \phi_i(x,m_s) =& \sum_{\Tilde{\mu}=1}^l C_{2\Tilde{\mu},i} \chi_{\Tilde{\mu}}(x) \alpha(m_s) + \\
+    +& \sum_{\Tilde{\mu}=1}^l C_{2\Tilde{\mu}+1,i} \chi_{\Tilde{\mu}}(x) \beta(m_s)
+\end{split}
+\label{eq:expansion_spf_gen}
+\end{align}
+
+
+\subsubsection{NEW FORM OF MATRIX ELEMENTS}
+As a result of the introduction of the new basis, it is convenient to represent on the basis itself the matrix elements appearing in the Hartree-Fock equations. Notice that in the following expressions we will use $\Tilde{\mu} = \mu//2$. We introduce the $h^{ho}$ matrix containing the various brakets enclosing the harmonic oscillator hamiltonian as
+\begin{align}
+    h_{\mu\nu}^{ho} &= \bracketOP{\psi_\mu}{\psi_\nu}{\hat{h} \otimes \hat{\mathbb{1}}} = \bracketOP{\chi_{\Tilde{\mu}}}{\chi_{\Tilde{\nu}}}{\hat{h}^{ho}} \bracket{\sigma_{\mu}}{\sigma_{\nu}} = \nonumber \\
+    &= \int dx \chi_{\Tilde{\mu}}(x) \hat{h}^{ho}(x) \chi_{\Tilde{\nu}}(x) \bracket{\sigma_{\mu}}{\sigma_{\nu}} \nonumber \\
+    &= \varepsilon_{\Tilde{\mu}}^{ho} \delta_{\Tilde{\mu} \Tilde{\nu} } \bracket{\sigma_{\mu}}{\sigma_{\nu}}  = \varepsilon_{\Tilde{\mu}}^{ho} \delta_{\mu \nu} 
+    \label{eq:h_elements}
+\end{align}
+where the bracket $\bracket{\sigma_{\mu}}{\sigma_{\nu}}$ stands for the dot product between the spin components associated to $\psi_\mu$ and $\psi_\nu$. Similarly, the expected values for the position operator are enclosed in $d$-matrix as
+\begin{align}
+    x_{\mu\nu} &= \bracketOP{\psi_\mu}{\psi_\nu}{\hat{x} \otimes \hat{\mathbb{1}}} = 
+    \bracketOP{\chi_{\Tilde{\mu}}}{\chi_{\Tilde{\nu}}}{\hat{x}} \braket{\sigma_\mu}{\sigma_\nu} \nonumber \\
+    &= \int dx \chi_{\Tilde{\mu}}(x) \hat{x} \chi_{\Tilde{\nu}}(x) \bracket{\sigma_{\mu}}{\sigma_{\nu}} 
+    \label{eq:x_elements}
+\end{align}
+These matrix elements will be useful while solving the time-dependent problem, since the potential introduced by the presence of the laser is strictly related to the dipole matrix. Proceeding, the direct and exchange terms appearing in the Hartee-Fock equations are represented as a 4-dimensional matrix $u$ as
+\begin{align}
+    u^{\alpha\beta}_{\mu\nu} &= \bracketOP{\psi_{\alpha} \psi_{\beta}}{\psi_{\mu} \psi_{\nu}}{v(x,y)} \nonumber \\
+    &= \bracketOP{\chi_{\Tilde{\alpha}} \chi_{\Tilde{\beta}}}{\chi_{\Tilde{\mu}} \chi_{\Tilde{\nu}}}{v(x,y)} \bracket{\sigma_{\alpha}}{\sigma_{\mu}} \bracket{\sigma_{\beta}}{\sigma_{\nu}} \nonumber \\
+    &= \bigg\{\int dr_1 dr_2 \chi_{\Tilde{\alpha}}^*(r_1) \chi_{\Tilde{\beta}}^* (r_2) v(r_1,r_2) \chi_{\Tilde{\mu}} (r_1) \chi_{\Tilde{\nu}} (r_2) \bigg\} \times\nonumber  \\
+    &\times \bracket{\sigma_{\alpha}}{\sigma_{\mu}} \bracket{\sigma_{\beta}}{\sigma_{\nu}} 
+    \label{eq:u_elements}
+\end{align}
+The matrix elements that actually enters in the Hartree-Fock equations are represented by the anti-symmetrized version of $u$, defined as
+\begin{align*}
+    u^{\alpha\beta}_{\mu\nu,AS} = u^{\alpha\beta}_{\mu\nu} - u^{\alpha\beta}_{\nu\mu}
+\end{align*}
+In general, we notice that all the matrices introduced up to now share the fact of having null elements in correspondence of indexes whose sum gives an odd number. This follows as a consequence of the convention previously chosen for the labelling of the basis functions, namely even and odd indices are respectively associated with up and down spin components. 
+
+
+
+\subsection{ROOTHAAN-HALL EQUATIONS AND THEIR TIME-DEPENDENT GENERALIZATION}
+The introduction of the new basis gives new shape also to the Hartree-Fock equations. Considering first the time-independent approach, we restart by substituting each molecular orbital with the corresponding expansion into Eq.\,\ref{eq:fock_matrix_t_ind}, obtaining
+\begin{align*}
+    &\hat{h} \sum_{\beta} C_{\beta,i} \ket{\psi_\beta} + \sum_{j}^{occ} \sum_{\beta\gamma\delta} C_{\gamma,j}^* C_{\delta,j} C_{\beta,i} \bracketOP{\psi_\gamma}{\psi_\delta}{v(r_{12})} \ket{\psi_\beta} - \\
+    &- \sum_{j}^{occ} \sum_{\beta\gamma\delta} C_{\gamma,j}^* C_{\delta,j} C_{\beta,i} \bracketOP{\psi_\gamma}{\psi_\beta}{v(r_{12})} \ket{\psi_\delta} \\
+    &= \varepsilon_{i} \sum_{\beta} C_{\beta,i} \ket{\psi_\beta}
+\end{align*}
+Projecting everything on $\bra{\psi_\alpha}$, one gets
+\begin{align*}
+    & \sum_{\beta} h_{\alpha,\beta} C_{\beta,i} + \sum_{j}^{occ} \sum_{\beta\gamma\delta} C_{\gamma,j}^* C_{\delta,j} C_{\beta,i} u^{\alpha\gamma}_{\beta\delta,AS} =  \varepsilon_{i}  C_{\beta,i}
+\end{align*}
+Recurring then to the rewritten form of the Fock matrix elements in the new basis, namely
+\begin{align*}
+    f_{\mu\nu} =  h_{\mu\nu}^{ho} + \sum_{j}^{occ} \sum_{\gamma\delta} C_{\gamma,j}^* C_{\delta,j} u^{\mu\gamma}_{\nu\delta,AS}
+\end{align*}
+one can also rewrite the previous system of equations in terms of a matrix product
+\begin{align*}
+    C\varepsilon = fC
+\end{align*}
+known also as Roothan-Hall equations. As previously introduced, these have to be cyclically solved up to the reaching of the self-consistency condition. For a numerical approach, this requirement is translated into the following
+\begin{align}
+    \Delta = \frac{1}{2l} \sum_{k=1}^{2l} \vert \varepsilon_k^{i+1} - \varepsilon_k^i \vert  < \delta
+    \label{eq:stop_condition}
+\end{align}
+where $\varepsilon^{i+1}$ and $\varepsilon^{i}$ are the vectors of eigenvalues provided by the diagonalization of the Fock matrix at two consecutive iterations, while $\delta$ is a parameter chosen by the user. When the condition is satisfied, the algorithm stops.
+
+A similar procedure to obtain the Fock matrix elements can be applied also to the time-dependent Hartree-Fock problem. Considering the result of Eq.\,\ref{eq:HF_eq_time_dep}, one can perform once more the expansion of each molecular orbital and project the so-obtained result onto $\bra{\psi_\alpha}$, getting then
+\begin{align*}
+    \dot{C}(t) = -i f(t)C(t) 
+\end{align*}
+where the time-dependent Fock matrix elements are
+\begin{align*}
+    f_{\mu\nu}(t) =  h_{\mu\nu}^{ho} + x_{\mu\nu} \fakeeps_0 \sin(\omega t) + \sum_{j}^{occ} \sum_{\gamma\delta} C_{\gamma,j}^* C_{\delta,j} u^{\mu\gamma}_{\nu\delta,AS}
+\end{align*}
+
+
+
+
+\subsection{INTEGRATOR FOR TIME EVOLUTION}
+\label{sec:integrator}
+The result of the last equation provides us with the receipe for the time evolution of the system. At every time step the product between the Fock matrix evaluated at time $t$ and the corresponding coefficient matrix gives us the time derivative for each coefficient. The configuration at the following step can the be derived by mean of a properly chosen integrator. For the considered problem we opted for \texttt{zvode} method included in the \texttt{scipy.integrate.ode} \cite{scipy.int} module provided by Python. This choice was driven by the fact that the selected integrator is actually symplectic: this property in our context can be translated in better energy conservation features provided by the integrator itself, and thus an improved physical accuracy in the obtained results. 
+
+
+
+\subsection{NEW FORM FOR EXPECTATION VALUES}
+The expectation values that we aim to evaluate in this project can also be rewritten in a more convenient form after having performed the basis change. The total energy of the system from Eq.\,\ref{eq:total_energy_no_coeff} becomes
+\begin{align}
+\begin{split}
+    \mathbb{E}[\mathcal{H}] &= \sum_{i=1}^2 \sum_{\alpha,\beta} C_{\alpha,i}^* C_{\beta,i} h_{\alpha\beta}^{ho} + \\
+    & + \frac{1}{2} \sum_{i,j=1}^2 \sum_{\alpha\beta\gamma\delta} C_{\alpha,i}^* C_{\gamma,j}^* C_{\beta,i} C_{\delta,j}  u^{\alpha\gamma}_{\beta\delta,AS}
+\end{split}
+\label{eq:total_energy_coeff}
+\end{align}
+while the one body density in Eq.\,\ref{eq:one_body_density_no_coeff} is rewritable as
+\begin{align}
+\begin{split}
+    \rho(x) = \sum_i^{occ} \sum_{\alpha\beta} C_{\alpha,i}^* C_{\beta,i} \chi_{\Tilde{\alpha}}^*(x) \chi_{\Tilde{\beta}}(x)
+\end{split}
+\label{eq:one_body_density_coeff}
+\end{align}
+The time-dependent overlap appearing in Eq.\,\ref{eq:overlap_no_coeff} then becomes
+\begin{align}
+    \xi(t) = \big\vert \det \left( C_o^{\dag}(t) C_o(0) \right) \big\vert^2 
+    \label{eq:overlap_coeff}
+\end{align}
+and the corresponding version translated in time is then
+\begin{equation}
+    \xi_T(t) = \big\vert \det \left( C_o^{\dag}(t) C_o(T) \right) \big\vert^2
+    \label{eq:overlap_T_coeff}
+\end{equation}
+This will be used during the Fourier analysis of the overlap curve. Here we defined $C_o(t)$ as a $2l\times2$ matrix corresponding to the first two columns of the coefficient matrix at time $t$. The number of columns that one has to consider corresponds to the number of particles populating the system. Finally the time-dependent average displacement of Eq.\,\ref{eq:x_time_dep_no_coeff} becomes
+\begin{align}
+    \overline{x}(t) = \sum_i^{occ} \sum_{\alpha\beta} C_{\alpha,i}^*(t) C_{\beta,i} (t) \bracketOP{\chi_{\Tilde{\alpha}}(x)}{\chi_{\Tilde{\beta}}(x)}{\hat{x}} 
+    \label{eq:x_time_dependent_coeff}
+\end{align}
+
+
+
+\subsection{RESTRICTED HARTREE-FOCK IMPLEMENTATION}
+\label{sec:restricted_HF}
+At a later stage of the project, we included in our code also the restricted representation of the spin part of the single particle wavefunctions, which then appeared to be written as
+\begin{align}
+    \phi_i(x,m_s) = \sum_{\mu=1}^{l} C_{\mu,i} \chi_\mu(x) \sigma_{i}(m_s)
+    \label{eq:expansion_spf_res}
+\end{align}
+Here $\sigma$ accounts for the spin component, being $\sigma_i=\alpha$ for $i$ even. The restricted implementation was tested only to find the solution of the ground-state problem in terms of energy and one-body density, excluding then the analysis in the time domain. This allowed us for a comparison with the corresponding results obtained with the general representation described above, especially for what concerns the convergence properties in the time-independent treatment. Here we will limit to briefly describe the modifications brought by the restricted representation in the equations derived above. A full derivation can however be found in \cite{modern_qc}. 
+
+In this context it is no more necessary to employ a basis constituted by $2l$ states, since the spin component is pre-assigned to every single particle wavefunction. Our task is then reduced to identify the $l$ coefficients which enter in the expansion of the radial part of each wavefunction, keeping in mind that each radial part is then associated to two different single particle states with opposite spins. Each sum performed over $\psi_i$ appearing in the previous derivation of the Hartree-Fock equations is then splitted into two restricted sums on the spin-up and spin-down single particle states, namely
+\begin{align*}
+    \sum_i^N \qquad \rightarrow \qquad \sum_{i,\ket{\uparrow}}^{N/2} + \sum_{i,\ket{\downarrow}}^{N/2}
+\end{align*}
+Applying all these conditions to the Hartree-Fock equations previously derived, one gets the Fock matrices rewritten in the formalism of the restricted spin representation
+\begin{align*}
+    f_{\mu\nu} =  h_{\mu\nu}^{ho} + 2\sum_{j}^{n/2} \sum_{\gamma\delta} C_{\gamma,j}^* C_{\delta,j} u^{\mu\gamma}_{\nu\delta} - \sum_{j}^{n/2} \sum_{\gamma\delta} C_{\gamma,j}^* C_{\delta,j} u^{\mu\gamma}_{\delta\nu}
+\end{align*}
+where $n$ is the number of particles. Notice that the indexes of all the matrices appearing in the equation run from $1$ to $l$, contrarily to what happened in the generalized representation where they could span from $1$ to $2l$. 
+
+The form of the total energy of the system becomes
+\begin{align*}
+    \mathbb{E}[\mathcal{H}] =& 2\sum_{i=1}^{n/2} \sum_{\alpha,\beta} C_{\alpha,i}^* C_{\beta,i} h_{\alpha\beta}^{ho} + \\
+    & + 2 \sum_{i,j=1}^{n/2} \sum_{\alpha\beta\gamma\delta} C_{\alpha,i}^* C_{\gamma,j}^* C_{\beta,i} C_{\delta,j}  u^{\alpha\gamma}_{\beta\delta} - \\
+    & - \sum_{i,j=1}^{n/2} \sum_{\alpha\beta\gamma\delta} C_{\alpha,i}^* C_{\gamma,j}^* C_{\beta,i} C_{\delta,j}  u^{\alpha\gamma}_{\delta\beta}
+\end{align*}
+while the one-body density appears as
+\begin{align*}
+    \rho(x) = 2 \sum_i^{n/2} \sum_{\alpha\beta} C_{\alpha,i}^* C_{\beta,i} \chi_{\alpha}^*(x) \chi_{\beta}(x)
+\end{align*}
+
+
+
+\subsubsection{FOURIER ANALYSIS}
+\label{sec:fourier_analysis}
+For the purpose of estimating the transition energy values as described in Section \ref{sec:intro_fourier}, the time-dependence was introduced in the system by mean of the mentioned laser potential, acting on the apparatus initially in its ground state. The source was left active for a time $T$, then switched off, still proceeding with the time evolution of the system (now in a superposition of eigenstates of the original Hamiltonian). Finally, a Fast Fourier Transform was performed on the so-obtained $\overline{x}(t)$ and $\xi_T(t)$ for $t>T$, extrapolating the frequencies corresponding to the transition energies.
+
+
+

@@ -1,0 +1,322 @@
+
+The treatment of complex many-body systems such as molecules or clusters represents a very demanding task. The introduction of some properly chosen approximations usually leads to a solution for the considered problem, the price to pay being a possible lack of accuracy in the obtained results. Extended systems illuminated by strong laser sources constitute a clear example: they are very complex to treat both computationally and theoretically and even the adoption of the so-called single active electron approximation is of any help in this context \cite{Zanghellini_2004}. Moreover, well known and established methods as the time-dependent Hartree-Fock or the time-dependent density functional theory suffer of a lack of accuracy when applied to the description of electron dynamics in such complex systems \cite{Zanghellini_2004}. Zanghellini et al. tried to provide for a new approach \cite{Zanghellini_2003} to this kind of problems, formulating the so-called Multi-configuration time-dependent Hartree-Fock method for strong laser field problems. As the name suggests, this strategy still relies on the standard Hartree-Fock theory, but now the total wavefunction describing a system of fermions is expanded in a series of Slater determinants. Higher levels of accuracy can be reached as the number of terms $\eta$ in the expansion increases, finally reaching the exact solution for $\eta \rightarrow \infty$. 
+
+At a later stage the validity of the approach was tested by applying it for the description of two systems, the first constituted by two electrons trapped in a harmonic oscillator potential, the second being represented by a He atom. Both the configurations were subject to a strong laser field. Procedures and results are reported in \cite{Zanghellini_2004}: here the attention is mainly focused on determining the number of Slater determinants that allows to reach a convergence with the numerically exact solution to the considered problems. On the contrary, we will limit our discussion to the case $\eta=1$, trying to reproduce the results for the 2-electrons systems only.
+
+\subsection{PRELIMINARY TIME-INDEPENDENT TREATMENT}
+
+\subsubsection{TIME INDEPENDENT HAMILTONIAN}
+The first part of the project was devoted to access the main properties of the system in its ground state. According to the content of the article, the following 1-D Hamiltonian was adopted
+\begin{align}
+\begin{split}
+    \mathcal{H}(x,y) =& -\frac{1}{2} \left( \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} \right) + \frac{1}{2} \Omega^2 (x^2 + y^2) + \\
+    & + \frac{1}{\sqrt{(x-y)^2 + a^2}} \\
+    =& \sum_{i=1}^2 h_{i}^{ho} + v(x,y)
+\end{split}
+\label{eq:hamiltonian_t_indep}
+\end{align}
+where $x$ and $y$ are the coordinates for the two electrons. The single-particle Hamiltonians $h_i^{ho}$ are limited to a kinetic energy term and a harmonic oscillator potential with frequency $\Omega=0.25$, since at this stage the time dependence is still not included. The interaction between the electrons is represented by a smoothed Coulomb potential, where the shielding parameter $a=0.25$ has been inserted to avoid divergences. Notice that the natural units convention has been adopted, namely $\hbar=4\pi\varepsilon_0=m_e=e=1$, thus all the results reported in the project are consequently represented, even if not explicitly specified. \\
+
+\subsubsection{TIME-INDEPENDENT HARTREE-FOCK METHOD}
+A good approximation for the wavefunction that minimizes the energy of the system can be accessed by means of the time-independent Hartree-Fock method. The derivation provided in this section mainly refers to \cite{bransden}, in the special case of the ground state of a system populated by $N$ electrons. \\
+
+In a quite general case, the hamiltonian that describes such a system is assumed to be 
+\begin{equation*}
+    \mathcal{H} = \mathcal{H}_1 + \mathcal{H}_2
+\end{equation*}
+where $\mathcal{H}_1$ is the single particle hamiltonian (or one body hamiltonian)
+\begin{equation*}
+    \mathcal{H}_1 = \sum_{i=1}^N h_i = \sum_{i=1}^N -\frac{1}{2}\nabla_{\ve{r}_i}^2 + V(r_i)
+\end{equation*}
+and $\mathcal{H}_2$ is the interaction term
+\begin{equation*}
+    \mathcal{H}_2 = \sum_{i<j,j=1}^N v(\vert r_i-r_j \vert)
+\end{equation*}
+Since we are dealing with a system of fermions, the wavefunction describing the ground state of the system $\Psi(q_1, \dots, q_N)$ must be antisymmetric under the action of the permutation operator $P$ so that
+\begin{gather*}
+    P_{ij} \Psi(q_1, \dots,q_i, \dots, q_j, \dots, q_N) = \\
+    = \Psi(q_1, \dots, q_j, \dots, q_i, \dots, q_N) = \\ 
+    = - \Psi(q_1, \dots, q_i, \dots, q_j, \dots, q_N) 
+\end{gather*}
+The central idea of the method consists in assuming that the ground state wavefunction $\Psi(q) \equiv \Psi(q_1, \dots, q_N)$ can be approximated by a Slater determinant of single particle wavefunctions
+\begin{equation*}
+    \Psi(q) \approx \Phi(q) \equiv \frac{1}{\sqrt{N!}} \ \begin{vmatrix} \phi_{1}(q_1) \ \phi_{2}(q_1) \ \dots \ \phi_{N}(q_1) \\ 
+    \phi_{1}(q_2) \ \phi_{2}(q_2) \ \dots \ \phi_{N}(q_2) \\
+    \dots \\
+    \dots \\
+    \dots \\
+    \phi_{1}(q_N) \ \phi_{2}(q_N) \ \dots \ \phi_{N}(q_N)
+    \end{vmatrix}
+\end{equation*}
+and then make use of the variational principle
+\begin{equation}
+    \bracketOP{\Psi}{\Psi}{\mathcal{H}} = \mathbb{E}[\Psi] \leq \mathbb{E}[\Phi] = \bracketOP{\Phi}{\Phi}{\mathcal{H}}
+    \label{eq:en_ground_slater_1}
+\end{equation}
+to find the single particle functions $\phi_{1}, \dots \phi_{N}$ that minimize the expectation value of the energy $\mathbb{E}[\Phi]$. \\ Each of the numerical subscripts used in the definition of $\Phi$ refers to a particular set of quantum numbers $(n_1, n_2, n_3, ...)$ so that the notation $\phi_{i}(q_k)$ stands for the single electron orbital identified by the set of quantum numbers $i = (n_1^i, n_2^i, n_3^i, ...)$ evaluated in the position of the particle $k$. Notice that index $i$ runs over the single-particle states, while $k$ runs over the particles, both ranging from 1 to N. We also require that ${\phi_{i}(q_k)}$ is an orthonormal basis set, so that $\langle \phi_{i}|\phi_{j}\rangle =\delta_{i, j} $ .
+
+The approximated wavefunction can be rewritten by making use of the antisymmetrizer operator $\mathcal{A}$, whose properties are described in \cite{bransden}:
+
+\begin{equation}
+\begin{aligned}
+    \Phi(q) &= \frac{1}{\sqrt{N!}}\bigg(\sum_P (-1)^P \hat{P} \bigg) \Phi_H(q) \\
+     &= \sqrt{N!} \, \mathcal{A} \, \Phi_H(q)
+\end{aligned}
+\label{eq:slater_determinant}
+\end{equation}
+where $\hat{P}$ indicates the permutation operator and $\Phi_H(q)$ is:
+\begin{equation*}
+    \Phi_H(q) = \phi_1(q_1) \, \phi_2(q_2) \, \dots \, \phi_N(q_N)  
+\end{equation*}
+Using the variational principle one can estimate the energy of the ground state with the initial guess on $\Phi$. Starting from Eq.\,\ref{eq:en_ground_slater_1}, it follows that
+\begin{align*}
+    \mathbb{E}[\Phi] &= \bracketOP{\Phi}{\Phi}{\mathcal{H}} \\
+    &= \bracketOP{\Phi}{\Phi}{\mathcal{H}_1} + \bracketOP{\Phi}{\Phi}{\mathcal{H}_2}
+\end{align*}
+Let us study the $\mathcal{H}_1$ term. Exploiting the fact that $[\mathcal{A}, H_1]=0$, $\mathcal{A}^2 = \mathcal{A}$ and the hermiticity of the operator, one gets 
+\begin{align*}
+    \bracketOP{\Phi}{\Phi}{\mathcal{H}_1} &= N! \bracketOP{\Phi_H}{\Phi_H}{\mathcal{A}\mathcal{H}_1 \mathcal{A}} \\
+    &= N! \bracketOP{\Phi_H}{\Phi_H}{\mathcal{H}_1\mathcal{A}^2} \\
+    &= N! \bracketOP{\Phi_H}{\Phi_H}{\mathcal{H}_1\mathcal{A}} \\
+    &= \sum_{i=1}^N \sum_P (-1)^P \bracketOP{\Phi_H}{\Phi_H}{h_i\hat{P}} 
+\end{align*}
+In the last sum over the possible permutations, the only term that survives is obtained when the permutation operator coincides with the identity operator (see Appendix A). This happens because we choose an orthonormal basis set for $\phi_i(q)$, yielding to: 
+\begin{align}
+    \bracketOP{\Phi}{\Phi}{\mathcal{H}_1} &= \sum_{i=1}^N  \bracketOP{\Phi_H}{\Phi_H}{h_i}
+    \label{eq:permutation_to_identity}
+\end{align}
+which in turn becomes a sum over the $N$ individual quantum states
+\begin{align*}
+    &= \sum_{i} \bracketOP{\phi_i}{\phi_i}{h} = \sum_{i} I_i
+\end{align*}
+We indicated with $I_i$ the average value of the individual hamiltonian $h$ evaluated on the the spin orbital $\phi_i$.
+
+Now we focus on the $\mathcal{H}_2$ interaction term: exploiting the fact that $[\mathcal{A}, \mathcal{H}_2]=0$, $\mathcal{A}^2 = \mathcal{A}$ and the hermiticity of the operator one gets
+\begin{align*}
+    \bracketOP{\Phi}{\Phi}{\mathcal{H}_2} &= N! \bracketOP{\Phi_H}{\Phi_H}{\mathcal{A} \mathcal{H}_2 \mathcal{A}} \\
+    &= N! \bracketOP{\Phi_H}{\Phi_H}{\mathcal{H}_2 \mathcal{A}} \\
+    &= \sum_P (-1)^P  \bracketOP{\Phi_H}{\Phi_H}{\mathcal{H}_2 P} \\
+    &= \sum_{i<j} \sum_P (-1)^P  \bracketOP{\Phi_H}{\Phi_H}{v(r_{ij}) P}
+\end{align*}
+where $r_{ij}=|r_i -r_j|$. The orthonormality of the single-particle wavefunctions leads us to say that the only non-zero terms are those obtained when the operator $P$ coincides with the identity or when $P$ exchanges the indexes $i \leftrightarrow j$ (this follows from an analogous reasoning to that reported in Appendix A):   
+\begin{align*}
+    &= \sum_{i<j} \bracketOP{\Phi_H}{\Phi_H}{v(r_{ij})(1-P_{ij})}
+\end{align*}
+Again, the sum over $i<j$ can be rewritten as a sum over the individual quantum states, obtaining at the end
+\begin{align*}
+    &= \frac{1}{2} \sum_{i,j} \bigg\{ \bracketOP{\phi_i (q_1) \phi_j(q_2)}{\phi_i (q_1) \phi_j (q_2)}{v(r_{12})} - \\
+    & - \bracketOP{\phi_i (q_1) \phi_j(q_2)}{\phi_j (q_1) \phi_i (q_2)}{v(r_{12})} \bigg\} \\
+    &= \frac{1}{2} \sum_{i,j} \bigg\{ \bracketOP{\phi_i \phi_j}{\phi_i \phi_j }{v(r_{12})} - \bracketOP{\phi_i \phi_j}{\phi_j \phi_i }{v(r_{12})} \bigg\} \\
+    &= \frac{1}{2} \sum_{i,j} \bigg\{ \mathcal{F}_{ij} - \mathcal{K}_{ij} \bigg\}
+\end{align*}
+where $\mathcal{F}_{ij}$ and $\mathcal{K}_{ij}$ are defined respectively as the direct and exchange term. Joining the results obtained up to now, one gets that
+\begin{align}
+    \mathbb{E}[\Psi] = \sum_i I_i + \frac{1}{2} \sum_{i,j} \mathcal{F}_{ij} - \mathcal{K}_{ij}
+    \label{eq:expected_val_energy}
+\end{align}
+At this point one can proceed with the minimization of the energy functional with respect to the single-particle states. The orthonormality condition for these functions is taken into account by introducing $N^2$ Lagrange multipliers, obtaining then
+\begin{align}
+    \delta E - \sum_{ij} \varepsilon_{ij} \delta \langle \phi_i \vert \phi_j \rangle = 0
+    \label{eq:lag_mult_interm_step}
+\end{align}
+We notice that the number of independent element inside the matrix of the Lagrange multipliers is actually reduced to $N(N-1)/2$, this due to the redundancy in the imposition of the same condition on $\langle \phi_i \vert \phi_j \rangle$ and $\langle \phi_j \vert \phi_i \rangle$. In particular, this leads to the hermiticity of the matrix, since $\varepsilon_{ij}^* = \varepsilon_{ji}$. It is known that a hermitian matrix can always be diagonalized through a proper basis change operated by a unitary matrix $U$, thus we shall assume that $\{\phi_i\}_{i=1}^N$ actually corresponds to the so-obtained basis. We notice that this basis change does not influence the procedures described up to now, since the full wavefunction gains at most a phase factor. Eq.\,\ref{eq:lag_mult_interm_step} then reduces to
+\begin{align*}
+    \delta E - \sum_{ij} \varepsilon_{i} \delta_{ij} \delta \langle \phi_i \vert \phi_j \rangle = 0
+\end{align*}
+the result of which becomes a system of single particle equations, namely
+\begin{align}
+\begin{split}
+     &h_i \phi_i(q_1) + \bigg[ \sum_j \int dq_2 \phi_j^*(q_2) v(r_{12}) \phi_j(q_2) \bigg] \phi_i (q_1) - \\
+    & - \sum_j \int dq_2 \phi_j^*(q_2) v(r_{12}) \phi_i(q_2) \bigg] \phi_j (q_1) = \varepsilon_i \phi_i (q_1)
+\end{split}
+\label{eq:fock_matrix_t_ind}
+\end{align}
+where the sums are performed over the occupied molecular orbitals. The direct term appearing in each equation accounts for the fact that each particle is moving in the average potential generated by the presence of the others in the system. In this sense the Hartree-Fock methods is operating in a mean-field approximation. The presence of the exchange term is on the contrary a pure quantum effect, which derives from the assumption made on the total wavefunction $\Psi$ to be written as a Slater determinant. For the sake of completeness, we introduce also the so-called Fock operator, which allows to rewrite the equation above as
+\begin{align*}
+    \hat{f} \phi_i = \varepsilon_i \phi_i
+\end{align*}
+From an operative point of view, one starts from an initial guess for each $\phi_i$ and then proceeds by feeding at each step the equations just reported with the single particle wavefunctions obtained at the previous iteration. The procedure continues ideally until the self-consistency requirement has been fulfilled, namely up to the point in which the various $\phi_i$ become the exact eigenstates of Hartree-Fock equations, with $\varepsilon_i$ being the corresponding eigenvalues. 
+
+
+
+\subsubsection{EXPECTATION VALUES}
+The results in terms of total wavefunction $\Psi$ provided at the end of the iterative process can be used to access some important properties of the system in its ground state. Adapting the results to the actual apparatus, we recall from Eq.\,\ref{eq:expected_val_energy} that the total energy can be achieved as
+\begin{align}
+\begin{split}
+    \mathbb{E}[\mathcal{H}] &= \sum_{i=1}^2 \bracketOP{\phi_i}{\phi_i}{h^{ho}} + \frac{1}{2} \sum_{i,j=1}^2 \bigg\{ \bracketOP{\phi_i \phi_j}{\phi_i \phi_j }{v(x,y)} - \\
+    &- \bracketOP{\phi_i \phi_j}{\phi_j \phi_i }{v(x,y)} \bigg\} 
+\end{split}
+\label{eq:total_energy_no_coeff}
+\end{align}
+while the ground-state one-body density comes from the following definition 
+\begin{align}
+\begin{split}
+    \rho(x) =& \int [dy] \Psi^*(x,y) \Psi(x,y) \\
+    =& \sum_{i=1}^N \sum_{\sigma} \vert \phi_i(x; \sigma) \vert^2
+\end{split}
+\label{eq:one_body_density_no_coeff}
+\end{align}
+This last equality can be derived again exploiting the properties of the anti-simmetrization operator entering in the definition of $\Phi$. Notice that with the notation $[dy]$ we are including also the bra-ket between the spin components $\sigma$ contained into each single particle wavefunctions. This operation is represented by the sum over $\sigma$ in the last step.
+
+
+\subsection{TIME-DEPENDENT TREATMENT}
+\subsubsection{TIME-DEPENDENT HAMILTONIAN}
+After a first stage described above, the time-dependence in the Hamiltonian can now be included. This is made by introducing the potential term describing the action of the laser field to which the system is subjected, namely
+\begin{align}
+\begin{split}
+    H(x,y; t) =& -\frac{1}{2} \left( \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} \right) + \frac{1}{2} \Omega^2 (x^2 + y^2) + \\
+    &+ \frac{1}{\sqrt{(x-y)^2 + a^2}} + (x+y) \fakeeps_0 \sin (\omega t) \\
+    =& \sum_{i=1}^2 h_i' + v(x,y) \\
+    =& \sum_{i=1}^2 \left[ h_i^{ho} + h_{i}^{L} \right]+ v(x,y)
+\end{split}
+\label{eq:hamiltonian_t_dip}
+\end{align}
+where $x$ and $y$ stand again for the coordinates for the two electrons. Now the single-particle terms have been enriched with the presence of the time-dependent sinusoidal contribution, where $\omega=8 \Omega = 2$ and $\fakeeps_0 = 1$.
+
+
+\subsubsection{TIME-DEPENDENT HARTREE-FOCK METHOD}
+The introduction of a temporal factor in the Hamiltonian requires the adoption of the time-dependent version of the method derived above. In the time dependent case, the approximated ground state wavefunction $\Psi(t, q)$ can be deduced by the principle of minimum action which reads
+\begin{equation*}
+    \delta \mathcal{S}[\Psi, \Psi^*] = 0
+\end{equation*}
+for a suitable choice of the action $\mathcal{S}[\Psi, \Psi^*]$. In the following derivation we assume the action to be of the form
+\begin{equation*}
+    \mathcal{S}[\Psi, \Psi^*, \lambda] = \int_{t_0}^t \mathcal{L}(\Psi, \Psi^*, \lambda) \, dt'
+\end{equation*}
+with $\mathcal{L}(\Psi, \Psi^*, \lambda)$ Lagrangian function given by
+\begin{equation}
+\begin{gathered}
+    \mathcal{L}[\Psi, \Psi^*, \lambda] = \left\langle\Psi(t)\left|\mathfrak{i \hbar} \partial_{t}-\mathcal{H}(t)\right| \Psi(t)\right\rangle
+\end{gathered}
+\label{eq:lagrangian_def}
+\end{equation}
+In light of the definition provided for the action functional, its minimization condition reduces to 
+\begin{align}
+\begin{split}
+    &\delta\mathcal{S}[\Psi, \Psi^*, \lambda] = \int_{t_0}^t \delta \mathcal{L}(\Psi, \Psi^*, \lambda) \, dt' = 0 \qquad \Rightarrow \\
+    & \Rightarrow \qquad \mathcal{L}(\Psi, \Tilde{\Psi}^*, \lambda) -  \mathcal{L}(\Psi, \Psi^*, \lambda) = 0
+\end{split}
+\label{eq:minimiz_action}
+\end{align}
+where the term $\Tilde{\Psi}$ simply corresponds to a variation on the total wavefunction that will be described in a moment.
+
+As for the time independent case, the true wavefunction $\Psi(t, q)$ is approximated by a function $\Phi(t, q)$ constructed as a Slater determinant as in Eq.\,\ref{eq:slater_determinant}. Thus the terms in the Lagrangian in Eq.\,\ref{eq:lagrangian_def} can be expanded using this assumption. This brings to a new form for the Lagrangian, namely
+\begin{equation*}
+\begin{gathered}
+    \mathcal{L}[\Phi, \Phi^*, \lambda] = \left\langle\Phi(t)\left| i \partial_{t}-\mathcal{H}(t)\right| \Phi(t)\right\rangle + \\ - \sum_{i,j} \lambda_{ji}\left(\left\langle\phi_{i}(i) \mid \phi_{j} (t) \right\rangle-\delta_{ij}\right)
+\end{gathered}
+\end{equation*}
+where we have introduced the Lagrange multipliers $\lambda_{ij}$ to account for the orthogonality of the single particle states. \\
+The previously mentioned variation on the total wavefunction can then be performed by introducing a variation on one single particle state per time
+\begin{equation*}
+    \widetilde \phi_i(t, q_i) = \phi_i(t, q_i) + \delta_{ik} \epsilon \eta(t, q_i) 
+\end{equation*}
+where $\epsilon$ is regarded as a real parameter and $\eta(t, q_i)$ is a complex valued function. Note that, as before, the variations on $\phi_i$ and $\phi_i^*$ (or, analogously on the ket $\ket{\phi_i}$ and on the bra $\bra{\phi_i}$) can be treated as independent. \\
+
+At this point, we can proceed with the explicit evaluation of the expression for $\mathcal{L}[\Phi, \widetilde\Psi ^*, \lambda]$. Let us proceed by following the scheme proposed for the time-independent case. Notice that now the time-dependences will be omitted for the sake of simplifying the notation.
+\begin{align*}
+    \bracketOP{\widetilde\Phi}{\Phi}{\mathcal{H}_1} 
+    &= \sum_{i=1}^N \sum_P (-1)^P \bracketOP{\widetilde\Phi_H}{\Phi_H}{h_i\hat{P}} \\
+    &= \sum_{i=1}^N \bracketOP{\widetilde\phi_i}{\phi_i}{h} \\
+    &= \sum_{i=1}^N \bracketOP{\phi_i}{\phi_i}{h} + \epsilon \sum_{i=1}^N \bracketOP{\eta}{\phi_i}{h} \delta_{ik} \\
+    &= \sum_{i=1}^N \mathcal{I}_i(t) + \epsilon \bracketOP{\eta}{\phi_k}{h} 
+\end{align*}
+Notice that the hermiticity of the operator $i\partial_t$ allows to treat it as a single-particle operator. This result will be included later. Similarly, the 2-body term becomes
+\begin{align*}
+    &\bracketOP{\Phi}{\Phi}{\mathcal{H}_2}
+    = \sum_{i<j} \bracketOP{\widetilde\Phi_H}{\Phi_H}{v(r_{ij})(1-P_{ij})} \\
+    &= \frac{1}{2} \sum_{i,j} \bigg\{ \mathcal{F}_{ij}(t) - \mathcal{K}_{ij}(t) \bigg\} + \\
+    &\quad +\epsilon \frac{1}{2} \sum_{i,j} \bigg\{ \delta_{ik} \bracketOP{\eta \phi_j}{\phi_i \phi_j }{v(r_{12})}_{AS} + \\
+    & \quad + \delta_{jk} \bracketOP{\phi_i \eta}{\phi_i \phi_j }{v(r_{12})}_{AS} \bigg\} \\ 
+    &= \frac{1}{2} \sum_{i,j} \bigg\{ \mathcal{F}_{ij}(t) - \mathcal{K}_{ij}(t) \bigg\} + \epsilon \sum_{i} \bracketOP{\eta \phi_i}{\phi_k \phi_i }{v(r_{12})}_{AS}
+\end{align*}
+The evaluation of the expression for $\mathcal{L}[\Phi, \Phi^*, \lambda]$ just adds the time dependence to the expressions obtained in the time-independent case.\\
+
+Joining all the results that we got up to now, we get
+\begin{align*}
+    &\mathcal{L}(\Psi, \Tilde{\Psi}^*, \lambda) -  \mathcal{L}(\Psi, \Psi^*, \lambda) = \\
+    & = i\epsilon \bracketOP{\eta}{\phi_k}{\partial_t} - \epsilon \bracketOP{\eta}{\phi_k}{h} - \epsilon \sum_{i} \bracketOP{\eta \phi_i}{\phi_k \phi_i }{v(r_{12})}_{AS} - \\
+    & \quad- \epsilon \sum_j \lambda_{kj} \bracket{\eta}{\phi_j} \\
+    &= i\epsilon \bracketOP{\eta}{\phi_k}{\partial_t} - \epsilon \bracketOP{\eta}{\phi_k}{\hat{f}(t)} - \epsilon \sum_j \lambda_{kj} \bracket{\eta}{\phi_j} = 0
+\end{align*}
+where we have introduced the time-dependent version of the Fock operator. Since the function $\eta$ was arbitrarily chosen, the result of the previous equation must not depend on its form, thus we get
+\begin{align*}
+    i \partial_t \ket{\phi_k} - \hat{f}(t) \ket{\phi_k} - \sum_j \lambda_{kj} \ket{\phi_j} = 0
+\end{align*}
+The expression for the generic Lagrange multiplier follows by projecting the result onto $\phi_l$.
+\begin{align*}
+    \bracketOP{\phi_l}{\phi_k}{i\partial_t} - \bracketOP{\phi_l}{\phi_k}{\hat{f}(t)} = \sum_j \lambda_{kj} \delta_{jl} = \lambda_{kl}
+\end{align*}
+Substituting the result for $\lambda_{kj}$ into the last equation, we get
+\begin{gather*}
+    i \partial_t \ket{\phi_k} - \hat{f}(t) \ket{\phi_k} - \sum_j \left[ \bracketOP{\phi_j}{\phi_k}{i\partial_t} - f_{jk} \right] \ket{\phi_j} = 0
+\end{gather*}
+which after the introduction of the operator $\mathds{P}$ can be rewritten as
+\begin{align}
+    \underbrace{ \left( \hat{\mathbb{1}} - \sum_j \ket{\phi_j} \bra{\phi_j} \right)}_{\hat{\mathds{P}}}  \left[ i\partial_t \ket{\phi_k} - \hat{f}(t) \ket{\phi_k} \right] = 0
+    \label{eq:intermed_step_t_dep_HF}
+\end{align}
+% Notice that the sum appearing in the definition of the operator $\mathds{P}$ does not lead to a completeness relation, since $\{ \phi_j \}_{j=1}^N$ do not form a complete basis. \\
+At this point, we can consider an arbitrary hermitian operator $\hat{Q}(t)$ and apply a unitary transformation to the single-particle states that makes this equation true
+\begin{equation*}
+    \bracketOP{\phi_p}{\phi_q}{i \partial_t} = \bracketOP{\phi_p}{\phi_q}{\hat{Q}(t)}
+\end{equation*}
+where $\phi_p$ and $\phi_q$ have to be intended as the transformed single particle states. The unitary transformation does not invalidate all the results applied up to now, since the Slater determinant gains at most a phase factor and the Lagrangian remains unaltered. The operator $\hat{Q}(t)$ was chosen arbitrarily, with the only requirement of being Hermitian, thus it can be set equal to $\hat{f}(t)$. After the single-particle state have undergone the proper unitary transformation, the following equation will then be satisfied
+\begin{equation*}
+    \bracketOP{\phi_p}{\phi_q}{i \partial_t} = \bracketOP{\phi_p}{\phi_q}{\hat{f}(t)}
+\end{equation*}
+Returning to Eq.\,\ref{eq:intermed_step_t_dep_HF} and inserting this last result, we finally get the time-dependent version of the Hartree-Fock equations
+\begin{align*}
+    &i\partial_t \ket{\phi_k} - \hat{f}(t) \ket{\phi_k} - \sum_j \ket{\phi_j} \left[ \bracketOP{\phi_j}{\phi_k}{i\partial_t} - \bracketOP{\phi_j}{\phi_k}{\hat{f}(t)} \right] \\
+    &= i\partial_t \ket{\phi_k} - \hat{f}(t) \ket{\phi_k} - \sum_j \ket{\phi_j} \left[ \cancel{f_{jk}(t)} - \cancel{f_{jk}(t)} \right] = 0 \;\; \Rightarrow \\
+    &\Rightarrow \qquad i\partial_t \ket{\phi_k} - \hat{f}(t) \ket{\phi_k} = 0
+\end{align*}
+In coordinate representation, this becomes
+\begin{equation}
+    i \frac{\partial }{\partial t} \phi_i(x;t) = \hat{f}(t) \phi_i(x;t)
+    \label{eq:HF_eq_time_dep}
+\end{equation}\\
+The new form of the Hartree-Fock equations still works in the context of mean-field approximation, but now the action of the operator $\hat{f}$ provides us with the time derivative of the single-particle wavefunctions, rather than with some kind of eigenvalue. Solving the time-dependent Hartree-Fock equations allows then to access the evolution in time of the single particle states. The initial conditions for the solution of the present system of equations are provided by the the single-particle wavefunctions obtained after the convergence of the Hartree-Fock equations in the time-independent treatment. 
+
+\subsubsection{EXPECTATION VALUES}
+A good parameter that provides a feedback on the modifications that the individual particle states encounter during their evolution is constituted by the overlap between the total wavefunction at two different instants. Considering $t=0$ as the reference, the indicator assumes the following value
+\begin{align}
+    \xi(t) = \langle \Psi(x,y; t) \vert \Psi(x,y; 0) \rangle 
+    \label{eq:overlap_no_coeff}
+\end{align}
+then the smaller the value of $\xi$, the smaller the similarities between the wavefunctions describing the system respectively at $t=0$ and $t>0$. 
+
+The effect brought by the introduction of the time-dependent potential associated to the laser appears also in the average displacement of the particles with respect to the center of the system. The evolution in time of this quantity can be evaluated as
+\begin{align}\begin{split}
+    \overline{x}(t) &= \bracketOP{\Psi(x,y; t)}{\Psi(x,y; t)}{\hat{x}} \\
+    &= \sum_{i=1}^N \bracketOP{\phi_i(x;\sigma)}{\phi_i(x; \sigma)}{\hat{x}}
+\end{split}
+\label{eq:x_time_dep_no_coeff}
+\end{align}
+%Ti piace di più così o come era prima?
+
+
+\subsection{FOURIER ANALYSIS}
+\label{sec:intro_fourier}
+The time evolution of the position operator $\hat{x}$ just described can be used to estimate the transition energy between the ground state and the excited states of the system under exam. In fact, considering an apparatus in its ground state at time $t=0$ described by an Hamiltonian $H_0$, one can apply a time-dependent perturbation with a finite duration $T$ and then return to the original time-independent description. The total wavefunction at time $T$ can then be written as a linear combination of the eigenstates $\Psi_i$ of $H_0$, namely
+\begin{align*}
+    \ket{\Psi(t>T)} &= \sum_i c_i(t) \ket{\Psi_i}  \\
+    &= \sum_i \e^{-iH_0 (t-T)}  c_i(T) \ket{\Psi_i} \\
+    &= \sum_i \e^{-i E_i (t-T)} c_i(T) \ket{\Psi_i}
+\end{align*}
+Here we used the fact that, since $H_0$ is time-independent, the time-evolution of the various excited states is simply provided by the operator $\exp ( -iH_0t)$. Using this formalism, we can rewrite the time-dependence in $\overline{x}(t)$ defined in Eq.\,\ref{eq:x_time_dep_no_coeff} as
+\begin{align}
+    \overline{x}(t-T) &= \bracketOP{\Psi(t-T)}{\Psi(t-T)}{\hat{x}} \nonumber \\
+    &= \sum_{i,j} c_i^*(t) c_j(t) \bracketOP{\Psi_i}{\Psi_i}{\hat{x}} \nonumber \\
+    &= \sum_{i,j} \e^{i [E_i - E_j] (t-T)} c_i^*(T) c_j(T)  \bracketOP{\Psi_i}{\Psi_i}{\hat{x}} \nonumber \\
+    &= \sum_{i,j} \e^{i \omega_{ij} (t-T)} c_i^*(T) c_j(T) \bracketOP{\Psi_i}{\Psi_i}{\hat{x}}
+    \label{eq:transition_energies}
+\end{align}
+From this result it is evident that the frequency components entering in $\overline{x}(t)$ stand for the transition energy between the various eigenstates of $H_0$.  \\
+
+Another way to estimate such transition frequencies consists in applying the same procedure to $\vert \braket{\Psi(t)}{\Psi(T)} \vert^2$ for $t>T$. In this case, with the same reasoning described above, one gets
+\begin{align*}
+    & \xi_T(t)=  \\
+    &= \sum_i \vert c_i(T) \vert^4 + \sum_{i\neq j} \vert c_i(T) \vert^2 \vert c_j(T) \vert^2 \cos((E_i - E_j)t)
+\end{align*}
+Here we exploited some trigonometrical identities (see Appendix B), obtaining that the overlap reduces to a constant term and a sum of sinusoidal functions with frequencies given again by the transition energies between the excited states of the system described by $H_0$. 
