@@ -1,0 +1,1098 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb,bm}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.8cm, right=2.8cm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{parskip}
+\setlength{\parskip}{0.5\baselineskip}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\definecolor{linkcolor}{rgb}{0,0,0.4}
+\hypersetup{colorlinks=true,linkcolor=linkcolor,urlcolor=linkcolor,citecolor=linkcolor}
+
+% ── Convenience macros ──────────────────────────────────────────────────────
+\newcommand{\bket}[1]{\vert #1 \rangle}
+\newcommand{\bbra}[1]{\langle #1 \vert}
+\newcommand{\braket}[2]{\langle #1 \vert #2 \rangle}
+\newcommand{\ketbra}[2]{\vert #1 \rangle\langle #2 \vert}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\imath}{i}            % imaginary unit (source files use \imath)
+
+% Grey box for many-body / quantum-computing connection notes
+\usepackage{mdframed}
+\newmdenv[backgroundcolor=gray!10,linecolor=gray!40,
+          innertopmargin=6pt,innerbottommargin=6pt,
+          innerleftmargin=8pt,innerrightmargin=8pt,
+          skipabove=8pt,skipbelow=6pt]{notebox}
+
+\title{\textbf{Linear Algebra for Many-Body Physics and Quantum Computing}\\[0.4em]
+       {\large Introductory Chapters}}
+\author{Morten Hjorth-Jensen\\[0.2em]
+  {\small Department of Physics and Center for Computing in Science Education,}\\
+  {\small University of Oslo, Norway}}
+\date{{\small \copyright\ 1999--2026, Morten Hjorth-Jensen.
+  Released under CC~Attribution-NonCommercial~4.0 license.}}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+%=============================================================================
+\section*{Preface}
+\addcontentsline{toc}{section}{Preface}
+%=============================================================================
+
+These chapters collect and reorganise the linear algebra material
+from the introductory weeks of the many-body physics course.
+The goal is to give a self-contained, coherent treatment of the
+mathematical structures that underpin the rest of the course —
+vectors, matrices, Dirac bra-ket notation, orthonormal bases, unitary
+transformations, tensor products, determinants and Slater determinants —
+while making explicit at each step how those structures appear in
+many-body methods (Hartree-Fock, FCI, coupled cluster, \ldots) and in
+quantum computing (qubit states, quantum gates, quantum circuits).
+
+The two source files (\texttt{week34.tex} and \texttt{week1.tex})
+contain essentially the same linear algebra definitions, developed in
+parallel for the many-body course and for the quantum computing course.
+Here those parallel threads are woven into a single, logically ordered
+narrative structured as two chapters:
+
+\begin{itemize}
+  \item \textbf{Chapter~\ref{chap:linalg}}: The core linear algebra —
+    notation, vectors, matrices, Dirac notation, special matrices,
+    algebraic operations, unitary transformations, tensor products,
+    spectral decomposition.
+  \item \textbf{Chapter~\ref{chap:mbphys}}: Applications to many-body
+    physics and quantum computing — the many-body Hamiltonian, the Pauli
+    principle, Slater determinants, the antisymmetriser, basis changes,
+    the Hartree-Fock energy functional, the exponential-dimension
+    problem, quantum gates, and an overview of how linear algebra
+    links all many-body methods.
+\end{itemize}
+
+Shaded boxes like the one below signal a direct connection to either
+many-body physics or quantum computing:
+
+\begin{notebox}
+\textbf{Connection.} This is where the abstract linear algebra concept
+just introduced reappears concretely in a many-body method or in a
+quantum circuit.
+\end{notebox}
+
+%=============================================================================
+\newpage
+\section{Linear Algebra: Notation, Vectors, Matrices and Operations}
+\label{chap:linalg}
+%=============================================================================
+
+\subsection{Notations and conventions}
+\label{sec:notation}
+
+Throughout these notes vectors, matrices and higher-order tensors are
+always set in boldface.  Vectors are denoted by lower-case letters
+($\bm{x}$, $\bm{v}$, \ldots) and matrices and tensors by upper-case
+letters ($\bm{A}$, $\bm{U}$, \ldots).
+
+Unless stated otherwise the elements $v_i$ of a vector $\bm{v}$ are
+assumed real.  A real vector of length $n$ satisfies $\bm{x}\in
+\mathbb{R}^{n}$; for complex vectors we write $\bm{x}\in
+\mathbb{C}^{n}$.  A real $n\times n$ matrix satisfies $\bm{A}\in
+\mathbb{R}^{n\times n}$.  Index counting starts at zero: matrix
+elements run from $a_{00}$ to $a_{n-1,n-1}$.
+
+We use the standard shorthand symbols: $\forall$ (for all),
+$\Rightarrow$ (implies), $\equiv$ (equivalent / defined as), with
+$\mathbb{R}$, $\mathbb{I}$, $\mathbb{C}$ for the real, integer and
+complex number fields.
+
+%----------------------------------------------------------------------
+\subsection{Vectors}
+\label{sec:vectors}
+
+A column vector of length $n$ and its transpose are
+\[
+  \bm{x} = \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_{n-1} \end{bmatrix},
+  \qquad
+  \bm{x}^{T} =
+    \begin{bmatrix} x_0 & x_1 & \cdots & x_{n-1} \end{bmatrix}.
+\]
+For complex vectors the \emph{Hermitian conjugate} (adjoint) is
+\[
+  \bm{x}^{\dagger} =
+    \begin{bmatrix} x_0^* & x_1^* & \cdots & x_{n-1}^* \end{bmatrix}.
+\]
+The \emph{inner (dot) product} is the scalar
+\[
+  \bm{x}^{T}\bm{x} = \sum_{i=0}^{n-1} x_i x_i
+    = x_0^2 + x_1^2 + \cdots + x_{n-1}^2,
+\]
+and for complex vectors
+$\bm{x}^{\dagger}\bm{x} = \sum_{i=0}^{n-1} x_i^* x_i = \|{\bm x}\|^2$.
+
+The \emph{outer product} of two real vectors $\bm{y}$ (length $n$)
+and $\bm{z}$ (length $m$) is the $n\times m$ matrix
+\[
+  \bm{y}\bm{z}^{T} \;\Longrightarrow\; (\bm{y}\bm{z}^T)_{ij} = y_i z_j.
+\]
+For complex vectors one writes $\bm{y}\bm{z}^{\dagger}$ with
+$(\bm{y}\bm{z}^{\dagger})_{ij}=y_i z_j^*$.
+
+Important vector operations:
+\begin{align*}
+  \text{Addition / subtraction:}\quad
+      &\bm{x} = \bm{y}\pm\bm{z} \;\Rightarrow\; x_i = y_i\pm z_i.\\
+  \text{Scalar multiplication:}\quad
+      &\bm{x} = \gamma\bm{y} \;\Rightarrow\; x_i = \gamma y_i.\\
+  \text{Hadamard (element-wise) product:}\quad
+      &\bm{x} = \bm{y}\circ\bm{z} \;\Rightarrow\; x_i = y_i z_i.
+\end{align*}
+
+%----------------------------------------------------------------------
+\subsection{Matrices: definitions and algebraic operations}
+\label{sec:matrices}
+
+A general $n\times n$ matrix and its column-vector representation:
+\[
+  \bm{A}
+  = \begin{bmatrix}
+      a_{00} & a_{01} & \cdots & a_{0,n-1} \\
+      a_{10} & a_{11} & \cdots & a_{1,n-1} \\
+      \vdots & \vdots & \ddots & \vdots    \\
+      a_{n-1,0} & \cdots & \cdots & a_{n-1,n-1}
+    \end{bmatrix}
+  = \begin{bmatrix}
+      \bm{a}_0 & \bm{a}_1 & \cdots & \bm{a}_{n-1}
+    \end{bmatrix}.
+\]
+
+The fundamental algebraic operations are:
+\begin{align*}
+  \text{Scalar mult.:}\quad
+      &\bm{A}=\gamma\bm{B} \;\Rightarrow\; a_{ij} = \gamma b_{ij}.\\[2pt]
+  \text{Addition:}\quad
+      &\bm{A}=\bm{B}\pm\bm{C} \;\Rightarrow\; a_{ij} = b_{ij}\pm c_{ij}.\\[2pt]
+  \text{Matrix-vector product:}\quad
+      &\bm{y}=\bm{A}\bm{x} \;\Rightarrow\;
+          y_i = \sum_{j=0}^{n-1} a_{ij}\,x_j.\\[2pt]
+  \text{Matrix-matrix product:}\quad
+      &\bm{A}=\bm{B}\bm{C} \;\Rightarrow\;
+          a_{ij} = \sum_{k=0}^{n-1} b_{ik}\,c_{kj}.\\[2pt]
+  \text{Transpose:}\quad
+      &\bm{A}=\bm{B}^{T} \;\Rightarrow\; a_{ij} = b_{ji}.
+\end{align*}
+
+\paragraph{Inverse.}
+If $\bm{A}$ is square and nonsingular, its inverse satisfies
+$\bm{A}^{-1}\bm{A}=\bm{I}$, where $\bm{I}$ is the identity matrix.
+
+\paragraph{Hermitian conjugate.}
+The Hermitian conjugate $\bm{A}^{\dagger}$ is obtained by transposing
+$\bm{A}$ and complex-conjugating every element:
+$(A^{\dagger})_{ij} = a_{ji}^{*}$.
+
+\paragraph{Nonsingularity: equivalent characterisations.}
+For an $n\times n$ matrix $\bm{A}$ the following properties are all
+equivalent: (i)~$\bm{A}^{-1}$ exists; (ii)~$\bm{A}\bm{x}=\bm{0}$
+implies $\bm{x}=\bm{0}$; (iii)~the rows of $\bm{A}$ form a basis of
+$\mathbb{C}^n$; (iv)~the columns of $\bm{A}$ form a basis of
+$\mathbb{C}^n$; (v)~$\bm{A}$ is a product of elementary matrices;
+(vi)~zero is not an eigenvalue of $\bm{A}$.
+
+%----------------------------------------------------------------------
+\subsection{Special matrix types}
+\label{sec:specialmat}
+
+Table~\ref{tab:matrices} lists the matrix types that appear most
+frequently in quantum mechanics and many-body physics.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{lll}
+\toprule
+\textbf{Name} & \textbf{Defining relation} & \textbf{Element condition} \\
+\midrule
+Symmetric     & $\bm{A}=\bm{A}^{T}$
+              & $a_{ij}=a_{ji}$ \\
+Real orthogonal & $\bm{A}=(\bm{A}^{T})^{-1}$
+              & $\sum_k a_{ik}a_{jk}=\delta_{ij}$ \\
+Hermitian     & $\bm{A}=\bm{A}^{\dagger}$
+              & $a_{ij}=a_{ji}^{*}$ \\
+Unitary       & $\bm{A}=(\bm{A}^{\dagger})^{-1}$
+              & $\sum_k a_{ik}a_{jk}^{*}=\delta_{ij}$ \\
+Real matrix   & $\bm{A}=\bm{A}^{*}$
+              & $a_{ij}=a_{ij}^{*}$ \\
+\bottomrule
+\end{tabular}
+\caption{Important special matrix types and their defining properties.}
+\label{tab:matrices}
+\end{table}
+
+Structured (sparse) matrices important for numerical many-body work:
+\begin{itemize}
+  \item \textbf{Diagonal}: $a_{ij}=0$ for $i\neq j$.
+  \item \textbf{Upper/lower triangular}: $a_{ij}=0$ for $i>j$ / $i<j$.
+  \item \textbf{Upper/lower Hessenberg}: $a_{ij}=0$ for $i>j+1$ / $i<j+1$.
+  \item \textbf{Tridiagonal}: $a_{ij}=0$ for $|i-j|>1$.
+  \item \textbf{Banded with bandwidth $p$}: $a_{ij}=0$ for $|i-j|>p$.
+  \item Block upper/lower triangular matrices, and more.
+\end{itemize}
+
+\begin{notebox}
+\textbf{Many-body connection.} Hamiltonian matrices in shell-model
+(full configuration-interaction, FCI) calculations are typically large,
+sparse, and often banded.  Exploiting sparsity is essential to
+diagonalise them for systems with many single-particle states.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{Dirac bra-ket notation}
+\label{sec:braket}
+
+In quantum mechanics it is conventional to write state vectors using
+Dirac's bra-ket formalism.  A ket $\bket{x}$ is a column vector
+\[
+  \bket{x} =
+  \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_{n-1} \end{bmatrix},
+\]
+and the corresponding bra $\bbra{x}$ is the row vector (dual)
+\[
+  \bbra{x} =
+  \begin{bmatrix} x_0^{*} & x_1^{*} & \cdots & x_{n-1}^{*} \end{bmatrix},
+\]
+so $\bket{x}^{\dagger}=\bbra{x}$.  The \emph{inner product}
+(a complex number) is
+\[
+  \braket{y}{x} = \sum_{i=0}^{n-1} y_i^{*} x_i.
+\]
+Note that $\braket{x}{x}\geq 0$ is always real and non-negative,
+and $\braket{y}{x}^{*}=\braket{x}{y}$.
+
+The \emph{outer product} $\ketbra{x}{y}$ is an $n\times n$ matrix
+with elements $(\ketbra{x}{y})_{ij}=x_i y_j^{*}$:
+\[
+  \bket{x}\bbra{y} =
+  \begin{bmatrix}
+    x_0 y_0^{*} & x_0 y_1^{*} & \cdots & x_0 y_{n-1}^{*} \\
+    x_1 y_0^{*} & x_1 y_1^{*} & \cdots & x_1 y_{n-1}^{*} \\
+    \vdots      & \vdots      & \ddots & \vdots           \\
+    x_{n-1}y_0^{*} & \cdots & \cdots & x_{n-1}y_{n-1}^{*}
+  \end{bmatrix}.
+\]
+
+\paragraph{Worked example.}
+Let $\bket{x}=\begin{bmatrix}1-\imath \\ 2+\imath\end{bmatrix}$.
+Then
+\[
+  \braket{x}{x}
+  = (1+\imath)(1-\imath)+(2-\imath)(2+\imath)=2+5=7\in\mathbb{R}.
+\]
+For two different vectors
+$\bket{x}=\begin{bmatrix}-1\\2\imath\\1\end{bmatrix}$,
+$\bket{y}=\begin{bmatrix}1\\0\\\imath\end{bmatrix}$:
+$\braket{x}{y}=-1+\imath\neq\braket{y}{x}=-1-\imath$,
+confirming the rule $\braket{x}{y}^{*}=\braket{y}{x}$.
+
+%----------------------------------------------------------------------
+\subsection{Computational basis states and superposition}
+\label{sec:compbasis}
+
+A \emph{two-level system} (qubit) is described by two orthonormal
+basis states, which we label
+\[
+  \bket{0}=\begin{bmatrix}1\\0\end{bmatrix},
+  \qquad
+  \bket{1}=\begin{bmatrix}0\\1\end{bmatrix},
+  \qquad
+  \braket{0}{1}=0,\quad
+  \braket{0}{0}=\braket{1}{1}=1.
+\]
+These are the \emph{computational basis} states.  A general state is
+a \emph{superposition}
+\[
+  \bket{\psi} = \alpha\bket{0}+\beta\bket{1},
+\]
+where $\alpha=\braket{0}{\psi}$ and $\beta=\braket{1}{\psi}$ are
+the probability amplitudes, satisfying
+$|\alpha|^{2}+|\beta|^{2}=1$.
+
+The identity operator decomposes as a sum of outer products:
+\[
+  \bm{I}
+  = \sum_{i=0}^{1}\ketbra{i}{i}
+  = \begin{bmatrix}1&0\\0&0\end{bmatrix}
+   +\begin{bmatrix}0&0\\0&1\end{bmatrix}
+  = \begin{bmatrix}1&0\\0&1\end{bmatrix}.
+\]
+
+\paragraph{Projection operators.}
+The outer products
+\[
+  \bm{P}=\ketbra{0}{0}=\begin{bmatrix}1&0\\0&0\end{bmatrix},
+  \qquad
+  \bm{Q}=\ketbra{1}{1}=\begin{bmatrix}0&0\\0&1\end{bmatrix}
+\]
+are \emph{projection operators}.  They are \emph{idempotent}
+($\bm{P}^2=\bm{P}$, $\bm{Q}^2=\bm{Q}$), commute with each other
+($[\bm{P},\bm{Q}]=0$), and satisfy $\bm{P}\bm{Q}=0$,
+$\bm{P}+\bm{Q}=\bm{I}$.  Acting on a superposition state:
+\[
+  \bm{P}\bket{\psi}=\alpha\bket{0},\qquad
+  \bm{Q}\bket{\psi}=\beta\bket{1}.
+\]
+The measurement postulate states that a measurement on $\bket{\psi}$
+yields $\bket{0}$ with probability $|\alpha|^2$ and $\bket{1}$ with
+probability $|\beta|^2$.
+
+\begin{notebox}
+\textbf{Many-body connection.} In many-body theory, projection
+operators $\hat{P}$ (onto occupied states) and $\hat{Q}$ (onto
+unoccupied / virtual states) define the particle-hole decomposition
+that is fundamental to perturbation theory, Hartree-Fock theory, and
+coupled-cluster methods.
+\end{notebox}
+
+\paragraph{Density matrix.}
+The density matrix (density operator) of a pure state $\bket{\psi}$
+is the outer product
+\[
+  \bm{\rho} = \ketbra{\psi}{\psi}
+  = \begin{bmatrix}\alpha\alpha^{*}&\alpha\beta^{*}\\\beta\alpha^{*}&\beta\beta^{*}\end{bmatrix},
+\]
+with $\mathrm{tr}\,\bm{\rho}=|\alpha|^2+|\beta|^2=1$.  Density matrices
+generalise to mixed states and subsystems; they are central to quantum
+information theory and to reduced-density-matrix many-body methods.
+
+%----------------------------------------------------------------------
+\subsection{Pauli matrices}
+\label{sec:pauli}
+
+The three Pauli matrices are
+\[
+  \sigma_x = \begin{bmatrix}0&1\\1&0\end{bmatrix},\quad
+  \sigma_y = \begin{bmatrix}0&-\imath\\\imath&0\end{bmatrix},\quad
+  \sigma_z = \begin{bmatrix}1&0\\0&-1\end{bmatrix}.
+\]
+Key properties (easy to verify directly):
+\begin{itemize}
+  \item \textbf{Involutory}: $\sigma_x^2=\sigma_y^2=\sigma_z^2=\bm{I}$.
+  \item \textbf{Unitary}: $\sigma_\alpha^\dagger=\sigma_\alpha^{-1}$
+        (Hermitian conjugate equals inverse).
+  \item \textbf{Hermitian}: $\sigma_\alpha^\dagger=\sigma_\alpha$.
+  \item $\det(\sigma_\alpha)=-1$ for each $\alpha$.
+  \item \textbf{Commutation}: $[\sigma_x,\sigma_y]=2\imath\sigma_z$
+        (and cyclic permutations).
+\end{itemize}
+
+The Pauli matrices act on the computational basis as
+\[
+  \sigma_x\bket{0}=\bket{1},\quad
+  \sigma_x\bket{1}=\bket{0};
+  \qquad
+  \sigma_z\bket{0}=+\bket{0},\quad
+  \sigma_z\bket{1}=-\bket{1}.
+\]
+Acting on a superposition $\bket{\psi}=\alpha\bket{0}+\beta\bket{1}$:
+\[
+  \sigma_x\bket{\psi}=\beta\bket{0}+\alpha\bket{1},\qquad
+  \sigma_y\bket{\psi}=\imath\beta\bket{0}-\imath\alpha\bket{1}.
+\]
+
+\begin{notebox}
+\textbf{Quantum computing connection.} The Pauli matrices are the
+elementary single-qubit gates $X$, $Y$, $Z$.  Together with the
+Hadamard gate $H=(\sigma_x+\sigma_z)/\sqrt{2}$ and the phase gate $T$
+they form a universal single-qubit gate set.
+
+\textbf{Many-body connection.} Via the Jordan-Wigner transformation,
+the creation/annihilation operators of second quantisation are mapped
+directly onto products (strings) of Pauli matrices, enabling the
+representation of fermionic Hamiltonians on qubit registers.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{Orthonormal bases and the completeness relation}
+\label{sec:onb}
+
+A set of states $\{\bket{\phi_i}\}_{i=0}^{n-1}$ is an
+\emph{orthonormal basis} (ONB) of an $n$-dimensional Hilbert space if
+\[
+  \braket{\phi_j}{\phi_i}=\delta_{ij}
+  \quad\text{and}\quad
+  \sum_{i=0}^{n-1}\ketbra{\phi_i}{\phi_i}=\bm{I}
+  \quad\text{(completeness / resolution of the identity)}.
+\]
+Any state can then be expanded as
+$\bket{\psi}=\sum_i\braket{\phi_i}{\psi}\bket{\phi_i}$,
+with $\braket{\phi_i}{\psi}$ the projection (overlap) of $\bket{\psi}$
+onto $\bket{\phi_i}$.
+
+\begin{notebox}
+\textbf{Many-body connection.} The natural ONB in many-body physics
+is the set of single-particle eigenstates of the one-body Hamiltonian:
+\[
+  \hat{h}_0\bket{\phi_i}=\varepsilon_i\bket{\phi_i},
+  \qquad
+  \phi_i(\mathbf{r})=\braket{\mathbf{r}}{\phi_i}.
+\]
+This single-particle basis $\{\bket{\phi_i}\}$ is the starting point
+for virtually all many-body methods: Hartree-Fock, MBPT, FCI,
+coupled-cluster, and quantum Monte Carlo.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{Unitary transformations and preservation of orthogonality}
+\label{sec:unitary}
+
+An $n\times n$ matrix $\bm{U}$ is \emph{unitary} if
+$\bm{U}^{\dagger}\bm{U}=\bm{U}\bm{U}^{\dagger}=\bm{I}$, which means
+$\bm{U}^{-1}=\bm{U}^{\dagger}$.
+
+\paragraph{Orthogonality is preserved.}
+If $\{\bm{v}_i\}$ is an orthonormal set, $\bm{v}_j^T\bm{v}_i=\delta_{ij}$,
+then the transformed set $\bm{w}_i=\bm{U}\bm{v}_i$ is also orthonormal:
+\[
+  \bm{w}_j^T\bm{w}_i
+  =(\bm{U}\bm{v}_j)^T\bm{U}\bm{v}_i
+  =\bm{v}_j^T\underbrace{\bm{U}^T\bm{U}}_{=\,\bm{I}}\bm{v}_i
+  =\bm{v}_j^T\bm{v}_i=\delta_{ij}.
+\]
+In Dirac notation, if $\bket{\psi_i}=\sum_j u_{ij}\bket{\phi_j}$
+with $(u_{ij})$ unitary, then $\braket{\psi_j}{\psi_i}=\delta_{ij}$.
+
+\paragraph{Why only unitary transformations?}
+For the inner product (and hence the norm) to be preserved under
+$\bket{\phi}=\bm{U}\bket{\psi}$ we need
+\[
+  \braket{\phi}{\phi}
+  =\bbra{\psi}\bm{U}^{\dagger}\bm{U}\bket{\psi}
+  =\braket{\psi}{\psi}=1,
+\]
+which requires $\bm{U}^{\dagger}\bm{U}=\bm{I}$.  Since probabilities
+must sum to unity, this is a fundamental physical requirement.
+Unitary transformations are rotations (and reflections) in Hilbert
+space.  The fact that $\bm{U}^{-1}=\bm{U}^{\dagger}$ also means that
+every unitary transformation is perfectly reversible.
+
+\paragraph{Example: two-state rotation.}
+Given $\bket{\psi}=\alpha\bket{0}+\beta\bket{1}$ and a unitary $\bm{U}$,
+the rotated state
+$\bket{\phi}=\gamma\bket{0}+\delta\bket{1}=\bm{U}\bket{\psi}$ satisfies
+\[
+  \begin{bmatrix}\gamma\\\delta\end{bmatrix}
+  =\begin{bmatrix}u_{00}&u_{01}\\u_{10}&u_{11}\end{bmatrix}
+  \begin{bmatrix}\alpha\\\beta\end{bmatrix}.
+\]
+Since $|\alpha|^2+|\beta|^2=1$ and $\bm{U}$ is unitary,
+$|\gamma|^2+|\delta|^2=1$ automatically.
+
+\begin{notebox}
+\textbf{Many-body connection.} In Hartree-Fock theory the
+self-consistent field (SCF) procedure generates a sequence of unitary
+rotations of the single-particle basis.  The total HF energy is
+invariant under unitary rotations within the occupied or virtual
+subspace separately, which is the Thouless theorem.
+
+\textbf{Quantum computing connection.} Every quantum gate is a
+unitary matrix.  The evolution of a closed quantum system is described
+entirely by unitary operations; this is the quantum analogue of
+classical reversibility.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{Tensor products}
+\label{sec:tensor}
+
+The \emph{tensor (Kronecker) product} of two vectors $\bket{x}$
+(length $n$) and $\bket{y}$ (length $m$) is the vector of length $nm$:
+\[
+  \bket{x}\otimes\bket{y}
+  =\bket{xy}
+  =\begin{bmatrix}x_0 y_0\\ x_0 y_1\\ x_1 y_0\\ x_1 y_1\end{bmatrix}
+  \quad\text{(for } n=m=2\text{)}.
+\]
+For the computational basis:
+\[
+  \bket{0}\otimes\bket{0}=\bket{00}
+    =\begin{bmatrix}1\\0\\0\\0\end{bmatrix},\quad
+  \bket{0}\otimes\bket{1}=\bket{01}
+    =\begin{bmatrix}0\\1\\0\\0\end{bmatrix},\quad
+  \bket{1}\otimes\bket{0}=\bket{10}
+    =\begin{bmatrix}0\\0\\1\\0\end{bmatrix},\quad
+  \bket{1}\otimes\bket{1}=\bket{11}
+    =\begin{bmatrix}0\\0\\0\\1\end{bmatrix}.
+\]
+These four states form an ONB for the two-qubit Hilbert space
+$\mathbb{C}^4=\mathbb{C}^2\otimes\mathbb{C}^2$.
+
+The most general state of $N$ qubits is
+\[
+  \bket{\Psi}
+  = \sum_{i_1 i_2\cdots i_N}\Psi_{i_1 i_2\cdots i_N}
+    \bket{i_1}\otimes\bket{i_2}\otimes\cdots\otimes\bket{i_N},
+\]
+requiring $2^N$ complex amplitudes.  For $N\approx 300$ this
+exceeds the number of atoms in the observable universe — this is the
+\emph{exponential complexity} at the heart of quantum many-body physics.
+
+\begin{notebox}
+\textbf{Many-body connection.} The full $N$-particle Hilbert space
+is a tensor product of $N$ single-particle spaces.  The FCI method
+works in this exponentially large space; all approximate methods
+(HF, MBPT, coupled cluster, DMRG, \ldots) are strategies to identify
+the relevant low-dimensional submanifold.
+
+\textbf{Quantum computing connection.} A quantum computer with $N$
+qubits \emph{inherently} represents a $2^N$-dimensional state vector.
+This is both the source of its potential power and the reason that
+quantum simulation of many-body systems is a leading application.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{Spectral decomposition of Hermitian operators}
+\label{sec:spectral}
+
+A Hermitian operator $\bm{A}=\bm{A}^{\dagger}$ has the following key
+properties:
+\begin{enumerate}
+  \item All eigenvalues $\lambda_i$ are \emph{real}.
+  \item Eigenvectors belonging to distinct eigenvalues are
+        \emph{orthogonal}.
+  \item $\bm{A}$ is diagonalisable (it is a \emph{normal} operator,
+        $[\bm{A},\bm{A}^{\dagger}]=0$).
+\end{enumerate}
+
+The eigenvalue equation $\bm{A}\bket{\psi}=\lambda\bket{\psi}$
+has non-trivial solutions only when
+\[
+  \det(\bm{A}-\lambda\bm{I})=0
+  \quad\text{(characteristic polynomial).}
+\]
+
+\paragraph{Spectral decomposition.}
+Let $\{\bket{i}\}$ be the eigenbasis of $\bm{A}$ with eigenvalues
+$\lambda_i$.  Any state expands as
+$\bket{\psi}=\sum_i\alpha_i\bket{i}$.
+Using projection operators $\bm{P}_i=\ketbra{i}{i}$ we obtain:
+\[
+  \bm{A}\bket{\psi}
+  =\sum_i\alpha_i\lambda_i\bket{i}
+  =\sum_i\lambda_i\bm{P}_i\bket{\psi},
+\]
+from which, since this holds for any $\bket{\psi}$,
+\[
+  \boxed{\bm{A}=\sum_{i=0}^{n-1}\lambda_i\,\ketbra{i}{i}
+               =\sum_{i=0}^{n-1}\lambda_i\,\bm{P}_i.}
+\]
+This is the \emph{spectral decomposition}: the operator is expressed
+as a weighted sum of its projection operators.
+
+\paragraph{Example for a $2\times 2$ operator.}
+If $\bm{A}$ has eigenstates
+$\bket{\psi_a}=\alpha_0\bket{0}+\alpha_1\bket{1}$ and
+$\bket{\psi_b}=\beta_0\bket{0}+\beta_1\bket{1}$
+with eigenvalues $\lambda_a$, $\lambda_b$, then
+\[
+  \bm{A}
+  =\lambda_a\begin{bmatrix}|\alpha_0|^2 & \alpha_0\alpha_1^*\\
+                            \alpha_1\alpha_0^* & |\alpha_1|^2\end{bmatrix}
+  +\lambda_b\begin{bmatrix}|\beta_0|^2 & \beta_0\beta_1^*\\
+                            \beta_1\beta_0^* & |\beta_1|^2\end{bmatrix}.
+\]
+
+\begin{notebox}
+\textbf{Many-body connection.} The spectral decomposition is used
+every time one diagonalises a Hamiltonian matrix.  In FCI the full
+$N$-body Hamiltonian is diagonalised in the many-determinant basis;
+in Hartree-Fock the Fock matrix (a single-particle Hermitian operator)
+is diagonalised to find the optimal orbital basis.
+
+\textbf{Quantum computing connection.} Any unitary gate $\bm{U}$ can
+be written as $\bm{U}=e^{i\bm{H}}$ for a Hermitian generator $\bm{H}$.
+The spectral decomposition of $\bm{H}$ gives
+$\bm{U}=\sum_i e^{i\lambda_i}\ketbra{i}{i}$.
+This exponential relationship connects the physical Hamiltonian to the
+time-evolution operator $\hat{U}=e^{-i\hat{H}t/\hbar}$ and is the
+basis of the variational quantum eigensolver (VQE) and unitary
+coupled-cluster (UCC) ansatz.
+\end{notebox}
+
+%=============================================================================
+\newpage
+\section{From Linear Algebra to Many-Body Physics and Quantum Computing}
+\label{chap:mbphys}
+%=============================================================================
+
+\subsection{The many-body Hamiltonian}
+\label{sec:hamiltonian}
+
+Throughout these lectures we assume that the interacting part of the
+Hamiltonian can be approximated by a two-body interaction, so the full
+$N$-particle Hamiltonian takes the form
+\begin{equation}
+  \hat{H} = \hat{H}_0 + \hat{H}_I
+           = \sum_{i=1}^{N}\hat{h}_0(x_i)
+           + \sum_{i<j}^{N}\hat{v}(r_{ij}),
+  \label{eq:H}
+\end{equation}
+where $x_i$ denotes the coordinates (position and spin) of particle
+$i$, and $\hat{h}_0$ is the one-body part (kinetic energy plus
+external potential).  The one-body potential is typically a harmonic
+oscillator, a Coulomb interaction, or the self-consistent Hartree-Fock
+potential.
+
+The Hamiltonian~\eqref{eq:H} is \emph{symmetric} under permutation of
+any two particles: for any permutation operator $\hat{P}_{ij}$,
+$[\hat{H},\hat{P}_{ij}]=0$.
+
+%----------------------------------------------------------------------
+\subsection{The Pauli exclusion principle and antisymmetry}
+\label{sec:pauli_exc}
+
+Since we deal with fermions, the total wave function must be
+antisymmetric under interchange of any two particles.  The permutation
+operator $\hat{P}_{ij}$ interchanges particles $i$ and $j$:
+\[
+  \hat{P}_{ij}\Psi(x_1,\ldots,x_i,\ldots,x_j,\ldots,x_N)
+  = \beta\,\Psi(x_1,\ldots,x_i,\ldots,x_j,\ldots,x_N).
+\]
+The Pauli principle requires $\beta=-1$: the fermionic wave function
+changes sign under every transposition.
+
+The \emph{antisymmetrisation operator} is
+\[
+  \hat{A} = \frac{1}{N!}\sum_{p}(-)^{p}\hat{P},
+\]
+where $p$ counts the parity of each permutation.  It satisfies
+\begin{equation}
+  \hat{A}^2=\hat{A}
+  \quad\text{(idempotency)},\qquad
+  [\hat{H}_0,\hat{A}]=[\hat{H}_I,\hat{A}]=0.
+  \label{eq:Asq}
+\end{equation}
+
+%----------------------------------------------------------------------
+\subsection{Determinants}
+\label{sec:determinants}
+
+For an $n\times n$ matrix $\bm{A}$, the determinant is defined by
+summing over all $n!$ permutations of column indices:
+\[
+  \det(\bm{A})
+  =|\bm{A}|
+  =\sum_{i=1}^{n!}(-1)^{p_i}\hat{P}_i\,a_{11}a_{22}\cdots a_{nn},
+\]
+where $p_i$ is the number of transpositions needed to restore the
+natural ordering.  For $n=2$:
+\[
+  \begin{vmatrix}a_{11}&a_{12}\\a_{21}&a_{22}\end{vmatrix}
+  =a_{11}a_{22}-a_{12}a_{21}.
+\]
+
+\paragraph{Linearity in a column.}
+A fundamental property used repeatedly in Hartree-Fock theory is the
+linearity of the determinant in any single column:
+\[
+  \left|\begin{array}{cccc}
+    a_{11} & \cdots & \displaystyle\sum_{k=1}^{n}c_k b_{1k} & \cdots \\[4pt]
+    a_{21} & \cdots & \displaystyle\sum_{k=1}^{n}c_k b_{2k} & \cdots \\
+    \vdots & & \vdots & \\
+    a_{n1} & \cdots & \displaystyle\sum_{k=1}^{n}c_k b_{nk} & \cdots
+  \end{array}\right|
+  =\sum_{k=1}^{n}c_k
+  \left|\begin{array}{cccc}
+    a_{11} & \cdots & b_{1k} & \cdots \\
+    a_{21} & \cdots & b_{2k} & \cdots \\
+    \vdots & & \vdots & \\
+    a_{n1} & \cdots & b_{nk} & \cdots
+  \end{array}\right|.
+\]
+
+\paragraph{Product rule.}
+If every column of $\bm{A}$ is a linear combination of columns of
+$\bm{B}$, with coefficient matrix $\bm{C}$ (i.e.\ $a_{ij}=\sum_k
+b_{ik}c_{kj}$, meaning $\bm{A}=\bm{B}\bm{C}$), then
+\[
+  \det(\bm{A})=\det(\bm{B})\cdot\det(\bm{C}).
+\]
+Verify this for $n=2$ as an exercise.
+
+%----------------------------------------------------------------------
+\subsection{The Slater determinant}
+\label{sec:slaterdet}
+
+The antisymmetric $N$-particle wave function built from
+single-particle orbitals
+$\psi_\alpha,\psi_\beta,\ldots,\psi_\sigma$ is the
+\emph{Slater determinant}
+\begin{equation}
+  \Phi(x_1,\ldots,x_N;\alpha,\ldots,\sigma)
+  =\frac{1}{\sqrt{N!}}
+  \begin{vmatrix}
+    \psi_\alpha(x_1) & \psi_\alpha(x_2) & \cdots & \psi_\alpha(x_N)\\
+    \psi_\beta(x_1)  & \psi_\beta(x_2)  & \cdots & \psi_\beta(x_N)\\
+    \vdots & \vdots & \ddots & \vdots\\
+    \psi_\sigma(x_1) & \psi_\sigma(x_2) & \cdots & \psi_\sigma(x_N)
+  \end{vmatrix},
+  \label{eq:SlatDet}
+\end{equation}
+where $x_i$ encodes both spatial coordinates and spin of particle $i$.
+
+The Slater determinant automatically enforces:
+\begin{itemize}
+  \item Antisymmetry under particle exchange (Pauli principle): swapping two
+        rows reverses the sign.
+  \item No two fermions in the same state: two identical rows give
+        $\det=0$.
+\end{itemize}
+
+An equivalent expression using the antisymmetriser is
+$\Phi=\sqrt{N!}\,\hat{A}\,\Phi_H$, where
+$\Phi_H=\psi_\alpha(x_1)\psi_\beta(x_2)\cdots\psi_\sigma(x_N)$
+is the (unsymmetrised) \emph{Hartree product}.
+
+%----------------------------------------------------------------------
+\subsection{Basis changes and the Slater determinant under unitary rotations}
+\label{sec:basischange}
+
+It is standard practice to expand the single-particle functions in a
+fixed orthogonal basis $\{\phi_\lambda\}$ and vary the coefficients.
+The new orbitals are
+\begin{equation}
+  \psi_p^{\rm new}(x)=\sum_{\lambda}C_{p\lambda}\,\phi_\lambda(x).
+  \label{eq:newbasis}
+\end{equation}
+If the matrix $(C_{p\lambda})$ is unitary, the new basis is
+automatically orthonormal.  In bra-ket notation:
+\[
+  \bket{p}=\sum_\lambda C_{p\lambda}\bket{\lambda},
+  \qquad
+  \braket{p}{q}=\delta_{pq}.
+\]
+The Slater determinant in the new basis becomes
+\[
+  \frac{1}{\sqrt{N!}}
+  \begin{vmatrix}
+    \displaystyle\sum_\lambda C_{p\lambda}\phi_\lambda(x_1) & \cdots \\
+    \vdots & \ddots
+  \end{vmatrix}
+  = \det(\bm{C})\cdot\det(\bm{\Phi}),
+\]
+by the determinant product rule.  Since $\bm{C}$ is unitary,
+$|\det(\bm{C})|=1$, so the new Slater determinant differs from the
+old one only by an unobservable global phase.
+
+\begin{notebox}
+\textbf{Many-body connection.} This is the algebraic foundation of the
+freedom to perform unitary rotations within the occupied subspace in
+Hartree-Fock theory without changing the many-body state or the total
+energy.  It also underlies the equivalence of different choices of
+occupied orbitals in CI and coupled-cluster calculations.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{Expectation values with a Slater determinant}
+\label{sec:expval}
+
+Using $\hat{A}^2=\hat{A}$ and orthogonality of the single-particle
+functions, the expectation value of the Hamiltonian~\eqref{eq:H}
+with the Slater determinant~\eqref{eq:SlatDet} factorises cleanly.
+
+\paragraph{One-body contribution.}
+\[
+  \langle\Phi|\hat{H}_0|\Phi\rangle
+  = \sum_{\mu=1}^{N}\langle\mu|\hat{h}_0|\mu\rangle,
+  \quad\text{where}\quad
+  \langle\mu|\hat{h}_0|\mu\rangle
+  =\int\psi_\mu^*(x)\hat{h}_0\psi_\mu(x)\,\dd x.
+\]
+
+\paragraph{Two-body contribution.}
+\begin{align*}
+  \langle\Phi|\hat{H}_I|\Phi\rangle
+  =\frac{1}{2}\sum_{\mu=1}^{N}\sum_{\nu=1}^{N}
+  \Big[
+    &\underbrace{\int\psi_\mu^*(x_i)\psi_\nu^*(x_j)
+       \hat{v}(r_{ij})\psi_\mu(x_i)\psi_\nu(x_j)\,\dd x_i\dd x_j}_{
+       \text{direct (Hartree) term:}\;\langle\mu\nu|\hat{v}|\mu\nu\rangle}\\[4pt]
+    -&\underbrace{\int\psi_\mu^*(x_i)\psi_\nu^*(x_j)
+       \hat{v}(r_{ij})\psi_\nu(x_i)\psi_\mu(x_j)\,\dd x_i\dd x_j}_{
+       \text{exchange (Fock) term:}\;\langle\mu\nu|\hat{v}|\nu\mu\rangle}
+  \Big].
+\end{align*}
+The antisymmetrised two-body matrix element is
+$\langle\mu\nu|\hat{v}|\mu\nu\rangle_{\rm AS}
+ =\langle\mu\nu|\hat{v}|\mu\nu\rangle-\langle\mu\nu|\hat{v}|\nu\mu\rangle$.
+
+\paragraph{The Hartree-Fock energy functional.}
+Combining both contributions:
+\begin{equation}
+  E[\Phi]
+  =\sum_{\mu=1}^{N}\langle\mu|\hat{h}_0|\mu\rangle
+  +\frac{1}{2}\sum_{\mu,\nu=1}^{N}
+   \langle\mu\nu|\hat{v}|\mu\nu\rangle_{\rm AS}.
+  \label{eq:EHF}
+\end{equation}
+Using the expansion~\eqref{eq:newbasis}, this becomes
+\begin{equation}
+  E[\Psi]
+  =\sum_{i=1}^{N}\sum_{\alpha\beta}C_{i\alpha}^*C_{i\beta}
+   \langle\alpha|\hat{h}_0|\beta\rangle
+  +\frac{1}{2}\sum_{i,j}\sum_{\alpha\beta\gamma\delta}
+   C_{i\alpha}^*C_{j\beta}^*C_{i\gamma}C_{j\delta}
+   \langle\alpha\beta|\hat{v}|\gamma\delta\rangle_{\rm AS}.
+  \label{eq:EHFnew}
+\end{equation}
+Minimising~\eqref{eq:EHFnew} with respect to the coefficients
+$(C_{p\lambda})$, subject to the unitarity constraint, yields the
+Hartree-Fock equations.  From a linear algebra standpoint, these are
+a self-consistent eigenvalue problem: diagonalise the Fock matrix
+(which itself depends on the solution through the density matrix),
+then iterate until convergence.
+
+\begin{notebox}
+\textbf{Summary.} The entire Hartree-Fock method is a story in
+linear algebra: expand states in an ONB (Section~\ref{sec:onb}),
+apply a unitary transformation (Section~\ref{sec:unitary}), use the
+product rule for determinants (Section~\ref{sec:determinants}), and
+solve a Hermitian eigenvalue problem (Section~\ref{sec:spectral}).
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{Quantum computing: the gate model and its linear-algebra foundation}
+\label{sec:qcgates}
+
+A quantum computer is a well-controlled quantum many-body system.  The
+abstract \emph{gate-based} model is defined as follows.  Starting from
+$N$ qubits initialised in $\bket{\Psi}^{(0)}=\bket{00\cdots0}$, the
+state evolves by successive applications of unitary gates:
+\[
+  \bket{\Psi}^{(n+1)}=\hat{U}^{(n)}\bket{\Psi}^{(n)},\qquad
+  \hat{U}^{(n)}=T\exp\!\left(-\imath\int_{t_n}^{t_{n+1}}\hat{H}(t)\,\dd t\right).
+\]
+A \emph{single-qubit gate} acts on qubit $a$ via a $2\times 2$ unitary:
+\[
+  \Psi_{i_1\cdots i_N}^{(n+1)}
+  =\sum_{i'_a}U^{(n)}_{i_a i'_a}\,
+   \Psi_{i_1\cdots i_{a-1}i'_a i_{a+1}\cdots i_N}^{(n)}.
+\]
+A \emph{two-qubit gate} acts on qubits $a$, $b$ via a $4\times 4$
+unitary.  Standard examples are the Pauli gates $X,Y,Z$ (see
+Section~\ref{sec:pauli}), the Hadamard gate
+\[
+  H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix},
+\]
+the phase gate
+$T=\begin{pmatrix}e^{\imath\pi/8}&0\\0&e^{-\imath\pi/8}\end{pmatrix}$,
+and the two-qubit CNOT (controlled-NOT):
+\[
+  C_X=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix}.
+\]
+When qubit $a$ is \emph{measured}, the result $\alpha\in\{0,1\}$
+occurs with probability
+\[
+  P_\alpha
+  =\sum_{i_1\cdots\hat{\imath}_a\cdots i_N}
+   \left|\Psi_{i_1\cdots\alpha\cdots i_N}^{(n)}\right|^2,
+\]
+after which the state collapses to the corresponding projected state.
+
+\begin{notebox}
+\textbf{In a nutshell.} Quantum computing is a restricted form of
+linear algebra: matrix-vector multiplications with special unitary
+matrices (gates) on exponentially large vectors (wave functions).
+The challenge — shared with classical many-body physics — is that
+only a tiny fraction of the $2^N$-dimensional space is physically
+relevant; identifying that subspace is the core problem in both fields.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\subsection{The exponential-dimension problem and why it matters}
+\label{sec:expdim}
+
+The state of $N$ spin-$\frac12$ particles requires $2^N$ complex
+numbers to describe.  For $N\approx 300$, $2^{300}\gg 10^{82}$
+(the estimated number of atoms in the observable universe).
+
+How do physicists actually compute?
+\begin{enumerate}
+  \item \textbf{Clever approximations}: Bethe ansatz, perturbation
+        theory, mean-field approximations.
+  \item \textbf{Computer simulations}: DFT, quantum Monte Carlo, FCI,
+        coupled cluster, DMRG.
+  \item \textbf{Restricting to tractable subsystems}: systems where a
+        single-particle basis is a good approximation.
+\end{enumerate}
+
+For a quantum circuit of depth $D$ acting on $N$ qubits, the
+accessible subspace has dimension $O(DN)$, vastly smaller than $2^N$.
+For $N=100$ and $D=10^6$, this subspace still has $10^{20}$ times
+fewer degrees of freedom than the full Hilbert space.  The question
+is whether the \emph{physically relevant} states lie in this reachable
+subspace — a central open problem in quantum many-body theory and
+quantum computing alike (see, e.g.,
+\href{https://www.nature.com/articles/s42254-025-00813-9}{LaRocca~et~al.}).
+
+The variational quantum eigensolver (VQE) algorithm tackles this
+problem by using a parametrised quantum circuit as an ansatz for the
+ground state, minimising the expectation value of the Hamiltonian
+classically.  This is the quantum-computing analogue of the
+variational principle that underlies Hartree-Fock and coupled-cluster
+theory: the ground state energy satisfies
+\[
+  E_0\leq E[\Phi]=\int\Phi^*\hat{H}\Phi\,\dd\bm{\tau}
+\]
+for any normalised trial state $\Phi$, with equality only at the exact
+ground state.
+
+%=============================================================================
+\section{Exercises}
+\label{sec:exercises}
+%=============================================================================
+
+\subsection*{Chapter 1: Linear algebra fundamentals}
+\addcontentsline{toc}{subsection}{Chapter 1: Linear algebra fundamentals}
+
+\begin{enumerate}
+
+\item \textbf{Inner and outer products.}
+  Let $\bm{u}=\begin{bmatrix}1-\imath & 2+\imath\end{bmatrix}^T$ and
+  $\bm{v}=\begin{bmatrix}1 & \imath\end{bmatrix}^T$.
+  (a) Compute $\bm{u}^\dagger\bm{v}$ and $\bm{v}^\dagger\bm{u}$.
+  (b) Verify $(\bm{u}^\dagger\bm{v})^*=\bm{v}^\dagger\bm{u}$.
+  (c) Compute the outer product $\bm{u}\bm{v}^\dagger$ and
+      show $\mathrm{tr}(\bm{u}\bm{v}^\dagger)=\bm{v}^\dagger\bm{u}$.
+
+\item \textbf{Special matrix types.}
+  For each matrix below, identify which type(s) from
+  Table~\ref{tab:matrices} it belongs to, and verify your answer using
+  the element conditions in the table:
+  (a) $\sigma_x$;\;
+  (b) $\sigma_z$;\;
+  (c) the Hadamard gate $H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$.
+
+\item \textbf{Pauli algebra.}
+  (a) Prove $\sigma_x^2=\sigma_y^2=\sigma_z^2=\bm{I}$.
+  (b) Compute all commutators $[\sigma_i,\sigma_j]$ for
+      $i,j\in\{x,y,z\}$.
+  (c) Which Pauli matrix has $\bket{0}$ and $\bket{1}$ as its
+      eigenbasis? What are the eigenvalues?
+
+\item \textbf{Projection operators.}
+  (a) Verify that $\bm{P}=\ketbra{0}{0}$ satisfies $\bm{P}^2=\bm{P}$
+      and $\det(\bm{P})=0$.
+  (b) Show $\bm{P}+\bm{Q}=\bm{I}$ and $\bm{P}\bm{Q}=0$.
+  (c) What does $\bm{P}\bket{\psi}$ equal for
+      $\bket{\psi}=\alpha\bket{0}+\beta\bket{1}$?
+
+\item \textbf{Commutator identities.}
+  Prove the following for arbitrary operators $\hat{A}$, $\hat{B}$,
+  $\hat{C}$:
+  (a) $[\hat{A}+\hat{B},\hat{C}]=[\hat{A},\hat{C}]+[\hat{B},\hat{C}]$;
+  (b) $[\hat{A},\hat{B}\hat{C}]=[\hat{A},\hat{B}]\hat{C}+\hat{B}[\hat{A},\hat{C}]$;
+  (c) $[\hat{A},[\hat{B},\hat{C}]]+[\hat{B},[\hat{C},\hat{A}]]+[\hat{C},[\hat{A},\hat{B}]]=0$
+      (Jacobi identity).
+
+\item \textbf{Shared eigenstates.}
+  Prove that if $[\hat{A},\hat{B}]=0$ then $\hat{A}$ and $\hat{B}$
+  share a common eigenbasis.
+
+\item \textbf{Tensor products.}
+  (a) Write out all four two-qubit basis states $\bket{00}$,
+      $\bket{01}$, $\bket{10}$, $\bket{11}$ as column vectors of
+      length 4 and verify they are mutually orthogonal.
+  (b) Compute $C_X\bket{00}$, $C_X\bket{01}$, $C_X\bket{10}$,
+      $C_X\bket{11}$.  Explain the action of the CNOT gate in words.
+
+\item \textbf{Unitary transformation.}
+  Let $\bm{U}$ be a $2\times 2$ unitary matrix and
+  $\{\bket{v_0},\bket{v_1}\}$ an ONB.  Prove that
+  $\{\bm{U}\bket{v_0},\bm{U}\bket{v_1}\}$ is also an ONB.
+
+\item \textbf{Spectral decomposition.}
+  (a) Find the eigenvalues and normalised eigenvectors of $\sigma_x$.
+  (b) Write the spectral decomposition $\sigma_x=\sum_i\lambda_i\ketbra{i}{i}$
+      explicitly.
+  (c) Verify that $\sigma_x\bket{\psi_a}=\lambda_a\bket{\psi_a}$ for
+      each eigenvector.
+
+\end{enumerate}
+
+\subsection*{Chapter 2: Many-body physics and quantum computing}
+\addcontentsline{toc}{subsection}{Chapter 2: Many-body physics and quantum computing}
+
+\begin{enumerate}
+
+\item \textbf{Determinant product rule.}
+  For $2\times 2$ matrices $\bm{B}$ and $\bm{C}$, define
+  $a_{ij}=\sum_k b_{ik}c_{kj}$.  Show by direct calculation that
+  $\det(\bm{A})=\det(\bm{B})\det(\bm{C})$.
+
+\item \textbf{Slater determinant: $N=2$.}
+  Write the Slater determinant for two electrons in orbitals
+  $\psi_\alpha$ and $\psi_\beta$.
+  (a) Show it is antisymmetric under particle exchange.
+  (b) Show it vanishes if $\psi_\alpha=\psi_\beta$.
+
+\item \textbf{Antisymmetriser.}
+  Verify for $N=2$ that $\hat{A}^2=\hat{A}$ and that
+  $[\hat{H}_0,\hat{A}]=0$ when $\hat{H}_0=\hat{h}_0(x_1)+\hat{h}_0(x_2)$.
+
+\item \textbf{Basis change of the Slater determinant.}
+  With the expansion $\psi_p=\sum_\lambda C_{p\lambda}\phi_\lambda$
+  and a $2\times 2$ unitary $\bm{C}$, show that the two-particle
+  Slater determinant in the new basis equals $\det(\bm{C})\det(\bm{\Phi})$
+  and that $|\det(\bm{C})|=1$ leaves the physics unchanged.
+
+\item \textbf{Hartree-Fock energy.}
+  For a two-electron system with orbitals $\psi_\alpha$ and
+  $\psi_\beta$, write out the HF energy functional~\eqref{eq:EHF}
+  explicitly, identifying the kinetic, direct (Hartree), and exchange
+  (Fock) contributions.
+
+\item \textbf{Variational principle.}
+  Show that $E[\Phi]\geq E_0$ for any normalised trial state $\Phi$,
+  where $E_0$ is the exact ground state energy.  Use the spectral
+  decomposition of $\hat{H}$ in its eigenbasis.
+
+\item \textbf{Exponential dimension.}
+  How many complex numbers are needed to store the full $N$-particle
+  wave function for $N=10$, $20$, $50$?  A modern GPU can perform
+  roughly $10^{14}$ floating-point operations per second.  Estimate
+  how long a single matrix-vector multiplication in the $N=50$ space
+  would take.
+
+\item \textbf{One-qubit gates numerically.}
+  Write a short Python function that represents $\bket{0}$ and
+  $\bket{1}$ as NumPy arrays and applies each Pauli matrix,
+  the Hadamard gate $H$, and the phase gate $T$ in turn.
+  Verify the action of $X$ (spin flip), $Z$ (phase flip) and
+  $H\bket{0}=(\bket{0}+\bket{1})/\sqrt{2}$ (creation of a
+  superposition state).
+
+\item \textbf{Pauli gate as a quantum NOT.}
+  Explain why $\sigma_x$ is the quantum analogue of the classical NOT
+  gate.  What is the difference between the classical and quantum
+  cases when the input is a superposition
+  $\alpha\bket{0}+\beta\bket{1}$?
+
+\item \textbf{VQE and the variational principle.}
+  The variational quantum eigensolver minimises
+  $E(\bm{\theta})=\langle\Psi(\bm{\theta})|\hat{H}|\Psi(\bm{\theta})\rangle$
+  over circuit parameters $\bm{\theta}$.
+  (a) Explain why $E(\bm{\theta})\geq E_0$ for any $\bm{\theta}$.
+  (b) Describe the connection to the Hartree-Fock variational principle.
+  (c) What determines the quality of the approximation in VQE
+      compared to FCI?
+
+\end{enumerate}
+
+\end{document}
