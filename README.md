@@ -65,7 +65,7 @@ There are many excellent textbooks on many-body physics. In addition to to ourn 
      - Gell-Man and Low's theorem
      - Adiabatic switching
      - Derivation of expressions for different parts of Hamiltonians, 1b, 2b, 3b etc
-     - Wigner-Jordan transformation and 2nd quantization
+     - Jordan-Wigner transformation and 2nd quantization
      - Baker-Campbell-Hausdorf (BCH)
      - Suzuki-Trotter as an approximation to BCH
 - FCI, diagrams and particle-hole representations
