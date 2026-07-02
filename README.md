@@ -30,6 +30,14 @@ depending on the background and interests of the participants.
 * _Phone_: +47-48257387
 * _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ470
 
+
+* _Name_: Cecilie Glittum
+* _Email_: cecilie.glittum@fys.uio.no
+#* _Phone_: +47-48257387
+* _Office_: Department of Physics, University of Oslo, Eastern wing, room FØ455
+
+
+
 ## Practicalities
 
 1. Four lectures per week, Fall semester, 10 ECTS. Thursday 1215pm-2pm and Friday 1015-12pm FØ257 The lectures will be recorded and linked to this site;
