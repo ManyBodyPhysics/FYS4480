@@ -40,9 +40,10 @@ depending on the background and interests of the participants.
 
 ## Practicalities
 
-1. Four lectures per week, Fall semester, 10 ECTS. Thursday 1215pm-2pm and Friday 1015-12pm FØ257 The lectures will be recorded and linked to this site;
+1. Four lectures per week, Fall semester, 10 ECTS. Thursday 1015am-12pm and Friday 1015-12pm FØ257 The lectures will be recorded and linked to this site;
 2. Two hours of exercise sessions for work on projects and exercises, Friday 1215pm-2pm, FØ257;
-3. Two projects which are graded and count 30% each of the final grade and a final oral exam that counts 40% of the final grade;
+3. Two project assignments that each count 25 % towards the final grade (50 % in total).
+Final oral or written exam which counts 50 % towards the final grade. An oral or written exam is decided based on the number of students who register for the course;
 4. Weekly assignments which are not graded;
 5. The course is offered as a so-called _cloned_ course,  FYS4480 at the Master of Science level and FYS9480 as a PhD course;
 6. Weekly email with summary of activities will be mailed to all participants;
