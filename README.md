@@ -101,9 +101,9 @@ There are many excellent textbooks on many-body physics. In addition to to ourn 
 - Green's function theory and parquet theory
 - Similarity renormalization theory
 - Monte Carlo methods
-     - Taught in FYS4411/9411
+     - Normally taught in FYS4411/9411 but integrated in the present set of lecture notes
 - Quantum computing
-     - VQE and unitary CC, taught in FYS5419/9419
+     - VQE, unitary CC, QAOA, HHL and other algorithms are taught in FYS5419/9419
 - Time-dependent many-body theory
 - Applications to different systems like the electron gas, Lipkin model, Pairing model, infinite nuclear matter, and more
 
