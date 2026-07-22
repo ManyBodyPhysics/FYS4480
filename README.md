@@ -51,7 +51,7 @@ Final oral or written exam which counts 50 % towards the final grade. An oral or
 ## Textbooks
 
 _Recommended textbooks_:
-There are many excellent textbooks on many-body physics. In addition to to ourn own collection of lecture notes, we will use material from the following  texts
+There are many excellent textbooks on many-body physics. In addition to our own collection of lecture notes, we will use material from the following  texts
 - Dickhoff and Van Neck at https://www.worldscientific.com/worldscibooks/10.1142/5804#t=aboutBook
 - Szabo and Ostlund at for example https://www.amazon.com/Modern-Quantum-Chemistry-Introduction-Electronic/dp/0486691861?asin=0486691861&revisionId=&format=4&depth=1
 - Shavitt and Bartlett at https://www.cambridge.org/core/books/manybody-methods-in-chemistry-and-physics/D12027E4DAF75CE8214671D842C6B80C
