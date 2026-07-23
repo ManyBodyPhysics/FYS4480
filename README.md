@@ -18,10 +18,11 @@ rules, microscopic mean-field theories (Hartree-Fock and Kohn-Sham
 theories), many-body perturbation theory, large-scale diagonalization
 methods, coupled cluster theory, algorithms from quantum computing,
 and Green's function approaches. Both fermionic and bosonic systems
-are discussed, depending on the interests of the participants, although the default focus is on fermionic systems..
-Selected physical systems from various fields such as quantum
-chemistry, solid-state physics and nuclear physics are studied,
-depending on the background and interests of the participants.
+are discussed, depending on the interests of the participants,
+although the default focus is on fermionic systems.  Selected
+physical systems from various fields such as quantum chemistry,
+solid-state physics and nuclear physics are studied, depending on the
+background and interests of the participants.
 
 
 ## Instructor information
