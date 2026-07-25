@@ -1,0 +1,1969 @@
+
+% rewrite the jacobi example
+
+\chapter{Eigensystems}\label{chap:eigenvalue} 
+
+
+
+\section{Introduction}
+We present here two methods for solving directly eigenvalue problems using similarity transformations. One is the familiar Jacobi rotation method while the second method is based on transforming the matrix to tridiagonal form using Householder's algorithm. We discuss also so-called power methods and conclude with a discussion of iterative algorithms. These are particularly interesting for eigenvalue problems of large dimnesionality.
+
+Together with linear equations and least squares, the third major problem in matrix computations
+deals with the algebraic eigenvalue problem. Here we limit our attention
+to the symmetric case. 
+We focus in particular on two similarity transformations, the Jacobi method, 
+the famous QR algoritm with Householder's method for obtaining a triangular matrix and 
+Francis' algorithm for the final eigenvalues. Our presentation follows closely that of 
+Golub and Van Loan, see Ref.~\cite{golub1996}.
+
+
+
+\section{Eigenvalue problems}
+%
+Let us consider the matrix {\bf A} of dimension n. The eigenvalues of
+{\bf A} are defined through the matrix equation 
+%
+\begin{equation}
+\label{eq10}
+   {\bf A}{\bf x^{(\nu)}} = \lambda^{(\nu)}{\bf x^{(\nu)}},
+\end{equation}
+%
+where $\lambda^{(\nu)}$ are the eigenvalues and ${\bf x^{(\nu)}}$ the
+corresponding eigenvectors.
+Unless otherwise stated, when we use the wording eigenvector we mean the
+right eigenvector. The left eigenvector is defined as 
+\[
+{\bf x^{(\nu)}}_L{\bf A} = \lambda^{(\nu)}{\bf x^{(\nu)}}_L
+\]
+The above right eigenvector problem is equivalent to a set of $n$ equations with $n$ unknowns
+$x_i$
+%
+\begin{eqnarray} 
+  a_{11}x_1 +a_{12}x_2 +\dots + a_{1n}x_n=&\lambda x_1 \nonumber\\
+  a_{21}x_1 + a_{22}x_2 + \dots+ a_{2n}x_n=&\lambda x_2\nonumber \\
+                                   \dots & \dots \nonumber \\  
+  a_{n1}x_1 + a_{n2}x_2 + \dots + a_{nn}x_n=&\lambda x_n. \nonumber
+\end{eqnarray}
+%
+We can rewrite Eq.~(\ref{eq10}) as
+
+\[
+   \left( {\bf A}-\lambda^{(\nu)} I \right) {\bf x^{(\nu)}} = 0,
+\]
+%
+with $I$ being the unity matrix. This equation provides
+a solution to the problem if and only if the determinant
+is zero, namely
+%
+\[
+   \left| {\bf A}-\lambda^{(\nu)}{\bf I}\right| = 0,
+\]
+%
+which in turn means that the determinant is a polynomial
+of degree $n$ in $\lambda$. The eigenvalues of a matrix 
+${\bf A}\in {\mathbb{C}}^{n\times n}$
+are thus the $n$ roots of its characteristic polynomial 
+\be
+P(\lambda) = det(\lambda{\bf I}-{\bf A}),
+\ee
+or 
+\be
+  P(\lambda)= \prod_{i=1}^{n}\left(\lambda_i-\lambda\right).
+\ee
+The set of these roots is called the spectrum and is denoted as
+$\lambda({\bf A})$.
+If $\lambda({\bf A})=\left\{\lambda_1,\lambda_2,\dots ,\lambda_n\right\}$ then we have
+\[
+   det({\bf A})= \lambda_1\lambda_2\dots\lambda_n,
+\]
+the trace of ${\bf A}$ 
+is $Tr({\bf A})=\lambda_1+\lambda_2+\dots+\lambda_n$.
+
+
+
+Procedures based on these ideas can be used if only a small fraction
+of all eigenvalues and eigenvectors are required or if the 
+matrix is on a tridiagonal form, but the standard
+approach to solve Eq.~(\ref{eq10}) is 
+to perform a given number of similarity transformations
+so as to render the original matrix ${\bf A}$
+in either a diagonal form or as a tridiagonal matrix 
+which then can be be diagonalized by computational very effective
+procedures.
+
+The first method leads us to 
+Jacobi's method whereas the second one is given 
+by Householder's algorithm for tridiagonal transformations.
+We will discuss both methods below.
+%
+
+\section{Similarity transformations}
+
+In the present discussion we assume that our matrix is real and symmetric, that is 
+${\bf A}\in {\mathbb{R}}^{n\times n}$.
+The matrix ${\bf A}$ has $n$ eigenvalues
+$\lambda_1\dots \lambda_n$ (distinct or not). Let ${\bf D}$ be the
+diagonal matrix with the eigenvalues on the diagonal
+%   
+\[
+{\bf D}=    \left( \begin{array}{ccccccc} \lambda_1 & 0 & 0   & 0    & \dots  &0     & 0 \\
+                                0 & \lambda_2 & 0 & 0    & \dots  &0     &0 \\
+                                0   & 0 & \lambda_3 & 0  &0       &\dots & 0\\
+                                \dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+                                0   & \dots & \dots & \dots  &\dots       &\lambda_{n-1} & \\
+                                0   & \dots & \dots & \dots  &\dots       &0 & \lambda_n
+
+             \end{array} \right).
+\]
+%
+If ${\bf A}$ is real and symmetric then there exists a real orthogonal matrix ${\bf S}$ such that
+\[
+     {\bf S}^T {\bf A}{\bf S}= \mathrm{diag}(\lambda_1,\lambda_2,\dots ,\lambda_n),
+\]
+and for $j=1:n$ we have ${\bf A}{\bf S}(:,j) = \lambda_j {\bf S}(:,j)$.  See chapter 8 of Ref.~\cite{golub1996} 
+for proof.
+
+To obtain the eigenvalues of ${\bf A}\in {\mathbb{R}}^{n\times n}$,
+the strategy is to
+perform a series of similarity transformations on the original
+matrix ${\bf A}$, in order to reduce it either into a  diagonal form as above
+or into a  tridiagonal form. 
+
+We say that a matrix ${\bf B}$ is a similarity
+transform  of  ${\bf A}$ if 
+%
+\[
+     {\bf B}= {\bf S}^T {\bf A}{\bf S}, \hspace*{1cm} \mbox{where} 
+     \hspace*{1cm}  {\bf S}^T{\bf S}={\bf S}^{-1}{\bf S} ={\bf I}.
+\]
+%
+The importance of a similarity transformation lies in the fact that
+the resulting matrix has the same
+eigenvalues, but the eigenvectors are in general different. To prove this we
+start with  the eigenvalue problem and a similarity transformed matrix ${\bf B}$.
+%
+\[
+   {\bf Ax}=\lambda{\bf x} \hspace{1cm} \mathrm{and}\hspace{1cm} 
+    {\bf B}= {\bf S}^T {\bf A}{\bf S}.
+\]
+%
+We multiply the first equation on the left by ${\bf S}^T$ and insert
+${\bf S}^{T}{\bf S} ={\bf I}$ between ${\bf A}$ and ${\bf x}$. Then we get
+%
+\begin{equation}
+   ({\bf S^TAS})({\bf S^Tx})=\lambda{\bf S^Tx} ,
+\end{equation}  
+%
+which is the same as 
+\[
+   {\bf B} \left ( {\bf S^Tx} \right ) = \lambda \left ({\bf S^Tx}
+                             \right ).
+\]
+%
+The variable  $\lambda$ is an eigenvalue of ${\bf B}$ as well, but with
+eigenvector ${\bf S^Tx}$.
+ 
+The basic philosophy is to
+%
+\begin{itemize}
+%
+\item either apply subsequent similarity transformations so that 
+%
+\begin{equation}
+   {\bf S_N^T\dots S_1^TAS_1\dots S_N }={\bf D} ,
+\end{equation}
+%
+\item  or apply subsequent similarity transformations so that 
+ {\bf A} becomes tridiagonal. Thereafter, techniques for obtaining
+eigenvalues from tridiagonal matrices can be used.
+\end{itemize}
+Let us look at the first method, better known as Jacobi's method or Given's rotations.
+
+\section{Jacobi's method}
+
+Consider an  ($n\times n$) orthogonal transformation matrix 
+%
+\[
+{\bf S}=
+ \left( 
+   \begin{array}{cccccccc}
+   1  &    0  & \dots &   0        &    0  & \dots & 0 &   0       \\
+   0  &    1  & \dots &   0        &    0  & \dots & 0 &   0       \\
+\dots & \dots & \dots & \dots      & \dots & \dots & 0 & \dots     \\ 
+   0  &    0  & \dots & cos\theta  &    0  & \dots & 0 & sin\theta \\
+   0  &    0  & \dots &   0        &    1  & \dots & 0 &   0       \\
+\dots & \dots & \dots & \dots      & \dots & \dots & 0 & \dots     \\
+   0  &    0  & \dots &   0        &    0  & \dots & 1 &   0       \\ 
+   0  &    0  & \dots & -sin\theta & \dots & \dots & 0 &cos\theta  
+   \end{array}
+ \right)
+\]
+%
+with property ${\bf S^{T}} = {\bf S^{-1}}$.
+It performs a plane rotation around an angle $\theta$ in the Euclidean 
+$n-$dimensional space. It means that the matrix elements that differ
+from zero are given by
+%
+\[
+    s_{kk}= s_{ll}=cos\theta, 
+    s_{kl}=-s_{lk}= -sin\theta, 
+    s_{ii}=-s_{ii}=1\hspace{0.5cm} i\ne k \hspace{0.5cm} i \ne l,
+\]
+%
+A similarity transformation 
+%
+\[
+     {\bf B}= {\bf S}^T {\bf A}{\bf S},
+\]
+%
+results in 
+\begin{eqnarray*}
+b_{ii} &=& a_{ii}, i \ne k, i \ne l \\
+b_{ik} &=& a_{ik}cos\theta - a_{il}sin\theta , i \ne k, i \ne l \\
+b_{il} &=& a_{il}cos\theta + a_{ik}sin\theta , i \ne k, i \ne l \nonumber\\
+b_{kk} &=& a_{kk}cos^2\theta - 2a_{kl}cos\theta sin\theta +a_{ll}sin^2\theta\nonumber\\
+b_{ll} &=& a_{ll}cos^2\theta +2a_{kl}cos\theta sin\theta +a_{kk}sin^2\theta\nonumber\\
+b_{kl} &=& (a_{kk}-a_{ll})cos\theta sin\theta +a_{kl}(cos^2\theta-sin^2\theta)\nonumber 
+\end{eqnarray*}
+%
+The angle $\theta$ is  arbitrary. The recipe is to choose  $\theta$ so that all
+non-diagonal matrix elements $b_{kl}$ become zero.  
+
+The algorithm is then quite simple. We perform a number of iterations until
+the sum over the squared non-diagonal matrix elements are less than
+a prefixed  test (ideally equal zero). 
+The algorithm is more or less foolproof for all
+real symmetric matrices, but becomes much slower than methods based
+on tridiagonalization for large matrices. 
+
+
+The main idea is thus to reduce systematically the 
+norm of the 
+off-diagonal matrix elements  of a matrix  ${\bf A}$ 
+\[
+\mathrm{off}({\bf A}) = \sqrt{\sum_{i=1}^n\sum_{j=1,j\ne i}^n a_{ij}^2}.
+\]
+ To demonstrate the algorithm, we consider the  simple $2\times 2$  similarity transformation
+of the full matrix. The matrix is symmetric, we single out $ 1\le k < l \le n$  and 
+use the abbreviations $c=\cos\theta$ and $s=\sin\theta$ to obtain
+
+\[
+ \left( \begin{array}{cc} b_{kk} & 0 \\
+                          0 & b_{ll} \\\end{array} \right)  =  \left( \begin{array}{cc} c & -s \\
+                          s &c \\\end{array} \right)  \left( \begin{array}{cc} a_{kk} & a_{kl} \\
+                          a_{lk} &a_{ll} \\\end{array} \right) \left( \begin{array}{cc} c & s \\
+                          -s & c \\\end{array} \right).
+\]
+We require that the non-diagonal matrix elements $b_{kl}=b_{lk}=0$, implying that 
+\[
+a_{kl}(c^2-s^2)+(a_{kk}-a_{ll})cs = b_{kl} = 0.
+\]
+If $a_{kl}=0$ one sees immediately that $\cos\theta = 1$ and $\sin\theta=0$.
+
+The Frobenius norm of an orthogonal transformation is always preserved. The Frobenius norm is defined
+as 
+\[
+||{\bf A}||_F =  \sqrt{\sum_{i=1}^n\sum_{j=1}^n |a_{ij}|^2}.
+\]
+This means that for our $2\times 2$ case  we have
+\[
+2a_{kl}^2+a_{kk}^2+a_{ll}^2 = b_{kk}^2+b_{ll}^2,
+\]
+which leads to
+\[
+\mathrm{off}({\bf B})^2 = ||{\bf B}||_F^2-\sum_{i=1}^nb_{ii}^2=\mathrm{off}({\bf A})^2-2a_{kl}^2,
+\]
+since 
+\[
+||{\bf B}||_F^2-\sum_{i=1}^nb_{ii}^2=||{\bf A}||_F^2-\sum_{i=1}^na_{ii}^2+(a_{kk}^2+a_{ll}^2 -b_{kk}^2-b_{ll}^2).
+\]
+This result means that  the matrix ${\bf A}$ moves closer to diagonal form  for each transformation.
+ 
+Defining the quantities $\tan\theta = t= s/c$ and
+\[\tau = \frac{a_{ll}-a_{kk}}{2a_{kl}},
+\]
+we obtain the quadratic equation
+\[
+t^2+2\tau t-1= 0,
+\]
+resulting in 
+\[
+  t = -\tau \pm \sqrt{1+\tau^2},
+\]
+and $c$ and $s$ are easily obtained via
+\[
+   c = \frac{1}{\sqrt{1+t^2}},
+\]
+and $s=tc$.  Choosing $t$ to be the smaller of the roots ensures that $|\theta| \le \pi/4$ and has the 
+effect of minimizing the difference between the matrices ${\bf B}$ and ${\bf A}$ since
+\[
+||{\bf B}-{\bf A}||_F^2=4(1-c)\sum_{i=1,i\ne k,l}^n(a_{ik}^2+a_{il}^2) +\frac{2a_{kl}^2}{c^2}.
+\]
+The main idea is thus to reduce systematically the 
+norm of the 
+off-diagonal matrix elements  of a matrix  ${\bf A}$ 
+\[
+\mathrm{off}({\bf A}) = \sqrt{\sum_{i=1}^n\sum_{j=1,j\ne i}^n a_{ij}^2}.
+\]
+
+
+
+To implement the Jacobi algorithm we can proceed as follows
+\begin{svgraybox}
+\begin{itemize}
+   \item Choose a tolerance $\epsilon$, making it a small number, typically $10^{-8}$ or smaller.
+   \item Setup a \lstinline{while}-test  where one compares the norm of the newly computed off-diagonal
+matrix elements  \[ \mathrm{off}({\bf A}) = \sqrt{\sum_{i=1}^n\sum_{j=1,j\ne i}^n a_{ij}^2}   >  \epsilon. \]
+This is however a very time-comsuming test which can be replaced by the simpler test
+\[
+\mathrm{max}(a_{ij}^2)   >  \epsilon.
+\]
+   \item Now choose the matrix elements $a_{kl}$ so that we have those with largest value, that is
+$|a_{kl}|=\mathrm{max}_{i\ne j} |a_{ij}|$.
+\item Compute thereafter $\tau = (a_{ll}-a_{kk})/2a_{kl}$, $\tan\theta$, $\cos\theta$ and
+$\sin\theta$.
+\item Compute thereafter the similarity transformation for this set of values $(k,l)$, obtaining the 
+new matrix ${\bf B}= {\bf S}(k,l,\theta)^T {\bf A}{\bf S}(k,l,\theta)$.
+   \item Continue till 
+\[
+\mathrm{max}(a_{ij}^2)   \le  \epsilon.
+\]
+\end{itemize}
+\end{svgraybox}
+
+The convergence rate of the Jacobi method is however poor, one needs typically $3n^2-5n^2$ rotations and each rotation 
+requires $4n$ operations, resulting in a total of $12n^3-20n^3$ operations in order to zero out non-diagonal matrix elements.
+Although the classical Jacobi algorithm performs  badly compared with methods based on tridiagonalization,
+it is easy to parallelize. 
+
+The slow convergence is related to the fact that when a new rotation is performed, matrix elements which were previously zero, may change to non-zero values in the next rotation. To see this, consider the following simple example.
+
+We specialize to a symmetric $3\times 3 $ matrix ${\bf A}$.
+We start the process as follows (assuming that $a_{23}=a_{32}$ is the largest non-diagonal matrix element)
+with $c=\cos{\theta}$ and $s=\sin{\theta}$
+%
+\[
+ {\bf B} =
+      \left( \begin{array}{ccc} 
+                1 & 0 & 0    \\
+                0 & c & -s     \\
+                0 & s & c
+             \end{array} \right)\left( \begin{array}{ccc} 
+                a_{11} & a_{12} & a_{13}    \\
+                a_{21} & a_{22} & a_{23}     \\
+                a_{31} & a_{32} & a_{33}
+             \end{array} \right)
+              \left( \begin{array}{ccc} 
+                1 & 0 & 0    \\
+                0 & c & s     \\
+                0 & -s & c
+             \end{array} \right).
+\]
+We will choose the angle $\theta$ in order to have $b_{23}=b_{32}=0$.
+We get the new symmetric matrix
+\[
+ {\bf B} =\left( \begin{array}{ccc} 
+                a_{11} & a_{12}c -a_{13}s& a_{12}s+a_{13}c    \\
+                a_{12}c -a_{13}s & a_{22}c^2+a_{33}s^2 -2a_{23}sc& (a_{22}-a_{33})sc +a_{23}(c^2-s^2)     \\
+                a_{12}s+a_{13}c & (a_{22}-a_{33})sc +a_{23}(c^2-s^2) & a_{22}s^2+a_{33}c^2 +2a_{23}sc
+             \end{array} \right).
+\]
+Note that $a_{11}$ is unchanged! As it should.
+
+We have then
+\begin{eqnarray*}
+b_{11} &=& a_{11} \\
+b_{12} &=& a_{12}cos\theta - a_{13}sin\theta , 1 \ne 2, 1 \ne 3 \\
+b_{13} &=& a_{13}cos\theta + a_{12}sin\theta , 1 \ne 2, 1 \ne 3 \nonumber\\
+b_{22} &=& a_{22}cos^2\theta - 2a_{23}cos\theta sin\theta +a_{33}sin^2\theta\nonumber\\
+b_{33} &=& a_{33}cos^2\theta +2a_{23}cos\theta sin\theta +a_{22}sin^2\theta\nonumber\\
+b_{23} &=& (a_{22}-a_{33})cos\theta sin\theta +a_{23}(cos^2\theta-sin^2\theta)\nonumber 
+\end{eqnarray*}
+We will fix the angle $\theta$ so that $b_{23}=0$.
+
+
+We get then a new matrix
+\[
+ {\bf B} =\left( \begin{array}{ccc} 
+                b_{11} & b_{12}& b_{13}    \\
+                b_{12}& b_{22}& 0    \\
+                b_{13}& 0& a_{33}
+             \end{array} \right).
+\]
+We repeat assuming that $b_{12}$ is the largest non-diagonal matrix element and get a
+new matrix 
+\[
+ {\bf C} =
+      \left( \begin{array}{ccc} 
+                c & -s & 0    \\
+                s & c & 0     \\
+                0 & 0 & 1
+             \end{array} \right)\left( \begin{array}{ccc} 
+                b_{11} & b_{12} & b_{13}    \\
+                b_{12} & b_{22} & 0     \\
+                b_{13} & 0 & b_{33}
+             \end{array} \right)
+              \left( \begin{array}{ccc} 
+                c & s & 0    \\
+                -s & c & 0     \\
+                0 & 0 & 1
+             \end{array} \right).
+\]
+We continue this process till all non-diagonal matrix elements are zero.
+It is easy to convince oneself 
+that when performing the above operations, the matrix element 
+$b_{23}$ which was previously set to zero may become different from zero.  This is one of the problems which slows
+down the Jacobi procedure. We leave this experience to the reader in form of a large numerical project at the
+end of this chapter.
+
+An implementation of the above algorithm, normally referred to as the classical Jacobi algorithm, is exposed
+partially in the code here.
+\begin{lstlisting}[title={\url{http://folk.uio.no/compphys/programs/chapter07/cpp/jacobi.cpp}}]
+/*
+    Jacobi's method for finding eigenvalues
+    eigenvectors of the symetric matrix A.
+
+    The eigenvalues of A will be on the diagonal
+    of A, with eigenvalue i being A[i][i].
+    The j-th component of the i-th eigenvector
+    is stored in R[i][j].
+ 
+    A: input matrix (n x n)
+    R: empty matrix for eigenvectors (n x n)
+    n: dimention of matrices
+*/
+#include <iostream>
+#include <cmath>
+#include "jacobi.h"
+
+void jacobi_method ( double ** A, double ** R, int n )
+{
+//  Setting up the eigenvector matrix
+  for ( int i = 0; i < n; i++ ) {
+    for ( int j = 0; j < n; j++ ) {
+      if ( i == j ) {
+	R[i][j] = 1.0;
+      } else {
+	R[i][j] = 0.0;
+      }
+    }
+  }
+
+  int k, l;
+  double epsilon = 1.0e-8;
+  double max_number_terations = (double) n * (double) n * (double) n;
+  int iterations = 0;
+  double max_offdiag = maxoffdiag ( A, &k, &l, n );
+
+  while ( fabs(max_offdiag) > epsilon && (double) iterations < max_number_iterations ) {
+    max:offdiag = maxoffdiag ( A, &k, &l, n );
+    rotate ( A, R, k, l, n );
+    iterations++;
+  }
+  std::cout << "Number of iterations: " << iterations << "\n";
+  return;
+}
+//  Function to find the maximum matrix element. Can you figure out a more
+//  elegant algorithm?
+double maxoffdiag ( double ** A, int * k, int * l, int n )
+{
+  double max = 0.0;
+
+  for ( int i = 0; i < n; i++ ) {
+    for ( int j = i + 1; j < n; j++ ) {
+      if ( fabs(A[i][j]) > max ) {
+	max = fabs(A[i][j]);
+	*l = i;
+	*k = j;
+      }
+    }
+  }
+  return max;
+}
+//  Function to find the values of cos and sin
+void rotate ( double ** A, double ** R, int k, int l, int n )
+{
+  double s, c;
+  if ( A[k][l] != 0.0 ) {
+    double t, tau;
+    tau = (A[l][l] - A[k][k])/(2*A[k][l]);
+    if ( tau > 0 ) {
+      t = 1.0/(tau + sqrt(1.0 + tau*tau);
+    } else {
+      t = -1.0/( -tau + sqrt(1.0 + tau*tau);
+    }
+    
+    c = 1/sqrt(1+t*t);
+    s = c*t;
+  } else {
+    c = 1.0;
+    s = 0.0;
+  }
+  double a_kk, a_ll, a_ik, a_il, r_ik, r_il;
+  a_kk = A[k][k];
+  a_ll = A[l][l];
+  // changing the matrix elements with indices k and l
+  A[k][k] = c*c*a_kk - 2.0*c*s*A[k][l] + s*s*a_ll;
+  A[l][l] = s*s*a_kk + 2.0*c*s*A[k][l] + c*c*a_ll;
+  A[k][l] = 0.0;  // hard-coding of the zeros
+  A[l][k] = 0.0;
+  // and then we change the remaining elements
+  for ( int i = 0; i < n; i++ ) {
+    if ( i != k && i != l ) {
+      a_ik = A[i][k];
+      a_il = A[i][l];
+      A[i][k] = c*a_ik - s*a_il;
+      A[k][i] = A[i][k];
+      A[i][l] = c*a_il + s*a_ik;
+      A[l][i] = A[i][l];
+    }
+    // Finally, we compute the new eigenvectors
+    r_ik = R[i][k];
+    r_il = R[i][l];
+    R[i][k] = c*r_ik - s*r_il;
+    R[i][l] = c*r_il + s*r_ik;
+  }
+  return;
+}
+\end{lstlisting}
+
+%\subsection{Parallel Jacobi algorithm}
+%In preparation for 2010.
+
+\section{Similarity Transformations with  Householder's method}
+%
+In this case the diagonalization is performed in two steps:
+First, the matrix is transformed into tridiagonal form by the
+Householder similarity transformation. Secondly, the tridiagonal
+matrix is then diagonalized. The reason for this two-step process is that
+diagonalizing a tridiagonal matrix is computational much faster than
+the corresponding diagonalization of a general symmetric matrix. Let
+us discuss the two steps in more detail.
+
+%
+\subsection{The Householder's method for tridiagonalization}
+%
+The first step  consists in finding
+an orthogonal  matrix ${\bf S}$ which is the product of $(n-2)$ orthogonal matrices 
+%
+\[ 
+   {\bf S}={\bf S}_1{\bf S}_2\dots{\bf S}_{n-2},
+\]
+%
+each of which successively transforms one row and one column of ${\bf A}$ into the 
+required tridiagonal form. Only $n-2$ transformations are required, since the last two
+elements are already in tridiagonal form. In order to determine each ${\bf S_i}$ let us
+see what happens after the first multiplication, namely,
+%
+\[
+    {\bf S}_1^T{\bf A}{\bf S}_1=    \left( \begin{array}{ccccccc} a_{11} & e_1 & 0   & 0    & \dots  &0     & 0 \\
+                                e_1 & a'_{22} &a'_{23}  & \dots    & \dots  &\dots &a'_{2n} \\
+                                0   & a'_{32} &a'_{33}  & \dots    & \dots  &\dots &a'_{3n} \\
+                                0   & \dots &\dots & \dots    & \dots  &\dots & \\
+                                0   & a'_{n2} &a'_{n3}  & \dots    & \dots  &\dots &a'_{nn} \\
+
+             \end{array} \right) 
+\]
+%
+where the primed quantities represent a matrix ${\bf A}'$ of dimension
+$n-1$ which will subsequentely be transformed by ${\bf S_2}$.
+The factor  $e_1$ is a possibly non-vanishing element. The next
+transformation produced by ${\bf S_2}$ has the same effect as  ${\bf
+S_1}$ but now on the submatirx ${\bf A^{'}}$ only
+%
+\[
+   \left ({\bf S}_{1}{\bf S}_{2} \right )^{T} {\bf A}{\bf S}_{1} {\bf S}_{2}
+ = \left( \begin{array}{ccccccc} a_{11} & e_1 & 0   & 0    & \dots  &0     & 0 \\
+                                e_1 & a'_{22} &e_2  & 0   & \dots  &\dots &0 \\
+                                0   & e_2 &a''_{33}  & \dots    & \dots  &\dots &a''_{3n} \\
+                                0   & \dots &\dots & \dots    & \dots  &\dots & \\
+                                0   & 0 &a''_{n3}  & \dots    & \dots  &\dots &a''_{nn} \\
+
+             \end{array} \right) 
+\]
+%
+Note that the effective size of the matrix on which we apply the transformation reduces
+for every new step. In the previous Jacobi method each similarity
+transformation is in principle performed on the full size of the original matrix.
+ 
+After a series of such transformations, we end with a set of diagonal
+matrix elements
+%
+\[
+  a_{11}, a'_{22}, a''_{33}\dots a^{n-1}_{nn},
+\]
+%
+and off-diagonal matrix elements 
+%
+\[
+   e_1, e_2,e_3,  \dots, e_{n-1}.
+\]
+%
+The resulting matrix reads
+%
+\[
+{\bf S}^{T} {\bf A} {\bf S} = 
+    \left( \begin{array}{ccccccc} a_{11} & e_1 & 0   & 0    & \dots  &0     & 0 \\
+                                e_1 & a'_{22} & e_2 & 0    & \dots  &0     &0 \\
+                                0   & e_2 & a''_{33} & e_3  &0       &\dots & 0\\
+                                \dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+                                0   & \dots & \dots & \dots  &\dots       &a^{(n-1)}_{n-1n-1} & e_{n-1}\\
+                                0   & \dots & \dots & \dots  &\dots       &e_{n-1} & a^{(n-1)}_{nn}
+
+             \end{array} \right) .
+\]
+%
+
+It remains to find a recipe for determining the transformation ${\bf S}_n$.
+We illustrate the method for ${\bf S}_1$ which we assume takes the form
+%
+\[
+    {\bf S_{1}} = \left( \begin{array}{cc} 1 & {\bf 0^{T}} \\
+                              {\bf 0}& {\bf P} \end{array} \right),
+\]
+%
+with ${\bf 0^{T}}$ being a zero row vector, ${\bf 0^{T}} = \{0,0,\cdots\}$
+of dimension $(n-1)$. The matrix ${\bf P}$  is symmetric 
+with dimension ($(n-1) \times (n-1)$) satisfying
+${\bf P}^2={\bf I}$  and ${\bf P}^T={\bf P}$. 
+A possible choice which fulfills the latter two requirements is 
+%
+\[
+    {\bf P}={\bf I}-2{\bf u}{\bf u}^T,
+\]
+%
+where ${\bf I}$ is the $(n-1)$ unity matrix and ${\bf u}$ is an $n-1$
+column vector with norm ${\bf u}^T{\bf u}=1$, that is  its inner product.
+
+ Note that ${\bf u}{\bf u}^T$ is an outer product giving a
+dimension ($(n-1) \times (n-1)$). 
+Each matrix element of ${\bf P}$ then reads
+%
+\[
+   P_{ij}=\delta_{ij}-2u_iu_j,
+\]
+%
+where $i$ and $j$ range from $1$ to $n-1$. Applying the transformation  
+${\bf S}_1$ results in 
+\[
+   {\bf S}_1^T{\bf A}{\bf S}_1 =  \left( \begin{array}{cc} a_{11} & ({\bf Pv})^T \\
+                              {\bf Pv}& {\bf A}' \end{array} \right) ,
+\]
+%
+where ${\bf v^{T}} = \{a_{21}, a_{31},\cdots, a_{n1}\}$ and {\bf P}
+must satisfy (${\bf Pv})^{T} = \{k, 0, 0,\cdots \}$. Then
+%
+\be
+    {\bf Pv} = {\bf v} -2{\bf u}( {\bf u}^T{\bf v})= k {\bf e},
+    \label{eq:palpha}
+\ee
+with ${\bf e^{T}} = \{1,0,0,\dots 0\}$.
+Solving the latter equation gives us ${\bf u}$ and thus the needed transformation
+${\bf P}$. We do first however need to compute the scalar $k$ by taking the scalar
+product of the last equation with its transpose and using the fact that ${\bf P}^2={\bf I}$.
+We get then
+%
+\[
+   ({\bf Pv})^T{\bf Pv} = k^{2} = {\bf v}^T{\bf v}=
+   |{\bf v}|^2 = \sum_{i=2}^{n}a_{i1}^2,
+\]
+%
+which determines the constant $ k = \pm v$. Now we can rewrite Eq.\ (\ref{eq:palpha})
+as 
+\[
+    {\bf v} - k{\bf e} = 2{\bf u}( {\bf u}^T{\bf v}),
+\]
+and taking the scalar product of this equation with itself and obtain
+\be
+    2( {\bf u}^T{\bf v})^2=(v^2\pm a_{21}v),
+    \label{eq:pmalpha}
+\ee
+which finally determines 
+\[
+    {\bf u}=\frac{{\bf v}-k{\bf e}}{2( {\bf u}^T{\bf v})}.
+\]
+In solving Eq.\ (\ref{eq:pmalpha}) great care has to be exercised so as to choose
+those values which make the right-hand largest in order to avoid loss of numerical
+precision. 
+The above steps are then repeated for every transformations till we have a 
+tridiagonal matrix suitable for obtaining the eigenvalues.  
+It is not so difficult to implement Householder's algorithm, as demonstrated by the following code.
+\begin{lstlisting}[title={\url{http://folk.uio.no/compphys/programs/chapter07/cpp/householder.cpp}}]
+    /*
+    ** The function
+    **                householder()
+    ** perform a Housholder reduction of a real symmetric matrix
+    ** a[][]. On output a[][] is replaced by the orthogonal matrix 
+    ** effecting the transformation. d[] returns the diagonal elements
+    ** of the tri-diagonal matrix, and e[] the off-diagonal elements, 
+    ** with e[0] = 0.
+    */
+void householder(double **a, int n, double *d, double *e)
+{
+   register int    l,k,j,i;
+   double          scale,hh,h,g,f;
+
+   for(i = n - 1; i > 0; i--) {
+      l = i-1;
+      h = scale= 0.0;
+      if(l > 0) {
+         for(k = 0; k <= l; k++)
+            scale += fabs(a[i][k]);
+            if(scale == 0.0)               // skip transformation
+               e[i] = a[i][l];
+            else {
+            for(k = 0; k <= l; k++) {
+               a[i][k] /= scale;          // used scaled a's for transformation
+               h       += a[i][k]*a[i][k];
+            }
+            f       = a[i][l];
+            g       = (f >= 0.0 ? -sqrt(h) : sqrt(h));
+            e[i]    = scale*g;
+            h      -= f * g;
+            a[i][l] = f - g;
+            f       = 0.0;
+
+            for(j = 0;j <= l;j++) {
+               a[j][i] = a[i][j]/h;       // can be omitted if eigenvector not wanted
+               g       = 0.0; 
+               for(k = 0; k <= j; k++) {
+                  g += a[j][k]*a[i][k];
+               }
+               for(k = j+1; k <= l; k++)
+                  g += a[k][j]*a[i][k];
+               e[j]=g/h;
+               f += e[j]*a[i][j];
+            }
+            hh=f/(h+h);
+            for(j = 0; j <= l;j++) {
+               f = a[i][j];
+               e[j]=g=e[j]-hh*f;
+               for(k = 0; k <= j; k++)
+                  a[j][k] -= (f*e[k]+g*a[i][k]);
+            }
+         }  // end k-loop
+      }  // end if-loop for l > 1
+      else {
+         e[i]=a[i][l];
+      }
+      d[i]=h;
+   }  // end i-loop
+   d[0]  = 0.0;
+   e[0]  = 0.0;
+
+         /* Contents of this loop can be omitted if eigenvectors not
+	 ** wanted except for statement d[i]=a[i][i];
+         */
+
+   for(i = 0; i < n; i++) {
+      l = i-1;
+      if(d[i]) {
+         for(j = 0; j <= l; j++) {
+            g= 0.0;
+            for(k = 0; k <= l; k++) {
+               g += a[i][k] * a[k][j];
+            }
+            for (k = 0; k <= l; k++) {
+               a[k][j] -= g * a[k][i];
+            }
+         }
+      }
+      d[i]    = a[i][i];
+      a[i][i] = 1.0;
+      for(j = 0; j <= l; j++)  {
+         a[j][i]=a[i][j] = 0.0;
+      }
+   }
+} // End: function householder()
+\end{lstlisting}
+
+
+\subsection{Diagonalization of a Tridiagonal Matrix via Francis' Algorithm}
+%
+The matrix is now transformed into tridiagonal form and the last
+step is to transform it into a diagonal matrix giving the eigenvalues
+on the diagonal\footnote{This section is not complete it will be finished end of fall 2009.}. 
+
+Before we discuss the algorithms, we note that the eigenvalues of a 
+tridiagonal matrix can be obtained using the characteristic polynomial 
+\[
+P(\lambda) = det(\lambda{\bf I}-{\bf A})= \prod_{i=1}^{n}\left(\lambda_i-\lambda\right),
+\]
+with the matrix
+\[
+{\bf A}-\lambda{\bf I}= \left( det\begin{array}{ccccccc} d_1-\lambda & e_1 & 0   & 0    & \dots  &0     & 0 \\
+                                e_1 & d_2-\lambda & e_2 & 0    & \dots  &0     &0 \\
+                                0   & e_2 & d_3-\lambda & e_3  &0       &\dots & 0\\
+                                \dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+                                0   & \dots & \dots & \dots  &\dots       &d_{N_{\mathrm{step}}-2}-\lambda & e_{N_{\mathrm{step}}-1}\\
+                                0   & \dots & \dots & \dots  &\dots       &e_{N_{\mathrm{step}}-1} & d_{N_{\mathrm{step}}-1}-\lambda
+
+             \end{array} \right)
+\] 
+We can solve this equation in a recursive manner. 
+We let $P_k(\lambda)$ be the value of $k$ subdeterminant of the above matrix of dimension
+$n\times n$. The polynomial $P_k(\lambda)$ is clearly a polynomial of degree $k$.
+Starting with $P_1(\lambda)$ we have $P_1(\lambda)=d_1-\lambda$. The next polynomial reads
+$P_2(\lambda)=(d_2-\lambda)P_1(\lambda)-e_1^2$. By expanding the determinant for $P_k(\lambda)$ 
+in terms of the minors of the $n$th column we arrive at the recursion relation
+\[ 
+   P_k(\lambda)=(d_k-\lambda)P_{k-1}(\lambda)-e_{k-1}^2P_{k-2}(\lambda).
+\]
+Together with the starting values $P_1(\lambda)$ and $P_2(\lambda)$ and good root searching methods
+we arrive at an efficient computational scheme for finding the roots of $P_n(\lambda)$. 
+However, for large matrices this algorithm is rather inefficient and time-consuming.
+
+The programs  which performs these transformations are
+$\mbox{matrix} \quad {\bf A} \longrightarrow \mbox{tridiagonal matrix}
+ \longrightarrow \mbox{diagonal matrix}$
+\begin{svgraybox}
+\begin{center} 
+\begin{tabular}{ll}
+%
+C: &void householder(double $**$a, int n, double d[], double e[])\\
+   &void francis(double d[], double[], int n, double $**$z)\\
+Fortran:  &CALL householder(a, n, d, e)\\
+          &CALL francis(d, e, n, z)
+\end{tabular}
+\end{center}
+\end{svgraybox}
+The last step through the function {\sl francis()} involves several technical details. Let
+us describe the basic idea in terms of a four-dimensional example.
+For more details, see Ref.~\cite{golub1996}, in particular chapters seven 
+and eight.
+ 
+The current tridiagonal matrix takes the form
+%
+\[
+ {\bf A} =
+      \left( \begin{array}{cccc} 
+                d_{1} & e_{1} & 0     &  0    \\
+                e_{1} & d_{2} & e_{2} &  0    \\
+                 0    & e_{2} & d_{3} & e_{3} \\
+                 0    &   0   & e_{3} & d_{4} 
+             \end{array} \right).
+\]
+%
+As a first observation, if any of the elements $e_{i}$ are zero the
+matrix can be separated into smaller pieces before
+diagonalization. Specifically, if $e_{1} = 0$ then $d_{1}$ is an
+eigenvalue. Thus, let us introduce  a transformation ${\bf S_{1}}$
+%
+\[
+ {\bf S_{1}} =
+      \left( \begin{array}{cccc} 
+                \cos \theta & 0 & 0 & \sin \theta \\
+                   0        & 0 & 0 &      0      \\
+                   0        & 0 & 0 &      0      \\
+               -\sin \theta & 0 & 0 & \cos \theta 
+             \end{array} \right)
+\]
+%
+Then the similarity transformation 
+%
+\[
+{\bf S_{1}^{T} A  S_{1}} = {\bf A'} = 
+      \left( \begin{array}{cccc}
+              d'_{1} & e'_{1} &   0    &   0   \\
+              e'_{1}  & d_{2}  & e_{2}  &   0   \\
+                0    & e_{2}  & d_{3}  & e'{3} \\
+                0    &   0    & e'_{3} & d'_{4}
+             \end{array} \right)
+\]
+%
+produces a matrix where the primed elements in ${\bf A'}$ have been
+changed by the transformation whereas the unprimed elements are unchanged.
+If we now choose $\theta$ to
+give the element $a_{21}^{'} = e^{'}= 0$ then we have the first
+eigenvalue  $= a_{11}^{'} = d_{1}^{'}$.
+
+This procedure can be continued on the remaining three-dimensional
+submatrix for the next eigenvalue. Thus after four transformations    
+we have the wanted diagonal form.
+%\section{The QR algorithm for finding eigenvalues}
+%In preparation for 2011
+\section{Power Methods}
+We assume $\hat{A}$ can be diagonalized.
+Let $\lambda_1$, $\lambda_2$, $\dots$, $\lambda_n$ be the 
+$n$ eigenvalues (counted with multiplicity) of $\hat{A}$ 
+and let $v_1$, $v_2$, $\dots$, $v_n$ be the corresponding eigenvectors. We assume that $\lambda_1$ is the dominant eigenvalue, 
+so that $|\lambda_1| > | \lambda_j |$ for $j > 1$.
+
+The initial vector $b_0$ can be written:
+\[
+    b_0 = c_{1}v_{1} + c_{2}v_{2} + \cdots + c_{m}v_{m}.
+\]
+If $b_0$ is chosen randomly (with uniform probability), then $c_1$ ≠ 0 with probability $1$. Now,
+\[
+    \begin{array}{lcl}A^{k}b_0 & = & c_{1}A^{k}v_{1} + c_{2}A^{k}v_{2} + \cdots + c_{m}A^{k}v_{m} \\ & = & c_{1}\lambda_{1}^{k}v_{1} + c_{2}\lambda_{2}^{k}v_{2} + \cdots + c_{m}\lambda_{m}^{k}v_{m} \\ & = & c_{1}\lambda_{1}^{k} \left( v_{1} + \frac{c_{2}}{c_{1}}\left(\frac{\lambda_{2}}{\lambda_{1}}\right)^{k}v_{2} + \cdots + \frac{c_{m}}{c_{1}}\left(\frac{\lambda_{m}}{\lambda_{1}}\right)^{k}v_{m}\right). \end{array}
+\]
+The expression within parentheses converges to $v_1$ because $| \lambda_j / \lambda_1 | < 1$ for $j > 1$. On the other hand, we have
+\[
+    b_k = \frac{A^kb_0}{\|A^kb_0\|}. 
+\]
+Therefore, $b_k$ converges to (a multiple of) the eigenvector $v_1$. The convergence is geometric, with ratio
+\[
+    \left| \frac{\lambda_2}{\lambda_1} \right|, 
+\]
+where $\lambda_2$ denotes the second dominant eigenvalue. Thus, the method converges slowly if there is an eigenvalue close in magnitude to the dominant eigenvalue.
+
+Under the assumptions:
+\begin{itemize}
+    \item A has an eigenvalue that is strictly greater in magnitude than its other eigenvalues
+    \item The starting vector $b_0$ has a nonzero component in the direction of an eigenvector associated with the dominant eigenvalue.
+\end{itemize}
+then:
+\begin{itemize}
+    \item A subsequence of $\left( b_{k} \right)$ converges to an eigenvector associated with the dominant eigenvalue
+\end{itemize}
+Note that the sequence $\left( b_{k} \right)$ does not necessarily converge. It can be shown that $b_{k} = e^{i \phi_{k}} v_{1} + r_{k}$ where: $v_1$ is an eigenvector associated with the dominant eigenvalue, and $\| r_{k} \| \rightarrow 0$. The presence of the term $e^{i \phi_{k}}$ implies that $\left( b_{k} \right)$ does not converge unless $e^{i \phi_{k}} = 1$. Under the two assumptions listed above, the sequence $\left( \mu_{k} \right)$ defined by $\mu_{k} = \frac{b_{k}^{*}Ab_{k}}{b_{k}^{*}b_{k}}$ converges to the dominant eigenvalue.
+
+Power iteration is not used very much because it can find only the dominant eigenvalue. 
+
+The algorithm is however very useful in some specific case. 
+For instance, Google uses it to calculate the page rank of documents in their search engine. For matrices that are well-conditioned and as sparse 
+as the web matrix, the power iteration method can be more efficient 
+than other methods of finding the dominant eigenvector.
+
+Some of the more advanced eigenvalue algorithms can be understood as variations of the power iteration. For instance, the inverse iteration method applies power iteration to the matrix $\hat{A}^{-1}$. 
+Other algorithms look at the whole subspace generated by the vectors $b_k$. 
+This subspace is known as the Krylov subspace. 
+It can be computed by Arnoldi iteration or Lanczos iteration. The latter is method of choice for diagonalizing symmetric matrices with huge dimensionalities. We discuss the Lanczos algorithm in the next section. 
+
+\section{Iterative methods: Lanczos' algorithm}
+The Lanczos algorithm is applied to symmetric eigenvalue problems.
+The basic features with a real symmetric matrix (and normally huge $n> 10^6$ and sparse) 
+$\hat{A}$ of dimension $n\times n$ are
+\begin{itemize}
+\item The  Lanczos' algorithm generates a sequence of real tridiagonal matrices $T_k$ of dimension $k\times k$ with $k\le n$, with the property that the extremal eigenvalues of $T_k$ are progressively better estimates of $\hat{A}$' extremal eigenvalues.
+\item The method converges to the extremal eigenvalues.
+\item The similarity transformation is 
+\[
+\hat{T}= \hat{Q}^{T}\hat{A}\hat{Q},
+\]
+with the first vector $\hat{Q}\hat{e}_1=\hat{q}_1$.
+\end{itemize}
+We are going to solve iteratively
+\[
+\hat{T}= \hat{Q}^{T}\hat{A}\hat{Q},
+\]
+with the first vector $\hat{Q}\hat{e}_1=\hat{q}_1$.
+We can then write out the matrix $\hat{Q}$ in terms of its column vectors 
+\[
+\hat{Q}=\left[\hat{q}_1\hat{q}_2\dots\hat{q}_n\right].
+\]
+
+The matrix
+\[
+\hat{T}= \hat{Q}^{T}\hat{A}\hat{Q},
+\]
+can be  written as 
+\[
+    \hat{T} = \left(\begin{array}{cccccc}
+                           \alpha_1& \beta_1 & 0 &\dots   & \dots &0 \\
+                           \beta_1 & \alpha_2 & \beta_2 &0 &\dots &0 \\
+                           0& \beta_2 & \alpha_3 & \beta_3 & \dots &0 \\
+                           \dots& \dots   & \dots &\dots   &\dots & 0 \\
+                           \dots&   &  &\beta_{n-2}  &\alpha_{n-1}& \beta_{n-1} \\
+                           0&  \dots  &\dots  &0   &\beta_{n-1} & \alpha_{n} \\
+                      \end{array} \right)
+\]
+Using the fact that $\hat{Q}\hat{Q}^T=\hat{I}$, 
+we can rewrite 
+\[
+\hat{T}= \hat{Q}^{T}\hat{A}\hat{Q},
+\]
+as 
+\[
+\hat{Q}\hat{T}= \hat{A}\hat{Q},
+\]
+and if we equate columns (recall from the previous slide)
+\[
+    \hat{T} = \left(\begin{array}{cccccc}
+                           \alpha_1& \beta_1 & 0 &\dots   & \dots &0 \\
+                           \beta_1 & \alpha_2 & \beta_2 &0 &\dots &0 \\
+                           0& \beta_2 & \alpha_3 & \beta_3 & \dots &0 \\
+                           \dots& \dots   & \dots &\dots   &\dots & 0 \\
+                           \dots&   &  &\beta_{n-2}  &\alpha_{n-1}& \beta_{n-1} \\
+                           0&  \dots  &\dots  &0   &\beta_{n-1} & \alpha_{n} \\
+                      \end{array} \right)
+\]
+we obtain
+\[
+\hat{A}\hat{q}_k=\beta_{k-1}\hat{q}_{k-1}+\alpha_k\hat{q}_k+\beta_k\hat{q}_{k+1}.
+\]
+We have thus
+\[
+\hat{A}\hat{q}_k=\beta_{k-1}\hat{q}_{k-1}+\alpha_k\hat{q}_k+\beta_k\hat{q}_{k+1},
+\]
+with $\beta_0\hat{q}_0=0$ for $k=1:n-1$.
+Remember that the vectors $\hat{q}_k$  are orthornormal and this implies
+\[
+\alpha_k=\hat{q}_k^T\hat{A}\hat{q}_k,
+\]
+and these vectors are called Lanczos vectors.
+We have thus
+\[
+\hat{A}\hat{q}_k=\beta_{k-1}\hat{q}_{k-1}+\alpha_k\hat{q}_k+\beta_k\hat{q}_{k+1},
+\]
+with $\beta_0\hat{q}_0=0$ for $k=1:n-1$ and 
+\[
+\alpha_k=\hat{q}_k^T\hat{A}\hat{q}_k.
+\]
+If 
+\[
+\hat{r}_k=(\hat{A}-\alpha_k\hat{I})\hat{q}_k-\beta_{k-1}\hat{q}_{k-1},
+\]
+is non-zero, then 
+\[
+\hat{q}_{k+1}=\hat{r}_{k}/\beta_k,
+\]
+with $\beta_k=\pm ||\hat{r}_{k}||_2$.  These steps can then be written in terms of the following simple algorithm:
+\begin{lstlisting}
+  r_0 = q_1; beta_0=1; q_0=0; int k = 0;
+  while (beta_k != 0)
+      q_{k+1} = r_k/beta_k
+      k = k+1
+      alpha_k = q_k^T A q_k
+      r_k = (A-alpha_k I) q_k  -beta_{k-1}q_{k-1}
+      beta_k = || r_k||_2
+  end while
+\end{lstlisting}
+
+%Assume now that we store the diagonal matrix elements of the tri-diagonal matrix $T_k$ in
+%$\alpha(1:k)$ and the non-diagonal ones in $\beta)1:k-1)$.
+
+%We assume also that we have a function which multiplies the matrix $\hat{A}$  with a vector $w$,
+%we call this $A.mult(w)$ in the algorithm below. 
+%We can then encode the Lanczos' algorithm in a more 
+%\begin{verbatim}
+%  v(1:n) = 0; beta_0=1; k = 0;
+%  while (beta_k != 0)
+%        if ( k /= 0 ) 
+%           for (i=1,n)
+%               t = w_i
+%               w_i = v_i/b_k
+%               v_i = -b_k/t
+%           end for
+%        end if
+%        v = v + H.mult(w)
+%        k = k+1
+%        alpha_k = w^T v
+%        v = v - a_k w
+%        beta_k = || v||_2
+%        call to orthogonalize
+%  end while
+%\end{verbatim}
+%The eigenvalues of $T_k$ are normally found using standard direct eigenvalue solvers.
+
+
+
+
+
+
+\section{Schr\"odinger's Equation  Through Diagonalization}
+\label{sec:se}
+
+Instead of solving the Schr\"odinger equation as a differential equation,
+we will solve it through diagonalization of a large matrix.
+However, in both cases we need to deal with a problem
+with boundary conditions, viz., the wave function goes to zero
+at the endpoints.  
+
+To solve the Schr\"odinger equation as a matrix diagonalization problem,
+let us study the radial part of the Schr\"odinger equation. 
+The radial part of the wave function, $R(r)$, is a solution to  
+%
+\[
+  -\frac{\hbar^2}{2 m} \left ( \frac{1}{r^2} \frac{d}{dr} r^2
+  \frac{d}{dr} - \frac{l (l + 1)}{r^2} \right )R(r) 
+     + V(r) R(r) = E R(r).
+\]
+%
+Then we substitute $R(r) = (1/r) u(r)$ and obtain
+%
+\[
+  -\frac{\hbar^2}{2 m} \frac{d^2}{dr^2} u(r) 
+       + \left ( V(r) + \frac{l (l + 1)}{r^2}\frac{\hbar^2}{2 m}
+                                    \right ) u(r)  = E u(r) .
+\]
+%
+We introduce a dimensionless variable $\rho = (1/\alpha) r$
+where $\alpha$ is a constant with dimension length and get
+% 
+\[
+  -\frac{\hbar^2}{2 m \alpha^2} \frac{d^2}{d\rho^2} u(r) 
+       + \left ( V(\rho) + \frac{l (l + 1)}{\rho^2}
+         \frac{\hbar^2}{2 m\alpha^2} \right ) u(\rho)  = E u(\rho) .
+\]
+%
+In the example below, we will replace 
+the latter equation with that for the one-dimensional
+harmonic oscillator. Note however that the procedure
+which we give below applies equally well to the case of e.g., 
+the hydrogen atom.
+We replace $\rho$ with $x$, take away the 
+centrifugal barrier term and set the potential equal to
+\[
+   V(x)=\frac{1}{2}kx^2,
+\]
+with  $k$ being a constant. In our solution we will use units so that
+$k=\hbar=m=\alpha=1$ and the Schr\"odinger equation for the one-dimensional harmonic oscillator becomes
+\[
+  - \frac{d^2}{dx^2} u(x) +x^2u(x)  = 2E u(x).
+\]
+%
+Let us now see how we can rewrite this equation as a matrix eigenvalue problem.
+First we need to compute  the second derivative. We use here the
+following expression for the second derivative of a function $f$
+\[
+    f''=\frac{f(x+h) -2f(x) +f(x-h)}{h^2} +O(h^2),
+\]
+where $h$ is our step.
+Next we define minimum and maximum values for the variable $x$,
+$R_{\mathrm{min}}$  and $R_{\mathrm{max}}$, respectively.
+With a given number of steps, $N_{\mathrm{step}}$, we then 
+define the step $h$ as
+\[
+  h=\frac{R_{\mathrm{max}}-R_{\mathrm{min}} }{N_{\mathrm{step}}}.
+\]
+If we now define an arbitrary value of $x$ as 
+\[
+    x_i= R_{\mathrm{min}} + ih \hspace{1cm} i=1,2,\dots , N_{\mathrm{step}}-1
+\]
+we can rewrite the Schr\"odinger equation for $x_i$ as
+\[
+-\frac{u(x_k+h) -2u(x_k) +u(x_k-h)}{h^2}+x_k^2u(x_k)  = 2E u(x_k),
+\]
+or in  a more compact way
+\[
+-\frac{u_{k+1} -2u_k +u_{k-1}}{h^2}+x_k^2u_k=-\frac{u_{k+1} -2u_k +u_{k-1} }{h^2}+V_ku_k  = 2E u_k,
+\]
+where $u_k=u(x_k)$, $u_{k\pm 1}=u(x_k\pm h)$ and $V_k=x_k^2$, the given potential.
+Let us see how this recipe may lead to a matrix reformulation of the 
+Schr\"odinger equation.
+Define first the diagonal matrix element
+\[
+   d_k=\frac{2}{h^2}+V_k,
+\]
+and the non-diagonal matrix element 
+\[
+   e_k=-\frac{1}{h^2}.
+\]
+In this case the non-diagonal matrix elements are given by a mere constant.
+{\em All non-diagonal matrix elements are equal}.
+With these definitions the Schr\"odinger equation takes the following form
+\[
+d_ku_k+e_{k-1}u_{k-1}+e_{k+1}u_{k+1}  = 2E u_k,
+\]
+where $u_k$ is unknown. Since we have $N_{\mathrm{step}}-1$ values of $k$ we can write the 
+latter equation as a matrix eigenvalue problem 
+\begin{equation}
+    \left( \begin{array}{ccccccc} d_1 & e_1 & 0   & 0    & \dots  &0     & 0 \\
+                                e_1 & d_2 & e_2 & 0    & \dots  &0     &0 \\
+                                0   & e_2 & d_3 & e_3  &0       &\dots & 0\\
+                                \dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+                                0   & \dots & \dots & \dots  &\dots       &d_{N_{\mathrm{step}}-2} & e_{N_{\mathrm{step}}-1}\\
+                                0   & \dots & \dots & \dots  &\dots       &e_{N_{\mathrm{step}}-1} & d_{N_{\mathrm{step}}-1}
+
+             \end{array} \right)      \left( \begin{array}{c} u_{1} \\
+                                                              u_{2} \\
+                                                              \dots\\ \dots\\ \dots\\
+                                                              u_{N_{\mathrm{step}}-1}
+             \end{array} \right)=2E \left( \begin{array}{c} u_{1} \\
+                                                              u_{2} \\
+                                                              \dots\\ \dots\\ \dots\\
+                                                              u_{N_{\mathrm{step}}-1}
+             \end{array} \right) 
+      \label{eq:sematrix}
+\end{equation} 
+or if we wish to be more detailed, we can write the tridiagonal matrix as
+\begin{equation}
+    \left( \begin{array}{ccccccc} \frac{2}{h^2}+V_1 & -\frac{1}{h^2} & 0   & 0    & \dots  &0     & 0 \\
+                                -\frac{1}{h^2} & \frac{2}{h^2}+V_2 & -\frac{1}{h^2} & 0    & \dots  &0     &0 \\
+                                0   & -\frac{1}{h^2} & \frac{2}{h^2}+V_3 & -\frac{1}{h^2}  &0       &\dots & 0\\
+                                \dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+                                0   & \dots & \dots & \dots  &\dots       &\frac{2}{h^2}+V_{N_{\mathrm{step}}-2} & -\frac{1}{h^2}\\
+                                0   & \dots & \dots & \dots  &\dots       &-\frac{1}{h^2} & \frac{2}{h^2}+V_{N_{\mathrm{step}}-1}
+
+             \end{array} \right)  
+\label{eq:matrixse} 
+\end{equation} 
+
+
+This is a matrix problem with a tridiagonal matrix of dimension 
+$N_{\mathrm{step}}-1 \times N_{\mathrm{step}}-1$ and will thus yield 
+$N_{\mathrm{step}}-1$ eigenvalues. 
+It is important to notice that we do not set up a matrix of dimension $N_{\mathrm{step}} \times N_{\mathrm{step}}$
+since we can fix the value of the wave function at $k=N_{\mathrm{step}}$.
+Similarly, we know the wave function at the other end point, that is for  $x_0$.
+
+The above equation represents an alternative
+to the numerical solution of the differential equation for the Schr\"odinger equation discussed
+in chapter \ref{chap:twop}.
+
+The eigenvalues of the harmonic oscillator in one dimension are well
+known. In our case, with all constants set equal to $1$, we have
+\[
+   E_n=n+\frac{1}{2},
+\]
+with the ground state being $E_0=1/2$. Note however that we have rewritten
+the Schr\"odinger equation so that a constant 2 stands in front of the energy. Our program will then
+yield twice the value, that is we will obtain the eigenvalues 
+$1,3,5,7..\dots$. 
+
+In the next subsection we will try to delineate how to solve the above 
+equation.
+
+\subsection{Numerical solution of the Schr\"odinger equation by diagonalization}
+
+
+
+The algorithm for solving Eq.\ (\ref{eq:sematrix})  may take the following 
+form 
+\begin{itemize}
+  \item Define values for $N_{\mathrm{step}}$, $R_{\mathrm{min}}$ and $R_{\mathrm{max}}$.
+        These values define in turn the step size $h$. Typical values for
+        $R_{\mathrm{max}}$ and $R_{\mathrm{min}}$ could be $10$ and $-10$ respectively for the lowest-lying states.  
+        The number of mesh points $N_{\mathrm{step}}$ could be in the range 100 to some
+        thousands. You can check the stability of the results as functions of 
+        $N_{\mathrm{step}}-1$ and $R_{\mathrm{max}}$ and $R_{\mathrm{min}}$
+        against the exact solutions. 
+  \item Construct then two one-dimensional arrays which contain all values of $x_k$ 
+        and the potential $V_k$. For the latter it can be convenient to write a
+        small function which sets up the potential as function of $x_k$. For 
+        the three-dimensional case you may also need to include 
+        the centrifugal potential. The dimension
+        of these two arrays should go from $0$ up to $N_{\mathrm{step}}$. 
+  \item Construct thereafter the one-dimensional vectors $d$ and $e$, where 
+        $d$ stands for the diagonal matrix elements and $e$ the non-diagonal ones.
+        Note that the dimension of these two arrays runs from $1$ up to
+        $N_{\mathrm{step}}-1$, since we know the wave function $u$ at both ends of the
+        chosen grid.   
+  \item We are now ready to obtain the eigenvalues by calling the function {\em tqli }
+        which can be found on the web page of the course.
+        Calling {\em tqli}, you have to transfer the 
+        matrices $d$ and $e$, their 
+        dimension $n=N_{\mathrm{step}}-1$ and a matrix $z$ of dimension
+        $N_{\mathrm{step}}-1\times N_{\mathrm{step}}-1$ which returns the eigenfunctions.
+        On return, the array $d$ contains the 
+        eigenvalues. If $z$ is given as the unity matrix on input, it returns the 
+       eigenvectors. For a given eigenvalue $k$, the eigenvector is given by the column
+       $k$ in $z$, that is z[][k] in C, or z(:,k) in Fortran.
+   \item TQLI does however not return an ordered sequence of eigenvalues. You may
+         then need to sort them as e.g., an ascending series of numbers.
+         The program we provide includes a sorting function as well. 
+   \item Finally, you may perhaps need to plot the eigenfunctions as well,
+         or calculate some other expectation values. Or, you would like
+         to compare the eigenfunctions with the analytical answers for the 
+         harmonic oscillator or the hydrogen atom. We provide a function 
+        {\em plot}
+         which has as input one eigenvalue chosen from the output of 
+         {\em tqli}.
+         This function gives you a normalized wave function $u$ where the norm
+         is calculated as 
+        \[ \int_{R_{\mathrm{min}}}^{R_{\mathrm{max}}}\left|u(x)\right|^2dx \rightarrow h\sum_{i=0}^{N_{\mathrm{step}} }u_i^2=1,\]
+        and we have used the trapezoidal rule for integration discussed in
+        chapter \ref{chap:integrate}.
+\end{itemize} 
+
+
+\subsection{Program example and results for the one-dimensional harmonic oscillator}
+We present here a program example which encodes the above 
+algorithm. 
+\begin{lstlisting}[title={\url{http://folk.uio.no/compphys/programs/chapter07/cpp/program1.cpp}}]
+/*
+  Solves the one-particle Schrodinger equation
+  for a potential specified in function
+  potential(). This example is for the harmonic oscillator
+*/
+#include <cmath>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "lib.h"
+using namespace  std;
+// output file as global variable
+ofstream ofile;  
+
+// function declarations 
+
+void initialise(double&, double&, int&, int&) ;
+double potential(double);
+int comp(const double *, const double *);
+void output(double, double, int, double *);
+
+int main(int argc, char* argv[])
+{
+  int       i, j, max_step, orb_l;
+  double    r_min, r_max, step, const_1, const_2, orb_factor, 
+            *e, *d, *w, *r, **z;
+  char *outfilename;
+  // Read in output file, abort if there are too few command-line arguments
+  if( argc <= 1 ){
+    cout << "Bad Usage: " << argv[0] << 
+      " read also output file on same line" << endl;
+    exit(1);
+  }
+  else{
+    outfilename=argv[1];
+  }
+  ofile.open(outfilename); 
+  //   Read in data 
+  initialise(r_min, r_max, orb_l, max_step);
+  // initialise constants
+  step    = (r_max - r_min) / max_step; 
+  const_2 = -1.0 / (step * step);
+  const_1 =  - 2.0 * const_2;
+  orb_factor = orb_l * (orb_l + 1);
+  
+  // local memory for r and the potential w[r] 
+  r = new double[max_step + 1];
+  w = new double[max_step + 1];
+  for(i = 0; i <= max_step; i++) {
+    r[i] = r_min + i * step;
+    w[i] = potential(r[i]) + orb_factor / (r[i] * r[i]);
+  }
+  // local memory for the diagonalization process 
+  d = new double[max_step];    // diagonal elements 
+  e = new double[max_step];    // tridiagonal off-diagonal elements 
+  z = (double **) matrix(max_step, max_step, sizeof(double));
+  for(i = 0; i < max_step; i++) {
+    d[i]    = const_1 + w[i + 1];
+    e[i]    = const_2;
+    z[i][i] = 1.0;
+    for(j = i + 1; j < max_step; j++)  {
+      z[i][j] = 0.0;
+    }
+  }
+  // diagonalize and obtain eigenvalues
+  tqli(d, e, max_step - 1, z);      
+  // Sort eigenvalues as an ascending series 
+  qsort(d,(UL) max_step - 1,sizeof(double),
+         (int(*)(const void *,const void *))comp);
+  // send results to ouput file
+  output(r_min , r_max, max_step, d);
+  delete [] r; delete [] w; delete [] e; delete [] d; 
+  free_matrix((void **) z); // free memory
+  ofile.close();  // close output file
+  return 0;
+} // End: function main() 
+
+/*
+  The function potential()
+  calculates and return the value of the 
+  potential for a given argument x.
+  The potential here is for the 1-dim harmonic oscillator
+*/        
+
+double potential(double x)
+{
+   return x*x;
+
+} // End: function potential()  
+
+/*
+  The function   int comp()                  
+  is a utility function for the library function qsort()
+  to sort double numbers after increasing values.
+*/       
+
+int comp(const double *val_1, const double *val_2)
+{
+  if((*val_1) <= (*val_2))       return -1;
+  else  if((*val_1) > (*val_2))  return +1;
+  else                     return  0; 
+} // End: function comp() 
+
+// read in min  and max radius, number of mesh points and l
+void initialise(double& r_min, double& r_max, int& orb_l, int& max_step) 
+{
+  cout << "Min vakues of R = ";
+  cin >> r_min;
+  cout << "Max value of R = ";
+  cin >> r_max;
+  cout << "Orbital momentum = ";
+  cin >> orb_l;
+  cout << "Number of steps = ";
+  cin >> max_step;
+}  // end of function initialise   
+// output of results
+void output(double r_min , double r_max, int max_step, double *d)
+{
+  int i;
+  ofile << "RESULTS:" << endl;
+  ofile << setiosflags(ios::showpoint | ios::uppercase);
+  ofile <<"R_min = " << setw(15) << setprecision(8) << r_min << endl;  
+  ofile <<"R_max = " << setw(15) << setprecision(8) << r_max << endl;  
+  ofile <<"Number of steps = " << setw(15) << max_step << endl;  
+  ofile << "Five lowest eigenvalues:" << endl;
+  for(i = 0; i < 5; i++) {
+    ofile << setw(15) << setprecision(8) << d[i] << endl;
+  }
+}  // end of function output
+\end{lstlisting}
+
+There are several features to be noted in this program.
+
+The main program calls the function {\em initialise}, which reads
+in the minimum and maximum values of $r$, the number of steps
+and the orbital angular momentum $l$. Thereafter we allocate place
+for the vectors containing $r$ and the potential, given by the variables
+$r[i]$ and $w[i]$, respectively.
+We also set up the vectors $d[i]$ and $e[i]$ containing
+the diagonal and non-diagonal matrix elements. Calling the function
+$tqli$ we obtain in turn the unsorted eigenvalues. The latter are sorted 
+by the intrinsic C-function $qsort$. 
+
+The calculaton of the wave function for the lowest eigenvalue is done
+in the function $plot$, while all output of the calculations
+is directed to the fuction $output$.
+
+%The tricky part of the calculation resides in the function $plot$
+%and the generation of the wave function for a specific eigenvalue. 
+%Using the differential operation 
+%of Eq.~(\ref{eq:diffoperation}) may lead to loss of precision
+%when dealing with problems with boundary conditions.
+%Since we have the eigenvalue, we can use 
+%\[ 
+%-\frac{u_{k+1} -2u_k +u_{k-1} }{h^2}+V_ku_k  = 2E u_k,
+%\]
+%and rewrite it as
+%\[ 
+%u_{k+1}= 2u_k -u_{k-1}+h^2u_k(V_k-2E).
+%\]
+%The last equation provides the algorithm for calculating
+%the new value of the eigenfunction. If we start with $k=1$,
+%we know already that $u_0=0$. To obtain $u_1$ we can Taylor
+%expand the exact wave function for the harmonic oscillator and
+%use values of this wave function where the function is close to zero.
+%The asymptotic behavior of the harmonic oscillator wave function
+%leads to the approximation $u_1\approx 0.5h^2$. For the 
+%hydrogen wave function the asymptotic behavior is $u_1\approx h$. 
+%This means that we have 
+%\[ 
+%u_{2}= 2u_1 -u_{0}+h^2u_1(V_1-2E)=h^2+\frac{1}{2}h^4(V_1-2E).
+%\]
+%With $u_2$ and $u_1$, we can continue computing the wave function
+%for new $r$ values. However, since we are dealing with differences
+%of numbers which are rather close, there is a large risk of loosing
+%numerical precision. The recipe is then to perform the above integration
+%inward and outward, i.e., starting from both $r_{\mathrm{min}}$ and 
+%$r_{\mathrm{max}}$
+%and finding a matching point. The matching point is determined 
+%by the point where the solution stops increasing. Since the value of
+%the wave function for the outward and inward integrations may not necessarily
+%be identical, we need to rescale the  wave function. This is done
+%by the variable $fac$ in $plot$.   
+
+%Finally, we calculate both the norm and the normalized 
+%wave function in $plot$.
+
+The included table exhibits the precision achieved as function
+of the number of mesh points $N$. The exact values are $1,3,5,7,9$.
+\begin{table}[hbtp]
+\begin{center}
+\caption{Five lowest eigenvalues as functions of the number of mesh points
+         $N$ with $r_{\mathrm{min}}=-10$ and 
+$r_{\mathrm{max}}=10$.}
+\begin{tabular}{rrrrrr}\hline
+$N$&$E_0$&$E_1$&$E_2$&$E_3$&$E_4$ \\\hline
+ 50  & 9.898985E-01& 2.949052E+00      &4.866223E+00     &6.739916E+00      &8.568442E+00     \\
+100   & 9.974893E-01     & 2.987442E+00    &4.967277E+00      &6.936913E+00     & 8.896282E+00       \\
+200   & 9.993715E-01     &2.996864E+00     & 4.991877E+00    & 6.984335E+00    &  8.974301E+00      \\
+400   & 9.998464E-01     & 2.999219E+00   & 4.997976E+00      &6.996094E+00      &  8.993599E+00      \\
+1000   & 1.000053E+00     & 2.999917E+00    &4.999723E+00      & 6.999353E+00     & 8.999016E+00       \\ \hline
+\end{tabular} 
+\end{center}   
+\label{tab:diagho_1}
+\end{table}     
+
+The agreement with the exact solution improves with increasing numbers
+of mesh points. However, the agreement for the excited states is by no means impressive. Moreover, 
+as the dimensionality increases, the time consumption
+increases dramatically. Matrix diagonalization scales typically 
+as $\approx N^3$.
+In addition, there is a maximum size of a matrix which can be stored in
+RAM. 
+
+The obvious question which then arises is whether this scheme is nothing 
+but  a mere example of matrix diagonalization, with few 
+practical applications of interest.  In chapter \ref{chap:differentiate}, where we dealt
+with interpolation and extrapolation, we discussed also called
+Richardson's deferred extrapolation
+scheme. Applied to this particualr case, the philosophy of this scheme would be  
+to diagonalize the above
+matrix for a set of values of $N$ and thereby the step length 
+$h$. Thereafter, an extrapolation is made to $h\rightarrow 0$.
+The obtained eigenvalues agree then with a remarkable precision
+with the exact solution.
+The algorithm is then as follows
+\begin{center}
+\shabox{\parbox{14cm}{
+\begin{itemize}
+   \item Perform a series of diagonalizations of the matrix in Eq.\ (\ref{eq:matrixse} )
+         for different values of the step size $h$. We obtain then a series of eigenvalues
+         $E(h/2^k)$ with $k=0,1,2,\dots$.
+         That will give us an array of 'x-values'  $h,h/2,h/4,\dots$ and an array of 'y-values'
+         $E(h),E(h/2),E(h/4),\dots$. Note that you will have such a set for each eigenvalue.
+   \item Use these values to perform an extrapolation calling e.g., the function
+         POLINT with the point where we wish to extrapolate to given by $h=0$. 
+   \item End the iteration over $k$ when  the error returned by POLINT is smaller
+         than a fixed test.
+\end{itemize}}}\end{center}
+
+The results for the 10 lowest-lying eigenstates for the one-dimensional harmonic oscillator
+are listed below after just 3 iterations, i.e., the step size has been reduced to $h/8$ only.
+The exact results are $1,3,5,\dots,19$ and we see that the agreement is just excellent for the 
+extrapolated results. The results after diagonalization differ already at the fourth-fifth digit. 
+\begin{table}[hbtp]
+\caption{Result  for numerically calculated eigenvalues of the one-dimensional harmonic oscillator
+         after three iterations starting with a matrix of size $100\times 100$ and ending
+         with a matrix of dimension $800\times 800$. These four values are then used to
+         extrapolate the 10 lowest-lying eigenvalues to $h=0.$. The values of $x$ span
+         from $-10$ to $10$, that means that the starting step was $h=20/100=0.2$. We list here
+         only the results after three iterations. The error test was set equal $10^{-6}$.}
+\begin{center} 
+\begin{tabular}{rrrrrrr}\hline
+Extrapolation&Diagonalization&Error\\\hline
+0.100000D+01&  0.999931D+00&  0.206825D-10\\
+0.300000D+01 & 0.299965D+01 & 0.312617D-09\\
+0.500000D+01 & 0.499910D+01 & 0.174602D-08\\
+0.700000D+01 & 0.699826D+01 & 0.605671D-08\\
+0.900000D+01 & 0.899715D+01 & 0.159170D-07\\
+0.110000D+02 & 0.109958D+02 & 0.349902D-07\\
+0.130000D+02 & 0.129941D+02 & 0.679884D-07\\
+0.150000D+02 & 0.149921D+02 & 0.120735D-06\\
+0.170000D+02 & 0.169899D+02 & 0.200229D-06\\
+0.190000D+02 & 0.189874D+02 & 0.314718D-06\\\hline
+\end{tabular}
+\end{center}  
+\end{table}     
+
+Parts of a  Fortran program which includes Richardson's extrapolation scheme
+is included here. It performs five diagonalizations and establishes results
+for various step lengths and interpolates using the function \lstinline{POLINT}.
+\lstset{language=[90]Fortran} 
+\begin{lstlisting}
+!  start loop over interpolations, here we set max interpolations to 5
+      DO interpol=1, 5
+         IF ( interpol == 1) THEN
+            max_step=start_step
+         ELSE 
+            max_step=(interpol-1)*2*start_step
+         ENDIF
+         n=max_step-1     
+         ALLOCATE ( e(n) , d(n) )
+         ALLOCATE ( w(0:max_step), r(0:max_step))
+         d=0. ; e =0.
+!  define the step size
+         step=(rmax-rmin)/FLOAT(max_step)
+         hh(interpol)=step*step
+!  define constants for the matrix to be diagonalized
+         const1=2./(step*step)
+         const2=-1./(step*step)
+!     set up r, the distance from the nucleus and the function w for energy =0
+!     w corresponds then to the potential
+!     values at 
+         DO i=0, max_step
+            r(i) = rmin+i*step
+            w(i) = potential(r(i))
+         ENDDO
+!     setup the diagonal d and the non-diagonal part e  of
+!     the  tridiagonal matrix matrix to be diagonalized
+         d(1:n)=const1+w(1:n)  ;  e(1:n)=const2
+!  allocate space for eigenvector info
+         ALLOCATE ( z(n,n) )
+!  obtain the eigenvalues
+         CALL tqli(d,e,n,z)
+!  sort eigenvalues as an ascending series 
+         CALL eigenvalue_sort(d,n)
+         DEALLOCATE (z) 
+         err1=0.
+!  the interpolation part starts here
+         DO l=1,20
+            err2=0.
+            value(interpol,l)=d(l)
+            inp=d(l)
+            IF ( interpol > 1 ) THEN
+               CALL polint(hh,value(:,l),interpol,0.d0 ,inp,err2)
+               err1=MAX(err1,err2)           
+               WRITE(6,'(D12.6,2X,D12.6,2X,D12.6)') inp, d(l), err1 
+            ELSE           
+               WRITE(6,'(D12.6,2X,D12.6,2X,D12.6)') d(l), d(l), err1
+            ENDIF
+         ENDDO 
+         DEALLOCATE ( w, r, d, e)
+      ENDDO
+\end{lstlisting}
+
+%\section{Discussion of BLAS and LAPACK functionalities}
+%In preparation, ready 2011.
+% add about lanczos iteration
+
+\section{Exercises}
+%\subsection*{Project 7.1: Schr\"odinger's equation for two electrons in a three-dimensional harmonic oscillator well}
+\begin{prob}
+The aim of this problem is to solve Schr\"odinger's equation for two electrons in a three-dimensional harmonic oscillator well with and without a repulsive 
+Coulomb interaction.  Your task is to solve this equation by reformulating it
+in a discretized form
+as an eigenvalue equation to be solved with Jacobi's method. To achieve this
+you will have to write your own code which implements Jacobi's method.
+
+Electrons confined in small areas in semiconductors, so-called quantum dots,
+form a hot research area in modern solid-state physics, with applications
+spanning from such diverse fields as quantum nano-medicine to the contruction
+of quantum gates.
+
+Here we will assume that these electrons move in a three-dimensional harmonic
+oscillator potential (they are confined by for example quadrupole fields)
+and repel  each other via the static Colulomb interaction.  
+We assume spherical symmetry.  
+
+We are first interested in the solution of the radial part of Schr\"odinger's equation for one electron. This equation reads
+\[
+  -\frac{\hbar^2}{2 m} \left ( \frac{1}{r^2} \frac{d}{dr} r^2
+  \frac{d}{dr} - \frac{l (l + 1)}{r^2} \right )R(r) 
+     + V(r) R(r) = E R(r).
+\]
+In our case $V(r)$ is the harmonic oscillator potential $(1/2)kr^2$ with
+$k=m\omega^2$ and $E$ is
+the energy of the harmonic oscillator in three dimensions.
+The oscillator frequency is $\omega$ and the energies are
+\[
+E_{nl}=  \hbar \omega \left(2n+l+\frac{3}{2}\right),
+\]
+with $n=0,1,2,\dots$ and $l=0,1,2,\dots$.
+ 
+Since we have made a transformation to spherical coordinates it means that 
+$r\in [0,\infty)$.  
+The quantum number
+$l$ is the orbital momentum of the electron.  
+%
+Then we substitute $R(r) = (1/r) u(r)$ and obtain
+%
+\[
+  -\frac{\hbar^2}{2 m} \frac{d^2}{dr^2} u(r) 
+       + \left ( V(r) + \frac{l (l + 1)}{r^2}\frac{\hbar^2}{2 m}
+                                    \right ) u(r)  = E u(r) .
+\]
+%
+The boundary conditions are $u(0)=0$ and $u(\infty)=0$.
+
+We introduce a dimensionless variable $\rho = (1/\alpha) r$
+where $\alpha$ is a constant with dimension length and get
+% 
+\[
+  -\frac{\hbar^2}{2 m \alpha^2} \frac{d^2}{d\rho^2} u(\rho) 
+       + \left ( V(\rho) + \frac{l (l + 1)}{\rho^2}
+         \frac{\hbar^2}{2 m\alpha^2} \right ) u(\rho)  = E u(\rho) .
+\]
+%
+We will set in this project $l=0$.
+Inserting $V(\rho) = (1/2) k \alpha^2\rho^2$ we end up with
+\[
+  -\frac{\hbar^2}{2 m \alpha^2} \frac{d^2}{d\rho^2} u(\rho) 
+       + \frac{k}{2} \alpha^2\rho^2u(\rho)  = E u(\rho) .
+\]
+We multiply thereafter with $2m\alpha^2/\hbar^2$ on both sides and obtain
+\[
+  -\frac{d^2}{d\rho^2} u(\rho) 
+       + \frac{mk}{\hbar^2} \alpha^4\rho^2u(\rho)  = \frac{2m\alpha^2}{\hbar^2}E u(\rho) .
+\]
+The constant $\alpha$ can now be fixed
+so that
+\[
+\frac{mk}{\hbar^2} \alpha^4 = 1,
+\]
+or 
+\[
+\alpha = \left(\frac{\hbar^2}{mk}\right)^{1/4}.
+\]
+Defining 
+\[
+\lambda = \frac{2m\alpha^2}{\hbar^2}E,
+\]
+we can rewrite Schr\"odinger's equation as
+\[
+  -\frac{d^2}{d\rho^2} u(\rho) + \rho^2u(\rho)  = \lambda u(\rho) .
+\]
+This is the first equation to solve numerically. In three dimensions 
+the eigenvalues for $l=0$ are 
+$\lambda_0=3,\lambda_1=7,\lambda_2=11,\dots .$
+
+We use the by now standard
+expression for the second derivative of a function $u$
+\[
+    u''=\frac{u(\rho+h) -2u(\rho) +u(\rho-h)}{h^2} +O(h^2),
+\]
+where $h$ is our step.
+Next we define minimum and maximum values for the variable $\rho$,
+$\rho_{\mathrm{min}}=0$  and $\rho_{\mathrm{max}}$, respectively.
+You need to check your results for the energies against different values
+$\rho_{\mathrm{max}}$, since we cannot set
+$\rho_{\mathrm{max}}=\infty$. 
+
+With a given number of steps, $n_{\mathrm{step}}$, we then 
+define the step $h$ as
+\[
+  h=\frac{\rho_{\mathrm{max}}-\rho_{\mathrm{min}} }{n_{\mathrm{step}}}.
+\]
+Define an arbitrary value of $\rho$ as 
+\[
+    \rho_i= \rho_{\mathrm{min}} + ih \hspace{1cm} i=0,1,2,\dots , n_{\mathrm{step}}
+\]
+we can rewrite the Schr\"odinger equation for $\rho_i$ as
+\[
+-\frac{u(\rho_i+h) -2u(\rho_i) +u(\rho_i-h)}{h^2}+\rho_i^2u(\rho_i)  = \lambda u(\rho_i),
+\]
+or in  a more compact way
+\[
+-\frac{u_{i+1} -2u_i +u_{i-1}}{h^2}+\rho_i^2u_i=-\frac{u_{i+1} -2u_i +u_{i-1} }{h^2}+V_iu_i  = \lambda u_i,
+\]
+where $V_i=\rho_i^2$ is the harmonic oscillator potential.
+Define first the diagonal matrix element
+\[
+   d_i=\frac{2}{h^2}+V_i,
+\]
+and the non-diagonal matrix element 
+\[
+   e_i=-\frac{1}{h^2}.
+\]
+In this case the non-diagonal matrix elements are given by a mere constant.
+{\em All non-diagonal matrix elements are equal}.
+With these definitions the Schr\"odinger equation takes the following form
+\[
+d_iu_i+e_{i-1}u_{i-1}+e_{i+1}u_{i+1}  = \lambda u_i,
+\]
+where $u_i$ is unknown. We can write the 
+latter equation as a matrix eigenvalue problem 
+\begin{equation}
+    \left( \begin{array}{ccccccc} d_1 & e_1 & 0   & 0    & \dots  &0     & 0 \\
+                                e_1 & d_2 & e_2 & 0    & \dots  &0     &0 \\
+                                0   & e_2 & d_3 & e_3  &0       &\dots & 0\\
+                                \dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+                                0   & \dots & \dots & \dots  &\dots       &d_{n_{\mathrm{step}}-2} & e_{n_{\mathrm{step}}-1}\\
+                                0   & \dots & \dots & \dots  &\dots       &e_{n_{\mathrm{step}}-1} & d_{n_{\mathrm{step}}}
+
+             \end{array} \right)      \left( \begin{array}{c} u_{1} \\
+                                                              u_{2} \\
+                                                              \dots\\ \dots\\ \dots\\
+                                                              u_{n_{\mathrm{step}}-1}
+             \end{array} \right)=\lambda \left( \begin{array}{c} u_{1} \\
+                                                              u_{2} \\
+                                                              \dots\\ \dots\\ \dots\\
+                                                              u_{n_{\mathrm{step}}-1}
+             \end{array} \right) 
+      \label{eq:sematrix1}
+\end{equation} 
+or if we wish to be more detailed, we can write the tridiagonal matrix as
+\begin{equation}
+    \left( \begin{array}{ccccccc} \frac{2}{h^2}+V_1 & -\frac{1}{h^2} & 0   & 0    & \dots  &0     & 0 \\
+                                -\frac{1}{h^2} & \frac{2}{h^2}+V_2 & -\frac{1}{h^2} & 0    & \dots  &0     &0 \\
+                                0   & -\frac{1}{h^2} & \frac{2}{h^2}+V_3 & -\frac{1}{h^2}  &0       &\dots & 0\\
+                                \dots  & \dots & \dots & \dots  &\dots      &\dots & \dots\\
+                                0   & \dots & \dots & \dots  &\dots       &\frac{2}{h^2}+V_{n_{\mathrm{step}}-2} & -\frac{1}{h^2}\\
+                                0   & \dots & \dots & \dots  &\dots       &-\frac{1}{h^2} & \frac{2}{h^2}+V_{n_{\mathrm{step}}-1}
+
+             \end{array} \right)  
+\label{eq:matrixse1} 
+\end{equation} 
+
+Recall that the solutions are known via the boundary conditions at
+$i=n_{\mathrm{step}}$ and at the other end point, that is for  $\rho_0$.
+The solution is zero in both cases.
+
+
+
+
+\begin{enumerate}
+\item[a)] Your task here is to write a function which implements
+Jacobi's rotation algorithm in order to
+solve Eq.~(\ref{eq:sematrix1}). 
+
+We 
+Define the quantities $\tan\theta = t= s/c$, with $s=\sin\theta$ and $c=\cos\theta$ and
+\[\cot 2\theta=\tau = \frac{a_{ll}-a_{kk}}{2a_{kl}}.
+\]
+We can then define the angle $\theta$ so that the non-diagonal matrix elements of the transformed matrix 
+$a_{kl}$ become non-zero and
+we obtain the quadratic equation (using $\cot 2\theta=1/2(\cot \theta-\tan\theta)$
+\[
+t^2+2\tau t-1= 0,
+\]
+resulting in 
+\[
+  t = -\tau \pm \sqrt{1+\tau^2},
+\]
+and $c$ and $s$ are easily obtained via
+\[
+   c = \frac{1}{\sqrt{1+t^2}},
+\]
+and $s=tc$.  
+Explain why we should choose 
+$t$ to be the smaller of the roots. Show that these choice  ensures that $|\theta| \le \pi/4$)
+ and has the 
+effect of minimizing the difference between the matrices ${\bf B}$ and ${\bf A}$ since
+\[
+||{\bf B}-{\bf A}||_F^2=4(1-c)\sum_{i=1,i\ne k,l}^n(a_{ik}^2+a_{il}^2) +\frac{2a_{kl}^2}{c^2}.
+\]
+
+\item[b)]
+
+
+How many points $n_{\mathrm{step}}$
+do you need in order to get the lowest three eigenvalues 
+with four leading digits?  
+Remember to check the eigenvalues for 
+the dependency on the choice of $\rho_{\mathrm{max}}$.
+
+How many similarity transformations are needed before you reach a 
+result where all non-diagonal matrix elements are essentially zero?
+Try to estimate the number of transformations and extract a behavior as function
+of the dimensionality of the matrix.
+
+You can check your results against the code based
+on Householder's algorithm, {\em tqli} in the file lib.cpp.
+
+Comment your results (here you could for example compute the time needed for 
+both algorithms for a given dimensionality of the matrix).  
+
+ 
+\item[c)] We will now study two electrons in a harmonic oscillator well which
+also interact via a repulsive Coulomb interaction.
+Let us start with the single-electron equation written as
+\[
+  -\frac{\hbar^2}{2 m} \frac{d^2}{dr^2} u(r) 
+       + \frac{1}{2}k r^2u(r)  = E^{(1)} u(r),
+\]
+where $E^{(1)}$ stands for the energy with one electron only.
+For two electrons with no repulsive Coulomb interaction, we have the following 
+Schr\"odinger equation
+\[
+\left(  -\frac{\hbar^2}{2 m} \frac{d^2}{dr_1^2} -\frac{\hbar^2}{2 m} \frac{d^2}{dr_2^2}+ \frac{1}{2}k r_1^2+ \frac{1}{2}k r_2^2\right)u(r_1,r_2)  = E^{(2)} u(r_1,r_2) .
+\]
+
+
+Note that we deal with a two-electron wave function $u(r_1,r_2)$ and 
+two-electron energy $E^{(2)}$.
+
+With no interaction this can be written out as the product of two
+single-electron wave functions, that is we have a solution on closed form.
+
+We introduce the relative coordinate ${\bf r} = {\bf r}_1-{\bf r}_2$
+and the center-of-mass coordinate ${\bf R} = 1/2({\bf r}_1+{\bf r}_2)$.
+With these new coordinates, the radial Schr\"odinger equation reads
+\[
+\left(  -\frac{\hbar^2}{m} \frac{d^2}{dr^2} -\frac{\hbar^2}{4 m} \frac{d^2}{dR^2}+ \frac{1}{4} k r^2+  kR^2\right)u(r,R)  = E^{(2)} u(r,R).
+\]
+
+The equations for $r$ and $R$ can be separated via the ansatz for the 
+wave function $u(r,R) = \psi(r)\phi(R)$ and the energy is given by the sum
+of the relative energy $E_r$ and the center-of-mass energy $E_R$, that
+is
+\[
+E^{(2)}=E_r+E_R.
+\]
+
+We add then the repulsive Coulomb interaction between two electrons,
+namely a term 
+\[
+V(r_1,r_2) = \frac{\beta e^2}{|{\bf r}_1-{\bf r}_2|}=\frac{\beta e^2}{r},
+\]
+with $\beta e^2=1.44$ eVnm.
+
+Adding this term, the $r$-dependent Schr\"odinger equation becomes
+\[
+\left(  -\frac{\hbar^2}{m} \frac{d^2}{dr^2}+ \frac{1}{4}k r^2+\frac{\beta e^2}{r}\right)\psi(r)  = E_r \psi(r).
+\]
+This equation is similar to the one we had previously in (a) and we introduce
+again a dimensionless variable $\rho = r/\alpha$. Repeating the same
+steps as in (a), we arrive at 
+\[
+  -\frac{d^2}{d\rho^2} \psi(\rho) 
+       + \frac{mk}{\hbar^2} \alpha^4\rho^2\psi(\rho)+\frac{m\alpha \beta e^2}{\rho\hbar^2}\psi(\rho)  = 
+\frac{m\alpha^2}{\hbar^2}E_r \psi(\rho) .
+\]
+We want to manipulate this equation further to make it as similar to that in (a)
+as possible. We define $k_r=1/4 k$
+The constant $\alpha$ is then again fixed
+so that
+\[
+\frac{mk_r}{\hbar^2} \alpha^4 = 1,
+\]
+or 
+\[
+\alpha = \left(\frac{\hbar^2}{mk_r}\right)^{1/4}.
+\]
+Defining 
+\[
+\lambda = \frac{m\alpha^2}{\hbar^2}E,
+\]
+we can rewrite Schr\"odinger's equation as
+\[
+  -\frac{d^2}{d\rho^2} \psi(\rho) + \rho^2\psi(\rho) +\frac{\gamma}{\rho} = \lambda \psi(\rho), 
+\]
+with 
+\[
+\gamma = \frac{m\alpha \beta e^2}{\hbar^2}.
+\]
+We treat $\gamma$ as a parameter which reflects the strength of the oscillator potential.
+
+Here we will study the cases $\gamma = 0$, $\gamma = 0.5$, $\gamma =1$,
+$\gamma = 2$ and $\gamma=4$.   
+for the ground state only, that is the lowest-lying state.
+
+
+For $\gamma =0$ you should get a result which corresponds to 
+the relative energy of a non-interacting system.  The way we have written the equations means you get the same as in (a) for $\gamma =0$. 
+Make sure your results are 
+stable as functions of $\rho_{\mathrm{max}}$ and the number of steps.
+
+We are only interested in the ground state with $l=0$. We omit the 
+center-of-mass energy.
+
+You can reuse the code you wrote for (a), 
+but you need to change the potential
+from $\rho^2$ to $\rho^2+\gamma/\rho$. 
+
+Comment the results for the lowest state (ground state) as function of
+varying strengths of $\gamma$. 
+
+
+For specific oscillator frequencies, the above equation has analytic answers,
+see the article by M.~Taut, Phys. Rev. A 48, 3561 - 3566 (1993).
+The article can be retrieved from the following web address
+\url{http://prola.aps.org/abstract/PRA/v48/i5/p3561_1}.
+
+\item[d)]
+In this exercise we want to plot the wave function 
+for two electrons as functions of the relative coordinate $r$ and different
+values of $\gamma$. For $\gamma =0$ your wave function should correspond to that
+of a harmonic oscillator.  Varying $\gamma$, the shape of the wave function
+will change.  
+
+We are only interested in the wave function for the ground state with $l=0$ and
+omit again the  center-of-mass motion.
+
+You can choose between two approaches; the first is to use the existing
+{\em tqli} function. Here the eigenvectors are obtained from the matrix
+$z[i][j]$, where the index $j$ refers to eigenvalue $j$. The index $i$
+points to the value of the wave function in position $\rho_j$.  
+That is,  $u^{(\lambda_j)}(\rho_i)=z[i][j]$.   
+
+The eigenvectors are normalized. 
+Plot then the normalized wave functions for different 
+values of $\gamma$ and comment the results.
+
+The other alternative is to add a piece to your Jacobi routine which also
+returns the eigenvectors. This is the more difficult part.
+You will need to normalize the eigenvectors.
+
+
+\end{enumerate}
+\end{prob}
+
+
+
+\bibliographystyle{plain}
+\bibliography{IntroductoryBook}
