@@ -1,0 +1,114 @@
+# doc/BookManybody — the textbook
+
+Source for *Quantum mechanics for Many-particle Systems: from standard methods
+to quantum computing and machine learning* (Morten Hjorth-Jensen), a Springer
+monograph. The same material is also maintained as a Jupyter-book in
+`../LectureNotes/` and drives the weekly FYS4480/9480 course.
+
+## Files
+
+```
+book.tex           root document — svmono class, all macros, \part/\input structure
+chapter1.tex       Mathematical basis, linear algebra, basis sets
+chapter2.tex       Second quantization
+variationalmc.tex  Variational Monte Carlo
+Greensfunction.tex Green's function theory
+preface.tex  acknow.tex  dedic.tex  acronym.tex
+svmono.cls  spphys.bst  spbasic.bst  spmpsci.bst   (Springer class + bib styles)
+Exercises/         weekly exercise sheets and answers (see below)
+BookMaterial/      legacy DocOnce sources (*.do.txt), notes.md outline, Programs/
+```
+
+`BookMaterial/notes.md` is the **planned outline** for the full book — consult
+it before proposing new chapter content, and update it when the plan changes.
+
+## Building
+
+`book.tex` compiles with `pdflatex` + `bibtex` + `makeindex` (style `svind.ist`).
+It uses `[dvips]` options on `epsfig`/`graphicx` and loads `pstricks`, so
+figure handling is DVI-oriented in places.
+
+### Known build issues — do not silently "fix", flag them
+
+1. `chapter1.tex` is currently a **standalone `article`** (`\documentclass` at
+   line 1, `\begin{document}`/`\end{document}`) yet `book.tex` does
+   `\input{chapter1}`. The book will not compile as-is. To fold it in, strip
+   the preamble and `document` environment and start it with `\chapter{...}`
+   (as `chapter2.tex` does), reconciling its local macros with the book's.
+2. `book.tex` has `\include{foreword}` but `foreword.tex` does not exist.
+3. Most `\part`s in `book.tex` have their `\input` lines commented out —
+   that is intentional work-in-progress, not an error.
+
+## LaTeX conventions
+
+- Chapter files start directly with `\chapter{...}`, no preamble (see
+  `chapter2.tex`). All packages and macros belong in `book.tex`.
+- **Never redefine a macro locally that `book.tex` already defines.** The book
+  preamble defines, among others:
+  - `\be \ee \bea \eea \beN \eeN \beaN \eeaN \bdm \edm` (equation shorthands)
+  - `\op{} \Op{} \OP{} \vec{} \matr{} \bfv{} \uvec{} \det{}`
+  - `\mean{}` and sized variants `\meanb \meanbb \meanbbb \meanbbbb`
+  - `\brab \ketb \overlap \bracket \projection` + `b/bb/bbb/bbbb` sized variants
+  - `\ud{} \udd{} \bigO \real{} \prob \cov \var \PsiT \Det{}`
+  - `Python` and `C++` `lstnewenvironment`s for code listings
+- Equations: numbered `equation` environments with labels in the pattern
+  `\label{eq:2-1a}` (chapter number, running index, letter suffix). Reference
+  as `Eq.~(\ref{eq:2-1a})`.
+- Add `\index{...}` entries for new terminology — the book has `\makeindex`.
+- Citations use `\cite{}` with `\bibliographystyle{unsrt}`; Springer styles
+  (`spphys`, `spbasic`, `spmpsci`) are available if the publisher requires them.
+- Notation follows `chapter2.tex`: `a^\dagger_\alpha`, `|0\rangle`,
+  `|\alpha_1\dots\alpha_n\rangle_{\mathrm{AS}}`, `\{A,B\}` for anticommutators.
+
+## Exercises/
+
+Weekly sheets for the course. Two document styles coexist:
+
+- **Exercise sheets** (`ExercisesWeekNN.tex`, `FirstMidterm2025.tex`,
+  `SecondMidterm2025.tex`): `\documentclass[prc]{revtex4}`, title
+  `Exercises FYS4480/9480, week NN, <Month D-D, YYYY>`, body organised as
+  `\subsection*{Exercise 1}`, `\subsection*{Exercise 2}`, …
+- **Answer sheets** (`AnswersWeekNN.tex`, `AnswerLipkin.tex`):
+  `\documentclass[a4paper, 11pt, notitlepage, english]{article}` with a fuller
+  preamble including `listings` set up for Python.
+
+Both define their own local macros (`\bra`, `\ket`, `\element`, `\normord`,
+`\Heff`, `\Veff`, `\Span`, `\tr`, `\diag`, …) — copy the preamble from the
+nearest existing week rather than inventing one. Each file is standalone.
+
+Recurring model systems across the weeks: the **Lipkin model**, the **pairing
+model**, the **electron gas** (`electrongas.tex`), and simple harmonic-oscillator
+systems.
+
+## Jupyter-book target
+
+`../LectureNotes/` holds the executable version: `_config.yml`, `_toc.yml`,
+markdown front matter (`intro.md`, `teachers.md`, `textbooks.md`) and chapter
+notebooks (`notation.ipynb`, `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`,
+`mbpt.ipynb`, `cc.ipynb`, `vmcdmc.ipynb`, …). New book material that includes
+runnable code should have a notebook counterpart, and new notebooks must be
+registered in `_toc.yml`.
+
+Note: `_toc.yml` lists `greensfunctions.ipynb`, which does not exist yet.
+
+## BookMaterial/
+
+Legacy **DocOnce** sources (`*.do.txt`) that predate the LaTeX chapters —
+`secondquant.do.txt`, `fci.do.txt`, `hfock.do.txt`, `cc.do.txt`, `mbpt.do.txt`,
+`notation.do.txt`, `quantumcomputing.do.txt`. The `.dlog` files are DocOnce
+translation logs; `*.p.tex` and `*~` are generated/backup artefacts — never edit
+those. `chapter2.tex` was derived from `secondquant.do.txt`, so that pair is the
+reference example for converting DocOnce to book LaTeX.
+
+`BookMaterial/Programs/` contains `CCD_PairingModel.py`,
+`NeutronMatterCCD_Ladders.py`, `ucc.py`, `ho1dim.py`, `ho2dim.py`; `sd.py` sits
+one level up in `BookMaterial/`.
+
+## House rules
+
+- Match the surrounding prose voice: first person plural ("We introduce…",
+  "It follows that…"), derivations written out step by step.
+- Prefer editing existing chapter files over creating new ones; when a new
+  chapter is genuinely needed, add it to `book.tex` under the right `\part`
+  and to `BookMaterial/notes.md`.
+- Leave `*~` backup files, `.dlog` logs and `.DS_Store` untouched.
