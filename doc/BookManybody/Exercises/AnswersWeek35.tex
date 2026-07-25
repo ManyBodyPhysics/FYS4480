@@ -1,0 +1,374 @@
+\documentclass[a4paper, 11pt, notitlepage, english]{article}
+
+\usepackage{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc, url}
+\usepackage{textcomp}
+\usepackage{amsmath, amssymb}
+\usepackage{amsbsy, amsfonts}
+\usepackage{graphicx, color}
+\usepackage{parskip}
+\usepackage{framed}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{flafter}
+
+
+\usepackage{geometry}
+\geometry{headheight=0.01mm}
+\geometry{top=24mm, bottom=29mm, left=39mm, right=39mm}
+
+\renewcommand{\arraystretch}{2}
+\setlength{\tabcolsep}{10pt}
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+
+\usepackage{listings}
+\lstset{language=python}
+\lstset{basicstyle=\ttfamily\small}
+\lstset{frame=single}
+\lstset{keywordstyle=\color{red}\bfseries}
+\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+
+\newcommand{\dd}[1]{\ \text{d}#1}
+\newcommand{\f}[2]{\frac{#1}{#2}} 
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bra}[1]{\langle #1|}
+\newcommand{\ket}[1]{|#1 \rangle}
+\newcommand{\braket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\braup}[1]{\langle #1 \left|\uparrow\rangle\right.}
+\newcommand{\bradown}[1]{\langle #1 \left|\downarrow\rangle\right.}
+\newcommand{\av}[1]{\left| #1 \right|}
+\newcommand{\op}[1]{\hat{#1}}
+\newcommand{\braopket}[3]{\langle #1 | {#2} | #3 \rangle}
+\newcommand{\ketbra}[2]{\ket{#1}\bra{#2}}
+\newcommand{\pp}[1]{\frac{\partial}{\partial #1}}
+\newcommand{\ppn}[1]{\frac{\partial^2}{\partial #1^2}}
+\newcommand{\up}{\left|\uparrow\rangle\right.}
+\newcommand{\upup}{\left|\uparrow\uparrow\rangle\right.}
+\newcommand{\down}{\left|\downarrow\rangle\right.}
+\newcommand{\downdown}{\left|\downarrow\downarrow\rangle\right.}
+\newcommand{\updown}{\left|\uparrow\downarrow\rangle\right.}
+\newcommand{\downup}{\left|\downarrow\uparrow\rangle\right.}
+\newcommand{\bupup}{\left.\langle\uparrow\uparrow\right|}
+\newcommand{\bdowndown}{\left.\langle\downarrow\downarrow\right|}
+\newcommand{\bupdown}{\left.\langle\uparrow\downarrow\right|}
+\newcommand{\bdownup}{\left.\langle\downarrow\uparrow\right|}
+\renewcommand{\d}{{\rm d}}
+\newcommand{\Res}[2]{{\rm Res}(#1;#2)}
+\newcommand{\To}{\quad\Rightarrow\quad}
+\newcommand{\eps}{\epsilon}
+\newcommand{\inner}[2]{\langle #1 , #2 \rangle}
+
+
+\newcommand{\bt}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\textsf{\textbf{#1}}}
+\newcommand{\I}{\boldsymbol{\mathcal{I}}}
+\newcommand{\p}{\partial}
+
+\title{Exercises week 35, August 25-29, 2025}
+
+\begin{document}
+\maketitle
+
+\section*{Exercise 1}
+
+In this problem we consider the Slater determinant
+$$\Phi_\lambda^{AS} (x_1, x_2, \ldots, x_N; \alpha_1, \ldots, \alpha_N) = \frac{1}{\sqrt{N!}}\sum_p (-)^p \op{P} \prod_{i=1}^N \psi_{\alpha_i}(x_i).$$
+Where $\alpha_i$ are quantum numbers and $N$ is the number of particles. The sum over $p$ is a summation over all possible permutations.
+
+\subsection*{a)}
+If we let $N=3$, the Slater determinant becomes:
+\begin{align*}   
+\Phi_\lambda^{AS}(\tau;\bt{\alpha}) = \frac{1}{\sqrt{6}} \bigg(
+&\psi_{\alpha_1}(x_1) \psi_{\alpha_2} (x_2)\psi_{\alpha_3}(x_3)
+- \psi_{\alpha_1}(x_2) \psi_{\alpha_2} (x_1)\psi_{\alpha_3}(x_3) \\
+&\quad+ \psi_{\alpha_1}(x_2) \psi_{\alpha_2} (x_3)\psi_{\alpha_3}(x_1)  
+- \psi_{\alpha_1}(x_3) \psi_{\alpha_2} (x_2)\psi_{\alpha_3}(x_1) \\
+&\qquad+ \psi_{\alpha_1}(x_3) \psi_{\alpha_2} (x_1)\psi_{\alpha_3}(x_2) 
+- \psi_{\alpha_1}(x_1) \psi_{\alpha_2} (x_3)\psi_{\alpha_3}(x_2)\bigg)
+\end{align*}
+
+\subsection*{b)}
+We will no show that the slater determinant is normalized, in the sense that
+$$\braket{\Phi_\lambda^{AS}}{\Phi_\lambda^{AS}} = \int |\Phi_\lambda^{AS} (x_1,\ldots, x_N, \alpha_1, \ldots, \alpha_N)|^2 \ \d \tau= 1.$$
+To do this we will assume that the single-particle states forms an orthonormal set, i.e.,
+$$\braket{\psi_{\alpha_i}}{\psi_{\alpha_j}} = \int \psi^*_{\alpha_i}(\bt{r})\psi_{\alpha_j}(\bt{r}) \ \d \bt{r} = \delta_{ij},$$
+where $\delta_{ij}$ is the Kronecker-delta.
+
+We now introduce the antisymmetrizer operator,
+$$\mathcal{A} = \frac{1}{N!}\sum_p (-)^p \op{P},$$
+and the \emph{Hartree-function},
+$$\phi_H \equiv \prod_{i=1}^N \psi_{\alpha_i}(x_i).$$
+The Slater determinant is now written compactly as
+$$\Phi_\lambda^{AS} = \sqrt{N!}\mathcal{A}\phi_H.$$
+We can then write the inner-product as
+$$\braket{\Phi_\lambda^{AS}}{\Phi_\lambda^{AS}} = N! \int \mathcal{A}^* \phi^*_H \mathcal{A} \phi_H \ \d \tau .$$
+We can simplify this as follows
+$$\braket{\Phi_\lambda^{AS}}{\Phi_\lambda^{AS}} = N! \int \phi^*_H \mathcal{A}^2 \phi_H \ \d \tau = N! \int \phi^*_H \mathcal{A} \phi_H \ \d \tau.$$
+Where we have used the fact that the antisymmetrizer is Hermitian, $\mathcal{A}^\dagger = \mathcal{A}$ and that it is a projection operator, meaning $\mathcal{A}^2 = \mathcal{A}$.
+We now write out the definition of the antisymmetrizer, giving
+$$\braket{\Phi_\lambda^{AS}}{\Phi_\lambda^{AS}} = \sum_p (-)^p \int \phi^*_H \\\op{P} \phi_H \ \d \tau.$$
+As the permutation operator only acts on one of the Hartree-functions, the two functions will never be similar and the orthogonality of the single-particle states makes these cross-products cancel out. We are left only with the contribution when the permuation operator is identity, giving
+$$\braket{\Phi_\lambda^{AS}}{\Phi_\lambda^{AS}} = \int \phi^*_H \phi_H \ \d \tau = 1.$$
+Where we again used our assumption about the orthonormality of the single-particle states.
+
+
+\subsection*{c)}
+We now define a general onebody operator and a general twobody operator:
+$$\op{F} = \sum_{i=1}^N \op{f}(x_i), \qquad \op{G} = \sum_{i<j} \op{g}(x_i, x_j).$$
+
+And we will  calculate the expectation value of these operators for a two-particle Slater determinant, 
+$$\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{F}}{\Phi^{AS}_{\alpha_1\alpha_2}}, \qquad \braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{G}}{\Phi^{AS}_{\alpha_1\alpha_2}}.$$
+
+We start with the onebody operator, using the same technique as above using the antisymmetrizer, we can write out the integral as follows
+$$\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{F}}{\Phi^{AS}_{\alpha_1\alpha_2}} = 2\int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{F} \mathcal{A} \psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \d \tau.$$
+We now insert the definitions of the two operators and find
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{F}}{\Phi^{AS}_{\alpha_1\alpha_2}} &= \sum_p (-)^p \int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{f}(x_1) \op{P} \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2) \ \d \tau \\
+&\qquad + \sum_p (-)^p \int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{f}(x_2) \op{P} \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2) \ \d \tau.
+\end{align*}
+As earlier, if one of the Hartree-functions is permutated, the integral vanishes. Both sums therefore only results in one term each, giving us
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{F}}{\Phi^{AS}_{\alpha_1\alpha_2}} &=  \int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{f}(x_1)  \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2) \ \d \tau \\
+&\qquad +  \int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{f}(x_2)  \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2) \ \d \tau
+\end{align*}
+In both integrals, the onebody operator only acts on a single particle, i.e., a single coordinate $x_i$. This means we can integrate over the other coordinate, and due to the orthonormaility of the single-particle states, we know that this integral will be unitary. This means we are left with
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{F}}{\Phi^{AS}_{\alpha_1\alpha_2}} &=  \int \psi^*_{\alpha_1}(\bt{r}) \op{f}(\bt{r})  \psi_{\alpha_1}(\bt{r}) \ \d \bt{r} +  \int \psi^*_{\alpha_2}(\bt{r}) \op{f}(\bt{r})  \psi_{\alpha_2}(\bt{r}) \ \d \bt{r}
+\end{align*}
+This is as far as we get for a general one-body term $\op{f}_i$. We can however introduce the short-hand,
+$$\braopket{\alpha_i}{\op{q}}{\alpha_j} \equiv  \int \psi^*_{\alpha_i}(\bt{r}) \op{q}(\bt{r})  \psi_{\alpha_j}(\bt{r}) \ \d \bt{r},$$
+which yields the final answer
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{F}}{\Phi^{AS}_{\alpha_1\alpha_2}} &=  \braopket{\alpha_1}{\op{f}}{\alpha_1} + \braopket{\alpha_2}{\op{f}}{\alpha_2}.
+\end{align*}
+
+
+We now go through the same process for the twobody operator. We start by writing out the two-particle Slater determinant using the antisymmetrizer and simplifying, giving
+$$\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{G}}{\Phi^{AS}_{\alpha_1\alpha_2}} = 2\int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{G} \mathcal{A} \psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \d \tau.$$
+As there only are two particles, the general two-body operator only consists of one term, $\op{G} = g(x_1,x_2)$. Inserting for both operators then gives
+$$\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{G}}{\Phi^{AS}_{\alpha_1\alpha_2}} = \sum_p (-)^p \int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{g}(x_1,x_2) \op{P} \psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \d \tau.$$
+We now write out the permutations and find
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{G}}{\Phi^{AS}_{\alpha_1\alpha_2}} &=  \int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{g}(x_1,x_2) \psi_{\alpha_1}(x_1) \psi_{\alpha_2}(x_2) \d \tau \\ 
+&\qquad - \int \psi^*_{\alpha_1}(x_1)\psi^*_{\alpha_2}(x_2) \op{g}(x_1,x_2)  \psi_{\alpha_1}(x_2) \psi_{\alpha_2}(x_1) \d \tau.
+\end{align*}
+The first term here is known as the direct term, or the \emph{Hartree}-term, while the second term is known as the exchange term, or the \emph{Fock}-term.
+
+We now introduce the short-hand notation
+$$\braopket{\alpha \beta}{\op{q}}{\gamma \delta} \equiv \int \psi^*_{\alpha}(x_1)\psi^*_{\beta}(x_2) \op{q}(x_1,x_2) \psi_{\gamma}(x_1)\psi_{\delta}(x_2) \ \d x_1 \d x_2,$$
+and also
+$$\braopket{\alpha \beta}{\op{q}}{\gamma \delta}_{\rm AS} = \braopket{\alpha \beta}{\op{q}}{\gamma \delta} + \braopket{\alpha \beta}{\op{q}}{\delta \gamma}.$$
+Using these, the final result can be written as.
+$$\braopket{\Phi^{AS}_{\alpha_1\alpha_2}}{\op{G}}{\Phi^{AS}_{\alpha_1\alpha_2}} = \braopket{\alpha_1\alpha_2}{\op{g}}{\alpha_1 \alpha_2}_{\rm AS}.$$
+
+We expect both the onebody and twobody operators to have permutation symmetry. This must be the cause because the particles were are studying are indistinguishable. This also mean they commute with the antisymmetrizer
+$$[\mathcal{A},\op{F}] = [\mathcal{A},\op{G}] = 0.$$
+We also expect them to be hermitian, as they must correspond to physical observables, which have real eigenvalues.
+
+
+\subsection*{d)}
+We will now calculate the same matrix elements again, but this time we will do it for a general $N$-particle Slater determinant. The steps are very similar to that of the two-particle case, so we only briefly show the calculations.
+
+Starting with the onebody operator, we have
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha}}{\op{F}}{\Phi^{AS}_{\alpha}} &= N!\int \phi_H^* \op{F} \mathcal{A} \phi_H \ \d \tau \\
+&= \sum_{i=1}^N \sum_p (-)^p \int \phi_H^* \op{f}(x_i) \op{P} \phi_H \ \d \tau \\
+&= \sum_{i=1}^N \int \phi_H^* \op{f}(x_i) \phi_H \ \d \tau \\
+&= \sum_{i=1}^N \int \psi_{\alpha_i}(\bt{r}) \op{f}(\bt{r}) \psi_{\alpha_i}(\bt{r}) \ \d \bt{r} \\
+&= \sum_{i=1}^N \braopket{\alpha_i}{\op{f}}{\alpha_i}.
+\end{align*}
+
+And for the twobody operator we have
+\begin{align*}
+\braopket{\alpha}{\op{G}}{\Phi^{AS}_{\alpha}} &= N!\int \phi_H^* \op{G} \mathcal{A} \phi_H \ \d \tau \\
+&= \sum_{i<j} \sum_p (-)^p \int \phi_H^* \op{g}(x_i,x_j) \op{P} \phi_H \ \d \tau.
+\end{align*}
+Now, for any pair of coordinates $(x_i, x_j)$, there are two contributing permutations of these coordinates, with opposite sites. If we now sum over all permutations we get
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha}}{\op{G}}{\Phi^{AS}_{\alpha}} 
+&= \sum_{i<j=1}^N \int \phi_H^* \op{g}(x_i,x_j) \big(1 - \op{P}_{ij}\big) \phi_H \ \d \tau \\
+&= \sum_{i<j=1}^N \bigg[\int \phi_H^* \op{g}(x_i,x_j) \phi_H \ \d \tau - \int \phi_H^* \op{g}(x_i,x_j) \op{P}_{ij} \phi_H \bigg] \ \d \tau.
+\end{align*}
+Where $\op{P}_{ij}$ is the permutation operator that changes the $(x_i, x_j)$ pair. Intstead of running $j$ from 1 to $N$, and letting $i<j$, we could sum both variables from 1 to $N$ in the following manner
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha}}{\op{G}}{\Phi^{AS}_{\alpha}} 
+&= \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N \bigg[\int \phi_H^* \op{g}(x_i,x_j) \phi_H \ \d \tau - \int \phi_H^* \op{g}(x_i,x_j) \op{P}_{ij} \phi_H \bigg] \ \d \tau.
+\end{align*}
+This is equivalent, as we have introduced a factor of $1/2$ to compensate that we run over all pairs twice. Note also that if $i=j$, the terms cancel eachother out, so those terms won't contribute to the final sum.
+
+As for the onebody case, in each term the twobody operator only acts on two particles, i.e., two coordinates $x_i$ and $x_j$. We can integrate all other degrees of freedom out of the Hartree-functions. We thus have
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha}}{\op{G}}{\Phi^{AS}_{\alpha}} 
+= \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N &\bigg[\int \psi_{\alpha_i}(x_i)^*\psi_{\alpha_j}(x_j) \op{g}(x_i,x_j) \psi_{\alpha_i}(x_i)\psi_{\alpha_j}(x_j) \ \d \tau \\
+&\qquad - \int \psi_{\alpha_i}(x_i)\psi_{\alpha_j}(x_j) \op{g}(x_i,x_j) \psi_{\alpha_i}(x_j)\psi_{\alpha_j}(x_i) \bigg] \ \d \tau,
+\end{align*}
+where we let the permutation operator work on the last term. Using the same shorthand as earlier, we can write this more compactily as
+$$ \braopket{\Phi^{AS}_{\alpha}}{\op{G}}{\Phi^{AS}_{\alpha}} 
+= \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N \braopket{\alpha_i\alpha_j}{\op{g}}{\alpha_i\alpha_j}_{\rm AS}.$$
+
+\subsection*{Summary}
+
+For a general N-particle Slater determinant, and general onebody and twobody operators, we have
+\begin{align*}
+\braopket{\Phi^{AS}_{\alpha}}{\op{F}}{\Phi^{AS}_{\alpha}} = \sum_{i=1}^N \braopket{\alpha_i}{\op{f}}{\alpha_i}, \qquad 
+\braopket{\Phi^{AS}_{\alpha}}{\op{G}}{\Phi^{AS}_{\alpha}} 
+= \frac{1}{2}\sum_{i=1}^N\sum_{j=1}^N \braopket{\alpha_i\alpha_j}{\op{g}}{\alpha_i\alpha_j}_{\rm AS}.
+\end{align*}
+
+
+\section*{Exercise 2}
+In this exercise we will look at a system with a very limited number of single-particle states. We label these states with the quantum number $p=1,2,\ldots$.Each single-particle state can hold up to two particles due to spin, which we label with the quantum numbers $\sigma=\{\uparrow, \downarrow\}$. The single-particle states are eigenstates of the onebody Hamiltonian
+$$\op{h}_0 \psi_{p\sigma} = pd\psi_{p\sigma},$$
+where $d$ is simply the spacing between the different energy levels.
+
+We will look at how this system behaves when we put two indistinguishable fermions in it. In both exercise b) and c) we will assume that these particles must inhabit the same single-particle state. We can then write the two-particle Slater determinant as
+$$\Phi_p = \frac{1}{2}\bigg(\psi_{p\uparrow}(x_1)\psi_{p\downarrow}(x_2) - \psi_{p\uparrow}(x_2)\psi_{p\downarrow}(x_1)\bigg).$$ 
+If we now introduce an interaction term into the Hamiltonian, such that
+$$\op{H} = \op{H}_0 + \op{H}_I,$$
+then the Slater determinants are \emph{not} the eigenstates of this Hamiltonian. However, the Slater determinants forms a ket-basis, meaning we can write out eigenstates of the Hamiltonian as linear combinations of the SDs
+\begin{align*}
+\ket{\Psi_0} = c_{0}\ket{\Phi_0} + c_{1}\ket{\Phi_1}, \\
+\ket{\Psi_1} = c_{2}\ket{\Phi_0} + c_{3}\ket{\Phi_1}.
+\end{align*}
+To find the coefficients $c_{i}$ we can look to the Schrödinger equation. As the $\Psi_i$'s are eigenstates of the Hamiltonian, we have
+$$\op{H}\ket{\Psi_i} = \eps_i\ket{\Psi_i}.$$ 
+We can also express the Hamiltionian operator is the Slater determinant ket-basis. To illustrate this, let us look at an arbitray operator and an arbitraty ket-basis $\{\ket{\phi_i}\}_i$. Using the \emph{completeness relation}\footnote{See Sakurai sec 1.3, p. 19, for more details.}, we can expand the operator into our ket-basis
+$$\op{X} = \sum_i \sum_j \ket{\phi_i}\braopket{\phi_i}{\op{X}}{\phi_j}\bra{\phi_j}.$$
+We now introduce the \emph{matrix representation} of the operator in the ket-basis, were the matrix elements are given as follows
+$$\op{X}_{ij} = \braopket{\phi_i}{\op{X}}{\phi_j}.$$
+We can now look at how the operator $\op{X}$ acts on a ket.
+$$\ket{\beta} = \op{X} \ket{\alpha} = \sum_i \sum_j \ket{\phi_i}\braopket{\phi_i}{\op{X}}{\phi_j}\braket{\phi_j}{\alpha}.$$
+Now, this might look somewhat complicated, but if we now right-multiply with the ket $\ket{\phi_i}$, we will see that we are left:
+$$\braket{\phi_i}{\beta} = \sum_j \braopket{\phi_i}{\op{X}}{\phi_j}\braket{\phi_j}{\alpha}. = \sum_j X_{ij} \alpha_j.$$
+So we see that we can interpret the operator acting on the ket as a simply matrix-vector product, where the vectors are also represented in the ket-basis, so we have
+$$
+\begin{pmatrix}
+\braopket{\phi_1}{\op{X}}{\phi_1} & \cdots & \braopket{\phi_1}{\op{X}}{\phi_N} \\
+\braopket{\phi_2}{\op{X}}{\phi_1} & \cdots & \braopket{\phi_2}{\op{X}}{\phi_N} 
+\\
+\vdots & \ddots & \vdots \\
+\braopket{\phi_N}{\op{X}}{\phi_1} & \cdots & \braopket{\phi_N}{\op{X}}{\phi_N}
+\end{pmatrix}
+\begin{pmatrix}
+\braket{\phi_1}{\alpha} \\
+\braket{\phi_2}{\alpha} \\
+\vdots \\
+\braket{\phi_N}{\alpha}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\braket{\phi_1}{\beta} \\
+\braket{\phi_2}{\beta} \\
+\vdots \\
+\braket{\phi_N}{\beta}
+\end{pmatrix}.
+$$
+Remember that $\braket{\phi_i}{\alpha} = c_i$. In summary, we can represent both kets and operators in a given ket-basis, and we are then left with a simple matrix-vector product.
+
+This is relevant for us, because if we represent the Hamiltonian in the $\Phi_p$-basis, finding the eigenstates corresponds to finding the eigenvectors of this matrix, as
+$$\op{H}\ket{\Psi_0} = \eps_0 \ket{\Psi_0},$$
+can now be written
+$$
+\begin{pmatrix}
+\braopket{\Phi_0}{\op{H}}{\Phi_0} & \braopket{\Phi_0}{\op{H}}{\Phi_1} \\
+\braopket{\Phi_1}{\op{H}}{\Phi_0} & \braopket{\Phi_1}{\op{H}}{\Phi_1} \\
+\end{pmatrix}
+\begin{pmatrix}
+    c_0 \\ c_1
+\end{pmatrix} 
+= \eps_0 \begin{pmatrix}
+    c_0 \\ c_1
+\end{pmatrix} 
+.$$
+
+
+
+
+
+\subsection*{a)}
+If we allow three different single-particle states, $p=\{1,2,3\},$ each with degeneracy 2 due to spin, there will be a total of $3\cdot 3 = 9$ combinations of the two particles in the three different states. However, as the particles are indistinguishable, there should be a permutation symmetry of the two particles, leaving 6 possible two-particle Slater determinants. In the case that we in addition insist that the two particles must inhabit the same single-particle state, there would be 3 possible Slater determinants.
+
+
+\subsection*{b)}
+We will now limit the system to only the two lowest states, $p=\{1,2\}$. We assume that the particles only can inhabit the same $p$-level. We introduce an interaction term to the Hamiltonian and want to find the eigenstates of the system. We let the interaction term just be a constant $-g$ energy.
+
+Following the approach outlined earlier, we first need to find the matrix elements of the Hamiltonian represented in the basis $\{\Phi_0, \Phi_1\}$, meaning the matrix
+$$
+\begin{bmatrix}
+\braopket{\Phi_0}{\op{H}}{\Phi_0} & \braopket{\Phi_0}{\op{H}}{\Phi_1} \\
+\braopket{\Phi_1}{\op{H}}{\Phi_0} & \braopket{\Phi_1}{\op{H}}{\Phi_1} \\
+\end{bmatrix}.
+$$
+The off-diagonal terms will only contain the interaction between the particles, and so as asummed will only be equal to $-g$.
+
+oFr the diagonal terms we also get the contribution from onebody operator:
+$$\braopket{\Phi_p}{\op{H}_0}{\Phi_p} = \sum_{i=1}^N \braopket{p}{\op{h}_0}{p} = 2\braopket{p}{\op{h}_0}{p}.$$
+And since $\psi_{p\sigma}$ is an eigenstate of $\op{H}_0$, we get
+$$\braopket{\Phi_p}{\op{H}_0}{\Phi_p} = 2\braopket{p}{\op{h}_0}{p} = 2pd,$$
+where we used the orthonormality of the single-particle states.
+
+Putting this together, we see that the matrix representation of the Hamiltonian is 
+$$\op{H} \overset{\cdot}{=} \begin{bmatrix}
+2d -g & -g \\
+-g & 4d -g 
+\end{bmatrix}.$$
+
+We want to find the eigenvalues and eigenvectors of this matrix. The eigenvalue equation for the matrix is
+$$\big(\op{H} - \lambda\I)\ket{\Psi} = 0 \To \det \big(\op{H} - \lambda\I) = 0,$$
+which gives the second-order equation
+$$\lambda^2 + (2g-6d)\lambda + 8d^2 - 24dg.$$
+Solving for $\lambda$ gives us
+$$\lambda_\pm = 3d -g \pm \sqrt{g^2 + d^2}.$$
+And we can now find the eigenvectors by diagonlizing
+$$
+\begin{bmatrix}
+2d - g - \lambda_\pm & -g \\
+-g & 4d-g -\lambda_\pm
+\end{bmatrix}
+$$
+Inserting for $\lambda$ gives
+$$\begin{bmatrix}
+-d \mp \sqrt{d^2 + g^2} & -g \\
+-g & d \mp \sqrt{d^2 + g^2}
+\end{bmatrix},$$
+which through elementary row operations give
+$$
+\begin{bmatrix}
+\frac{d\pm\sqrt{d^2 + g^2}}{g} & 0 \\
+0 & 1.
+\end{bmatrix}$$
+So we have the eigenstates (non-normalized)
+$$\ket{\Psi_0} = \frac{d + \sqrt{d^2 + g^2}}{g} \ket{\Phi_0} + \ket{\Phi_1},$$
+$$\ket{\Psi_1} = \frac{d - \sqrt{d^2 + g^2}}{g} \ket{\Phi_0} + \ket{\Phi_1}.$$
+We can introduce the dimensionless variable $\gamma \equiv d/g$, which characterizes how strong the interaction between the particles is compared to the difference in energy between the $p$-levels. We can then write the (non-normalized) eigenstates as 
+$$\ket{\Psi_0} = \big(\gamma + \sqrt{1 + \gamma^2}\big) \ket{\Phi_0} + \ket{\Phi_1},$$
+$$\ket{\Psi_1} = \big(\gamma - \sqrt{1 + \gamma^2}\big) \ket{\Phi_0} + \ket{\Phi_1}.$$
+
+\section*{c)}
+We will now add the $p=3$ level. Nothing else is changed. Our Hamiltonian can now be represented as
+$$\op{H} \overset{\cdot}{=} \begin{bmatrix}
+2d -g & -g & -g \\
+-g & 4d -g & -g \\
+-g & -g & 6d - g.
+\end{bmatrix} {=} \begin{bmatrix}
+2\gamma -1 & -1 & -1 \\
+-1 & 4\gamma -1 & -1 \\
+-1 & -1 & 6\gamma - 1.
+\end{bmatrix}.$$
+This is because the cross-terms are still constant, and we still have $\braopket{\Phi_p}{\op{H_0}}{\Phi_p} = 2pd,$---which for $p=3$ gives $6d$.
+
+We can find the eigenvalues and eigenvectors by using a symbolic programming tool like wolfram alpha or sympy. 
+
+\end{document}

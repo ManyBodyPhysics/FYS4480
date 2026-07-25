@@ -1,0 +1,181 @@
+\documentclass[prc]{revtex4}
+\usepackage[dvips]{graphicx}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+\usepackage{lscape}
+
+\usepackage{epic,eepic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[dvips]{epsfig}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{bezier}
+\usepackage{pstricks}
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+%\usepackage{braket}
+\usepackage[dvips]{graphicx}
+\usepackage{pst-plot}
+
+\newcommand{\One}{\hat{\mathbf{1}}}
+\newcommand{\eff}{\text{eff}}
+\newcommand{\Heff}{\hat{H}_\text{eff}}
+\newcommand{\Veff}{\hat{V}_\text{eff}}
+\newcommand{\braket}[1]{\langle#1\rangle}
+\newcommand{\Span}{\operatorname{sp}}
+\newcommand{\tr}{\operatorname{trace}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bra}[1]{\left\langle #1 \right|}
+\newcommand{\ket}[1]{\left| #1 \right\rangle}
+\newcommand{\element}[3]
+    {\bra{#1}#2\ket{#3}}
+
+\newcommand{\normord}[1]{
+    \left\{#1\right\}
+}
+
+\usepackage{amsmath}
+\begin{document}
+
+\title{Exercises FYS4480, week 34, August 18-22, 2025}
+%\author{}
+\maketitle
+The exercises this week are mainly meant as reminders of specific linear algebra elements which we will use throughout the course.
+
+\subsection*{Exercise 1, unitary transformations and orthogonality}
+
+In many-body theories it is common to expand a new basis interms of a
+known basis. Well-known examples thereof are the analytical solutions
+to the quantum mechanical harmonic oscillator or the atomic hydrogen
+case with a Coulomb interaction between the electron and the atomic
+nucleus. Varying the expansion coefficients leads then to a
+variational minimum which is expected to be closer to the true
+minimum, the so-called energy ground state (or fundamental state) of a
+system for a given Hamiltonian. This forms for example the background
+for mean-field theories, full configuration interaction theory and
+many other many-body methods. Normally these expansion coefficients
+represent the matrix elements of a unitary or orthogonal matrix.
+
+Assuming that the matrix $\bm{U}$ is unitary with dimension $n\times
+n$ and matrix elements $u_{ij}$, we can, using a so-called Dirac
+notation for vectors, represent a new vector $\vert \psi_p\rangle$ of
+length $n$ via another vector $\vert \phi_{\lambda}\rangle$ with
+length $n$ through
+
+\[
+\vert \psi_p\rangle = \bm{U} \vert \phi_{\lambda}\rangle.
+\]
+
+It is common to assume that the basis vectors $\vert \phi\rangle$ are
+normalized and orthogonal and are the eigenvectors of an eigenvalue
+problem
+\[
+\bm{O}\vert \phi_{\lambda}\rangle = o_{\lambda}\vert \phi_{\lambda}\rangle,
+\]
+where $\bm{O}$ is a Hermitian matrix of dimension $n\times n$ and
+$_{\lambda}$ one of the $n$ eigenvalues.
+
+We have thus defined our new basis by performing a unitary (or
+othogonal) transformation as indicated in the first equation above.
+
+\begin{enumerate}
+\item[a)] Write down the properties of unitary and orthogonal matrices. 
+\item[b)] Write down the properties of hermitian matrices.  
+
+\item[c)] Assuming that the  coefficients $u_{p\lambda}$ belong to a unitary or orthogonal trasformation, 
+show that the new basis is orthogonal and normalized as well.
+
+\item[d)] Show that the eigenvalues of $\vert \psi_p\rangle$ are the same as those of $\vert \phi_{\lambda}\rangle$.
+
+\end{enumerate}
+
+
+\subsection*{Exercise 2, determinamts}
+
+
+
+\begin{enumerate}
+
+
+\item[a)] 
+Consider the following determinant
+\[
+\left| \begin{array}{cc} \alpha_1b_{11}+\alpha_2sb_{12}& a_{12}\\
+                         \alpha_1b_{21}+\alpha_2b_{22}&a_{22}\end{array} \right|=\alpha_1\left|\begin{array}{cc} b_{11}& a_{12}\\
+                         b_{21}&a_{22}\end{array} \right|+\alpha_2\left| \begin{array}{cc} b_{12}& a_{12}\\b_{22}&a_{22}\end{array} \right|
+\]
+
+We can generalize this to  an $n\times n$ matrix and have 
+\[
+\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots & \sum_{k=1}^n c_k b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots & \sum_{k=1}^n c_k b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+a_{n1}& a_{n2} & \dots & \sum_{k=1}^n c_k b_{nk} &\dots & a_{nn}\end{array} \right|=
+\sum_{k=1}^n c_k\left| \begin{array}{cccccc} a_{11}& a_{12} & \dots &  b_{1k} &\dots & a_{1n}\\
+a_{21}& a_{22} & \dots &  b_{2k} &\dots & a_{2n}\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+\dots & \dots & \dots & \dots & \dots & \dots\\
+a_{n1}& a_{n2} & \dots &  b_{nk} &\dots & a_{nn}\end{array} \right| .
+\]
+This is a property we will use in for example our discussions of mean-field theories.
+
+
+Show that you can generalize the previous results, now 
+with all elements $a_{ij}$  being given as functions of 
+linear combinations  of various coefficients $c$ and elements $b_{ij}$,
+\[
+\left| \begin{array}{cccccc} \sum_{k=1}^n b_{1k}c_{k1}& \sum_{k=1}^n b_{1k}c_{k2} & \dots & \sum_{k=1}^n b_{1k}c_{kj}  &\dots & \sum_{k=1}^n b_{1k}c_{kn}\\
+\sum_{k=1}^n b_{2k}c_{k1}& \sum_{k=1}^n b_{2k}c_{k2} & \dots & \sum_{k=1}^n b_{2k}c_{kj} &\dots & \sum_{k=1}^n b_{2k}c_{kn}\\
+\dots & \dots & \dots & \dots & \dots & \dots \\
+\dots & \dots & \dots & \dots & \dots &\dots \\
+\sum_{k=1}^n b_{nk}c_{k1}& \sum_{k=1}^n b_{nk}c_{k2} & \dots & \sum_{k=1}^n b_{nk}c_{kj} &\dots & \sum_{k=1}^n b_{nk}c_{kn}\end{array} \right|=det(\mathbf{C})det(\mathbf{B}),
+\]
+where $det(\mathbf{C})$ and $det(\mathbf{B})$ are the determinants of $n\times n$ matrices
+with elements $c_{ij}$ and $b_{ij}$ respectively.  
+
+
+
+
+\item[b)]
+With our definition from the previous exercise of the new basis in terms of an orthogonal basis we have (now we specialize to a specific basis of single-particle functions)  
+
+\[
+\psi_p(x)  = \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x).
+\]
+If the coefficients $C_{p\lambda}$ belong to an orthogonal or unitary matrix, the new basis is also orthogonal.
+
+Show that the determinant in the new basis $\psi_p(x)$ can be written as (omitting a factor $1/\sqrt{N!}$, where $N$ is the number of particles),
+\[
+\left| \begin{array}{ccccc} \psi_{p}(x_1)& \psi_{p}(x_2)& \dots & \dots & \psi_{p}(x_N)\\
+                            \psi_{q}(x_1)&\psi_{q}(x_2)& \dots & \dots & \psi_{q}(x_N)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \psi_{t}(x_1)&\psi_{t}(x_2)& \dots & \dots & \psi_{t}(x_N)\end{array} \right|=
+\left| \begin{array}{ccccc} \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_1)& \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{p\lambda}\phi_{\lambda}(x_N)\\
+                            \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{q\lambda}\phi_{\lambda}(x_N)\\  
+                            \dots & \dots & \dots & \dots & \dots \\
+                            \dots & \dots & \dots & \dots & \dots \\
+                     \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_1)&\sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_2)& \dots & \dots & \sum_{\lambda} C_{t\lambda}\phi_{\lambda}(x_N)\end{array} \right|,
+\]
+
+which is nothing but $det(\mathbf{C})det(\Phi)$, with $det(\Phi)$ being the determinant given by the basis functions $\phi_{\lambda}(x)$. 
+
+\item[c)] Show that the new determinant (left hand side) differs from $det(\Phi)$ by a complex phase only.
+
+
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+

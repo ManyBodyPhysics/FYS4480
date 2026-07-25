@@ -1,0 +1,298 @@
+\documentclass[a4paper, 11pt, notitlepage, english]{article}
+
+\usepackage{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc, url}
+\usepackage{textcomp}
+\usepackage{amsmath, amssymb}
+\usepackage{amsbsy, amsfonts}
+\usepackage{graphicx, color}
+\usepackage{parskip}
+\usepackage{framed}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{flafter}
+
+
+\usepackage{geometry}
+\geometry{headheight=0.01mm}
+\geometry{top=24mm, bottom=29mm, left=39mm, right=39mm}
+
+\renewcommand{\arraystretch}{2}
+\setlength{\tabcolsep}{10pt}
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+%
+% Parametere for inkludering av kode fra fil
+%
+\usepackage{listings}
+\lstset{language=python}
+\lstset{basicstyle=\ttfamily\small}
+\lstset{frame=single}
+\lstset{keywordstyle=\color{red}\bfseries}
+\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+
+%
+% Definering av egne kommandoer og miljøer
+%
+\newcommand{\dd}[1]{\ \text{d}#1}
+\newcommand{\f}[2]{\frac{#1}{#2}} 
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bra}[1]{\langle #1|}
+\newcommand{\ket}[1]{|#1 \rangle}
+\newcommand{\braket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\braup}[1]{\langle #1 \left|\uparrow\rangle\right.}
+\newcommand{\bradown}[1]{\langle #1 \left|\downarrow\rangle\right.}
+\newcommand{\av}[1]{\left| #1 \right|}
+\newcommand{\op}[1]{\hat{#1}}
+\newcommand{\braopket}[3]{\langle #1 | {#2} | #3 \rangle}
+\newcommand{\ketbra}[2]{\ket{#1}\bra{#2}}
+\newcommand{\pp}[1]{\frac{\partial}{\partial #1}}
+\newcommand{\ppn}[1]{\frac{\partial^2}{\partial #1^2}}
+\newcommand{\up}{\left|\uparrow\rangle\right.}
+\newcommand{\upup}{\left|\uparrow\uparrow\rangle\right.}
+\newcommand{\down}{\left|\downarrow\rangle\right.}
+\newcommand{\downdown}{\left|\downarrow\downarrow\rangle\right.}
+\newcommand{\updown}{\left|\uparrow\downarrow\rangle\right.}
+\newcommand{\downup}{\left|\downarrow\uparrow\rangle\right.}
+\newcommand{\bupup}{\left.\langle\uparrow\uparrow\right|}
+\newcommand{\bdowndown}{\left.\langle\downarrow\downarrow\right|}
+\newcommand{\bupdown}{\left.\langle\uparrow\downarrow\right|}
+\newcommand{\bdownup}{\left.\langle\downarrow\uparrow\right|}
+\renewcommand{\d}{{\rm d}}
+\newcommand{\Res}[2]{{\rm Res}(#1;#2)}
+\newcommand{\To}{\quad\Rightarrow\quad}
+\newcommand{\eps}{\epsilon}
+\newcommand{\inner}[2]{\langle #1 , #2 \rangle}
+
+
+\newcommand{\bt}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\textsf{\textbf{#1}}}
+\newcommand{\I}{\boldsymbol{\mathcal{I}}}
+\newcommand{\p}{\partial}
+%
+\title{Exercises week 39}
+\author{FYS4480, Fall semester 2025}
+\begin{document}
+\maketitle
+
+\section*{Exercise 1}
+
+In this problem set we will be looking more at second quantization. To get a more compact notation, we will use the following shorthand for the creation and annihilation operators throughout
+$$\op{\alpha}^\dag \equiv \op{a}_\alpha^\dag \quad \mbox{and} \quad \op{\alpha} = \op{a}_\alpha.$$
+
+For the first exercise, we will be looking closer at the general onebody and twobody operators, and how they are affected by a change of single-particle basis. We also look into number of particles and number of pairs operators in second quantization.
+
+In second quantization a general onebody operator can be written
+$$\op{T} = \sum_{\alpha\beta} \braopket{\alpha}{\op{t}}{\beta} \op{\alpha}^\dag \op{\beta},$$
+and a general twobody operator as
+$$\op{V} = \frac{1}{2}\sum_{\alpha\beta\gamma\delta} \braopket{\alpha\beta}{\op{v}}{\gamma\delta} \op{\alpha}^\dag \op{\beta}^\dag \op{\delta} \op{\gamma}.$$
+
+\subsection*{Change of Basis}
+We will now study what happens to these operators when we perform a change of single-particle basis. The general idea here, is that if we have a ket basis, $\{\phi_i\}_i$ then any ket can be expressed as a linear combination of these basis kets
+$$\ket{\psi} = \sum_i c_i \ket{\phi_i},$$
+where the coefficicents $c_i$ are generally complex numbers and can be found by taking the inner product 
+$$c_i = \braket{\phi_i}{\psi},$$
+which corresponds to projecting $\ket{\psi}$ onto the basis-ket $\ket{\phi_i}$. This means we can write any ket as
+$$\ket{\psi} = \sum_i  \braket{\phi_i}{\psi}\ket{\phi_i},$$
+and as the inner product is simply a number, we can rearrange this into
+$$\ket{\psi} = \sum_i  \ket{\phi_i}\braket{\phi_i}{\psi}.$$
+And from this we get what is called \emph{the completeness relation}, which states that 
+$$\sum_k \ketbra{\phi_k}{\phi_k} = 1,$$
+for any ket basis $\{\phi_k\}_k$. We will use this relation to show that a change of single-particle basis does not alter the form of the onebody and twobody operators in second quantization.
+
+\subsubsection*{Onebody operator}
+We now look at two distinct single-particle basis, we denote one with greek letters, and one with roman letters. To change from the first basis to the second, we insert the completeness relation twice into the onebody operator, 
+\begin{align*}
+\op{T} &= \sum_{\alpha\beta}\braopket{\alpha}{\op{t}}{\beta}\op{\alpha}^\dag \op{\beta}. \\
+&= \sum_{\alpha\beta}\sum_{ab} \braket{\alpha}{a}\braopket{a}{\op{t}}{b}\braket{b}{\beta}\op{\alpha}^\dag \op{\beta}.
+\end{align*}
+We can freely rearrange the inner products and the operators, as numbers always commute with operators, giving
+\begin{align*}
+\op{T} &= \sum_{\alpha\beta}\sum_{ab} \braopket{a}{\op{t}}{b}\braket{\alpha}{a}\op{\alpha}^\dag \braket{b}{\beta} \op{\beta}. 
+\end{align*}
+As the first inner product does not depend on $\alpha$ or $\beta$ we can put them outside the sum, so we rearrange further
+$$\op{T} = \sum_{ab} \braopket{a}{\op{t}}{b}\bigg(\sum_\alpha \braket{\alpha}{a}\op{\alpha}^\dag\bigg)\bigg(\sum_\beta \braket{b}{\beta}\op{\beta}\bigg).$$
+We now define
+$$\sum_\alpha \braket{\alpha}{a}\op{\alpha}^\dag \equiv \op{a}^\dag \quad \mbox{and} \quad \sum_\beta \braket{b}{\beta}\op{\beta}^\dag \equiv \op{b}.$$
+This definition may seem ad hoc, but it actually makes a lot of sense. Any operator is independant of a specific basis, but can be \emph{represented} in any basis. However, when we defined the creation and annihilation operators, we defined them by how they act on kets represented in a specific single-particle basis. Therefore, $\op{\alpha}$ and $\op{a}$ are definitly \emph{not} the same operator represented in different basies, just like $\ket{\alpha}$ and $\ket{a}$ are clearly \emph{not} the same states. Our newly defined operators do however \emph{act} on the new basis as the originial creation and annihilation operators acted on the original basis, in the sense that
+$$\op{a}^\dag\ket{0} = \ket{a}.$$
+We have then shown
+$$\op{T} = \sum_{\alpha\beta}\braopket{\alpha}{\op{t}}{\beta}\op{\alpha}^\dag \op{\beta} = \sum_{ab}\braopket{a}{\op{t}}{b}\op{a}^\dag \op{b}.$$
+Meaning it has the same form in the two single-particle bases. As the two bases we have used here are completely general, we know that the operator has the same form in \emph{any} single-particle basis, and a change of basis will not change the form of the operator in second quantization.
+
+
+\subsubsection*{Twobody operator}
+We now look at the twobody operator. Again we have two single-particle bases, one denoted with greek letters and one with roman letters. We start of by inserting the completeness relation four times
+\begin{align*}
+\op{V} &= \frac{1}{2}\sum_{\alpha\beta\gamma\delta} \braopket{\alpha\beta}{\op{v}}{\gamma\delta} \op{\alpha}^\dag \op{\beta}^\dag \op{\delta} \op{\gamma} \\
+&= \frac{1}{2}\sum_{\alpha\beta\gamma\delta} \sum_{abcd}\braket{\alpha\beta}{ab}\braopket{ab}{\op{v}}{cd}\braket{cd}{\gamma\delta} \op{\alpha}^\dag \op{\beta}^\dag \op{\delta} \op{\gamma}.
+\end{align*}
+Looking close at the inner product $\braket{\alpha\beta}{ab}$ we find
+\begin{align*}
+\braket{\alpha \beta}{ab} &= \int \psi_{\alpha}(x_1)\psi_a(x_1)\psi_{\beta}(x_2)\psi_b(x_2) \ \d x_1 \d x_2 \\
+&= \int \psi_{\alpha}(x_1)\psi_a(x_1) \ \d x_1 \int \psi_{\beta}(x_2)\psi_b(x_2) \d x_2 \\
+&= \braket{\alpha}{a}\braket{\beta}{b}.
+\end{align*}
+Using this together with the fact that all inner products commute with each other gives us
+\begin{align*}
+\op{V} &= \frac{1}{2}\sum_{\alpha\beta\gamma\delta} \sum_{abcd} \braopket{ab}{\op{v}}{cd} \braket{\alpha}{a} \op{\alpha}^\dag \braket{\beta}{b}\op{\beta}^\dag \braket{d}{\delta}\op{\delta} \braket{c}{\gamma} \op{\gamma}.
+\end{align*}
+We can now move the sums around
+\begin{align*}
+\op{V} &= \frac{1}{2} \sum_{abcd} \braopket{ab}{\op{v}}{cd} \bigg(\sum_{\alpha}\braket{\alpha}{a} \op{\alpha}^\dag \bigg)\bigg(\sum_{\beta}\braket{\beta}{b}\op{\beta}^\dag \bigg)\bigg(\sum_{\delta}\braket{d}{\delta}\op{\delta} \bigg)\bigg(\sum_{\gamma}\braket{c}{\gamma} \op{\gamma}\bigg).
+\end{align*}
+And we recognize this as equivalent to the onebody case, were we defined
+$$\sum_\alpha \braket{\alpha}{a}\op{\alpha}^\dag \equiv \op{a}^\dag.$$
+So we have
+$$\op{V} = \frac{1}{2}\sum_{\alpha\beta\gamma\delta}\braopket{\alpha\beta}{\op{v}}{\gamma\delta}\op{\alpha}^\dag \op{\beta}^\dag \op{\delta} \op{\gamma} = \frac{1}{2}\sum_{abcc}\braopket{ab}{\op{v}}{cd}\op{a}^\dag \op{b}^\dag \op{d} \op{c}.$$
+We now see that the twobody operator has the same form in the two single-particle bases, and again we can make the argument---as the single-particle bases used were completely general, the twobody operator has the same form for \emph{any} single-particle basis in second quantization.
+
+What follows next, is just an extension to the exercise not included in the orginal exercise text.
+
+\subsubsection*{Number operator}
+We will now look closer into the number of particles operator. As we are looking at fermions, we know that any given single-particle state, i.e., \emph{orbital}, can either be occupied or vacant. The name, \emph{number of particles}-operator, can therefore only give the results zero or one. For bosons however, it can be any non-negative integer. We have earlier shown that the number operator for the state $\ket{\alpha}$ is
+$$\op{n}_\alpha = \op{\alpha}^\dag \op{\alpha},$$
+which for ferimons has the property
+$$\op{n}_\alpha \ket{\beta} = \delta_{\alpha\beta}\ket{\beta}.$$
+
+Completely analogously, it is obvious that the number operator for the orbital $\ket{i}$ is
+$$\op{n}_i = \op{i}^\dag \op{i},$$
+in the sense that
+$$\op{n}_i \ket{j} = \delta_{ij}\ket{j}.$$
+Again we have defined the analog operator by the way it acts on the basis functions. This means that as before, the two operators are definitly \emph{not} the same operator represented in different basises. The states $\ket{\alpha}$ and $\ket{i}$ are completely different states! If we insert our definition of $\op{i}^\dag$ and $\op{i}$ we find
+$$\op{n}_i = \sum_{\alpha}\braket{\alpha}{a}\op{\alpha}^\dag \sum_{\beta} \braket{a}{\beta}\op{\beta} = \sum_{\alpha\beta} \braket{a}{\alpha}\braket{\beta}{a} \op{\alpha}^\dag \op{\beta} = \sum_\alpha \op{\alpha}^\dag \op{\alpha} = \sum_\alpha \op{n}_\alpha.$$
+And so we see that when representing the number operator for the state $\ket{i}$, $\op{n}_i$, in the basis for $\ket{\alpha}$, it is the sum over all the basis kets. This result is actually quite intuitive, as $\op{n}_i$ "picks out" the orbital $\ket{i}$, it should pick out the components of all $\ket{\alpha}$'s that form $\ket{i}$. Let us check that this in fact works. In the $\ket{i}$-basis, we know that
+$$\op{n}_i \ket{i} = \ket{i},$$
+easy as that. But now, let's insert the representations of both the number operator and the base ket in the $\ket{\alpha}$-basis, and see if we get the same result
+$$\op{n}_i \ket{i} = \sum_{\alpha}\op{n}_\alpha \sum_{\alpha'}\braket{\alpha'}{i}\ket{\alpha'}.$$
+The inner-product is a number, and so commutes with the number operator, and as there is no dependance on $\alpha$, we can rearrange the terms as follows
+$$\op{n}_i \ket{i} =  \sum_{\alpha'}\braket{\alpha'}{i} \sum_{\alpha}\op{n}_\alpha\ket{\alpha'}.$$
+And now we let the operator act on the ket, and take the sum to find 
+$$\op{n}_i \ket{i} = \sum_{\alpha'}\braket{\alpha'}{i} \sum_{\alpha} \delta_{\alpha \alpha'}\ket{\alpha'} = \sum_{\alpha'} \braket{\alpha'}{i}\ket{\alpha'} = \ket{i}.$$
+And so we see that everything does in fact make sense.
+
+\subsubsection*{Rewriting the onebody operator}
+
+Let us look at what happens to the onebody operator if $T$ is diagonal in our single-particle basis, $\{\phi_i\}$. That $T$ is diagonal in the basis means that every off-diagonal matrix element is zero, this means that we can write any matrix element as
+$$\braopket{i}{\op{t}}{j} = \eps_i \delta_{ij},$$
+where $\eps_i$ is a given constant. This again corresponds to the single-particle basis being eigenkets for the $\op{t}$-operator, with eigenvalues $\eps_i$. If this is the case, we can rewrite $\op{T}$ as follows (remember that $\op{T}$ has the same form in \emph{any} basis, including the basis of eigenkets)
+\begin{align*}
+\op{T} &= \sum_{\alpha \beta} \braopket{\alpha}{\op{t}}{\beta} \op{\alpha}^\dag \op{\beta} 
+= \sum_{\alpha \beta} \eps_\alpha \delta_{\alpha\beta} \op{\alpha}^\dag \op{\beta} 
+= \sum_{\alpha} \eps_\alpha \op{\alpha}^\dag \op{\alpha} 
+= \sum_{\alpha} \eps_\alpha \op{n}_\alpha.
+\end{align*}
+So we see that if our single-particle basis are eigenkets of $\op{t}$, then we simply need to sum over the eigenvalues of all occupied states---this result is very intuitive.
+
+\subsubsection*{Number of pair operators}
+We have now looked at the number operator, which told us if a single-particle orbital was occupied or not, and saw that in the right basis, the onebody operator could be simplified considerably using the number operator. We will now introduce the number of pairs operator. We give the ansatz
+$$\op{N}_p = \frac{1}{2}\sum_{\alpha \neq \beta} \op{\alpha}^\dag \op{\beta}^\dag \op{\beta} \op{\alpha}.$$
+Let us study the action of this operator on a given Slater-determinant. First we note
+$$\op{\alpha}^\dag  \op{\beta}^\dag \op{\beta} \op{\alpha} \ket{\cdots\alpha\cdots\beta\cdots} = (-)^{p_1}(-)^{p_2} \op{\alpha}^\dag  \op{\beta}^\dag \ket{\cdots} = \ket{\cdots\alpha\cdots\beta\cdots},$$
+$$\op{\alpha}^\dag  \op{\beta}^\dag \op{\beta} \op{\alpha} \ket{\cdots\beta\cdots} = 0,$$
+$$\op{\alpha}^\dag  \op{\beta}^\dag \op{\beta} \op{\alpha} \ket{\cdots\alpha\cdots} = 0,$$
+$$\op{\alpha}^\dag  \op{\beta}^\dag \op{\beta} \op{\alpha} \ket{\cdots} = 0.$$
+So if we say that our Slater-determinant consists of the states $\{\phi_i\}_{i=1}^n$, meaning we have a $n$-particles in our system, we get
+$$\op{N}_p \ket{SD} = \frac{1}{2}\sum_{\alpha \neq \beta} \op{\alpha}^\dag \op{\beta}^\dag \op{\beta} \op{\alpha}\ket{SD} = \frac{1}{2} \sum_{i=1}^N \sum_{\substack{j=1 \\ j\neq i}}^N \ket{SD} = \frac{n(n-1)}{2}\ket{SD}.$$
+So we see that the result of $\op{N}_p$ on the $n$-particle Slater determinant gives $n(n-1)/2$, which corresponds to the number of unordered pairs possible in the system. The operator thus acts just like we want a number of pairs operator to behave.
+
+\subsubsection*{Rewriting the twobody operator}
+When looking at the twobody operator in second quantization
+$$\op{V} = \frac{1}{2}\sum_{\alpha\beta\gamma\delta}\braopket{\alpha\beta}{\op{v}}{\gamma\delta}\op{\alpha}^\dag\op{\beta}^\dag \op{\delta}\op{\gamma},$$
+we notice that when $\alpha=\gamma$ and $\beta=\delta$, the form resembles the number of pairs operator. Also, when $\alpha=\delta$ and $\beta=\gamma$ we can rearrange the operators as follows
+$$\alpha^\dagger\beta^\dagger\alpha \beta = -\alpha^\dagger\beta^\dagger \beta\alpha.$$
+Using all this, we get
+$$\op{V} = \frac{1}{2}\sum_{\alpha \neq \beta} \braopket{\alpha\beta}{\op{v}}{\alpha\beta}_{\rm AS}\op{\alpha}^\dag\op{\beta}^\dag\op{\beta}\op{\alpha} + \frac{1}{2}\sum_{\alpha}\sum_{\beta\neq\alpha}\sum_{\substack{\gamma\neq\alpha \\ \gamma \neq\beta}}\sum_{\substack{\delta\neq\alpha \\\delta\neq\beta\\ \delta \neq \gamma}} \braopket{\alpha\beta}{\op{v}}{\gamma\delta}\op{\alpha}^\dag\op{\beta}^\dag \op{\delta}\op{\gamma} .$$
+Where we see that the first term is a weighted number of pairs sum. We can rewrite this as follows
+$$\op{\alpha}^\dag\op{\beta}^\dag \op{\beta} \op{\alpha} = \op{\alpha}^\dag \op{\alpha}\op{\beta}^\dag\op{\beta} - \delta_{\alpha\beta}\op{\alpha}^\dag\op{\beta}.$$
+The Kronecker-delta kills the second term, as $\alpha\neq\beta$, leaving only
+$$\op{\alpha}^\dag\op{\alpha} \op{\beta}^\dag \op{\beta} = \op{n}_\alpha \op{n}_\beta.$$
+We can then write the twobody operator as
+$$\op{V} = \frac{1}{2}\sum_{\alpha \neq \beta} \braopket{\alpha\beta}{\op{v}}{\alpha\beta}_{\rm AS}\op{n}_\alpha \op{n}_\beta + \frac{1}{4}\sum_{\alpha}\sum_{\beta\neq\alpha}\sum_{\substack{\gamma\neq\alpha \\ \gamma \neq\beta}}\sum_{\substack{\delta\neq\alpha \\\delta\neq\beta\\ \delta \neq \gamma}} \braopket{\alpha\beta}{\op{v}}{\gamma\delta}_{\rm AS}\op{\alpha}^\dag\op{\beta}^\dag \op{\delta}\op{\gamma} .$$
+
+\section*{Exercise 2}
+
+We now look at a Slater determinant built up of single-particle orbitals from the basis $\{\psi_\alpha\}_{\alpha=1}^N$. We will look at a change of basis into the basis $\{\psi'_a\}_{a=1}^N$. Note that we denote the first basis using greek letters, and the second basis using both roman letters and a prime. We know we can transform any single-particle orbital from one basis to the other by using the completeness relation
+$$\ket{a} = \sum_{\alpha} \ket{\alpha}\braket{\alpha}{a} = \sum_{\alpha} C_{\alpha a} \ket{\alpha},$$
+where we have defined the coefficient $C_{\alpha a} \equiv \braket{\alpha}{a}$. This is actually a unitary transformation, where $C$ is a unitary matrix, and also corresponds to the coefficients of $\ket{\alpha}$'s representation in the other basis. 
+
+We will now study some properties of this unitary transformation
+
+\subsubsection*{Orthonormality}
+If we assume that the original basis is orthonormal, we will show that this implies that the second basis is orthonormal. We start by inserting the completeness relation twice
+$$\braket{a}{b} = \bra{a} \bigg(\sum_\alpha \ketbra{\alpha}{\alpha} \bigg)\bigg(\sum_\beta \ketbra{\beta}{\beta}  \bigg) \ket{b}.$$
+Rearranging the terms gives
+$$\braket{a}{b} = \sum_{\alpha\beta} \braket{a}{\alpha} \braket{\beta}{b} \braket{\alpha}{\beta}.$$
+From our assumption about the first basis being orthonormal, we know that
+$$\braket{\alpha}{\beta} = \delta_{\alpha\beta},$$
+which kills one of the sums
+$$\braket{a}{b} = \sum_\alpha \sum_\beta \braket{a}{\alpha} \braket{\beta}{b} \delta{\alpha\beta} = \sum_\alpha  \braket{a}{\alpha} \braket{\alpha}{b}.$$
+We see that we can interpret this as a matrix-matrix product
+$$\braket{a}{b} = \sum_\alpha \underbrace{\braket{a}{\alpha}}_{C^\dag_{a\alpha}} \underbrace{\braket{\alpha}{b}}_{C_{\alpha b}} = \bigg(C^\dag C\bigg)_{ab}.$$
+But as $C$ is unitary, we can simplify this as
+$$\bigg(C^\dag C\bigg)_{ab} = \mathbb{1}_{ab} = \delta_{ab}.$$
+So we have shown that
+$$\braket{a}{b} = \delta_{ab},$$
+meaning that this basis is also orthonormal.
+
+\subsubsection*{Unitary transform of the Slater Determinant}
+Assume we have defined a Slater determinant in our first basis
+$$\Phi = \mathcal{A}\psi_1\psi_2\cdots\psi_N = \frac{1}{\sqrt{N!}}
+\begin{vmatrix}
+\psi_1(x_1) & \psi_2 (x_1) & \cdots & \psi_N(x_1) \\
+\psi_1(x_2) & \psi_2 (x_2) & \cdots & \psi_N(x_2) \\
+\vdots & \vdots & \ddots & \vdots \\
+\psi_1(x_N) & \psi_2 (x_N) & \cdots & \psi_N(x_N) \\
+\end{vmatrix} = \frac{1}{\sqrt{N!}} \det \mat A, $$
+where we have denoted the matrix built from the original ket basis by $\mat A$. We will show that the Slater determinant is invariant, up to a complex phase, under the change of the single-particle basis.
+
+First, let us look at the matrix built from the ket basis $\{\psi'_a\}_{a=1}^N$, it is given as
+$$\mat A' = \begin{bmatrix}
+\psi'_1(x_1) & \psi'_2 (x_1) & \cdots & \psi'_N(x_1) \\
+\psi'_1(x_2) & \psi'_2 (x_2) & \cdots & \psi'_N(x_2) \\
+\vdots & \vdots & \ddots & \vdots \\
+\psi'_1(x_N) & \psi'_2 (x_N) & \cdots & \psi'_N(x_N) \end{bmatrix}.$$
+And so the matrix elements are $(\mat A')_{ij} = \psi'_i(x_j)$. We can expand this matrix element into the original basis and find
+$$(\mat A')_{ij} = \psi'_i(x_j) = \sum_k C_{ik}\psi_k(x_j) = (\mat C \mat A)_{ij},$$
+and so we see 
+$$\mat A' = \mat C \mat A.$$
+And so we can write the Slater determinant in the new single-particle basis as
+$$\Phi' = \frac{1}{\sqrt{N!}} \det \mat A' = \frac{1}{\sqrt{N!}} \det (\mat C \mat A) = \frac{1}{\sqrt{N!}} \det \mat C \det \mat A,$$
+where we have used the fact that for any matrices we have $\det(\mat A \mat B) = \det \mat A \det \mat B$.
+
+We must now use the property that the determinant of any unitary matrix is generally a complex number with magnitude 1, let us prove this
+\begin{align*}
+\mat U^\dag \mat U &= \mathbb{1} \\
+\det (\mat U^\dag \mat U) &= \det \mathbb{1} \\
+\det \mat U^\dag \det \mat U &= 1 \\
+(\det \mat U)^* (\det \mat U) &= 1 \\
+|\det \mat U|^2 &= 1 \\
+|\det \mat U| &= 1.
+\end{align*}
+And so we can generally write $\det \mat U = e^{i\phi}$, where $\phi \in \mathbb{R}$ is a real phase factor. We then have
+$$\Phi' = e^{i\phi} \Phi,$$
+and so we see that the Slater determinants in two different single-particle basises are equal up to a complex phase factor. As these two basises are completely general (except for the assumption that the original basis was orthonormal), it follows that the Slater determinant is invariant under change of single-particle basis.
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+\end{document}
