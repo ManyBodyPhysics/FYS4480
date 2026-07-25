@@ -1769,3 +1769,413 @@ dimensions are set by the number of single-particle states, this is the
 method of choice.  It becomes useless the moment the dimension is set by the
 number of Slater determinants, which is the situation of the next section.
 \end{notebox}
+
+%----------------------------------------------------------------------
+\section{Lanczos' algorithm}
+\label{sec:lanczos}
+
+\index{Lanczos' algorithm}\index{Krylov space}
+The methods of the previous two sections transform the matrix, and therefore
+need to have it.  In large-scale many-body calculations we do not.  A
+full configuration-interaction Hamiltonian for a realistic system may have a
+dimension of $10^9$ or more; it is sparse, it is generated on the fly from the
+occupation numbers of the Slater determinants, and it is never stored.  What
+we can always do is compute the product $\bm{A}\bm{q}$ for a given vector
+$\bm{q}$.  And we rarely want the whole spectrum: the ground state and a
+handful of excited states are enough.
+
+The Lanczos algorithm is built for exactly this situation.  It applies to real
+symmetric matrices and has the following properties:
+\begin{itemize}
+  \item it generates a sequence of real tridiagonal matrices $\bm{T}_k$ of
+        dimension $k\times k$ with $k\le n$, whose extremal eigenvalues are
+        progressively better estimates of the extremal eigenvalues of
+        $\bm{A}$;
+  \item the matrix enters only through the product $\bm{A}\bm{q}$;
+  \item the underlying transformation is the similarity transformation
+        $\bm{T}=\bm{Q}^{T}\bm{A}\bm{Q}$, with the first Lanczos vector
+        $\bm{Q}\bm{e}_0=\bm{q}_0$ chosen at will.
+\end{itemize}
+
+\paragraph{The three-term recurrence.}
+Write $\bm{Q}$ in terms of its column vectors,
+$\bm{Q}=[\bm{q}_0\,\bm{q}_1\cdots\bm{q}_{n-1}]$, and let
+\begin{equation}
+  \bm{T} =
+  \begin{bmatrix}
+    \alpha_0 & \beta_0  &        &        &  \\
+    \beta_0  & \alpha_1 & \beta_1&        &  \\
+             & \beta_1  & \alpha_2 & \ddots & \\
+             &          & \ddots & \ddots & \beta_{n-2}\\
+             &          &        & \beta_{n-2} & \alpha_{n-1}
+  \end{bmatrix}.
+  \label{eq:1-lanczosT}
+\end{equation}
+Using $\bm{Q}\bm{Q}^{T}=\bm{I}$ we may rewrite
+$\bm{T}=\bm{Q}^{T}\bm{A}\bm{Q}$ as $\bm{Q}\bm{T}=\bm{A}\bm{Q}$, and equating
+column $k$ on both sides gives the three-term recurrence
+\begin{equation}
+  \bm{A}\bm{q}_k = \beta_{k-1}\bm{q}_{k-1}
+                 + \alpha_k\bm{q}_k
+                 + \beta_k\bm{q}_{k+1},
+  \label{eq:1-lanczosrec}
+\end{equation}
+with $\beta_{-1}\bm{q}_{-1}=\bm{0}$.  This single equation contains the whole
+algorithm.  Since the Lanczos vectors are orthonormal, multiplying
+Eq.~(\ref{eq:1-lanczosrec}) from the left by $\bm{q}_k^{T}$ gives
+\begin{equation}
+  \alpha_k = \bm{q}_k^{T}\bm{A}\bm{q}_k ,
+  \label{eq:1-lanczosalpha}
+\end{equation}
+and the remainder
+\begin{equation}
+  \bm{r}_k = (\bm{A}-\alpha_k\bm{I})\bm{q}_k - \beta_{k-1}\bm{q}_{k-1}
+  \label{eq:1-lanczosr}
+\end{equation}
+determines the next vector.  If $\bm{r}_k\ne\bm{0}$ then
+\begin{equation}
+  \bm{q}_{k+1} = \bm{r}_k/\beta_k,
+  \qquad \beta_k = \pm\|\bm{r}_k\|_2 .
+  \label{eq:1-lanczosbeta}
+\end{equation}
+If $\bm{r}_k$ does vanish we have found an invariant subspace, and the
+eigenvalues of $\bm{T}_k$ are exact eigenvalues of $\bm{A}$.  The algorithm is
+therefore
+\begin{equation}
+  \begin{array}{l}
+    \bm{r}_0=\bm{q}_0,\quad \beta_{-1}=1,\quad \bm{q}_{-1}=\bm{0},\quad k=0\\
+    \textbf{while } \beta_{k-1}\ne 0\\
+    \quad \bm{q}_k = \bm{r}_{k-1}/\beta_{k-1}\\
+    \quad \alpha_k = \bm{q}_k^{T}\bm{A}\bm{q}_k\\
+    \quad \bm{r}_k = (\bm{A}-\alpha_k\bm{I})\bm{q}_k-\beta_{k-1}\bm{q}_{k-1}\\
+    \quad \beta_k = \|\bm{r}_k\|_2,\quad k\leftarrow k+1\\
+    \textbf{end while}
+  \end{array}
+  \label{eq:1-lanczosalgo}
+\end{equation}
+
+\paragraph{Krylov spaces and Ritz values.}
+After $m$ steps the vectors $\bm{q}_0,\dots,\bm{q}_{m-1}$ span the Krylov
+space
+\begin{equation}
+  \mathcal{K}_m(\bm{A},\bm{q}_0)
+   = \mathrm{span}\{\bm{q}_0,\bm{A}\bm{q}_0,\bm{A}^2\bm{q}_0,
+                    \dots,\bm{A}^{m-1}\bm{q}_0\} ,
+  \label{eq:1-krylov}
+\end{equation}
+which is precisely the sequence of vectors the power method of
+Section~\ref{sec:power} generates and then throws away.  Lanczos keeps them,
+orthonormalises them, and diagonalises $\bm{A}$ restricted to their span.  The
+eigenvalues $\theta_i$ of the small matrix $\bm{T}_m$ are called \emph{Ritz
+values} and the vectors $\bm{Q}\bm{y}_i$, with $\bm{y}_i$ the eigenvectors of
+$\bm{T}_m$, are the \emph{Ritz vectors}.  They are the best approximations to
+eigenpairs of $\bm{A}$ obtainable within the Krylov space, in the variational
+sense: the lowest Ritz value is the minimum of the Rayleigh quotient over
+$\mathcal{K}_m$, and is therefore an upper bound on the exact ground-state
+energy.  This is the same variational principle that underlies Hartree-Fock
+theory and the variational Monte Carlo method.
+
+Because $\bm{T}_m$ is tridiagonal and small, it is diagonalised with the QL
+algorithm of Section~\ref{sec:qlalgorithm}.  The two algorithms are thus used
+together: Lanczos reduces the enormous problem to a tiny tridiagonal one, and
+\texttt{tqli} finishes the job.
+
+\begin{Python}{}
+def run(self, m, q0=None, tol=1.0e-12):
+    """Perform m Lanczos steps, returning the tridiagonal matrix elements."""
+    n = self.n
+    q = np.random.default_rng(2026).normal(size=n) if q0 is None \
+        else np.asarray(q0, dtype=float).copy()
+    q /= np.linalg.norm(q)
+
+    Q = np.zeros((n, m))
+    alpha = np.zeros(m)
+    beta = np.zeros(max(m - 1, 0))
+    q_prev = np.zeros(n)
+    b_prev = 0.0
+
+    for k in range(m):
+        Q[:, k] = q
+        w = self.matvec(q)                     # the only use made of A
+        alpha[k] = q @ w                       # alpha_k = q_k^T A q_k
+        w = w - alpha[k]*q - b_prev*q_prev     # r_k
+
+        if self.reorthogonalize:
+            for _ in range(2):                 # modified Gram-Schmidt
+                w -= Q[:, :k+1] @ (Q[:, :k+1].T @ w)
+
+        if k == m - 1:
+            break
+        b = np.linalg.norm(w)
+        if b < tol:                            # invariant subspace found
+            alpha, beta, Q = alpha[:k+1], beta[:k], Q[:, :k+1]
+            break
+        beta[k] = b
+        q_prev, b_prev = q, b
+        q = w / b
+
+    self.alpha, self.beta, self.Q = alpha, beta, Q
+    return alpha, beta, Q
+\end{Python}
+
+\paragraph{Loss of orthogonality.}
+In exact arithmetic the three-term recurrence produces orthogonal vectors
+automatically.  In floating-point arithmetic it does not.  As soon as one Ritz
+value converges, the corresponding direction starts to reappear in the
+remainder $\bm{r}_k$, orthogonality is lost, and the algorithm produces
+spurious extra copies of eigenvalues it has already found.  These are the
+notorious \emph{ghost} eigenvalues.  The simplest cure, used in the code
+above, is full reorthogonalisation: at every step the new vector is
+explicitly orthogonalised against all previous ones.  This requires storing
+all the Lanczos vectors and costs $\bigO(m^2n)$ operations, which is
+acceptable when $m$ is a few hundred.  For very long runs one uses selective
+or periodic reorthogonalisation instead.
+
+\paragraph{A many-body example.}
+Table~\ref{tab:lanczos} shows the algorithm at work on the pairing model that
+runs through this book: twelve doubly degenerate single-particle levels,
+six pairs, single-particle spacing $\delta=1$ and pairing strength $g=0.5$.
+In the seniority-zero space a basis state is a choice of which levels carry a
+pair, so the dimension is $\binom{12}{6}=924$.  The ground-state energy is
+converged to ten digits after thirty matrix-vector products and to machine
+precision after forty, in a space of dimension $924$.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{rll}
+\toprule
+$m$ & \textbf{Lowest Ritz value} & \textbf{Error} \\
+\midrule
+ 5 & $32.865169933329$ & $8.0\times10^{0}$  \\
+10 & $25.140140936891$ & $3.0\times10^{-1}$ \\
+20 & $24.839267115133$ & $9.4\times10^{-5}$ \\
+30 & $24.839172748689$ & $2.4\times10^{-10}$\\
+40 & $24.839172748451$ & $5.7\times10^{-14}$\\
+\midrule
+exact & $24.839172748451$ & \\
+\bottomrule
+\end{tabular}
+\caption{Convergence of the lowest Ritz value for the pairing model with
+twelve levels and six pairs, $\delta=1$, $g=0.5$, in a space of dimension
+$924$.  The exact value is obtained by full diagonalisation.}
+\label{tab:lanczos}
+\end{table}
+
+Run without reorthogonalisation for $120$ steps on the same matrix, the
+Lanczos vectors lose orthogonality completely,
+$\|\bm{Q}^{T}\bm{Q}-\bm{I}\|=4.9$, and three copies of the non-degenerate
+ground state appear among the Ritz values.  With reorthogonalisation the
+deviation is $8.3\times10^{-15}$ and the ground state appears exactly once.
+
+\begin{notebox}
+\textbf{Many-body connection.} The Lanczos algorithm is the engine of
+large-scale shell-model and full configuration-interaction codes.  Its
+combination of properties -- only matrix-vector products are needed, the
+extremal eigenvalues converge first, and the lowest Ritz value is a
+variational upper bound -- matches the structure of the many-body problem
+exactly: we want the ground state, the Hamiltonian is sparse, and the
+dimension is astronomical.  The same Krylov idea reappears in quantum
+computing, where the quantum phase estimation and variational quantum
+eigensolver algorithms are, in different ways, attempts to extract the same
+information with quantum rather than classical resources.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Application: Schr\"odinger's equation through diagonalisation}
+\label{sec:schrodiag}
+
+\index{Schrodinger equation!by diagonalisation}
+We close the chapter by putting the machinery to work on a genuine quantum
+mechanical problem, and one that will return in a many-body guise later:
+solving Schr\"odinger's equation not as a differential equation, but as a
+matrix eigenvalue problem.
+
+The radial equation for a particle in a central potential is
+\begin{equation}
+  -\frac{\hbar^2}{2m}\left(\frac{1}{r^2}\frac{d}{dr}r^2\frac{d}{dr}
+   -\frac{l(l+1)}{r^2}\right)R(r) + V(r)R(r) = ER(r).
+  \label{eq:1-radial}
+\end{equation}
+Substituting $R(r)=u(r)/r$ removes the first-derivative term,
+\begin{equation}
+  -\frac{\hbar^2}{2m}\frac{d^2u}{dr^2}
+   + \left(V(r)+\frac{l(l+1)}{r^2}\frac{\hbar^2}{2m}\right)u(r) = Eu(r),
+  \label{eq:1-radialu}
+\end{equation}
+and introducing the dimensionless variable $\rho=r/\alpha$ with $\alpha$ a
+length makes the equation dimensionless.  We specialise to one dimension, drop
+the centrifugal term, and take the harmonic oscillator potential
+$V(x)=\tfrac{1}{2}kx^2$.  In units where $k=\hbar=m=\alpha=1$ the equation
+becomes
+\begin{equation}
+  -\frac{d^2u}{dx^2} + x^2 u(x) = 2E\,u(x).
+  \label{eq:1-hoschrod}
+\end{equation}
+The factor two on the right is worth remembering: the program will return the
+values $2E_n=2n+1$, that is $1,3,5,7,\dots$, rather than $E_n=n+\tfrac{1}{2}$.
+
+We now repeat the discretisation of Section~\ref{sec:gauss}.  Choose
+$R_{\mathrm{min}}$ and $R_{\mathrm{max}}$, a number of mesh points
+$N_{\mathrm{step}}$, and the step
+$h=(R_{\mathrm{max}}-R_{\mathrm{min}})/N_{\mathrm{step}}$.  With
+$x_i=R_{\mathrm{min}}+ih$ and the three-point formula
+(\ref{eq:1-secondderiv}), Eq.~(\ref{eq:1-hoschrod}) becomes
+\begin{equation}
+  -\frac{u_{i+1}-2u_i+u_{i-1}}{h^2} + V_i u_i = 2E\,u_i ,
+  \label{eq:1-hodisc}
+\end{equation}
+that is the tridiagonal eigenvalue problem
+\begin{equation}
+  \begin{bmatrix}
+    \frac{2}{h^2}+V_1 & -\frac{1}{h^2} &  &  \\
+    -\frac{1}{h^2} & \frac{2}{h^2}+V_2 & -\frac{1}{h^2} & \\
+     & \ddots & \ddots & \ddots\\
+     &  & -\frac{1}{h^2} & \frac{2}{h^2}+V_{N_{\mathrm{step}}-1}
+  \end{bmatrix}
+  \begin{bmatrix}u_1\\u_2\\\vdots\\u_{N_{\mathrm{step}}-1}\end{bmatrix}
+  = 2E
+  \begin{bmatrix}u_1\\u_2\\\vdots\\u_{N_{\mathrm{step}}-1}\end{bmatrix}.
+  \label{eq:1-homatrix}
+\end{equation}
+The boundary conditions $u(R_{\mathrm{min}})=u(R_{\mathrm{max}})=0$ are
+imposed simply by leaving the two endpoints out of the matrix, whose dimension
+is therefore $N_{\mathrm{step}}-1$.  The eigenvectors are the wave functions
+on the grid, normalised with the trapezoidal rule,
+\begin{equation}
+  \int_{R_{\mathrm{min}}}^{R_{\mathrm{max}}}|u(x)|^2\ud{x}
+   \;\longrightarrow\; h\sum_{i}u_i^2 = 1 .
+  \label{eq:1-trapnorm}
+\end{equation}
+
+Since the matrix is already tridiagonal, the Householder step is unnecessary
+and we go straight to \texttt{tqli}.  Alternatively, and this is the point of
+the exercise, we may pretend that the matrix is far too large to store and use
+the Lanczos algorithm with a matrix-free operator.
+
+\begin{Python}{}
+class SchrodingerDiagonalization:
+    """Discretise -u'' + V(x) u = 2E u and diagonalise the result."""
+
+    def __init__(self, potential, rmin=-10.0, rmax=10.0, nsteps=400):
+        self.potential = potential
+        self.h = (rmax - rmin) / nsteps
+        # interior mesh points only; u vanishes at the two endpoints
+        self.x = rmin + self.h * np.arange(1, nsteps)
+        self.n = len(self.x)
+
+    @property
+    def diagonal(self):
+        return 2.0 / self.h**2 + self.potential(self.x)
+
+    @property
+    def offdiagonal(self):
+        return np.full(self.n - 1, -1.0 / self.h**2)
+
+    def matvec(self, v):
+        """Apply the Hamiltonian without ever forming the matrix."""
+        w = self.diagonal * v
+        w[:-1] -= v[1:] / self.h**2
+        w[1:] -= v[:-1] / self.h**2
+        return w
+
+    def solve(self, k=5):
+        """The k lowest eigenvalues and normalised eigenfunctions."""
+        values, vectors = SymmetricEigenSolver.tqli(self.diagonal,
+                                                    self.offdiagonal)
+        order = np.argsort(values)
+        return (values[order][:k],
+                self._normalise(vectors[:, order][:, :k]))
+
+    def solve_lanczos(self, k=5, m=None):
+        """The same eigenvalues from the Lanczos algorithm."""
+        lan = Lanczos(matvec=self.matvec, n=self.n)
+        values, vectors = lan.ritz(10*k if m is None else m, k=k)
+        return values, self._normalise(vectors)
+\end{Python}
+
+Table~\ref{tab:schrodinger} shows the result on $x\in[-10,10]$.  The
+eigenvalues converge to the exact values $1,3,5,\dots$ as $h^2$: doubling
+$N_{\mathrm{step}}$ divides the error by four, exactly as the truncation error
+of the three-point formula demands.  Running the same problem through the
+Lanczos algorithm with $m=200$ steps reproduces the three lowest eigenvalues
+to $6\times10^{-13}$, and the computed wave functions agree with the analytic
+$u_0(x)=\pi^{-1/4}e^{-x^2/2}$ to $7\times10^{-5}$.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{rlllr}
+\toprule
+$N_{\mathrm{step}}$ & $2E_0$ & $2E_1$ & $2E_2$ & \textbf{Max error}\\
+\midrule
+100 & $0.9974937026$ & $2.9874430342$ & $4.9672772610$ & $1.0\times10^{-1}$\\
+200 & $0.9993746086$ & $2.9968714733$ & $4.9918612670$ & $2.6\times10^{-2}$\\
+400 & $0.9998437256$ & $2.9992185301$ & $4.9979678946$ & $6.4\times10^{-3}$\\
+800 & $0.9999609360$ & $2.9998046738$ & $4.9994921341$ & $1.6\times10^{-3}$\\
+\midrule
+exact & $1$ & $3$ & $5$ & \\
+\bottomrule
+\end{tabular}
+\caption{The one-dimensional harmonic oscillator obtained by diagonalising
+Eq.~(\ref{eq:1-homatrix}) on $x\in[-10,10]$.  The error decreases as $h^2$.}
+\label{tab:schrodinger}
+\end{table}
+
+\begin{notebox}
+\textbf{Many-body connection.} This calculation is the one-particle ancestor
+of everything that follows.  Expanding a state in a finite basis and
+diagonalising the resulting matrix is exactly what full configuration
+interaction does, the only difference being that the basis consists of Slater
+determinants rather than grid points, and that the dimension grows
+exponentially with the number of particles rather than linearly with the
+number of mesh points.  The eigenvectors computed here are the natural
+single-particle basis $\{\bket{\phi_i}\}$ of Section~\ref{sec:onb} from which
+those Slater determinants are built.  Chapter~\ref{chap:mbphys} takes the
+first step in that direction.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Summary and the programs}
+\label{sec:ch1summary}
+
+The chapter has moved from notation to algorithms.  The linear algebra of
+Sections~\ref{sec:notation}-\ref{sec:spectral} supplies the language in which
+quantum mechanics is written: states are vectors, observables are Hermitian
+matrices, symmetries and basis changes are unitary transformations, and the
+physical content of an operator is its spectral decomposition.  The numerical
+sections supply the means of extracting numbers from that language.
+
+Two dividing lines are worth keeping in mind.  The first separates direct
+from iterative methods.  Direct methods -- Gaussian elimination, LU,
+Cholesky, Householder with QL -- deliver the complete answer in a fixed
+$\bigO(n^3)$ number of operations, and require the matrix to be stored.
+Iterative methods -- Jacobi, Gauss-Seidel, over-relaxation, conjugate
+gradient, Lanczos -- deliver an approximation that improves with each step,
+and require only the action of the matrix on a vector.  The second line
+separates dense from structured problems: a tridiagonal system costs
+$\bigO(n)$ rather than $\bigO(n^3)$, and recognising structure is usually
+worth more than any amount of tuning.
+
+The complete programs are collected in
+\texttt{doc/BookManybody/BookMaterial/Programs}:
+
+\begin{itemize}
+  \item \texttt{direct\_solvers.py} -- Gaussian elimination, LU, Cholesky and
+        the tridiagonal solver, with determinants and inverses.
+  \item \texttt{iterative\_solvers.py} -- Jacobi, Gauss-Seidel,
+        over-relaxation and the conjugate gradient method, in both a
+        matrix-based and a matrix-free form.
+  \item \texttt{householder.py} -- Householder tridiagonalisation, the QL
+        algorithm with implicit shifts, and the power method.
+  \item \texttt{lanczos.py} -- the Lanczos algorithm with optional full
+        reorthogonalisation, together with the pairing-model Hamiltonian used
+        in Table~\ref{tab:lanczos}.
+  \item \texttt{schrodinger\_diagonalization.py} -- Schr\"odinger's equation
+        by diagonalisation, solved both directly and by Lanczos.
+\end{itemize}
+
+Each file runs as a script and reproduces the numbers quoted in this chapter.
+An executable version of the same material, in which the reader can vary the
+parameters, is available as a Jupyter notebook in the accompanying
+Jupyter-book.
