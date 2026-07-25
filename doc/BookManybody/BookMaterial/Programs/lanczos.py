@@ -130,78 +130,91 @@ class Lanczos:
 
 
 # ---------------------------------------------------------------------------
-def _harmonic_oscillator_matrix(n=500, rmax=10.0):
-    """The tridiagonal matrix of -d^2/dx^2 + x^2 on [-rmax, rmax].
+def pairing_hamiltonian(levels=12, pairs=6, delta=1.0, g=0.5):
+    """The pairing model Hamiltonian in the seniority-zero space.
 
-    A physically realistic test case: the low-lying eigenvalues are well
-    separated, which is precisely the situation in which Lanczos shines.  In
-    the units of the text the eigenvalues are 2E_k = 2k + 1.
+    We use the standard pairing Hamiltonian of the course,
+
+        H = delta * sum_p (p-1) N_p - g * sum_{pq} P_p^+ P_q,
+
+    with doubly degenerate single-particle levels p = 1, ..., L and N_p the
+    number operator.  In the space of states with no broken pairs a basis
+    state is a choice of which levels carry a pair, so the dimension is the
+    binomial coefficient C(L, n).  The diagonal elements are the unperturbed
+    energies minus g (from the p = q terms) and any two configurations that
+    differ by moving a single pair are coupled by -g.
+
+    This is a genuine many-body matrix: sparse, with a well separated ground
+    state, and it is exactly the kind of problem the Lanczos algorithm was
+    designed for.
     """
-    h = 2.0 * rmax / (n + 1)
-    x = -rmax + h * np.arange(1, n + 1)
-    diag = 2.0 / h**2 + x**2
-    off = np.full(n - 1, -1.0 / h**2)
-    return np.diag(diag) + np.diag(off, 1) + np.diag(off, -1)
+    from itertools import combinations
+
+    basis = list(combinations(range(1, levels + 1), pairs))
+    index = {c: i for i, c in enumerate(basis)}
+    dim = len(basis)
+    H = np.zeros((dim, dim))
+
+    for c, i in index.items():
+        H[i, i] = 2.0 * delta * sum(p - 1 for p in c) - g * pairs
+        occupied = set(c)
+        for p in c:                                  # move the pair from p
+            for q in range(1, levels + 1):           # to an empty level q
+                if q in occupied:
+                    continue
+                new = tuple(sorted(occupied - {p} | {q}))
+                H[index[new], i] -= g
+    return H, basis
 
 
 def _demo():
-    n = 500
-    A = _harmonic_oscillator_matrix(n)
-    exact = np.linalg.eigvalsh(A)
+    H, basis = pairing_hamiltonian(levels=12, pairs=6, delta=1.0, g=0.5)
+    n = H.shape[0]
+    exact = np.linalg.eigvalsh(H)
 
     print("=" * 72)
-    print(f"Lanczos for the one-dimensional harmonic oscillator, n = {n}")
-    print("The exact lowest eigenvalues of this matrix are 1, 3, 5, 7, ...")
+    print(f"Lanczos for the pairing model: 12 levels, 6 pairs, "
+          f"dimension {n}")
     print("=" * 72)
     print(f"{'m':>5s} {'lowest Ritz value':>22s} {'error':>12s} "
           f"{'second':>18s} {'error':>12s}")
     print("-" * 72)
     for m in (5, 10, 20, 30, 40):
-        theta, _ = Lanczos(A).ritz(m)
+        theta, _ = Lanczos(H).ritz(m)
         print(f"{m:5d} {theta[0]:22.12f} {abs(theta[0]-exact[0]):12.2e} "
               f"{theta[1]:18.10f} {abs(theta[1]-exact[1]):12.2e}")
     print("-" * 72)
     print(f"{'exact':>5s} {exact[0]:22.12f} {'':12s} {exact[1]:18.10f}")
 
     print()
-    print("Forty matrix-vector products give the two lowest eigenvalues of a")
-    print(f"{n}x{n} matrix to ten digits.  A full diagonalisation would cost")
-    print(f"O(n^3) = {n**3:.1e} operations and require storing all of A.")
+    print(f"A few tens of matrix-vector products give the ground-state energy")
+    print(f"of a {n}x{n} many-body matrix to machine precision, and the")
+    print("Lanczos vectors are the only large objects ever stored.")
 
     print()
     print("=" * 72)
     print("Loss of orthogonality without reorthogonalisation")
     print("=" * 72)
     for flag in (True, False):
-        lan = Lanczos(A, reorthogonalize=flag)
+        lan = Lanczos(H, reorthogonalize=flag)
         _, _, Q = lan.run(120)
         dev = np.linalg.norm(Q.T @ Q - np.eye(Q.shape[1]))
         theta, _ = lan.ritz(120)
-        # spurious ("ghost") eigenvalues appear as near-duplicates
-        gaps = np.diff(np.sort(theta))
-        ghosts = int(np.sum(gaps < 1.0e-8))
+        # the ground state is non-degenerate, so any extra Ritz value sitting
+        # on top of it is a spurious "ghost" produced by the loss of
+        # orthogonality among the Lanczos vectors
+        copies = int(np.sum(np.abs(theta - exact[0]) < 1.0e-8))
         print(f"reorthogonalize = {str(flag):5s}:  |Q^T Q - I| = {dev:9.2e},"
-              f"  duplicated Ritz values after 120 steps: {ghosts}")
+              f"  copies of the ground state after 120 steps: {copies}")
 
     print()
     print("=" * 72)
-    print("Matrix-free Lanczos: only the action of A on a vector is needed")
+    print("Matrix-free Lanczos: only the action of H on a vector is needed")
     print("=" * 72)
-
-    h = 2.0 * 10.0 / (n + 1)
-    x = -10.0 + h * np.arange(1, n + 1)
-
-    def matvec(v):
-        """Apply -d^2/dx^2 + x^2 without ever forming the matrix."""
-        w = (2.0 / h**2 + x**2) * v
-        w[:-1] -= v[1:] / h**2
-        w[1:] -= v[:-1] / h**2
-        return w
-
-    theta, vec = Lanczos(matvec=matvec, n=n).ritz(40)
+    theta, vec = Lanczos(matvec=lambda v: H @ v, n=n).ritz(40)
     print(f"lowest Ritz value = {theta[0]:.12f}   (exact {exact[0]:.12f})")
-    print(f"|A v - theta v|   = "
-          f"{np.linalg.norm(A @ vec[:, 0] - theta[0] * vec[:, 0]):.2e}")
+    print(f"|H v - theta v|   = "
+          f"{np.linalg.norm(H @ vec[:, 0] - theta[0] * vec[:, 0]):.2e}")
 
 
 if __name__ == "__main__":

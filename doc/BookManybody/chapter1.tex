@@ -534,3 +534,1238 @@ basis of the variational quantum eigensolver (VQE) and unitary
 coupled-cluster (UCC) ansatz.
 \end{notebox}
 
+%=============================================================================
+%  PART TWO: NUMERICAL LINEAR ALGEBRA
+%=============================================================================
+
+\section{From algebra to computation}
+\label{sec:fromalgebra}
+
+Everything said so far is exact algebra.  The moment we hand a matrix to a
+computer, however, two new questions arise.  The first is one of
+\emph{accuracy}: floating-point numbers carry a finite number of digits, and
+we need a way of measuring how large the resulting error is.  The second is
+one of \emph{cost}: a many-body Hamiltonian matrix may have a dimension of
+$10^6$ or more, and an algorithm whose work grows as $n^3$ is then simply not
+available to us.
+
+The remainder of this chapter is devoted to these two questions.  We first
+introduce the norms with which errors are measured, then develop the direct
+(elimination) methods for linear systems, the iterative alternatives, and
+finally the algorithms for the algebraic eigenvalue problem
+$\bm{A}\bket{x}=\lambda\bket{x}$, which is the computational problem at the
+heart of essentially every method in this book.  All programs are written in
+Python; the complete, runnable versions are collected in the
+\texttt{BookMaterial/Programs} directory.
+
+Throughout we keep the convention of Section~\ref{sec:notation} that indices
+run from $0$ to $n-1$, so that the mathematical formulae and the Python code
+carry the same indices.
+
+%----------------------------------------------------------------------
+\section{Vector and matrix norms}
+\label{sec:norms}
+
+\index{norm!vector}
+A class of vector norms is given by the so-called $p$-norms
+\begin{equation}
+  \|\bm{x}\|_p =
+    \left(|x_0|^p+|x_1|^p+\dots+|x_{n-1}|^p\right)^{1/p},
+  \qquad p\ge 1 .
+  \label{eq:1-pnorm}
+\end{equation}
+The three cases we shall need are $p=1$, $p=2$ and the limit
+$p\rightarrow\infty$,
+\begin{align}
+  \|\bm{x}\|_1 &= |x_0|+|x_1|+\dots+|x_{n-1}|,
+  \label{eq:1-norm1}\\
+  \|\bm{x}\|_2 &=
+     \left(|x_0|^2+\dots+|x_{n-1}|^2\right)^{1/2}
+     =\left(\bm{x}^{\dagger}\bm{x}\right)^{1/2},
+  \label{eq:1-norm2}\\
+  \|\bm{x}\|_{\infty} &= \max_{0\le i\le n-1} |x_i| .
+  \label{eq:1-norminf}
+\end{align}
+The $2$-norm is the one we have already been using implicitly: it is the
+square root of the inner product of Section~\ref{sec:vectors}, and in Dirac
+notation $\|\bket{x}\|_2^2=\braket{x}{x}$.  A quantum state is normalised
+precisely when its $2$-norm equals unity.
+
+Two inequalities follow from these definitions and will be used repeatedly.
+The first is the Cauchy-Schwarz inequality, valid for any two vectors in an
+inner product space,
+\begin{equation}
+  \left|\bm{x}^{\dagger}\bm{y}\right| \le
+     \|\bm{x}\|_2\,\|\bm{y}\|_2 ,
+  \label{eq:1-cauchy}
+\end{equation}
+with equality only when $\bm{x}$ and $\bm{y}$ are linearly dependent.  In
+Dirac notation this reads $|\braket{x}{y}|^2\le\braket{x}{x}\braket{y}{y}$,
+and it is the inequality behind the variational principle: the overlap of a
+trial state with the exact ground state can never exceed the product of their
+norms.  The second is the triangle inequality
+\begin{equation}
+  \|\bm{x}+\bm{y}\|_2 \le \|\bm{x}\|_2 + \|\bm{y}\|_2 ,
+  \label{eq:1-triangle}
+\end{equation}
+which follows from Eq.~(\ref{eq:1-cauchy}).  Proofs may be found in Golub and
+Van Loan~\cite{golub1996}.
+
+\index{norm!matrix}
+For matrices the most frequently used norms are the Frobenius norm
+\begin{equation}
+  \|\bm{A}\|_F = \sqrt{\sum_{i=0}^{m-1}\sum_{j=0}^{n-1}|a_{ij}|^2},
+  \label{eq:1-frobenius}
+\end{equation}
+which is simply the $2$-norm of the matrix read as a long vector, and the
+induced or operator $p$-norms
+\begin{equation}
+  \|\bm{A}\|_p = \max_{\bm{x}\ne 0}
+     \frac{\|\bm{A}\bm{x}\|_p}{\|\bm{x}\|_p} .
+  \label{eq:1-opnorm}
+\end{equation}
+The induced norm measures the largest factor by which $\bm{A}$ can stretch a
+vector.  For a Hermitian matrix $\|\bm{A}\|_2$ is the largest absolute
+eigenvalue, a fact which follows immediately from the spectral decomposition
+of Section~\ref{sec:spectral}.  A unitary matrix has $\|\bm{U}\|_2=1$; it
+rotates but never stretches, which is Section~\ref{sec:unitary} restated in
+the language of norms.
+
+\paragraph{Relative error.}
+Let $fl(\bm{x})$ denote the machine representation of a vector $\bm{x}\ne 0$.
+The relative error is
+\begin{equation}
+  \epsilon = \frac{\|fl(\bm{x})-\bm{x}\|}{\|\bm{x}\|},
+  \label{eq:1-relerr}
+\end{equation}
+and if we use the $\infty$-norm the statement
+$\|fl(\bm{x})-\bm{x}\|_{\infty}/\|\bm{x}\|_{\infty}\approx 10^{-l}$ says that
+the largest component of $fl(\bm{x})$ carries roughly $l$ correct significant
+digits.
+
+\paragraph{The condition number.}
+\index{condition number}
+Suppose we solve $\bm{A}\bm{x}=\bm{b}$ but, because of rounding, actually
+solve a slightly perturbed problem with right-hand side $\bm{b}+\delta\bm{b}$.
+The resulting error $\delta\bm{x}$ satisfies
+$\bm{A}\,\delta\bm{x}=\delta\bm{b}$, hence
+$\|\delta\bm{x}\|\le\|\bm{A}^{-1}\|\,\|\delta\bm{b}\|$, while
+$\|\bm{b}\|\le\|\bm{A}\|\,\|\bm{x}\|$.  Combining the two gives
+\begin{equation}
+  \frac{\|\delta\bm{x}\|}{\|\bm{x}\|} \le
+  \kappa(\bm{A})\,\frac{\|\delta\bm{b}\|}{\|\bm{b}\|},
+  \qquad
+  \kappa(\bm{A}) = \|\bm{A}\|\,\|\bm{A}^{-1}\| .
+  \label{eq:1-condition}
+\end{equation}
+The quantity $\kappa(\bm{A})$ is the \emph{condition number}.  It tells us how
+much an input error can be amplified, and it is a property of the problem, not
+of the algorithm: no amount of cleverness can rescue an ill-conditioned
+system.  In the $2$-norm and for a Hermitian matrix
+\begin{equation}
+  \kappa_2(\bm{A}) =
+    \frac{\max_i |\lambda_i|}{\min_i |\lambda_i|},
+  \label{eq:1-cond2}
+\end{equation}
+so a matrix is ill-conditioned exactly when it has eigenvalues of very
+different magnitude, that is, when it is close to being singular.  As a rule
+of thumb, if $\kappa\approx 10^{k}$ one loses about $k$ significant digits.
+
+\begin{notebox}
+\textbf{Many-body connection.} Ill-conditioning is not an academic worry in
+many-body physics.  Overlap matrices of non-orthogonal single-particle bases,
+such as the Gaussian basis sets of quantum chemistry, become nearly singular
+as the basis approaches linear dependence, and their condition numbers can
+reach $10^{10}$ and beyond.  The standard cure is to diagonalise the overlap
+matrix and discard the eigenvectors with the smallest eigenvalues, which is
+the canonical orthogonalisation procedure met again in Hartree-Fock theory.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Linear systems and Gaussian elimination}
+\label{sec:gauss}
+
+\index{Gaussian elimination}
+We now turn to the solution of
+\begin{equation}
+  \bm{A}\bm{x} = \bm{w},
+  \label{eq:1-linsys}
+\end{equation}
+with $\bm{A}$ non-singular.  Before describing the algorithms it is worth
+seeing why such systems appear at all.
+
+\paragraph{Where linear systems come from.}
+Consider the boundary value problem
+\begin{equation}
+  -\frac{d^2u(x)}{dx^2} = f(x), \qquad x\in(a,b),
+  \qquad u(a)=u(b)=0 .
+  \label{eq:1-bvp}
+\end{equation}
+We subdivide the interval into $n+1$ subintervals by setting $x_i=a+ih$ with
+step $h=(b-a)/(n+1)$, and replace the second derivative by the three-point
+formula
+\begin{equation}
+  u''(x_i) \approx \frac{u_{i+1}-2u_i+u_{i-1}}{h^2} + \bigO(h^2).
+  \label{eq:1-secondderiv}
+\end{equation}
+For the interior points $i=0,1,\dots,n-1$ this turns Eq.~(\ref{eq:1-bvp})
+into
+\begin{equation}
+  \frac{-u_{i+1}+2u_i-u_{i-1}}{h^2} = f_i ,
+  \label{eq:1-discbvp}
+\end{equation}
+where the boundary values $u_{-1}$ and $u_{n}$ are known and equal to zero.
+Collecting the coefficients we obtain $\bm{A}\bm{u}=\bm{f}$ with the
+tridiagonal matrix
+\begin{equation}
+  \bm{A} = \frac{1}{h^2}
+  \begin{bmatrix}
+     2 & -1 &    &        &    \\
+    -1 &  2 & -1 &        &    \\
+       & -1 &  2 & \ddots &    \\
+       &    & \ddots & \ddots & -1 \\
+       &    &    & -1 & 2
+  \end{bmatrix} .
+  \label{eq:1-laplacian}
+\end{equation}
+A differential equation has become a matrix equation.  This is the single
+most important lesson of this chapter, and it will be repeated in a
+many-body setting in Section~\ref{sec:schrodiag}: discretising a continuous
+problem, or expanding a state in a finite basis, always produces a matrix
+problem.
+
+\paragraph{The elimination.}
+The idea of Gaussian elimination is to use the first equation to eliminate
+$x_0$ from the remaining $n-1$ equations, then the new second equation to
+eliminate $x_1$ from the remaining $n-2$, and so on.  After $n-1$ such steps
+we are left with an upper triangular system
+\begin{equation}
+  \bm{U}\bm{x} = \bm{y},
+  \label{eq:1-uppertri}
+\end{equation}
+which is solved from the bottom upwards by \emph{backward substitution}
+\begin{equation}
+  x_m = \frac{1}{u_{mm}}
+        \left(y_m - \sum_{k=m+1}^{n-1} u_{mk}x_k\right),
+  \qquad m=n-1,n-2,\dots,0 .
+  \label{eq:1-backsub}
+\end{equation}
+To eliminate $x_0$ we multiply the first equation by $a_{j0}/a_{00}$ and
+subtract it from equation $j$, for $j=1,\dots,n-1$.  The elements of the
+remaining $(n-1)\times(n-1)$ block are updated according to
+\begin{equation}
+  a^{(1)}_{jk} = a_{jk} - \frac{a_{j0}\,a_{0k}}{a_{00}},
+  \qquad j,k = 1,\dots,n-1 ,
+  \label{eq:1-gausstep}
+\end{equation}
+and the same formula, applied to successively smaller blocks, defines the
+whole algorithm.  Counting operations, the elimination requires
+$2n^3/3+\bigO(n^2)$ floating point operations, while the backward
+substitution costs only $\bigO(n^2)$.  The elimination dominates, and this
+cubic scaling is the reason why direct methods become unusable for the large
+matrices of Section~\ref{sec:lanczos}.
+
+\paragraph{Pivoting.}
+\index{pivoting}
+The derivation assumed $a_{00}\ne0$, and more generally that no pivot element
+vanishes.  Even a small pivot is dangerous, since dividing by it amplifies
+rounding errors.  The cure is \emph{partial pivoting}: before eliminating
+column $k$ we search the column for the element of largest absolute value and
+interchange rows so that this element becomes the pivot.  Row interchanges do
+not alter the solution, and they keep all multipliers bounded by unity.  In
+practice one always pivots.
+
+The following class implements the algorithm.
+
+\begin{Python}{}
+class GaussianElimination(DirectSolver):
+    """Gaussian elimination with partial pivoting."""
+
+    def solve(self, b):
+        n = self.n
+        M = self.A.copy()                 # the elimination destroys its input
+        y = np.asarray(b, dtype=float).copy()
+
+        for k in range(n - 1):            # forward elimination
+            # partial pivoting: use the largest element in the column
+            p = k + np.argmax(np.abs(M[k:, k]))
+            if abs(M[p, k]) < 1.0e-14:
+                raise np.linalg.LinAlgError("matrix is singular")
+            if p != k:
+                M[[k, p]] = M[[p, k]]
+                y[k], y[p] = y[p], y[k]
+            for i in range(k + 1, n):
+                factor = M[i, k] / M[k, k]
+                M[i, k:] -= factor * M[k, k:]
+                y[i] -= factor * y[k]
+
+        return self._back_substitute(M, y)
+
+    @staticmethod
+    def _back_substitute(U, y):
+        """Solve U x = y for an upper triangular U."""
+        n = U.shape[0]
+        x = np.zeros(n)
+        for m in range(n - 1, -1, -1):
+            x[m] = (y[m] - U[m, m+1:] @ x[m+1:]) / U[m, m]
+        return x
+\end{Python}
+
+%----------------------------------------------------------------------
+\section{LU decomposition}
+\label{sec:lu}
+
+\index{LU decomposition}
+Gaussian elimination as written above throws away the multipliers once it has
+used them.  If we keep them instead, we obtain a factorisation of $\bm{A}$
+itself, and this is what makes the method reusable.  The LU decomposition
+writes
+\begin{equation}
+  \bm{A} = \bm{L}\bm{U},
+  \label{eq:1-lu}
+\end{equation}
+with $\bm{L}$ unit lower triangular and $\bm{U}$ upper triangular; for a
+$4\times 4$ matrix
+\begin{equation}
+  \begin{bmatrix}
+    a_{00} & a_{01} & a_{02} & a_{03}\\
+    a_{10} & a_{11} & a_{12} & a_{13}\\
+    a_{20} & a_{21} & a_{22} & a_{23}\\
+    a_{30} & a_{31} & a_{32} & a_{33}
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    1      & 0      & 0      & 0\\
+    l_{10} & 1      & 0      & 0\\
+    l_{20} & l_{21} & 1      & 0\\
+    l_{30} & l_{31} & l_{32} & 1
+  \end{bmatrix}
+  \begin{bmatrix}
+    u_{00} & u_{01} & u_{02} & u_{03}\\
+    0      & u_{11} & u_{12} & u_{13}\\
+    0      & 0      & u_{22} & u_{23}\\
+    0      & 0      & 0      & u_{33}
+  \end{bmatrix} .
+  \label{eq:1-lu4}
+\end{equation}
+The factorisation exists whenever $\bm{A}$ is non-singular and, with the
+normalisation $l_{ii}=1$, it is unique.  Multiplying out the first column
+gives $a_{00}=u_{00}$ and $a_{j0}=l_{j0}u_{00}$, which determines $u_{00}$ and
+the multipliers $l_{j0}$.  The second column then gives $u_{01}$, $u_{11}$ and
+$l_{j1}$, and so on: at every stage the unknowns are determined by quantities
+already computed.  In practice $\bm{L}$ and $\bm{U}$ are stored in the same
+array as $\bm{A}$, since the unit diagonal of $\bm{L}$ need not be kept.
+
+With partial pivoting the factorisation reads $\bm{P}\bm{A}=\bm{L}\bm{U}$
+with $\bm{P}$ a permutation matrix, which in the program is recorded as a
+permutation array rather than as a matrix.
+
+\paragraph{The determinant.}
+Because $\det(\bm{L})=1$ and the determinant of a triangular matrix is the
+product of its diagonal elements,
+\begin{equation}
+  \Det{A} = \pm\, u_{00}u_{11}\cdots u_{n-1,n-1},
+  \label{eq:1-ludet}
+\end{equation}
+where the sign is $(-1)^{r}$ with $r$ the number of row interchanges.  This is
+the only sensible way of computing a determinant numerically; expanding in
+minors would cost $\bigO(n!)$ operations.
+
+\paragraph{Solving the system.}
+Writing $\bm{A}\bm{x}=\bm{L}\bm{U}\bm{x}=\bm{w}$ and introducing the
+intermediate vector $\bm{y}=\bm{U}\bm{x}$, the problem splits into two
+triangular systems,
+\begin{equation}
+  \bm{L}\bm{y}=\bm{P}\bm{w}
+  \quad\text{(forward substitution)},
+  \qquad
+  \bm{U}\bm{x}=\bm{y}
+  \quad\text{(backward substitution)} ,
+  \label{eq:1-lusolve}
+\end{equation}
+each costing only $\bigO(n^2)$ operations.  This is the decisive advantage of
+LU over plain elimination: the expensive $\bigO(n^3)$ factorisation is
+performed once, after which any number of right-hand sides can be treated
+cheaply.
+
+\paragraph{The inverse.}
+Column $j$ of $\bm{A}^{-1}$ is the solution of $\bm{A}\bm{x}=\bm{e}_j$, where
+$\bm{e}_j$ is the $j$th unit vector.  The inverse therefore costs one
+factorisation plus $n$ substitutions.  It is worth stressing that one should
+almost never compute an inverse: if the aim is to solve a linear system,
+solving it directly is both faster and more accurate than forming
+$\bm{A}^{-1}$ and multiplying.
+
+\begin{Python}{}
+class LUDecomposition(DirectSolver):
+    """Doolittle LU factorisation with partial pivoting, P A = L U."""
+
+    def _factorize(self):
+        n = self.n
+        LU = self.A.copy()
+        perm = np.arange(n)
+        sign = 1.0
+
+        for k in range(n):
+            p = k + np.argmax(np.abs(LU[k:, k]))
+            if abs(LU[p, k]) < 1.0e-14:
+                raise np.linalg.LinAlgError("matrix is singular")
+            if p != k:
+                LU[[k, p]] = LU[[p, k]]
+                perm[[k, p]] = perm[[p, k]]
+                sign = -sign
+            # the multipliers l_ik are stored in place, below the diagonal
+            LU[k+1:, k] /= LU[k, k]
+            # rank-one update of the trailing submatrix
+            LU[k+1:, k+1:] -= np.outer(LU[k+1:, k], LU[k, k+1:])
+
+        self.LU, self.perm, self.sign = LU, perm, sign
+
+    def solve(self, b):
+        """Solve A x = b in two steps: L y = P b, then U x = y."""
+        y = np.asarray(b, dtype=float)[self.perm].copy()
+        n = self.n
+        for i in range(1, n):                    # forward, L has unit diagonal
+            y[i] -= self.LU[i, :i] @ y[:i]
+        x = np.zeros(n)
+        for i in range(n - 1, -1, -1):           # backward
+            x[i] = (y[i] - self.LU[i, i+1:] @ x[i+1:]) / self.LU[i, i]
+        return x
+
+    def determinant(self):
+        return self.sign * np.prod(np.diag(self.LU))
+\end{Python}
+
+\paragraph{Cholesky's factorisation.}
+\index{Cholesky factorisation}
+If $\bm{A}$ is real, symmetric and positive definite it admits the special
+factorisation
+\begin{equation}
+  \bm{A} = \bm{L}\bm{L}^{T},
+  \label{eq:1-cholesky}
+\end{equation}
+with $\bm{L}$ lower triangular.  The elements follow from
+\begin{align}
+  L_{ii} &= \left(A_{ii}-\sum_{k=0}^{i-1}L_{ik}^2\right)^{1/2},
+  \label{eq:1-choldiag}\\
+  L_{ji} &= \frac{1}{L_{ii}}
+            \left(A_{ji}-\sum_{k=0}^{i-1}L_{ik}L_{jk}\right),
+            \qquad j=i+1,\dots,n-1 .
+  \label{eq:1-choloff}
+\end{align}
+The algorithm costs half of a general LU factorisation, and since the pivots
+$L_{ii}$ are guaranteed positive there is no need for pivoting at all.  The
+square root in Eq.~(\ref{eq:1-choldiag}) also provides the cheapest available
+test of positive definiteness: if the argument turns negative, the matrix is
+not positive definite.
+
+\begin{notebox}
+\textbf{Many-body connection.} Positive definite matrices are everywhere in
+many-body theory.  Overlap matrices of linearly independent basis functions
+are positive definite by construction, and the Cholesky factor of the overlap
+matrix is the standard tool for transforming a generalised eigenvalue problem
+$\bm{H}\bm{c}=E\bm{S}\bm{c}$ into an ordinary one.  The Hessian of the
+variance in variational Monte Carlo is likewise positive definite, which is
+what makes the conjugate gradient method of Section~\ref{sec:cg} applicable
+to the optimisation of trial wave functions.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Tridiagonal systems}
+\label{sec:tridiag}
+
+\index{tridiagonal matrix}
+The matrix of Eq.~(\ref{eq:1-laplacian}) is tridiagonal, and applying general
+Gaussian elimination to it would be an extravagant waste: almost all the
+operations would be spent on elements that are already zero.  Writing the
+system as
+\begin{equation}
+  a_i u_{i-1} + b_i u_i + c_i u_{i+1} = f_i ,
+  \qquad i=0,1,\dots,n-1,
+  \label{eq:1-tridiag}
+\end{equation}
+with $a_0$ and $c_{n-1}$ not referenced, the elimination reduces to a single
+forward sweep followed by a single backward sweep.  The cost is $\bigO(n)$
+operations rather than $2n^3/3$, and the storage is three vectors rather than
+a full matrix.  Whenever a problem produces a tridiagonal, banded or
+otherwise sparse matrix, exploiting that structure is not an optimisation but
+a necessity.
+
+\begin{Python}{}
+class TridiagonalSolver:
+    """Solve a tridiagonal system in O(n) operations."""
+
+    def solve(self, f):
+        n = self.n
+        f = np.asarray(f, dtype=float)
+        temp = np.zeros(n)
+        u = np.zeros(n)
+
+        btemp = self.b[0]                       # forward substitution
+        u[0] = f[0] / btemp
+        for i in range(1, n):
+            temp[i] = self.c[i-1] / btemp
+            btemp = self.b[i] - self.a[i] * temp[i]
+            u[i] = (f[i] - self.a[i] * u[i-1]) / btemp
+
+        for i in range(n - 2, -1, -1):          # backward substitution
+            u[i] -= temp[i+1] * u[i+1]
+        return u
+\end{Python}
+
+Applied to $-u''=2$ on $(0,1)$ with $u(0)=u(1)=0$, whose exact solution is
+$u(x)=x(1-x)$, the solver reproduces the analytic answer to
+$8.6\times 10^{-16}$ with $n=100$ interior points.  The three-point formula is
+exact for polynomials of degree two, which is why the discretisation error
+vanishes here; for a general right-hand side the error would be
+$\bigO(h^2)$, as we shall see in Section~\ref{sec:schrodiag}.
+
+%----------------------------------------------------------------------
+\section{Iterative methods for linear systems}
+\label{sec:iterative}
+
+\index{iterative methods}
+The methods of the previous sections are \emph{direct}: up to rounding they
+produce the exact answer in a finite, known number of operations.  Their cost,
+however, grows as $n^3$, and they require the matrix to be stored.  Iterative
+methods take the opposite view.  We start from a guess and improve it until
+the change falls below a tolerance.  The matrix enters only through the
+product $\bm{A}\bm{x}$, so a matrix that is sparse, or that is never formed at
+all but only applied, costs nothing extra.  This is the reason iterative
+methods, and not the direct ones, are what one uses for large-scale many-body
+calculations.
+
+We split the matrix as
+\begin{equation}
+  \bm{A} = \bm{D} + \bm{L} + \bm{U},
+  \label{eq:1-splitting}
+\end{equation}
+with $\bm{D}$ diagonal, $\bm{L}$ strictly lower and $\bm{U}$ strictly upper
+triangular.
+
+\paragraph{Jacobi's method.}
+\index{Jacobi's method}
+Solving row $i$ for $x_i$ and evaluating the right-hand side with the previous
+iterate gives
+\begin{equation}
+  x_i^{(k+1)} = \frac{1}{a_{ii}}
+     \left(b_i - \sum_{j\ne i} a_{ij} x_j^{(k)}\right),
+  \label{eq:1-jacobi}
+\end{equation}
+or, in matrix form,
+\begin{equation}
+  \bm{x}^{(k+1)} = \bm{D}^{-1}
+      \left(\bm{b}-(\bm{L}+\bm{U})\bm{x}^{(k)}\right).
+  \label{eq:1-jacobimat}
+\end{equation}
+Every component of the new iterate is computed from the old ones only, so all
+$n$ updates are independent and the method parallelises trivially.  It
+converges whenever $\bm{A}$ is strictly diagonally dominant or symmetric
+positive definite.
+
+\paragraph{Gauss-Seidel.}
+\index{Gauss-Seidel method}
+Nothing forces us to wait: the components $x_0^{(k+1)},\dots,x_{i-1}^{(k+1)}$
+are already available when we compute $x_i^{(k+1)}$.  Using them immediately
+gives the Gauss-Seidel iteration
+\begin{equation}
+  x_i^{(k+1)} = \frac{1}{a_{ii}}
+     \left(b_i - \sum_{j<i} a_{ij}x_j^{(k+1)}
+                - \sum_{j>i} a_{ij}x_j^{(k)}\right).
+  \label{eq:1-gaussseidel}
+\end{equation}
+This is forward substitution applied to the splitting, and it typically halves
+the number of iterations.  The price is that the sweep is now inherently
+sequential.
+
+\paragraph{Successive over-relaxation.}
+\index{successive over-relaxation}
+Gauss-Seidel usually moves in the right direction but not far enough.
+Over-relaxation exaggerates the step by a factor $\omega$,
+\begin{equation}
+  x_i^{(k+1)} = (1-\omega)x_i^{(k)} + \frac{\omega}{a_{ii}}
+     \left(b_i - \sum_{j<i} a_{ij}x_j^{(k+1)}
+                - \sum_{j>i} a_{ij}x_j^{(k)}\right),
+  \label{eq:1-sor}
+\end{equation}
+which in matrix form reads
+\begin{equation}
+  \bm{x}^{(k+1)} = (\bm{D}+\omega\bm{L})^{-1}
+     \left(\omega\bm{b}
+       -\left[\omega\bm{U}+(\omega-1)\bm{D}\right]\bm{x}^{(k)}\right).
+  \label{eq:1-sormat}
+\end{equation}
+For symmetric positive definite matrices convergence is guaranteed for
+$0<\omega<2$, and $\omega=1$ returns Gauss-Seidel.  A well chosen $\omega$ can
+reduce the iteration count by an order of magnitude, but the optimal value
+depends on the spectrum of $\bm{A}$ and is rarely known in advance.
+
+%----------------------------------------------------------------------
+\section{The conjugate gradient method}
+\label{sec:cg}
+
+\index{conjugate gradient method}
+The methods above treat the linear system as a fixed-point problem.  The
+conjugate gradient method instead treats it as a minimisation.  For a
+symmetric positive definite $\bm{A}$ the solution of $\bm{A}\bm{x}=\bm{b}$ is
+the unique minimum of the quadratic form
+\begin{equation}
+  P(\bm{x}) = \tfrac{1}{2}\bm{x}^{T}\bm{A}\bm{x} - \bm{x}^{T}\bm{b},
+  \label{eq:1-quadform}
+\end{equation}
+since $\nabla P = \bm{A}\bm{x}-\bm{b}$, which vanishes precisely at the
+solution.  The residual
+\begin{equation}
+  \bm{r} = \bm{b} - \bm{A}\bm{x}
+  \label{eq:1-residual}
+\end{equation}
+is therefore the negative gradient of $P$, and steepest descent would move
+along it.  Steepest descent is however notoriously slow, because successive
+steps undo part of the progress of their predecessors.
+
+The remedy is to search along directions that are \emph{conjugate}, meaning
+orthogonal with respect to the inner product defined by $\bm{A}$,
+\begin{equation}
+  \bm{p}_i^{T}\bm{A}\bm{p}_j = 0, \qquad i\ne j .
+  \label{eq:1-conjugate}
+\end{equation}
+The eigenvectors of $\bm{A}$ are an example, since
+$\bm{v}_i^{T}\bm{A}\bm{v}_j=\lambda_j\bm{v}_i^{T}\bm{v}_j$ vanishes for $i\ne
+j$; but the whole point of the method is that we shall construct conjugate
+directions without knowing any eigenvectors.  A set of $n$ mutually conjugate
+vectors forms a basis of $\mathbb{R}^n$, so we may expand
+\begin{equation}
+  \bm{x} = \sum_{i=0}^{n-1}\alpha_i\bm{p}_i .
+  \label{eq:1-cgexpand}
+\end{equation}
+Multiplying $\bm{A}\bm{x}=\bm{b}$ from the left by $\bm{p}_k^{T}$ and using
+Eq.~(\ref{eq:1-conjugate}) collapses the sum to a single term,
+\begin{equation}
+  \alpha_k = \frac{\bm{p}_k^{T}\bm{b}}{\bm{p}_k^{T}\bm{A}\bm{p}_k},
+  \label{eq:1-cgalpha}
+\end{equation}
+so each direction can be treated independently.  In exact arithmetic the
+method therefore terminates after at most $n$ steps, which makes it a direct
+method in disguise; what makes it useful is that a good approximation is
+normally reached in far fewer.
+
+The directions are generated on the fly.  Starting from $\bm{x}_0=\bm{0}$ and
+$\bm{p}_0=\bm{r}_0=\bm{b}$, the new direction is the residual with its
+component along the previous direction projected out,
+\begin{equation}
+  \bm{p}_{k+1} = \bm{r}_{k+1}
+    - \frac{\bm{p}_k^{T}\bm{A}\bm{r}_{k+1}}
+           {\bm{p}_k^{T}\bm{A}\bm{p}_k}\,\bm{p}_k ,
+  \label{eq:1-cgdirection}
+\end{equation}
+and the residual itself is updated recursively.  From
+$\bm{x}_{k+1}=\bm{x}_k+\alpha_k\bm{p}_k$ we get
+\begin{equation}
+  \bm{r}_{k+1}=\bm{b}-\bm{A}(\bm{x}_k+\alpha_k\bm{p}_k)
+              =\bm{r}_k-\alpha_k\bm{A}\bm{p}_k ,
+  \label{eq:1-cgresidual}
+\end{equation}
+which saves one matrix-vector product per iteration.  Remarkably, the
+orthogonality relations that hold between the residuals allow
+Eq.~(\ref{eq:1-cgdirection}) to be reduced to the two-term recurrence
+\begin{equation}
+  \bm{p}_{k+1} = \bm{r}_{k+1} + \beta_k \bm{p}_k ,
+  \qquad
+  \beta_k = \frac{\bm{r}_{k+1}^{T}\bm{r}_{k+1}}{\bm{r}_k^{T}\bm{r}_k},
+  \label{eq:1-cgbeta}
+\end{equation}
+so that only the current residual and the current direction need to be stored.
+This is what the implementation below uses.
+
+\begin{Python}{}
+class ConjugateGradient(IterativeSolver):
+    """Conjugate gradient for symmetric positive definite A.
+
+    Only the matrix-vector product A p is required, so a `matvec` callable
+    may be supplied instead of a dense matrix.
+    """
+
+    def solve(self, b, x0=None):
+        b = np.asarray(b, dtype=float)
+        x = self._initial_guess(x0)
+        r = b - self.matvec(x)            # residual
+        p = r.copy()                      # first search direction
+        rs = r @ r
+
+        for k in range(self.max_iter):
+            Ap = self.matvec(p)
+            alpha = rs / (p @ Ap)
+            x += alpha * p                # x_{k+1} = x_k + alpha_k p_k
+            r -= alpha * Ap               # r_{k+1} = r_k - alpha_k A p_k
+            rs_new = r @ r
+            if np.sqrt(rs_new) < self.tol:
+                break
+            p = r + (rs_new / rs) * p     # beta_k = |r_{k+1}|^2 / |r_k|^2
+            rs = rs_new
+        return x
+\end{Python}
+
+Table~\ref{tab:iterative} compares the four methods on the discretised second
+derivative of Eq.~(\ref{eq:1-laplacian}) with $n=50$ interior points, for a
+residual tolerance of $10^{-8}$.  The ordering is the one to remember:
+Gauss-Seidel is roughly twice as fast as Jacobi, a well chosen relaxation
+parameter gains an order of magnitude, and the conjugate gradient method gains
+another.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Method} & \textbf{Iterations} & \textbf{Error} \\
+\midrule
+Jacobi                       & 11049 & $1.0\times10^{-9}$ \\
+Gauss-Seidel                 &  5526 & $1.0\times10^{-9}$ \\
+Successive over-relaxation ($\omega=1.9$) & 220 & $2.8\times10^{-10}$ \\
+Conjugate gradient           &    25 & $1.7\times10^{-16}$ \\
+\bottomrule
+\end{tabular}
+\caption{Iterations needed to solve $-u''=2$ on $(0,1)$ with $u(0)=u(1)=0$,
+discretised on $n=50$ interior points, to a residual tolerance of $10^{-8}$.
+The error is measured against the analytic solution $u(x)=x(1-x)$.}
+\label{tab:iterative}
+\end{table}
+
+\begin{notebox}
+\textbf{Many-body connection.} The conjugate gradient method appears in two
+distinct roles in this book.  As a linear solver it is used wherever a large
+sparse positive definite system arises.  As a minimiser it is the workhorse of
+variational calculations: in variational Monte Carlo the parameters of a trial
+wave function are optimised by conjugate gradient steps on the energy or the
+variance, and the Hessian of the variance plays the role of $\bm{A}$.  The
+non-linear generalisations of the method, discussed in the chapter on
+gradient methods, all rest on the linear theory developed here.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Cubic spline interpolation}
+\label{sec:spline}
+
+\index{spline interpolation}
+Tridiagonal systems appear in a second, quite different context, and the
+solver of Section~\ref{sec:tridiag} can be reused verbatim.  Suppose we are
+given $n+1$ knots $x_0<x_1<\dots<x_n$ and the corresponding function values
+$y_i=f(x_i)$, and we want a smooth interpolant.  A spline function $s$ of
+degree $k$ is a piecewise polynomial: on every subinterval $[x_{i},x_{i+1})$
+it is a polynomial of degree at most $k$, and it has $k-1$ continuous
+derivatives on the whole interval.  For $k=1$ the spline is the broken line
+through the data points, with no continuous derivative at all.  The useful
+choice is $k=3$, the cubic spline, which is twice continuously differentiable
+and therefore looks smooth to the eye.
+
+On each of the $n$ subintervals we have a cubic
+\begin{equation}
+  s_i(x) = a_{i0}+a_{i1}x+a_{i2}x^2+a_{i3}x^3 ,
+  \label{eq:1-splinepoly}
+\end{equation}
+giving $4n$ unknown coefficients.  Interpolation at both ends of every
+subinterval provides $2n$ conditions, continuity of $s'$ at the interior knots
+$n-1$ more, and continuity of $s''$ another $n-1$, for a total of $4n-2$.  Two
+degrees of freedom remain, and they are fixed by a condition at the two ends;
+setting the second derivative to zero there gives the \emph{natural} cubic
+spline.
+
+The elegant way to construct the spline is to take the second derivatives
+$f_i=s''(x_i)$ as the unknowns.  Since $s''$ is piecewise linear,
+\begin{equation}
+  s_i''(x) = \frac{f_i}{x_{i+1}-x_i}(x_{i+1}-x)
+           + \frac{f_{i+1}}{x_{i+1}-x_i}(x-x_i),
+  \label{eq:1-splinesecond}
+\end{equation}
+and integrating twice, fixing the integration constants by the interpolation
+conditions, gives $s_i(x)$ in terms of $f_i$ and $f_{i+1}$.  Demanding that
+$s'$ be continuous at the interior knots then produces $n-1$ equations for the
+$n-1$ unknown interior second derivatives, and those equations are
+tridiagonal and diagonally dominant.  A cubic spline through $n$ points
+therefore costs $\bigO(n)$ operations, which is why splines rather than global
+polynomials are used to interpolate tabulated potentials, form factors and
+matrix elements.
+
+%----------------------------------------------------------------------
+\section{Applications: integral equations and matrix inversion}
+\label{sec:applications}
+
+Two further examples show how naturally physical problems turn into the
+matrix problems of this chapter.
+
+\paragraph{A linear integral equation.}
+\index{Lippmann-Schwinger equation}
+The scattering problem in quantum mechanics leads to the Lippmann-Schwinger
+equation, an integral equation of the form
+\begin{equation}
+  R(k,k') = V(k,k')
+    + \frac{2}{\pi}\,\mathcal{P}\!\int_0^{\infty}
+       \ud{q}\, q^2\,
+       \frac{V(k,q)\,R(q,k')}{(k_0^2-q^2)/m},
+  \label{eq:1-lippmann}
+\end{equation}
+where $\mathcal{P}$ denotes the Cauchy principal value.  If we approximate the
+integral by a quadrature rule with $N$ points $q_j$ and weights $w_j$, the
+unknown function $R$ is replaced by the $N+1$ numbers $R(q_i,k_0)$, and
+Eq.~(\ref{eq:1-lippmann}) becomes
+\begin{equation}
+  \sum_{j} A_{ij} R_j = V_i,
+  \qquad
+  A_{ij} = \delta_{ij} - \frac{2}{\pi} u_j V(k_i,q_j) ,
+  \label{eq:1-lippmannmat}
+\end{equation}
+with the weights $u_j$ containing the quadrature weights and the propagator.
+The principal value is handled by the standard subtraction trick, which
+removes the singularity at $q=k_0$ before the quadrature is applied.  What
+began as an integral equation is now a linear system of the type treated in
+Section~\ref{sec:lu}: the physics is entirely in the construction of the
+matrix, and the solution is one call to an LU solver.
+
+\paragraph{An ill-conditioned inverse.}
+\index{Vandermonde matrix}
+Not every matrix inversion is benign.  Fitting a polynomial of degree $n-1$
+through $n$ points $x_0,\dots,x_{n-1}$ requires inverting the Vandermonde
+matrix
+\begin{equation}
+  \bm{V} =
+  \begin{bmatrix}
+    1 & x_0 & x_0^2 & \cdots & x_0^{n-1}\\
+    1 & x_1 & x_1^2 & \cdots & x_1^{n-1}\\
+    \vdots & \vdots & \vdots & & \vdots\\
+    1 & x_{n-1} & x_{n-1}^2 & \cdots & x_{n-1}^{n-1}
+  \end{bmatrix}.
+  \label{eq:1-vandermonde}
+\end{equation}
+Its inverse is known in closed form, but its condition number grows
+exponentially with $n$: for equidistant points on $[0,1]$ and $n=20$ it
+exceeds $10^{20}$, so that not a single significant digit survives in double
+precision.  This is the numerical statement of a fact familiar from
+interpolation theory, namely that high-degree polynomial interpolation on a
+uniform grid is a bad idea, and it is the practical reason for preferring the
+piecewise construction of Section~\ref{sec:spline}.
+
+%=============================================================================
+%  EIGENVALUE PROBLEMS
+%=============================================================================
+
+\section{The algebraic eigenvalue problem}
+\label{sec:eigenproblem}
+
+\index{eigenvalue problem}
+We return to the eigenvalue problem introduced in
+Section~\ref{sec:spectral}, this time asking how it is actually solved.  The
+eigenvalues of a matrix $\bm{A}$ of dimension $n$ are defined by
+\begin{equation}
+  \bm{A}\bm{x}^{(\nu)} = \lambda^{(\nu)}\bm{x}^{(\nu)},
+  \label{eq:1-eigen}
+\end{equation}
+where, unless stated otherwise, eigenvector means right eigenvector; the left
+eigenvectors satisfy $\bm{x}_L^{(\nu)}\bm{A}=\lambda^{(\nu)}\bm{x}_L^{(\nu)}$.
+Rewriting Eq.~(\ref{eq:1-eigen}) as
+$(\bm{A}-\lambda^{(\nu)}\bm{I})\bm{x}^{(\nu)}=\bm{0}$, a non-trivial solution
+exists only if the matrix is singular, that is only if
+\begin{equation}
+  P(\lambda) = \det(\lambda\bm{I}-\bm{A}) = 0 .
+  \label{eq:1-charpoly}
+\end{equation}
+The characteristic polynomial $P(\lambda)$ has degree $n$, and its roots
+\begin{equation}
+  P(\lambda) = \prod_{i=0}^{n-1}(\lambda_i-\lambda)
+  \label{eq:1-charfactor}
+\end{equation}
+form the \emph{spectrum} $\lambda(\bm{A})$.  Two useful identities follow at
+once from the factorisation,
+\begin{equation}
+  \Det{A} = \lambda_0\lambda_1\cdots\lambda_{n-1},
+  \qquad
+  \mathrm{Tr}(\bm{A}) = \lambda_0+\lambda_1+\dots+\lambda_{n-1} .
+  \label{eq:1-dettrace}
+\end{equation}
+
+It is tempting to conclude that one should find eigenvalues by computing the
+characteristic polynomial and looking for its roots.  This is almost always a
+bad idea: the roots of a polynomial are extremely sensitive to its
+coefficients, so the detour through $P(\lambda)$ throws away accuracy that the
+original matrix still contained.  The one case where the polynomial route is
+respectable is a tridiagonal matrix, for which the leading principal minors
+obey the recursion
+\begin{equation}
+  P_k(\lambda) = (d_k-\lambda)P_{k-1}(\lambda) - e_{k-1}^2 P_{k-2}(\lambda),
+  \label{eq:1-sturm}
+\end{equation}
+with $P_0(\lambda)=d_0-\lambda$ and $P_{-1}=1$.  The sequence
+$\{P_k(\lambda)\}$ is a Sturm sequence, and counting its sign changes tells us
+how many eigenvalues lie below $\lambda$, which is a robust way of isolating
+selected eigenvalues.
+
+The standard approach is entirely different.  We apply a sequence of
+similarity transformations that bring $\bm{A}$ either to diagonal form
+directly, or first to tridiagonal form and then to diagonal form.  The second
+route is the one we follow, because diagonalising a tridiagonal matrix is
+vastly cheaper than diagonalising a full one.
+
+%----------------------------------------------------------------------
+\section{Similarity transformations}
+\label{sec:similarity}
+
+\index{similarity transformation}
+Let $\bm{A}\in\mathbb{R}^{n\times n}$ be real and symmetric.  Then there
+exists a real orthogonal matrix $\bm{S}$ such that
+\begin{equation}
+  \bm{S}^{T}\bm{A}\bm{S}
+    = \mathrm{diag}(\lambda_0,\lambda_1,\dots,\lambda_{n-1}) \equiv \bm{D},
+  \label{eq:1-diagonalise}
+\end{equation}
+and the $j$th column of $\bm{S}$ is the eigenvector belonging to
+$\lambda_j$~\cite{golub1996}.  We say that $\bm{B}$ is a similarity transform
+of $\bm{A}$ if
+\begin{equation}
+  \bm{B} = \bm{S}^{T}\bm{A}\bm{S},
+  \qquad
+  \bm{S}^{T}\bm{S} = \bm{S}^{-1}\bm{S} = \bm{I} .
+  \label{eq:1-similar}
+\end{equation}
+The importance of such a transformation is that it leaves the eigenvalues
+unchanged while altering the eigenvectors in a controlled way.  The proof is
+one line.  Multiply $\bm{A}\bm{x}=\lambda\bm{x}$ from the left by $\bm{S}^{T}$
+and insert $\bm{S}\bm{S}^{T}=\bm{I}$ between $\bm{A}$ and $\bm{x}$,
+\begin{equation}
+  (\bm{S}^{T}\bm{A}\bm{S})(\bm{S}^{T}\bm{x})
+    = \lambda\,(\bm{S}^{T}\bm{x}),
+  \label{eq:1-similarproof}
+\end{equation}
+that is $\bm{B}(\bm{S}^{T}\bm{x})=\lambda(\bm{S}^{T}\bm{x})$.  So $\lambda$ is
+an eigenvalue of $\bm{B}$ as well, with eigenvector $\bm{S}^{T}\bm{x}$.
+
+The strategy is therefore either to apply transformations until
+\begin{equation}
+  \bm{S}_N^{T}\cdots\bm{S}_1^{T}\bm{A}\bm{S}_1\cdots\bm{S}_N = \bm{D},
+  \label{eq:1-seqsimilar}
+\end{equation}
+which is Jacobi's method of successive plane rotations, or to reduce $\bm{A}$
+to tridiagonal form in a finite number of steps and then attack the
+tridiagonal matrix.  We follow the second route, which is what all modern
+library routines do.
+
+\begin{notebox}
+\textbf{Many-body connection.} Similarity transformations are not merely a
+numerical device.  The whole of coupled-cluster theory rests on the
+similarity-transformed Hamiltonian $\bar{H}=e^{-T}\op{H}e^{T}$, which has the
+same eigenvalues as $\op{H}$ but is not Hermitian, since $e^{T}$ is not
+unitary.  The in-medium similarity renormalisation group instead uses a
+continuous sequence of \emph{unitary} transformations to drive the Hamiltonian
+towards diagonal form, which is Eq.~(\ref{eq:1-seqsimilar}) carried out with
+infinitesimal steps.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The power method}
+\label{sec:power}
+
+\index{power method}
+The simplest of all eigenvalue algorithms is worth understanding, because
+everything that follows can be seen as a refinement of it.  Assume $\bm{A}$
+can be diagonalised, with eigenvalues $\lambda_0,\dots,\lambda_{n-1}$ and
+eigenvectors $\bm{v}_0,\dots,\bm{v}_{n-1}$, and assume there is a dominant
+eigenvalue, $|\lambda_0|>|\lambda_j|$ for $j>0$.  An arbitrary starting vector
+expands as
+\begin{equation}
+  \bm{b}_0 = c_0\bm{v}_0 + c_1\bm{v}_1 + \dots + c_{n-1}\bm{v}_{n-1},
+  \label{eq:1-powerexpand}
+\end{equation}
+and applying $\bm{A}$ repeatedly gives
+\begin{equation}
+  \bm{A}^{k}\bm{b}_0
+   = c_0\lambda_0^{k}
+     \left(\bm{v}_0
+       + \sum_{j>0}\frac{c_j}{c_0}
+         \left(\frac{\lambda_j}{\lambda_0}\right)^{k}\bm{v}_j\right).
+  \label{eq:1-powerapply}
+\end{equation}
+Every ratio $|\lambda_j/\lambda_0|$ is smaller than one, so the bracket tends
+to $\bm{v}_0$: repeated multiplication filters out everything except the
+dominant eigenvector.  Normalising at every step,
+$\bm{b}_{k}=\bm{A}^{k}\bm{b}_0/\|\bm{A}^{k}\bm{b}_0\|$, and estimating the
+eigenvalue by the Rayleigh quotient
+\begin{equation}
+  \mu_k = \frac{\bm{b}_k^{\dagger}\bm{A}\bm{b}_k}
+               {\bm{b}_k^{\dagger}\bm{b}_k},
+  \label{eq:1-rayleigh}
+\end{equation}
+we obtain a method that converges geometrically with ratio
+$|\lambda_1/\lambda_0|$, where $\lambda_1$ is the second largest eigenvalue in
+magnitude.  When the two are close, convergence is correspondingly slow.
+
+The power method has two obvious weaknesses: it gives only one eigenpair, and
+it discards all the information contained in the intermediate vectors
+$\bm{b}_0,\bm{A}\bm{b}_0,\dots,\bm{A}^{k-1}\bm{b}_0$.  Removing the second
+weakness by working in the whole space spanned by those vectors, the
+\emph{Krylov space}, leads directly to the Lanczos algorithm of
+Section~\ref{sec:lanczos}.  Applying the power method to $\bm{A}^{-1}$ instead
+gives inverse iteration, which converges to the eigenvalue of smallest
+magnitude and, with a shift, to any eigenvalue one can bracket.
+
+%----------------------------------------------------------------------
+\section{Householder's method for tridiagonalisation}
+\label{sec:householder}
+
+\index{Householder's method}
+The first of the two steps is to construct an orthogonal $\bm{S}$ that brings
+$\bm{A}$ to tridiagonal form.  It is built as a product of $n-2$ elementary
+transformations,
+\begin{equation}
+  \bm{S} = \bm{S}_0\bm{S}_1\cdots\bm{S}_{n-3},
+  \label{eq:1-householderprod}
+\end{equation}
+each of which clears one column and one row.  Only $n-2$ steps are needed,
+since the last two rows are already tridiagonal.  After the first
+transformation
+\begin{equation}
+  \bm{S}_0^{T}\bm{A}\bm{S}_0 =
+  \begin{bmatrix}
+    a_{00} & e_0 & 0 & \cdots & 0\\
+    e_0    & a'_{11} & a'_{12} & \cdots & a'_{1,n-1}\\
+    0      & a'_{21} & a'_{22} & \cdots & a'_{2,n-1}\\
+    \vdots &  &  & &\vdots\\
+    0      & a'_{n-1,1} & \cdots & \cdots & a'_{n-1,n-1}
+  \end{bmatrix},
+  \label{eq:1-afterfirst}
+\end{equation}
+where the primed block is a matrix of dimension $n-1$ which the next
+transformation will treat in the same way.  Note that the effective size of
+the problem shrinks at every step; in Jacobi's method, by contrast, each
+rotation acts on the full matrix and previously created zeros are destroyed.
+After all $n-2$ steps we are left with the diagonal elements
+$a_{00},a'_{11},a''_{22},\dots$ and the off-diagonal elements
+$e_0,e_1,\dots,e_{n-2}$ of a tridiagonal matrix.
+
+It remains to find the transformations.  We take
+\begin{equation}
+  \bm{S}_0 =
+  \begin{bmatrix} 1 & \bm{0}^{T}\\ \bm{0} & \bm{P}\end{bmatrix},
+  \qquad
+  \bm{P} = \bm{I} - 2\bm{u}\bm{u}^{T},
+  \qquad \bm{u}^{T}\bm{u}=1,
+  \label{eq:1-reflector}
+\end{equation}
+where $\bm{u}$ is a column vector of length $n-1$.  The matrix $\bm{P}$, whose
+elements are $P_{ij}=\delta_{ij}-2u_iu_j$, is a \emph{Householder reflector}:
+it is symmetric and satisfies $\bm{P}^2=\bm{I}$, hence
+$\bm{P}^{T}=\bm{P}^{-1}$, so it is orthogonal.  Geometrically it reflects a
+vector in the hyperplane perpendicular to $\bm{u}$.
+
+Applying $\bm{S}_0$ gives
+\begin{equation}
+  \bm{S}_0^{T}\bm{A}\bm{S}_0 =
+  \begin{bmatrix} a_{00} & (\bm{P}\bm{v})^{T}\\
+                  \bm{P}\bm{v} & \bm{A}'\end{bmatrix},
+  \qquad
+  \bm{v}^{T} = \{a_{10},a_{20},\dots,a_{n-1,0}\} ,
+  \label{eq:1-applyS0}
+\end{equation}
+so we must choose $\bm{u}$ such that $\bm{P}\bm{v}$ has only one non-zero
+component,
+\begin{equation}
+  \bm{P}\bm{v} = \bm{v} - 2\bm{u}(\bm{u}^{T}\bm{v}) = \kappa\,\bm{e},
+  \qquad \bm{e}^{T}=\{1,0,\dots,0\} .
+  \label{eq:1-pv}
+\end{equation}
+The constant $\kappa$ follows from taking the scalar product of
+Eq.~(\ref{eq:1-pv}) with itself and using $\bm{P}^2=\bm{I}$,
+\begin{equation}
+  (\bm{P}\bm{v})^{T}\bm{P}\bm{v} = \kappa^2 = \bm{v}^{T}\bm{v}
+   = \sum_{i=1}^{n-1}a_{i0}^2 ,
+  \label{eq:1-kappa}
+\end{equation}
+so $\kappa=\pm\|\bm{v}\|_2$.  Rewriting Eq.~(\ref{eq:1-pv}) as
+$\bm{v}-\kappa\bm{e}=2\bm{u}(\bm{u}^{T}\bm{v})$ shows that $\bm{u}$ is
+proportional to $\bm{v}-\kappa\bm{e}$, and normalising gives
+\begin{equation}
+  \bm{u} = \frac{\bm{v}-\kappa\bm{e}}{\|\bm{v}-\kappa\bm{e}\|_2} .
+  \label{eq:1-uvector}
+\end{equation}
+The sign of $\kappa$ is free, and here numerical care is essential: if
+$v_0=a_{10}$ and $\kappa$ have the same sign, the leading component of
+$\bm{v}-\kappa\bm{e}$ is a difference of nearly equal numbers and precision is
+lost.  We therefore always choose
+\begin{equation}
+  \kappa = -\mathrm{sign}(v_0)\,\|\bm{v}\|_2 ,
+  \label{eq:1-kappasign}
+\end{equation}
+which makes the subtraction an addition.
+
+Finally we need the transformed block.  Writing
+$\bm{p}=\bm{A}'\bm{u}$ and $K=\bm{u}^{T}\bm{p}$, and introducing
+$\bm{z}=\bm{p}-K\bm{u}$, a short calculation gives the symmetric rank-two
+update
+\begin{equation}
+  \bm{P}\bm{A}'\bm{P} = \bm{A}'
+     - 2\bm{z}\bm{u}^{T} - 2\bm{u}\bm{z}^{T} ,
+  \label{eq:1-ranktwo}
+\end{equation}
+which costs $\bigO(n^2)$ operations rather than the $\bigO(n^3)$ of forming
+the products explicitly.  Summed over the $n-2$ steps, the whole reduction
+costs $\tfrac{4}{3}n^3$ operations, or twice that if the transformation matrix
+is accumulated.
+
+\begin{Python}{}
+def tridiagonalize(self):
+    """Return (d, e, S) with S^T A S tridiagonal."""
+    n = self.n
+    M = self.A.copy()
+    S = np.eye(n)
+
+    for k in range(n - 2):
+        v = M[k+1:, k]                       # the column to be reduced
+        norm_v = np.linalg.norm(v)
+        if norm_v < self.tol:
+            continue
+        # the sign is chosen to avoid cancellation in v[0] - kappa
+        kappa = -np.copysign(norm_v, v[0])
+        w = v.copy()
+        w[0] -= kappa
+        u = w / np.linalg.norm(w)            # unit vector, u^T u = 1
+
+        # similarity transformation of the trailing block,
+        #   P A P = A - 2 z u^T - 2 u z^T,  z = A u - (u^T A u) u
+        block = M[k+1:, k+1:]
+        p = block @ u
+        z = p - (u @ p) * u
+        M[k+1:, k+1:] = block - 2.0*np.outer(z, u) - 2.0*np.outer(u, z)
+
+        M[k+1:, k] = 0.0                     # the reduced column and row
+        M[k+1, k] = kappa
+        M[k, k+1:] = 0.0
+        M[k, k+1] = kappa
+
+        S[:, k+1:] -= 2.0 * np.outer(S[:, k+1:] @ u, u)   # S <- S P
+
+    d = np.diag(M).copy()
+    e = np.diag(M, -1).copy()
+    return d, e, S
+\end{Python}
+
+For a random symmetric $8\times 8$ matrix the routine returns an $\bm{S}$ with
+$\|\bm{S}^{T}\bm{S}-\bm{I}\|=1.1\times10^{-15}$ and reproduces the original
+matrix, $\|\bm{S}\bm{T}\bm{S}^{T}-\bm{A}\|=3.1\times10^{-15}$.  Orthogonality
+is preserved to machine precision, which is exactly why reflectors are
+preferred to the more obvious Gaussian-elimination-like schemes.
+
+%----------------------------------------------------------------------
+\section{Diagonalising a tridiagonal matrix}
+\label{sec:qlalgorithm}
+
+\index{QL algorithm}\index{Francis' algorithm}
+The second step diagonalises the tridiagonal matrix
+\begin{equation}
+  \bm{T} =
+  \begin{bmatrix}
+    d_0 & e_0 &     &     \\
+    e_0 & d_1 & e_1 &     \\
+        & e_1 & d_2 & \ddots\\
+        &     & \ddots & \ddots
+  \end{bmatrix}.
+  \label{eq:1-tridiagmat}
+\end{equation}
+The basic observation is that if any off-diagonal element $e_i$ vanishes, the
+matrix splits into two independent blocks; in particular if $e_0=0$ then $d_0$
+is already an eigenvalue.  The algorithm therefore works by making the
+off-diagonal elements vanish one after another.
+
+Francis' original scheme, and the QL and QR algorithms that grew out of it,
+apply a sequence of plane rotations
+\begin{equation}
+  \bm{S}_i =
+  \begin{bmatrix}
+    \cos\theta & \cdots & \sin\theta\\
+    \vdots & & \vdots\\
+    -\sin\theta & \cdots & \cos\theta
+  \end{bmatrix},
+  \label{eq:1-planerot}
+\end{equation}
+choosing $\theta$ at each step so as to annihilate one off-diagonal element.
+Two refinements turn this idea into the algorithm actually used.  The first is
+\emph{shifting}: instead of working with $\bm{T}$ one works with
+$\bm{T}-\sigma\bm{I}$, where $\sigma$ is an estimate of the eigenvalue being
+sought.  The rate of convergence of the element $e_{m-1}$ to zero is governed
+by the ratio of the distances of $\sigma$ to the two nearest eigenvalues, so a
+good shift produces cubic convergence and typically two or three iterations
+per eigenvalue.  The Wilkinson shift, obtained from the trailing $2\times2$
+submatrix, is the standard choice.  The second refinement is to apply the
+shift \emph{implicitly}, by chasing an unwanted element down the subdiagonal
+with successive rotations, which avoids ever forming
+$\bm{T}-\sigma\bm{I}$ explicitly and so avoids the associated cancellation.
+
+The resulting routine is traditionally called \texttt{tqli}.  It takes the
+diagonal $d$ and the off-diagonal $e$ produced by the Householder step,
+together with the accumulated transformation matrix, and returns the
+eigenvalues in $d$ and the eigenvectors as the columns of that matrix.
+
+\begin{Python}{}
+@staticmethod
+def tqli(d, e, z=None, max_sweeps=50):
+    """QL algorithm with implicit shifts for a symmetric tridiagonal matrix.
+
+    Pass the S of the Householder step as z to obtain the eigenvectors of
+    the original matrix A.
+    """
+    d = np.asarray(d, dtype=float).copy()
+    n = len(d)
+    e = np.concatenate([np.asarray(e, dtype=float), [0.0]])
+    z = np.eye(n) if z is None else np.asarray(z, dtype=float).copy()
+    eps = np.finfo(float).eps
+
+    for l in range(n):
+        for _ in range(max_sweeps):
+            # look for a negligible off-diagonal element to split off
+            m = n - 1
+            for i in range(l, n - 1):
+                if abs(e[i]) <= eps * (abs(d[i]) + abs(d[i+1])):
+                    m = i
+                    break
+            if m == l:                       # d[l] has converged
+                break
+
+            # Wilkinson shift, computed without cancellation
+            g = (d[l+1] - d[l]) / (2.0 * e[l])
+            r = np.hypot(g, 1.0)
+            g = d[m] - d[l] + e[l] / (g + np.copysign(r, g))
+
+            s = c = 1.0
+            p = 0.0
+            for i in range(m - 1, l - 1, -1):
+                f = s * e[i]
+                b = c * e[i]
+                r = np.hypot(f, g)
+                e[i+1] = r
+                s, c = f / r, g / r
+                g = d[i+1] - p
+                r = (d[i] - g) * s + 2.0 * c * b
+                p = s * r
+                d[i+1] = g + p
+                g = c * r - b
+                col = z[:, i+1].copy()       # accumulate the plane rotation
+                z[:, i+1] = s * z[:, i] + c * col
+                z[:, i] = c * z[:, i] - s * col
+            d[l] -= p
+            e[l] = g
+            e[m] = 0.0
+    return d, z
+\end{Python}
+
+Together, the two steps constitute a complete eigenvalue solver.  On a random
+symmetric $8\times8$ matrix it reproduces the eigenvalues returned by
+\texttt{numpy.linalg.eigvalsh} to $2.2\times10^{-15}$, with
+$\|\bm{A}\bm{V}-\bm{V}\bm{D}\|=4.9\times10^{-15}$ and
+$\|\bm{V}^{T}\bm{V}-\bm{I}\|=2.7\times10^{-15}$.  The total cost is
+$\bigO(n^3)$, dominated by the Householder reduction.
+
+\begin{notebox}
+\textbf{Many-body connection.} The Householder and QL combination is what
+lies behind every call to a library eigenvalue routine, and it is entirely
+adequate as long as the matrix fits in memory.  For the Hartree-Fock and
+random-phase-approximation matrices of the following chapters, whose
+dimensions are set by the number of single-particle states, this is the
+method of choice.  It becomes useless the moment the dimension is set by the
+number of Slater determinants, which is the situation of the next section.
+\end{notebox}
