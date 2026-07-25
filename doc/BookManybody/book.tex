@@ -43,6 +43,9 @@
  \usepackage{color}
  \usepackage{amsmath}
  \usepackage{amssymb}
+ \usepackage{bm}
+ \usepackage{booktabs}
+ \usepackage{mdframed}
  \usepackage[dvips]{epsfig}
 % \usepackage{psfig}
  \usepackage[T1]{fontenc}
@@ -273,8 +276,10 @@ tabsize=2
 \newcommand{\matr}[1]{\boldsymbol{#1}}
 %\newcommand{\bb}[1]{\mathbb{#1}}
 
-%% Determinant symbol:
-\renewcommand{\det}[1]{|#1|}
+%% Determinant symbol: use \Det{A} for |A|.
+%% NB: do NOT redefine \det -- the chapters and variationalmc.tex use it as the
+%% standard operator, e.g. $\det(\bm{A})$.
+%\renewcommand{\det}[1]{|#1|}
 
 %% Means (expectation values) of varius sizes
 \newcommand{\mean}[1]{\langle #1 \rangle}
@@ -284,7 +289,7 @@ tabsize=2
 \newcommand{\meanbbbb}[1]{\Bigg\langle #1 \Bigg\rangle}
 
 %% Shorthands for text set in roman font
-\newcommand{\prob}[0]{\mathrm{Prob}} %probability
+\newcommand{\Prob}[0]{\mathrm{Prob}} %probability (\prob is an svmono theorem env)
 \newcommand{\cov}[0]{\mathrm{Cov}}   %covariance
 \newcommand{\var}[0]{\mathrm{Var}}   %variancd
 
@@ -323,6 +328,25 @@ tabsize=2
 { \bigg| #1 \bigg\rangle \bigg\langle #2 \bigg|}
 \newcommand{\projectionbbbb}[2]
 { \Bigg| #1 \Bigg\rangle \Bigg\langle #2 \Bigg|}
+
+%% Convenience macros used by chapter1.tex and chapter2.tex
+\newcommand{\bket}[1]{\vert #1 \rangle}
+\newcommand{\bbra}[1]{\langle #1 \vert}
+\newcommand{\braket}[2]{\langle #1 \vert #2 \rangle}
+\newcommand{\ketbra}[2]{\vert #1 \rangle\langle #2 \vert}
+\newcommand{\dd}{\mathrm{d}}
+\renewcommand{\imath}{i}          % imaginary unit (source files use \imath)
+
+%% mathptmx and amsfonts (loaded via amssymb) clash over \hbar: amsfonts
+%% redefines it, and mathptmx's \AtBeginDocument hook then restores a dangling
+%% robust wrapper, so \hbar becomes undefined. Use the AMS glyph.
+\AtBeginDocument{\let\hbar\hslash}
+
+%% Grey box for many-body / quantum-computing connection notes
+\newmdenv[backgroundcolor=gray!10,linecolor=gray!40,
+          innertopmargin=6pt,innerbottommargin=6pt,
+          innerleftmargin=8pt,innerrightmargin=8pt,
+          skipabove=8pt,skipbelow=6pt]{notebox}
 
 
 
