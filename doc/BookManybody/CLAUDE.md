@@ -84,10 +84,11 @@ systems.
 
 `../LectureNotes/` holds the executable version: `_config.yml`, `_toc.yml`,
 markdown front matter (`intro.md`, `teachers.md`, `textbooks.md`) and chapter
-notebooks (`notation.ipynb`, `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`,
-`mbpt.ipynb`, `cc.ipynb`, `vmcdmc.ipynb`, …). New book material that includes
-runnable code should have a notebook counterpart, and new notebooks must be
-registered in `_toc.yml`.
+notebooks. `linearalgebra.ipynb` is the companion to `chapter1.tex` and
+`manybodybasics.ipynb` to `chapter2.tex`; the older set is `notation.ipynb`,
+`secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
+`vmcdmc.ipynb`, … New book material that includes runnable code should have a
+notebook counterpart, and new notebooks must be registered in `_toc.yml`.
 
 Note: `_toc.yml` lists `greensfunctions.ipynb`, which does not exist yet.
 
@@ -100,9 +101,25 @@ translation logs; `*.p.tex` and `*~` are generated/backup artefacts — never ed
 those. `chapter2.tex` was derived from `secondquant.do.txt`, so that pair is the
 reference example for converting DocOnce to book LaTeX.
 
-`BookMaterial/Programs/` contains `CCD_PairingModel.py`,
-`NeutronMatterCCD_Ladders.py`, `ucc.py`, `ho1dim.py`, `ho2dim.py`; `sd.py` sits
-one level up in `BookMaterial/`.
+`BookMaterial/Programs/` holds the programs referenced by the chapters. Those
+written for chapters 1 and 2 are:
+
+| File | Chapter | Contents |
+|---|---|---|
+| `direct_solvers.py` | 1 | Gaussian elimination, LU, Cholesky, tridiagonal |
+| `iterative_solvers.py` | 1 | Jacobi, Gauss-Seidel, SOR, conjugate gradient |
+| `householder.py` | 1 | Householder tridiagonalisation, `tqli`, power method |
+| `lanczos.py` | 1 | Lanczos with reorthogonalisation, pairing model |
+| `schrodinger_diagonalization.py` | 1 | Schrödinger by diagonalisation |
+| `svd.py` | 1 | SVD, pseudoinverse, Schmidt decomposition, two-body factorisation |
+| `slaterdeterminant.py` | 2 | Slater determinants, energy functional, minimal SCF |
+| `slater_update.py` | 2 | Ratio $R$, Sherman-Morrison updates, nodal-surface stability |
+
+Every number quoted in chapters 1 and 2 comes from one of these; each file runs
+as a script and prints the tables that appear in the text. **If you change a
+program, re-run it and update the corresponding table.** The older programs
+`CCD_PairingModel.py`, `NeutronMatterCCD_Ladders.py`, `ucc.py`, `ho1dim.py` and
+`ho2dim.py` are also here; `sd.py` sits one level up in `BookMaterial/`.
 
 ## House rules
 

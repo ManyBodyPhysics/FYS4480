@@ -1295,8 +1295,8 @@ whether the ansatz can reach the true ground state.
 %=============================================================================
 
 
-\subsection*{Chapter 2: Many-body physics and quantum computing}
-\addcontentsline{toc}{subsection}{Chapter 2: Many-body physics and quantum computing}
+\subsection*{Warm-up exercises}
+\addcontentsline{toc}{subsection}{Warm-up exercises}
 
 \begin{enumerate}
 
@@ -1461,3 +1461,561 @@ whether the ansatz can reach the true ground state.
 
 \end{enumerate}
 
+%----------------------------------------------------------------------
+\subsection*{Exercise session, week 35: Slater determinants and a first FCI model}
+\addcontentsline{toc}{subsection}{Exercise session, week 35}
+
+\paragraph{Exercise 1: expectation values with a Slater determinant.}
+Consider the fermion Slater determinant used as an ansatz for a
+quantum-mechanical state,
+\begin{equation}
+  \Phi_{\lambda}^{AS}(x_1x_2\dots x_N;\alpha_1\alpha_2\dots\alpha_N)
+   = \frac{1}{\sqrt{N!}}\sum_{p}(-)^{p}\hat{P}\prod_{i=1}^{N}
+     \psi_{\alpha_i}(x_i),
+  \label{eq:2-w35SD}
+\end{equation}
+where $\hat{P}$ permutes the particles and the sum runs over all $N!$
+permutations.  The number of particles equals the number of available
+single-particle states $\alpha_1\alpha_2\dots\alpha_N$, and the
+single-particle basis $\psi_{\alpha_i}$ is orthonormal.
+
+\begin{enumerate}
+  \item[a)] Write out $\Phi^{AS}$ for $N=3$.
+  \item[b)] Show that
+  \[
+    \int \ud{x_1}\ud{x_2}\cdots\ud{x_N}\,
+    \left|\Phi_{\lambda}^{AS}(x_1x_2\dots x_N;
+      \alpha_1\alpha_2\dots\alpha_N)\right|^2 = 1 .
+  \]
+  \item[c)] Define a general one-body operator
+  $\hat{F}=\sum_i^{N}\hat{f}(x_i)$ and a general two-body operator
+  $\hat{G}=\sum_{i>j}^{N}\hat{g}(x_i,x_j)$, with $\hat{g}$ invariant under the
+  interchange of the coordinates of particles $i$ and $j$.  Calculate the
+  matrix elements for a two-particle Slater determinant,
+  \[
+    \bracket{\Phi^{AS}_{\alpha_1\alpha_2}}{\hat{F}}{\Phi^{AS}_{\alpha_1\alpha_2}}
+    \qquad\text{and}\qquad
+    \bracket{\Phi^{AS}_{\alpha_1\alpha_2}}{\hat{G}}{\Phi^{AS}_{\alpha_1\alpha_2}} .
+  \]
+  Which properties do you expect these operators to have, in addition to
+  permutation symmetry?
+  \item[d)] Repeat the calculation for a general $N$-particle Slater
+  determinant.
+\end{enumerate}
+
+\paragraph{Exercise 2: a three-level model.}
+We now consider a simple three-level problem, our first and very simple model
+of a many-fermion system and of what we shall later call full configuration
+interaction theory.  The particles are fermions.  The single-particle states
+are labelled by the quantum number $p$ and each can accommodate up to two
+particles, so every single-particle state is doubly degenerate; one may think
+of the two as spin up and spin down.  The spacing between the doubly
+degenerate states is constant with value $d$, the first state has energy $d$,
+and there are three available states $p=1,2,3$, as in
+Figure~\ref{fig:threelevel}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[x=1.0cm, y=1.0cm]
+  % the three doubly degenerate levels
+  \foreach \y/\lab in {0/{$p=1$}, 1.1/{$p=2$}, 2.2/{$p=3$}} {
+    \draw[dashed, gray] (0,\y) -- (11,\y);
+    \node[anchor=east] at (-0.15,\y) {\lab};
+  }
+  % four two-particle configurations
+  \foreach \x in {0.9, 3.6, 6.3, 9.0} {
+    \draw[gray!50, dotted] (\x-0.55,-0.5) -- (\x-0.55,2.7);
+  }
+  \fill (0.7,0)   circle (2.6pt);  \fill (1.3,0)   circle (2.6pt);
+  \fill (3.4,1.1) circle (2.6pt);  \fill (4.0,1.1) circle (2.6pt);
+  \fill (6.1,0)   circle (2.6pt);  \fill (6.7,2.2) circle (2.6pt);
+  \fill (8.8,1.1) circle (2.6pt);  \fill (9.4,2.2) circle (2.6pt);
+\end{tikzpicture}
+\caption{Schematic plot of the possible single-particle levels with double
+degeneracy.  The filled circles indicate occupied states and the spacing
+between the levels is constant.  Four possible two-particle states are shown;
+the two leftmost are the configurations retained in parts b) and c), in which
+both particles occupy the same level.}
+\label{fig:threelevel}
+\end{figure}
+
+\begin{enumerate}
+  \item[a)] How many two-particle Slater determinants can we construct in this
+  space?
+  \item[b)] Limit the system to the two lowest orbits, $p=1$ and $p=2$, and
+  two particles.  Write the Hamiltonian as
+  $\hat{H}=\hat{H}_0+\hat{H}_I$, with the one-body part satisfying
+  \[
+    \hat{h}_0\psi_{p\sigma}=p\,d\,\psi_{p\sigma},
+  \]
+  where $\sigma$ is the spin quantum number.  Assume that the only
+  two-particle states that can exist are those in which both particles occupy
+  the same level $p$, and that all two-particle matrix elements of
+  $\hat{H}_I$ have the constant value $-g$.  Show that the Hamiltonian matrix
+  can be written as
+  \[
+    \begin{pmatrix} 2d-g & -g\\ -g & 4d-g\end{pmatrix},
+  \]
+  and find its eigenvalues and eigenvectors.  What is the admixture of the
+  state with two particles in $p=2$ to the wave function with two particles in
+  $p=1$?  Discuss the result in terms of a linear combination of Slater
+  determinants.
+  \item[c)] Add the possibility that the two particles occupy $p=3$, and find
+  the Hamiltonian matrix, the eigenvalues and the eigenvectors.  We still
+  insist that only two-particle states with both particles in the same level
+  are allowed.  The $3\times3$ matrix may be diagonalised numerically.
+\end{enumerate}
+
+This small model catches several birds with one stone.  It shows how linear
+combinations of Slater determinants are built and how the coefficients are
+interpreted as admixtures to a given state.  The two-particle states above
+$p=1$ are excitations of the ground-state configuration, and the reliability
+of the single-determinant ansatz depends on the ratio of the interaction
+strength $g$ to the level spacing $d$.  Finally, the model is a schematic
+ansatz for pairing correlations, and hence for superfluidity and
+superconductivity in fermionic systems; it is the two-level ancestor of the
+pairing model used in Section~\ref{sec:lanczos}.
+
+%----------------------------------------------------------------------
+\subsection*{Answers, week 35}
+\addcontentsline{toc}{subsection}{Answers, week 35}
+
+\paragraph{Exercise 1a.}
+For $N=3$ the six permutations give
+\begin{align}
+  \Phi_{\lambda}^{AS} = \frac{1}{\sqrt{6}}\Big(
+  &\psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2)\psi_{\alpha_3}(x_3)
+  -\psi_{\alpha_1}(x_2)\psi_{\alpha_2}(x_1)\psi_{\alpha_3}(x_3)\nonumber\\
+  &+\psi_{\alpha_1}(x_2)\psi_{\alpha_2}(x_3)\psi_{\alpha_3}(x_1)
+  -\psi_{\alpha_1}(x_3)\psi_{\alpha_2}(x_2)\psi_{\alpha_3}(x_1)\nonumber\\
+  &+\psi_{\alpha_1}(x_3)\psi_{\alpha_2}(x_1)\psi_{\alpha_3}(x_2)
+  -\psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_3)\psi_{\alpha_3}(x_2)\Big),
+  \label{eq:2-w35a}
+\end{align}
+which is the expansion of the $3\times3$ determinant of
+Eq.~(\ref{eq:SlatDet}) along its rows.
+
+\paragraph{Exercise 1b.}
+Introduce the antisymmetriser~(\ref{eq:2-antisym}) and the Hartree
+function~(\ref{eq:2-hartreeproduct}), so that
+$\Phi^{AS}_{\lambda}=\sqrt{N!}\,\hat{A}\Phi_H$.  Then
+\begin{equation}
+  \braket{\Phi^{AS}_{\lambda}}{\Phi^{AS}_{\lambda}}
+   = N!\int \Phi_H^{*}\hat{A}^{\dagger}\hat{A}\Phi_H\,\ud{\bm{\tau}}
+   = N!\int \Phi_H^{*}\hat{A}\Phi_H\,\ud{\bm{\tau}} ,
+  \label{eq:2-w35b1}
+\end{equation}
+where we used that $\hat{A}$ is Hermitian and idempotent,
+Eq.~(\ref{eq:Asq}).  Writing out the antisymmetriser cancels the factor $N!$,
+\begin{equation}
+  \braket{\Phi^{AS}_{\lambda}}{\Phi^{AS}_{\lambda}}
+   = \sum_{p}(-)^{p}\int \Phi_H^{*}\hat{P}\Phi_H\,\ud{\bm{\tau}} .
+  \label{eq:2-w35b2}
+\end{equation}
+The permutation operator acts on only one of the two Hartree functions, so
+any $\hat{P}$ other than the identity produces at least one overlap
+$\braket{\alpha_i}{\alpha_j}$ with $i\ne j$, which vanishes by
+orthonormality.  Only the identity survives and
+$\braket{\Phi^{AS}_{\lambda}}{\Phi^{AS}_{\lambda}}=\int\Phi_H^{*}\Phi_H
+\ud{\bm{\tau}}=1$.
+
+\paragraph{Exercise 1c.}
+For two particles the same manipulation gives
+\begin{equation}
+  \bracket{\Phi^{AS}_{\alpha_1\alpha_2}}{\hat{F}}{\Phi^{AS}_{\alpha_1\alpha_2}}
+   = \sum_{p}(-)^{p}\int \psi^{*}_{\alpha_1}(x_1)\psi^{*}_{\alpha_2}(x_2)
+     \left[\hat{f}(x_1)+\hat{f}(x_2)\right]\hat{P}\,
+     \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2)\,\ud{\bm{\tau}} .
+  \label{eq:2-w35c1}
+\end{equation}
+As in b), a permuted Hartree function makes the integral vanish, so only the
+identity contributes.  In each remaining term the one-body operator acts on a
+single coordinate; integrating out the other gives unity, and
+\begin{equation}
+  \bracket{\Phi^{AS}_{\alpha_1\alpha_2}}{\hat{F}}{\Phi^{AS}_{\alpha_1\alpha_2}}
+   = \langle\alpha_1|\hat{f}|\alpha_1\rangle
+   + \langle\alpha_2|\hat{f}|\alpha_2\rangle ,
+  \label{eq:2-w35c2}
+\end{equation}
+with the shorthand of Eq.~(\ref{eq:2-onebodyshorthand}).
+
+For the two-body operator there is only one term, $\hat{G}=\hat{g}(x_1,x_2)$,
+and now the transposition survives as well, since $\hat{g}$ depends on both
+coordinates.  The two permutations give
+\begin{align}
+  \bracket{\Phi^{AS}_{\alpha_1\alpha_2}}{\hat{G}}{\Phi^{AS}_{\alpha_1\alpha_2}}
+  &= \int \psi^{*}_{\alpha_1}(x_1)\psi^{*}_{\alpha_2}(x_2)\hat{g}(x_1,x_2)
+     \psi_{\alpha_1}(x_1)\psi_{\alpha_2}(x_2)\,\ud{\bm{\tau}}\nonumber\\
+  &\quad - \int \psi^{*}_{\alpha_1}(x_1)\psi^{*}_{\alpha_2}(x_2)\hat{g}(x_1,x_2)
+     \psi_{\alpha_1}(x_2)\psi_{\alpha_2}(x_1)\,\ud{\bm{\tau}}\nonumber\\
+  &= \langle\alpha_1\alpha_2|\hat{g}|\alpha_1\alpha_2\rangle_{\mathrm{AS}} .
+  \label{eq:2-w35c3}
+\end{align}
+The first term is the direct or Hartree term, the second the exchange or Fock
+term, exactly as in Eq.~(\ref{H2Expectation}).
+
+Beyond permutation symmetry we expect both operators to be \emph{Hermitian},
+since they represent physical observables and must have real eigenvalues.
+Permutation symmetry is forced on us because the particles are
+indistinguishable, and it implies
+$[\hat{A},\hat{F}]=[\hat{A},\hat{G}]=0$, which is what allowed the
+manipulations above.
+
+\paragraph{Exercise 1d.}
+For general $N$ the steps are the same.  For the one-body operator,
+\begin{equation}
+  \bracket{\Phi^{AS}}{\hat{F}}{\Phi^{AS}}
+   = \sum_{i=1}^{N}\sum_{p}(-)^{p}\int\Phi_H^{*}\hat{f}(x_i)\hat{P}\Phi_H
+     \ud{\bm{\tau}}
+   = \sum_{i=1}^{N}\langle\alpha_i|\hat{f}|\alpha_i\rangle .
+  \label{eq:2-w35d1}
+\end{equation}
+For the two-body operator, each pair $(x_i,x_j)$ receives two contributing
+permutations with opposite signs, giving the factor $(1-\hat{P}_{ij})$ of
+Eq.~(\ref{eq:2-twobody2}).  Replacing the restricted sum $i<j$ by an
+unrestricted double sum with a compensating $\tfrac12$, and noting that the
+$i=j$ terms cancel identically, leaves
+\begin{equation}
+  \bracket{\Phi^{AS}}{\hat{G}}{\Phi^{AS}}
+   = \frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}
+     \langle\alpha_i\alpha_j|\hat{g}|\alpha_i\alpha_j\rangle_{\mathrm{AS}} .
+  \label{eq:2-w35d2}
+\end{equation}
+Equations~(\ref{eq:2-w35d1}) and (\ref{eq:2-w35d2}) together are
+Eq.~(\ref{eq:EHF}), the Hartree-Fock energy functional.
+
+\paragraph{Exercise 2a.}
+With three levels, each doubly degenerate, there are six single-particle
+states and hence $\binom{6}{2}=15$ two-particle Slater determinants in
+general.  If we count only the level labels and ignore spin, three states with
+two distinct levels and three with both particles in the same level give six
+configurations.  Under the restriction of parts b) and c), that both particles
+occupy the \emph{same} level, exactly three Slater determinants remain, one
+for each $p$.
+
+\paragraph{Exercise 2b.}
+Denote by $\bket{\Phi_p}$ the state with both particles in level $p$.  Since
+$\psi_{p\sigma}$ is an eigenstate of $\hat{h}_0$ with eigenvalue $pd$, the
+one-body part contributes
+$\bracket{\Phi_p}{\hat{H}_0}{\Phi_p}=2\langle p|\hat{h}_0|p\rangle=2pd$,
+using Eq.~(\ref{eq:2-w35d1}) with $N=2$.  Every matrix element of
+$\hat{H}_I$ equals $-g$.  With $\bket{\Phi_1}$ and $\bket{\Phi_2}$ as basis,
+\begin{equation}
+  \bm{H} =
+  \begin{pmatrix} 2d-g & -g\\ -g & 4d-g \end{pmatrix},
+  \label{eq:2-w35hmat}
+\end{equation}
+which is the requested matrix.  This is the matrix representation of an
+operator in a chosen basis, exactly as in Section~\ref{sec:eigenproblem}: the
+Slater determinants are not eigenstates of $\hat{H}$, but they form a basis in
+which the eigenstates can be expanded,
+$\bket{\Psi_i}=c_{i0}\bket{\Phi_1}+c_{i1}\bket{\Phi_2}$.
+
+The characteristic polynomial follows from the trace $6d-2g$ and the
+determinant $(2d-g)(4d-g)-g^2=8d^2-6dg$,
+\begin{equation}
+  \lambda^2 + (2g-6d)\lambda + 8d^2 - 6dg = 0,
+  \label{eq:2-w35charpoly}
+\end{equation}
+and solving it gives
+\begin{equation}
+  \lambda_{\pm} = 3d-g \pm \sqrt{d^2+g^2} .
+  \label{eq:2-w35eigen}
+\end{equation}
+Substituting back, the unnormalised eigenvectors are
+\begin{equation}
+  \bket{\Psi_{\mp}} = \frac{d\pm\sqrt{d^2+g^2}}{g}\bket{\Phi_1}
+                    + \bket{\Phi_2},
+  \label{eq:2-w35vec}
+\end{equation}
+or, with the dimensionless ratio $\gamma\equiv d/g$,
+\begin{equation}
+  \bket{\Psi_{\mp}} = \left(\gamma\pm\sqrt{1+\gamma^2}\right)\bket{\Phi_1}
+                    + \bket{\Phi_2} .
+  \label{eq:2-w35vecgamma}
+\end{equation}
+The single parameter $\gamma$ measures the strength of the interaction against
+the level spacing.  For $g\rightarrow0$ ($\gamma\rightarrow\infty$) the ground
+state becomes pure $\bket{\Phi_1}$: the single Slater determinant is exact.
+As $g$ grows the admixture of $\bket{\Phi_2}$ grows with it, and at $\gamma=0$
+the two determinants enter with equal weight.  This is correlation, in its
+simplest possible form, and it is the same story told quantitatively by the
+occupation numbers of Section~\ref{sec:naturalorbitals}.
+
+\paragraph{Exercise 2c.}
+Adding $p=3$ changes nothing structurally: the diagonal element is
+$2pd-g=6d-g$ and the off-diagonal elements remain $-g$, so
+\begin{equation}
+  \bm{H} =
+  \begin{pmatrix}
+    2d-g & -g   & -g\\
+    -g   & 4d-g & -g\\
+    -g   & -g   & 6d-g
+  \end{pmatrix}
+   = g\begin{pmatrix}
+    2\gamma-1 & -1 & -1\\
+    -1 & 4\gamma-1 & -1\\
+    -1 & -1 & 6\gamma-1
+  \end{pmatrix}.
+  \label{eq:2-w35hmat3}
+\end{equation}
+The eigenvalues may be found symbolically, or numerically with the Householder
+and QL solver of Sections~\ref{sec:householder} and~\ref{sec:qlalgorithm} --
+three lines of Python.  For $\gamma\gg1$ the ground state is again dominated
+by $\bket{\Phi_1}$ with admixtures of order $1/\gamma$ from the two excited
+configurations.  Continuing this construction to $L$ levels and $n$ pairs
+gives exactly the pairing model of Table~\ref{tab:lanczos}, whose dimension
+$\binom{L}{n}$ grows fast enough that the Lanczos algorithm becomes the only
+practical route.
+
+%----------------------------------------------------------------------
+\subsection*{Exercise session, week 36: Condon-Slater rules and second quantisation}
+\addcontentsline{toc}{subsection}{Exercise session, week 36}
+
+\paragraph{Exercise 1: Condon-Slater rules for expectation values.}
+Consider three $N$-particle Slater determinants $\bket{SD}$, $\bket{SD_i^j}$
+and $\bket{SD_{ij}^{kl}}$, where $\bket{SD_i^j}$ differs from $\bket{SD}$ by a
+single single-particle state -- the state $\psi_i$ has been replaced by
+$\psi_j$ -- and $\bket{SD_{ij}^{kl}}$ differs by two.  Define, as in
+week 35, a general one-body operator $\hat{F}=\sum_i^{N}\hat{f}(x_i)$ and a
+general two-body operator $\hat{G}=\sum_{i>j}^{N}\hat{g}(x_i,x_j)$ with
+$\hat{g}$ invariant under interchange of two coordinates.  The
+single-particle states $\psi_i$ are not necessarily eigenstates of $\hat{f}$.
+
+\begin{enumerate}
+  \item[a)] Find $\bracket{SD}{\hat{F}}{SD}$ and $\bracket{SD}{\hat{G}}{SD}$.
+  \item[b)] Find $\bracket{SD}{\hat{F}}{SD_i^j}$ and
+        $\bracket{SD}{\hat{G}}{SD_i^j}$.
+  \item[c)] Find $\bracket{SD}{\hat{F}}{SD_{ij}^{kl}}$ and
+        $\bracket{SD}{\hat{G}}{SD_{ij}^{kl}}$.  What happens to the two-body
+        operator for a transition
+        $\bracket{SD}{\hat{G}}{SD_{ijk}^{lmn}}$, in which the determinant on
+        the right differs by more than two single-particle states?
+\end{enumerate}
+
+\paragraph{Exercise 2: a first encounter with second quantisation.}
+\begin{enumerate}
+  \item[a)] Show that the density of particles at $\bm{x}$,
+  \[
+    n(\bm{x}) = N\int \ud{\bm{x}_2}\cdots\ud{\bm{x}_N}\,
+      \left|\Psi_{AS}(\bm{x},\bm{x}_2,\dots,\bm{x}_N)\right|^2 ,
+  \]
+  can be written in terms of the single-particle states as
+  \[
+    n(\bm{x}) = \sum_k \left|\psi_k(\bm{x})\right|^2 .
+  \]
+  \item[b)] Calculate the matrix elements
+  $\bracket{\alpha_1\alpha_2}{\hat{F}}{\alpha_1\alpha_2}$ and
+  $\bracket{\alpha_1\alpha_2}{\hat{G}}{\alpha_1\alpha_2}$ with
+  \begin{align*}
+    \bket{\alpha_1\alpha_2} &= a^{\dagger}_{\alpha_1}a^{\dagger}_{\alpha_2}
+      \bket{0},\\
+    \hat{F} &= \sum_{\alpha\beta}\langle\alpha|f|\beta\rangle
+      a^{\dagger}_{\alpha}a_{\beta},\\
+    \hat{G} &= \frac{1}{2}\sum_{\alpha\beta\gamma\delta}
+      \langle\alpha\beta|g|\gamma\delta\rangle
+      a^{\dagger}_{\alpha}a^{\dagger}_{\beta}a_{\delta}a_{\gamma},
+  \end{align*}
+  where the matrix elements are the integrals of
+  Eqs.~(\ref{eq:2-onebodyshorthand}), (\ref{eq:2-direct}) and
+  (\ref{eq:2-exchange}).  Compare with exercise 1c) of week 35.
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection*{Answers, week 36}
+\addcontentsline{toc}{subsection}{Answers, week 36}
+
+Throughout we assume the two determinants have been brought to \emph{maximum
+coincidence}: the common single-particle states appear in the same order in
+both, so that no additional sign from reordering rows is left over.  If they
+have not, every result below acquires the factor $(-1)^{\sigma}$ of the
+permutation needed to bring them into that form.
+
+\paragraph{Exercise 1a: the diagonal elements.}
+These are the results already derived in Section~\ref{sec:expval} and in
+exercise 1d) of week 35,
+\begin{equation}
+  \bracket{SD}{\hat{F}}{SD} = \sum_{i=1}^{N}\langle i|\hat{f}|i\rangle,
+  \qquad
+  \bracket{SD}{\hat{G}}{SD}
+   = \frac{1}{2}\sum_{i,j=1}^{N}\langle ij|\hat{g}|ij\rangle_{\mathrm{AS}} .
+  \label{eq:2-w36a}
+\end{equation}
+The one-body operator sees each occupied orbital once; the two-body operator
+sees each occupied pair once, with the exchange term subtracted.
+
+\paragraph{Exercise 1b: one differing state.}
+Write $\bket{SD_i^j}$ for the determinant in which $\psi_i$ has been replaced
+by $\psi_j$, with $j$ not among the states occupied in $\bket{SD}$.  Using
+$\Phi=\sqrt{N!}\hat{A}\Phi_H$ and the same argument as in
+Section~\ref{sec:expval}, a term survives only if every orbital not acted on
+by the operator overlaps with an \emph{identical} orbital on the other side.
+Since exactly one orbital differs, the one-body operator must be the one that
+connects $\psi_i$ to $\psi_j$, and every other factor contributes unity:
+\begin{equation}
+  \bracket{SD}{\hat{F}}{SD_i^j} = \langle i|\hat{f}|j\rangle .
+  \label{eq:2-w36b1}
+\end{equation}
+A single term, not a sum: the one-body operator can repair exactly one
+mismatch.
+
+For the two-body operator, one of the two coordinates must carry the
+$i\rightarrow j$ replacement while the other runs over all the orbitals common
+to both determinants.  Both the direct and the exchange contraction survive,
+so
+\begin{equation}
+  \bracket{SD}{\hat{G}}{SD_i^j}
+   = \sum_{k=1}^{N}\langle ik|\hat{g}|jk\rangle_{\mathrm{AS}}
+   = \sum_{k=1}^{N}\left[\langle ik|\hat{g}|jk\rangle
+     -\langle ik|\hat{g}|kj\rangle\right],
+  \label{eq:2-w36b2}
+\end{equation}
+where the sum runs over the states occupied in $\bket{SD}$.  The term $k=i$
+contributes nothing, since $\langle ii|\hat{g}|ji\rangle_{\mathrm{AS}}=0$ by
+the antisymmetry of Eq.~(\ref{eq:2-antisymmatrix}).
+
+Equation~(\ref{eq:2-w36b2}) is worth pausing on.  It says that a two-body
+interaction, evaluated between determinants differing by one orbital, behaves
+like an \emph{effective one-body} operator obtained by summing over the
+occupied states.  That sum is precisely the interaction part of the Fock
+matrix of Eq.~(\ref{eq:2-fock}); the Hartree-Fock condition
+$\bracket{SD}{\hat{H}}{SD_i^j}=0$, that no single excitation couples to the
+reference, is Brillouin's theorem.
+
+\paragraph{Exercise 1c: two differing states, and beyond.}
+The one-body operator can repair only one mismatch at a time, so with two
+differing orbitals at least one overlap $\braket{i}{k}$ between different
+states is always left over and
+\begin{equation}
+  \bracket{SD}{\hat{F}}{SD_{ij}^{kl}} = 0 .
+  \label{eq:2-w36c1}
+\end{equation}
+The two-body operator can repair exactly two, and both coordinates are used
+up doing so.  Nothing is left to sum over, and
+\begin{equation}
+  \bracket{SD}{\hat{G}}{SD_{ij}^{kl}}
+   = \langle ij|\hat{g}|kl\rangle_{\mathrm{AS}}
+   = \langle ij|\hat{g}|kl\rangle - \langle ij|\hat{g}|lk\rangle .
+  \label{eq:2-w36c2}
+\end{equation}
+Finally, if the determinants differ by three or more single-particle states,
+\begin{equation}
+  \bracket{SD}{\hat{G}}{SD_{ijk}^{lmn}} = 0 ,
+  \label{eq:2-w36c3}
+\end{equation}
+because a two-body operator acts on at most two coordinates and therefore
+cannot bridge three mismatches; at least one vanishing overlap always
+survives.
+
+Equations~(\ref{eq:2-w36a})--(\ref{eq:2-w36c3}) are the \emph{Condon-Slater
+rules}, and the pattern is simple enough to memorise: an $n$-body operator
+connects Slater determinants differing by at most $n$ single-particle states.
+Their consequence is the reason large-scale diagonalisation is feasible at
+all.  A configuration-interaction Hamiltonian matrix contains only one- and
+two-body operators, so all matrix elements between determinants differing by
+three or more orbitals vanish identically.  The matrix is therefore extremely
+\emph{sparse}: of the $\binom{n}{N}^2$ possible elements only a tiny fraction
+are non-zero, which is exactly the structure the Lanczos algorithm of
+Section~\ref{sec:lanczos} was designed to exploit, and the reason the
+Hamiltonian need never be stored.
+
+\paragraph{Exercise 2a: the density.}
+Expand the Slater determinant along the row belonging to the coordinate
+$\bm{x}$,
+\begin{equation}
+  \Psi_{AS}(\bm{x},\bm{x}_2,\dots,\bm{x}_N)
+   = \frac{1}{\sqrt{N}}\sum_{k=1}^{N}(-)^{k+1}\psi_{k}(\bm{x})\,
+     \Psi^{(k)}_{AS}(\bm{x}_2,\dots,\bm{x}_N),
+  \label{eq:2-w36density1}
+\end{equation}
+where $\Psi^{(k)}_{AS}$ is the normalised $(N-1)$-particle Slater determinant
+built from all the occupied orbitals \emph{except} $\psi_k$.  Because two such
+determinants with $k\ne k'$ differ by one orbital, they are orthogonal,
+\begin{equation}
+  \int \ud{\bm{x}_2}\cdots\ud{\bm{x}_N}\,
+   \Psi^{(k)*}_{AS}\Psi^{(k')}_{AS} = \delta_{kk'} .
+  \label{eq:2-w36density2}
+\end{equation}
+Squaring Eq.~(\ref{eq:2-w36density1}) and integrating therefore kills every
+cross term and leaves
+\begin{equation}
+  \int \ud{\bm{x}_2}\cdots\ud{\bm{x}_N}\left|\Psi_{AS}\right|^2
+   = \frac{1}{N}\sum_{k=1}^{N}\left|\psi_k(\bm{x})\right|^2 ,
+  \label{eq:2-w36density3}
+\end{equation}
+so that
+\begin{equation}
+  n(\bm{x}) = N\cdot\frac{1}{N}\sum_{k=1}^{N}\left|\psi_k(\bm{x})\right|^2
+            = \sum_{k=1}^{N}\left|\psi_k(\bm{x})\right|^2 .
+  \label{eq:2-w36density4}
+\end{equation}
+The density of a Slater determinant is the sum of the densities of its
+occupied orbitals, with no interference between them.  Integrating gives
+$\int n(\bm{x})\ud{\bm{x}}=N$, as it must.  Note that
+Eq.~(\ref{eq:2-w36density4}) is the diagonal of the one-body density matrix
+of Eq.~(\ref{eq:1-onebodydm}) in coordinate space, whose eigenvalues we
+already know to be $0$ and $1$ for a single determinant.
+
+\paragraph{Exercise 2b: the same results from second quantisation.}
+Start from the one-body operator.  Acting with $a_{\beta}$ on the two-particle
+state and using $\{a_{\alpha},a^{\dagger}_{\beta}\}=\delta_{\alpha\beta}$,
+\begin{equation}
+  a_{\beta}\,a^{\dagger}_{\alpha_1}a^{\dagger}_{\alpha_2}\bket{0}
+   = \delta_{\beta\alpha_1}a^{\dagger}_{\alpha_2}\bket{0}
+   - \delta_{\beta\alpha_2}a^{\dagger}_{\alpha_1}\bket{0} ,
+  \label{eq:2-w36b2q1}
+\end{equation}
+so that
+\begin{equation}
+  a^{\dagger}_{\alpha}a_{\beta}\bket{\alpha_1\alpha_2}
+   = \delta_{\beta\alpha_1}a^{\dagger}_{\alpha}a^{\dagger}_{\alpha_2}\bket{0}
+   - \delta_{\beta\alpha_2}a^{\dagger}_{\alpha}a^{\dagger}_{\alpha_1}\bket{0} .
+  \label{eq:2-w36b2q2}
+\end{equation}
+Projecting on $\bbra{\alpha_1\alpha_2}=\bbra{0}a_{\alpha_2}a_{\alpha_1}$ and
+using $\braket{\alpha_1\alpha_2}{\alpha\alpha_2}=\delta_{\alpha\alpha_1}$ and
+$\braket{\alpha_1\alpha_2}{\alpha\alpha_1}=-\delta_{\alpha\alpha_2}$ gives
+\begin{equation}
+  \bracket{\alpha_1\alpha_2}{a^{\dagger}_{\alpha}a_{\beta}}{\alpha_1\alpha_2}
+   = \delta_{\alpha\alpha_1}\delta_{\beta\alpha_1}
+   + \delta_{\alpha\alpha_2}\delta_{\beta\alpha_2} ,
+  \label{eq:2-w36b2q3}
+\end{equation}
+and therefore
+\begin{equation}
+  \bracket{\alpha_1\alpha_2}{\hat{F}}{\alpha_1\alpha_2}
+   = \langle\alpha_1|f|\alpha_1\rangle + \langle\alpha_2|f|\alpha_2\rangle .
+  \label{eq:2-w36b2q4}
+\end{equation}
+For the two-body operator, $a_{\delta}a_{\gamma}$ annihilates the state unless
+$\{\gamma,\delta\}=\{\alpha_1,\alpha_2\}$, and likewise
+$a^{\dagger}_{\alpha}a^{\dagger}_{\beta}$ must recreate the same pair.  The
+four surviving index assignments give, after collecting the signs from the
+anticommutators,
+\begin{equation}
+  \bracket{\alpha_1\alpha_2}{\hat{G}}{\alpha_1\alpha_2}
+   = \langle\alpha_1\alpha_2|g|\alpha_1\alpha_2\rangle
+   - \langle\alpha_1\alpha_2|g|\alpha_2\alpha_1\rangle
+   = \langle\alpha_1\alpha_2|g|\alpha_1\alpha_2\rangle_{\mathrm{AS}} .
+  \label{eq:2-w36b2q5}
+\end{equation}
+The factor $\tfrac12$ in the definition of $\hat{G}$ is cancelled by the two
+equivalent assignments of the pair.
+
+\paragraph{Comparison.}
+Equations~(\ref{eq:2-w36b2q4}) and (\ref{eq:2-w36b2q5}) are \emph{identical}
+to the results (\ref{eq:2-w35c2}) and (\ref{eq:2-w35c3}) obtained in week 35
+by integrating over permutations of the Hartree function.  This is the point
+of the exercise.  The first-quantised route required us to write out the
+antisymmetriser, sort through $N!$ permutations, and argue term by term about
+which overlaps vanish; the second-quantised route required only the
+anticommutation relations $\{a_{\alpha},a^{\dagger}_{\beta}\}=
+\delta_{\alpha\beta}$.  Antisymmetry, which was an explicit and increasingly
+painful bookkeeping task in Section~\ref{sec:expval}, has been built into the
+algebra of the operators themselves.
+
+This is why the next chapter is devoted to second quantisation.  The Slater
+determinant of Eq.~(\ref{eq:SlatDet}) becomes a string of creation operators
+acting on the vacuum, the Condon-Slater rules of exercise 1 become elementary
+consequences of Wick's theorem, and calculations that are barely feasible by
+hand for $N=3$ become mechanical for arbitrary $N$.

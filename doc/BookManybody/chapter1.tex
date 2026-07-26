@@ -2875,8 +2875,8 @@ Jupyter-book.
 \label{sec:exercises}
 %=============================================================================
 
-\subsection*{Chapter 1: Linear algebra fundamentals}
-\addcontentsline{toc}{subsection}{Chapter 1: Linear algebra fundamentals}
+\subsection*{Warm-up exercises}
+\addcontentsline{toc}{subsection}{Warm-up exercises}
 
 \begin{enumerate}
 
@@ -2943,3 +2943,242 @@ Jupyter-book.
 
 \end{enumerate}
 
+%----------------------------------------------------------------------
+\subsection*{Exercise session, week 34: unitary transformations and determinants}
+\addcontentsline{toc}{subsection}{Exercise session, week 34}
+
+The exercises of this session are mainly meant as reminders of the specific
+linear algebra elements that we shall use throughout the course.
+
+\paragraph{Exercise 1: unitary transformations and orthogonality.}
+In many-body theories it is common to expand a new basis in terms of a known
+one.  Well-known examples are the analytical solutions of the quantum
+mechanical harmonic oscillator, or the hydrogen atom with a Coulomb
+interaction between the electron and the nucleus.  Varying the expansion
+coefficients leads to a variational minimum which is expected to lie closer to
+the true ground state of a given Hamiltonian.  This is the background for
+mean-field theories, full configuration interaction theory and many other
+many-body methods, and the expansion coefficients are normally the matrix
+elements of a unitary or orthogonal matrix.
+
+Assume that the matrix $\bm{U}$ is unitary with dimension $n\times n$ and
+matrix elements $u_{p\lambda}$.  Using Dirac notation we represent a new
+vector $\bket{\psi_p}$ of length $n$ in terms of another vector
+$\bket{\phi_{\lambda}}$ of length $n$ through
+\begin{equation}
+  \bket{\psi_p} = \bm{U}\bket{\phi_{\lambda}} .
+  \label{eq:1-w34unitary}
+\end{equation}
+It is common to assume that the basis vectors $\bket{\phi_{\lambda}}$ are
+normalised and orthogonal, and that they are the eigenvectors of an eigenvalue
+problem
+\begin{equation}
+  \bm{O}\bket{\phi_{\lambda}} = o_{\lambda}\bket{\phi_{\lambda}},
+  \label{eq:1-w34eigen}
+\end{equation}
+where $\bm{O}$ is a Hermitian matrix of dimension $n\times n$ and
+$o_{\lambda}$ one of its $n$ eigenvalues.  We have thus defined our new basis
+by performing a unitary (or orthogonal) transformation.
+
+\begin{enumerate}
+  \item[a)] Write down the properties of unitary and orthogonal matrices.
+  \item[b)] Write down the properties of Hermitian matrices.
+  \item[c)] Assuming that the coefficients $u_{p\lambda}$ belong to a unitary
+        or orthogonal transformation, show that the new basis is orthogonal
+        and normalised as well.
+  \item[d)] Show that the eigenvalues obtained in the new basis are the same
+        as those of the original basis.
+\end{enumerate}
+
+\paragraph{Exercise 2: determinants.}
+\begin{enumerate}
+  \item[a)] Consider the determinant
+  \[
+    \begin{vmatrix}
+      \alpha_1 b_{11}+\alpha_2 b_{12} & a_{12}\\
+      \alpha_1 b_{21}+\alpha_2 b_{22} & a_{22}
+    \end{vmatrix}
+    = \alpha_1\begin{vmatrix} b_{11} & a_{12}\\ b_{21} & a_{22}\end{vmatrix}
+    + \alpha_2\begin{vmatrix} b_{12} & a_{12}\\ b_{22} & a_{22}\end{vmatrix},
+  \]
+  which generalises to the linearity in a column expressed by
+  Eq.~(\ref{eq:2-detlinear}).  Use it to show that, with every element
+  $a_{ij}$ given as a linear combination
+  $a_{ij}=\sum_{k=1}^{n}b_{ik}c_{kj}$,
+  \[
+    \begin{vmatrix}
+      \sum_k b_{1k}c_{k1} & \cdots & \sum_k b_{1k}c_{kn}\\
+      \vdots & & \vdots\\
+      \sum_k b_{nk}c_{k1} & \cdots & \sum_k b_{nk}c_{kn}
+    \end{vmatrix}
+    = \Det{C}\,\Det{B},
+  \]
+  where $\Det{B}$ and $\Det{C}$ are the determinants of the $n\times n$
+  matrices with elements $b_{ij}$ and $c_{ij}$.  This is the product rule
+  (\ref{eq:2-detproduct}), and we shall use it repeatedly in the mean-field
+  theories of the following chapters.
+
+  \item[b)] With the new basis of the previous exercise, now specialised to a
+  basis of single-particle functions,
+  \[
+    \psi_p(x) = \sum_{\lambda}C_{p\lambda}\phi_{\lambda}(x),
+  \]
+  show that the determinant in the new basis $\psi_p(x)$ can be written as
+  (omitting the factor $1/\sqrt{N!}$, with $N$ the number of particles)
+  \[
+    \begin{vmatrix}
+      \psi_p(x_1) & \cdots & \psi_p(x_N)\\
+      \vdots & \ddots & \vdots\\
+      \psi_t(x_1) & \cdots & \psi_t(x_N)
+    \end{vmatrix}
+    =
+    \begin{vmatrix}
+      \sum_\lambda C_{p\lambda}\phi_\lambda(x_1) & \cdots &
+      \sum_\lambda C_{p\lambda}\phi_\lambda(x_N)\\
+      \vdots & \ddots & \vdots\\
+      \sum_\lambda C_{t\lambda}\phi_\lambda(x_1) & \cdots &
+      \sum_\lambda C_{t\lambda}\phi_\lambda(x_N)
+    \end{vmatrix},
+  \]
+  which is nothing but $\Det{C}\Det{\Phi}$, with $\Det{\Phi}$ the determinant
+  built from the basis functions $\phi_{\lambda}(x)$.
+
+  \item[c)] Show that the new determinant differs from $\Det{\Phi}$ by a
+  complex phase only.
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection*{Answers, week 34}
+\addcontentsline{toc}{subsection}{Answers, week 34}
+
+\paragraph{Exercise 1a.}
+A matrix $\bm{U}\in\mathbb{C}^{n\times n}$ is \emph{unitary} if
+\begin{equation}
+  \bm{U}^{\dagger}\bm{U} = \bm{U}\bm{U}^{\dagger} = \bm{I},
+  \qquad\text{equivalently}\qquad
+  \bm{U}^{-1} = \bm{U}^{\dagger} .
+  \label{eq:1-w34a1}
+\end{equation}
+In terms of matrix elements this reads $\sum_k u_{ik}u_{jk}^{*}=\sum_k
+u_{ki}^{*}u_{kj}=\delta_{ij}$: the rows form an orthonormal set, and so do the
+columns.  Three consequences follow at once and were used throughout
+Section~\ref{sec:unitary}.  The inner product is preserved,
+$(\bm{U}\bm{x})^{\dagger}(\bm{U}\bm{y})=\bm{x}^{\dagger}\bm{y}$, hence so is
+the norm; the eigenvalues all have modulus one, since
+$\bm{U}\bm{x}=\lambda\bm{x}$ with $\|\bm{x}\|=1$ gives
+$|\lambda|^2=\bm{x}^{\dagger}\bm{U}^{\dagger}\bm{U}\bm{x}=1$; and
+$|\Det{U}|=1$, because $\Det{U}^{*}\Det{U}=\Det{U^{\dagger}U}=1$.  A unitary
+matrix is thus a rotation, and it is perfectly reversible.
+
+A \emph{real} unitary matrix is called \emph{orthogonal}: $\bm{O}^{T}\bm{O}=
+\bm{O}\bm{O}^{T}=\bm{I}$ and $\bm{O}^{-1}=\bm{O}^{T}$, with
+$\Det{O}=\pm1$.  These are the matrix types listed in
+Table~\ref{tab:matrices}.
+
+\paragraph{Exercise 1b.}
+A matrix is \emph{Hermitian} if $\bm{A}=\bm{A}^{\dagger}$, that is
+$a_{ij}=a_{ji}^{*}$; a real Hermitian matrix is symmetric.  As shown in
+Section~\ref{sec:spectral}, the eigenvalues of a Hermitian matrix are real,
+eigenvectors belonging to distinct eigenvalues are orthogonal, and the matrix
+is diagonalisable by a unitary transformation,
+$\bm{U}^{\dagger}\bm{A}\bm{U}=\mathrm{diag}(\lambda_0,\dots,\lambda_{n-1})$.
+It follows that expectation values $\bracket{\psi}{\bm{A}}{\psi}$ are real,
+which is why observables are represented by Hermitian operators.
+
+\paragraph{Exercise 1c.}
+Write the transformation in components,
+$\bket{\psi_p}=\sum_{\lambda}u_{p\lambda}\bket{\phi_{\lambda}}$, and use
+$\braket{\phi_{\lambda}}{\phi_{\mu}}=\delta_{\lambda\mu}$:
+\begin{equation}
+  \braket{\psi_p}{\psi_q}
+   = \sum_{\lambda\mu}u_{p\lambda}^{*}u_{q\mu}
+     \braket{\phi_{\lambda}}{\phi_{\mu}}
+   = \sum_{\lambda}u_{p\lambda}^{*}u_{q\lambda}
+   = \left(\bm{U}\bm{U}^{\dagger}\right)_{qp}
+   = \delta_{pq} .
+  \label{eq:1-w34c}
+\end{equation}
+Orthonormality of the new basis is therefore \emph{equivalent} to unitarity of
+the coefficient matrix; nothing else about $\bm{U}$ is needed, and nothing
+less would do.  This is the statement proved geometrically in
+Eq.~(\ref{eq:2-orthopreserved}).
+
+\paragraph{Exercise 1d.}
+In the new basis the operator $\bm{O}$ is represented by
+$\bm{O}'=\bm{U}\bm{O}\bm{U}^{\dagger}$.  This is a similarity transformation
+of the kind studied in Section~\ref{sec:similarity}, and by
+Eq.~(\ref{eq:1-similarproof}) it leaves the spectrum unchanged: if
+$\bm{O}\bket{\phi_{\lambda}}=o_{\lambda}\bket{\phi_{\lambda}}$ then
+\begin{equation}
+  \bm{O}'\left(\bm{U}\bket{\phi_{\lambda}}\right)
+   = \bm{U}\bm{O}\bm{U}^{\dagger}\bm{U}\bket{\phi_{\lambda}}
+   = o_{\lambda}\left(\bm{U}\bket{\phi_{\lambda}}\right) .
+  \label{eq:1-w34d}
+\end{equation}
+The eigenvalues are the same and the eigenvectors are the rotated ones.
+Physically: the spectrum is a property of the operator, not of the basis we
+happen to write it in.
+
+\paragraph{Exercise 2a.}
+Let $\bm{A}=\bm{B}\bm{C}$, so that column $j$ of $\bm{A}$ is
+$\bm{a}_j=\sum_{k}c_{kj}\bm{b}_k$, a linear combination of the columns of
+$\bm{B}$.  Applying the linearity~(\ref{eq:2-detlinear}) to the first column,
+then to the second, and so on through all $n$ columns, gives
+\begin{equation}
+  \Det{A} = \sum_{k_1=1}^{n}\sum_{k_2=1}^{n}\cdots\sum_{k_n=1}^{n}
+    c_{k_1 1}c_{k_2 2}\cdots c_{k_n n}\,
+    \left|\bm{b}_{k_1}\,\bm{b}_{k_2}\cdots\bm{b}_{k_n}\right| .
+  \label{eq:1-w34a2}
+\end{equation}
+There are $n^n$ terms, but a determinant with two equal columns vanishes, so
+every term in which two indices coincide drops out.  Only the $n!$ terms in
+which $(k_1,\dots,k_n)$ is a permutation $\sigma$ of $(1,\dots,n)$ survive,
+and reordering the columns of such a term into their natural order produces
+the sign $(-1)^{\sigma}$ together with $\Det{B}$.  Hence
+\begin{equation}
+  \Det{A} = \left(\sum_{\sigma}(-1)^{\sigma}
+    c_{\sigma(1)1}c_{\sigma(2)2}\cdots c_{\sigma(n)n}\right)\Det{B}
+   = \Det{C}\,\Det{B},
+  \label{eq:1-w34a3}
+\end{equation}
+where the bracket is precisely the definition~(\ref{eq:2-detdef}) of
+$\Det{C}$.
+
+Two remarks are worth making.  First, the derivation is combinatorial and says
+nothing about how to \emph{compute} either determinant; for that one uses the
+LU factorisation of Section~\ref{sec:lu} and Eq.~(\ref{eq:1-ludet}), at a cost
+of $\bigO(n^3)$ rather than the $\bigO(n!)$ of the sum above.  Second, the
+result immediately gives $\Det{A^{-1}}=1/\Det{A}$ and, for a unitary matrix,
+$|\Det{U}|=1$.
+
+\paragraph{Exercise 2b.}
+The matrix whose determinant we want has elements
+\begin{equation}
+  M_{pj} = \psi_p(x_j) = \sum_{\lambda}C_{p\lambda}\phi_{\lambda}(x_j)
+         = \left(\bm{C}\bm{\Phi}\right)_{pj},
+  \qquad \Phi_{\lambda j} = \phi_{\lambda}(x_j),
+  \label{eq:1-w34b1}
+\end{equation}
+so $\bm{M}=\bm{C}\bm{\Phi}$ and part a) gives directly
+\begin{equation}
+  \Det{M} = \Det{C}\,\Det{\Phi} .
+  \label{eq:1-w34b2}
+\end{equation}
+The rows of $\bm{M}$ are labelled by the new single-particle states and its
+columns by the particle coordinates, exactly as in
+Eq.~(\ref{eq:2-slatermatrix}).
+
+\paragraph{Exercise 2c.}
+If $\bm{C}$ is unitary then $\Det{C}^{*}\Det{C}=\Det{C^{\dagger}C}=\Det{I}=1$,
+so $\Det{C}=e^{\imath\theta}$ for some real $\theta$ and
+\begin{equation}
+  \Det{M} = e^{\imath\theta}\,\Det{\Phi} .
+  \label{eq:1-w34c2}
+\end{equation}
+The two determinants differ by a global phase.  Since all physical
+predictions depend on $|\Psi|^2$ or on expectation values
+$\bracket{\Psi}{\op{O}}{\Psi}$, in which the phase cancels, the two describe
+the \emph{same} state.  This is the result exploited in
+Section~\ref{sec:basischange}: one may rotate the occupied orbitals among
+themselves at will without changing any physics, which is the freedom
+underlying Hartree-Fock theory and Thouless' theorem.
