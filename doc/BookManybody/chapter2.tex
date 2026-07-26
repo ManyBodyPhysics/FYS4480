@@ -2,6 +2,21 @@
 \label{chap:mbphys}
 %=============================================================================
 
+Chapter~\ref{chap:linalg} developed a language and a set of algorithms.  This
+chapter puts them to work.  We shall see that the central object of fermionic
+many-body theory, the Slater determinant, is a determinant in exactly the
+sense of Section~\ref{sec:determinants}; that changing the single-particle
+basis is a unitary transformation of the kind studied in
+Section~\ref{sec:unitary}; that the Hartree-Fock energy is minimised by
+solving a symmetric eigenvalue problem with the machinery of
+Sections~\ref{sec:householder} and \ref{sec:qlalgorithm}; and that the
+obstacle which makes the whole subject difficult -- the exponential growth of
+the Hilbert space -- is the tensor product of Section~\ref{sec:tensor}.
+
+Nothing in this chapter is new mathematics.  What is new is the physics that
+the mathematics is asked to carry.
+
+%----------------------------------------------------------------------
 \section{The many-body Hamiltonian}
 \label{sec:hamiltonian}
 
@@ -14,64 +29,123 @@ $N$-particle Hamiltonian takes the form
            + \sum_{i<j}^{N}\hat{v}(r_{ij}),
   \label{eq:H}
 \end{equation}
-where $x_i$ denotes the coordinates (position and spin) of particle
-$i$, and $\hat{h}_0$ is the one-body part (kinetic energy plus
-external potential).  The one-body potential is typically a harmonic
-oscillator, a Coulomb interaction, or the self-consistent Hartree-Fock
-potential.
+where $x_i$ denotes the coordinates -- position and spin -- of particle $i$.
+The one-body operator splits into a kinetic and a potential part,
+\begin{equation}
+  \hat{h}_0(x_i) = \hat{t}(x_i) + \hat{u}_{\mathrm{ext}}(x_i),
+  \label{eq:2-onebody}
+\end{equation}
+where $\hat{u}_{\mathrm{ext}}$ is typically a harmonic oscillator potential,
+the Coulomb attraction of a nucleus, or the self-consistent Hartree-Fock
+potential derived later in this chapter.
 
-The Hamiltonian~\eqref{eq:H} is \emph{symmetric} under permutation of
-any two particles: for any permutation operator $\hat{P}_{ij}$,
-$[\hat{H},\hat{P}_{ij}]=0$.
+We shall assume that the single-particle functions $\psi_{\alpha}$ are
+eigenfunctions of $\hat{h}_0$,
+\begin{equation}
+  \hat{h}_0(x)\,\psi_{\alpha}(x)
+   = \left(\hat{t}(x)+\hat{u}_{\mathrm{ext}}(x)\right)\psi_{\alpha}(x)
+   = \varepsilon_{\alpha}\,\psi_{\alpha}(x),
+  \label{eq:2-spequation}
+\end{equation}
+with $\varepsilon_{\alpha}$ the \emph{unperturbed} or non-interacting
+single-particle energies.  In the absence of $\hat{H}_I$ the total energy
+would simply be the sum of the occupied $\varepsilon_{\alpha}$.  Everything
+that makes many-body physics hard is contained in the correction to that
+statement.
+
+Equation~(\ref{eq:2-spequation}) is an eigenvalue problem, and in practice we
+solve it exactly as in Section~\ref{sec:schrodiag}: discretise on a grid, or
+expand in a finite basis, and diagonalise the resulting matrix with the
+algorithms of Sections~\ref{sec:householder} and~\ref{sec:qlalgorithm}.  The
+harmonic oscillator eigenfunctions computed there are the single-particle
+basis used in the numerical examples of this chapter.
+
+Finally, the Hamiltonian~(\ref{eq:H}) is \emph{symmetric} under the
+interchange of any two particles.  Writing $\hat{P}_{ij}$ for the operator
+that permutes particles $i$ and $j$,
+\begin{equation}
+  [\hat{H},\hat{P}_{ij}] = 0 ,
+  \label{eq:2-commuteP}
+\end{equation}
+so the eigenfunctions of $\hat{H}$ can be chosen to be eigenfunctions of
+$\hat{P}_{ij}$ as well.
 
 %----------------------------------------------------------------------
 \section{The Pauli exclusion principle and antisymmetry}
 \label{sec:pauli_exc}
 
-Since we deal with fermions, the total wave function must be
-antisymmetric under interchange of any two particles.  The permutation
-operator $\hat{P}_{ij}$ interchanges particles $i$ and $j$:
-\[
-  \hat{P}_{ij}\Psi(x_1,\ldots,x_i,\ldots,x_j,\ldots,x_N)
-  = \beta\,\Psi(x_1,\ldots,x_i,\ldots,x_j,\ldots,x_N).
-\]
-The Pauli principle requires $\beta=-1$: the fermionic wave function
-changes sign under every transposition.
-
-The \emph{antisymmetrisation operator} is
-\[
-  \hat{A} = \frac{1}{N!}\sum_{p}(-)^{p}\hat{P},
-\]
-where $p$ counts the parity of each permutation.  It satisfies
+Let $\Psi_{\lambda}$ be such a simultaneous eigenfunction.  Then
 \begin{equation}
-  \hat{A}^2=\hat{A}
-  \quad\text{(idempotency)},\qquad
-  [\hat{H}_0,\hat{A}]=[\hat{H}_I,\hat{A}]=0.
+  \hat{P}_{ij}\Psi_{\lambda}(x_1,\dots,x_i,\dots,x_j,\dots,x_N)
+   = \beta\,\Psi_{\lambda}(x_1,\dots,x_i,\dots,x_j,\dots,x_N),
+  \label{eq:2-permeigen}
+\end{equation}
+and since applying the permutation twice returns the original function,
+$\beta^2=1$ and $\beta=\pm1$.  For bosons $\beta=+1$; for fermions, which are
+our concern here, the Pauli principle requires
+\begin{equation}
+  \beta = -1 ,
+  \label{eq:2-beta}
+\end{equation}
+so the wave function changes sign under every transposition.
+
+An arbitrary product of single-particle functions has no such symmetry, and
+must be projected onto the antisymmetric subspace.  The projector is the
+\emph{antisymmetrisation operator}
+\begin{equation}
+  \hat{A} = \frac{1}{N!}\sum_{p}(-)^{p}\hat{P},
+  \label{eq:2-antisym}
+\end{equation}
+where the sum runs over all $N!$ permutations $\hat{P}$ and $p$ is the parity
+of each, that is the number of transpositions required to build it.  Two
+properties of $\hat{A}$ will do all the work in Section~\ref{sec:expval}.
+First, since $\hat{H}_0$ and $\hat{H}_I$ are invariant under every
+permutation,
+\begin{equation}
+  [\hat{H}_0,\hat{A}] = [\hat{H}_I,\hat{A}] = 0 .
+  \label{eq:2-commuteA}
+\end{equation}
+Second, $\hat{A}$ is idempotent,
+\begin{equation}
+  \hat{A}^2 = \hat{A},
   \label{eq:Asq}
 \end{equation}
+because permuting an already antisymmetrised function reproduces it up to the
+sign that the prefactor $(-)^p$ removes.  A projector, in the sense of
+Section~\ref{sec:compbasis}: $\hat{A}$ projects the full $N$-particle space
+onto its antisymmetric subspace, exactly as $\bm{P}=\ketbra{0}{0}$ projects a
+qubit onto a computational basis state.
 
 %----------------------------------------------------------------------
-\section{Determinants}
+\section{Determinants, and how they are actually computed}
 \label{sec:determinants}
 
-For an $n\times n$ matrix $\bm{A}$, the determinant is defined by
-summing over all $n!$ permutations of column indices:
-\[
-  \det(\bm{A})
-  =|\bm{A}|
-  =\sum_{i=1}^{n!}(-1)^{p_i}\hat{P}_i\,a_{11}a_{22}\cdots a_{nn},
-\]
-where $p_i$ is the number of transpositions needed to restore the
-natural ordering.  For $n=2$:
-\[
+For an $n\times n$ matrix $\bm{A}$, the determinant is defined by summing over
+all $n!$ permutations of the column indices,
+\begin{equation}
+  \Det{A} = |\bm{A}|
+   = \sum_{i=1}^{n!}(-1)^{p_i}\hat{P}_i\,a_{11}a_{22}\cdots a_{nn},
+  \label{eq:2-detdef}
+\end{equation}
+where $\hat{P}_i$ permutes the column indices and $p_i$ is the number of
+transpositions needed to restore the natural ordering $a_{11}a_{22}\cdots
+a_{nn}$.  For $n=2$ the sum has two terms,
+\begin{equation}
   \begin{vmatrix}a_{11}&a_{12}\\a_{21}&a_{22}\end{vmatrix}
-  =a_{11}a_{22}-a_{12}a_{21}.
-\]
+   = (-1)^0 a_{11}a_{22} + (-1)^1 a_{12}a_{21},
+  \label{eq:2-det2}
+\end{equation}
+the second obtained by interchanging the column indices $1$ and $2$.
 
-\paragraph{Linearity in a column.}
-A fundamental property used repeatedly in Hartree-Fock theory is the
-linearity of the determinant in any single column:
-\[
+The resemblance between Eq.~(\ref{eq:2-detdef}) and the antisymmetriser
+(\ref{eq:2-antisym}) is not an accident, and it is the reason determinants
+appear in fermionic physics at all: both are the signed sum over the symmetric
+group, and the determinant is simply what the antisymmetriser produces when
+applied to a product of single-particle functions.
+
+\paragraph{Two properties we shall need.}
+The determinant is linear in each column separately,
+\begin{equation}
   \left|\begin{array}{cccc}
     a_{11} & \cdots & \displaystyle\sum_{k=1}^{n}c_k b_{1k} & \cdots \\[4pt]
     a_{21} & \cdots & \displaystyle\sum_{k=1}^{n}c_k b_{2k} & \cdots \\
@@ -84,28 +158,63 @@ linearity of the determinant in any single column:
     a_{21} & \cdots & b_{2k} & \cdots \\
     \vdots & & \vdots & \\
     a_{n1} & \cdots & b_{nk} & \cdots
-  \end{array}\right|.
-\]
+  \end{array}\right| ,
+  \label{eq:2-detlinear}
+\end{equation}
+and if every column of $\bm{A}$ is a linear combination of the columns of
+$\bm{B}$ with coefficient matrix $\bm{C}$, that is $a_{ij}=\sum_k b_{ik}c_{kj}$
+or $\bm{A}=\bm{B}\bm{C}$, then
+\begin{equation}
+  \Det{A} = \Det{B}\cdot\Det{C} .
+  \label{eq:2-detproduct}
+\end{equation}
+Equation~(\ref{eq:2-detproduct}) follows by applying
+Eq.~(\ref{eq:2-detlinear}) to each column in turn; the reader is invited to
+verify it for $n=2$.  It is the single most important algebraic fact in this
+chapter, and Section~\ref{sec:basischange} is nothing but its physical
+interpretation.
 
-\paragraph{Product rule.}
-If every column of $\bm{A}$ is a linear combination of columns of
-$\bm{B}$, with coefficient matrix $\bm{C}$ (i.e.\ $a_{ij}=\sum_k
-b_{ik}c_{kj}$, meaning $\bm{A}=\bm{B}\bm{C}$), then
-\[
-  \det(\bm{A})=\det(\bm{B})\cdot\det(\bm{C}).
-\]
-Verify this for $n=2$ as an exercise.
+\paragraph{A warning about Eq.~(\ref{eq:2-detdef}).}
+The definition is a definition, not an algorithm.  Evaluating a determinant by
+summing over permutations costs $\bigO(n!)$ operations, which for $n=20$ is
+$2\times10^{18}$ and for $n=25$ exceeds the age of the universe on any
+machine.  The LU decomposition of Section~\ref{sec:lu} computes the same
+number in $\bigO(n^3)$ operations as the product of the diagonal elements of
+$\bm{U}$, Eq.~(\ref{eq:1-ludet}).  Table~\ref{tab:detcost} makes the
+comparison.  Every Slater determinant evaluated in a Monte Carlo or
+configuration-interaction code is computed this way, never from
+Eq.~(\ref{eq:2-detdef}).
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rll}
+\toprule
+$n$ & \textbf{From Eq.~(\ref{eq:2-detdef}), $n!$} &
+\textbf{From LU, $\sim\tfrac{2}{3}n^3$}\\
+\midrule
+ 5 & $1.2\times10^{2}$  & $8.3\times10^{1}$\\
+10 & $3.6\times10^{6}$  & $6.7\times10^{2}$\\
+20 & $2.4\times10^{18}$ & $5.3\times10^{3}$\\
+50 & $3.0\times10^{64}$ & $8.3\times10^{4}$\\
+\bottomrule
+\end{tabular}
+\caption{Operation counts for evaluating an $n\times n$ determinant from the
+definition and from the LU decomposition of Section~\ref{sec:lu}.}
+\label{tab:detcost}
+\end{table}
 
 %----------------------------------------------------------------------
 \section{The Slater determinant}
 \label{sec:slaterdet}
 
-The antisymmetric $N$-particle wave function built from
-single-particle orbitals
-$\psi_\alpha,\psi_\beta,\ldots,\psi_\sigma$ is the
-\emph{Slater determinant}
+We now have everything needed to write down an antisymmetric $N$-particle
+wave function.  Given $N$ single-particle orbitals
+$\psi_{\alpha},\psi_{\beta},\dots,\psi_{\sigma}$, the \emph{Slater
+determinant} is
 \begin{equation}
-  \Phi(x_1,\ldots,x_N;\alpha,\ldots,\sigma)
+  \Phi(x_1,\dots,x_N;\alpha,\beta,\dots,\sigma)
   =\frac{1}{\sqrt{N!}}
   \begin{vmatrix}
     \psi_\alpha(x_1) & \psi_\alpha(x_2) & \cdots & \psi_\alpha(x_N)\\
@@ -115,139 +224,515 @@ $\psi_\alpha,\psi_\beta,\ldots,\psi_\sigma$ is the
   \end{vmatrix},
   \label{eq:SlatDet}
 \end{equation}
-where $x_i$ encodes both spatial coordinates and spin of particle $i$.
-
-The Slater determinant automatically enforces:
+where $\alpha,\beta,\dots,\sigma$ are the quantum numbers labelling the
+occupied orbitals.  The two defining physical properties follow from two
+elementary properties of determinants:
 \begin{itemize}
-  \item Antisymmetry under particle exchange (Pauli principle): swapping two
-        rows reverses the sign.
-  \item No two fermions in the same state: two identical rows give
-        $\det=0$.
+  \item interchanging two particles interchanges two \emph{columns}, which
+        reverses the sign -- the wave function is antisymmetric, as
+        Eq.~(\ref{eq:2-beta}) demands;
+  \item placing two particles in the same orbital gives two identical
+        \emph{rows}, and the determinant vanishes -- no two fermions may
+        occupy the same single-particle state.
 \end{itemize}
+The Pauli principle is thus not an extra postulate bolted onto the formalism;
+it is a property of determinants.
 
-An equivalent expression using the antisymmetriser is
-$\Phi=\sqrt{N!}\,\hat{A}\,\Phi_H$, where
-$\Phi_H=\psi_\alpha(x_1)\psi_\beta(x_2)\cdots\psi_\sigma(x_N)$
-is the (unsymmetrised) \emph{Hartree product}.
-
-%----------------------------------------------------------------------
-\section{Basis changes and the Slater determinant under unitary rotations}
-\label{sec:basischange}
-
-It is standard practice to expand the single-particle functions in a
-fixed orthogonal basis $\{\phi_\lambda\}$ and vary the coefficients.
-The new orbitals are
+An equivalent form uses the antisymmetriser directly.  Writing the
+unsymmetrised product, the \emph{Hartree function},
 \begin{equation}
-  \psi_p^{\rm new}(x)=\sum_{\lambda}C_{p\lambda}\,\phi_\lambda(x).
-  \label{eq:newbasis}
+  \Phi_H(x_1,\dots,x_N;\alpha,\dots,\nu)
+   = \psi_{\alpha}(x_1)\psi_{\beta}(x_2)\cdots\psi_{\nu}(x_N),
+  \label{eq:2-hartreeproduct}
 \end{equation}
-If the matrix $(C_{p\lambda})$ is unitary, the new basis is
-automatically orthonormal.  In bra-ket notation:
-\[
-  \bket{p}=\sum_\lambda C_{p\lambda}\bket{\lambda},
-  \qquad
-  \braket{p}{q}=\delta_{pq}.
-\]
-The Slater determinant in the new basis becomes
-\[
-  \frac{1}{\sqrt{N!}}
-  \begin{vmatrix}
-    \displaystyle\sum_\lambda C_{p\lambda}\phi_\lambda(x_1) & \cdots \\
-    \vdots & \ddots
-  \end{vmatrix}
-  = \det(\bm{C})\cdot\det(\bm{\Phi}),
-\]
-by the determinant product rule.  Since $\bm{C}$ is unitary,
-$|\det(\bm{C})|=1$, so the new Slater determinant differs from the
-old one only by an unobservable global phase.
+we have
+\begin{equation}
+  \Phi = \frac{1}{\sqrt{N!}}\sum_{p}(-)^{p}\hat{P}\,\Phi_H
+       = \sqrt{N!}\,\hat{A}\,\Phi_H .
+  \label{eq:2-slaterasA}
+\end{equation}
+This is the form used in the derivations of Section~\ref{sec:expval}.
 
 \begin{notebox}
-\textbf{Many-body connection.} This is the algebraic foundation of the
-freedom to perform unitary rotations within the occupied subspace in
-Hartree-Fock theory without changing the many-body state or the total
-energy.  It also underlies the equivalence of different choices of
-occupied orbitals in CI and coupled-cluster calculations.
+\textbf{Link to Chapter~\ref{chap:linalg}.} The Hartree
+function~(\ref{eq:2-hartreeproduct}) is precisely a tensor product,
+$\bket{\alpha}\otimes\bket{\beta}\otimes\cdots\otimes\bket{\nu}$, of the kind
+introduced in Section~\ref{sec:tensor}.  The Slater determinant is its
+antisymmetric projection.  A tensor product of $N$ single-particle states is
+the least entangled state there is, and its Schmidt rank across any cut is
+one; antisymmetrisation introduces exactly the correlation demanded by
+statistics and no more.  This is the precise sense in which a Slater
+determinant is an \emph{uncorrelated} state, and it is made quantitative by
+the occupation numbers of Section~\ref{sec:naturalorbitals}: for a single
+Slater determinant they are exactly $1$ for the $N$ occupied orbitals and
+exactly $0$ for all the rest.  Any deviation from those values is a measure of
+genuine, dynamical correlation.
 \end{notebox}
+
+The numerical companion \texttt{slaterdeterminant.py} verifies both
+statements.  Evaluating Eq.~(\ref{eq:SlatDet}) for three particles at
+$(x_1,x_2,x_3)$ and at $(x_2,x_1,x_3)$ gives values that cancel to machine
+zero, and putting two particles in the same orbital gives
+$\Phi=-6\times10^{-18}$.  The eigenvalues of the density matrix
+$\rho_{\lambda\mu}=\sum_i C^*_{i\lambda}C_{i\mu}$ come out as
+$(1,1,1,0,0,0,0,0)$ to machine precision.
+
+%----------------------------------------------------------------------
+\section{Single-particle bases and unitary transformations}
+\label{sec:basischange}
+
+In practice one rarely knows the right orbitals in advance.  The standard
+strategy is to expand them in a fixed, known basis $\{\phi_{\lambda}\}$ --
+harmonic oscillator functions, hydrogen-like functions, plane waves,
+Gaussians -- and to vary the expansion coefficients,
+\begin{equation}
+  \psi_p(x) = \sum_{\lambda} C_{p\lambda}\,\phi_{\lambda}(x).
+  \label{eq:newbasis}
+\end{equation}
+The basis $\{\phi_{\lambda}\}$ is normally chosen as the eigenfunctions of the
+one-body Hamiltonian, Eq.~(\ref{eq:2-spequation}), and is orthonormal.  In
+Dirac notation Eq.~(\ref{eq:newbasis}) reads
+\begin{equation}
+  \bket{p} = \sum_{\lambda}C_{p\lambda}\bket{\lambda},
+  \qquad
+  \phi_{\lambda}(\bm{r}) = \braket{\bm{r}}{\lambda}.
+  \label{eq:2-newbasisdirac}
+\end{equation}
+
+Two questions arise immediately.  Does the new basis remain orthonormal?  And
+what happens to the Slater determinant?  Chapter~\ref{chap:linalg} has already
+answered both.
+
+\paragraph{Orthonormality is preserved if and only if $\bm{C}$ is unitary.}
+This was proved in Section~\ref{sec:unitary}: for an orthonormal set
+$\bm{v}_j^{T}\bm{v}_i=\delta_{ij}$ and a transformation
+$\bm{w}_i=\bm{U}\bm{v}_i$,
+\begin{equation}
+  \bm{w}_j^{T}\bm{w}_i
+   = \bm{v}_j^{T}\underbrace{\bm{U}^{T}\bm{U}}_{=\bm{I}}\bm{v}_i
+   = \delta_{ij},
+  \label{eq:2-orthopreserved}
+\end{equation}
+so $\braket{p}{q}=\delta_{pq}$ follows whenever $(C_{p\lambda})$ is unitary.
+We shall use this constantly: it is what allows us to search over
+single-particle bases without ever having to re-orthogonalise.
+
+\paragraph{The Slater determinant picks up a phase.}
+Substituting Eq.~(\ref{eq:newbasis}) into Eq.~(\ref{eq:SlatDet}), every entry
+of the determinant becomes a sum $\sum_{\lambda}C_{p\lambda}\phi_{\lambda}(x_i)$,
+that is, the matrix of orbitals is the product of the coefficient matrix
+$\bm{C}$ with the matrix $\bm{\Phi}$ of basis functions.  By the product
+rule~(\ref{eq:2-detproduct}),
+\begin{equation}
+  \frac{1}{\sqrt{N!}}
+  \begin{vmatrix}
+    \displaystyle\sum_\lambda C_{p\lambda}\phi_\lambda(x_1) & \cdots &
+    \displaystyle\sum_\lambda C_{p\lambda}\phi_\lambda(x_N)\\
+    \vdots & \ddots & \vdots\\
+    \displaystyle\sum_\lambda C_{t\lambda}\phi_\lambda(x_1) & \cdots &
+    \displaystyle\sum_\lambda C_{t\lambda}\phi_\lambda(x_N)
+  \end{vmatrix}
+  = \Det{C}\cdot\Det{\Phi} .
+  \label{eq:2-slaterrotated}
+\end{equation}
+If $\bm{C}$ is unitary then $|\Det{C}|=1$, so the rotated Slater determinant
+differs from the original only by an overall phase.  It describes the
+\emph{same} physical state.
+
+\begin{notebox}
+\textbf{Many-body connection.} Equation~(\ref{eq:2-slaterrotated}) is the
+algebraic foundation of a fact used everywhere in this book: one may perform
+any unitary rotation among the occupied orbitals without changing the
+many-body state, the density, or the total energy.  In Hartree-Fock theory
+this is the freedom that makes canonical and localised orbitals equally valid
+descriptions of the same determinant, and it is the content of Thouless'
+theorem.  In configuration interaction and coupled-cluster theory it is why
+the choice of reference orbitals is a matter of convenience rather than
+principle.  The numerical check in \texttt{slaterdeterminant.py} makes it
+concrete: a random orthogonal rotation of three occupied orbitals leaves the
+energy unchanged to $2.7\times10^{-15}$, while a rotation that mixes occupied
+and unoccupied orbitals changes it by more than a factor of two.
+\end{notebox}
+
+\paragraph{Truncation, and what happens when the basis is not orthogonal.}
+A complete basis $\{\bket{\lambda}\}$ contains infinitely many states, and any
+calculation must truncate the sum in Eq.~(\ref{eq:newbasis}).  This is the
+first and often the largest approximation in a many-body calculation, and its
+convergence has to be studied explicitly.
+
+Furthermore, some of the most useful bases are not orthogonal at all.
+Gaussian basis sets in quantum chemistry, oscillator states of different
+oscillator length, and generator-coordinate states all have non-trivial
+overlap matrices $S_{ij}=\braket{\phi_i}{\phi_j}$, and
+Eq.~(\ref{eq:2-orthopreserved}) no longer applies.  The eigenvalue problem
+then becomes the generalised one,
+$\bm{H}\bm{c}=E\bm{S}\bm{c}$, treated in Section~\ref{sec:pseudoinverse}: one
+diagonalises $\bm{S}$, discards the directions whose eigenvalues lie below a
+threshold, and transforms with $\bm{X}=\bm{V}\bm{s}^{-1/2}$.  The threshold is
+a physical choice, and Table~\ref{tab:canonical} shows how much
+ill-conditioning it removes.
+
+%----------------------------------------------------------------------
+\section{Particle-hole notation and the Fermi level}
+\label{sec:particlehole}
+
+Before deriving the energy it is worth fixing the index conventions that will
+be used for the rest of the book.  Given a reference Slater determinant --
+usually the one obtained by filling the $N$ lowest single-particle levels --
+the single-particle states divide into those that are occupied in the
+reference and those that are not.  The dividing line is the \emph{Fermi
+level}, denoted $F$.  We write
+\begin{equation}
+  \begin{array}{ll}
+    i,j,k,l,\dots \le F & \text{occupied states, or \emph{hole} states},\\[2pt]
+    a,b,c,d,\dots > F   & \text{unoccupied states, or \emph{particle} states},\\[2pt]
+    p,q,r,s,\dots       & \text{general single-particle states.}
+  \end{array}
+  \label{eq:2-phnotation}
+\end{equation}
+The names come from the picture in which the reference determinant is treated
+as a new vacuum: exciting a particle from an occupied state $i$ to an
+unoccupied state $a$ creates a particle in $a$ and leaves a hole in $i$.
+Chapter~\ref{chap:secondquant} develops this into the particle-hole formalism
+of second quantisation, where it becomes the natural language for
+perturbation theory, coupled-cluster theory and the shell model.  For now it
+is simply a convention, but it is one worth adopting at once: every equation
+from here on is easier to read with it.
+
+%----------------------------------------------------------------------
+\section{The variational principle}
+\label{sec:variational}
+
+Let $E_0$ be the exact ground-state energy of $\hat{H}$.  For any normalised
+trial function $\Phi$,
+\begin{equation}
+  E_0 \le E[\Phi] = \int \Phi^{*}\hat{H}\,\Phi\,\ud{\bm{\tau}},
+  \qquad
+  \int \Phi^{*}\Phi\,\ud{\bm{\tau}} = 1,
+  \label{eq:2-variational}
+\end{equation}
+with the shorthand $\ud{\bm{\tau}}=\ud{x_1}\ud{x_2}\cdots\ud{x_N}$.  The proof
+is the spectral decomposition of Section~\ref{sec:spectral} and nothing more.
+Expanding $\Phi$ in the exact eigenstates,
+$\bket{\Phi}=\sum_k c_k\bket{\Psi_k}$ with $\hat{H}\bket{\Psi_k}=E_k
+\bket{\Psi_k}$ and $\sum_k|c_k|^2=1$, gives
+\begin{equation}
+  E[\Phi] = \sum_k |c_k|^2 E_k
+          \ \ge\ E_0\sum_k |c_k|^2 = E_0 ,
+  \label{eq:2-variationalproof}
+\end{equation}
+with equality only when $\Phi$ is the ground state itself.
+
+This one inequality is the engine of most of what follows.  Restricting the
+trial function to a single Slater determinant and minimising gives
+Hartree-Fock theory; allowing a linear combination of determinants gives
+configuration interaction; parametrising it by a quantum circuit gives the
+variational quantum eigensolver of Section~\ref{sec:expdim}.  It is also the
+reason the Lanczos algorithm of Section~\ref{sec:lanczos} is so well suited to
+many-body problems: the lowest Ritz value is the minimum of the Rayleigh
+quotient over the Krylov space, and therefore an upper bound on $E_0$ that can
+only improve as the space grows.
 
 %----------------------------------------------------------------------
 \section{Expectation values with a Slater determinant}
 \label{sec:expval}
 
-Using $\hat{A}^2=\hat{A}$ and orthogonality of the single-particle
-functions, the expectation value of the Hamiltonian~\eqref{eq:H}
-with the Slater determinant~\eqref{eq:SlatDet} factorises cleanly.
+We now compute $E[\Phi]$ for the Slater determinant~(\ref{eq:SlatDet}).  The
+calculation uses only Eqs.~(\ref{eq:2-commuteA}), (\ref{eq:Asq}) and the
+orthonormality of the single-particle functions, and it is worth following in
+full: the same manipulations recur throughout many-body theory, and second
+quantisation exists largely to make them automatic.
 
-\paragraph{One-body contribution.}
-\[
-  \langle\Phi|\hat{H}_0|\Phi\rangle
-  = \sum_{\mu=1}^{N}\langle\mu|\hat{h}_0|\mu\rangle,
-  \quad\text{where}\quad
-  \langle\mu|\hat{h}_0|\mu\rangle
-  =\int\psi_\mu^*(x)\hat{h}_0\psi_\mu(x)\,\dd x.
-\]
+\paragraph{The one-body contribution.}
+Using the form~(\ref{eq:2-slaterasA}) of the Slater determinant,
+\begin{equation}
+  \int \Phi^{*}\hat{H}_0\Phi\,\ud{\bm{\tau}}
+   = N!\int \Phi_H^{*}\hat{A}\hat{H}_0\hat{A}\,\Phi_H\,\ud{\bm{\tau}} .
+  \label{eq:2-onebody1}
+\end{equation}
+Because $\hat{H}_0$ commutes with $\hat{A}$ we may move the left-hand
+antisymmetriser through it, and because $\hat{A}^2=\hat{A}$ the two then
+collapse into one,
+\begin{equation}
+  \int \Phi^{*}\hat{H}_0\Phi\,\ud{\bm{\tau}}
+   = N!\int \Phi_H^{*}\hat{H}_0\hat{A}\,\Phi_H\,\ud{\bm{\tau}} .
+  \label{eq:2-onebody2}
+\end{equation}
+Replacing $\hat{A}$ by its definition~(\ref{eq:2-antisym}), which cancels the
+factor $N!$, and $\hat{H}_0$ by the sum of one-body operators,
+\begin{equation}
+  \int \Phi^{*}\hat{H}_0\Phi\,\ud{\bm{\tau}}
+   = \sum_{i=1}^{N}\sum_{p}(-)^{p}
+     \int \Phi_H^{*}\hat{h}_0(x_i)\hat{P}\,\Phi_H\,\ud{\bm{\tau}} .
+  \label{eq:2-onebody3}
+\end{equation}
+Now the key step.  The integrand factorises into single-particle integrals,
+and $\hat{h}_0(x_i)$ touches only one coordinate.  If $\hat{P}$ permutes any
+two particles, at least one of the remaining factors is an overlap
+$\braket{\mu}{\nu}$ between two \emph{different} orbitals, which vanishes.
+Only the identity permutation survives,
+\begin{equation}
+  \int \Phi^{*}\hat{H}_0\Phi\,\ud{\bm{\tau}}
+   = \sum_{i=1}^{N}\int \Phi_H^{*}\hat{h}_0(x_i)\Phi_H\,\ud{\bm{\tau}} ,
+  \label{eq:2-onebody4}
+\end{equation}
+and integrating out the $N-1$ spectator coordinates, each of which
+contributes unity, leaves
+\begin{equation}
+  \int \Phi^{*}\hat{H}_0\Phi\,\ud{\bm{\tau}}
+   = \sum_{\mu=1}^{N}\int \psi_{\mu}^{*}(x)\,\hat{h}_0\,\psi_{\mu}(x)\ud{x} .
+  \label{H1Expectation}
+\end{equation}
+Introducing the shorthand
+\begin{equation}
+  \langle \mu|\hat{h}_0|\mu\rangle
+   = \int \psi_{\mu}^{*}(x)\hat{h}_0\psi_{\mu}(x)\ud{x},
+  \label{eq:2-onebodyshorthand}
+\end{equation}
+this is simply
+\begin{equation}
+  \int \Phi^{*}\hat{H}_0\Phi\,\ud{\bm{\tau}}
+   = \sum_{\mu=1}^{N}\langle\mu|\hat{h}_0|\mu\rangle .
+  \label{H1Expectation1}
+\end{equation}
+The one-body energy is the sum of the diagonal matrix elements over the
+occupied orbitals -- the result one would have guessed, now derived.
 
-\paragraph{Two-body contribution.}
-\begin{align*}
-  \langle\Phi|\hat{H}_I|\Phi\rangle
-  =\frac{1}{2}\sum_{\mu=1}^{N}\sum_{\nu=1}^{N}
-  \Big[
-    &\underbrace{\int\psi_\mu^*(x_i)\psi_\nu^*(x_j)
-       \hat{v}(r_{ij})\psi_\mu(x_i)\psi_\nu(x_j)\,\dd x_i\dd x_j}_{
-       \text{direct (Hartree) term:}\;\langle\mu\nu|\hat{v}|\mu\nu\rangle}\\[4pt]
-    -&\underbrace{\int\psi_\mu^*(x_i)\psi_\nu^*(x_j)
-       \hat{v}(r_{ij})\psi_\nu(x_i)\psi_\mu(x_j)\,\dd x_i\dd x_j}_{
-       \text{exchange (Fock) term:}\;\langle\mu\nu|\hat{v}|\nu\mu\rangle}
-  \Big].
-\end{align*}
-The antisymmetrised two-body matrix element is
-$\langle\mu\nu|\hat{v}|\mu\nu\rangle_{\rm AS}
- =\langle\mu\nu|\hat{v}|\mu\nu\rangle-\langle\mu\nu|\hat{v}|\nu\mu\rangle$.
+\paragraph{The two-body contribution.}
+The same three steps apply,
+\begin{equation}
+  \int \Phi^{*}\hat{H}_I\Phi\,\ud{\bm{\tau}}
+   = N!\int \Phi_H^{*}\hat{A}\hat{H}_I\hat{A}\,\Phi_H\,\ud{\bm{\tau}}
+   = \sum_{i<j}^{N}\sum_{p}(-)^{p}
+     \int \Phi_H^{*}\hat{v}(r_{ij})\hat{P}\,\Phi_H\,\ud{\bm{\tau}} ,
+  \label{eq:2-twobody1}
+\end{equation}
+but the conclusion is different.  Because $\hat{v}(r_{ij})$ depends on
+\emph{two} coordinates, the permutation that exchanges precisely those two
+particles no longer produces a vanishing overlap.  Two permutations survive:
+the identity, and the transposition $\hat{P}_{ij}$.  Hence
+\begin{equation}
+  \int \Phi^{*}\hat{H}_I\Phi\,\ud{\bm{\tau}}
+   = \sum_{i<j}^{N}\int
+     \Phi_H^{*}\,\hat{v}(r_{ij})\left(1-\hat{P}_{ij}\right)\Phi_H\,\ud{\bm{\tau}} .
+  \label{eq:2-twobody2}
+\end{equation}
+Writing out the two terms and integrating over the spectator coordinates,
+\begin{align}
+  \int \Phi^{*}\hat{H}_I\Phi\,\ud{\bm{\tau}}
+  = \frac{1}{2}\sum_{\mu=1}^{N}\sum_{\nu=1}^{N}
+    &\left[\int \psi_{\mu}^{*}(x_i)\psi_{\nu}^{*}(x_j)\,
+      \hat{v}(r_{ij})\,\psi_{\mu}(x_i)\psi_{\nu}(x_j)\,\ud{x_i}\ud{x_j}
+     \right.\nonumber\\
+  &\left.\ -\int \psi_{\mu}^{*}(x_i)\psi_{\nu}^{*}(x_j)\,
+      \hat{v}(r_{ij})\,\psi_{\nu}(x_i)\psi_{\mu}(x_j)\,\ud{x_i}\ud{x_j}
+    \right],
+  \label{H2Expectation}
+\end{align}
+where the factor $\tfrac12$ compensates for the unrestricted double sum, which
+counts every pair twice.  The first term is the \emph{direct} or
+\emph{Hartree} term: it is the classical electrostatic energy of one charge
+distribution in the field of another.  The second is the \emph{exchange} or
+\emph{Fock} term, and it has no classical counterpart whatsoever; it exists
+solely because the wave function is antisymmetric, and it is the sole trace
+left in the energy by the transposition $\hat{P}_{ij}$ in
+Eq.~(\ref{eq:2-twobody2}).
 
-\paragraph{The Hartree-Fock energy functional.}
-Combining both contributions:
+\paragraph{Notation for the matrix elements.}
+Writing the single-particle functions as overlaps,
+$\psi_{\alpha}(x)=\braket{x}{\alpha}$, we abbreviate the two integrals as
+\begin{align}
+  \langle\mu\nu|\hat{v}|\mu\nu\rangle
+   &= \int \psi_{\mu}^{*}(x_i)\psi_{\nu}^{*}(x_j)\hat{v}(r_{ij})
+      \psi_{\mu}(x_i)\psi_{\nu}(x_j)\,\ud{x_i}\ud{x_j},
+  \label{eq:2-direct}\\
+  \langle\mu\nu|\hat{v}|\nu\mu\rangle
+   &= \int \psi_{\mu}^{*}(x_i)\psi_{\nu}^{*}(x_j)\hat{v}(r_{ij})
+      \psi_{\nu}(x_i)\psi_{\mu}(x_j)\,\ud{x_i}\ud{x_j},
+  \label{eq:2-exchange}
+\end{align}
+and define the \emph{antisymmetrised} matrix element
+\begin{equation}
+  \langle\mu\nu|\hat{v}|\mu\nu\rangle_{\mathrm{AS}}
+   = \langle\mu\nu|\hat{v}|\mu\nu\rangle
+   - \langle\mu\nu|\hat{v}|\nu\mu\rangle .
+  \label{eq:2-antisymmatrix}
+\end{equation}
+Note that $\langle\mu\mu|\hat{v}|\mu\mu\rangle_{\mathrm{AS}}=0$: a particle
+does not interact with itself.  The self-interaction that the Hartree term
+would otherwise contain is cancelled exactly by the exchange term, which is
+one of the reasons Hartree-Fock theory is better behaved than the Hartree
+theory that preceded it.
+
+%----------------------------------------------------------------------
+\section{The energy as a functional of the coefficients}
+\label{sec:energyfunctional}
+
+Collecting Eqs.~(\ref{H1Expectation1}) and (\ref{H2Expectation}), the
+expectation value of the Hamiltonian in a Slater determinant is
 \begin{equation}
   E[\Phi]
-  =\sum_{\mu=1}^{N}\langle\mu|\hat{h}_0|\mu\rangle
-  +\frac{1}{2}\sum_{\mu,\nu=1}^{N}
-   \langle\mu\nu|\hat{v}|\mu\nu\rangle_{\rm AS}.
+   = \sum_{\mu=1}^{N}\langle\mu|\hat{h}_0|\mu\rangle
+   + \frac{1}{2}\sum_{\mu=1}^{N}\sum_{\nu=1}^{N}
+     \langle\mu\nu|\hat{v}|\mu\nu\rangle_{\mathrm{AS}} ,
   \label{eq:EHF}
 \end{equation}
-Using the expansion~\eqref{eq:newbasis}, this becomes
+or, in the particle-hole notation of Section~\ref{sec:particlehole},
+\begin{equation}
+  E[\Phi] = \sum_{i=1}^{N}\langle i|\hat{h}_0|i\rangle
+          + \frac{1}{2}\sum_{i,j=1}^{N}\langle ij|\hat{v}|ij\rangle_{\mathrm{AS}} .
+  \label{FunctionalEPhi2}
+\end{equation}
+This is a functional of the occupied orbitals.  To turn it into something we
+can minimise we insert the expansion~(\ref{eq:newbasis}) and let the
+coefficients carry the variation,
 \begin{equation}
   E[\Psi]
-  =\sum_{i=1}^{N}\sum_{\alpha\beta}C_{i\alpha}^*C_{i\beta}
-   \langle\alpha|\hat{h}_0|\beta\rangle
-  +\frac{1}{2}\sum_{i,j}\sum_{\alpha\beta\gamma\delta}
-   C_{i\alpha}^*C_{j\beta}^*C_{i\gamma}C_{j\delta}
-   \langle\alpha\beta|\hat{v}|\gamma\delta\rangle_{\rm AS}.
+   = \sum_{i=1}^{N}\sum_{\alpha\beta}C^{*}_{i\alpha}C_{i\beta}
+     \langle\alpha|\hat{h}_0|\beta\rangle
+   + \frac{1}{2}\sum_{i,j=1}^{N}\sum_{\alpha\beta\gamma\delta}
+     C^{*}_{i\alpha}C^{*}_{j\beta}C_{i\gamma}C_{j\delta}
+     \langle\alpha\beta|\hat{v}|\gamma\delta\rangle_{\mathrm{AS}} .
   \label{eq:EHFnew}
 \end{equation}
-Minimising~\eqref{eq:EHFnew} with respect to the coefficients
-$(C_{p\lambda})$, subject to the unitarity constraint, yields the
-Hartree-Fock equations.  From a linear algebra standpoint, these are
-a self-consistent eigenvalue problem: diagonalise the Fock matrix
-(which itself depends on the solution through the density matrix),
-then iterate until convergence.
+The Greek indices run over the full, fixed basis; the Latin indices run over
+the $N$ occupied orbitals only.  Everything on the right-hand side except the
+$C$'s is computed once and stored.
+
+Minimising Eq.~(\ref{eq:EHFnew}) with respect to $C^{*}_{i\alpha}$ subject to
+the orthonormality constraint yields the Hartree-Fock equations.  We defer
+the derivation, but the structure of the answer can be read off immediately
+and is worth stating now.  Define the \emph{density matrix} and the
+\emph{Fock matrix}
+\begin{equation}
+  \rho_{\gamma\delta} = \sum_{i=1}^{N} C^{*}_{i\gamma}C_{i\delta},
+  \qquad
+  f_{\alpha\beta} = \langle\alpha|\hat{h}_0|\beta\rangle
+    + \sum_{\gamma\delta}\rho_{\gamma\delta}
+      \langle\alpha\gamma|\hat{v}|\beta\delta\rangle_{\mathrm{AS}} .
+  \label{eq:2-fock}
+\end{equation}
+The condition for a stationary point is then
+\begin{equation}
+  \sum_{\beta} f_{\alpha\beta}\,C_{i\beta} = \varepsilon_i\,C_{i\alpha},
+  \label{eq:2-hfequations}
+\end{equation}
+a Hermitian eigenvalue problem of exactly the kind solved in
+Sections~\ref{sec:householder} and~\ref{sec:qlalgorithm} -- with the single
+complication that the matrix $\bm{f}$ depends, through $\bm{\rho}$, on the
+eigenvectors we are trying to find.  One therefore guesses, builds $\bm{f}$,
+diagonalises, rebuilds and repeats until nothing changes.  This is the
+\emph{self-consistent field} procedure, and it is an iteration in the sense of
+Section~\ref{sec:iterative}, with a matrix diagonalisation in place of a
+single sweep.
 
 \begin{notebox}
-\textbf{Summary.} The entire Hartree-Fock method is a story in
-linear algebra: expand states in an ONB (Section~\ref{sec:onb}),
-apply a unitary transformation (Section~\ref{sec:unitary}), use the
-product rule for determinants (Section~\ref{sec:determinants}), and
-solve a Hermitian eigenvalue problem (Section~\ref{sec:spectral}).
+\textbf{Summary: Hartree-Fock is Chapter~\ref{chap:linalg} applied to
+fermions.} Expand the states in an orthonormal basis
+(Section~\ref{sec:onb}); change basis with a unitary transformation
+(Section~\ref{sec:unitary}), which leaves the determinant invariant up to a
+phase by the product rule (Section~\ref{sec:determinants}); minimise a
+quadratic form subject to a constraint, which produces a Hermitian eigenvalue
+problem (Section~\ref{sec:spectral}); solve it by Householder reduction
+followed by the QL algorithm (Sections~\ref{sec:householder}
+and~\ref{sec:qlalgorithm}); and iterate to self-consistency.  Every step has
+already been developed.
 \end{notebox}
+
+The minimal implementation in \texttt{slaterdeterminant.py} does exactly this,
+using the eigenvalue solver written in Chapter~\ref{chap:linalg}.  For
+spinless fermions in a one-dimensional trap with a softened Coulomb
+repulsion, and a basis of eight harmonic oscillator orbitals, it converges in
+nine iterations and lowers the energy below that of the naive determinant
+built from the $N$ lowest oscillator states, as shown in
+Table~\ref{tab:hfgain}.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{rlll}
+\toprule
+$N$ & $E$ (lowest $N$ orbitals) & $E$ (Hartree-Fock) & \textbf{Gain}\\
+\midrule
+2 & $2.69018342$  & $2.66308878$  & $-2.7\times10^{-2}$\\
+3 & $6.46801021$  & $6.39016133$  & $-7.8\times10^{-2}$\\
+4 & $11.77084712$ & $11.62305385$ & $-1.5\times10^{-1}$\\
+\bottomrule
+\end{tabular}
+\caption{Self-consistent Hartree-Fock energies for $N$ spinless fermions in a
+one-dimensional harmonic trap with a softened Coulomb interaction, in a basis
+of eight oscillator orbitals.  The middle column is the energy of the
+determinant built from the $N$ lowest oscillator states; the Hartree-Fock
+solution optimises the orbitals and always lies below it.}
+\label{tab:hfgain}
+\end{table}
+
+For $N=2$ the exact ground state in the same truncated basis can be obtained
+by diagonalising the Hamiltonian in the space of antisymmetric pairs, and the
+difference
+\begin{equation}
+  E_{\mathrm{corr}} = E_{\mathrm{exact}} - E_{\mathrm{HF}}
+  \label{eq:2-correlation}
+\end{equation}
+defines the \emph{correlation energy}.  Here it is $-3.86\times10^{-3}$: the
+system is weakly correlated, and the largest amplitude in the exact state,
+$0.9930$, sits on the Hartree-Fock configuration.  Recovering the remaining
+$0.7\%$ of the amplitude is what every method in the rest of this book is
+built to do.
+
+%----------------------------------------------------------------------
+\section{The price of the two-body matrix elements}
+\label{sec:twobodycost}
+
+Equation~(\ref{eq:EHFnew}) contains a sum over four basis indices, so a
+calculation in a basis of $n$ single-particle states requires $n^4$ two-body
+matrix elements.  For $n=100$ that is $10^8$ numbers, for $n=1000$ it is
+$10^{12}$, and long before the many-body problem becomes hard the mere
+storage of the interaction does.
+
+Symmetries help.  For a real, local interaction the matrix elements obey
+\begin{equation}
+  \langle\alpha\beta|\hat{v}|\gamma\delta\rangle
+   = \langle\beta\alpha|\hat{v}|\delta\gamma\rangle
+   = \langle\gamma\delta|\hat{v}|\alpha\beta\rangle ,
+  \label{eq:2-vsymmetry}
+\end{equation}
+which reduces the count by roughly a factor of eight, and rotational or
+translational invariance can reduce it much further by making most elements
+vanish.  But the scaling remains $\bigO(n^4)$.
+
+The structural remedy is the one developed in
+Section~\ref{sec:twobodyfact}.  Reading the pairs $(\alpha\gamma)$ and
+$(\beta\delta)$ as composite indices turns the four-index array into an
+ordinary matrix, which for a Coulomb-like interaction is positive
+semidefinite with rapidly decaying eigenvalues, so that
+\begin{equation}
+  \langle\alpha\beta|\hat{v}|\gamma\delta\rangle
+   = \sum_{\eta=0}^{M-1} L^{\eta}_{\alpha\gamma}L^{\eta}_{\beta\delta},
+  \qquad M \ll n^2 .
+  \label{eq:2-cholesky}
+\end{equation}
+The storage drops from $n^4$ to $Mn^2$ and the contractions in
+Eq.~(\ref{eq:EHFnew}) can be performed on the factors rather than on the full
+array.  For the eight-orbital basis used above, the $64\times64$ pair matrix
+has numerical rank $15$, not $64$: less than a quarter of the nominal size.
+This is the same effect that Table~\ref{tab:density} quantified, and it is
+what makes large-basis coupled-cluster and perturbation-theory calculations
+possible at all.
 
 %----------------------------------------------------------------------
 \section{Quantum computing: the gate model and its linear-algebra foundation}
 \label{sec:qcgates}
 
-A quantum computer is a well-controlled quantum many-body system.  The
-abstract \emph{gate-based} model is defined as follows.  Starting from
-$N$ qubits initialised in $\bket{\Psi}^{(0)}=\bket{00\cdots0}$, the
-state evolves by successive applications of unitary gates:
+A quantum computer is a well-controlled quantum many-body system, and the
+abstract \emph{gate-based} model is defined entirely in the language of
+Chapter~\ref{chap:linalg}.  Starting from $N$ qubits initialised in
+$\bket{\Psi}^{(0)}=\bket{00\cdots0}$, the state evolves by successive
+applications of unitary gates,
 \[
   \bket{\Psi}^{(n+1)}=\hat{U}^{(n)}\bket{\Psi}^{(n)},\qquad
-  \hat{U}^{(n)}=T\exp\!\left(-\imath\int_{t_n}^{t_{n+1}}\hat{H}(t)\,\dd t\right).
+  \hat{U}^{(n)}=T\exp\!\left(-\imath\int_{t_n}^{t_{n+1}}\hat{H}(t)\,\ud{t}\right).
 \]
 A \emph{single-qubit gate} acts on qubit $a$ via a $2\times 2$ unitary:
 \[
@@ -256,8 +741,8 @@ A \emph{single-qubit gate} acts on qubit $a$ via a $2\times 2$ unitary:
    \Psi_{i_1\cdots i_{a-1}i'_a i_{a+1}\cdots i_N}^{(n)}.
 \]
 A \emph{two-qubit gate} acts on qubits $a$, $b$ via a $4\times 4$
-unitary.  Standard examples are the Pauli gates $X,Y,Z$ (see
-Section~\ref{sec:pauli}), the Hadamard gate
+unitary.  Standard examples are the Pauli gates $X,Y,Z$ of
+Section~\ref{sec:pauli}, the Hadamard gate
 \[
   H=\frac{1}{\sqrt{2}}\begin{pmatrix}1&1\\1&-1\end{pmatrix},
 \]
@@ -274,13 +759,14 @@ occurs with probability
   =\sum_{i_1\cdots\hat{\imath}_a\cdots i_N}
    \left|\Psi_{i_1\cdots\alpha\cdots i_N}^{(n)}\right|^2,
 \]
-after which the state collapses to the corresponding projected state.
+after which the state collapses to the corresponding projected state -- the
+projection operators of Section~\ref{sec:compbasis} acting for real.
 
 \begin{notebox}
 \textbf{In a nutshell.} Quantum computing is a restricted form of
 linear algebra: matrix-vector multiplications with special unitary
 matrices (gates) on exponentially large vectors (wave functions).
-The challenge — shared with classical many-body physics — is that
+The challenge -- shared with classical many-body physics -- is that
 only a tiny fraction of the $2^N$-dimensional space is physically
 relevant; identifying that subspace is the core problem in both fields.
 \end{notebox}
@@ -289,40 +775,53 @@ relevant; identifying that subspace is the core problem in both fields.
 \section{The exponential-dimension problem and why it matters}
 \label{sec:expdim}
 
-The state of $N$ spin-$\frac12$ particles requires $2^N$ complex
-numbers to describe.  For $N\approx 300$, $2^{300}\gg 10^{82}$
-(the estimated number of atoms in the observable universe).
+The state of $N$ spin-$\frac12$ particles requires $2^N$ complex numbers to
+describe, as the tensor-product construction of Section~\ref{sec:tensor}
+already made clear.  For $N\approx 300$, $2^{300}\gg 10^{82}$, the estimated
+number of atoms in the observable universe.  The same counting applies to the
+fermionic problem: the number of Slater determinants that can be formed by
+distributing $N$ particles over $n$ single-particle states is $\binom{n}{N}$,
+which for $n=40$ and $N=20$ is already $1.4\times10^{11}$.
 
 How do physicists actually compute?
 \begin{enumerate}
   \item \textbf{Clever approximations}: Bethe ansatz, perturbation
-        theory, mean-field approximations.
+        theory, mean-field approximations such as the Hartree-Fock theory
+        derived above.
   \item \textbf{Computer simulations}: DFT, quantum Monte Carlo, FCI,
         coupled cluster, DMRG.
   \item \textbf{Restricting to tractable subsystems}: systems where a
         single-particle basis is a good approximation.
 \end{enumerate}
 
-For a quantum circuit of depth $D$ acting on $N$ qubits, the
-accessible subspace has dimension $O(DN)$, vastly smaller than $2^N$.
-For $N=100$ and $D=10^6$, this subspace still has $10^{20}$ times
-fewer degrees of freedom than the full Hilbert space.  The question
-is whether the \emph{physically relevant} states lie in this reachable
-subspace — a central open problem in quantum many-body theory and
-quantum computing alike (see, e.g.,
+Chapter~\ref{chap:linalg} supplied two of the reasons this is not hopeless.
+The first is that we rarely want the whole spectrum: the Lanczos algorithm of
+Section~\ref{sec:lanczos} extracts the lowest eigenvalues of a matrix of
+dimension $10^9$ using only matrix-vector products, and the pairing-model
+example there converged to machine precision in forty of them.  The second is
+that physically relevant states are compressible: the Schmidt spectrum of a
+ground state decays rapidly (Section~\ref{sec:schmidt}), and the
+Eckart-Young theorem, Eq.~(\ref{eq:1-eckartyoung}), guarantees that
+truncating it is the best approximation of its rank.  Density-matrix
+renormalisation group and tensor-network methods are built on precisely that
+observation.
+
+For a quantum circuit of depth $D$ acting on $N$ qubits, the accessible
+subspace has dimension $\bigO(DN)$, vastly smaller than $2^N$.  For $N=100$
+and $D=10^6$, this subspace still has $10^{20}$ times fewer degrees of freedom
+than the full Hilbert space.  The question is whether the \emph{physically
+relevant} states lie in this reachable subspace -- a central open problem in
+quantum many-body theory and quantum computing alike (see, e.g.,
 \href{https://www.nature.com/articles/s42254-025-00813-9}{LaRocca~et~al.}).
 
-The variational quantum eigensolver (VQE) algorithm tackles this
-problem by using a parametrised quantum circuit as an ansatz for the
-ground state, minimising the expectation value of the Hamiltonian
-classically.  This is the quantum-computing analogue of the
-variational principle that underlies Hartree-Fock and coupled-cluster
-theory: the ground state energy satisfies
-\[
-  E_0\leq E[\Phi]=\int\Phi^*\hat{H}\Phi\,\dd\bm{\tau}
-\]
-for any normalised trial state $\Phi$, with equality only at the exact
-ground state.
+The variational quantum eigensolver (VQE) tackles the problem by using a
+parametrised quantum circuit as an ansatz for the ground state and minimising
+$\langle\Psi(\bm{\theta})|\hat{H}|\Psi(\bm{\theta})\rangle$ classically over
+the circuit parameters.  It is the quantum-computing form of the variational
+principle~(\ref{eq:2-variational}) that underlies Hartree-Fock and
+coupled-cluster theory: the bound $E(\bm{\theta})\ge E_0$ holds for every
+choice of parameters, and the quality of the result is decided entirely by
+whether the ansatz can reach the true ground state.
 
 %=============================================================================
 \section{Exercises}
@@ -395,6 +894,55 @@ ground state.
   (b) Describe the connection to the Hartree-Fock variational principle.
   (c) What determines the quality of the approximation in VQE
       compared to FCI?
+
+
+\item \textbf{The antisymmetriser as a projector.}
+  Using Eq.~(\ref{eq:2-antisym}), verify for $N=2$ that
+  $\hat{A}^2=\hat{A}$ and that $[\hat{H}_0,\hat{A}]=0$ when
+  $\hat{H}_0=\hat{h}_0(x_1)+\hat{h}_0(x_2)$.  Explain why
+  $\hat{A}$ is a projection operator in the sense of
+  Section~\ref{sec:compbasis}, and identify the subspace it projects onto.
+
+\item \textbf{Why only two permutations survive.}
+  In the derivation of Eq.~(\ref{eq:2-twobody2}) it was argued that only the
+  identity and the transposition $\hat{P}_{ij}$ contribute to the two-body
+  expectation value.  Write out the case $N=3$ explicitly, listing all six
+  permutations, and show that four of them give a vanishing integral.
+  Then explain why the corresponding argument for the one-body operator
+  leaves only one surviving permutation.
+
+\item \textbf{Self-interaction.}
+  Show from Eq.~(\ref{eq:2-antisymmatrix}) that
+  $\langle\mu\mu|\hat{v}|\mu\mu\rangle_{\mathrm{AS}}=0$, and explain in words
+  what would go wrong in Eq.~(\ref{eq:EHF}) if the exchange term were omitted.
+
+\item \textbf{Occupation numbers of a Slater determinant.}
+  For the determinant~(\ref{eq:SlatDet}) the density matrix is
+  $\rho_{\lambda\mu}=\sum_{i}C^{*}_{i\lambda}C_{i\mu}$.
+  (a) Show that $\bm{\rho}^2=\bm{\rho}$ when the coefficients are orthonormal.
+  (b) Conclude that the eigenvalues -- the natural occupation numbers of
+      Section~\ref{sec:naturalorbitals} -- can only be $0$ or $1$.
+  (c) What does it mean physically when a computed occupation number comes
+      out as $0.93$?
+
+\item \textbf{Cost of a determinant.}
+  Reproduce Table~\ref{tab:detcost}.  For $n=20$, estimate how long the
+  evaluation of a single determinant would take from
+  Eq.~(\ref{eq:2-detdef}) on a machine performing $10^{12}$ operations per
+  second, and compare with the LU route of Section~\ref{sec:lu}.
+
+\item \textbf{Two-body storage.}
+  How many two-body matrix elements $\langle\alpha\beta|\hat{v}|\gamma\delta
+  \rangle$ are there for $n=50$, $n=200$ and $n=1000$ single-particle states?
+  How much memory does each case require in double precision?  Using
+  Eq.~(\ref{eq:2-cholesky}) with $M=5n$, how much is saved?
+
+\item \textbf{Hartree-Fock numerically.}
+  Using \texttt{slaterdeterminant.py}, reproduce Table~\ref{tab:hfgain}.
+  Then vary the interaction strength and plot the correlation
+  energy~(\ref{eq:2-correlation}) and the largest natural occupation number
+  against it.  At what point would you no longer trust a single-determinant
+  description?
 
 \end{enumerate}
 
