@@ -347,6 +347,28 @@ tabsize=2
 %% robust wrapper, so \hbar becomes undefined. Use the AMS glyph.
 \AtBeginDocument{\let\hbar\hslash}
 
+%% Wick contraction lines (Chapter 3).  \wmark{name}{operator} tags an
+%% operator in a product; \wline{a}{b} then draws a contraction line above
+%% the pair and \wlineb{a}{b} below it, so that crossing contractions can
+%% both be displayed.  The optional argument sets the height of the line.
+\usetikzlibrary{tikzmark}
+%% the \vphantom makes every marked operator the same height and depth, so
+%% that contraction lines drawn at the same level really are level
+\newcommand{\wmark}[2]{\tikzmarknode{#1}{\vphantom{a_p^{\dagger}}#2}}
+\newcommand{\wline}[3][2.4ex]{%
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[thin] ([yshift=0.7ex]#2.north) -- ++(0,#1)
+                -| ([yshift=0.7ex]#3.north);
+  \end{tikzpicture}}
+%% reserves vertical space above a display for the contraction lines,
+%% which are drawn as overlays and so take no space of their own
+\newcommand{\wstrut}[1][4.6ex]{\vphantom{\rule{0pt}{#1}}}
+\newcommand{\wlineb}[3][2.4ex]{%
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[thin] ([yshift=-0.5ex]#2.south) -- ++(0,-#1)
+                -| ([yshift=-0.5ex]#3.south);
+  \end{tikzpicture}}
+
 %% Grey box for many-body / quantum-computing connection notes
 \newmdenv[backgroundcolor=gray!10,linecolor=gray!40,
           innertopmargin=6pt,innerbottommargin=6pt,

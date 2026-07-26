@@ -217,7 +217,7 @@ and the corresponding commutator algebra
 \{a_\alpha^{\dagger},a_\beta \} = \delta_{\alpha\beta}.
 \]
 
-\subsection*{One-body operators in second quantization}
+\section{One-body operators in second quantization}
 
 A very useful operator is the so-called number-operator.  Most physics cases  we will
 study in this text conserve the total number of particles.  The number operator is therefore
@@ -365,7 +365,7 @@ and
 \langle \alpha_1|\hat{h}_0|\alpha_2\rangle = \sum_{\alpha\beta} \langle \alpha|\hat{h}_0|\beta\rangle\delta_{\alpha \alpha_1} \delta_{\beta \alpha_2} = \langle \alpha_1|\hat{h}_0|\alpha_2\rangle \label{eq:2-30f}
 \end{equation}
 
-\subsection*{Two-body operators in second quantization}
+\section{Two-body operators in second quantization}
 
 Let us now derive the expression for our two-body interaction part, which also conserves the number of particles.
 We can proceed in exactly the same way as for the one-body operator. In the coordinate representation our
@@ -545,7 +545,7 @@ as
 \end{equation}
 This is the form we will use in the rest of these lectures, assuming that we work with anti-symmetrized two-body matrix elements.
 
-\subsection*{Particle-hole formalism}
+\section{Particle-hole formalism}
 
 Second quantization is a useful and elegant formalism  for constructing many-body  states and 
 quantum mechanical operators. One can express and translate many physical processes
@@ -763,7 +763,7 @@ It represents a contribution to single-hole energy  to first order.
 The last term collects all contributions to the energy of the ground state of a closed-shell system arising
 from hole-hole correlations.
 
-\subsection*{Summarizing and defining a normal-ordered Hamiltonian}
+\section{Summarizing and defining a normal-ordered Hamiltonian}
 
 \[
   \Phi_{AS}(\alpha_1, \dots, \alpha_A; x_1, \dots x_A)=
@@ -822,7 +822,612 @@ with the antisymmetrized matrix element
             \langle pqr|\hat{v}_3|stu\rangle_{AS} = \langle pqr|\hat{v}_3|stu\rangle + \langle pqr|\hat{v}_3|tus\rangle + \langle pqr|\hat{v}_3|ust\rangle- \langle pqr|\hat{v}_3|sut\rangle - \langle pqr|\hat{v}_3|tsu\rangle - \langle pqr|\hat{v}_3|uts\rangle.
 \end{align}
 
-\subsection*{Operators in second quantization}
+
+%----------------------------------------------------------------------
+\section{Normal ordering}
+\label{sec:normalordering}
+
+\index{normal ordering}
+The manipulations of the previous sections all follow the same pattern.  Take
+a product of creation and annihilation operators, push the annihilation
+operators to the right using the anticommutation relations until they meet the
+vacuum and give zero, and collect the Kronecker deltas that fall out along the
+way.  For two operators this is immediate.  For the four operators of an
+overlap between two-particle states it is already an exercise in care, and for
+the eight or more operators that arise in perturbation theory and
+coupled-cluster theory it is hopeless.  Wick's theorem organises the whole
+calculation once and for all.  We need two definitions first.
+
+A product of creation and annihilation operators is in \emph{normal-ordered}
+form when all creation operators stand to the left of all annihilation
+operators.  For an arbitrary product we define the normal-ordered product
+\begin{equation}
+  N\left[xyz\cdots w\right] = (-1)^{\kappa}\,
+    \Big(\text{the same operators, all creation operators to the left,}
+    \Big)
+  \label{eq:3-normalorder}
+\end{equation}
+where $\kappa$ counts the interchanges of neighbouring operators needed to
+bring the product into that form.  Every interchange of two fermion operators
+costs a minus sign, and the factor $(-1)^{\kappa}$ records them.  Two
+elementary cases are
+\begin{equation}
+  N\left[a_p a_q^{\dagger}\right] = -a_q^{\dagger}a_p ,
+  \qquad
+  N\left[a_p^{\dagger} a_q\right] = a_p^{\dagger}a_q ,
+  \label{eq:3-normalexamples}
+\end{equation}
+the first requiring one interchange and the second none.  The ordering of the
+creation operators among themselves, and of the annihilation operators among
+themselves, is a matter of convention as long as the same sign rule is applied
+consistently.
+
+The one property that makes normal ordering useful follows immediately from
+$a_p\vert 0\rangle = 0$ and $\langle 0\vert a_p^{\dagger}=0$:
+\begin{equation}
+  \boxed{\;\langle 0\vert N\left[xyz\cdots w\right]\vert 0\rangle = 0\;}
+  \qquad\text{for every non-empty product.}
+  \label{eq:3-normalvanishes}
+\end{equation}
+Whatever else it contains, a normal-ordered product has an annihilation
+operator on the far right or a creation operator on the far left, and either
+one kills the vacuum.  A normal-ordered product therefore contributes nothing
+to a vacuum expectation value.  The whole problem of evaluating
+$\langle 0\vert xyz\cdots w\vert 0\rangle$ reduces to finding the pieces that
+are \emph{not} normal-ordered.
+
+%----------------------------------------------------------------------
+\section{Contractions}
+\label{sec:contractions}
+
+\index{contraction}
+The \emph{contraction} of two operators is defined as the difference between
+their product and their normal-ordered product,
+\begin{equation}
+  \wstrut
+  \wmark{ca}{x}\,\wmark{cb}{y}\wline[1.6ex]{ca}{cb}
+   \;\equiv\; xy - N\left[xy\right] ,
+  \label{eq:3-contractiondef}
+\end{equation}
+and we indicate it by a line joining the two operators.  Since the
+normal-ordered piece has vanishing vacuum expectation value by
+Eq.~(\ref{eq:3-normalvanishes}), a contraction is just a number,
+\begin{equation}
+  \wstrut
+  \wmark{cc}{x}\,\wmark{cd}{y}\wline[1.6ex]{cc}{cd}
+   = \langle 0\vert xy\vert 0\rangle .
+  \label{eq:3-contractionvev}
+\end{equation}
+There are four possible pairs of operators, and only one of them survives:
+\begin{align}
+  \wstrut
+  \wmark{c1}{a_p}\,\wmark{c2}{a_q^{\dagger}}\wline[1.6ex]{c1}{c2}
+   &= \langle 0\vert a_p a_q^{\dagger}\vert 0\rangle = \delta_{pq},
+  \label{eq:3-contraction1}\\[2ex]
+  \wmark{c3}{a_p}\,\wmark{c4}{a_q}\wline[1.6ex]{c3}{c4}
+   &= \langle 0\vert a_p a_q\vert 0\rangle = 0,
+  \label{eq:3-contraction2}\\[2ex]
+  \wmark{c5}{a_q^{\dagger}}\,\wmark{c6}{a_p}\wline[1.6ex]{c5}{c6}
+   &= \langle 0\vert a_q^{\dagger} a_p\vert 0\rangle = 0,
+  \label{eq:3-contraction3}\\[2ex]
+  \wmark{c7}{a_p^{\dagger}}\,\wmark{c8}{a_q^{\dagger}}\wline[1.6ex]{c7}{c8}
+   &= \langle 0\vert a_p^{\dagger} a_q^{\dagger}\vert 0\rangle = 0 .
+  \label{eq:3-contraction4}
+\end{align}
+Only an annihilation operator standing to the \emph{left} of a creation
+operator gives a non-vanishing contraction.  This single fact carries all the
+bookkeeping that follows: it is the statement that the vacuum contains no
+particles, and every zero in the calculations below can be traced back to it.
+
+When the two contracted operators are not adjacent, the contraction carries
+the sign of the interchanges needed to bring them together.  For a set of
+contractions the total sign is
+\begin{equation}
+  (-1)^{\nu},
+  \qquad
+  \nu = \text{number of crossings of the contraction lines},
+  \label{eq:3-crossingsign}
+\end{equation}
+since each crossing corresponds to one interchange of neighbouring fermion
+operators.  We shall use this rule constantly, and it is verified numerically
+for arbitrary strings in \texttt{wick.py}.
+
+%----------------------------------------------------------------------
+\section{Two operators}
+\label{sec:wicktwo}
+
+We now build the theorem up from the simplest cases, using nothing more than
+the anticommutation relations.  For two operators the content of the theorem
+is the definition~(\ref{eq:3-contractiondef}) rearranged,
+\begin{equation}
+  \wstrut
+  xy = N\left[xy\right] +
+  \wmark{w2a}{x}\,\wmark{w2b}{y}\wline[1.6ex]{w2a}{w2b} .
+  \label{eq:3-wick2}
+\end{equation}
+Take $x=a_p$ and $y=a_q^{\dagger}$.  The anticommutation relation
+$\{a_p,a_q^{\dagger}\}=\delta_{pq}$ gives
+\begin{equation}
+  a_p a_q^{\dagger} = \delta_{pq} - a_q^{\dagger}a_p
+                    = \delta_{pq} + N\left[a_p a_q^{\dagger}\right],
+  \label{eq:3-wick2example}
+\end{equation}
+where the second step is Eq.~(\ref{eq:3-normalexamples}).  Comparing with
+Eq.~(\ref{eq:3-wick2}) identifies the contraction as $\delta_{pq}$, which is
+Eq.~(\ref{eq:3-contraction1}).  Taking the vacuum expectation value and using
+Eq.~(\ref{eq:3-normalvanishes}) recovers the overlap of two single-particle
+states,
+\begin{equation}
+  \langle p\vert q\rangle
+   = \langle 0\vert a_p a_q^{\dagger}\vert 0\rangle = \delta_{pq} .
+  \label{eq:3-overlap1}
+\end{equation}
+The three remaining combinations $a_pa_q$, $a_p^{\dagger}a_q$ and
+$a_p^{\dagger}a_q^{\dagger}$ are already normal-ordered up to a sign, so their
+contractions vanish and so do their vacuum expectation values.
+
+%----------------------------------------------------------------------
+\section{Three operators}
+\label{sec:wickthree}
+
+An odd number of operators can never be paired up completely.  Whatever
+contractions we carry out, at least one operator is always left over, and a
+single uncontracted operator inside a vacuum expectation value gives
+\begin{equation}
+  \langle 0\vert a_p\vert 0\rangle
+   = \langle 0\vert a_p^{\dagger}\vert 0\rangle = 0 .
+  \label{eq:3-oddvanishes}
+\end{equation}
+Hence
+\begin{equation}
+  \langle 0\vert xyz\vert 0\rangle = 0
+  \label{eq:3-wick3}
+\end{equation}
+for every choice of the three operators, as one may also check directly by
+anticommuting.  Take $x=a_p$, $y=a_q^{\dagger}$, $z=a_r^{\dagger}$:
+\begin{equation}
+  a_p a_q^{\dagger}a_r^{\dagger}
+   = \left(\delta_{pq}-a_q^{\dagger}a_p\right)a_r^{\dagger}
+   = \delta_{pq}a_r^{\dagger}
+   - a_q^{\dagger}\left(\delta_{pr}-a_r^{\dagger}a_p\right),
+  \label{eq:3-three1}
+\end{equation}
+and every surviving term contains a single unpaired creation operator acting
+on the vacuum, so the vacuum expectation value vanishes.
+
+The result is worth stating explicitly because it is used constantly:
+\emph{any} vacuum expectation value of an odd number of creation and
+annihilation operators is zero.  The same argument reappears in the proof of
+the theorem, where it disposes of half the terms in the induction step.
+
+%----------------------------------------------------------------------
+\section{Four operators}
+\label{sec:wickfour}
+
+Four operators is the first genuinely interesting case, and it is the one that
+appears whenever we compute the overlap of two two-particle states,
+\begin{equation}
+  \vert rs\rangle = a_r^{\dagger}a_s^{\dagger}\vert 0\rangle,
+  \qquad
+  \vert pq\rangle = a_p^{\dagger}a_q^{\dagger}\vert 0\rangle,
+  \qquad
+  \langle rs\vert pq\rangle
+   = \langle 0\vert a_s a_r a_p^{\dagger}a_q^{\dagger}\vert 0\rangle .
+  \label{eq:3-fouroverlap}
+\end{equation}
+
+\paragraph{By anticommutation.}
+We evaluate it the elementary way first, so that the answer can be checked
+against the theorem afterwards.  Anticommuting $a_r$ past $a_p^{\dagger}$
+with $a_r a_p^{\dagger}=\delta_{rp}-a_p^{\dagger}a_r$,
+\begin{equation}
+  a_s a_r a_p^{\dagger}a_q^{\dagger}
+   = a_s\left(\delta_{rp}-a_p^{\dagger}a_r\right)a_q^{\dagger}
+   = \delta_{rp}\,a_s a_q^{\dagger} - a_s a_p^{\dagger}a_r a_q^{\dagger} .
+  \label{eq:3-four1}
+\end{equation}
+The first term is handled by Eq.~(\ref{eq:3-wick2example}),
+\begin{equation}
+  \delta_{rp}\,a_s a_q^{\dagger}
+   = \delta_{rp}\left(\delta_{sq}-a_q^{\dagger}a_s\right)
+   \;\longrightarrow\; \delta_{rp}\delta_{sq},
+  \label{eq:3-four2}
+\end{equation}
+the arrow denoting that we take the vacuum expectation value and drop the
+normal-ordered remainder.  For the second term we anticommute twice more,
+\begin{equation}
+  -a_s a_p^{\dagger}a_r a_q^{\dagger}
+   = -a_s a_p^{\dagger}\left(\delta_{rq}-a_q^{\dagger}a_r\right)
+   = -\delta_{rq}\,a_s a_p^{\dagger} + a_s a_p^{\dagger}a_q^{\dagger}a_r ,
+  \label{eq:3-four3}
+\end{equation}
+and the last term has an annihilation operator on the far right, so it dies on
+the vacuum.  The surviving piece is
+\begin{equation}
+  -\delta_{rq}\,a_s a_p^{\dagger}
+   = -\delta_{rq}\left(\delta_{sp}-a_p^{\dagger}a_s\right)
+   \;\longrightarrow\; -\delta_{rq}\delta_{sp} .
+  \label{eq:3-four4}
+\end{equation}
+Collecting the two contributions,
+\begin{equation}
+  \boxed{\;
+  \langle rs\vert pq\rangle
+   = \langle 0\vert a_s a_r a_p^{\dagger}a_q^{\dagger}\vert 0\rangle
+   = \delta_{rp}\delta_{sq} - \delta_{sp}\delta_{rq} \;}
+  \label{eq:3-fourresult}
+\end{equation}
+Two-particle states are orthonormal up to precisely the antisymmetry expected
+of fermions: the overlap is the antisymmetrised product of single-particle
+overlaps.
+
+\paragraph{By contractions.}
+The same answer can be read off without any algebra at all.  Four operators
+can be paired in three ways.  The first pairs the two annihilation operators
+with each other and the two creation operators with each other,
+\begin{equation}
+  \wstrut
+  \wmark{p1a}{a_s}\,\wmark{p1b}{a_r}\,
+  \wmark{p1c}{a_p^{\dagger}}\,\wmark{p1d}{a_q^{\dagger}}
+  \wline[1.6ex]{p1a}{p1b}\wline[1.6ex]{p1c}{p1d}
+  \;=\;0 ,
+  \label{eq:3-pair1}
+\end{equation}
+which vanishes by Eqs.~(\ref{eq:3-contraction2}) and
+(\ref{eq:3-contraction4}).  The second is the nested pairing, with no
+crossings and hence a plus sign,
+\begin{equation}
+  \wstrut
+  \wmark{p2a}{a_s}\,\wmark{p2b}{a_r}\,
+  \wmark{p2c}{a_p^{\dagger}}\,\wmark{p2d}{a_q^{\dagger}}
+  \wline[3.4ex]{p2a}{p2d}\wline[1.4ex]{p2b}{p2c}
+  \;=\;+\,\delta_{sq}\delta_{rp} .
+  \label{eq:3-pair2}
+\end{equation}
+The third has the two lines crossing once, and therefore a minus sign by
+Eq.~(\ref{eq:3-crossingsign}); we draw one line above and one below,
+\begin{equation}
+  \wstrut
+  \wmark{p3a}{a_s}\,\wmark{p3b}{a_r}\,
+  \wmark{p3c}{a_p^{\dagger}}\,\wmark{p3d}{a_q^{\dagger}}
+  \wline[1.6ex]{p3a}{p3c}\wlineb[1.6ex]{p3b}{p3d}
+  \;=\;-\,\delta_{sp}\delta_{rq} .
+  \label{eq:3-pair3}
+\end{equation}
+Adding the three gives Eq.~(\ref{eq:3-fourresult}) again.
+
+Three pairings, one of which vanishes on inspection and two of which are read
+straight off: this is the economy the theorem buys.  The program
+\texttt{wick.py} carries out both routes for arbitrary strings and confirms
+that they agree.  For the eight-operator strings of
+Section~\ref{sec:wickapps} the anticommutation recursion takes $129$ steps,
+while the theorem enumerates $105$ pairings of which only a handful survive.
+
+%----------------------------------------------------------------------
+\section{Wick's theorem}
+\label{sec:wicktheorem}
+
+\index{Wick's theorem}
+The pattern of the previous three sections generalises.  \emph{Wick's
+theorem} states that an arbitrary product of creation and annihilation
+operators can be written as the normal-ordered product plus the sum of all
+possible contractions,
+\begin{align}
+  xyz\cdots w
+   &= N\left[xyz\cdots w\right] \nonumber\\
+   &\quad + \sum_{(1)} N\left[xyz\cdots w\right]
+     \qquad\text{(all single contractions)}\nonumber\\
+   &\quad + \sum_{(2)} N\left[xyz\cdots w\right]
+     \qquad\text{(all double contractions)}\nonumber\\
+   &\quad + \cdots
+     + \sum_{[M/2]} N\left[xyz\cdots w\right] ,
+  \label{eq:3-wicktheorem}
+\end{align}
+where $\sum_{(m)}$ runs over all ways of choosing $m$ disjoint pairs of
+operators to contract, each term carrying the sign~(\ref{eq:3-crossingsign}),
+and $[M/2]$ is the largest number of disjoint pairs that $M$ operators admit.
+
+The theorem becomes a computational tool the moment we take a vacuum
+expectation value.  Every term in Eq.~(\ref{eq:3-wicktheorem}) that still
+contains an uncontracted operator is normal-ordered and therefore vanishes by
+Eq.~(\ref{eq:3-normalvanishes}).  Only the \emph{fully} contracted terms
+survive:
+\begin{equation}
+  \boxed{\;
+  \langle 0\vert xyz\cdots w\vert 0\rangle
+   = \sum_{[M/2]} N\left[xyz\cdots w\right]
+   \quad\text{(fully contracted terms only)} \;}
+  \label{eq:3-wickvev}
+\end{equation}
+For $M$ even there are $(M-1)!!$ such terms -- one, three, fifteen and
+one hundred and five for $M=2,4,6,8$ -- and most of them vanish on inspection
+because one of their contractions is of the type
+(\ref{eq:3-contraction2})--(\ref{eq:3-contraction4}).  For $M$ odd there are
+none, which is Eq.~(\ref{eq:3-wick3}) again.
+
+%----------------------------------------------------------------------
+\section{Proof of Wick's theorem}
+\label{sec:wickproof}
+
+The proof is by induction on the number of operators.  The case $M=2$ is
+Eq.~(\ref{eq:3-wick2}), established directly from the anticommutation
+relation.  The induction step requires one preparatory result, which does all
+the real work.
+
+\paragraph{A lemma: appending one operator on the right.}
+Let $x,y,z,\dots,w$ be a set of operators and let $\Omega$ be one further
+creation or annihilation operator.  Then
+\begin{equation}
+  N\left[xyz\cdots w\right]\,\Omega
+   = N\left[xyz\cdots w\,\Omega\right]
+   + \sum_{(1)\Omega} N\left[xyz\cdots w\,\Omega\right] ,
+  \label{eq:3-lemma}
+\end{equation}
+where $\sum_{(1)\Omega}$ runs over all single contractions \emph{involving}
+$\Omega$, that is over the contractions of $\Omega$ with each of
+$x,y,z,\dots,w$ in turn.
+
+\paragraph{Proof of the lemma.}
+There are four cases to consider, and three of them are immediate.
+
+\begin{enumerate}
+\item[(i)] \emph{$\Omega$ is an annihilation operator.}  Then
+  $N[xyz\cdots w]\,\Omega$ is already in normal-ordered form, since appending
+  an annihilation operator on the far right cannot disturb the ordering, and
+  so the left-hand side equals $N[xyz\cdots w\,\Omega]$.  At the same time
+  every contraction with $\Omega$ vanishes: a non-zero contraction requires
+  an annihilation operator to the \emph{left} of a creation operator, and here
+  $\Omega$ is itself an annihilation operator standing to the right of
+  everything.  Both extra terms are absent and the lemma holds trivially.
+
+\item[(ii)] \emph{All of $x,y,\dots,w$ are annihilation operators and $\Omega$
+  is an annihilation operator.}  This is a special case of (i), and the lemma
+  is again trivially satisfied.
+
+\item[(iii)] \emph{$\Omega$ is a creation operator.}  Here we need only prove
+  the lemma when all of $x,y,\dots,w$ are annihilation operators.  The reason
+  is that a creation operator inside the normal-ordered product already
+  stands to the left of $\Omega$'s eventual position, and its contraction with
+  $\Omega$ vanishes by Eq.~(\ref{eq:3-contraction4}),
+  \[
+    \wmark{L1}{a_i^{\dagger}}\,\wmark{L2}{a_j^{\dagger}}\wline[1.6ex]{L1}{L2}=0 .
+  \]
+  Creation operators in the string thus contribute neither to the reordering
+  nor to the sum of contractions, and may be carried along untouched.
+
+\item[(iv)] It remains to anticommute $\Omega$ leftwards through the
+  annihilation operators $x,y,\dots,w$, one at a time.  Each step uses
+  \[
+    a_j\,\Omega = \delta_{j\Omega} - \Omega\,a_j ,
+  \]
+  and produces two pieces: a Kronecker delta, which is precisely the
+  contraction of $a_j$ with $\Omega$ carrying the sign of the operators
+  $\Omega$ has had to cross, and a term in which $\Omega$ has moved one place
+  to the left.  Iterating until $\Omega$ has passed all of them, the
+  accumulated delta terms are exactly the sum
+  $\sum_{(1)\Omega} N[xyz\cdots w\,\Omega]$, and the final term, in which
+  $\Omega$ stands to the left of every annihilation operator, is exactly
+  $N[xyz\cdots w\,\Omega]$.  This is Eq.~(\ref{eq:3-lemma}). \hfill$\square$
+\end{enumerate}
+
+\paragraph{The lemma at work.}
+For $M=1$ the lemma reads
+\begin{equation}
+  \wstrut
+  N\left[a_1\right]a_{\ell}^{\dagger}
+   = N\left[a_1 a_{\ell}^{\dagger}\right]
+   + N\left[\wmark{L3}{a_1}\,\wmark{L4}{a_{\ell}^{\dagger}}
+       \wline[1.6ex]{L3}{L4}\right]
+   = -\langle 0\vert a_{\ell}^{\dagger}a_1\vert 0\rangle
+     + \delta_{1\ell} ,
+  \label{eq:3-lemmaM1}
+\end{equation}
+which is just Eq.~(\ref{eq:3-wick2example}) once more.  For $M=2$,
+\begin{equation}
+  \wstrut
+  a_0\,N\left[a_1\right]a_{\ell}^{\dagger}
+   = N\left[a_0 a_1 a_{\ell}^{\dagger}\right]
+   + N\left[a_0\,\wmark{L5}{a_1}\,\wmark{L6}{a_{\ell}^{\dagger}}
+       \wline[1.6ex]{L5}{L6}\right]
+   + N\left[\wmark{L7}{a_0}\,a_1\,\wmark{L8}{a_{\ell}^{\dagger}}
+       \wline[2.8ex]{L7}{L8}\right],
+  \label{eq:3-lemmaM2}
+\end{equation}
+that is $N[a_0a_1a_{\ell}^{\dagger}] + \delta_{1\ell}N[a_0]
++ \delta_{0\ell}N[a_1]$ up to the signs of the crossings.  Generally,
+\begin{equation}
+  a_0\,N\left[a_1a_2\cdots a_M\right]a_{\ell}^{\dagger}
+   = \sum_{(1)\Omega} N\left[a_0a_1\cdots a_M a_{\ell}^{\dagger}\right]
+   + N\left[a_0a_1\cdots a_M a_{\ell}^{\dagger}\right] .
+  \label{eq:3-lemmaMgeneral}
+\end{equation}
+
+\paragraph{The induction step.}
+Assume Wick's theorem, Eq.~(\ref{eq:3-wicktheorem}), holds for a product of
+$M$ operators.  Multiply both sides from the right by one further operator
+$\Omega$ and apply the lemma to every term.  The first term gives
+\begin{equation}
+  N\left[xyz\cdots w\right]\Omega
+   = N\left[xyz\cdots w\,\Omega\right]
+   + \sum_{(1)\Omega} N\left[xyz\cdots w\,\Omega\right],
+  \label{eq:3-induct1}
+\end{equation}
+the $m$-fold contracted terms give
+\begin{equation}
+  \sum_{(m)} N\left[xyz\cdots w\right]\Omega
+   = \sum_{(m)\ne\Omega} N\left[xyz\cdots w\,\Omega\right]
+   + \sum_{(m)\Omega} N\left[xyz\cdots w\,\Omega\right],
+  \label{eq:3-induct2}
+\end{equation}
+where $\sum_{(m)\ne\Omega}$ collects the $m$-fold contractions that do not
+involve $\Omega$ and $\sum_{(m)\Omega}$ those in which one of the $m$
+contractions ends on $\Omega$.  But an $m$-fold contraction of the $M+1$
+operators either involves $\Omega$ or it does not, so the two sums recombine,
+\begin{equation}
+  \sum_{(m)\ne\Omega} + \sum_{(m)\Omega} = \sum_{(m)}
+  \qquad\text{over all } M+1 \text{ operators.}
+  \label{eq:3-recombine}
+\end{equation}
+Collecting the terms by the number of contractions therefore reproduces
+Eq.~(\ref{eq:3-wicktheorem}) with $M$ replaced by $M+1$,
+\begin{equation}
+  xyz\cdots w\,\Omega
+   = N\left[xyz\cdots w\,\Omega\right]
+   + \sum_{(1)} N\left[\cdots\right]
+   + \sum_{(2)} N\left[\cdots\right]
+   + \cdots
+   + \sum_{[(M+1)/2]} N\left[\cdots\right] .
+  \label{eq:3-wickM1}
+\end{equation}
+This completes the induction. \hfill$\square$
+
+\paragraph{A remark on parity.}
+If $M+1$ is odd, the last sum $\sum_{[(M+1)/2]}$ still leaves one operator
+uncontracted, since an odd number of operators cannot be paired up completely.
+On taking the vacuum expectation value these terms vanish by
+Eq.~(\ref{eq:3-oddvanishes}), and we recover the result of
+Section~\ref{sec:wickthree}: vacuum expectation values of odd strings are
+zero.  For $M+1$ even the last sum consists of the fully contracted terms,
+and Eq.~(\ref{eq:3-wickvev}) follows.
+
+%----------------------------------------------------------------------
+\section{Wick's generalised theorem}
+\label{sec:wickgeneral}
+
+\index{Wick's theorem!generalised}
+In practice we rarely meet a bare product of operators.  What we meet is a
+product of groups, each of which is \emph{already} in normal-ordered form:
+the bra, the operator, and the ket.  Wick's generalised theorem states that
+for such a product
+\begin{equation}
+  N\left[A_1A_2\cdots\right]\,N\left[B_1B_2\cdots\right]\,
+  N\left[C_1C_2\cdots\right]
+   = N\left[A_1A_2\cdots B_1B_2\cdots C_1C_2\cdots\right]
+   + \sum_{\mathrm{all}} N\left[A_1A_2\cdots C_1C_2\cdots\right],
+  \label{eq:3-wickgeneral}
+\end{equation}
+where the sum runs over all contractions \emph{between operators belonging to
+different normal-ordered groups}.  Contractions within a single group are
+absent, precisely because that group is already normal-ordered and its
+internal contractions vanish by
+Eqs.~(\ref{eq:3-contraction2})--(\ref{eq:3-contraction4}).
+
+This is a substantial saving.  In the examples of the next section the naive
+count of pairings runs into the hundreds, while the number of contractions
+between different groups is a handful.
+
+%----------------------------------------------------------------------
+\section{Applications: matrix elements between two-particle states}
+\label{sec:wickapps}
+
+We close with the two calculations that motivated the whole construction.
+Both use the generalised theorem, and in both the bra, the operator and the
+ket are separately normal-ordered.
+
+\paragraph{A one-body operator.}
+With
+\begin{equation}
+  \hat{O}^{(1)} = \sum_{pq}\langle p\vert\hat{o}^{(1)}\vert q\rangle\,
+    a_p^{\dagger}a_q ,
+  \label{eq:3-onebodyop}
+\end{equation}
+and the two-particle states $\vert ij\rangle=a_i^{\dagger}a_j^{\dagger}\vert
+0\rangle$, $\langle ij\vert = \langle 0\vert a_j a_i$, we need
+\begin{equation}
+  \langle ij\vert \hat{O}^{(1)}\vert k\ell\rangle
+   = \sum_{pq}\langle p\vert\hat{o}^{(1)}\vert q\rangle\,
+     \langle 0\vert\,
+     \underbrace{a_j a_i}_{\text{bra}}\;
+     \underbrace{a_p^{\dagger}a_q}_{\text{operator}}\;
+     \underbrace{a_k^{\dagger}a_{\ell}^{\dagger}}_{\text{ket}}\,
+     \vert 0\rangle .
+  \label{eq:3-onebodyme}
+\end{equation}
+Only contractions between different groups contribute, and each must join an
+annihilation operator to a creation operator standing to its right.  One such
+term is
+\begin{equation}
+  \wstrut
+  \wmark{o1}{a_j}\,\wmark{o2}{a_i}\,\wmark{o3}{a_p^{\dagger}}\,
+  \wmark{o4}{a_q}\,\wmark{o5}{a_k^{\dagger}}\,\wmark{o6}{a_{\ell}^{\dagger}}
+  \wline[1.4ex]{o2}{o3}\wline[1.4ex]{o4}{o5}\wlineb{o1}{o6}
+  \;=\;\delta_{ip}\,\delta_{qk}\,\delta_{j\ell},
+  \label{eq:3-onebodycontraction}
+\end{equation}
+which contributes $\delta_{j\ell}\,\langle i\vert\hat{o}^{(1)}\vert k\rangle$
+after the sums over $p$ and $q$ are carried out.  Collecting the four such
+terms gives the familiar result
+\begin{equation}
+  \langle ij\vert \hat{O}^{(1)}\vert k\ell\rangle
+   = \delta_{j\ell}\langle i\vert\hat{o}^{(1)}\vert k\rangle
+   - \delta_{jk}\langle i\vert\hat{o}^{(1)}\vert\ell\rangle
+   - \delta_{i\ell}\langle j\vert\hat{o}^{(1)}\vert k\rangle
+   + \delta_{ik}\langle j\vert\hat{o}^{(1)}\vert\ell\rangle .
+  \label{eq:3-onebodyresult}
+\end{equation}
+The matrix element vanishes whenever the two Slater determinants differ by
+more than one single-particle state, since then no assignment of the deltas
+can be satisfied.  This is the Condon-Slater rule of
+Section~\ref{sec:particlehole}, now obtained without a single explicit
+permutation.
+
+\paragraph{The two-body interaction.}
+With the normal-ordered interaction
+\begin{equation}
+  \hat{H}_I = \frac{1}{2}\sum_{pqrs}\langle pq\vert v\vert rs\rangle\,
+    a_p^{\dagger}a_q^{\dagger}a_s a_r ,
+  \label{eq:3-twobodyop}
+\end{equation}
+the diagonal matrix element in the state $\vert ij\rangle$ is
+\begin{equation}
+  \langle ij\vert \hat{H}_I\vert ij\rangle
+   = \frac{1}{2}\sum_{pqrs}\langle pq\vert v\vert rs\rangle\,
+     \langle 0\vert\,
+     \underbrace{a_j a_i}_{\text{bra}}\;
+     \underbrace{a_p^{\dagger}a_q^{\dagger}a_s a_r}_{\text{operator}}\;
+     \underbrace{a_i^{\dagger}a_j^{\dagger}}_{\text{ket}}\,
+     \vert 0\rangle .
+  \label{eq:3-twobodyme}
+\end{equation}
+This is an eight-operator string.  Enumerating its $105$ pairings by hand
+would be unpleasant, but the generalised theorem restricts us to contractions
+between the three groups, and of those only four survive.  Two of them are
+\begin{equation}
+  \wstrut
+  \wmark{t1}{a_j}\,\wmark{t2}{a_i}\,\wmark{t3}{a_p^{\dagger}}\,
+  \wmark{t4}{a_q^{\dagger}}\,\wmark{t5}{a_s}\,\wmark{t6}{a_r}\,
+  \wmark{t7}{a_i^{\dagger}}\,\wmark{t8}{a_j^{\dagger}}
+  \wline[1.4ex]{t2}{t3}\wline[1.4ex]{t6}{t7}
+  \wlineb[1.4ex]{t1}{t4}\wlineb[3.0ex]{t5}{t8}
+  \;=\;\delta_{ip}\delta_{jq}\delta_{ri}\delta_{sj},
+  \label{eq:3-twobodyc1}
+\end{equation}
+giving $\langle ij\vert v\vert ij\rangle$, and the one obtained by exchanging
+the roles of $r$ and $s$, which crosses one more line and therefore enters
+with the opposite sign, giving $-\langle ij\vert v\vert ji\rangle$.  The two
+remaining terms are these two with $i$ and $j$ interchanged; they are equal to
+the first two and cancel the factor $\tfrac12$.  The result is
+\begin{equation}
+  \boxed{\;
+  \langle ij\vert \hat{H}_I\vert ij\rangle
+   = \langle ij\vert v\vert ij\rangle - \langle ij\vert v\vert ji\rangle
+   = \langle ij\vert v\vert ij\rangle_{\mathrm{AS}} \;}
+  \label{eq:3-twobodyresult}
+\end{equation}
+which is exactly the antisymmetrised matrix element obtained in
+Chapter~\ref{chap:mbphys} by writing out the antisymmetriser and sorting
+through permutations.  The two derivations agree, as they must; the point is
+that this one required no permutations at all, only the observation that a
+contraction is non-zero when an annihilation operator stands to the left of a
+creation operator.
+
+The program \texttt{wick.py} performs every calculation of these sections in
+both ways -- by brute-force anticommutation and by summing contractions with
+their signs -- and verifies that they agree, for strings of two, four, six and
+eight operators.  It also reproduces Eq.~(\ref{eq:3-twobodyresult}) by
+enumerating which of the $(p,q,r,s)$ assignments survive.
+
+\section{Operators in second quantization}
 
 In the build-up of a shell-model or FCI code that is meant to tackle large dimensionalities
 is the action of the Hamiltonian $\hat{H}$ on a
