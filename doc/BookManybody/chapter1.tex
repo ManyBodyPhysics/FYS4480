@@ -2138,6 +2138,668 @@ those Slater determinants are built.  Chapter~\ref{chap:mbphys} takes the
 first step in that direction.
 \end{notebox}
 
+%=============================================================================
+%  THE SINGULAR VALUE DECOMPOSITION
+%=============================================================================
+
+\section{The singular value decomposition}
+\label{sec:svd}
+
+\index{singular value decomposition}
+Every algorithm so far has assumed a square matrix, and most of them a
+symmetric one.  Many of the objects we meet in many-body physics are neither.
+The coefficients of a state written across a partition of the system into two
+parts form a rectangular array; a set of sampled wave functions collected as
+columns forms a rectangular array; the two-body matrix elements arranged in a
+composite pair index form a matrix whose row and column dimensions have
+nothing to do with the dimension of the Hilbert space.  For all of these we
+need a decomposition that does not require squareness, and preferably one
+that does not require diagonalisability either.
+
+Recall that a square matrix can be diagonalised if and only if it is
+\emph{normal}, that is if $\bm{X}\bm{X}^{T}=\bm{X}^{T}\bm{X}$ in the real case
+or $\bm{X}\bm{X}^{\dagger}=\bm{X}^{\dagger}\bm{X}$ in the complex one.  Not
+every matrix satisfies this.  The simplest counterexample is
+\begin{equation}
+  \bm{X} = \begin{bmatrix} 1 & -1\\ 1 & -1\end{bmatrix},
+  \label{eq:1-defective}
+\end{equation}
+whose determinant vanishes and for which
+$\bm{X}\bm{X}^{T}\neq\bm{X}^{T}\bm{X}$.  It is \emph{defective}: it cannot be
+diagonalised, and it has no inverse.
+
+The singular value decomposition has no such restriction.
+
+\paragraph{The theorem.}
+Any $m\times n$ matrix $\bm{X}$, real or complex, square or rectangular, can
+be written
+\begin{equation}
+  \bm{X} = \bm{U}\bm{\Sigma}\bm{V}^{T},
+  \label{eq:1-svd}
+\end{equation}
+where $\bm{U}$ is an $m\times m$ orthogonal matrix,
+$\bm{U}\bm{U}^{T}=\bm{U}^{T}\bm{U}=\bm{I}_m$, where $\bm{V}$ is an $n\times n$
+orthogonal matrix, $\bm{V}\bm{V}^{T}=\bm{V}^{T}\bm{V}=\bm{I}_n$, and where
+$\bm{\Sigma}$ is an $m\times n$ matrix which is zero except on the main
+diagonal, on which sit the \emph{singular values}
+\begin{equation}
+  \sigma_0 \ge \sigma_1 \ge \dots \ge \sigma_{r-1} \ge 0,
+  \qquad r=\min(m,n).
+  \label{eq:1-singvals}
+\end{equation}
+The columns of $\bm{U}$ are the \emph{left} singular vectors and the columns
+of $\bm{V}$ the \emph{right} singular vectors.  The decomposition always
+exists.  For the defective matrix of Eq.~(\ref{eq:1-defective}) it reads
+\begin{equation}
+  \bm{X}
+   = \frac{1}{\sqrt{2}}\begin{bmatrix}1&1\\1&-1\end{bmatrix}
+     \begin{bmatrix}2&0\\0&0\end{bmatrix}
+     \frac{1}{\sqrt{2}}\begin{bmatrix}1&-1\\1&1\end{bmatrix}
+   = \bm{U}\bm{\Sigma}\bm{V}^{T},
+  \label{eq:1-defectivesvd}
+\end{equation}
+with $\sigma_0=2$ and $\sigma_1=0$.  A matrix that cannot be diagonalised at
+all is decomposed without difficulty, and the vanishing singular value states
+plainly what the determinant only hinted at.
+
+\paragraph{Geometry.}
+Equation~(\ref{eq:1-svd}) says that every linear map is a rotation, followed
+by a scaling along the new axes, followed by another rotation.  The singular
+values are the scale factors, and $\|\bm{X}\|_2=\sigma_0$, which is the
+statement of Section~\ref{sec:norms} that the induced $2$-norm measures the
+largest stretching a matrix can produce.
+
+\paragraph{Relation to the eigenvalue problem.}
+The SVD is not an independent construction; it is the symmetric eigenvalue
+problem of Section~\ref{sec:eigenproblem} in disguise.  Using
+Eq.~(\ref{eq:1-svd}) and the orthogonality of $\bm{U}$,
+\begin{equation}
+  \bm{X}^{T}\bm{X}
+   = \bm{V}\bm{\Sigma}^{T}\bm{U}^{T}\bm{U}\bm{\Sigma}\bm{V}^{T}
+   = \bm{V}\bm{\Sigma}^{T}\bm{\Sigma}\bm{V}^{T}
+   \equiv \bm{V}\tilde{\bm{\Sigma}}^{2}\bm{V}^{T},
+  \label{eq:1-xtx}
+\end{equation}
+where $\tilde{\bm{\Sigma}}$ is the $n\times n$ diagonal matrix of singular
+values.  Multiplying from the right by $\bm{V}$ gives
+\begin{equation}
+  \left(\bm{X}^{T}\bm{X}\right)\bm{v}_i = \sigma_i^2\,\bm{v}_i ,
+  \label{eq:1-righteigen}
+\end{equation}
+so the right singular vectors are the eigenvectors of $\bm{X}^{T}\bm{X}$ and
+the squared singular values its eigenvalues.  In exactly the same way
+\begin{equation}
+  \bm{X}\bm{X}^{T} = \bm{U}\bm{\Sigma}\bm{\Sigma}^{T}\bm{U}^{T},
+  \qquad
+  \left(\bm{X}\bm{X}^{T}\right)\bm{u}_i = \sigma_i^2\,\bm{u}_i ,
+  \label{eq:1-lefteigen}
+\end{equation}
+with the remaining $m-r$ eigenvalues equal to zero.  Every singular value is
+therefore the non-negative square root of an eigenvalue of $\bm{X}^{T}\bm{X}$,
+and if $\bm{X}$ is itself symmetric the singular values are the absolute
+values of its eigenvalues.  These two relations will do a great deal of work
+in the sections that follow: $\bm{X}\bm{X}^{T}$ and $\bm{X}^{T}\bm{X}$ will
+turn out to be the two reduced density matrices of a bipartite quantum state.
+
+\paragraph{The economy-size decomposition.}
+If $m>n$ the last $m-n$ columns of $\bm{U}$ are multiplied by zeros in
+$\bm{\Sigma}$ and can never contribute.  Removing them, and the corresponding
+rows of zeros in $\bm{\Sigma}$, gives the economy-size decomposition, in which
+$\bm{U}$ is $m\times n$ and $\bm{\Sigma}$ is $n\times n$.  If $n>m$ one keeps
+instead the first $m$ columns of $\bm{V}$.  Nothing is lost and both storage
+and work are reduced; this is the default in most library routines.
+
+\paragraph{How not to compute it.}
+Equation~(\ref{eq:1-righteigen}) suggests an algorithm: form $\bm{X}^{T}\bm{X}$,
+diagonalise it with the Householder and QL machinery of
+Sections~\ref{sec:householder} and \ref{sec:qlalgorithm}, take square roots.
+This is mathematically correct and numerically poor.  From
+Eq.~(\ref{eq:1-cond2}) the condition number of the product is the square of
+that of $\bm{X}$,
+\begin{equation}
+  \kappa_2(\bm{X}^{T}\bm{X}) = \kappa_2(\bm{X})^{2},
+  \label{eq:1-condsquared}
+\end{equation}
+so half of the available significant digits are destroyed before the
+eigenvalue solver is even called.  Table~\ref{tab:svdroute} shows the damage
+for a $60\times 12$ matrix constructed with singular values spread
+logarithmically between $1$ and $10^{-7}$: the direct SVD returns all twelve
+to machine precision, the detour through $\bm{X}^{T}\bm{X}$ loses seven
+digits on the smallest.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{llll}
+\toprule
+\textbf{Exact $\sigma_i$} & \textbf{From the SVD} &
+\textbf{From $\bm{X}^{T}\bm{X}$} & \textbf{Relative error}\\
+\midrule
+$1.00000000\times10^{0}$  & $1.00000000\times10^{0}$  & $1.00000000\times10^{0}$  & $4.4\times10^{-16}$\\
+$6.57933225\times10^{-4}$ & $6.57933225\times10^{-4}$ & $6.57933225\times10^{-4}$ & $2.0\times10^{-11}$\\
+$1.87381742\times10^{-6}$ & $1.87381742\times10^{-6}$ & $1.87381889\times10^{-6}$ & $7.8\times10^{-7}$\\
+$4.32876128\times10^{-7}$ & $4.32876128\times10^{-7}$ & $4.32893930\times10^{-7}$ & $4.1\times10^{-5}$\\
+$1.00000000\times10^{-7}$ & $1.00000000\times10^{-7}$ & $9.99683051\times10^{-8}$ & $3.2\times10^{-4}$\\
+\bottomrule
+\end{tabular}
+\caption{Singular values of a $60\times12$ matrix with
+$\kappa_2(\bm{X})=10^{7}$, computed directly and through the eigenvalues of
+$\bm{X}^{T}\bm{X}$, for which $\kappa_2=10^{14}$.  Forming the product costs
+roughly half the significant digits.}
+\label{tab:svdroute}
+\end{table}
+
+The stable algorithm never forms the product.  It reduces $\bm{X}$ to
+bidiagonal form by Householder reflectors applied alternately from the left
+and the right -- the same reflectors as in Section~\ref{sec:householder} --
+and then runs an implicitly shifted QR sweep on the bidiagonal matrix.  This
+is the Golub-Kahan algorithm, and it is what \texttt{numpy.linalg.svd} calls
+through LAPACK.  We use the library routine in what follows: the interest
+here lies in what the decomposition is used for.
+
+\begin{notebox}
+\textbf{Many-body connection.} Equations~(\ref{eq:1-righteigen}) and
+(\ref{eq:1-lefteigen}) are the reason the SVD keeps reappearing in many-body
+physics.  Whenever a quantity is built as a product of a matrix with its own
+transpose -- a density matrix, an overlap matrix, a two-body interaction
+written in a pair index -- the SVD of the underlying rectangular object gives
+its spectrum directly, with better accuracy and often at lower cost than
+forming the product at all.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Rank, the pseudoinverse and ill-conditioned bases}
+\label{sec:pseudoinverse}
+
+\index{rank}\index{pseudoinverse}
+The \emph{rank} of a matrix is the number of linearly independent columns, and
+the SVD reads it off immediately: it is the number of non-zero singular
+values.  In floating-point arithmetic one asks instead for the
+\emph{numerical rank}, the number of singular values above a threshold,
+typically $\max(m,n)\,\varepsilon\,\sigma_0$ with $\varepsilon$ the machine
+precision.  A matrix is rank deficient when some columns are linear
+combinations of others, and near rank deficient -- which is the practically
+dangerous case -- when they nearly are.
+
+The condition number of Section~\ref{sec:norms} is likewise a statement about
+singular values,
+\begin{equation}
+  \kappa_2(\bm{X}) = \frac{\sigma_0}{\sigma_{r-1}} ,
+  \label{eq:1-svdcond}
+\end{equation}
+which is infinite exactly when $\bm{X}$ is singular.  The SVD thus not only
+detects near-singularity, it quantifies it.
+
+\paragraph{The Moore-Penrose pseudoinverse.}
+When $\bm{X}^{-1}$ does not exist, or exists but is useless because $\bm{X}$
+is nearly singular, the SVD provides the natural substitute
+\begin{equation}
+  \bm{X}^{+} = \bm{V}\bm{\Sigma}^{+}\bm{U}^{T},
+  \label{eq:1-pseudoinverse}
+\end{equation}
+where $\bm{\Sigma}^{+}$ is obtained from $\bm{\Sigma}$ by transposing it and
+replacing every non-zero singular value by its reciprocal, \emph{leaving the
+zeros as zeros}.  In practice one treats as zero every singular value below
+some $\varepsilon_{\mathrm{cut}}\sigma_0$.  If $\bm{X}$ is invertible and well
+conditioned, $\bm{X}^{+}=\bm{X}^{-1}$; otherwise $\bm{X}^{+}\bm{b}$ is the
+least-squares solution of smallest norm.  Inverting a singular value of
+$10^{-13}$ would amplify the rounding noise in the corresponding direction by
+$10^{13}$; discarding it simply declares that the problem contains no
+information about that direction, which is the truth.
+
+\paragraph{Near-linearly-dependent basis sets.}
+This is not an abstract concern.  Many-body calculations are routinely carried
+out in non-orthogonal single-particle bases -- Gaussians in quantum chemistry,
+harmonic-oscillator states in different oscillator lengths, generator
+coordinates in nuclear physics -- and such bases become linearly dependent
+long before one would like them to.  The eigenvalue problem is then the
+generalised one,
+\begin{equation}
+  \bm{H}\bm{c} = E\,\bm{S}\bm{c},
+  \qquad S_{ij}=\braket{\phi_i}{\phi_j},
+  \label{eq:1-geneig}
+\end{equation}
+with $\bm{S}$ the overlap matrix.  Diagonalising $\bm{S}=\bm{V}\bm{s}\bm{V}^T$
+and forming
+\begin{equation}
+  \bm{X} = \bm{V}\bm{s}^{-1/2}
+  \label{eq:1-canonical}
+\end{equation}
+turns Eq.~(\ref{eq:1-geneig}) into the ordinary problem
+$(\bm{X}^{T}\bm{H}\bm{X})\bm{c}'=E\bm{c}'$.  The transformation involves
+$s_i^{-1/2}$, so a tiny overlap eigenvalue is precisely where the procedure
+breaks down.  \emph{Canonical orthogonalisation} is the fix: drop the
+eigenvectors whose eigenvalues lie below a threshold before forming
+Eq.~(\ref{eq:1-canonical}).
+
+Table~\ref{tab:canonical} shows this for twelve Gaussians of width $1.4$
+placed on a uniform grid, a deliberately over-complete basis of the kind used
+in quantum chemistry.  The overlap matrix has eigenvalues spanning thirteen
+orders of magnitude, from $6.9$ down to $6.5\times10^{-13}$, and a condition
+number of $1.1\times10^{13}$: in double precision only three significant
+digits would survive.  Discarding three basis directions removes six orders
+of magnitude of ill-conditioning at negligible cost in completeness.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{lrl}
+\toprule
+\textbf{Threshold} & \textbf{Functions kept} &
+\textbf{Effective $\kappa_2(\bm{S})$}\\
+\midrule
+none        & 12 & $1.1\times10^{13}$\\
+$10^{-12}$  & 11 & $6.9\times10^{10}$\\
+$10^{-8}$   &  9 & $2.1\times10^{7}$\\
+$10^{-5}$   &  7 & $3.3\times10^{4}$\\
+\bottomrule
+\end{tabular}
+\caption{Canonical orthogonalisation of a basis of twelve overlapping
+Gaussians.  Eigenvectors of the overlap matrix with eigenvalue below the
+threshold, relative to the largest, are discarded.}
+\label{tab:canonical}
+\end{table}
+
+\begin{Python}{}
+class CanonicalOrthogonalization:
+    """Orthogonalise a non-orthogonal basis with a near-singular overlap.
+
+    The generalised problem H c = E S c is reduced to an ordinary one by
+    X = V s^{-1/2}, keeping only the eigenvalues of S above a threshold.
+    """
+
+    def __init__(self, S, threshold=1.0e-8):
+        self.S = np.asarray(S, dtype=float)
+        w, V = np.linalg.eigh(self.S)
+        order = np.argsort(w)[::-1]
+        self.eigenvalues = w[order]
+        self.eigenvectors = V[:, order]
+        keep = self.eigenvalues > threshold * self.eigenvalues[0]
+        self.kept = int(np.sum(keep))
+        self.X = self.eigenvectors[:, keep] / np.sqrt(self.eigenvalues[keep])
+
+    def solve_generalized(self, H):
+        """Solve H c = E S c through the orthogonalised problem."""
+        values, vectors = np.linalg.eigh(self.X.T @ H @ self.X)
+        return values, self.X @ vectors
+\end{Python}
+
+\begin{notebox}
+\textbf{Many-body connection.} The threshold is a physical choice, not a
+numerical detail.  Setting it too low keeps directions that carry only
+rounding noise and poisons the whole calculation; setting it too high throws
+away genuine variational freedom and raises the computed energy.  The same
+trade-off appears in the generator-coordinate method, where the overlap
+kernel of non-orthogonal mean-field states is routinely rank deficient, and
+in explicitly correlated Gaussian expansions, where it is the principal
+practical obstacle to enlarging the basis.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Low-rank approximation and the Schmidt decomposition}
+\label{sec:schmidt}
+
+\index{Eckart-Young theorem}\index{Schmidt decomposition}
+We now come to the property that makes the SVD indispensable in many-body
+physics.  Truncating the sum
+\begin{equation}
+  \bm{X} = \sum_{k=0}^{r-1}\sigma_k\,\bm{u}_k\bm{v}_k^{T}
+  \label{eq:1-svdsum}
+\end{equation}
+after $\chi$ terms gives a matrix $\bm{X}_{\chi}$ of rank $\chi$.  The
+Eckart-Young theorem states that this is the \emph{best} rank-$\chi$
+approximation to $\bm{X}$, in both the $2$-norm and the Frobenius norm, and
+that the error it makes is
+\begin{equation}
+  \|\bm{X}-\bm{X}_{\chi}\|_2 = \sigma_{\chi},
+  \qquad
+  \|\bm{X}-\bm{X}_{\chi}\|_F^2 = \sum_{k\ge\chi}\sigma_k^2 .
+  \label{eq:1-eckartyoung}
+\end{equation}
+No cleverer choice of $\chi$ vectors exists.  If the singular values decay
+quickly, a matrix with $mn$ entries is captured by $\chi(m+n+1)$ numbers.
+
+\paragraph{The Schmidt decomposition.}
+Consider a quantum system divided into two parts, $A$ and $B$, with
+orthonormal bases $\{\bket{i}_A\}$ and $\{\bket{j}_B\}$.  Any state of the
+whole system can be written
+\begin{equation}
+  \bket{\Psi} = \sum_{ij} C_{ij}\,\bket{i}_A\otimes\bket{j}_B ,
+  \label{eq:1-bipartite}
+\end{equation}
+and the coefficients form a matrix $\bm{C}$ which is rectangular whenever the
+two parts have different dimensions.  Inserting its SVD
+$\bm{C}=\bm{U}\bm{\Sigma}\bm{V}^{T}$ and absorbing $\bm{U}$ and $\bm{V}$ into
+new basis states $\bket{u_k}_A=\sum_i U_{ik}\bket{i}_A$ and
+$\bket{v_k}_B=\sum_j V_{jk}\bket{j}_B$, which are orthonormal because $\bm{U}$
+and $\bm{V}$ are orthogonal, gives
+\begin{equation}
+  \boxed{\;
+  \bket{\Psi} = \sum_{k=0}^{\chi-1}\sigma_k\,\bket{u_k}_A\otimes\bket{v_k}_B \; }
+  \label{eq:1-schmidt}
+\end{equation}
+This is the \emph{Schmidt decomposition}.  A double sum over the product basis
+has collapsed to a single sum, and the SVD has done all the work.  The
+singular values $\sigma_k$ are the Schmidt coefficients, and normalisation
+$\braket{\Psi}{\Psi}=1$ gives $\sum_k\sigma_k^2=1$.
+
+The reduced density matrices follow at once.  Tracing out $B$,
+\begin{equation}
+  \bm{\rho}_A = \mathrm{Tr}_B\,\projection{\Psi}{\Psi} = \bm{C}\bm{C}^{T}
+   = \bm{U}\bm{\Sigma}^2\bm{U}^{T},
+  \qquad
+  \bm{\rho}_B = \bm{C}^{T}\bm{C} = \bm{V}\bm{\Sigma}^2\bm{V}^{T},
+  \label{eq:1-reduceddm}
+\end{equation}
+which is Eqs.~(\ref{eq:1-righteigen}) and (\ref{eq:1-lefteigen}) read as
+physics.  The two reduced density matrices have the \emph{same} non-zero
+eigenvalues $\sigma_k^2$, however different the sizes of the two parts, and
+their eigenvectors are the Schmidt states.  The number of non-zero $\sigma_k$
+is the \emph{Schmidt rank}: it equals one precisely when $\bket{\Psi}$ is a
+product state, so a single singular value is the signature of an unentangled
+state.  The \emph{entanglement entropy}
+\begin{equation}
+  S_A = -\mathrm{Tr}\,\bm{\rho}_A\ln\bm{\rho}_A
+      = -\sum_k \sigma_k^2\ln\sigma_k^2
+  \label{eq:1-entropy}
+\end{equation}
+measures how far from a product the state is, and it is manifestly symmetric
+between $A$ and $B$.
+
+\paragraph{Truncation.}
+Keeping only the $\chi$ largest Schmidt coefficients gives, by
+Eq.~(\ref{eq:1-eckartyoung}), the best possible approximation to
+$\bket{\Psi}$ of that rank, with discarded weight
+\begin{equation}
+  \epsilon_{\chi} = \sum_{k\ge\chi}\sigma_k^2 .
+  \label{eq:1-truncationerror}
+\end{equation}
+This single quantity is the truncation error of the density-matrix
+renormalisation group, and $\chi$ is its bond dimension.  Whether a many-body
+state can be compressed is therefore a question about the decay of the Schmidt
+spectrum, and that decay is what area laws for the entanglement entropy
+assert: for ground states of local, gapped Hamiltonians the entropy across a
+cut grows with the \emph{boundary} of the cut rather than with the volume of
+the subsystem, so a modest $\chi$ suffices no matter how large the system.
+Matrix product states are the systematic version of this observation, obtained
+by applying Eq.~(\ref{eq:1-schmidt}) at every bond of a one-dimensional
+lattice in turn.
+
+\paragraph{The pairing model across a cut.}
+Take the ground state of the pairing model of Section~\ref{sec:lanczos} and
+split the twelve single-particle levels into the lowest six and the highest
+six.  A seniority-zero basis state is a set of occupied levels, which
+factorises into its part in $A$ and its part in $B$, so the coefficients form
+a $64\times64$ matrix.  Its singular values are the Schmidt coefficients
+across the cut.  Table~\ref{tab:schmidt} gives the discarded weight as a
+function of $\chi$: three Schmidt states out of $64$ already capture all but
+$5\times10^{-3}$ of the state, and ten capture all but $8\times10^{-7}$.  The
+entanglement entropy is $S_A=0.9238$, well below the maximum $\ln 64=4.16$
+that an arbitrary state of this size could carry.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{rl}
+\toprule
+\textbf{Schmidt states kept, $\chi$} & \textbf{Discarded weight $\epsilon_{\chi}$}\\
+\midrule
+ 1 & $4.831\times10^{-1}$\\
+ 2 & $7.461\times10^{-2}$\\
+ 3 & $5.448\times10^{-3}$\\
+ 5 & $1.854\times10^{-4}$\\
+ 7 & $7.363\times10^{-6}$\\
+10 & $7.530\times10^{-7}$\\
+15 & $4.225\times10^{-9}$\\
+\bottomrule
+\end{tabular}
+\caption{Schmidt spectrum of the pairing-model ground state ($12$ levels,
+$6$ pairs, $\delta=1$, $g=0.5$) across the cut separating the lowest six
+levels from the highest six.  The coefficient matrix is $64\times64$ and the
+entanglement entropy is $0.9238$.}
+\label{tab:schmidt}
+\end{table}
+
+\begin{Python}{}
+class SchmidtDecomposition:
+    """The SVD of a bipartitioned state vector.
+
+    For |Psi> = sum_ij C_ij |i>_A |j>_B the SVD C = U Sigma V^T gives
+    |Psi> = sum_k sigma_k |u_k>_A |v_k>_B.  The eigenvalues of both reduced
+    density matrices are sigma_k^2.
+    """
+
+    def __init__(self, C):
+        self.C = np.asarray(C, dtype=float)
+        self.U, self.sigma, self.Vt = np.linalg.svd(C, full_matrices=False)
+        self.weights = self.sigma**2        # normalised: sum_k sigma_k^2 = 1
+
+    def schmidt_rank(self, tol=1.0e-10):
+        return int(np.sum(self.sigma > tol * self.sigma[0]))
+
+    def entanglement_entropy(self, base=np.e):
+        w = self.weights[self.weights > 1.0e-16]
+        entropy = -np.sum(w * np.log(w)) / np.log(base)
+        return float(entropy) if entropy > 0.0 else 0.0
+
+    def truncation_error(self, k):
+        """Weight discarded when only k Schmidt states are kept."""
+        return float(np.sum(self.weights[k:]))
+
+    def truncate(self, k):
+        """The best rank-k approximation to the state, renormalised."""
+        C = (self.U[:, :k] * self.sigma[:k]) @ self.Vt[:k]
+        return C / np.linalg.norm(C)
+\end{Python}
+
+\begin{notebox}
+\textbf{Many-body connection.} The Schmidt decomposition is the bridge
+between linear algebra and the modern theory of many-body wave functions.
+The density-matrix renormalisation group truncates the Schmidt spectrum at
+every bond; matrix product states, projected entangled pair states and the
+whole family of tensor networks are built by iterating
+Eq.~(\ref{eq:1-schmidt}); and the entanglement entropy, computed from nothing
+more than a list of singular values, is what tells us in advance whether such
+a compression can work at all.
+
+\textbf{Quantum computing connection.} The same numbers govern how hard a
+state is to simulate classically.  A state of $N$ qubits whose Schmidt rank
+across every cut is bounded by $\chi$ can be stored in $\bigO(N\chi^2)$
+numbers and evolved classically; only states whose Schmidt rank grows
+exponentially require a quantum computer.  Entanglement, quantified by
+Eq.~(\ref{eq:1-entropy}), is thus simultaneously the resource that quantum
+algorithms exploit and the obstacle that classical ones must overcome.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Natural orbitals and occupation numbers}
+\label{sec:naturalorbitals}
+
+\index{natural orbitals}\index{occupation numbers}
+For two identical particles the Schmidt decomposition has a name of its own.
+Write the two-particle wave function in a single-particle basis
+$\{\varphi_p\}$,
+\begin{equation}
+  \Psi(x_1,x_2) = \sum_{pq} C_{pq}\,\varphi_p(x_1)\varphi_q(x_2),
+  \label{eq:1-twoparticle}
+\end{equation}
+where symmetry under exchange makes $\bm{C}$ symmetric (or antisymmetric).
+The SVD of $\bm{C}$, which for a symmetric matrix is its eigen-decomposition
+up to signs, gives the \emph{natural expansion}
+\begin{equation}
+  \Psi(x_1,x_2) = \sum_{k}\sigma_k\,\chi_k(x_1)\chi_k(x_2),
+  \label{eq:1-naturalexpansion}
+\end{equation}
+a single sum in terms of the transformed orbitals
+$\chi_k=\sum_p U_{pk}\varphi_p$.  These are L\"owdin's \emph{natural
+orbitals}, and they are the eigenvectors of the one-body density matrix
+\begin{equation}
+  \rho_{pq} = \bracket{\Psi}{a^{\dagger}_p a_q}{\Psi},
+  \qquad
+  \bm{\rho} \propto \bm{C}\bm{C}^{\dagger} = \bm{U}\bm{\Sigma}^2\bm{U}^{\dagger},
+  \label{eq:1-onebodydm}
+\end{equation}
+with eigenvalues $n_k\propto\sigma_k^2$: the \emph{occupation numbers}.  For a
+single Slater determinant exactly $N$ occupation numbers equal one and the
+rest vanish; correlation depletes the occupied orbitals and populates the
+others, and the deviation of the largest $n_k$ from unity is a direct measure
+of how far the state is from a mean-field one.
+
+Table~\ref{tab:natural} illustrates this for two particles in a
+one-dimensional harmonic trap interacting through a softened Coulomb
+potential of strength $g$, solved on a grid of $40$ points by full
+diagonalisation of the $1600$-dimensional two-particle problem.  At $g=0$ the
+ground state is a product, there is a single natural orbital with $n_0=1$, and
+the entanglement entropy vanishes exactly.  Switching on the interaction
+depletes $n_0$ and populates $n_1$, $n_2$ and so on, and the entropy rises.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{9pt}
+\begin{tabular}{rllllr}
+\toprule
+$g$ & $E_0$ & $S_A$ & $n_0$ & $n_1$ & $\chi$ for $10^{-8}$\\
+\midrule
+$0$ & $1.992536$ & $0.000000$ & $1.000000$ & $0.000000$ & $1$\\
+$1$ & $3.173866$ & $0.040874$ & $0.993528$ & $0.006017$ & $10$\\
+$2$ & $4.245117$ & $0.139618$ & $0.970732$ & $0.027407$ & $11$\\
+$5$ & $6.755062$ & $0.507970$ & $0.821806$ & $0.168066$ & $11$\\
+\bottomrule
+\end{tabular}
+\caption{Natural occupation numbers and entanglement entropy for two
+particles in a harmonic trap with a softened Coulomb repulsion of strength
+$g$, on a grid of $40$ points.  The last column gives the number of natural
+orbitals needed to recover all but $10^{-8}$ of the norm.}
+\label{tab:natural}
+\end{table}
+
+\begin{notebox}
+\textbf{Many-body connection.} Natural orbitals are the optimal
+single-particle basis in a precise sense: for a given number of retained
+orbitals, no other choice gives a better representation of the state, which
+is Eq.~(\ref{eq:1-eckartyoung}) again.  This is why natural-orbital
+truncation is the standard way of reducing a correlated basis in quantum
+chemistry and in nuclear structure, and why occupation numbers are reported
+as a diagnostic: a system whose largest occupation number is $0.99$ is
+well described by a single determinant and Hartree-Fock theory of
+Chapter~\ref{chap:mbphys} will be a good starting point, while one whose
+occupation numbers are spread over several orbitals is strongly correlated
+and demands a multireference treatment.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Low-rank factorisation of the two-body interaction}
+\label{sec:twobodyfact}
+
+\index{density fitting}\index{Cholesky decomposition!of two-body integrals}
+The last application concerns not the wave function but the Hamiltonian.  The
+two-body matrix elements $V_{pqrs}$ form a four-index array with $n^4$
+entries, where $n$ is the number of single-particle states, and for $n$ of a
+few hundred this is already the dominant storage cost of a many-body
+calculation.  Reading the pairs $(pq)$ and $(rs)$ as composite indices turns
+the array into an ordinary $n^2\times n^2$ matrix,
+\begin{equation}
+  V_{(pq),(rs)}
+   = \int\!\!\int \ud{x}\ud{y}\;
+     \varphi_p(x)\varphi_q(x)\,K(x,y)\,\varphi_r(y)\varphi_s(y),
+  \label{eq:1-pairmatrix}
+\end{equation}
+and for a Coulomb-like kernel $K$ this matrix is symmetric and positive
+semidefinite.  Its eigen-decomposition, equivalently its Cholesky
+factorisation of Section~\ref{sec:lu}, gives
+\begin{equation}
+  V_{(pq),(rs)} = \sum_{\gamma=0}^{M-1} L^{\gamma}_{pq}L^{\gamma}_{rs},
+  \qquad
+  L^{\gamma}_{pq} = \sqrt{\lambda_{\gamma}}\;U_{(pq),\gamma} .
+  \label{eq:1-cholvectors}
+\end{equation}
+The decisive fact is that the eigenvalues $\lambda_{\gamma}$ decay rapidly,
+because the pair densities $\varphi_p\varphi_q$ are far from linearly
+independent as functions.  Keeping only $M\ll n^2$ of them reduces the
+storage from $n^4$ to $Mn^2$ and turns the contraction of the interaction with
+a wave function into a sequence of matrix products.
+
+Table~\ref{tab:density} shows the decay for the twelve-Gaussian basis of
+Section~\ref{sec:pseudoinverse}, for which there are $144$ pair indices.  Nine
+vectors reproduce the interaction to one part in $10^{6}$, and ten to one part
+in $10^{8}$: a reduction of the rank by more than a factor of ten.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{lrl}
+\toprule
+\textbf{Target weight} & \textbf{Vectors $M$} &
+\textbf{$\|\bm{V}-\bm{L}^{T}\bm{L}\|/\|\bm{V}\|$}\\
+\midrule
+$10^{-4}$ & $7$  & $2.1\times10^{-5}$\\
+$10^{-6}$ & $9$  & $1.7\times10^{-7}$\\
+$10^{-8}$ & $10$ & $1.2\times10^{-8}$\\
+\bottomrule
+\end{tabular}
+\caption{Low-rank factorisation of the two-body matrix elements in a basis of
+twelve Gaussians, for which the pair index runs over $144$ values.  The
+leading eigenvalues of the pair matrix are $44.7$, $15.6$, $5.18$, $1.38$,
+$0.309$, $0.055$, $\dots$, a geometric decay.}
+\label{tab:density}
+\end{table}
+
+\begin{Python}{}
+class TwoBodyFactorization:
+    """Low-rank factorisation of a two-body interaction.
+
+    The pair-index matrix V_{(pq),(rs)} is positive semidefinite for a
+    Coulomb-like interaction, so it factorises as a sum of outer products,
+    V = sum_gamma L^gamma (L^gamma)^T, with few terms.
+    """
+
+    def __init__(self, V):
+        self.V = np.asarray(V, dtype=float)
+        w, U = np.linalg.eigh(0.5 * (self.V + self.V.T))
+        order = np.argsort(w)[::-1]
+        self.eigenvalues = w[order]
+        self.vectors = U[:, order]
+
+    def rank_for(self, tol):
+        """Smallest M such that the discarded weight is below tol."""
+        w = np.maximum(self.eigenvalues, 0.0)
+        tail = np.cumsum(w[::-1])[::-1]
+        below = np.where(tail <= tol * np.sum(w))[0]
+        return int(below[0]) if len(below) else len(w)
+
+    def cholesky_vectors(self, M):
+        """The M leading vectors L^gamma."""
+        w = np.maximum(self.eigenvalues[:M], 0.0)
+        return (self.vectors[:, :M] * np.sqrt(w)).T
+\end{Python}
+
+\begin{notebox}
+\textbf{Many-body connection.} Equation~(\ref{eq:1-cholvectors}) is known as
+the Cholesky decomposition of the two-electron integrals, or, when the
+auxiliary vectors are chosen from a fitted basis rather than computed, as
+density fitting or the resolution of the identity.  It is what makes
+large-basis coupled-cluster and many-body perturbation theory calculations
+feasible, since the rate-determining contractions can be performed on the
+factors $L^{\gamma}$ rather than on the full four-index array.
+
+\textbf{Quantum computing connection.} Applying the same idea twice gives the
+\emph{double factorisation}: each matrix $L^{\gamma}_{pq}$ is itself
+diagonalised, $\bm{L}^{\gamma}=\bm{W}^{\gamma}\bm{d}^{\gamma}
+(\bm{W}^{\gamma})^{T}$, so that the Hamiltonian becomes a short sum of squares
+of one-body operators.  Since a one-body operator maps under the
+Jordan-Wigner transformation of Section~\ref{sec:pauli} onto a small number of
+commuting Pauli strings, this reduces the number of terms that must be
+measured in a variational quantum eigensolver, and the cost of block encoding
+the Hamiltonian for qubitisation, from $\bigO(n^4)$ to $\bigO(n^3)$ or better.
+The same singular values control the truncation in both the classical and the
+quantum setting.
+\end{notebox}
+
 %----------------------------------------------------------------------
 \section{Summary and the programs}
 \label{sec:ch1summary}
@@ -2149,7 +2811,7 @@ matrices, symmetries and basis changes are unitary transformations, and the
 physical content of an operator is its spectral decomposition.  The numerical
 sections supply the means of extracting numbers from that language.
 
-Two dividing lines are worth keeping in mind.  The first separates direct
+Three dividing lines are worth keeping in mind.  The first separates direct
 from iterative methods.  Direct methods -- Gaussian elimination, LU,
 Cholesky, Householder with QL -- deliver the complete answer in a fixed
 $\bigO(n^3)$ number of operations, and require the matrix to be stored.
@@ -2159,6 +2821,20 @@ and require only the action of the matrix on a vector.  The second line
 separates dense from structured problems: a tridiagonal system costs
 $\bigO(n)$ rather than $\bigO(n^3)$, and recognising structure is usually
 worth more than any amount of tuning.
+
+The third line is the one drawn by the singular value decomposition, and it
+is of a different kind.  It separates the part of a problem that carries
+information from the part that does not.  The same list of singular values
+tells us the numerical rank of a matrix, how far a basis is from linear
+dependence, how much of a wave function survives a truncation, how entangled
+a state is across a cut, which single-particle orbitals are actually
+occupied, and how few auxiliary vectors are needed to represent a two-body
+interaction.  Sections~\ref{sec:svd}-\ref{sec:twobodyfact} are five readings
+of one decomposition, and the thread connecting them --
+Eq.~(\ref{eq:1-eckartyoung}), that truncating the singular values is the best
+approximation of its rank -- is the mathematical justification for a large
+part of modern many-body theory, from natural-orbital bases to the
+density-matrix renormalisation group.
 
 The complete programs are collected in
 \texttt{doc/BookManybody/BookMaterial/Programs}:
@@ -2176,6 +2852,13 @@ The complete programs are collected in
         in Table~\ref{tab:lanczos}.
   \item \texttt{schrodinger\_diagonalization.py} -- Schr\"odinger's equation
         by diagonalisation, solved both directly and by Lanczos.
+  \item \texttt{svd.py} -- the singular value decomposition: rank, the
+        pseudoinverse, canonical orthogonalisation, the Schmidt decomposition
+        with entanglement entropies and natural occupation numbers, and the
+        low-rank factorisation of a two-body interaction.  It also contains
+        the two physical models used in
+        Sections~\ref{sec:schmidt}-\ref{sec:twobodyfact}: two particles in a
+        trap, and the pairing model bipartitioned across a cut.
 \end{itemize}
 
 Each file runs as a script and reproduces the numbers quoted in this chapter.
