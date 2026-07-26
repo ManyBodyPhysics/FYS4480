@@ -1,0 +1,1140 @@
+\chapter{Full configuration interaction theory}
+\label{chap:fci}
+
+We will start our discussions of many-body methods with what is called
+full configuration interaction theory, or just FCI.  The reason for
+this is simple. If the effective degrees of freedom which are relevant
+for describing a physical system give a sufficiently good reproduction
+of the static properties (and later we will add dynamical properties)
+of a many-body system, FCI gives us all relevant eigenpairs
+(eigenvalues and eigenstates) and allows us to compute other
+expectation values than the energy levels.
+
+Although it would have been natural to start with mean-field methods
+(FCI is often labelled as a post Hartree-Fock method), we have chosen
+a slightly different route. The reason for this is that FCI,
+within a restricted effective space, provides us with the exact
+eigenvalues and can thus serve as a benchmark for the approximative
+methods discussed in the coming chapters, from mean field methods to
+the Tamm-Dancoff (TDA) and random-phase (RPA) approximations, variants of many-body
+perturbation theory and coupled-cluster theory, Greens' function
+approaches and other. We will use FCI to illustrate how these other
+methods can be interpreeted in terms of specific truncations/approximations of
+FCI.
+
+We start thus with, what this authour likes to claim as the simplest
+possible approach to many-body problems, an approach which involves us
+being able to set up a many-body Hamiltonian matrix (within an
+effective and reduced Hilbert space), and then simply diagonalize. The
+overarching principles and the underlying mathematics are
+straightforward, although the actual implementations may easily lead
+to endless frustrations and sleepless nights. Let us get started.
+
+%----------------------------------------------------------------------
+\section{Slater determinants as a basis}
+\label{sec:cibasis}
+
+\index{configuration interaction}
+The simplest many-body wave function is a product,
+\begin{equation}
+  \Psi(x_1,x_2,\dots,x_N) \approx
+    \phi_1(x_1)\phi_2(x_2)\cdots\phi_N(x_N),
+  \label{eq:5-product}
+\end{equation}
+because we are really only good at thinking about one particle at a time.
+Product functions are easy to work with: if the single-particle states are
+orthonormal the products are too, and matrix elements factorise into
+one-dimensional integrals.  The price is the complete absence of correlations,
+which must then be built up by superposing many, many products.  This is the
+trade-off that runs through the whole subject -- a compact representation with
+difficult integrals, or easy integrals and very many states.
+
+Antisymmetry turns the product into a determinant, and
+Chapter~\ref{chap:mbphys} showed that the two elementary properties of
+determinants -- a sign change under the interchange of two columns, and
+vanishing when two rows coincide -- are exactly the Pauli principle:
+\begin{itemize}
+  \item no two particles at the same place (two equal columns);
+  \item no two particles in the same state (two equal rows).
+\end{itemize}
+Beyond $N=4$ the coordinate-space determinant becomes unwieldy, which is why
+Chapter~\ref{chap:secondquant} replaced it by the occupation representation.
+There a Slater determinant is a string of creation operators acting on the
+vacuum, each index appearing at most once because
+$a^{\dagger}_i a^{\dagger}_i=0$, and antisymmetry is carried by the algebra
+rather than by the notation.
+
+We take that formalism as given.  Writing the reference determinant as
+\begin{equation}
+  \bket{\Phi_0} = \left(\prod_{i\le F}\hat{a}_i^{\dagger}\right)\bket{0},
+  \label{eq:5-reference}
+\end{equation}
+the excited determinants are
+\begin{equation}
+  \bket{\Phi_i^a} = \hat{a}_a^{\dagger}\hat{a}_i\bket{\Phi_0},
+  \qquad
+  \bket{\Phi_{ij}^{ab}} =
+    \hat{a}_a^{\dagger}\hat{a}_b^{\dagger}\hat{a}_j\hat{a}_i\bket{\Phi_0},
+  \label{eq:5-excitations}
+\end{equation}
+and in general
+\begin{equation}
+  \bket{\Phi_{ijk\dots}^{abc\dots}} =
+    \hat{a}_a^{\dagger}\hat{a}_b^{\dagger}\hat{a}_c^{\dagger}\cdots
+    \hat{a}_k\hat{a}_j\hat{a}_i\bket{\Phi_0},
+  \label{eq:5-npnh}
+\end{equation}
+with the hole indices $i,j,k$ below the Fermi level and the particle indices
+$a,b,c$ above it, following the convention of
+Section~\ref{sec:particlehole}.  We call such a determinant an $np$-$nh$
+excitation, or a \emph{configuration}.
+
+%----------------------------------------------------------------------
+\section{The configuration-interaction expansion}
+\label{sec:ciexpansion}
+
+The exact ground state is an arbitrary superposition of all of these,
+\begin{equation}
+  \bket{\Psi_0} = C_0\bket{\Phi_0}
+    + \sum_{ai}C_i^a\bket{\Phi_i^a}
+    + \sum_{abij}C_{ij}^{ab}\bket{\Phi_{ij}^{ab}} + \cdots
+    = \left(C_0+\hat{C}\right)\bket{\Phi_0},
+  \label{eq:5-ciexpansion}
+\end{equation}
+where we have introduced the \emph{correlation operator}
+\begin{equation}
+  \hat{C} = \sum_{ai}C_i^a\hat{a}_a^{\dagger}\hat{a}_i
+    + \sum_{abij}C_{ij}^{ab}
+      \hat{a}_a^{\dagger}\hat{a}_b^{\dagger}\hat{a}_j\hat{a}_i + \cdots
+  \label{eq:5-correlationoperator}
+\end{equation}
+The normalisation of $\bket{\Psi_0}$ is at our disposal, and $C_0$ is by
+hypothesis non-zero, so we may set $C_0=1$ with proportional changes in all
+the other coefficients.  With this \emph{intermediate normalisation},
+\begin{equation}
+  \braket{\Psi_0}{\Phi_0} = \braket{\Phi_0}{\Phi_0} = 1,
+  \qquad
+  \bket{\Psi_0} = \left(1+\hat{C}\right)\bket{\Phi_0}.
+  \label{eq:5-intermediate}
+\end{equation}
+
+It is convenient to compress the notation.  Writing $H$ for a set of
+$0,1,\dots,n$ hole indices and $P$ for a set of $0,1,\dots,n$ particle
+indices,
+\begin{equation}
+  \bket{\Psi_0} = \sum_{PH}C_H^P\bket{\Phi_H^P}
+    = \left(\sum_{PH}C_H^P\hat{A}_H^P\right)\bket{\Phi_0},
+  \label{eq:5-compact}
+\end{equation}
+with $\hat{A}_H^P$ the operator that creates the corresponding excitation.
+Unit normalisation reads $\sum_{PH}|C_H^P|^2=1$, and the energy is
+\begin{equation}
+  E = \bracket{\Psi_0}{\hat{H}}{\Psi_0}
+    = \sum_{PP'HH'}C_H^{*P}
+      \bracket{\Phi_H^P}{\hat{H}}{\Phi_{H'}^{P'}}C_{H'}^{P'} .
+  \label{eq:5-energy}
+\end{equation}
+
+If the expansion runs over \emph{all} determinants that can be built from the
+chosen single-particle basis, this is \emph{full configuration interaction}.
+The only approximation left is the truncation of the single-particle space
+itself.
+
+%----------------------------------------------------------------------
+\section{The eigenvalue problem}
+\label{sec:cieigenvalue}
+
+Equation~(\ref{eq:5-energy}) is solved by diagonalisation, and it is worth
+seeing why the diagonalisation is not merely convenient but is the
+variational answer.  We minimise the energy subject to normalisation,
+\begin{equation}
+  \delta\left[\bracket{\Psi_0}{\hat{H}}{\Psi_0}
+    - \lambda\braket{\Psi_0}{\Psi_0}\right] = 0,
+  \label{eq:5-variation}
+\end{equation}
+with $\lambda$ a Lagrange multiplier.  Carrying out the variation,
+\begin{equation}
+  \sum_{P'H'}\Big\{\delta[C_H^{*P}]
+    \bracket{\Phi_H^P}{\hat{H}}{\Phi_{H'}^{P'}}C_{H'}^{P'}
+  + C_H^{*P}\bracket{\Phi_H^P}{\hat{H}}{\Phi_{H'}^{P'}}\delta[C_{H'}^{P'}]
+  - \lambda\big(\delta[C_H^{*P}]C_{H'}^{P'}
+    + C_H^{*P}\delta[C_{H'}^{P'}]\big)\Big\} = 0 .
+  \label{eq:5-variation2}
+\end{equation}
+Since $\delta[C_H^{*P}]$ and $\delta[C_{H'}^{P'}]$ are complex conjugates, it
+is necessary and sufficient that the quantities multiplying
+$\delta[C_H^{*P}]$ vanish, giving
+\begin{equation}
+  \sum_{P'H'}\bracket{\Phi_H^P}{\hat{H}}{\Phi_{H'}^{P'}}C_{H'}^{P'}
+    = \lambda\,C_H^{P}
+  \label{eq:5-eigen}
+\end{equation}
+for every set $PH$.  Multiplying by $C_H^{*P}$ and summing identifies
+$\lambda=E$, so the multiplier is the energy and
+\begin{equation}
+  \boxed{\;
+  \sum_{P'H'}\bracket{\Phi_H^P}{\hat{H}-E}{\Phi_{H'}^{P'}}C_{H'}^{P'} = 0
+  \;}
+  \label{eq:fullci}
+\end{equation}
+This is the full CI equation.  The same result follows more directly by
+writing $(\hat{H}-E)\bket{\Psi_0}=0$ and projecting successively onto every
+$\bbra{\Phi_H^P}$.
+
+Equation~(\ref{eq:fullci}) is a Hermitian eigenvalue problem, and the
+diagonalisation is a Rayleigh-Ritz variational calculation in the space
+spanned by the chosen determinants: the lowest eigenvalue is the best upper
+bound to $E_0$ obtainable in that space, and it can only improve as the space
+grows.  This is exactly the property that made the Lanczos algorithm of
+Section~\ref{sec:lanczos} so well suited to the problem -- the lowest Ritz
+value there is the same variational bound, computed in a Krylov space instead
+of a space of determinants.
+
+Everything now depends on being able to build and diagonalise the matrix
+$\bracket{\Phi_H^P}{\hat{H}}{\Phi_{H'}^{P'}}$.  The matrix elements are
+supplied by the Condon-Slater rules of Section~\ref{sec:wickapps}, and the
+diagonalisation by the algorithms of Chapter~\ref{chap:linalg}: Householder
+and QL for small matrices, Lanczos for large ones.
+
+%----------------------------------------------------------------------
+\section{The structure of the Hamiltonian matrix}
+\label{sec:cimatrix}
+
+Suppose we have six fermions below the Fermi level, so that at most
+$6p$-$6h$ excitations are possible.  Ordering the determinants by excitation
+level, the Hamiltonian matrix has the block structure
+\begin{equation}
+  \begin{array}{c|ccccccc}
+     & 0p0h & 1p1h & 2p2h & 3p3h & 4p4h & 5p5h & 6p6h\\
+    \hline
+    0p0h & \times & \times & \times & 0 & 0 & 0 & 0\\
+    1p1h & \times & \times & \times & \times & 0 & 0 & 0\\
+    2p2h & \times & \times & \times & \times & \times & 0 & 0\\
+    3p3h & 0 & \times & \times & \times & \times & \times & 0\\
+    4p4h & 0 & 0 & \times & \times & \times & \times & \times\\
+    5p5h & 0 & 0 & 0 & \times & \times & \times & \times\\
+    6p6h & 0 & 0 & 0 & 0 & \times & \times & \times
+  \end{array}
+  \label{eq:5-blockstructure}
+\end{equation}
+The zeros are not accidental.  A two-body operator connects Slater
+determinants differing by at most two single-particle states, which is the
+last of the Condon-Slater rules of Section~\ref{sec:wickapps}.  The matrix is
+therefore \emph{banded} in the excitation level, with bandwidth two, and
+overwhelmingly sparse: for six particles the fraction of non-zero blocks is
+already small, and it falls as the space grows.  Chapter~\ref{chap:linalg}
+called this the structure that Lanczos exploits; here we see where it comes
+from.
+
+\paragraph{In a Hartree-Fock basis.}
+If the single-particle states are the solutions of the Hartree-Fock equations
+rather than the eigenstates of $\hat{h}_0$, one more set of elements
+vanishes.  Brillouin's theorem, met in Section~\ref{sec:wickapps}, states that
+\begin{equation}
+  \bracket{\Phi_0}{\hat{H}}{\Phi_i^a} = 0,
+  \label{eq:5-brillouin}
+\end{equation}
+so the reference determinant does not couple to the singles at all,
+\begin{equation}
+  \begin{array}{c|ccccccc}
+     & 0p0h & 1p1h & 2p2h & 3p3h & 4p4h & 5p5h & 6p6h\\
+    \hline
+    0p0h & \tilde{\times} & 0 & \tilde{\times} & 0 & 0 & 0 & 0\\
+    1p1h & 0 & \tilde{\times} & \tilde{\times} & \tilde{\times} & 0 & 0 & 0\\
+    2p2h & \tilde{\times} & \tilde{\times} & \tilde{\times} & \tilde{\times}
+         & \tilde{\times} & 0 & 0\\
+    3p3h & 0 & \tilde{\times} & \tilde{\times} & \tilde{\times}
+         & \tilde{\times} & \tilde{\times} & 0\\
+    4p4h & 0 & 0 & \tilde{\times} & \tilde{\times} & \tilde{\times}
+         & \tilde{\times} & \tilde{\times}\\
+    5p5h & 0 & 0 & 0 & \tilde{\times} & \tilde{\times} & \tilde{\times}
+         & \tilde{\times}\\
+    6p6h & 0 & 0 & 0 & 0 & \tilde{\times} & \tilde{\times} & \tilde{\times}
+  \end{array}
+  \label{eq:5-blockstructureHF}
+\end{equation}
+where the tildes are a reminder that a unitary transformation of the
+single-particle basis has changed every matrix element.  The correlation
+energy is then carried entirely by the doubles at leading order, which is the
+starting point for both many-body perturbation theory and coupled-cluster
+theory.
+
+The programme \texttt{fci.py} builds this structure explicitly.  For the
+pairing model with four levels and four particles the full space has
+$\binom{8}{4}=70$ determinants, distributed as $1$, $16$, $36$, $16$, $1$ over
+the excitation levels $0$ to $4$, and the computed block table is
+\begin{equation}
+  \begin{array}{c|ccccc}
+     & 0p0h & 1p1h & 2p2h & 3p3h & 4p4h\\
+    \hline
+    0p0h & \times & 0 & \times & 0 & 0\\
+    1p1h & 0 & \times & 0 & \times & 0\\
+    2p2h & \times & 0 & \times & 0 & \times\\
+    3p3h & 0 & \times & 0 & \times & 0\\
+    4p4h & 0 & 0 & \times & 0 & \times
+  \end{array}
+  \label{eq:5-pairingblocks}
+\end{equation}
+Even the odd blocks are empty here, because the pairing interaction moves
+particles two at a time and can never change the number of broken pairs.  The
+symmetry has done more work than Brillouin's theorem would.
+
+%----------------------------------------------------------------------
+\section{The exponential wall}
+\label{sec:exponentialwall}
+
+\index{exponential wall}\index{Hilbert space!dimension}
+Full configuration interaction is exact, and that is precisely its problem.
+With $N$ particles distributed over $n$ single-particle states the number of
+Slater determinants is
+\begin{equation}
+  \dim\mathcal{H} = \binom{n}{N},
+  \label{eq:5-dimension}
+\end{equation}
+which is the count of bit patterns with $N$ bits set out of $n$, in the
+representation of Section~\ref{sec:bitrep}.  This is a combinatorial
+expression, but combinatorial growth turns into exponential growth as soon as
+the particle number scales with the size of the basis.  At half filling,
+$N=n/2$, Stirling's formula gives
+\begin{equation}
+  \binom{n}{n/2} \sim \frac{2^{n}}{\sqrt{\pi n/2}} \sim \frac{2^{n}}{\sqrt{n}},
+  \label{eq:5-stirling}
+\end{equation}
+so the dimension doubles every time one single-particle state is added.  The
+program \texttt{fci.py} tabulates both sides:
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{rll}
+\toprule
+$n$ & $\binom{n}{n/2}$ & $2^{n}/\sqrt{n}$\\
+\midrule
+$10$  & $2.520\times10^{2}$  & $3.238\times10^{2}$\\
+$20$  & $1.848\times10^{5}$  & $2.345\times10^{5}$\\
+$40$  & $1.378\times10^{11}$ & $1.738\times10^{11}$\\
+$80$  & $1.075\times10^{23}$ & $1.352\times10^{23}$\\
+$160$ & $9.205\times10^{46}$ & $1.155\times10^{47}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The estimate is accurate to within a factor of order one over five decades of
+$n$ and twenty-five orders of magnitude of dimension.
+
+\paragraph{A realistic example.}
+Consider oxygen-16 and let the neutrons occupy the four lowest major
+oscillator shells, the $0s$, $0p$, $1s0d$ and $1p0f$ shells, which together
+hold $2+6+12+20=40$ single-particle states for each species.  The eight
+neutrons can be distributed in
+\begin{equation}
+  \binom{40}{8} = 7.690\times10^{7}
+  \label{eq:5-oxygen}
+\end{equation}
+ways, and since the protons can be distributed independently the full
+proton-neutron space has
+\begin{equation}
+  \binom{40}{8}^2 = 5.914\times10^{15}
+  \label{eq:5-oxygen2}
+\end{equation}
+Slater determinants.  Rotational and parity symmetry reduce this by orders of
+magnitude, but adding a single further major shell, or relaxing the
+truncation, restores the growth immediately.  Direct diagonalisation by
+Householder and QL, Sections~\ref{sec:householder}
+and~\ref{sec:qlalgorithm}, is limited to matrices of dimension around $10^5$
+because it stores and modifies the whole matrix.  Lanczos,
+Section~\ref{sec:lanczos}, needs only the product $\bm{H}\bm{v}$ and reaches
+perhaps $10^{10}$ on a large machine.  Beyond that no rearrangement of the
+linear algebra helps: the expansion itself must be truncated.
+
+\paragraph{The same wall in the models of Chapter~\ref{chap:systems}.}
+Each of the models of the previous chapter meets Eq.~(\ref{eq:5-stirling}) in
+its own way.
+\begin{itemize}
+  \item The \emph{Lipkin model} with $N$ particles in two $N$-fold degenerate
+    levels has $\binom{2N}{N}$ determinants in total and $\binom{N}{N/2}\sim
+    2^{N}/\sqrt{N}$ in the maximal-quasispin multiplet.  That the SU(2)
+    structure of Section~\ref{sec:lipkin} collapses the problem to an
+    $(N+1)$-dimensional matrix is a symmetry accident, not a general escape.
+  \item The \emph{pairing model} of Section~\ref{sec:pairingmodel} has
+    $\binom{2n}{N}$ determinants for $n$ doubly degenerate levels, of which
+    only $\binom{n}{N/2}$ have seniority zero.  Again a symmetry -- here the
+    conservation of the number of broken pairs -- takes the square root of
+    the dimension, and again it is special to the model.
+  \item The \emph{Hubbard model} of Section~\ref{sec:hubbard} has a local
+    Hilbert space of dimension four, so $L$ sites give $4^{L}$ states in
+    total.  At fixed particle number this becomes
+    $\binom{L}{N_{\uparrow}}\binom{L}{N_{\downarrow}}$,
+    Eq.~(\ref{eq:4-hubbarddim}), which is again exponential at any extensive
+    filling.
+  \item A \emph{spin chain}, the limit of the Hubbard model at large $U$, has
+    no combinatorial disguise at all:
+    $\mathcal{H}=\bigotimes_{i=1}^{L}\mathbb{C}^2$ has dimension $2^{L}$ by
+    construction.
+\end{itemize}
+The pattern is worth stating plainly.  Combinatorial counting and
+tensor-product structure are two faces of the same growth; the tensor product
+is fundamental, the binomial coefficient is what survives after a conservation
+law has been imposed.  A conserved quantity can remove a factor, but never the
+exponential.
+
+\begin{notebox}
+\textbf{Why the wall is not the end of the story.}  The dimension of
+$\mathcal{H}$ counts the coefficients an \emph{arbitrary} state would need.
+Physical ground states are not arbitrary.  For local Hamiltonians with a gap,
+the entanglement entropy across a cut grows with the area of the cut rather
+than with the volume it encloses, and states obeying such an area law are
+described to high accuracy by a number of parameters polynomial in $L$.  The
+Schmidt decomposition of Section~\ref{sec:schmidt} is the one-cut version of
+this statement, and the singular values decaying rapidly is exactly what
+makes the truncation work.  Applying it at every bond of a chain gives a
+matrix product state,
+\begin{equation}
+  \bket{\psi} = \sum_{s_1\dots s_L}
+    A^{s_1}_1A^{s_2}_2\cdots A^{s_L}_L\,\bket{s_1s_2\dots s_L},
+  \label{eq:5-mps}
+\end{equation}
+whose cost is polynomial in the bond dimension $D$; this is the density-matrix
+renormalisation group.  The same idea appears elsewhere in this book in
+different clothing: a neural-network quantum state replaces the exponentially
+many amplitudes by a polynomially parameterised function of the occupation
+pattern, and quantum computing replaces them by $n$ qubits whose Hilbert space
+is exponential by construction.  Full CI is the reference against which all
+of these compressions are measured, which is why we treat it first.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Full CI for the pairing model}
+\label{sec:fcipairing}
+
+The pairing Hamiltonian of Section~\ref{sec:pairingmodel},
+\begin{equation}
+  \hat{H} = \xi\sum_{p\sigma}(p-1)\hat{a}^{\dagger}_{p\sigma}
+    \hat{a}_{p\sigma}
+  - \frac{1}{2}g\sum_{pq}\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}
+    \hat{a}_{q-}\hat{a}_{q+},
+  \label{eq:5-pairingH}
+\end{equation}
+is the ideal first test.  It is small enough to diagonalise in the full
+space, and Chapter~\ref{chap:systems} already gave the exact answer in the
+seniority-zero subspace, so the two calculations can be checked against each
+other.
+
+Take four doubly degenerate levels and four particles, $\xi=1$.  The full
+space has $\binom{8}{4}=70$ determinants, distributed over the excitation
+levels as $1$, $16$, $36$, $16$, $1$.  The seniority-zero subspace used in
+Chapter~\ref{chap:systems} has only $\binom{4}{2}=6$ states.  Diagonalising
+the $70\times70$ matrix at $g=1$ gives $E_0=0.63554847$, identical to the
+value in Table~\ref{tab:pairing} to all digits shown.  The determinants with
+broken pairs are present in the basis but carry no amplitude in the ground
+state, because the interaction cannot create a broken pair from a paired
+configuration.  The symmetry that we imposed by hand in Chapter~\ref{chap:systems}
+is recovered automatically by the diagonalisation.
+
+This is the general situation.  A symmetry of $\hat{H}$ block-diagonalises the
+FCI matrix, and one may either exploit it, gaining a smaller matrix and a
+labelled spectrum, or ignore it, gaining a simpler code at the cost of
+diagonalising a larger matrix.  Production codes exploit it; the program
+accompanying this chapter does not, precisely so that the two answers can be
+compared.
+
+%----------------------------------------------------------------------
+\section{Full CI for the Hubbard model}
+\label{sec:fcihubbard}
+
+The Hubbard model of Section~\ref{sec:hubbard} is the harder test, and the
+more instructive one.  We take a ring of $L=6$ sites at half filling,
+$N_{\uparrow}=N_{\downarrow}=3$, and work in the momentum basis, where the
+hopping term is diagonal,
+\begin{equation}
+  \hat{H} = \sum_{k\sigma}\varepsilon_k
+    \hat{c}^{\dagger}_{k\sigma}\hat{c}_{k\sigma}
+  + \frac{U}{L}\sum_{kk'q}
+    \hat{c}^{\dagger}_{k+q\uparrow}\hat{c}^{\dagger}_{k'-q\downarrow}
+    \hat{c}_{k'\downarrow}\hat{c}_{k\uparrow},
+  \qquad
+  \varepsilon_k = -2t\cos k,
+  \label{eq:5-hubbardmom}
+\end{equation}
+with $k=2\pi m/L$.  In this basis the non-interacting ground state is a single
+determinant -- the Fermi sea -- so the machinery of
+Section~\ref{sec:ciexpansion} applies directly with $\bket{\Phi_0}$ the filled
+Fermi sea.  The dimension is $\binom{6}{3}^2=400$, with the excitation levels
+populated as $1$, $18$, $99$, $164$, $99$, $18$, $1$.
+
+The interesting quantity is how much of the correlation energy survives
+truncation as $U/t$ grows:
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rlllll}
+\toprule
+$U/t$ & $E_{\mathrm{ref}}$ & CIS & CID & CISD & FCI\\
+\midrule
+$1$ & $-6.500000$ & $-6.50000000$ & $-6.59980159$ & $-6.59989778$ & $-6.60115829$\\
+$2$ & $-5.000000$ & $-5.00000000$ & $-5.38877703$ & $-5.39026458$ & $-5.40945685$\\
+$4$ & $-2.000000$ & $-2.00000000$ & $-3.41192866$ & $-3.43018837$ & $-3.66870618$\\
+$8$ & $\phantom{-}4.000000$ & $\phantom{-}2.48338852$ & $-0.36779217$ & $-1.05692183$ & $-2.04813089$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The doubles recover $98.66\%$ of the correlation energy at $U/t=1$ but only
+$72.22\%$ at $U/t=8$.  Two features deserve comment.
+
+First, the reference does not couple to the singles at all: the interaction
+conserves total momentum, and a single excitation changes it, so
+$\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$ exactly, for every $U$.  This is
+Brillouin's theorem, Eq.~(\ref{eq:5-brillouin}), enforced here by a symmetry
+rather than by a variational condition -- the plane-wave determinant is the
+Hartree-Fock solution of a translationally invariant problem.  The CIS matrix
+is therefore block diagonal, and its lowest eigenvalue is the smaller of the
+reference energy and the lowest eigenvalue of the singles block alone.  For
+$U/t\le 4$ the reference wins and CIS reproduces it exactly.  At $U/t=8$ it
+does not: the singles block, strongly mixed by the large interaction, has an
+eigenvalue at $2.483$, below the reference at $4.000$.  The number in the
+table is that eigenvalue, and the state it belongs to is orthogonal to
+$\bket{\Phi_0}$.  What CIS reports as a ground state is by then not a
+correlated version of the reference at all.
+
+Second, the deterioration with $U/t$ is the signature of \emph{strong
+correlation}.  At small $U$ the ground state is a single determinant with
+small corrections and any method built on that picture works.  At large $U$
+the ground state is a superposition of very many determinants with comparable
+weight, the reference is a poor starting point, and a truncation at any fixed
+excitation level fails.  This is where the tensor-network and quantum-computing
+approaches of the later chapters become attractive, and it is why the Hubbard
+model at intermediate $U/t$ remains a benchmark problem.
+
+%----------------------------------------------------------------------
+\section{Truncating the expansion}
+\label{sec:citruncations}
+
+\index{configuration interaction!truncated}
+Since the full expansion is out of reach for all but the smallest systems, we
+truncate it.  The natural truncation is by excitation level: keep all
+determinants up to $n$ particle-hole pairs and discard the rest.  This gives
+the familiar hierarchy
+\begin{align}
+  \bket{\Psi_{\mathrm{CIS}}} &=
+    \left(1+\hat{C}_1\right)\bket{\Phi_0},
+  \label{eq:5-cis}\\
+  \bket{\Psi_{\mathrm{CID}}} &=
+    \left(1+\hat{C}_2\right)\bket{\Phi_0},
+  \label{eq:5-cid}\\
+  \bket{\Psi_{\mathrm{CISD}}} &=
+    \left(1+\hat{C}_1+\hat{C}_2\right)\bket{\Phi_0},
+  \label{eq:5-cisd}
+\end{align}
+and so on to CISDT, CISDTQ, until at $\hat{C}_N$ we are back at full CI.
+Each of these is again a variational calculation in a subspace, so each
+lowest eigenvalue is an upper bound to $E_0$ and the bounds decrease
+monotonically as the truncation is relaxed.  The cost, for a basis of $n$
+states and $N$ particles, is roughly $\binom{N}{k}\binom{n-N}{k}$ determinants
+at excitation level $k$, that is polynomial of degree $2k$ -- which is why
+CISD, at $\mathcal{O}(n^6)$, is affordable and CISDTQ, at
+$\mathcal{O}(n^{10})$, is not.
+
+For the pairing model with four levels and four particles the truncated
+spaces have dimensions $1$, $17$, $53$, $69$, $70$, and the energies are
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rlllll}
+\toprule
+$g$ & $E_{\mathrm{ref}}$ & CIS & CID & CISD & FCI\\
+\midrule
+$0.25$ & $1.750000$ & $1.75000000$ & $1.73050700$ & $1.73050700$ & $1.73045985$\\
+$0.50$ & $1.500000$ & $1.50000000$ & $1.41759645$ & $1.41759645$ & $1.41677428$\\
+$1.00$ & $1.000000$ & $1.00000000$ & $0.64890655$ & $0.64890655$ & $0.63554847$\\
+$2.00$ & $0.000000$ & $0.00000000$ & $-1.35208670$ & $-1.35208670$ & $-1.48965216$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The singles change nothing at all, and CISD coincides with CID: the pairing
+interaction moves pairs and cannot break them, so it has no matrix element
+between the reference and a $1p$-$1h$ state, nor between a $1p$-$1h$ state and
+the reference through any intermediate.  The doubles carry essentially the
+whole correlation energy -- $99.8\%$ at $g=0.25$, still $96.3\%$ at $g=1$,
+but only $90.8\%$ at $g=2$.  The pattern is the same as in the Hubbard model:
+truncation at fixed excitation level works while the reference is good and
+degrades as the coupling grows.
+
+%----------------------------------------------------------------------
+\section{Size consistency}
+\label{sec:sizeconsistency}
+
+\index{size consistency}
+There is a defect of truncated CI that is more serious than the loss of
+accuracy, because it does not go away as the basis is improved.  Consider two
+identical systems $A$ and $B$, infinitely far apart and non-interacting.  The
+Hamiltonian is $\hat{H}_A+\hat{H}_B$ and the exact ground state is the product
+$\bket{\Psi_A}\bket{\Psi_B}$, so the exact energy must satisfy
+\begin{equation}
+  E(AB) = E(A) + E(B) = 2E(A).
+  \label{eq:5-sizeconsistent}
+\end{equation}
+A method that reproduces this is called \emph{size consistent}.
+
+Full CI is size consistent, since the product state lies in the full space.
+Truncated CI is not.  The reason is immediate: if $A$ and $B$ are each doubly
+excited, the combined state is a \emph{quadruple} excitation of the combined
+reference, and CID has no room for it.  The product of two doubles is a
+quadruple, and truncating at a fixed excitation level is not a
+multiplicatively closed operation.
+
+The program \texttt{fci.py} demonstrates this on two non-interacting copies of
+a two-level, two-particle pairing system:
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rllll}
+\toprule
+$g$ & $2E(A)$ & $E(AB)$, FCI & $E(AB)$, CID & CID error\\
+\midrule
+$0.25$ & $-0.26556444$ & $-0.26556444$ & $-0.26550480$ & $5.96\times10^{-5}$\\
+$0.50$ & $-0.56155281$ & $-0.56155281$ & $-0.56066017$ & $8.93\times10^{-4}$\\
+$1.00$ & $-1.23606798$ & $-1.23606798$ & $-1.22474487$ & $1.13\times10^{-2}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Full CI passes to machine precision; CID fails, and the failure grows with the
+coupling.  With $M$ subsystems instead of two the error grows with $M$, so the
+energy per particle computed with truncated CI drifts as the system is made
+larger.  For an extended system -- nuclear matter, the electron gas, a large
+molecule -- this is fatal.
+
+The repair is to make the ansatz multiplicative rather than additive.
+Replacing $1+\hat{C}$ by $\exp(\hat{T})$ with $\hat{T}=\hat{T}_1+\hat{T}_2$
+gives
+\begin{equation}
+  \bket{\Psi_{\mathrm{CCSD}}} = e^{\hat{T}_1+\hat{T}_2}\bket{\Phi_0}
+  = \left(1+\hat{T}_1+\hat{T}_2
+    + \tfrac{1}{2}\hat{T}_2^2 + \cdots\right)\bket{\Phi_0},
+  \label{eq:5-ccsd}
+\end{equation}
+in which the quadruple excitation $\tfrac12\hat{T}_2^2$ appears automatically,
+with its coefficient fixed by the doubles rather than determined
+independently.  For two non-interacting subsystems
+$e^{\hat{T}}=e^{\hat{T}_A}e^{\hat{T}_B}$ and size consistency is exact.  This
+is coupled-cluster theory, and Eq.~(\ref{eq:5-ccsd}) is the reason it, rather
+than truncated CI, is the workhorse of modern many-body physics.  We shall
+develop it properly in a later chapter; the point here is that its central
+idea is a response to a defect that full CI lets us see clearly.
+
+%----------------------------------------------------------------------
+\section{Truncations and the other many-body methods}
+\label{sec:citruncationmap}
+
+We can now do what the introduction to this chapter promised, and read the
+standard many-body methods as truncations of Eq.~(\ref{eq:fullci}).  Write the
+projected equations explicitly.  Multiplying
+$(\hat{H}-E)\bket{\Psi_0}=0$ from the left by $\bbra{\Phi_0}$ and by
+$\bbra{\Phi_H^P}$ gives
+\begin{align}
+  E &= \bracket{\Phi_0}{\hat{H}}{\Phi_0}
+    + \sum_{P'H'\ne 0}\bracket{\Phi_0}{\hat{H}}{\Phi_{H'}^{P'}}C_{H'}^{P'},
+  \label{eq:5-energyeq}\\
+  \left(E - \bracket{\Phi_H^P}{\hat{H}}{\Phi_H^P}\right)C_H^P
+   &= \sum_{P'H'\ne PH}
+      \bracket{\Phi_H^P}{\hat{H}}{\Phi_{H'}^{P'}}C_{H'}^{P'} .
+  \label{eq:5-amplitudeeq}
+\end{align}
+The first equation says that the correlation energy comes entirely from the
+coupling of the reference to the doubles, since only those have a non-zero
+matrix element with $\bket{\Phi_0}$.  The second is a set of coupled
+equations for the coefficients, which can be solved by iteration: guess the
+$C$'s, compute the right-hand side, update, repeat.  Every method in the
+remaining chapters is a prescription for which terms of
+Eq.~(\ref{eq:5-amplitudeeq}) to keep and how to solve it.
+
+\begin{itemize}
+  \item \textbf{Hartree-Fock theory} keeps only $C_0$ and instead varies the
+    single-particle basis so that $\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$ --
+    the Brillouin condition of Eq.~(\ref{eq:5-brillouin}).  It is the
+    optimisation of the reference rather than of the expansion, and it fixes
+    the basis in which every subsequent truncation is made.  In the language
+    of Eq.~(\ref{eq:5-blockstructureHF}), Hartree-Fock chooses the unitary
+    transformation that empties the $0p0h$-$1p1h$ block.
+  \item \textbf{The Tamm-Dancoff approximation} restricts the space to the
+    $1p$-$1h$ block alone and diagonalises it.  It is CIS applied to excited
+    states, and it gives the excitation spectrum of the reference at the
+    cheapest non-trivial level.
+  \item \textbf{The random-phase approximation} enlarges TDA by allowing the
+    ground state to contain $2p$-$2h$ correlations, so that the excitation
+    operator carries both $1p$-$1h$ and $1h$-$1p$ pieces.  It is a partial
+    summation of the doubles block, performed to all orders in the coupling
+    but only for a selected class of terms.
+  \item \textbf{Many-body perturbation theory} solves
+    Eq.~(\ref{eq:5-amplitudeeq}) by expanding in powers of the interaction
+    rather than by iterating to convergence.  Setting $E$ on the left-hand
+    side to the reference energy and $C_{H'}^{P'}$ on the right to zero gives
+    the first-order coefficients; substituting these back gives the
+    second-order energy, and so on.  The order in perturbation theory is the
+    number of times the right-hand side has been substituted into itself.
+  \item \textbf{Coupled-cluster theory} keeps the same truncation in
+    excitation level as CISD but writes the wave function multiplicatively,
+    Eq.~(\ref{eq:5-ccsd}).  The equations look like
+    Eq.~(\ref{eq:5-amplitudeeq}) with additional nonlinear terms, and it is
+    those nonlinear terms that restore size consistency.
+\end{itemize}
+
+Seen this way the methods are not a list of unrelated techniques but a set of
+answers to one question: given that we cannot keep all of
+Eq.~(\ref{eq:5-ciexpansion}), which parts do we keep, and do we keep them
+additively or multiplicatively?  Full CI is the fixed point that lets us
+measure each answer.  Whenever a model is small enough for
+Eq.~(\ref{eq:fullci}) to be solved exactly -- the pairing model, the Lipkin
+model, a short Hubbard ring -- we should solve it, and use the result to
+calibrate the approximation before applying it to a system where no
+calibration is possible.
+
+%----------------------------------------------------------------------
+\section{Practical considerations}
+\label{sec:cipractical}
+
+Three remarks on implementation, which anticipate the code discussed in the
+companion notebook.
+
+\paragraph{Never store the matrix.}
+The FCI matrix is sparse, with the band structure of
+Eq.~(\ref{eq:5-blockstructure}), and for interesting dimensions it cannot be
+stored.  The Lanczos algorithm of Section~\ref{sec:lanczos} needs only the
+product $\bm{H}\bm{v}$, and that product is computed by looping over the
+determinants and over the non-zero matrix elements of $\hat{H}$, using the bit
+representation of Section~\ref{sec:bitrep} to find which determinant each term
+produces and with which sign.  This is the single most important structural
+choice in an FCI code.
+
+\paragraph{Reorthogonalise.}
+The Lanczos vectors lose orthogonality as soon as an eigenvalue has converged,
+and spurious copies of converged eigenvalues appear.  Section~\ref{sec:lanczos}
+discussed the remedies; for FCI the usual choice is full or selective
+reorthogonalisation, at the price of storing the Lanczos vectors.
+
+\paragraph{Use the symmetries.}
+Angular momentum, parity, particle number, total momentum and spin projection
+all commute with $\hat{H}$ and block-diagonalise the matrix.  Working in a
+single symmetry block reduces the dimension by orders of magnitude and, just
+as importantly, labels the states.  The pairing calculation of
+Section~\ref{sec:fcipairing} illustrated both options -- $70$ determinants
+without the symmetry, $6$ with it, the same ground-state energy.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:ch5summary}
+
+Full configuration interaction is the statement that a many-body state is a
+superposition of all Slater determinants that the single-particle basis
+allows, together with the observation that finding the best superposition is a
+Hermitian eigenvalue problem, Eq.~(\ref{eq:fullci}).  Everything else in this
+chapter follows from that.  The Condon-Slater rules make the matrix banded in
+the excitation level; a Hartree-Fock basis empties one more block; the
+combinatorics of Eq.~(\ref{eq:5-dimension}) makes the matrix too large to
+build beyond a few tens of single-particle states; and the truncations that
+this forces upon us are precisely the approximations that the following
+chapters elevate into methods.
+
+The program \texttt{fci.py} in \texttt{BookMaterial/Programs/} carries out
+every calculation quoted above: the pairing model in the full
+$70$-dimensional space and in the seniority-zero subspace, the block structure
+of the Hamiltonian, the CIS/CID/CISD/FCI comparison for pairing and for the
+Hubbard ring, the size-consistency test, and the dimension tables of
+Section~\ref{sec:exponentialwall}.  The accompanying notebook
+\texttt{fci.ipynb} runs the same code cell by cell.
+
+%----------------------------------------------------------------------
+\section{Exercises}
+\label{sec:ch5exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: counting determinants}
+\label{ex:5-counting}
+\addcontentsline{toc}{subsection}{Exercise 1: counting determinants}
+
+\begin{enumerate}
+  \item[a)] Show that the number of Slater determinants with $N$ particles in
+  $n$ single-particle states that are $k$ particle-hole excitations of a given
+  reference is $\binom{N}{k}\binom{n-N}{k}$, and verify that
+  $\sum_k\binom{N}{k}\binom{n-N}{k}=\binom{n}{N}$.
+  \item[b)] Evaluate this for $n=8$, $N=4$ and compare with the distribution
+  $1,16,36,16,1$ quoted in Section~\ref{sec:cimatrix}.
+  \item[c)] Use Stirling's formula to derive Eq.~(\ref{eq:5-stirling}), and
+  determine the largest $n$ for which $\binom{n}{n/2}$ stays below $10^{10}$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Choosing which $k$ of the $N$ occupied states to empty can be done in
+$\binom{N}{k}$ ways, and which $k$ of the $n-N$ empty states to fill in
+$\binom{n-N}{k}$ ways; the two choices are independent.  Every determinant
+with $N$ particles arises in this way exactly once, for exactly one value of
+$k$, namely the number of occupied states it does not share with the
+reference.  Summing over $k$ must therefore give the total, which is
+Vandermonde's identity
+\begin{equation}
+  \sum_k\binom{N}{k}\binom{n-N}{k}
+  = \sum_k\binom{N}{N-k}\binom{n-N}{k} = \binom{n}{N}.
+  \label{eq:5-exa1}
+\end{equation}
+
+\paragraph{Answer to b).}
+With $n=8$ and $N=4$ the products are $\binom{4}{k}^2 = 1,16,36,16,1$ for
+$k=0,\dots,4$, summing to $70=\binom{8}{4}$.  This is exactly the distribution
+that \texttt{fci.py} finds by classifying the $70$ determinants of the pairing
+model by excitation level.
+
+\paragraph{Answer to c).}
+Stirling's formula $m!\sim\sqrt{2\pi m}\,(m/e)^m$ gives
+\begin{equation}
+  \binom{n}{n/2}
+  = \frac{n!}{[(n/2)!]^2}
+  \sim \frac{\sqrt{2\pi n}\,(n/e)^n}
+            {2\pi (n/2)\,\left[(n/2e)^{n/2}\right]^2}
+  = \frac{2^{n}}{\sqrt{\pi n/2}} ,
+  \label{eq:5-exa2}
+\end{equation}
+which is Eq.~(\ref{eq:5-stirling}) up to the constant $\sqrt{\pi/2}\approx
+1.25$.  Solving $\binom{n}{n/2}=10^{10}$ numerically: $\binom{36}{18}=
+9.08\times10^{9}$ and $\binom{38}{19}=3.49\times10^{10}$, so $n=36$ is the
+last even value below the limit.  Every further pair of single-particle
+states multiplies the dimension by about four.
+
+\subsection*{Exercise 2: which blocks vanish}
+\label{ex:5-blocks}
+\addcontentsline{toc}{subsection}{Exercise 2: which blocks vanish}
+
+Let $\hat{H}=\hat{H}_0+\hat{H}_I$ with $\hat{H}_I$ a two-body operator.
+
+\begin{enumerate}
+  \item[a)] Show that $\bracket{\Phi_H^P}{\hat{H}}{\Phi_{H'}^{P'}}=0$ whenever
+  the two determinants differ by more than two single-particle states, and
+  deduce the band structure of Eq.~(\ref{eq:5-blockstructure}).
+  \item[b)] Suppose $\hat{H}$ also contains a genuine three-body force.  How
+  does the band structure change, and what does that do to the cost of a
+  matrix-vector product?
+  \item[c)] For the pairing Hamiltonian, Eq.~(\ref{eq:5-pairingH}), show that
+  every block connecting an even to an odd excitation level vanishes, as in
+  Eq.~(\ref{eq:5-pairingblocks}).
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Write both determinants in the occupation representation of
+Section~\ref{sec:bitrep}.  A two-body operator is a product of two creation
+and two annihilation operators, so it can change at most two occupation
+numbers from one to zero and two from zero to one.  If the two determinants
+differ in more than four occupation numbers -- that is, by more than two
+single-particle states -- then in the Wick expansion of
+Section~\ref{sec:wickapps} at least one operator is left uncontracted in every
+term, and the matrix element is zero.  Since an $np$-$nh$ and an $mp$-$mh$
+determinant differ by at least $|n-m|$ single-particle states, the element
+vanishes for $|n-m|>2$.  The matrix is therefore banded with bandwidth two in
+the excitation level, which is Eq.~(\ref{eq:5-blockstructure}).
+
+\paragraph{Answer to b).}
+A three-body operator changes up to three occupations of each kind, so the
+bandwidth becomes three and the $0p0h$ row now reaches the $3p3h$ block.  The
+number of non-zero elements per row grows from $\mathcal{O}(N^2(n-N)^2)$ to
+$\mathcal{O}(N^3(n-N)^3)$, so a matrix-vector product costs a further factor
+$N(n-N)$ -- typically two to three orders of magnitude.  This is why
+three-body forces, though physically important in nuclear physics, are usually
+normal-ordered with respect to the reference determinant and then truncated at
+the two-body level, a procedure whose justification rests on
+Section~\ref{sec:normalordering}.
+
+\paragraph{Answer to c).}
+The interaction
+$-\tfrac12 g\sum_{pq}\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}
+\hat{a}_{q-}\hat{a}_{q+}$ removes a complete pair from level $q$ and creates a
+complete pair in level $p$.  Define the seniority $s$ as the number of
+unpaired particles.  Both the one-body term and the interaction leave $s$
+unchanged, so $[\hat{H},\hat{s}]=0$ and $\hat{H}$ is block diagonal in
+seniority.  An excitation of odd order relative to the paired reference must
+leave at least two particles unpaired, so it has $s\ge2$, whereas the
+reference and all even excitations reached from it by moving whole pairs have
+$s=0$.  Every even-odd matrix element therefore connects different seniorities
+and vanishes.  Numerically the $70\times70$ matrix splits into a
+six-dimensional $s=0$ block, a $s=2$ block and so on, and the ground state
+lies in the first.
+
+\subsection*{Exercise 3: full CI for the pairing model}
+\label{ex:5-pairingfci}
+\addcontentsline{toc}{subsection}{Exercise 3: full CI for the pairing model}
+
+Take four doubly degenerate levels with single-particle energies
+$\varepsilon_p=(p-1)\xi$, $p=1,\dots,4$, four particles, $\xi=1$, and the
+Hamiltonian of Eq.~(\ref{eq:5-pairingH}).
+
+\begin{enumerate}
+  \item[a)] Set up the six seniority-zero configurations and write down the
+  $6\times6$ Hamiltonian matrix.
+  \item[b)] Diagonalise it for $g=-1,-0.5,0,0.5,1$ and reproduce
+  Table~\ref{tab:pairing}.
+  \item[c)] Repeat the calculation in the full $70$-dimensional space and
+  confirm that the ground-state energy is unchanged.  Inspect the eigenvector
+  and verify that every determinant with a broken pair has zero amplitude.
+  \item[d)] Plot the correlation energy against $g$ and show that it is
+  quadratic for small $|g|$, as second-order perturbation theory requires.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Label a seniority-zero configuration by the pair of levels that are occupied.
+With four levels and two pairs there are $\binom{4}{2}=6$ of them,
+\begin{equation}
+  \bket{12},\;\bket{13},\;\bket{14},\;\bket{23},\;\bket{24},\;\bket{34},
+  \label{eq:5-exb1}
+\end{equation}
+where $\bket{pq}$ has pairs in levels $p$ and $q$.  The diagonal element of
+$\bket{pq}$ is $2\xi[(p-1)+(q-1)]-g$: the factor two because each level holds
+two particles, and $-g$ because the $p=q$ terms of the interaction give
+$-\tfrac12 g$ for each of the two occupied pairs.  A single application of the
+interaction moves \emph{one} pair, so two configurations are connected by
+$-\tfrac12 g$ if and only if they share exactly one occupied level; the three
+pairs of configurations that share no level, $\bket{12}$--$\bket{34}$,
+$\bket{13}$--$\bket{24}$ and $\bket{14}$--$\bket{23}$, are not connected at
+all.  With $\xi=1$ and the ordering of Eq.~(\ref{eq:5-exb1}),
+\begin{equation}
+  \bm{H} =
+  \begin{pmatrix}
+    2-g & -g/2 & -g/2 & -g/2 & -g/2 & 0\\
+    -g/2 & 4-g & -g/2 & -g/2 & 0 & -g/2\\
+    -g/2 & -g/2 & 6-g & 0 & -g/2 & -g/2\\
+    -g/2 & -g/2 & 0 & 6-g & -g/2 & -g/2\\
+    -g/2 & 0 & -g/2 & -g/2 & 8-g & -g/2\\
+    0 & -g/2 & -g/2 & -g/2 & -g/2 & 10-g
+  \end{pmatrix}.
+  \label{eq:5-exb2}
+\end{equation}
+
+\paragraph{Answer to b).}
+Diagonalising Eq.~(\ref{eq:5-exb2}) reproduces Table~\ref{tab:pairing}; at
+$g=1$ the lowest eigenvalue is $0.63554847$ and the reference energy is
+$E_{\mathrm{ref}}=H_{11}=1$.
+
+\paragraph{Answer to c).}
+The class \texttt{PairingFCI} in \texttt{fci.py} builds the full space with no
+seniority restriction.  Its dimension is $\binom{8}{4}=70$, the excitation
+levels are populated as $1,16,36,16,1$, and the lowest eigenvalue at $g=1$ is
+$0.63554847$, identical to b) to every digit.  Projecting the ground-state
+eigenvector onto the $64$ determinants with at least one broken pair gives
+zero to machine precision, as Exercise 2c) predicts.
+
+\paragraph{Answer to d).}
+The reference is $\bket{12}$.  Second-order perturbation theory in the
+interaction gives
+\begin{equation}
+  E^{(2)} = \sum_{\Phi\ne\Phi_0}
+    \frac{|\bracket{\Phi_0}{\hat{H}_I}{\Phi}|^2}{E_0^{(0)}-E_{\Phi}^{(0)}}
+  = \frac{g^2}{4}\left(\frac{1}{-2}+\frac{1}{-4}+\frac{1}{-4}
+    +\frac{1}{-6}\right)
+  = -\frac{7}{24}g^2 ,
+  \label{eq:5-exb3}
+\end{equation}
+using the four configurations reachable from $\bket{12}$ by moving one pair,
+with unperturbed excitation energies $2,4,4,6$.  A log-log plot of
+$|E_{\mathrm{corr}}|$ against $g$ has slope $2$ for $|g|\lesssim0.2$ and bends
+away above that, where the higher orders take over.  At $g=0.25$,
+Eq.~(\ref{eq:5-exb3}) gives $-0.01823$ against the exact $-0.01954$; at
+$g=0.5$ it gives $-0.0729$ against $-0.0832$, and at $g=1$ only $-0.2917$
+against $-0.3645$.
+
+\subsection*{Exercise 4: truncations and size consistency}
+\label{ex:5-sizeconsistency}
+\addcontentsline{toc}{subsection}{Exercise 4: truncations and size consistency}
+
+\begin{enumerate}
+  \item[a)] Using the code of the previous exercise, restrict the basis to
+  excitation levels $\le1$ and $\le2$ and reproduce the CIS and CID columns of
+  Section~\ref{sec:citruncations}.  Explain why CIS returns exactly the
+  reference energy.
+  \item[b)] Build a system of two identical, non-interacting two-level pairing
+  systems.  Show that full CI gives exactly twice the energy of one subsystem
+  while CID does not, and tabulate the error for $g=0.25,0.5,1$.
+  \item[c)] Identify the configuration that CID is missing, and show that
+  including quadruple excitations restores the exact result.
+  \item[d)] Show that the ansatz $\exp(\hat{T}_2)\bket{\Phi_0}$, with the same
+  number of independent parameters as CID, is size consistent for this system.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+In a truncated space the eigenvalue problem is Eq.~(\ref{eq:fullci})
+restricted to the corresponding rows and columns.  The dimensions for the cuts
+at $0,1,2,3,4$ are $1,17,53,69,70$.  CIS returns the reference energy because
+$\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$: a single excitation breaks a pair and
+so changes the seniority, which the pairing Hamiltonian conserves
+(Exercise 2c).  The reference is therefore decoupled from the
+entire singles block and remains an exact eigenstate of the truncated matrix.
+Its energy is also the lowest diagonal element, and the singles block lies far
+above it for the couplings considered, so it is the CIS ground state.
+
+\paragraph{Answer to b).}
+Let each subsystem have two levels at $0$ and $\xi$, holding one pair.  The
+combined system then has four levels with energies $0,\xi,0,\xi$ and two
+pairs, one per subsystem, with the interaction acting only within a
+subsystem.  The class \texttt{NonInteractingCopies} gives
+\begin{equation}
+\begin{array}{rllll}
+g & 2E(A) & E(AB)_{\mathrm{FCI}} & E(AB)_{\mathrm{CID}}
+  & \text{CID error}\\[2pt]
+0.25 & -0.26556444 & -0.26556444 & -0.26550480 & 5.96\times10^{-5}\\
+0.50 & -0.56155281 & -0.56155281 & -0.56066017 & 8.93\times10^{-4}\\
+1.00 & -1.23606798 & -1.23606798 & -1.22474487 & 1.13\times10^{-2}
+\end{array}
+\label{eq:5-exc1}
+\end{equation}
+Full CI is exact to machine precision; the CID error grows by roughly an order
+of magnitude each time $g$ is doubled.
+
+\paragraph{Answer to c).}
+Writing $\hat{A}_2^X$ for the operator that excites the pair of subsystem $X$,
+the exact product state is
+\begin{equation}
+  \left(1+c\hat{A}_2^A\right)\left(1+c\hat{A}_2^B\right)\bket{\Phi_0}
+  = \left(1 + c\hat{A}_2^A + c\hat{A}_2^B
+    + c^2\hat{A}_2^A\hat{A}_2^B\right)\bket{\Phi_0}.
+  \label{eq:5-exc2}
+\end{equation}
+The last term excites both subsystems at once and is a $4p$-$4h$ excitation of
+the combined reference; it is absent from CID.  Adding the quadruples -- which
+for this small system means going to the full space -- recovers the exact
+energy, and the coefficient of the quadruple comes out equal to $c^2$, the
+product of the two double amplitudes.
+
+\paragraph{Answer to d).}
+With $\hat{T}_2 = t\left(\hat{A}_2^A+\hat{A}_2^B\right)$ the two terms commute,
+since they act on disjoint sets of orbitals, so
+\begin{equation}
+  e^{\hat{T}_2} = e^{t\hat{A}_2^A}e^{t\hat{A}_2^B}
+  = \left(1+t\hat{A}_2^A\right)\left(1+t\hat{A}_2^B\right),
+  \label{eq:5-exc3}
+\end{equation}
+the last step because $(\hat{A}_2^X)^2=0$ -- one cannot excite the same pair
+twice.  The exponential ansatz therefore generates exactly the product state
+of Eq.~(\ref{eq:5-exc2}) with one parameter per subsystem, the same count as
+CID, and the energy is additive by construction.  This is coupled cluster with
+doubles in miniature, and it shows that the cure for size inconsistency costs
+nothing in parameters -- only a change from a linear to a multiplicative
+ansatz.
+
+\subsection*{Exercise 5: the Hubbard ring by full CI}
+\label{ex:5-hubbardfci}
+\addcontentsline{toc}{subsection}{Exercise 5: the Hubbard ring by full CI}
+
+Take a ring of $L=6$ sites at half filling with $t=1$, in the momentum basis
+of Eq.~(\ref{eq:5-hubbardmom}).
+
+\begin{enumerate}
+  \item[a)] Verify that the dimension is $\binom{6}{3}^2=400$ and that the
+  excitation levels are populated as $1$, $18$, $99$, $164$, $99$, $18$, $1$.
+  \item[b)] Compute the exact ground-state energy for $U/t=1,2,4,8$ and
+  compare with the CID result.
+  \item[c)] Show that $\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$ for every single
+  excitation, and explain this using conservation of total momentum.
+  \item[d)] At $U/t=8$ the CIS energy lies \emph{below} the reference energy
+  even though the reference does not couple to the singles.  Explain how this
+  is possible and what it says about the reliability of a variational bound.
+  \item[e)] Compare the exact energies at large $U$ with the Heisenberg limit
+  of Section~\ref{sec:hubbard}.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+There are $\binom{6}{3}=20$ ways to place three electrons of each spin, and
+the two species are independent, so the dimension is $400$.  Counting for each
+determinant the number of occupied momenta outside the Fermi sea, separately
+for each spin, and adding the two counts gives $1,18,99,164,99,18,1$, which
+sums to $400$.  The distribution is symmetric because a $kp$-$kh$ excitation
+of the Fermi sea is a $(6-k)p$-$(6-k)h$ excitation of the completely inverted
+determinant.
+
+\paragraph{Answer to b).}
+The values are those of Section~\ref{sec:fcihubbard}.  Relative to the
+reference, the doubles recover $98.66\%$, $94.95\%$, $84.61\%$ and $72.22\%$
+of the correlation energy at $U/t=1,2,4,8$.
+
+\paragraph{Answer to c).}
+The interaction is
+$\tfrac{U}{L}\sum_{kk'q}\hat{c}^{\dagger}_{k+q\uparrow}
+\hat{c}^{\dagger}_{k'-q\downarrow}\hat{c}_{k'\downarrow}\hat{c}_{k\uparrow}$,
+in which the momenta of the two created operators sum to those of the two
+annihilated ones; total crystal momentum is therefore conserved.  A single
+excitation $i\to a$ changes the total momentum by $k_a-k_i\ne0$ and so cannot
+be reached from the Fermi sea.  The one-body part is diagonal in $k$ and
+cannot connect them either.  Evaluating the couplings numerically gives zero
+to machine precision for every $U$.  Note that this is Brillouin's theorem,
+Eq.~(\ref{eq:5-brillouin}), obtained here from a symmetry rather than from a
+variational condition: for a translationally invariant problem the plane-wave
+determinant \emph{is} the Hartree-Fock solution.
+
+\paragraph{Answer to d).}
+Because the coupling vanishes, the CIS matrix is block diagonal: a $1\times1$
+block holding $E_{\mathrm{ref}}$ and an $18\times18$ singles block.  Its
+lowest eigenvalue is the smaller of the two numbers.  At $U/t\le4$ the
+reference wins and CIS reproduces it exactly.  At $U/t=8$ the singles block,
+strongly mixed by the large interaction, has an eigenvalue at $2.483$, which
+lies below $E_{\mathrm{ref}}=4.000$, and the variational principle selects the
+corresponding state -- one that is exactly orthogonal to $\bket{\Phi_0}$.  The
+number is a legitimate upper bound to $E_0$, but it is not a correlated
+correction to the reference; the calculation has silently changed which state
+it describes.  The moral is that a lower variational energy does not by itself
+mean a better description of the state one set out to compute, and that the
+overlap with the reference should always be monitored alongside the energy.
+
+\paragraph{Answer to e).}
+For $U/t\gg1$ the half-filled Hubbard model maps onto a Heisenberg chain with
+$J=4t^2/U$, Eq.~(\ref{eq:4-tJ}), whose ground-state energy per site tends to
+$-J(\ln 2-\tfrac14)$ in the thermodynamic limit.  At $U/t=8$ and $L=6$ this
+estimate gives about $-1.3$ against the exact $-2.05$.  The discrepancy is
+expected: the mapping neglects terms of order $t^4/U^3$, the ring is short, and
+$U/t=8$ is not yet deep in the strong-coupling regime.  Repeating the
+comparison at $U/t=20$ and $40$ shows the two converging.
+
+\subsection*{Exercise 6: the exponential wall in practice}
+\label{ex:5-wall}
+\addcontentsline{toc}{subsection}{Exercise 6: the exponential wall in practice}
+
+\begin{enumerate}
+  \item[a)] A shell-model code stores the Hamiltonian matrix in double
+  precision.  For a dimension of $10^6$ with on average $10^3$ non-zero
+  elements per row, and a $4$-byte column index per element, how much memory
+  does the sparse matrix need?  Compare with storing the full matrix.
+  \item[b)] How large a single-particle space can be treated at half filling
+  if a Lanczos code can handle $10^{10}$ determinants?
+  \item[c)] A matrix product state with bond dimension $D$ on $L$ sites has
+  about $LD^2d$ parameters, with $d$ the local dimension.  For a spin chain
+  with $d=2$, $L=100$ and $D=200$, compare this with $2^{L}$.
+  \item[d)] Discuss what must be true of the physical state for the comparison
+  in c) to be a fair one.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The sparse matrix holds $10^{6}\times10^{3}=10^{9}$ elements at $8+4=12$ bytes
+each, or $12$~GB -- large but routine.  The full matrix would need
+$8\times10^{12}$ bytes, $8$~TB, and diagonalising it by Householder and QL
+would take $\mathcal{O}(10^{18})$ floating-point operations.  This is the
+practical content of Section~\ref{sec:cipractical}: the dense algorithms of
+Sections~\ref{sec:householder} and~\ref{sec:qlalgorithm} are unusable here,
+and even the sparse matrix is best not stored at all but regenerated on the
+fly inside the matrix-vector product.
+
+\paragraph{Answer to b).}
+From Eq.~(\ref{eq:5-stirling}), $2^{n}/\sqrt{n}=10^{10}$ gives $n\approx38$,
+and the exact condition $\binom{n}{n/2}\le10^{10}$ gives $n=36$.  A Lanczos
+calculation at the limit of current hardware therefore reaches roughly
+$36$--$40$ single-particle states at half filling.  Away from half filling the
+binomial coefficient is much smaller and the reach is greater, which is why
+calculations near closed shells are so much easier than calculations in the
+middle of a shell.
+
+\paragraph{Answer to c).}
+The matrix product state has about $100\times200^2\times2=8\times10^{6}$
+parameters, against $2^{100}=1.27\times10^{30}$ amplitudes for a general
+state -- a compression by twenty-four orders of magnitude.
+
+\paragraph{Answer to d).}
+The comparison is fair only if the state of interest is actually representable
+at that bond dimension.  The Schmidt spectrum across every bond must decay
+fast enough that keeping $D$ singular values costs little, which is the
+truncation error of the Eckart-Young theorem in
+Section~\ref{sec:schmidt} applied bond by bond.  This holds for the ground
+states of gapped one-dimensional local Hamiltonians, which obey an area law.
+For critical chains the required $D$ grows polynomially with $L$; for
+volume-law states -- generic excited states, or the state produced by a
+quantum quench after a time proportional to $L$ -- no polynomial $D$
+suffices and the exponential wall stands undiminished.  The same caveat
+applies to every other compressed representation, including the
+neural-network and quantum-circuit ansaetze of the later chapters: each buys
+its efficiency by restricting the class of states it can describe, and full
+configuration interaction remains the only method that makes no such
+restriction at all.
