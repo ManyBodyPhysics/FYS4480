@@ -721,6 +721,473 @@ This is the same effect that Table~\ref{tab:density} quantified, and it is
 what makes large-basis coupled-cluster and perturbation-theory calculations
 possible at all.
 
+
+%----------------------------------------------------------------------
+\section{Evaluating Slater determinants in Monte Carlo simulations}
+\label{sec:slaterupdate}
+
+\index{Slater determinant!efficient evaluation}
+The energy functional of Section~\ref{sec:energyfunctional} needs the Slater
+determinant once.  A Monte Carlo calculation needs it several million times,
+and needs its gradient and its Laplacian as well.  The variational and
+diffusion Monte Carlo methods developed later in this book propose a new
+configuration, accept or reject it, and repeat; the local energy requires
+\begin{equation}
+  \frac{\nabla_i\Det{D}}{\Det{D}}
+  \qquad\text{and}\qquad
+  \frac{\nabla_i^2\Det{D}}{\Det{D}}
+  \label{eq:2-gradlapratio}
+\end{equation}
+for every particle $i$ at every step.  Since the cost of a single
+determinant is $\bigO(N^3)$ by Section~\ref{sec:determinants}, and there are
+$N\cdot d$ coordinates to differentiate, brute-force evaluation costs
+\begin{equation}
+  N d\cdot\bigO(N^3) \sim \bigO(d\cdot N^4)
+  \label{eq:2-bruteforce}
+\end{equation}
+per sweep.  This is prohibitive, and it is entirely avoidable.  The technical
+material of this section and the next reduces it to $\bigO(d\cdot N^2)$.  It
+is placed here because it is nothing but linear algebra applied to the object
+introduced in Section~\ref{sec:slaterdet}; the physics that makes it necessary
+comes later.
+
+\paragraph{The Slater matrix.}
+Define the $N\times N$ matrix $\bm{D}$ with elements
+\begin{equation}
+  d_{ij} = \phi_j(\bm{r}_i),
+  \label{eq:2-slatermatrix}
+\end{equation}
+where $\phi_j$ is a single-particle wave function.  Rows are labelled by
+particles and columns by the single-particle states.  The Slater determinant
+of Eq.~(\ref{eq:SlatDet}) is $\Det{D}/\sqrt{N!}$.
+
+The observation that makes everything work is this: \emph{if we move only one
+particle at a time, only one row of $\bm{D}$ changes}.  Recomputing the whole
+determinant then throws away almost all of the work already done.  The
+solution is to keep track of the \emph{inverse} of the Slater matrix.
+
+\paragraph{The ratio of two determinants.}
+Let $\bm{r}^{\mathrm{old}}$ be the current configuration and
+$\bm{r}^{\mathrm{new}}$ the proposed one, differing only in the position of
+particle $i$.  The Metropolis test needs the ratio
+\begin{equation}
+  R \equiv \frac{\Det{D(\bm{r}^{\mathrm{new}})}}
+                {\Det{D(\bm{r}^{\mathrm{old}})}} .
+  \label{eq:2-Rdefinition}
+\end{equation}
+Expanding each determinant along row $i$ in terms of the cofactors $C_{ij}$,
+\begin{equation}
+  R = \frac{\sum_{j=1}^{N} d_{ij}(\bm{r}^{\mathrm{new}})\,
+            C_{ij}(\bm{r}^{\mathrm{new}})}
+           {\sum_{j=1}^{N} d_{ij}(\bm{r}^{\mathrm{old}})\,
+            C_{ij}(\bm{r}^{\mathrm{old}})} .
+  \label{eq:2-Rcofactors}
+\end{equation}
+Now recall that the cofactor $C_{ij}$ is the signed minor obtained by
+\emph{deleting} row $i$ and column $j$, so the $i$th row of the cofactor
+matrix does not depend on the $i$th row of $\bm{D}$ at all.  Since the two
+configurations differ only in that row,
+\begin{equation}
+  C_{ij}(\bm{r}^{\mathrm{new}}) = C_{ij}(\bm{r}^{\mathrm{old}})
+  \qquad \forall\, j\in\{1,\dots,N\} .
+  \label{eq:2-cofactorequal}
+\end{equation}
+Next, the inverse of a matrix is the transposed cofactor matrix divided by the
+determinant,
+\begin{equation}
+  d^{-1}_{ij} = \frac{C_{ji}}{\Det{D}} ,
+  \label{eq:2-inversecofactor}
+\end{equation}
+and by definition $\sum_{k} d_{ik}\,d^{-1}_{kj} = \delta_{ij}$.  Substituting
+Eq.~(\ref{eq:2-cofactorequal}) into Eq.~(\ref{eq:2-Rcofactors}) and replacing
+the cofactors using Eq.~(\ref{eq:2-inversecofactor}), the denominator becomes
+exactly unity, and we are left with
+\begin{equation}
+  \boxed{\;
+  R = \sum_{j=1}^{N} d_{ij}(\bm{r}^{\mathrm{new}})\,
+      d^{-1}_{ji}(\bm{r}^{\mathrm{old}})
+    = \sum_{j=1}^{N} \phi_j(\bm{r}_i^{\mathrm{new}})\,
+      d^{-1}_{ji}(\bm{r}^{\mathrm{old}}) \;}
+  \label{eq:2-Rinverse}
+\end{equation}
+The ratio of two $N\times N$ determinants is a single dot product between the
+vector of single-particle functions evaluated at the new position and the
+$i$th column of the old inverse.  The cost is $\bigO(N)$ instead of
+$\bigO(N^3)$, and no determinant is computed at all.
+
+\paragraph{Updating the inverse.}
+The price is that we must maintain $\bm{D}^{-1}$.  If the move is accepted,
+the inverse is repaired in $\bigO(N^2)$ operations rather than recomputed in
+$\bigO(N^3)$.  For every column $j\ne i$ form
+\begin{equation}
+  S_j = \left(\bm{D}(\bm{r}^{\mathrm{new}})\,
+              \bm{D}^{-1}(\bm{r}^{\mathrm{old}})\right)_{ij}
+      = \sum_{l=1}^{N} d_{il}(\bm{r}^{\mathrm{new}})\,
+        d^{-1}_{lj}(\bm{r}^{\mathrm{old}}) ,
+  \label{eq:2-Sj}
+\end{equation}
+and update
+\begin{equation}
+  d^{-1}_{kj}(\bm{r}^{\mathrm{new}})
+   = d^{-1}_{kj}(\bm{r}^{\mathrm{old}})
+   - \frac{S_j}{R}\,d^{-1}_{ki}(\bm{r}^{\mathrm{old}}),
+  \qquad k=1,\dots,N,\quad j\ne i .
+  \label{eq:2-inverseupdate}
+\end{equation}
+The $i$th column is simply rescaled,
+\begin{equation}
+  d^{-1}_{ki}(\bm{r}^{\mathrm{new}})
+   = \frac{1}{R}\,d^{-1}_{ki}(\bm{r}^{\mathrm{old}}),
+  \qquad k=1,\dots,N .
+  \label{eq:2-inverseupdatei}
+\end{equation}
+Equations~(\ref{eq:2-inverseupdate}) and (\ref{eq:2-inverseupdatei}) are the
+Sherman-Morrison formula specialised to a rank-one change of a single row.
+Note that both contain a division by $R$: the algorithm degrades precisely
+when the proposed determinant is small, a point we return to in
+Section~\ref{sec:slaterstability}.
+
+\begin{Python}{}
+def ratio(self, i, r_new):
+    """R = |D(r_new)| / |D(r_old)|, in O(N) operations."""
+    row = np.array([self.s.basis.value(j, r_new)[0]
+                    for j in range(self.s.N)])
+    return float(row @ self.s.Dinv[:, i]), row
+
+
+def accept(self, i, r_new, R=None, row=None):
+    """Update D and D^{-1} after the move of particle i is accepted."""
+    if row is None:
+        R, row = self.ratio(i, r_new)
+    Dinv = self.s.Dinv
+
+    # S_j = (D(new) D^{-1}(old))_{ij} for every column j
+    S = row @ Dinv                       # length N, S[i] == R
+    new_inv = Dinv.copy()
+    for j in range(self.s.N):
+        if j != i:
+            new_inv[:, j] = Dinv[:, j] - (S[j] / R) * Dinv[:, i]
+    new_inv[:, i] = Dinv[:, i] / R
+
+    self.s.Dinv = new_inv
+    self.s.D[i, :] = row
+    self.s.positions[i] = r_new
+\end{Python}
+
+For six particles in a two-dimensional oscillator basis the ratio computed
+from Eq.~(\ref{eq:2-Rinverse}) agrees with the brute-force quotient of two
+determinants to $2\times10^{-16}$, as \texttt{slater\_update.py} confirms.
+
+%----------------------------------------------------------------------
+\section{Gradients, the Laplacian and the quantum force}
+\label{sec:slatergradients}
+
+The same argument applies to derivatives, and this is where the real saving
+lies.  Differentiating the Slater determinant with respect to the coordinates
+of particle $i$ changes only the $i$th row of $\bm{D}$, exactly as moving
+particle $i$ did.  The derivation leading to Eq.~(\ref{eq:2-Rinverse})
+therefore goes through unchanged with $d_{ij}$ replaced by its derivative,
+\begin{align}
+  \frac{\nabla_i\Det{D(\bm{r})}}{\Det{D(\bm{r})}}
+   &= \sum_{j=1}^{N}\nabla_i d_{ij}(\bm{r})\,d^{-1}_{ji}(\bm{r})
+    = \sum_{j=1}^{N}\nabla_i\phi_j(\bm{r}_i)\,d^{-1}_{ji}(\bm{r}),
+  \label{eq:2-gradratio}\\[4pt]
+  \frac{\nabla_i^2\Det{D(\bm{r})}}{\Det{D(\bm{r})}}
+   &= \sum_{j=1}^{N}\nabla_i^2 d_{ij}(\bm{r})\,d^{-1}_{ji}(\bm{r})
+    = \sum_{j=1}^{N}\nabla_i^2\phi_j(\bm{r}_i)\,d^{-1}_{ji}(\bm{r}).
+  \label{eq:2-lapratio}
+\end{align}
+To obtain every derivative of the Slater determinant we therefore need only
+the derivatives of the \emph{single-particle} functions and the elements of
+the inverse Slater matrix.  Each derivative is an $\bigO(N)$ dot product, and
+there are $d\cdot N$ of them, so the total evaluation costs $\bigO(d\cdot
+N^2)$.  With the $\bigO(N^2)$ update of the inverse the overall scaling is no
+worse, which should be compared with the $\bigO(d\cdot N^4)$ of
+Eq.~(\ref{eq:2-bruteforce}).  Table~\ref{tab:vmcscaling} collects the counts.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{lll}
+\toprule
+\textbf{Quantity} & \textbf{Brute force} & \textbf{With the inverse}\\
+\midrule
+Ratio $R$ for one move            & $\bigO(N^3)$      & $\bigO(N)$\\
+Update of $\bm{D}^{-1}$           & $\bigO(N^3)$      & $\bigO(N^2)$\\
+All gradients and Laplacians      & $\bigO(d\,N^4)$   & $\bigO(d\,N^2)$\\
+\bottomrule
+\end{tabular}
+\caption{Operation counts for the quantities a Monte Carlo step requires,
+with and without maintaining the inverse Slater matrix.}
+\label{tab:vmcscaling}
+\end{table}
+
+Equation~(\ref{eq:2-gradratio}) is the \emph{quantum force} (up to a factor of
+two) that drives the importance-sampled random walk of diffusion Monte Carlo,
+and Eq.~(\ref{eq:2-lapratio}) supplies the kinetic energy in the local energy.
+Both are therefore evaluated at every single step of the simulation.
+
+\paragraph{A practical remark.}
+In almost all cases one has closed-form expressions for the single-particle
+wave functions.  It is then worth differentiating them analytically and
+writing separate functions for $\nabla_i\phi_j$ and $\nabla_i^2\phi_j$.
+Finite differences would cost both accuracy and speed, and the derivatives are
+needed far too often to tolerate either.  The check in
+\texttt{slater\_update.py} compares the analytic
+Eqs.~(\ref{eq:2-gradratio}) and (\ref{eq:2-lapratio}) against numerical
+differentiation of $\ln\Det{D}$ and finds agreement to $5\times10^{-10}$ and
+$9\times10^{-6}$ respectively -- the residual being the error of the finite
+differences, not of the formulae.
+
+%----------------------------------------------------------------------
+\section{Spin factorisation of the Slater determinant}
+\label{sec:spinfactorisation}
+
+\index{Slater determinant!spin factorisation}
+A further and quite substantial saving follows from a property of the spin
+degree of freedom.  Consider beryllium, four electrons in the $1s$ and $2s$
+orbitals.  The Slater determinant reads
+\begin{equation}
+  \Phi(\bm{r}_1,\bm{r}_2,\bm{r}_3,\bm{r}_4)=\frac{1}{\sqrt{4!}}
+  \begin{vmatrix}
+    \psi_{100\uparrow}(\bm{r}_1)  & \psi_{100\uparrow}(\bm{r}_2)  &
+    \psi_{100\uparrow}(\bm{r}_3)  & \psi_{100\uparrow}(\bm{r}_4)\\
+    \psi_{100\downarrow}(\bm{r}_1)& \psi_{100\downarrow}(\bm{r}_2)&
+    \psi_{100\downarrow}(\bm{r}_3)& \psi_{100\downarrow}(\bm{r}_4)\\
+    \psi_{200\uparrow}(\bm{r}_1)  & \psi_{200\uparrow}(\bm{r}_2)  &
+    \psi_{200\uparrow}(\bm{r}_3)  & \psi_{200\uparrow}(\bm{r}_4)\\
+    \psi_{200\downarrow}(\bm{r}_1)& \psi_{200\downarrow}(\bm{r}_2)&
+    \psi_{200\downarrow}(\bm{r}_3)& \psi_{200\downarrow}(\bm{r}_4)
+  \end{vmatrix} .
+  \label{eq:2-berylliumdet}
+\end{equation}
+As written this determinant \emph{vanishes}, because the spatial parts of the
+spin-up and spin-down rows are identical: rows one and two are the same
+function of the spatial coordinates, and so are rows three and four.  The spin
+labels carry the distinction, and a determinant of spatial functions alone
+cannot see them.
+
+Expanding Eq.~(\ref{eq:2-berylliumdet}) in terms of $2\times2$ determinants
+built separately from the spin-up and spin-down orbitals gives
+\begin{align}
+  \Phi \ \propto\
+  &\det\!\uparrow(1,2)\det\!\downarrow(3,4)
+  -\det\!\uparrow(1,3)\det\!\downarrow(2,4) \nonumber\\
+  &-\det\!\uparrow(1,4)\det\!\downarrow(3,2)
+  +\det\!\uparrow(2,3)\det\!\downarrow(1,4) \nonumber\\
+  &-\det\!\uparrow(2,4)\det\!\downarrow(1,3)
+  +\det\!\uparrow(3,4)\det\!\downarrow(1,2) ,
+  \label{eq:2-spinexpansion}
+\end{align}
+with
+\begin{equation}
+  \det\!\uparrow(1,2)=\frac{1}{\sqrt{2}}
+  \begin{vmatrix}
+    \psi_{100\uparrow}(\bm{r}_1) & \psi_{100\uparrow}(\bm{r}_2)\\
+    \psi_{200\uparrow}(\bm{r}_1) & \psi_{200\uparrow}(\bm{r}_2)
+  \end{vmatrix},
+  \qquad
+  \det\!\downarrow(3,4)=\frac{1}{\sqrt{2}}
+  \begin{vmatrix}
+    \psi_{100\downarrow}(\bm{r}_3) & \psi_{100\downarrow}(\bm{r}_4)\\
+    \psi_{200\downarrow}(\bm{r}_3) & \psi_{200\downarrow}(\bm{r}_4)
+  \end{vmatrix}.
+  \label{eq:2-updowndets}
+\end{equation}
+The total is of course still zero; the expansion has merely reorganised the
+sum over spin assignments.
+
+\paragraph{The Moskowitz-Kalos ansatz.}
+What we would like is to avoid summing over spin variables altogether,
+particularly when the interaction does not depend on spin.  It can be shown,
+see Moskowitz and Kalos~\cite{moskowitz1981}, that for the variational energy
+one may replace the full determinant by the single product
+\begin{equation}
+  \Phi(\bm{r}_1,\dots,\bm{r}_N)\ \propto\
+  \det\!\uparrow\cdot\det\!\downarrow ,
+  \label{eq:2-spinfactorised}
+\end{equation}
+in which $\det\!\uparrow$ involves only the electrons with spin up and
+$\det\!\downarrow$ only those with spin down.  This ansatz is \emph{not}
+antisymmetric under the exchange of two electrons of opposite spin, but as
+long as the Hamiltonian is spin independent it yields the same expectation
+value for the energy as the full determinant.  The reason is visible in
+Section~\ref{sec:expval}: the exchange term of Eq.~(\ref{H2Expectation})
+connects only orbitals with the same spin, so the missing antisymmetry never
+enters the energy.
+
+\paragraph{The saving.}
+The full determinant factorises,
+\begin{equation}
+  \Det{D} = \Det{D}_{\uparrow}\cdot\Det{D}_{\downarrow} ,
+  \label{eq:2-detfactorises}
+\end{equation}
+and the combined dimensionality of the two smaller determinants equals that of
+the original.  The ratio then factorises too,
+\begin{equation}
+  \frac{\Det{D}^{\mathrm{new}}}{\Det{D}^{\mathrm{old}}}
+   = \frac{\Det{D}_{\uparrow}^{\mathrm{new}}}
+          {\Det{D}_{\uparrow}^{\mathrm{old}}}\cdot
+     \frac{\Det{D}_{\downarrow}^{\mathrm{new}}}
+          {\Det{D}_{\downarrow}^{\mathrm{old}}} ,
+  \label{eq:2-ratiofactorises}
+\end{equation}
+and when a single particle moves, one of the two factors is unchanged and
+cancels.  Only a determinant of size $N/2$ is involved in each ratio and each
+inverse update, so the cost of one move drops from
+\begin{equation}
+  \bigO_R(N)+\bigO_{\mathrm{inverse}}(N^2)
+  \qquad\text{to}\qquad
+  \bigO_R(N/2)+\bigO_{\mathrm{inverse}}(N^2/4),
+  \label{eq:2-spincount1}
+\end{equation}
+and the cost of a full sweep over all $N$ particles from
+$\bigO_R(N^2)+\bigO_{\mathrm{inverse}}(N^3)$ to
+\begin{equation}
+  \bigO_R(N^2/2)+\bigO_{\mathrm{inverse}}(N^3/4).
+  \label{eq:2-spincount2}
+\end{equation}
+The reduction is a constant factor, but a large one, and it is greatest when
+the numbers of spin-up and spin-down particles are equal so that the two
+factorised determinants are exactly half the size of the original.
+
+%----------------------------------------------------------------------
+\section{Determinants, inverses and numerical stability}
+\label{sec:slaterstability}
+
+\index{determinant!from LU decomposition}
+\index{determinant!from singular values}
+The updating scheme of Section~\ref{sec:slaterupdate} still needs the inverse
+and the determinant \emph{once}, at the start of the simulation and whenever
+the accumulated error has to be reset.  This is where the machinery of
+Chapter~\ref{chap:linalg} enters directly.
+
+\paragraph{The determinant from LU.}
+Never use the definition~(\ref{eq:2-detdef}).  The LU factorisation of
+Section~\ref{sec:lu} gives $\bm{P}\bm{D}=\bm{L}\bm{U}$ in $\bigO(N^3)$
+operations, and the determinant follows from Eq.~(\ref{eq:1-ludet}) as the
+signed product of the diagonal elements of $\bm{U}$,
+\begin{equation}
+  \Det{D} = \pm\,u_{00}u_{11}\cdots u_{N-1,N-1} .
+  \label{eq:2-detfromlu}
+\end{equation}
+The same factorisation delivers the inverse for $N$ additional back
+substitutions, Eq.~(\ref{eq:1-lusolve}).  One factorisation therefore supplies
+both objects the Monte Carlo run needs.
+
+In practice one should not store $\Det{D}$ at all but its logarithm.  A
+product of $N$ orbital values underflows or overflows long before $N$ becomes
+physically interesting, whereas
+\begin{equation}
+  \ln\left|\Det{D}\right| = \sum_{k=0}^{N-1}\ln|u_{kk}|
+  \label{eq:2-logdet}
+\end{equation}
+is perfectly well behaved, and the sign is tracked separately as the parity of
+the row interchanges.  Since the Metropolis test uses only ratios, working
+with $\ln|\Phi|$ throughout costs nothing.
+
+\paragraph{The determinant from the SVD.}
+The singular value decomposition of Section~\ref{sec:svd} gives the same
+number,
+\begin{equation}
+  \left|\Det{D}\right| = \prod_{k=0}^{N-1}\sigma_k ,
+  \label{eq:2-detfromsvd}
+\end{equation}
+since $\bm{D}=\bm{U}\bm{\Sigma}\bm{V}^{T}$ with $|\Det{U}|=|\Det{V}|=1$.  It
+costs several times more than LU and is never the right way to compute a
+determinant on its own.  It is, however, exactly the right tool when one wants
+to know \emph{how close to singular} the Slater matrix is, because it returns
+the condition number of Eq.~(\ref{eq:1-svdcond}) in the same breath,
+\begin{equation}
+  \kappa_2(\bm{D}) = \frac{\sigma_0}{\sigma_{N-1}} .
+  \label{eq:2-slaterkappa}
+\end{equation}
+
+\paragraph{The nodal surface.}
+This matters because the Slater determinant vanishes on the \emph{nodal
+surface}, the set of configurations at which $\Det{D}=0$.  As a configuration
+approaches it the matrix becomes singular, the smallest singular value goes to
+zero, and the condition number diverges.  Table~\ref{tab:nodal} shows what
+happens as two of six particles are brought together: the determinant and the
+smallest singular value fall in step, the condition number rises by the same
+factor, and the accuracy of the computed inverse degrades exactly as
+Eq.~(\ref{eq:1-condition}) predicts.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{llll}
+\toprule
+\textbf{Separation} & $\left|\Det{D}\right|$ & $\kappa_2(\bm{D})$ &
+$\|\bm{D}\bm{D}^{-1}-\bm{I}\|$\\
+\midrule
+$10^{0}$  & $2.81\times10^{0}$  & $2.58\times10^{1}$ & $8.7\times10^{-16}$\\
+$10^{-2}$ & $3.21\times10^{-2}$ & $1.51\times10^{3}$ & $5.5\times10^{-14}$\\
+$10^{-4}$ & $3.20\times10^{-4}$ & $1.54\times10^{5}$ & $4.3\times10^{-12}$\\
+$10^{-6}$ & $3.20\times10^{-6}$ & $1.54\times10^{7}$ & $4.7\times10^{-10}$\\
+\bottomrule
+\end{tabular}
+\caption{Six particles in a two-dimensional oscillator basis, with two of them
+brought to the separation shown.  Each factor of $100$ in the separation costs
+two digits in the inverse.}
+\label{tab:nodal}
+\end{table}
+
+\paragraph{When to rebuild.}
+Equations~(\ref{eq:2-inverseupdate}) and (\ref{eq:2-inverseupdatei}) divide by
+$R$, so every near-nodal move multiplies the error in $\bm{D}^{-1}$ by roughly
+$1/R$, and the damage is permanent: subsequent updates propagate it.  Under
+Metropolis sampling of $|\Phi|^2$ this is rare, since the sampling density
+itself vanishes on the node -- in a run of $5000$ moves the smallest accepted
+$|R|$ was $0.143$ and the error in the inverse never exceeded
+$5\times10^{-14}$.  But rare is not never.  Forcing a sequence of near-nodal
+moves shows the mechanism plainly:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{ll}
+\toprule
+$R$ \textbf{of the move} & $\|\bm{D}\bm{D}^{-1}-\bm{I}\|$ \textbf{after}\\
+\midrule
+(start)              & $2.2\times10^{-15}$\\
+$-7.0\times10^{-3}$  & $3.4\times10^{-14}$\\
+$\ \ 1.2\times10^{-4}$ & $3.5\times10^{-12}$\\
+$\ \ 1.2\times10^{-6}$ & $2.0\times10^{-10}$\\
+$\ \ 1.2\times10^{-8}$ & $3.2\times10^{-8}$\\
+\midrule
+after an LU refresh  & $1.7\times10^{-15}$\\
+\bottomrule
+\end{tabular}
+\caption{Error accumulated in the updated inverse by a sequence of moves that
+pass close to the nodal surface, and its removal by one LU refactorisation.}
+\label{tab:refresh}
+\end{table}
+
+The remedy is simple and universal: rebuild $\bm{D}^{-1}$ from an LU
+factorisation every few hundred accepted moves.  The $\bigO(N^3)$ cost,
+amortised over that many $\bigO(N^2)$ updates, is negligible, and the
+accumulated error is reset to machine precision.  A production Monte Carlo
+code should also monitor $\|\bm{D}\bm{D}^{-1}-\bm{I}\|$, or the condition
+number of Eq.~(\ref{eq:2-slaterkappa}), and refresh whenever it exceeds a
+threshold.
+
+\begin{notebox}
+\textbf{Link to Chapter~\ref{chap:linalg}.} Three separate results from the
+first chapter meet here.  The LU decomposition of Section~\ref{sec:lu}
+supplies the determinant and the inverse at the start of the run; the
+condition number of Section~\ref{sec:norms}, computed from the singular values
+of Section~\ref{sec:svd}, tells us how many digits the inverse has lost; and
+the observation that the accuracy of a computed inverse is governed by
+$\kappa_2$ rather than by the algorithm, Eq.~(\ref{eq:1-condition}), explains
+why no cleverer updating formula could avoid the problem.  The nodal surface
+of a fermionic wave function is, from the point of view of linear algebra,
+simply the locus where the Slater matrix becomes singular.
+\end{notebox}
+
 %----------------------------------------------------------------------
 \section{Quantum computing: the gate model and its linear-algebra foundation}
 \label{sec:qcgates}
@@ -943,6 +1410,54 @@ whether the ansatz can reach the true ground state.
   energy~(\ref{eq:2-correlation}) and the largest natural occupation number
   against it.  At what point would you no longer trust a single-determinant
   description?
+
+
+\item \textbf{The ratio $R$ by hand.}
+  Take $N=2$ and a Slater matrix $\bm{D}$ with elements
+  $d_{ij}=\phi_j(\bm{r}_i)$.  Move particle $1$ and compute the ratio
+  $R$ both from the definition~(\ref{eq:2-Rdefinition}), by evaluating
+  two $2\times2$ determinants, and from
+  Eq.~(\ref{eq:2-Rinverse}).  Verify that they agree, and count the
+  floating point operations each route requires.
+
+\item \textbf{Why the cofactor row does not change.}
+  Explain in your own words why $C_{ij}(\bm{r}^{\mathrm{new}})=
+  C_{ij}(\bm{r}^{\mathrm{old}})$ when only particle $i$ has moved,
+  Eq.~(\ref{eq:2-cofactorequal}).  Where in the derivation of
+  Eq.~(\ref{eq:2-Rinverse}) would the argument fail if two particles were
+  moved at once?
+
+\item \textbf{Updating the inverse.}
+  Implement Eqs.~(\ref{eq:2-Sj})--(\ref{eq:2-inverseupdatei}) for a
+  $3\times3$ Slater matrix and check the result against
+  \texttt{numpy.linalg.inv}.  Confirm that the update costs $\bigO(N^2)$
+  operations by counting the loops.
+
+\item \textbf{Derivatives of the determinant.}
+  Using \texttt{slater\_update.py}, compare the analytic gradient and
+  Laplacian ratios of Eqs.~(\ref{eq:2-gradratio}) and (\ref{eq:2-lapratio})
+  with numerical differentiation of $\ln\Det{D}$.  Why does the Laplacian
+  agree to fewer digits than the gradient?
+
+\item \textbf{The nodal surface as an ill-conditioned matrix.}
+  Reproduce Table~\ref{tab:nodal}.  Plot $\ln\kappa_2(\bm{D})$ against
+  $\ln(\text{separation})$ and explain the slope.  Using
+  Eq.~(\ref{eq:1-condition}), predict how many digits of $\bm{D}^{-1}$
+  survive at a separation of $10^{-8}$, and check your prediction.
+
+\item \textbf{When to refresh.}
+  Design a rule for deciding when to rebuild $\bm{D}^{-1}$ from an LU
+  factorisation.  Estimate the fraction of the total run time that the
+  refreshes consume for $N=50$ if you rebuild every $500$ accepted moves,
+  and compare with the cost of doing so at every move.
+
+\item \textbf{Spin factorisation.}
+  For $N=4$ with two spin-up and two spin-down particles, write out
+  Eq.~(\ref{eq:2-spinexpansion}) and verify that the full determinant of
+  Eq.~(\ref{eq:2-berylliumdet}) vanishes.  Then show, using the structure of
+  Eq.~(\ref{H2Expectation}), that the factorised
+  ansatz~(\ref{eq:2-spinfactorised}) gives the same energy for a
+  spin-independent Hamiltonian.
 
 \end{enumerate}
 
