@@ -1,6 +1,24 @@
 \chapter{Second quantization}
 \label{chap:secondquant}
 
+Chapter~\ref{chap:mbphys} ended with a warning.  Every expectation value there
+was obtained by writing out the antisymmetriser, sorting through $N!$
+permutations, and arguing term by term about which overlaps vanish.  For two
+particles this is an exercise; for the eight-operator strings of
+Section~\ref{sec:expval} it is already unpleasant; for the excited
+determinants that perturbation theory and coupled-cluster theory require it is
+impossible.  Exercise~2 of the week-36 session made the point sharply: the
+same matrix elements fall out of the anticommutation relations in three lines.
+
+This chapter develops that observation into a formalism.  Antisymmetry, which
+was an explicit and increasingly costly bookkeeping task in
+Chapter~\ref{chap:mbphys}, is built once and for all into the algebra of the
+creation and annihilation operators.  The Slater determinant of
+Eq.~(\ref{eq:SlatDet}) becomes a string of creation operators acting on the
+vacuum, the Condon-Slater rules of Section~\ref{sec:particlehole} become
+consequences of Wick's theorem, and calculations that were barely feasible by
+hand for $N=3$ become mechanical for arbitrary $N$.
+
 We introduce the time-independent  operators
 $a_\alpha^{\dagger}$ and $a_\alpha$   which create and annihilate, respectively, a particle 
 in the single-particle state 
@@ -219,6 +237,12 @@ and the corresponding commutator algebra
 
 \section{One-body operators in second quantization}
 
+The result we are about to derive was obtained once already, in
+Section~\ref{sec:expval}, by integrating over permutations of the Hartree
+function.  It is worth comparing the two routes as we go: what took a page of
+careful argument there follows here from the anticommutation relations alone.
+
+
 A very useful operator is the so-called number-operator.  Most physics cases  we will
 study in this text conserve the total number of particles.  The number operator is therefore
 a useful quantity which allows us to test that our many-body formalism  conserves the number of particles.
@@ -366,6 +390,13 @@ and
 \end{equation}
 
 \section{Two-body operators in second quantization}
+
+The antisymmetrised matrix elements $\langle pq|\hat{v}|rs\rangle_{AS}$ that
+appear below are exactly those of Eq.~(\ref{eq:2-antisymmatrix}), and the
+$n^4$ of them are the storage problem discussed in
+Section~\ref{sec:twobodycost}.  Nothing in this chapter changes that count;
+what changes is the ease with which they are contracted.
+
 
 Let us now derive the expression for our two-body interaction part, which also conserves the number of particles.
 We can proceed in exactly the same way as for the one-body operator. In the coordinate representation our
@@ -546,6 +577,13 @@ as
 This is the form we will use in the rest of these lectures, assuming that we work with anti-symmetrized two-body matrix elements.
 
 \section{Particle-hole formalism}
+
+The index conventions used here -- $i,j,k,l$ for hole states below the Fermi
+level, $a,b,c,d$ for particle states above it, and $p,q,r,s$ for either -- were
+introduced in Section~\ref{sec:particlehole}.  We now give them their proper
+setting: the reference determinant becomes a new vacuum, and the operators are
+redefined with respect to it.
+
 
 Second quantization is a useful and elegant formalism  for constructing many-body  states and 
 quantum mechanical operators. One can express and translate many physical processes
@@ -764,6 +802,16 @@ The last term collects all contributions to the energy of the ground state of a 
 from hole-hole correlations.
 
 \section{Summarizing and defining a normal-ordered Hamiltonian}
+
+Everything collected here has an exact counterpart in
+Chapter~\ref{chap:mbphys}.  The Slater determinant is
+Eq.~(\ref{eq:SlatDet}); the antisymmetrised two-body matrix element is
+Eq.~(\ref{eq:2-antisymmatrix}); and the energy functional that follows from
+the normal-ordered Hamiltonian is Eq.~(\ref{eq:EHF}), whose minimisation gives
+the Hartree-Fock equations~(\ref{eq:2-hfequations}).  The difference is that
+the derivations there ran over permutations, while here they will run over
+contractions.
+
 
 \[
   \Phi_{AS}(\alpha_1, \dots, \alpha_A; x_1, \dots x_A)=
@@ -1145,6 +1193,15 @@ because one of their contractions is of the type
 (\ref{eq:3-contraction2})--(\ref{eq:3-contraction4}).  For $M$ odd there are
 none, which is Eq.~(\ref{eq:3-wick3}) again.
 
+The practical consequence is the one anticipated in
+Section~\ref{sec:expdim}.  Because an $n$-body operator can connect only
+Slater determinants differing by at most $n$ single-particle states, a
+configuration-interaction Hamiltonian built from one- and two-body operators
+is extremely sparse: of the $\binom{n}{N}^2$ possible matrix elements only a
+vanishing fraction are non-zero.  That sparsity is precisely what the Lanczos
+algorithm of Section~\ref{sec:lanczos} exploits, and it is why the Hamiltonian
+never has to be stored.
+
 %----------------------------------------------------------------------
 \section{Proof of Wick's theorem}
 \label{sec:wickproof}
@@ -1428,6 +1485,14 @@ eight operators.  It also reproduces Eq.~(\ref{eq:3-twobodyresult}) by
 enumerating which of the $(p,q,r,s)$ assignments survive.
 
 \section{Operators in second quantization}
+
+What follows is the bridge from the formalism to a running code.  The
+Hamiltonian matrix built here is the sparse, never-stored matrix that the
+Lanczos algorithm of Section~\ref{sec:lanczos} was designed for: only the
+product $\bm{H}\bm{v}$ is needed, and the Condon-Slater rules of
+Section~\ref{sec:wickapps} say which of its elements can be non-zero.  The bit
+representation below is how that product is evaluated in practice.
+
 
 In the build-up of a shell-model or FCI code that is meant to tackle large dimensionalities
 is the action of the Hamiltonian $\hat{H}$ on a

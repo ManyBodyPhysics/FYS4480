@@ -1,0 +1,1085 @@
+\chapter{Physical systems and models}
+\label{chap:systems}
+%=============================================================================
+
+The three preceding chapters built a formalism.  This one puts it to work on
+four systems.
+
+The models collected here share a property that makes them invaluable: each is
+simple enough to be solved exactly, at least for small numbers of particles,
+yet each contains a genuine many-body mechanism.  The Lipkin model has a
+collective mode driven by a two-body interaction that scatters pairs across a
+gap; the pairing model has superfluid correlations; the Fermi-Hubbard model
+has the competition between kinetic delocalisation and on-site repulsion that
+drives the Mott transition; and the Calogero-Sutherland model is exactly
+solvable for arbitrary particle number, with a ground state that is a pure
+Jastrow function.  Because the exact answer is available, these models are the
+benchmarks against which every approximate method in the rest of this book is
+measured.
+
+They also share a structure.  Every one of them is written as
+\begin{equation}
+  \hat{H} = \sum_{pq}\langle p|\hat{h}_0|q\rangle a_p^{\dagger}a_q
+    + \frac{1}{4}\sum_{pqrs}\langle pq|\hat{v}|rs\rangle_{\mathrm{AS}}
+      a_p^{\dagger}a_q^{\dagger}a_s a_r ,
+  \label{eq:4-generalH}
+\end{equation}
+the general second-quantised Hamiltonian of
+Chapter~\ref{chap:secondquant}, with a particular and very restricted choice
+of matrix elements.  What differs between them is which single-particle
+states there are and which matrix elements are allowed to be non-zero.  The
+symmetries that follow from those restrictions are what make the models
+tractable, and identifying them is the first step in every case.
+
+Throughout, the detailed algebra is relegated to the exercises at the end of
+the chapter, where full solutions are given.  The main text states each model,
+identifies its symmetries, and reports what the exact solution looks like.
+All numbers quoted are produced by \texttt{models.py}.
+
+%----------------------------------------------------------------------
+\section{The Lipkin model}
+\label{sec:lipkin}
+
+\index{Lipkin model}
+The Lipkin-Meshkov-Glick model~\cite{lipkin1965} describes $N$ fermions
+distributed over two levels, each of degeneracy $\Omega$.  The levels carry
+the quantum number $\sigma=\pm1$: the upper has $\sigma=+1$ and energy
+$+\varepsilon/2$, the lower has $\sigma=-1$ and energy $-\varepsilon/2$.  The
+substates of each level are labelled $p=1,\dots,\Omega$, so a single-particle
+state is $\bket{p\sigma}=a_{p\sigma}^{\dagger}\bket{0}$.
+
+The Hamiltonian is
+\begin{equation}
+  \hat{H} = \hat{H}_0 + \hat{H}_1 + \hat{H}_2,
+  \label{eq:4-lipkinH}
+\end{equation}
+with
+\begin{align}
+  \hat{H}_0 &= \frac{1}{2}\varepsilon\sum_{p\sigma}\sigma\,
+    a_{p\sigma}^{\dagger}a_{p\sigma},
+  \label{eq:4-lipkinH0}\\
+  \hat{H}_1 &= \frac{1}{2}V\sum_{p p'\sigma}
+    a_{p\sigma}^{\dagger}a_{p'\sigma}^{\dagger}
+    a_{p'-\sigma}a_{p-\sigma},
+  \label{eq:4-lipkinH1}\\
+  \hat{H}_2 &= \frac{1}{2}W\sum_{p p'\sigma}
+    a_{p\sigma}^{\dagger}a_{p'-\sigma}^{\dagger}
+    a_{p'\sigma}a_{p-\sigma}.
+  \label{eq:4-lipkinH2}
+\end{align}
+The operator $\hat{H}_1$ moves a \emph{pair} of particles from one level to
+the other, with strength $V$; $\hat{H}_2$ is a spin-exchange term of strength
+$W$, which moves a pair from $(p\sigma,p'-\sigma)$ to $(p-\sigma,p'\sigma)$.
+Neither changes the substate labels $p$, and this is the crucial restriction:
+the interaction is completely degenerate in $p$.
+
+\paragraph{Quasispin.}
+The degeneracy in $p$ means the model has an $SU(2)$ symmetry.  Define the
+\emph{quasispin} operators
+\begin{equation}
+  \hat{J}_{\pm} = \sum_p a_{p\pm}^{\dagger}a_{p\mp},
+  \qquad
+  \hat{J}_z = \frac{1}{2}\sum_{p\sigma}\sigma
+    a_{p\sigma}^{\dagger}a_{p\sigma},
+  \qquad
+  \hat{J}^2 = \hat{J}_+\hat{J}_- + \hat{J}_z^2 - \hat{J}_z .
+  \label{eq:4-quasispin}
+\end{equation}
+Exercise~\ref{ex:4-lipkin} shows, using only the anticommutation relations of
+Chapter~\ref{chap:secondquant}, that these satisfy the angular-momentum
+algebra
+\begin{equation}
+  [\hat{J}_z,\hat{J}_{\pm}] = \pm\hat{J}_{\pm},
+  \qquad
+  [\hat{J}_+,\hat{J}_-] = 2\hat{J}_z,
+  \qquad
+  [\hat{J}^2,\hat{J}_{\pm}] = [\hat{J}^2,\hat{J}_z] = 0,
+  \label{eq:4-su2}
+\end{equation}
+and that the Hamiltonian collapses to
+\begin{equation}
+  \boxed{\;
+  \hat{H} = \varepsilon\hat{J}_z
+    + \frac{1}{2}V\left(\hat{J}_+^2+\hat{J}_-^2\right)
+    + \frac{1}{2}W\left(-\hat{N} + \hat{J}_+\hat{J}_- + \hat{J}_-\hat{J}_+
+      \right) \;}
+  \label{eq:4-lipkinquasispin}
+\end{equation}
+with $\hat{N}=\sum_{p\sigma}a_{p\sigma}^{\dagger}a_{p\sigma}$ the number
+operator.  Every trace of the substate index $p$ has disappeared.
+
+The consequence is decisive.  Since $[\hat{H},\hat{J}^2]=0$ and
+$[\hat{H},\hat{N}]=0$, both $J$ and $N$ are good quantum numbers, and the
+Hamiltonian is block diagonal in $J$.  A Hilbert space of dimension
+$\binom{2\Omega}{N}$ collapses into blocks of dimension $2J+1$.  For $N=4$
+particles at half filling the largest block is $J=2$, of dimension five: a
+$70$-dimensional problem has become a $5\times5$ matrix.
+
+\paragraph{The $J=2$ block.}
+The states are labelled $\bket{J,J_z}$ with $J_z=-J,\dots,J$.  The
+lowest, with all four spins down, is
+\begin{equation}
+  \bket{2,-2} = a_{1-}^{\dagger}a_{2-}^{\dagger}
+                a_{3-}^{\dagger}a_{4-}^{\dagger}\bket{0},
+  \label{eq:4-lipkinlowest}
+\end{equation}
+and the remaining four follow by applying $\hat{J}_+$ with the standard
+normalisations
+\begin{equation}
+  \hat{J}_{\pm}\bket{J,J_z}
+   = \sqrt{J(J+1)-J_z(J_z\pm1)}\,\bket{J,J_z\pm1} .
+  \label{eq:4-ladder}
+\end{equation}
+Working out the matrix elements of
+Eq.~(\ref{eq:4-lipkinquasispin}) -- again Exercise~\ref{ex:4-lipkin} -- gives
+for $\varepsilon=2$, $V=-1/3$, $W=-1/4$
+\begin{equation}
+  \bm{H}_{J=2}^{(1)} =
+  \begin{bmatrix}
+    -4 & 0 & -\sqrt{6}/3 & 0 & 0\\
+     0 & -11/4 & 0 & -1 & 0\\
+    -\sqrt{6}/3 & 0 & -1 & 0 & -\sqrt{6}/3\\
+     0 & -1 & 0 & 5/4 & 0\\
+     0 & 0 & -\sqrt{6}/3 & 0 & 4
+  \end{bmatrix},
+  \label{eq:4-lipkinmatrix1}
+\end{equation}
+whose eigenvalues are $-4.21288$, $-2.98607$, $-0.91914$, $1.48607$ and
+$4.13201$.  The ground state is
+\begin{equation}
+  \bket{\psi_0} = 0.96735\bket{2,-2} + 0.25221\bket{2,0}
+                + 0.02507\bket{2,2},
+  \qquad E_0 = -4.21288 .
+  \label{eq:4-lipkinground1}
+\end{equation}
+Note the structure: the interaction connects only states differing by two
+units of $J_z$, because $\hat{J}_{\pm}^2$ moves a pair.  The matrix therefore
+splits further into even and odd $J_z$.
+
+Increasing the interaction to $V=-4/3$, $W=-1$ gives eigenvalues $-7.75122$,
+$-7.47214$, $-1.55581$, $1.47214$, $5.30704$ and the ground state
+\begin{equation}
+  \bket{\psi_0} = 0.64268\bket{2,-2} + 0.73816\bket{2,0}
+                + 0.20515\bket{2,2},
+  \qquad E_0 = -7.75122 .
+  \label{eq:4-lipkinground2}
+\end{equation}
+In the first case the unperturbed configuration $\bket{2,-2}$ carries $94\%$
+of the probability and a single Slater determinant is a good approximation.
+In the second the interaction matrix elements are comparable to the
+single-particle spacing, $\bket{2,0}$ has become the dominant component, and
+no single determinant will do.  This is the same story the occupation numbers
+of Section~\ref{sec:naturalorbitals} told, in a model small enough to see the
+whole of it.
+
+\begin{notebox}
+\textbf{Why this model matters.} The Lipkin model was invented to test
+many-body methods, and it still is.  Because the exact answer is a
+$5\times5$ eigenvalue problem while the interaction can be tuned from weak to
+strong, it exposes exactly where an approximation breaks down: Hartree-Fock
+theory undergoes a spurious phase transition at a critical coupling, the
+random-phase approximation predicts an excitation energy that goes imaginary
+there, and coupled-cluster theory tracks the exact result much further.  Every
+one of these statements can be checked against
+Eq.~(\ref{eq:4-lipkinground1}) and its analogues.
+\end{notebox}
+
+\paragraph{Mapping to qubits.}
+The Lipkin model is a natural first target for quantum algorithms, and how one
+maps it onto qubits is worth a moment.  There are three obvious schemes.
+
+The \emph{occupation mapping} assigns one qubit to each single-particle state
+$(p,\sigma)$, the qubit being $\bket{1}$ or $\bket{0}$ according as that state
+is occupied or empty.  It costs $2\Omega$ qubits.
+
+The \emph{level mapping} exploits the fact that there are only two levels.
+Restricting to half filling, $N=\Omega$, each doublet $\left((p,+1),
+(p,-1)\right)$ holds exactly one particle, so one qubit per doublet suffices:
+$\bket{0}$ for the particle in the upper state and $\bket{1}$ for the lower.
+This costs $\Omega$ qubits, half of the occupation mapping.  It has a second
+advantage: moving a pair changes the state of two doublets, so any operator in
+the Hamiltonian is at most a two-qubit gate.
+
+The \emph{spin mapping} goes further and assigns a qubit to each state
+$\bket{J,J_z}$.  For a given $J$ there are only $2J+1$ of these, so with
+$J_{\max}=N/2$ the largest register is $N+1$ qubits.  The price is that one
+must run a separate circuit for each $J$ and take the lowest of the resulting
+energies.
+
+Under the level mapping the quasispin operators become sums of Pauli matrices.
+Writing $\hat{J}_z=\sum_p j_z^{(p)}$ and $\hat{J}_{\pm}=\sum_p
+j_{\pm}^{(p)}$ with
+\begin{equation}
+  j_z^{(p)} = \frac{1}{2}\sum_{\sigma}\sigma
+    a_{p\sigma}^{\dagger}a_{p\sigma},
+  \qquad
+  j_{\pm}^{(p)} = a_{p\pm}^{\dagger}a_{p\mp},
+  \label{eq:4-onebodyquasispin}
+\end{equation}
+each doublet operator is a single-qubit operator, and the correspondence with
+the Pauli matrices of Section~\ref{sec:pauli} is
+\begin{equation}
+  j_z^{(p)} \;\longleftrightarrow\; \tfrac12 Z_p,
+  \qquad
+  j_{\pm}^{(p)} \;\longleftrightarrow\; \tfrac12\left(X_p \pm \imath Y_p\right).
+  \label{eq:4-paulimapping}
+\end{equation}
+The Hamiltonian~(\ref{eq:4-lipkinquasispin}) therefore becomes a sum of Pauli
+strings of weight at most two -- exactly the form a variational quantum
+eigensolver requires.  The circuits themselves belong to the
+quantum-computing part of this book; what matters here is that the mapping
+costs $\Omega$ qubits and two-qubit interactions only, which is a direct
+consequence of the $SU(2)$ structure identified above.
+
+%----------------------------------------------------------------------
+\section{The pairing model}
+\label{sec:pairingmodel}
+
+\index{pairing model}
+The pairing model has appeared repeatedly already -- as the test case for the
+Lanczos algorithm in Section~\ref{sec:lanczos}, for the Schmidt decomposition
+in Section~\ref{sec:schmidt}, and as the three-level exercise of week~35.  We
+now set it out properly.
+
+The single-particle space consists of $L$ doubly degenerate, equally spaced
+levels labelled $p=1,2,\dots,L$ with spin $\sigma=\pm1$.  The Hamiltonian is
+\begin{equation}
+  \hat{H} = \hat{H}_0 + \hat{V},
+  \qquad
+  \hat{H}_0 = \xi\sum_{p\sigma}(p-1)\,a_{p\sigma}^{\dagger}a_{p\sigma},
+  \qquad
+  \hat{V} = -\frac{1}{2}g\sum_{pq}
+    a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{q+} .
+  \label{eq:4-pairingH}
+\end{equation}
+The spacing $\xi$ is set to unity without loss of generality.  The interaction
+has a single term and a single strength $g$: it destroys a pair of particles
+in level $q$ with opposite spins and creates one in level $p$.  Nothing else
+happens.  In the language of Eq.~(\ref{eq:4-generalH}), only the matrix
+elements $\langle p+\,p-|\hat{v}|q+\,q-\rangle$ are non-zero, and they are all
+equal.
+
+\paragraph{Symmetries.}
+Exercise~\ref{ex:4-pairing} shows that both $\hat{H}_0$ and $\hat{V}$ commute
+with the spin projection and the total spin,
+\begin{equation}
+  \hat{S}_z = \frac{1}{2}\sum_{p\sigma}\sigma
+    a^{\dagger}_{p\sigma}a_{p\sigma},
+  \qquad
+  \hat{S}^2 = \hat{S}_z^2
+    + \frac{1}{2}\left(\hat{S}_+\hat{S}_- + \hat{S}_-\hat{S}_+\right),
+  \qquad
+  \hat{S}_{\pm} = \sum_p a^{\dagger}_{p\pm}a_{p\mp},
+  \label{eq:4-pairingspin}
+\end{equation}
+so the Hamiltonian is block diagonal in $S$ and $S_z$.  We work in the
+$S=0$ block.  There it is natural to introduce the pair operators
+\begin{equation}
+  \hat{P}^{+}_p = a^{\dagger}_{p+}a^{\dagger}_{p-},
+  \qquad
+  \hat{P}^{-}_p = a_{p-}a_{p+},
+  \label{eq:4-pairoperators}
+\end{equation}
+in terms of which
+\begin{equation}
+  \hat{H} = \sum_{p\sigma}(p-1)a_{p\sigma}^{\dagger}a_{p\sigma}
+    - \frac{1}{2}g\sum_{pq}\hat{P}^{+}_p\hat{P}^{-}_q .
+  \label{eq:4-pairingpairform}
+\end{equation}
+The pair creation operators commute among themselves, $[\hat{P}^{+}_p,
+\hat{P}^{+}_q]=0$, which is why they behave like bosons and why the model
+describes a superfluid.  They are \emph{not} bosons, however:
+$(\hat{P}^{+}_p)^2=0$, the Pauli principle asserting itself.
+
+\paragraph{The seniority-zero space.}
+Because the interaction only moves pairs, it never breaks one.  If we start
+from a state in which every occupied level carries a full pair, we stay in
+that space forever.  A basis state is then simply a choice of which $n$ of the
+$L$ levels carry a pair, and the dimension is $\binom{L}{n}$ rather than
+$\binom{2L}{2n}$.  For $L=4$ and $n=2$ this is $6$ instead of $28$; for $L=12$
+and $n=6$ it is $924$ instead of $2704156$.  This is the space in which
+Table~\ref{tab:lanczos} was computed.
+
+In that basis the Hamiltonian is easy to write down: the diagonal is
+$2\sum_{p\in\mathrm{occ}}(p-1) - \tfrac{1}{2}gn$, and any two configurations
+differing by the position of a single pair are connected by $-\tfrac{1}{2}g$.
+
+Table~\ref{tab:pairing} gives the exact ground-state energy for four particles
+in four levels as a function of $g$, together with the energy of the
+unperturbed configuration.  At $g=0$ the reference determinant is exact.  For
+small $|g|$ the correlation energy grows quadratically, as second-order
+perturbation theory requires, and for $g=1$ it has reached $36\%$ of the
+reference energy.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rlll}
+\toprule
+$g$ & $E_{\mathrm{ref}}$ & $E_0$ (exact) & $E_{\mathrm{corr}}$\\
+\midrule
+$-1.00$ & $3.000000$ & $2.77987014$ & $-0.22012986$\\
+$-0.50$ & $2.500000$ & $2.43688426$ & $-0.06311574$\\
+$0.00$  & $2.000000$ & $2.00000000$ & $\phantom{-}0.00000000$\\
+$0.50$  & $1.500000$ & $1.41677428$ & $-0.08322572$\\
+$1.00$  & $1.000000$ & $0.63554847$ & $-0.36445153$\\
+\bottomrule
+\end{tabular}
+\caption{The pairing model with four doubly degenerate levels and two pairs,
+$\xi=1$.  $E_{\mathrm{ref}}$ is the energy of the configuration with both
+pairs in the two lowest levels; $E_0$ is the exact ground-state energy in the
+six-dimensional seniority-zero space.}
+\label{tab:pairing}
+\end{table}
+
+\begin{notebox}
+\textbf{Why this model matters.} The pairing model is the schematic version
+of superfluidity and superconductivity, and it is the standard proving ground
+for the hierarchy of many-body methods.  Because the exact answer is
+available for any $g$, one can plot Hartree-Fock, second- and third-order
+perturbation theory, coupled cluster with doubles, and full configuration
+interaction on the same axes and watch each one fail at a different coupling.
+The second midterm of FYS4480 does exactly this, and the exercises at the end
+of this chapter set up the ingredients.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The Fermi-Hubbard model}
+\label{sec:hubbard}
+
+\index{Hubbard model}
+The two models so far live in an abstract single-particle space with no
+geometry.  The Fermi-Hubbard model introduces a lattice, and with it the
+competition that dominates the physics of correlated electrons: kinetic energy
+wants to delocalise the particles, the interaction wants to keep them apart.
+
+Electrons hop between neighbouring sites of a lattice and pay an energy $U$
+whenever two of them, necessarily of opposite spin, occupy the same site,
+\begin{equation}
+  \boxed{\;
+  \hat{H} = -\sum_{\langle ij\rangle\sigma} t_{ij}
+    \left(c^{\dagger}_{i\sigma}c_{j\sigma} + \mathrm{h.c.}\right)
+  + U\sum_i \hat{n}_{i\uparrow}\hat{n}_{i\downarrow} \;}
+  \label{eq:4-hubbardH}
+\end{equation}
+with $\hat{n}_{i\sigma}=c^{\dagger}_{i\sigma}c_{i\sigma}$.  This is again
+Eq.~(\ref{eq:4-generalH}): the one-body part is the hopping matrix, and the
+only non-vanishing two-body matrix element is the on-site one.
+
+The single-particle basis is now the set of lattice sites, so the creation
+operators carry a position label.  Fermionic antisymmetry is enforced by the
+Jordan-Wigner string: $c^{\dagger}_i c_j$ acting on an occupation-number state
+picks up the parity of the occupied sites strictly between $i$ and $j$, which
+is exactly the phase computed by the bit-counting algorithm at the end of
+Chapter~\ref{chap:secondquant}.
+
+\paragraph{Symmetries and sector dimensions.}
+The Hamiltonian conserves $N_{\uparrow}$ and $N_{\downarrow}$ separately, so
+we may diagonalise in a fixed sector of dimension
+\begin{equation}
+  \dim = \binom{N}{N_{\uparrow}}\binom{N}{N_{\downarrow}} .
+  \label{eq:4-hubbarddim}
+\end{equation}
+Better still, the hopping term acts on the two spin species independently, so
+the sector factorises as a tensor product and the kinetic part of the
+Hamiltonian is
+\begin{equation}
+  \bm{K}_{\uparrow}\otimes\bm{I}_{\downarrow}
+  + \bm{I}_{\uparrow}\otimes\bm{K}_{\downarrow},
+  \label{eq:4-hubbardkron}
+\end{equation}
+the tensor-product construction of Section~\ref{sec:tensor} used in earnest.
+The interaction is diagonal in the occupation basis.  On a periodic chain
+translational invariance gives a further reduction into momentum sectors.
+
+\paragraph{From metal to Mott insulator.}
+Table~\ref{tab:hubbard} follows the half-filled four-site ring as $U$ grows.
+At $U=0$ the model is exact free fermions: the single-particle energies are
+$\varepsilon_k=-2t\cos k$ with $k=0,\pm\pi/2,\pi$, and filling the two lowest
+levels for each spin gives $E_0=-4t$, which the diagonalisation reproduces.
+As $U$ increases, the double occupancy falls steadily -- the electrons avoid
+each other -- and the ground-state energy rises towards zero.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rlll}
+\toprule
+$U/t$ & $E_0/t$ & $E_0/(Nt)$ & $\sum_i\langle n_{i\uparrow}n_{i\downarrow}\rangle$\\
+\midrule
+$0$  & $-4.00000000$ & $-1.000000$ & $1.000000$\\
+$2$  & $-2.82842712$ & $-0.707107$ & $0.453082$\\
+$4$  & $-2.10274848$ & $-0.525687$ & $0.287325$\\
+$8$  & $-1.32023496$ & $-0.330059$ & $0.129992$\\
+$16$ & $-0.72286432$ & $-0.180716$ & $0.042033$\\
+\bottomrule
+\end{tabular}
+\caption{The half-filled four-site Hubbard ring, $N_{\uparrow}=N_{\downarrow}
+=2$, sector dimension $36$.  The last column is the total double occupancy in
+the ground state.}
+\label{tab:hubbard}
+\end{table}
+
+\paragraph{The strong-coupling limit.}
+When $U\gg t$ the doubly occupied states are pushed far up in energy and can
+be eliminated perturbatively.  What remains is a model of localised spins,
+\begin{equation}
+  \hat{H}_{tJ} = \hat{P}_G\left[
+    -\sum_{\langle ij\rangle\sigma}t_{ij}
+      \left(c^{\dagger}_{i\sigma}c_{j\sigma}+\mathrm{h.c.}\right)
+    \right]\hat{P}_G
+  + \sum_{\langle ij\rangle}J_{ij}
+    \left[\bm{S}_i\cdot\bm{S}_j
+      - \tfrac14\hat{P}_G\hat{n}_i\hat{n}_j\hat{P}_G\right],
+  \qquad J_{ij}=\frac{4t_{ij}^2}{U},
+  \label{eq:4-tJ}
+\end{equation}
+where $\hat{P}_G$ is the Gutzwiller projector removing all doubly occupied
+sites.  At half filling there is no empty site to hop into, the kinetic term
+is frozen, and the $t$-$J$ model reduces to the Heisenberg antiferromagnet.
+
+This is a prediction we can check.  For the four-site ring the Heisenberg part
+contributes $-2J$ and the constant $-\tfrac14 n_i n_j$ term on four bonds
+contributes $-J$, so $E_0\rightarrow-3J=-12t^2/U$.
+Table~\ref{tab:hubbardstrong} shows the ratio $E_0/J$ converging to $-3$.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{rll}
+\toprule
+$U/t$ & $E_0/t$ & $E_0/J$, \quad $J=4t^2/U$\\
+\midrule
+$8$   & $-1.3202349583$ & $-2.64047$\\
+$16$  & $-0.7228643224$ & $-2.89146$\\
+$32$  & $-0.3714104223$ & $-2.97128$\\
+$64$  & $-0.1870445461$ & $-2.99271$\\
+$128$ & $-0.0936928521$ & $-2.99817$\\
+\bottomrule
+\end{tabular}
+\caption{The half-filled four-site Hubbard ring at strong coupling.  The ratio
+converges to $-3$, confirming the mapping onto the Heisenberg model with
+$J=4t^2/U$.}
+\label{tab:hubbardstrong}
+\end{table}
+
+\begin{notebox}
+\textbf{Why this model matters.} The Hubbard model is the minimal model of
+strong correlation.  It is believed to contain the essential physics of the
+cuprate superconductors, it is the standard benchmark for quantum Monte Carlo,
+tensor-network and machine-learning wave functions, and it is among the first
+targets for quantum simulation with cold atoms and with quantum computers.  It
+is also the model in which the exponential wall of Section~\ref{sec:expdim}
+bites hardest: the sector dimension~(\ref{eq:4-hubbarddim}) for a $4\times4$
+lattice at half filling is already $1.66\times10^8$, and the two-dimensional
+model remains unsolved.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The Calogero-Sutherland model}
+\label{sec:calogero}
+
+\index{Calogero-Sutherland model}
+The three models above are solvable because a symmetry cuts the Hilbert space
+down to a manageable size.  The Calogero-Sutherland
+model~\cite{calogero1971,sutherland1971} is solvable for a different and much
+rarer reason: it is \emph{integrable}, and its ground state is known in closed
+form for any number of particles.
+
+The Calogero model describes $N$ particles on a line in a harmonic trap,
+interacting through an inverse-square potential,
+\begin{equation}
+  \hat{H} = -\frac{\hbar^2}{2m}\sum_{i=1}^{N}
+      \frac{\partial^2}{\partial x_i^2}
+    + \frac{m\omega^2}{2}\sum_{i=1}^{N}x_i^2
+    + \sum_{i<j}\frac{g}{(x_i-x_j)^2} .
+  \label{eq:4-calogeroH}
+\end{equation}
+It is conventional to parametrise the coupling as
+\begin{equation}
+  g = \frac{\hbar^2}{m}\lambda(\lambda-1),
+  \label{eq:4-calogerocoupling}
+\end{equation}
+so that $\lambda$ measures the interaction strength.  The Sutherland model is
+the same system on a ring of circumference $L$, with the inverse square
+replaced by the chord distance,
+\begin{equation}
+  \hat{H} = -\frac{\hbar^2}{2m}\sum_i\frac{\partial^2}{\partial x_i^2}
+    + \frac{\hbar^2}{m}\left(\frac{\pi}{L}\right)^2\sum_{i<j}
+      \frac{\lambda(\lambda-1)}{\sin^2\!\left(\pi(x_i-x_j)/L\right)} .
+  \label{eq:4-sutherlandH}
+\end{equation}
+
+\paragraph{The exact ground state.}
+In units $\hbar=m=1$ the ground state of Eq.~(\ref{eq:4-calogeroH}) is
+\begin{equation}
+  \boxed{\;
+  \Psi_0(x_1,\dots,x_N)
+   = \prod_{i<j}|x_i-x_j|^{\lambda}\,
+     \exp\!\left(-\frac{\omega}{2}\sum_i x_i^2\right) \;}
+  \label{eq:4-calogeroground}
+\end{equation}
+with energy
+\begin{equation}
+  E_0 = \omega\left[\frac{N}{2} + \frac{\lambda N(N-1)}{2}\right] .
+  \label{eq:4-calogeroenergy}
+\end{equation}
+Exercise~\ref{ex:4-calogero} verifies this by direct substitution; the
+inverse-square form of the potential is precisely what is needed for the
+cross terms generated by the Laplacian to cancel.
+
+The factor $\prod_{i<j}|x_i-x_j|^{\lambda}$ is a \emph{Jastrow factor}, and it
+is the reason this model deserves a place in a book about many-body methods.
+It is a correlated wave function of exactly the type that variational Monte
+Carlo optimises numerically -- but here it is exact, for every $N$ and every
+$\lambda$.  The model is therefore the sharpest available test of a Jastrow
+ansatz: any method that cannot reproduce Eq.~(\ref{eq:4-calogeroground}) is
+missing something structural.
+
+Two limits are instructive.  At $\lambda=0$ the coupling $g$ vanishes and the
+particles are free bosons in a trap, $E_0=\omega N/2$.  At $\lambda=1$ the
+coupling vanishes again, but now
+\begin{equation}
+  \prod_{i<j}|x_i-x_j|
+  \label{eq:4-vandermonde}
+\end{equation}
+is the absolute value of the Vandermonde determinant of
+Section~\ref{sec:applications}, which is precisely the Slater determinant of
+$N$ free fermions in a harmonic trap.  The Calogero model interpolates
+continuously between bosons and fermions, and for non-integer $\lambda$ it
+describes particles obeying \emph{fractional statistics}.
+
+\paragraph{A numerical check.}
+For $N=2$ the centre-of-mass and relative motions separate.  With
+$x=x_1-x_2$ the relative Hamiltonian is
+\begin{equation}
+  \hat{h}_{\mathrm{rel}} = -\frac{d^2}{dx^2}
+    + \frac{\omega^2}{4}x^2 + \frac{\lambda(\lambda-1)}{x^2},
+  \label{eq:4-calogerorel}
+\end{equation}
+whose exact ground-state energy is $\omega(\lambda+\tfrac12)$.  Discretising
+on a grid and diagonalising with the machinery of
+Section~\ref{sec:schrodiag} reproduces this to better than $10^{-5}$ for
+$\lambda$ between $1$ and $3$, as \texttt{models.py} confirms.  The
+inverse-square barrier keeps the wave function away from the origin, so the
+boundary condition $\Psi\rightarrow0$ as $x\rightarrow0$ is automatic for
+$\lambda>0$.
+
+\begin{notebox}
+\textbf{Why this model matters.} The Calogero-Sutherland model sits at the
+junction of several subjects.  Its ground state is a Laughlin-type wave
+function, $\prod_{i<j}(z_i-z_j)^m e^{-\sum|z_i|^2/4}$, connecting it to the
+fractional quantum Hall effect; its excitation spectrum is that of free
+particles with fractional statistics; and the probability density
+$|\Psi_0|^2\propto\prod_{i<j}|x_i-x_j|^{2\lambda}e^{-\omega\sum x_i^2}$ is
+exactly the eigenvalue distribution of a random matrix ensemble, with
+$\beta=2\lambda$ the Dyson index.  For our purposes it is above all a
+benchmark with a known answer for arbitrary $N$ -- something none of the other
+models in this chapter can offer.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{What the four models have in common}
+\label{sec:modelssummary}
+
+Table~\ref{tab:models} collects the four.  The pattern is worth stating
+explicitly, because it is the pattern of the whole subject.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\setlength{\tabcolsep}{7pt}
+\begin{tabular}{lllll}
+\toprule
+\textbf{Model} & \textbf{Single-particle space} & \textbf{Interaction} &
+\textbf{Symmetry used} & \textbf{Exactly solvable}\\
+\midrule
+Lipkin   & two levels, degeneracy $\Omega$ & pair transfer, spin exchange
+         & $SU(2)$ quasispin & yes, block by block\\
+Pairing  & $L$ doubly degenerate levels & pair transfer
+         & $S$, $S_z$, seniority & yes, small $L$\\
+Hubbard  & lattice sites & on-site $U$
+         & $N_{\uparrow}$, $N_{\downarrow}$, momentum & 1D only\\
+Calogero & continuum, $N$ particles & inverse square
+         & integrability & yes, any $N$\\
+\bottomrule
+\end{tabular}
+\caption{The four models of this chapter.  Each is the general
+Hamiltonian~(\ref{eq:4-generalH}) with a drastically restricted set of
+two-body matrix elements, and in each case a symmetry reduces the dimension
+of the problem.}
+\label{tab:models}
+\end{table}
+
+In every case the route is the same.  Write the Hamiltonian in second
+quantisation; identify the operators that commute with it; use them to block
+diagonalise; and solve the blocks.  The first step is
+Chapter~\ref{chap:secondquant}, the second is a commutator calculation of the
+kind Wick's theorem makes routine, the third is the statement that a symmetry
+gives a basis in which the matrix is block diagonal
+(Section~\ref{sec:spectral}), and the fourth is the eigenvalue problem of
+Sections~\ref{sec:householder} and~\ref{sec:lanczos}.
+
+What separates these models from a realistic system is only the last step of
+the reduction.  In a real nucleus or a real molecule the symmetries reduce the
+dimension by orders of magnitude but not to five; the matrix is sparse but
+enormous; and one must fall back on the approximate methods that occupy the
+rest of this book.  The value of the models in this chapter is that they let
+us watch those approximations succeed and fail against an answer we already
+know.
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the Lipkin model in the quasispin basis}
+\label{ex:4-lipkin}
+\addcontentsline{toc}{subsection}{Exercise 1: the Lipkin model}
+
+\begin{enumerate}
+  \item[a)] Show that the quasispin operators~(\ref{eq:4-quasispin}) obey the
+  angular-momentum algebra~(\ref{eq:4-su2}), using only the anticommutation
+  relations of Chapter~\ref{chap:secondquant}.
+  \item[b)] Show that the Lipkin Hamiltonian~(\ref{eq:4-lipkinH}) can be
+  rewritten as Eq.~(\ref{eq:4-lipkinquasispin}).
+  \item[c)] Show that $[\hat{H},\hat{J}^2]=0$ and $[\hat{H},\hat{N}]=0$, and
+  explain what this implies for the structure of the Hamiltonian matrix.
+  \item[d)] Construct the five states $\bket{2,J_z}$ for four particles, and
+  compute the matrix~(\ref{eq:4-lipkinmatrix1}).  Diagonalise it and compare
+  with Eq.~(\ref{eq:4-lipkinground1}).
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Insert the definitions and use
+$\{a_l,a_k\}=\{a^{\dagger}_l,a^{\dagger}_k\}=0$ and
+$\{a^{\dagger}_l,a_k\}=\delta_{lk}$.  For the first commutator,
+\begin{align}
+  [\hat{J}_z,\hat{J}_{\pm}]
+  &= \frac{1}{2}\sum_{pp'\sigma}\sigma\left(
+     a_{p\sigma}^{\dagger}a_{p\sigma}a_{p'\pm}^{\dagger}a_{p'\mp}
+   - a_{p'\pm}^{\dagger}a_{p'\mp}a_{p\sigma}^{\dagger}a_{p\sigma}\right).
+  \label{eq:4-exa1}
+\end{align}
+Anticommute the operators of the second product into the order of the first.
+Using $a_{p'\mp}a_{p\sigma}^{\dagger}=\delta_{pp'}\delta_{\mp\sigma}
+- a_{p\sigma}^{\dagger}a_{p'\mp}$ and then
+$a_{p\sigma}a_{p'\pm}^{\dagger}=\delta_{pp'}\delta_{\pm\sigma}
+- a_{p'\pm}^{\dagger}a_{p\sigma}$, the four-operator terms cancel in pairs and
+what survives is
+\begin{equation}
+  [\hat{J}_z,\hat{J}_{\pm}]
+  = \frac{1}{2}\sum_{p\sigma}\sigma\left(
+     \delta_{\pm\sigma}a_{p\sigma}^{\dagger}a_{p\mp}
+   - \delta_{\mp\sigma}a_{p\pm}^{\dagger}a_{p\sigma}\right)
+  = \pm\frac{1}{2}\sum_p\left(
+     a_{p\pm}^{\dagger}a_{p\mp} + a_{p\pm}^{\dagger}a_{p\mp}\right)
+  = \pm\hat{J}_{\pm},
+  \label{eq:4-exa2}
+\end{equation}
+where the two Kronecker deltas each pick out one value of $\sigma$, and the
+factor $\sigma=\pm1$ supplies the sign.  The same manipulation gives
+$[\hat{J}_+,\hat{J}_-]=2\hat{J}_z$, and $[\hat{J}^2,\hat{J}_{\pm}]=
+[\hat{J}^2,\hat{J}_z]=0$ then follows from the definition
+$\hat{J}^2=\hat{J}_+\hat{J}_-+\hat{J}_z^2-\hat{J}_z$ exactly as for ordinary
+angular momentum.
+
+\paragraph{Answer to b).}
+The one-body part is immediate: comparing
+Eqs.~(\ref{eq:4-lipkinH0}) and~(\ref{eq:4-quasispin}) gives
+$\hat{H}_0=\varepsilon\hat{J}_z$.
+
+For $\hat{H}_1$, first anticommute the two annihilation operators,
+$a_{p'-\sigma}a_{p-\sigma}=-a_{p-\sigma}a_{p'-\sigma}$, and then move
+$a_{p-\sigma}$ past $a_{p'\sigma}^{\dagger}$ using
+$a_{p-\sigma}a_{p'\sigma}^{\dagger}
+=\delta_{pp'}\delta_{-\sigma\sigma}-a_{p'\sigma}^{\dagger}a_{p-\sigma}$.
+Since $\delta_{-\sigma\sigma}=0$, the delta term drops out and
+\begin{equation}
+  \hat{H}_1 = \frac{1}{2}V\sum_{pp'\sigma}
+    a_{p\sigma}^{\dagger}a_{p-\sigma}\,
+    a_{p'\sigma}^{\dagger}a_{p'-\sigma} .
+  \label{eq:4-exb1}
+\end{equation}
+The two factors are now independent sums over $p$ and $p'$.  Writing out
+$\sigma=\pm$ separately,
+\begin{equation}
+  \hat{H}_1 = \frac{1}{2}V\left[
+    \Big(\sum_p a_{p+}^{\dagger}a_{p-}\Big)
+    \Big(\sum_{p'}a_{p'+}^{\dagger}a_{p'-}\Big)
+  + \Big(\sum_p a_{p-}^{\dagger}a_{p+}\Big)
+    \Big(\sum_{p'}a_{p'-}^{\dagger}a_{p'+}\Big)\right]
+  = \frac{1}{2}V\left(\hat{J}_+^2+\hat{J}_-^2\right).
+  \label{eq:4-exb2}
+\end{equation}
+
+For $\hat{H}_2$ the same two steps give
+\begin{equation}
+  \hat{H}_2 = \frac{1}{2}W\left(
+    -\sum_{p\sigma}a_{p\sigma}^{\dagger}a_{p\sigma}
+    + \sum_{pp'\sigma}a_{p\sigma}^{\dagger}a_{p-\sigma}
+      a_{p'-\sigma}^{\dagger}a_{p'\sigma}\right),
+  \label{eq:4-exb3}
+\end{equation}
+where this time $\delta_{-\sigma-\sigma}=1$ and the delta term survives as
+$-\hat{N}$.  Splitting the remaining sum over $\sigma$ as before identifies it
+as $\hat{J}_+\hat{J}_-+\hat{J}_-\hat{J}_+$, so
+$\hat{H}_2=\tfrac12 W(-\hat{N}+\hat{J}_+\hat{J}_-+\hat{J}_-\hat{J}_+)$.
+Adding the three pieces gives Eq.~(\ref{eq:4-lipkinquasispin}).
+
+\paragraph{Answer to c).}
+Written as in Eq.~(\ref{eq:4-lipkinquasispin}), $\hat{H}$ is built entirely
+from $\hat{J}_z$, $\hat{J}_{\pm}$ and $\hat{N}$.  Since $\hat{J}^2$ commutes
+with each of $\hat{J}_z$ and $\hat{J}_{\pm}$ by part a), and with $\hat{N}$
+trivially, it commutes with $\hat{H}$.  For $\hat{N}$: the one-body term
+conserves particle number, and every term of the interaction contains two
+creation and two annihilation operators, so $[\hat{H},\hat{N}]=0$.
+
+Both $J$ and $N$ are therefore good quantum numbers.  In a basis
+$\bket{J,J_z}$ the Hamiltonian matrix is block diagonal, one block for each
+$J$, of dimension $2J+1$.  Within a block, $\hat{J}_z$ is diagonal and
+$\hat{J}_{\pm}^2$ connects $J_z$ to $J_z\pm2$, so the block splits once more
+into even and odd $J_z$.  A problem of nominal dimension
+$\binom{2\Omega}{N}$ has been reduced to a set of matrices of dimension at
+most $N/2+1$.
+
+\paragraph{Answer to d).}
+Start from $\bket{2,-2}$, Eq.~(\ref{eq:4-lipkinlowest}), and apply
+Eq.~(\ref{eq:4-ladder}).  With $J=2$ and $J_z=-2$ the factor is
+$\sqrt{6-2}=2$, so
+\begin{equation}
+  \bket{2,-1} = \frac{1}{2}\hat{J}_+\bket{2,-2}
+   = \frac{1}{2}\Big(
+     a_{1+}^{\dagger}a_{2-}^{\dagger}a_{3-}^{\dagger}a_{4-}^{\dagger}
+   + a_{1-}^{\dagger}a_{2+}^{\dagger}a_{3-}^{\dagger}a_{4-}^{\dagger}
+   + a_{1-}^{\dagger}a_{2-}^{\dagger}a_{3+}^{\dagger}a_{4-}^{\dagger}
+   + a_{1-}^{\dagger}a_{2-}^{\dagger}a_{3-}^{\dagger}a_{4+}^{\dagger}
+     \Big)\bket{0},
+  \label{eq:4-exd1}
+\end{equation}
+one term for each substate that can be flipped.  Applying $\hat{J}_+$ again
+with the factor $\sqrt{6-0}=\sqrt6$ gives $\bket{2,0}$ as the normalised sum
+of the six ways of flipping two of the four substates, and so on up to
+$\bket{2,2}$ with all four spins up.
+
+The matrix elements follow from Eq.~(\ref{eq:4-lipkinquasispin}).  The
+diagonal is
+\begin{equation}
+  \bracket{2,J_z}{\hat{H}}{2,J_z}
+   = \varepsilon J_z + \frac{W}{2}\Big(-N + 2\big[J(J+1)-J_z^2\big]\Big),
+  \label{eq:4-exd2}
+\end{equation}
+since $\hat{J}_+\hat{J}_-+\hat{J}_-\hat{J}_+=2(\hat{J}^2-\hat{J}_z^2)$.  The
+off-diagonal elements come from $\tfrac12 V(\hat{J}_+^2+\hat{J}_-^2)$,
+\begin{equation}
+  \bracket{2,J_z+2}{\hat{H}}{2,J_z}
+   = \frac{V}{2}\sqrt{J(J+1)-J_z(J_z+1)}\,
+     \sqrt{J(J+1)-(J_z+1)(J_z+2)} .
+  \label{eq:4-exd3}
+\end{equation}
+With $\varepsilon=2$, $V=-1/3$, $W=-1/4$ and $N=4$ this gives
+Eq.~(\ref{eq:4-lipkinmatrix1}); for instance the $(-2,0)$ element is
+$\tfrac12 V\sqrt{4}\sqrt{6}=-\sqrt6/3$, and the $J_z=-1$ diagonal element is
+$-2+\tfrac12(-\tfrac14)(-4+2[6-1])=-2-\tfrac34=-\tfrac{11}{4}$.
+Diagonalising reproduces Eq.~(\ref{eq:4-lipkinground1}).
+
+\subsection*{Exercise 2: the pairing model}
+\label{ex:4-pairing}
+\addcontentsline{toc}{subsection}{Exercise 2: the pairing model}
+
+\begin{enumerate}
+  \item[a)] Show that $\hat{H}_0$ and $\hat{V}$ of Eq.~(\ref{eq:4-pairingH})
+  commute with $\hat{S}_z$ and $\hat{S}^2$ of Eq.~(\ref{eq:4-pairingspin}).
+  \item[b)] Show that the Hamiltonian can be written in the pair
+  form~(\ref{eq:4-pairingpairform}), and that the pair creation operators
+  commute among themselves while $(\hat{P}^{+}_p)^2=0$.
+  \item[c)] Construct the Hamiltonian matrix for four particles in the four
+  lowest levels, with no broken pairs and $S=0$, and find its eigenvalues as a
+  function of $g$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+$\hat{H}_0$ is a sum of number operators $a^{\dagger}_{p\sigma}
+a_{p\sigma}$, and $\hat{S}_z$ is a weighted sum of the same operators, so the
+two commute term by term.  For $\hat{V}$, note that
+$a^{\dagger}_{p+}a^{\dagger}_{p-}$ creates one particle with $\sigma=+1$ and
+one with $\sigma=-1$, changing $S_z$ by $\tfrac12(+1)+\tfrac12(-1)=0$;
+likewise $a_{q-}a_{q+}$ destroys such a pair.  Hence $[\hat{V},\hat{S}_z]=0$.
+
+For $\hat{S}^2$ it is enough to show $[\hat{V},\hat{S}_{\pm}]=0$.  The
+operator $\hat{S}_+=\sum_p a^{\dagger}_{p+}a_{p-}$ acting on a fully paired
+level gives zero, because the state $\bket{p+}$ is already occupied and
+$(a^{\dagger}_{p+})^2=0$; acting on an empty level it also gives zero.  Since
+$\hat{V}$ maps the fully paired space into itself,
+$\hat{S}_+\hat{V}$ and $\hat{V}\hat{S}_+$ both annihilate it, and the
+commutator vanishes.  Both $S$ and $S_z$ are therefore good quantum numbers
+and the Hamiltonian is block diagonal in them.
+
+\paragraph{Answer to b).}
+Insert the definitions~(\ref{eq:4-pairoperators}) into
+Eq.~(\ref{eq:4-pairingH}):
+\begin{equation}
+  -\frac{1}{2}g\sum_{pq}a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{q+}
+  = -\frac{1}{2}g\sum_{pq}\hat{P}^{+}_p\hat{P}^{-}_q ,
+  \label{eq:4-exp1}
+\end{equation}
+which is Eq.~(\ref{eq:4-pairingpairform}).
+
+For the commutator, $\hat{P}^{+}_p\hat{P}^{+}_q
+= a^{\dagger}_{p+}a^{\dagger}_{p-}a^{\dagger}_{q+}a^{\dagger}_{q-}$.  Moving
+$a^{\dagger}_{q+}a^{\dagger}_{q-}$ to the front requires four interchanges of
+neighbouring creation operators, each contributing a minus sign, so the total
+sign is $(-1)^4=+1$ and $[\hat{P}^{+}_p,\hat{P}^{+}_q]=0$.  The pair operators
+therefore behave like bosons under exchange.
+
+They are not bosons, however.  Since
+$(a^{\dagger}_{p+})^2=0$ by the Pauli principle,
+\begin{equation}
+  \left(\hat{P}^{+}_p\right)^2
+   = a^{\dagger}_{p+}a^{\dagger}_{p-}a^{\dagger}_{p+}a^{\dagger}_{p-}
+   = -\left(a^{\dagger}_{p+}\right)^2
+      \left(a^{\dagger}_{p-}\right)^2 = 0 .
+  \label{eq:4-exp2}
+\end{equation}
+A level can hold one pair but not two.  This is the hard-core constraint that
+distinguishes the pairing model from a gas of free bosons, and it is what
+makes the model non-trivial.
+
+\paragraph{Answer to c).}
+With four levels and two pairs there are $\binom{4}{2}=6$ basis states, which
+we label by the occupied levels: $(12)$, $(13)$, $(14)$, $(23)$, $(24)$,
+$(34)$.  The diagonal element of a configuration is
+$2\sum_{p\in\mathrm{occ}}(p-1) - g$, the last term coming from the $p=q$ terms
+of the interaction with two pairs present.  Every pair of configurations
+differing by the position of one pair is connected by $-g/2$; configurations
+differing in both pairs are not connected.  Ordering the basis as above,
+\begin{equation}
+  \bm{H} =
+  \begin{bmatrix}
+    2-g & -g/2 & -g/2 & -g/2 & -g/2 & 0\\
+    -g/2 & 4-g & -g/2 & -g/2 & 0 & -g/2\\
+    -g/2 & -g/2 & 6-g & 0 & -g/2 & -g/2\\
+    -g/2 & -g/2 & 0 & 6-g & -g/2 & -g/2\\
+    -g/2 & 0 & -g/2 & -g/2 & 8-g & -g/2\\
+    0 & -g/2 & -g/2 & -g/2 & -g/2 & 10-g
+  \end{bmatrix}.
+  \label{eq:4-exp3}
+\end{equation}
+Diagonalising for a range of $g$ gives Table~\ref{tab:pairing}.  Note that the
+$(13)$ and $(23)$ configurations are degenerate at $g=0$ -- both have
+unperturbed energy $6$ -- and that the correlation energy is negative for both
+signs of $g$, since the interaction can always lower the energy by mixing
+configurations.
+
+\subsection*{Exercise 3: the Hubbard model}
+\label{ex:4-hubbard}
+\addcontentsline{toc}{subsection}{Exercise 3: the Hubbard model}
+
+\begin{enumerate}
+  \item[a)] Show that the Hubbard Hamiltonian~(\ref{eq:4-hubbardH}) conserves
+  $N_{\uparrow}$ and $N_{\downarrow}$ separately, and hence $S_z$.
+  \item[b)] Diagonalise the $U=0$ Hubbard ring analytically and verify the
+  entry $E_0=-4t$ of Table~\ref{tab:hubbard}.
+  \item[c)] Derive the effective spin Hamiltonian in the limit $U\gg t$ at
+  half filling, and predict the ratio $E_0/J$ for the four-site ring.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The hopping term contains $c^{\dagger}_{i\sigma}c_{j\sigma}$ with the
+\emph{same} $\sigma$ on both operators, so it conserves the number of
+particles of each spin separately.  The interaction is a product of number
+operators and conserves everything.  Hence $[\hat{H},\hat{N}_{\uparrow}]
+=[\hat{H},\hat{N}_{\downarrow}]=0$, and since
+$\hat{S}_z=\tfrac12(\hat{N}_{\uparrow}-\hat{N}_{\downarrow})$, also
+$[\hat{H},\hat{S}_z]=0$.  This is what allows the diagonalisation to be
+carried out in a fixed sector of dimension~(\ref{eq:4-hubbarddim}).
+
+\paragraph{Answer to b).}
+At $U=0$ the Hamiltonian is a sum of independent one-body problems.  On a ring
+of $N$ sites with periodic boundary conditions the hopping matrix is
+diagonalised by plane waves $c^{\dagger}_{k\sigma}=N^{-1/2}\sum_j
+e^{\imath k j}c^{\dagger}_{j\sigma}$ with $k=2\pi n/N$, giving
+\begin{equation}
+  \varepsilon_k = -2t\cos k .
+  \label{eq:4-exh1}
+\end{equation}
+For $N=4$ the allowed momenta are $k=0,\pm\pi/2,\pi$ with energies
+$-2t$, $0$, $0$, $+2t$.  Filling the two lowest for each spin gives
+$-2t+0=-2t$ per spin species, hence $E_0=-4t$, which is the first line of
+Table~\ref{tab:hubbard}.  The degeneracy at $k=\pm\pi/2$ means the $U=0$
+ground state is not unique; switching on $U$ lifts the degeneracy.
+
+\paragraph{Answer to c).}
+At half filling and $U\gg t$ every site carries exactly one electron in the
+ground state, and states with a doubly occupied site lie an energy $U$ higher.
+Treat the hopping as a perturbation.  A single hop creates a doubly occupied
+site and an empty one, costing $U$; hopping back restores a singly occupied
+configuration.  Second-order perturbation theory therefore gives an energy
+gain $-2t^2/U$ for each such virtual excursion, and the process is possible
+only if the two spins involved are antiparallel, since the Pauli principle
+forbids two electrons of the same spin on one site.
+
+Collecting the terms gives the Heisenberg Hamiltonian
+\begin{equation}
+  \hat{H}_{\mathrm{eff}}
+   = J\sum_{\langle ij\rangle}\left(\bm{S}_i\cdot\bm{S}_j
+     - \frac{\hat{n}_i\hat{n}_j}{4}\right),
+  \qquad J = \frac{4t^2}{U},
+  \label{eq:4-exh2}
+\end{equation}
+which is the half-filled limit of the $t$-$J$ model, Eq.~(\ref{eq:4-tJ}).
+For the four-site ring the Heisenberg ground-state energy is $-2J$, and the
+constant $-\tfrac14 n_i n_j$ contributes $-\tfrac14$ per bond on four bonds,
+that is $-J$.  Hence
+\begin{equation}
+  E_0 \longrightarrow -3J = -\frac{12t^2}{U},
+  \qquad\text{so}\qquad \frac{E_0}{J}\longrightarrow-3,
+  \label{eq:4-exh3}
+\end{equation}
+which is what Table~\ref{tab:hubbardstrong} confirms numerically.
+
+\subsection*{Exercise 4: the Calogero ground state}
+\label{ex:4-calogero}
+\addcontentsline{toc}{subsection}{Exercise 4: the Calogero ground state}
+
+\begin{enumerate}
+  \item[a)] Verify by direct substitution that
+  Eq.~(\ref{eq:4-calogeroground}) is an eigenstate of
+  Eq.~(\ref{eq:4-calogeroH}) with energy~(\ref{eq:4-calogeroenergy}).
+  \item[b)] Show that at $\lambda=1$ the ground state is the Slater
+  determinant of $N$ free fermions in a harmonic trap.
+  \item[c)] Separate the $N=2$ problem and verify the relative energy
+  $\omega(\lambda+\tfrac12)$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Work in units $\hbar=m=1$ and write $\Psi_0=e^{-\Phi}$ with
+\begin{equation}
+  \Phi = \frac{\omega}{2}\sum_i x_i^2
+       - \lambda\sum_{i<j}\ln|x_i-x_j| .
+  \label{eq:4-exc1}
+\end{equation}
+For any such form,
+\begin{equation}
+  -\frac{1}{2}\sum_i\frac{\partial^2\Psi_0}{\partial x_i^2}
+   = \frac{1}{2}\left[\sum_i\frac{\partial^2\Phi}{\partial x_i^2}
+     - \sum_i\left(\frac{\partial\Phi}{\partial x_i}\right)^2\right]\Psi_0 .
+  \label{eq:4-exc2}
+\end{equation}
+The derivatives are
+\begin{equation}
+  \frac{\partial\Phi}{\partial x_i} = \omega x_i
+    - \lambda\sum_{j\ne i}\frac{1}{x_i-x_j},
+  \qquad
+  \frac{\partial^2\Phi}{\partial x_i^2} = \omega
+    + \lambda\sum_{j\ne i}\frac{1}{(x_i-x_j)^2} .
+  \label{eq:4-exc3}
+\end{equation}
+Squaring the first,
+\begin{equation}
+  \sum_i\left(\frac{\partial\Phi}{\partial x_i}\right)^2
+   = \omega^2\sum_i x_i^2
+   - 2\lambda\omega\sum_i\sum_{j\ne i}\frac{x_i}{x_i-x_j}
+   + \lambda^2\sum_i\sum_{j\ne i}\sum_{k\ne i}
+     \frac{1}{(x_i-x_j)(x_i-x_k)} .
+  \label{eq:4-exc4}
+\end{equation}
+Two simplifications now do all the work.  In the second term, pairing $(i,j)$
+with $(j,i)$ gives
+$x_i/(x_i-x_j)+x_j/(x_j-x_i)=1$, so the double sum equals $N(N-1)/2$ times
+two, that is $-2\lambda\omega\cdot N(N-1)/2$.  In the third term the pieces
+with $j=k$ give $\lambda^2\sum_{i\ne j}(x_i-x_j)^{-2}$, while the pieces with
+$j\ne k$ cancel identically by the three-term identity
+\begin{equation}
+  \frac{1}{(x_i-x_j)(x_i-x_k)}
+  + \frac{1}{(x_j-x_i)(x_j-x_k)}
+  + \frac{1}{(x_k-x_i)(x_k-x_j)} = 0 .
+  \label{eq:4-exc5}
+\end{equation}
+Assembling everything, the inverse-square terms combine as
+\begin{equation}
+  \frac{1}{2}\left[\lambda\sum_{i\ne j}\frac{1}{(x_i-x_j)^2}
+   - \lambda^2\sum_{i\ne j}\frac{1}{(x_i-x_j)^2}\right]
+   = -\lambda(\lambda-1)\sum_{i<j}\frac{1}{(x_i-x_j)^2},
+  \label{eq:4-exc6}
+\end{equation}
+which cancels the interaction term of the Hamiltonian exactly; the
+$\omega^2 x_i^2$ terms cancel the trap; and what is left is the constant
+\begin{equation}
+  E_0 = \frac{1}{2}\left[N\omega + \lambda\omega N(N-1)\right]
+      = \omega\left[\frac{N}{2}+\frac{\lambda N(N-1)}{2}\right],
+  \label{eq:4-exc7}
+\end{equation}
+which is Eq.~(\ref{eq:4-calogeroenergy}).  The cancellation in
+Eq.~(\ref{eq:4-exc6}) works only because the interaction falls off as the
+inverse \emph{square}; this is the sense in which the model is fine-tuned to
+be solvable.
+
+\paragraph{Answer to b).}
+At $\lambda=1$ the coupling $g=\lambda(\lambda-1)$ vanishes and the particles
+are free, but the wave function
+\begin{equation}
+  \Psi_0 = \prod_{i<j}|x_i-x_j|\,e^{-\omega\sum_i x_i^2/2}
+  \label{eq:4-exc8}
+\end{equation}
+is not the bosonic ground state.  Up to an overall sign it is the Vandermonde
+determinant of Section~\ref{sec:applications},
+\begin{equation}
+  \prod_{i<j}(x_j-x_i) = \det\left[x_i^{\,j-1}\right],
+  \label{eq:4-exc9}
+\end{equation}
+and multiplying each column by the Gaussian and taking suitable linear
+combinations turns $x_i^{j-1}e^{-\omega x_i^2/2}$ into the Hermite functions
+of Section~\ref{sec:schrodiag}.  The result is precisely the Slater
+determinant of the $N$ lowest harmonic oscillator orbitals.  The energy check
+is immediate: Eq.~(\ref{eq:4-calogeroenergy}) with $\lambda=1$ gives
+$E_0=\omega N^2/2 = \omega\sum_{n=0}^{N-1}(n+\tfrac12)$, the sum of the $N$
+lowest oscillator energies.
+
+For non-integer $\lambda$ the wave function is neither symmetric nor
+antisymmetric, and the particles obey fractional statistics interpolating
+between the two.
+
+\paragraph{Answer to c).}
+Introduce $X=(x_1+x_2)/2$ and $x=x_1-x_2$.  The kinetic energy separates as
+$-\tfrac14\partial_X^2-\partial_x^2$ and the trap as
+$\omega^2 X^2 + \tfrac14\omega^2 x^2$, so with $\hbar=m=1$
+\begin{equation}
+  \hat{H} = \left[-\frac{1}{4}\frac{\partial^2}{\partial X^2}
+     + \omega^2 X^2\right]
+   + \left[-\frac{\partial^2}{\partial x^2}
+     + \frac{\omega^2}{4}x^2
+     + \frac{\lambda(\lambda-1)}{x^2}\right].
+  \label{eq:4-exc10}
+\end{equation}
+The centre-of-mass part is a harmonic oscillator with ground-state energy
+$\omega/2$.  The relative part is Eq.~(\ref{eq:4-calogerorel}); its ground
+state is $x^{\lambda}e^{-\omega x^2/4}$ with energy $\omega(\lambda+\tfrac12)$,
+as substitution confirms.  The total is
+$\omega/2+\omega(\lambda+\tfrac12)=\omega(1+\lambda)$, which agrees with
+Eq.~(\ref{eq:4-calogeroenergy}) for $N=2$.  Solving the relative problem
+numerically on a grid, as in Section~\ref{sec:schrodiag}, reproduces
+$\omega(\lambda+\tfrac12)$ to better than $10^{-5}$; see \texttt{models.py}.
+
+\subsection*{Exercise 5: numerical explorations}
+\addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{models.py}, plot the Lipkin ground-state energy and
+  the weight of $\bket{2,-2}$ in the ground state as functions of $V$ at fixed
+  $\varepsilon$ and $W$.  At roughly what value of $V/\varepsilon$ does the
+  single-configuration picture break down?
+  \item[b)] Repeat the pairing calculation of Table~\ref{tab:pairing} for six
+  and eight levels.  How does the correlation energy at $g=1$ scale with the
+  number of levels?
+  \item[c)] Compute the double occupancy of the Hubbard ring as a function of
+  $U/t$ and identify the crossover.  Compare a six-site ring with the
+  four-site one.
+  \item[d)] For the pairing model with twelve levels and six pairs, compare
+  the exact ground-state energy from full diagonalisation with the Lanczos
+  result of Table~\ref{tab:lanczos}, and with the Schmidt truncation of
+  Table~\ref{tab:schmidt}.  How many Schmidt states are needed for the energy
+  to be correct to six digits?
+\end{enumerate}

@@ -15,8 +15,12 @@ chapter2.tex       From linear algebra to many-body physics: Slater
                    determinants, the energy functional, Monte Carlo updates
 chapter3.tex       Second quantization, the particle-hole formalism and
                    Wick's theorem
-add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt   staging files, merged
-                   into the chapters above; not included by book.tex
+chapter4.tex       Physical systems and models: Lipkin, pairing,
+                   Fermi-Hubbard, Calogero-Sutherland
+add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
+calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  FYS4480*.pdf
+                   staging files and handwritten notes, merged into the
+                   chapters above; not included by book.tex
 variationalmc.tex  Variational Monte Carlo
 Greensfunction.tex Green's function theory
 preface.tex  acknow.tex  dedic.tex  acronym.tex
@@ -43,7 +47,7 @@ The build is clean: no errors, no undefined references or citations.
 2. Most `\part`s in `book.tex` have their `\input` lines commented out —
    work in progress.
 3. `book.tex` loads `pstricks` and `[dvips]{epsfig}`, though nothing in
-   chapters 1–3 uses them. Dropping them would allow a plain `pdflatex` route.
+   chapters 1–4 uses them. Dropping them would allow a plain `pdflatex` route.
 
 ## LaTeX conventions
 
@@ -60,9 +64,10 @@ The build is clean: no errors, no undefined references or citations.
 - Equations: numbered `equation` environments with labels in the pattern
   `\label{eq:2-1a}` (chapter number, running index, letter suffix). Reference
   as `Eq.~(\ref{eq:2-1a})`.
-- All three chapters use numbered `\section{...}`, and each ends with an
+- All four chapters use numbered `\section{...}`. Chapters 1--3 end with an
   `Exercises` section containing warm-up exercises followed by the weekly
-  FYS4480 sessions and their answers.
+  FYS4480 sessions and their answers; chapter 4 relegates the long derivations
+  to its exercises, each with a worked solution.
 - `book.tex` also defines `\wmark`, `\wline`, `\wlineb` and `\wstrut` for the
   Wick contraction lines of Chapter 3, and a `notebox` environment for the
   many-body and quantum-computing connection boxes.
@@ -97,8 +102,9 @@ systems.
 `../LectureNotes/` holds the executable version: `_config.yml`, `_toc.yml`,
 markdown front matter (`intro.md`, `teachers.md`, `textbooks.md`) and chapter
 notebooks. `linearalgebra.ipynb` is the companion to `chapter1.tex` and
-`manybodybasics.ipynb` to `chapter2.tex` and `wicktheorem.ipynb` to the Wick
-sections of `chapter3.tex`; the older set is `notation.ipynb`,
+`manybodybasics.ipynb` to `chapter2.tex`, `wicktheorem.ipynb` to the Wick
+sections of `chapter3.tex`, and `models.ipynb` plus `Hubbard.ipynb` to
+`chapter4.tex`; the older set is `notation.ipynb`,
 `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
 `vmcdmc.ipynb`, … New book material that includes runnable code should have a
 notebook counterpart, and new notebooks must be registered in `_toc.yml`.
@@ -128,8 +134,9 @@ written for chapters 1 and 2 are:
 | `slaterdeterminant.py` | 2 | Slater determinants, energy functional, minimal SCF |
 | `slater_update.py` | 2 | Ratio $R$, Sherman-Morrison updates, nodal-surface stability |
 | `wick.py` | 3 | Vacuum expectation values by anticommutation and by Wick contractions |
+| `models.py` | 4 | Lipkin, pairing, Hubbard and Calogero: matrices, spectra, exact limits |
 
-Every number quoted in chapters 1–3 comes from one of these; each file runs
+Every number quoted in chapters 1–4 comes from one of these; each file runs
 as a script and prints the tables that appear in the text. **If you change a
 program, re-run it and update the corresponding table.** The older programs
 `CCD_PairingModel.py`, `NeutronMatterCCD_Ladders.py`, `ucc.py`, `ho1dim.py` and
