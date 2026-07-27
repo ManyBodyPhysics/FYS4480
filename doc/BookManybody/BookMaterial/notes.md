@@ -58,6 +58,23 @@
        with the number operator, and the Delta N = 0 vs pairing-vibration
        mode content
      - Still to add if wanted: number projection, renormalised QRPA, HFB
+
+### Density functional theory  (chapter8.tex, done)
+     - Born-Oppenheimer and the electronic Hamiltonian
+     - One- and two-body reduced density matrices in coordinate space; the
+       Slater-determinant factorisation of rho^(2) and the N-representability
+       problem
+     - Hohenberg-Kohn theorems I and II with the reductio ad absurdum proof;
+       v-representability and the Levy-Lieb constrained search
+     - Thomas-Fermi from the electron gas of chapter 6, and why it fails
+     - The Kohn-Sham construction, the total-energy formula, KS vs HF
+     - LDA built explicitly from the uniform gas (analytic in 3D, numerical
+       for the 1D model interaction); the exchange hole and its sum rule
+     - The self-interaction error and the locality error, both measured on
+       the trap system of chapters 2 and 6
+     - Still to add if wanted: GGA construction from exact constraints,
+       time-dependent DFT as the density-functional analogue of RPA,
+       DFT for nuclei (Skyrme functionals)
 ###  Many-body perturbation theory
      - Time dependent and time-independent representation
      - Brillouin-Wigner and Rayleigh-Schrødinger pert theory

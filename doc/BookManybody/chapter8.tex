@@ -1,0 +1,1268 @@
+\chapter{Density functional theory}
+\label{chap:dft}
+%=============================================================================
+
+Every method so far has been a method for the wave function.  Full
+configuration interaction stores its coefficients, Hartree-Fock optimises the
+orbitals it is built from, and the random-phase approximation describes the
+fluctuations around that.  All of them run into the same wall: the object
+being computed lives in a space whose dimension grows exponentially with the
+number of particles, Section~\ref{sec:exponentialwall}.
+
+Density functional theory takes a different route.  It replaces the wave
+function of $N$ electrons -- a function of $3N$ coordinates -- by the
+electronic density, a function of three.  This is not an approximation but,
+remarkably, an exact reformulation: Hohenberg and Kohn proved that the
+ground-state density determines the external potential, hence the Hamiltonian,
+hence everything.  The catch, which we shall be careful to state precisely, is
+that the theorem asserts the existence of a universal functional without
+telling us its form.
+
+The chapter has three parts.  We first assemble the tools -- the
+Born-Oppenheimer Hamiltonian and the reduced density matrices of
+Sections~\ref{sec:naturalorbitals} and~\ref{sec:energyfunctional}, now in
+coordinate space.  We then prove the Hohenberg-Kohn theorems and examine what
+they do and do not deliver.  Finally we build the Kohn-Sham scheme, which
+recovers most of what the mean-field methods of
+Chapter~\ref{chap:hartrefock} do well while replacing the expensive part by a
+local functional, and we construct that functional explicitly from the
+electron gas of Section~\ref{sec:electrongas}.
+
+Density functional theory has been an extraordinary practical success.  Most
+crystalline materials and a very large fraction of molecular structures have
+been described with it; Walter Kohn shared the 1998 Nobel Prize in Chemistry
+for it; and it is now standard in quantum chemistry, materials science,
+condensed-matter physics and, increasingly, low-energy nuclear physics.  It is
+also, as we shall see, an approximation whose errors are of a quite different
+character from those of the wave-function methods, and understanding that
+difference is the point of putting it here.
+
+%----------------------------------------------------------------------
+\section{The electronic Hamiltonian}
+\label{sec:electronichamiltonian}
+
+\index{Born-Oppenheimer approximation}
+Any piece of matter -- a crystal, a molecule, a living cell -- is a collection
+of nuclei and electrons held together by the Coulomb interaction, and is
+governed by
+\begin{equation}
+  \imath\hbar\frac{\partial}{\partial t}\Phi(\bm{r};t)
+   = \left(-\sum_{i}^{N}\frac{\hbar^2}{2m_i}
+     \frac{\partial^2}{\partial\bm{r}_i^2}
+     + \sum_{i<j}^{N}\frac{e^2Z_iZ_j}{\vert\bm{r}_i-\bm{r}_j\vert}
+     \right)\Phi(\bm{r};t).
+  \label{eq:8-manybody}
+\end{equation}
+Nothing else is needed in principle, and nothing is soluble in practice.
+
+The first simplification is universal.  Even the lightest nucleus is nearly
+two thousand times heavier than an electron, so on the time scale of electronic
+motion the nuclei may be treated as fixed.  This is the
+\emph{Born-Oppenheimer approximation}, and it turns
+Eq.~(\ref{eq:8-manybody}) into a time-independent problem for the electrons
+alone, moving in the static field of the nuclei,
+\begin{equation}
+  \left[\sum_{i}^{N}\left(-\frac{\hbar^2}{2m}
+    \frac{\partial^2}{\partial\bm{r}_i^2}
+    + v_{\mathrm{ext}}(\bm{r}_i)\right)
+    + \sum_{i<j}^{N}v(r_{ij})\right]\Psi(\bm{r}) = E_0\Psi(\bm{r}),
+  \label{eq:8-electronic}
+\end{equation}
+with $r_{ij}=\vert\bm{r}_i-\bm{r}_j\vert$ and the external potential supplied
+by the nuclei,
+\begin{equation}
+  v_{\mathrm{ext}}(\bm{r}_i) = -\sum_{j}\frac{e^2Z_j}{
+    \vert\bm{r}_i-\bm{R}_j\vert}.
+  \label{eq:8-vext}
+\end{equation}
+We have written a generic two-body interaction $v(r_{ij})$ rather than the
+bare Coulomb repulsion, because everything below applies unchanged to any
+interaction depending only on the relative distance -- nuclear forces
+included, where $v_{\mathrm{ext}}$ is absent and the system is self-bound, as
+Section~\ref{sec:whyhf} noted.
+
+Equation~(\ref{eq:8-electronic}) is the Hamiltonian of
+Eq.~(\ref{eq:4-generalH}) written in coordinate space.  Only one thing about
+it will matter in what follows: the kinetic energy and the interaction are the
+\emph{same for every system}, and the only thing that distinguishes one
+material from another is $v_{\mathrm{ext}}$.
+
+%----------------------------------------------------------------------
+\section{Reduced density matrices}
+\label{sec:reduceddensity}
+
+\index{density matrix!one-body}\index{density matrix!two-body}
+The central object of this chapter is the electronic density.  It is the
+diagonal of the one-body reduced density matrix, which we met in
+Section~\ref{sec:naturalorbitals} as a matrix in a single-particle basis and
+now write in coordinate space.
+
+\subsection{The one-body density}
+\label{sec:onebodydensity}
+
+Define the density operator
+\begin{equation}
+  \hat{n}(\bm{r}) = \sum_{i=1}^{N}\delta(\bm{r}-\bm{r}_i),
+  \qquad
+  n(\bm{r}) = \frac{\bracket{\Psi}{\hat{n}(\bm{r})}{\Psi}}
+    {\braket{\Psi}{\Psi}},
+  \label{eq:8-densityoperator}
+\end{equation}
+for any normalisable state $\Psi$.  Equivalently, integrating out all
+coordinates but one,
+\begin{equation}
+  n(\bm{r}) = N\int \ud{^3\bm{r}_2}\cdots\ud{^3\bm{r}_N}\,
+    \left\vert\Psi(\bm{r},\bm{r}_2,\dots,\bm{r}_N)\right\vert^2 .
+  \label{eq:8-onebodydensity}
+\end{equation}
+For a single Slater determinant built from orbitals $\psi_i$ this collapses to
+\begin{equation}
+  n(\bm{r}) = \sum_{i=1}^{N}\left\vert\psi_i(\bm{r})\right\vert^2,
+  \label{eq:8-densitydeterminant}
+\end{equation}
+a result already used in Section~\ref{sec:scf}.
+
+In second quantization the operator reads
+\begin{equation}
+  \hat{n}(\bm{r}) = \sum_{\alpha\beta}
+    \psi^{*}_{\alpha}(\bm{r})\psi_{\beta}(\bm{r})\,
+    \hat{a}^{\dagger}_{\alpha}\hat{a}_{\beta},
+  \label{eq:8-densitysecondquant}
+\end{equation}
+so that its expectation value in \emph{any} state -- a full
+configuration-interaction ground state
+$\bket{\Psi_0}=\sum_i C_{0i}\bket{\Phi_i}$ included -- is
+\begin{equation}
+  n(\bm{r}) = \sum_{ij}C^{*}_{0i}C_{0j}
+    \sum_{\alpha\beta}\psi^{*}_{\alpha}(\bm{r})\psi_{\beta}(\bm{r})
+    \bracket{\Phi_i}{\hat{a}^{\dagger}_{\alpha}\hat{a}_{\beta}}{\Phi_j}.
+  \label{eq:8-densityfci}
+\end{equation}
+Integrating over $\bm{r}$ and using orthonormality gives
+$\int n(\bm{r})\ud{^3\bm{r}}=N$, as it must.
+
+The more general object, needed below, is the one-body reduced density matrix
+off the diagonal,
+\begin{equation}
+  \rho^{(1)}(x';x) = N\int \ud{x_2}\cdots\ud{x_N}\,
+    \Psi^{*}(x',x_2,\dots,x_N)\,\Psi(x,x_2,\dots,x_N),
+  \label{eq:8-rho1}
+\end{equation}
+with $x$ the combined space and spin coordinate.  It is Hermitian, its
+diagonal is the density, $n(x)=\rho^{(1)}(x;x)$, and its eigenvalues are the
+occupation numbers of Section~\ref{sec:naturalorbitals}: at most one for
+fermions, and exactly $N$ ones and the rest zeros when -- and only when --
+$\Psi$ is a single Slater determinant, in which case $\rho^{(1)}$ is the
+projector onto the occupied subspace.
+
+\subsection{The two-body density}
+\label{sec:twobodydensity}
+
+Two-body operators need the pair density,
+\begin{equation}
+  \rho^{(2)}(x_1,x_2;y_1,y_2) = \frac{N(N-1)}{2}
+    \int \ud{x_3}\cdots\ud{x_N}\,
+    \Psi^{*}(y_1,y_2,x_3,\dots,x_N)\,\Psi(x_1,x_2,x_3,\dots,x_N),
+  \label{eq:8-rho2}
+\end{equation}
+the prefactor counting the $N(N-1)/2$ distinct pairs.  Its diagonal
+$\rho^{(2)}(x_1,x_2)$ is the joint probability of finding one particle at
+$x_1$ and another at $x_2$, and it contains everything needed for the
+expectation value of any two-body operator -- which is to say, everything
+needed for the energy.  In second quantization,
+\begin{equation}
+  \hat{\rho}^{(2)}(\bm{r}_1,\bm{r}_2)
+   = \sum_{\alpha\beta\gamma\delta}
+     \rho_{\alpha\gamma}(\bm{r}_1)\rho_{\beta\delta}(\bm{r}_2)\,
+     \hat{a}^{\dagger}_{\alpha}\hat{a}^{\dagger}_{\beta}
+     \hat{a}_{\delta}\hat{a}_{\gamma},
+  \qquad
+  \rho_{\alpha\beta}(\bm{r})
+   = \psi^{*}_{\alpha}(\bm{r})\psi_{\beta}(\bm{r}).
+  \label{eq:8-rho2secondquant}
+\end{equation}
+
+\subsection{Antisymmetry, and when the pair density factorises}
+\label{sec:factorisation}
+
+Fermionic wave functions change sign under the exchange of any two particles,
+\begin{equation}
+  \Psi(\dots,x_i,\dots,x_j,\dots)
+   = -\Psi(\dots,x_j,\dots,x_i,\dots),
+  \label{eq:8-antisymmetry}
+\end{equation}
+and this has a direct consequence for the pair density: it must vanish when
+$x_1=x_2$, since two identical fermions cannot be at the same point in the
+same spin state.  This is the Pauli principle expressed as a statement about
+$\rho^{(2)}$, and any approximate treatment that violates it is in trouble.
+
+For a single Slater determinant the pair density is completely determined by
+the one-body density matrix.  Applying Wick's theorem,
+Section~\ref{sec:wicktheorem}, to $\bracket{\Phi_0}{
+\hat{a}^{\dagger}\hat{a}^{\dagger}\hat{a}\hat{a}}{\Phi_0}$ leaves exactly two
+contractions, and
+\begin{equation}
+  \boxed{\;
+  \rho^{(2)}(x_1,x_2;y_1,y_2)
+   = \rho^{(1)}(x_1;y_1)\rho^{(1)}(x_2;y_2)
+   - \rho^{(1)}(x_1;y_2)\rho^{(1)}(x_2;y_1).
+  \;}
+  \label{eq:8-factorisation}
+\end{equation}
+The first term is the naive product -- what one would write for independent
+particles -- and the second is the exchange term that enforces antisymmetry.
+On the diagonal,
+\begin{equation}
+  \rho^{(2)}(x_1,x_2) = n(x_1)n(x_2)
+    - \left\vert\rho^{(1)}(x_1;x_2)\right\vert^2 ,
+  \label{eq:8-pairdiagonal}
+\end{equation}
+and setting $x_1=x_2$ gives $n(x_1)^2-n(x_1)^2=0$ exactly, as required.
+
+Equation~(\ref{eq:8-factorisation}) is worth dwelling on, because it marks
+precisely the boundary of mean-field theory.  For a Hartree product -- a
+plain product of orbitals with no antisymmetry -- one would have
+$\rho^{(2)}=n(x_1)n(x_2)$, but such a state is not a legitimate fermionic wave
+function.  The closest legitimate object is a single determinant, for which
+Eq.~(\ref{eq:8-factorisation}) holds \emph{exactly}, with the exchange term as
+the only two-particle correlation.  Beyond that -- for any genuinely
+correlated state -- the pair density cannot be reduced to one-body quantities
+at all, and the difference is what we have been calling correlation
+throughout this book.
+
+\begin{notebox}
+\textbf{Where this leaves us.}  The energy of Eq.~(\ref{eq:8-electronic})
+needs only $\rho^{(1)}$ and $\rho^{(2)}$; the full wave function is
+superfluous.  That observation is the origin of reduced-density-matrix
+methods, which try to determine $\rho^{(2)}$ directly.  The difficulty is
+the \emph{$N$-representability problem}: not every Hermitian, antisymmetric,
+correctly normalised $\rho^{(2)}$ comes from an actual $N$-fermion wave
+function, and characterising those that do is extremely hard.  Density
+functional theory sidesteps this by going all the way down to $n(\bm{r})$, at
+the price of an unknown functional.  The two difficulties -- an unknown
+functional here, an unknown representability condition there -- are two faces
+of the same problem, and neither has been solved.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The Hohenberg-Kohn theorems}
+\label{sec:hohenbergkohn}
+
+\index{Hohenberg-Kohn theorems}
+We now come to the two results on which everything rests.  Consider the family
+of Hamiltonians
+\begin{equation}
+  \hat{H} = \hat{T} + \hat{V}_{\mathrm{ext}} + \hat{V},
+  \qquad
+  \hat{V}_{\mathrm{ext}}\in\mathcal{V}_{\mathrm{ext}},
+  \label{eq:8-family}
+\end{equation}
+in which $\hat{T}$ and $\hat{V}$ are fixed once and for all -- they are
+properties of electrons, not of materials -- and only the external potential
+varies.  Assume for now that the ground state is non-degenerate.
+
+\begin{theorem}[Hohenberg-Kohn I]
+The external potential $v_{\mathrm{ext}}(\bm{r})$ is determined, up to an
+additive constant, by the ground-state density $n_0(\bm{r})$.
+\end{theorem}
+
+\begin{theorem}[Hohenberg-Kohn II]
+There exists a universal functional $F[n]$, the same for every external
+potential, such that
+\begin{equation}
+  E[n] = F[n] + \int \ud{^3\bm{r}}\,v_{\mathrm{ext}}(\bm{r})n(\bm{r}),
+  \qquad
+  F[n] = T[n] + V_{\mathrm{int}}[n],
+  \label{eq:8-hkfunctional}
+\end{equation}
+is minimised, over densities integrating to $N$, by the true ground-state
+density, and its minimum value is the ground-state energy $E_0$.
+\end{theorem}
+
+Together these say something startling.  The density -- three variables --
+determines the potential, hence the Hamiltonian, hence the full many-body
+wave function and every ground-state observable.  A quantity that is measured
+routinely by X-ray diffraction contains, in principle, all the information in
+the $3N$-dimensional $\Psi$.
+
+\subsection{Proof of the first theorem}
+\label{sec:hkproof}
+
+The proof is a two-line \emph{reductio ad absurdum} and is worth giving in
+full, because its simplicity is itself informative.
+
+Suppose two external potentials $v^{(1)}$ and $v^{(2)}$, differing by more
+than a constant, produced the same ground-state density $n(\bm{r})$.  They have
+different Hamiltonians $\hat{H}^{(1)},\hat{H}^{(2)}$ and, by the unique
+continuation theorem, different ground states
+$\Psi^{(1)}\ne\Psi^{(2)}$ with energies $E^{(1)},E^{(2)}$.
+
+Use $\Psi^{(2)}$ as a trial function for $\hat{H}^{(1)}$.  The variational
+principle of Section~\ref{sec:variational} is strict for a non-degenerate
+ground state, so
+\begin{equation}
+  E^{(1)} < \bracket{\Psi^{(2)}}{\hat{H}^{(1)}}{\Psi^{(2)}}
+   = \bracket{\Psi^{(2)}}{\hat{H}^{(2)}}{\Psi^{(2)}}
+   + \int\left[v^{(1)}-v^{(2)}\right]n(\bm{r})\ud{^3\bm{r}}
+   = E^{(2)} + \int\left[v^{(1)}-v^{(2)}\right]n .
+  \label{eq:8-hkineq1}
+\end{equation}
+The two Hamiltonians differ only in the external potential, and the density is
+by hypothesis the same, which is what allows the middle step.  Interchanging
+the labels,
+\begin{equation}
+  E^{(2)} < E^{(1)} + \int\left[v^{(2)}-v^{(1)}\right]n .
+  \label{eq:8-hkineq2}
+\end{equation}
+Adding Eqs.~(\ref{eq:8-hkineq1}) and~(\ref{eq:8-hkineq2}), the integrals
+cancel and we are left with
+\begin{equation}
+  E^{(1)} + E^{(2)} < E^{(1)} + E^{(2)},
+  \label{eq:8-hkcontradiction}
+\end{equation}
+which is absurd.  Hence no two potentials differing by more than a constant
+can share a ground-state density.
+
+The second theorem follows immediately.  Since $n_0$ fixes
+$v_{\mathrm{ext}}$, it fixes $\hat{H}$ and therefore $\Psi[n]$, so
+\begin{equation}
+  F_{\mathrm{HK}}[n] \equiv \bracket{\Psi[n]}{\hat{T}+\hat{V}}{\Psi[n]}
+  \label{eq:8-fhk}
+\end{equation}
+is a well-defined functional of the density alone, and it is universal
+because $\hat{T}$ and $\hat{V}$ contain no reference to
+$v_{\mathrm{ext}}$.  The Rayleigh-Ritz principle applied within this family
+gives $E_0=\min_{n}E[n]$.
+
+\subsection{What the theorems do not give}
+\label{sec:hkcaveats}
+
+Three caveats deserve stating plainly, because they are the difference
+between a beautiful theorem and a working method.
+
+\paragraph{They are existence theorems.}
+Nothing in the proof constructs $F[n]$, and nothing suggests it is simple.
+All the many-body difficulty of the preceding chapters is still there; it has
+been moved inside $F[n]$.  This is why the practical history of density
+functional theory is a history of \emph{approximate functionals}.
+
+\paragraph{$v$-representability.}
+The argument assumes that the density under consideration is the ground-state
+density of \emph{some} potential in the family.  Not every well-behaved,
+positive, correctly normalised $n(\bm{r})$ is, and characterising those that
+are is unsolved.  Levy and Lieb removed the difficulty by redefining the
+functional as a constrained search over wave functions,
+\begin{equation}
+  F_{\mathrm{LL}}[n] = \min_{\Psi\to n}
+    \bracket{\Psi}{\hat{T}+\hat{V}}{\Psi},
+  \label{eq:8-levylieb}
+\end{equation}
+the minimum running over all antisymmetric $\Psi$ that yield the density $n$.
+This is defined for any $N$-representable density, agrees with
+$F_{\mathrm{HK}}$ where the latter exists, and extends the theory to
+degenerate ground states.  It is also, of course, no more computable.
+
+\paragraph{Ground states only.}
+The functional delivers $E_0$ and $n_0$ and nothing else.  Excitation
+energies -- the subject of Chapter~\ref{chap:mfapplications} -- are not
+obtained from the ground-state functional, and reaching them requires a
+separate construction such as time-dependent density functional theory.  The
+Kohn-Sham eigenvalues introduced below are \emph{not} excitation energies, a
+point we return to in Section~\ref{sec:ksmeaning}.
+
+\subsection{The variational equation}
+\label{sec:dftvariational}
+
+Given $F[n]$, the ground state follows from minimising $E[n]$ subject to
+$\int n = N$.  Introducing a Lagrange multiplier exactly as in
+Section~\ref{sec:varcalculus},
+\begin{equation}
+  \frac{\delta}{\delta n(\bm{r})}
+  \left\{E[n]-\mu\left(\int n\,\ud{^3\bm{r}}-N\right)\right\} = 0
+  \qquad\Longrightarrow\qquad
+  \left.\frac{\delta E[n]}{\delta n(\bm{r})}\right\vert_{n=n_0} = \mu ,
+  \label{eq:8-eulerequation}
+\end{equation}
+so that the functional derivative of the energy is constant throughout the
+system.  That constant is the chemical potential, the Fermi level.  The
+pattern is by now familiar: a constrained variation produces a stationarity
+condition, and the multiplier enforcing normalisation is the energy conjugate
+to the particle number.
+
+%----------------------------------------------------------------------
+\section{Building a functional from the electron gas}
+\label{sec:functionalfromgas}
+
+\index{Thomas-Fermi model}\index{local density approximation}
+The theorems tell us $F[n]$ exists.  To make progress we need an
+approximation, and the oldest and still the most instructive strategy is to
+take a system we \emph{can} solve exactly and use it locally.
+
+That system is the homogeneous electron gas of
+Section~\ref{sec:electrongas}.  There we computed, for a uniform density
+$n$, both the kinetic energy per unit volume,
+\begin{equation}
+  t_0[n] = \frac{3\hbar^2(3\pi^2)^{2/3}}{10m}\,n^{5/3},
+  \label{eq:8-tf}
+\end{equation}
+which is Eq.~(\ref{eq:6-egkineticdensity}) divided by the volume, and the
+exchange energy per particle.  If the density varies slowly enough, we may
+pretend that each small region behaves like a uniform gas at the local
+density and integrate,
+\begin{equation}
+  \mathcal{T}_0[n] = \frac{3\hbar^2(3\pi^2)^{2/3}}{10m}
+    \int \ud{^3\bm{r}}\,\left(n(\bm{r})\right)^{5/3}.
+  \label{eq:8-tffunctional}
+\end{equation}
+This is the \emph{Thomas-Fermi} kinetic functional, and with the classical
+electrostatic (Hartree) energy
+\begin{equation}
+  \mathcal{U}_{\mathrm{H}}[n] = \frac{e^2}{2}
+    \iint \ud{^3\bm{r}}\ud{^3\bm{r}'}\,
+    \frac{n(\bm{r})n(\bm{r}')}{\vert\bm{r}-\bm{r}'\vert},
+  \label{eq:8-hartree}
+\end{equation}
+it gives a complete, if crude, theory.  Everything not accounted for is
+collected into a single remainder, the \emph{exchange-correlation energy}
+$E_{\mathrm{xc}}[n]$, and the Hohenberg-Kohn functional is written
+\begin{equation}
+  \mathcal{E}_{\mathrm{HK}}[n]
+   = \mathcal{T}_0[n]
+   + \int \ud{^3\bm{r}}\,v_{\mathrm{ext}}(\bm{r})n(\bm{r})
+   + \mathcal{U}_{\mathrm{H}}[n]
+   + E_{\mathrm{xc}}[n].
+  \label{eq:8-hkdecomposition}
+\end{equation}
+The decomposition is a definition, not an approximation: whatever is missing
+is in $E_{\mathrm{xc}}$ by construction.  It is useful only if that remainder
+is small, which is the whole gamble of the subject.
+
+\paragraph{Why Thomas-Fermi is not enough.}
+Equation~(\ref{eq:8-tffunctional}) has no orbitals in it, and minimising
+Eq.~(\ref{eq:8-hkdecomposition}) directly over $n$ gives an algebraic
+equation.  It is enormously cheaper than anything in the preceding chapters.
+It also fails, and the failure is instructive rather than marginal.  The
+program \texttt{dft.py} compares the exact kinetic energy of $N$
+non-interacting fermions in a one-dimensional trap with the local estimate:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrr}
+\toprule
+$N$ & $T$ (exact) & $T$ (Thomas-Fermi) & ratio\\
+\midrule
+$1$ & $0.250000$  & $0.302300$  & $1.2092$\\
+$2$ & $1.000000$  & $1.074844$  & $1.0748$\\
+$3$ & $2.250000$  & $2.340025$  & $1.0400$\\
+$4$ & $4.000000$  & $4.101805$  & $1.0255$\\
+$6$ & $9.000000$  & $9.120038$  & $1.0133$\\
+$8$ & $16.000000$ & $16.134286$ & $1.0084$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The error falls steadily as the particle number grows, which is exactly what
+the construction promises -- the density becomes smoother on the scale of the
+local Fermi wavelength -- but a one per cent error in the \emph{largest} term
+of the energy is fatal when chemical accuracy is wanted.  Worse, the
+Thomas-Fermi density has no shell structure at all: it is smooth and
+featureless, with none of the nodal structure that orbitals supply, and
+Teller proved that within the model no molecule is bound.  Something has to
+be done about the kinetic energy specifically.
+
+%----------------------------------------------------------------------
+\section{The Kohn-Sham construction}
+\label{sec:kohnsham}
+
+\index{Kohn-Sham equations}
+Kohn and Sham's idea was to keep orbitals for the one term that cannot be
+approximated locally, and only that term.
+
+Introduce an auxiliary system of $N$ \emph{non-interacting} fermions moving
+in some effective potential $v_{\mathrm{KS}}(\bm{r})$, chosen so that its
+ground-state density equals the density of the real, interacting system.  Its
+kinetic energy,
+\begin{equation}
+  T_s[n] = -\frac{\hbar^2}{2m}\sum_{i=1}^{N}
+    \int \ud{^3\bm{r}}\,\psi^{*}_i(\bm{r})\nabla^2\psi_i(\bm{r}),
+  \label{eq:8-Ts}
+\end{equation}
+is computed exactly from orbitals rather than approximated from the density,
+and it captures the shell structure that Thomas-Fermi threw away.  It is not
+the true kinetic energy $T[n]$ of the interacting system, but the difference
+is small, and we simply redefine the remainder to absorb it,
+\begin{equation}
+  E_{\mathrm{xc}}[n] \equiv \left(T[n]-T_s[n]\right)
+    + \left(V_{\mathrm{int}}[n]-\mathcal{U}_{\mathrm{H}}[n]\right).
+  \label{eq:8-excdefinition}
+\end{equation}
+The total energy is then
+\begin{equation}
+  E[n] = T_s[n]
+    + \int \ud{^3\bm{r}}\,v_{\mathrm{ext}}n
+    + \mathcal{U}_{\mathrm{H}}[n]
+    + E_{\mathrm{xc}}[n].
+  \label{eq:8-ksenergy}
+\end{equation}
+
+Varying Eq.~(\ref{eq:8-ksenergy}) with respect to the orbitals, subject to
+orthonormality, and following exactly the steps of
+Section~\ref{sec:hfcoefficients}, gives the \emph{Kohn-Sham equations}
+\begin{equation}
+  \boxed{\;
+  \left(-\frac{\hbar^2}{2m}\nabla^2
+    + v_{\mathrm{KS}}(\bm{r})\right)\psi_i(\bm{r})
+   = \varepsilon_i\psi_i(\bm{r}),
+  \;}
+  \label{eq:8-kohnsham}
+\end{equation}
+with the Kohn-Sham potential
+\begin{equation}
+  v_{\mathrm{KS}}(\bm{r}) = v_{\mathrm{ext}}(\bm{r})
+    + \int \ud{^3\bm{r}'}\,\frac{e^2 n(\bm{r}')}{\vert\bm{r}-\bm{r}'\vert}
+    + v_{\mathrm{xc}}(\bm{r}),
+  \qquad
+  v_{\mathrm{xc}}(\bm{r})
+   = \frac{\delta E_{\mathrm{xc}}[n]}{\delta n(\bm{r})} ,
+  \label{eq:8-kspotential}
+\end{equation}
+and the density reconstructed from the occupied orbitals,
+\begin{equation}
+  n(\bm{r}) = \sum_{i=1}^{N}\vert\psi_i(\bm{r})\vert^2 .
+  \label{eq:8-ksdensity}
+\end{equation}
+Since $v_{\mathrm{KS}}$ depends on $n$ and $n$ on the orbitals, the equations
+are nonlinear and must be iterated to self-consistency -- the same
+self-consistent field loop as Section~\ref{sec:scf}, and for the same reason.
+
+\paragraph{The total energy.}
+The sum of the Kohn-Sham eigenvalues is \emph{not} the total energy, exactly
+as in Hartree-Fock, Exercise~\ref{ex:6-hfequations}b).  Since
+$\sum_i\varepsilon_i = T_s + \int v_{\mathrm{KS}}n$,
+\begin{equation}
+  E = \sum_{i=1}^{N}\varepsilon_i
+    - \mathcal{U}_{\mathrm{H}}[n]
+    + E_{\mathrm{xc}}[n]
+    - \int \ud{^3\bm{r}}\,v_{\mathrm{xc}}(\bm{r})n(\bm{r}) ,
+  \label{eq:8-kstotalenergy}
+\end{equation}
+the last three terms correcting the double counting of the Hartree and
+exchange-correlation contributions.
+
+\subsection{Kohn-Sham against Hartree-Fock}
+\label{sec:ksvshf}
+
+It is worth setting the two schemes side by side, since they look almost
+identical and differ in one decisive respect.  The Hartree-Fock equation of
+Chapter~\ref{chap:hartrefock} reads, in coordinate space,
+\begin{align}
+  \Bigg(-\frac{\hbar^2}{2m}\nabla^2 + v_{\mathrm{ext}}(\bm{r})
+   &+ \int \ud{^3\bm{r}'}\,w(\bm{r},\bm{r}')n(\bm{r}')\Bigg)\phi_k(\bm{r})
+   \nonumber\\
+   &\underbrace{-\sum_{l=1}^{N}\int \ud{^3\bm{r}'}\,
+     \phi^{*}_l(\bm{r}')w(\bm{r},\bm{r}')\phi_k(\bm{r}')\phi_l(\bm{r})}
+     _{\text{exchange}}
+   = \varepsilon_k\phi_k(\bm{r}),
+  \label{eq:8-hfcoordinate}
+\end{align}
+whereas the Kohn-Sham equation is
+\begin{equation}
+  \left(-\frac{\hbar^2}{2m}\nabla^2 + v_{\mathrm{ext}}(\bm{r})
+    + \int \ud{^3\bm{r}'}\,w(\bm{r},\bm{r}')n(\bm{r}')
+    + \underbrace{v_{\mathrm{xc}}([n];\bm{r})}
+      _{\text{exchange {\it and} correlation}}\right)\phi_k(\bm{r})
+   = \varepsilon_k\phi_k(\bm{r}).
+  \label{eq:8-kscoordinate}
+\end{equation}
+The difference is the last term.  Hartree-Fock's exchange is \emph{non-local}
+-- an integral operator, different for each orbital -- and it is exact.
+Kohn-Sham's $v_{\mathrm{xc}}$ is a \emph{local multiplicative potential}, the
+same for every orbital, and it is approximate; but it also contains
+correlation, which Hartree-Fock does not have at all.  The trade is
+non-locality and exactness against locality, cheapness and a bit of
+correlation.  Both scale formally as the cube of the number of basis
+functions, but the Kohn-Sham prefactor is far smaller because no
+four-index integrals are needed for $v_{\mathrm{xc}}$.
+
+\begin{notebox}
+\textbf{What the Kohn-Sham orbitals are.}
+\label{sec:ksmeaning}
+They are the orbitals of a fictitious non-interacting system chosen to
+reproduce the right density.  They are not approximations to the true
+one-electron wave functions, and the eigenvalues $\varepsilon_i$ are not
+ionisation energies -- Koopmans' theorem, Exercise~\ref{ex:6-hfequations}c),
+applies to Hartree-Fock, not here.  The one exception is the highest occupied
+level, which for the exact functional equals minus the exact ionisation
+energy.  The systematic underestimation of band gaps by Kohn-Sham eigenvalue
+differences is not a numerical deficiency but a consequence of asking the
+orbitals a question they were not built to answer.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The local density approximation}
+\label{sec:lda}
+
+\index{local density approximation}\index{exchange-correlation energy}
+Everything now rests on $E_{\mathrm{xc}}[n]$.  The oldest approximation, and
+still the reference point for all the others, is the \emph{local density
+approximation}: assume that the exchange-correlation energy density at a
+point depends only on the density at that point, and take that dependence
+from the uniform electron gas,
+\begin{equation}
+  E_{\mathrm{xc}}^{\mathrm{LDA}}[n]
+   = \int \ud{^3\bm{r}}\,n(\bm{r})\,
+     \epsilon_{\mathrm{xc}}\!\left(n(\bm{r})\right),
+  \label{eq:8-lda}
+\end{equation}
+where $\epsilon_{\mathrm{xc}}(n)$ is the exchange-correlation energy per
+particle of a uniform gas of density $n$.  The corresponding potential
+follows by differentiation,
+\begin{equation}
+  v_{\mathrm{xc}}(\bm{r})
+   = \frac{\ud{}}{\ud{n}}
+     \left[n\,\epsilon_{\mathrm{xc}}(n)\right]_{n=n(\bm{r})} .
+  \label{eq:8-vxclda}
+\end{equation}
+
+The exchange part is available in closed form.  It is the exchange energy of
+Section~\ref{sec:egsingleparticle} expressed per particle rather than per
+state,
+\begin{equation}
+  \epsilon_{x}(n) = -\frac{3}{4}\left(\frac{3}{\pi}\right)^{1/3}n^{1/3},
+  \qquad
+  v_{x}(n) = \frac{4}{3}\epsilon_x(n),
+  \label{eq:8-ldaexchange}
+\end{equation}
+in Hartree atomic units.  That this must reproduce the electron-gas result of
+Chapter~\ref{chap:hartrefock} is a consistency check the program performs:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrr}
+\toprule
+$r_s$ & $\epsilon_x$ [Ha] & $\epsilon_x$ [Ry] & $-0.916/r_s$ [Ry]\\
+\midrule
+$1.0000$ & $-0.458165$ & $-0.916331$ & $-0.916000$\\
+$2.0000$ & $-0.229083$ & $-0.458165$ & $-0.458000$\\
+$4.0000$ & $-0.114541$ & $-0.229083$ & $-0.229000$\\
+$4.8253$ & $-0.094951$ & $-0.189901$ & $-0.189833$\\
+$6.0000$ & $-0.076361$ & $-0.152722$ & $-0.152667$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The coefficient comes out as $0.916331$ against the $0.9163$ of
+Eq.~(\ref{eq:6-egcoefficients}).  This agreement is a tautology -- the local
+approximation is \emph{defined} to be exact for the uniform gas -- and the
+interesting question is not whether it holds but why the approximation
+remains useful when the density is far from uniform.
+
+The correlation part $\epsilon_c(n)$ has no closed form.  It is obtained from
+quantum Monte Carlo calculations of the uniform gas, the diffusion Monte
+Carlo results of Ceperley and Alder being the standard source, and then
+fitted to a convenient analytic form.  This is worth noticing: the input to
+the most widely used approximation in computational materials science is a
+wave-function calculation of the kind developed in the preceding chapters.
+
+\subsection{The exchange hole}
+\label{sec:exchangehole}
+
+\index{exchange hole}
+The reason a local approximation works at all becomes clearer if one looks at
+what exchange actually does.  Divide the pair
+density~(\ref{eq:8-pairdiagonal}) by the product of densities to define the
+pair correlation function $g$; for the uniform gas at the Hartree-Fock level
+it depends only on $y=k_F s$ and is known exactly,
+\begin{equation}
+  g(y) = 1 - \frac{9}{2}
+    \left[\frac{\sin y - y\cos y}{y^3}\right]^2 .
+  \label{eq:8-paircorrelation}
+\end{equation}
+The program tabulates it:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rll}
+\toprule
+$k_F s$ & $g(s)$ & \\
+\midrule
+$0.00$  & $0.500000$ & same spins never coincide\\
+$0.50$  & $0.524471$ & \\
+$1.00$  & $0.591838$ & \\
+$2.00$  & $0.786732$ & \\
+$4.00$  & $0.996208$ & \\
+$8.00$  & $0.999920$ & the hole has healed\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At coincidence $g(0)=\tfrac12$: electrons of the same spin are completely
+excluded, those of opposite spin are uncorrelated at this level.  Each
+electron therefore moves inside a hole in the density of its neighbours, and
+that hole obeys an exact sum rule -- it contains precisely one missing
+electron,
+\begin{equation}
+  n\int \ud{^3\bm{s}}\left[g(s)-1\right]
+   = \frac{4}{3\pi}\int_0^{\infty}\ud{y}\,y^2\left[g(y)-1\right]
+   = -1 ,
+  \label{eq:8-sumrule}
+\end{equation}
+which the program verifies numerically to four digits.
+
+This is the deeper reason the local approximation succeeds.  The
+exchange-correlation energy is, to a good approximation, the electrostatic
+interaction of each electron with its own hole.  That energy depends mostly
+on the \emph{total charge} of the hole -- which the sum rule fixes exactly --
+and only weakly on its shape.  A functional that gets the shape badly wrong
+but the normalisation right can still give good energies, and this is what
+the local density approximation does.
+
+\subsection{Beyond LDA}
+\label{sec:beyondlda}
+
+The density in a real atom or molecule is anything but slowly varying, and
+the natural first correction is to let the functional see the gradient as
+well,
+\begin{equation}
+  E_{\mathrm{xc}}^{\mathrm{GGA}}[n]
+   = \int \ud{^3\bm{r}}\,n(\bm{r})\,
+     \epsilon_{\mathrm{xc}}\!\left(n(\bm{r}),
+       \vert\nabla n(\bm{r})\vert\right),
+  \label{eq:8-gga}
+\end{equation}
+the \emph{generalised gradient approximation}.  A naive gradient expansion of
+the uniform gas actually makes things worse; what works is to construct the
+gradient dependence so as to preserve the exact constraints -- the sum rule
+above, scaling relations, known limits -- and this is how the widely used
+functionals were built.  Beyond that lie meta-GGAs, which add the kinetic
+energy density, and hybrids, which mix in a fraction of exact Hartree-Fock
+exchange, Eq.~(\ref{eq:8-hfcoordinate}), to repair the self-interaction error
+discussed next.
+
+%----------------------------------------------------------------------
+\section{Kohn-Sham in practice}
+\label{sec:kspractice}
+
+To see the machinery work, and fail, we apply it to a system we have solved
+twice already: $N$ spinless fermions in a one-dimensional harmonic trap with
+a softened Coulomb repulsion, in a basis of eight oscillator orbitals.  This
+is the system of Section~\ref{sec:energyfunctional} and of the Hartree-Fock
+calculation of Section~\ref{sec:scf}, so the three treatments can be compared
+for the same Hamiltonian.
+
+There is no tabulated exchange functional for a one-dimensional gas with this
+interaction, so the program builds one, which is instructive in itself.  For a
+spinless one-dimensional gas the Fermi momentum is $k_F=\pi n$ and the
+one-body density matrix is $\rho^{(1)}(s)=\sin(k_Fs)/\pi s$, so
+\begin{equation}
+  \epsilon_x(n) = -\frac{1}{n}\int_0^{\infty}\ud{s}\,v(s)
+    \left[\frac{\sin(k_F s)}{\pi s}\right]^2 ,
+  \label{eq:8-lda1d}
+\end{equation}
+which is evaluated numerically on a grid of densities, tabulated and
+interpolated.  This is precisely how real functionals are made.  The result:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrr}
+\toprule
+$n$ & $\epsilon_x(n)$ & $v_x(n)$\\
+\midrule
+$0.05$ & $-0.17352608$ & $-0.29740316$\\
+$0.10$ & $-0.27855522$ & $-0.45906496$\\
+$0.20$ & $-0.42332628$ & $-0.65789106$\\
+$0.40$ & $-0.59557914$ & $-0.84878595$\\
+$0.80$ & $-0.75884371$ & $-0.96587633$\\
+$1.50$ & $-0.86548980$ & $-0.99703512$\\
+$2.50$ & $-0.91895548$ & $-0.99989688$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Solving Eq.~(\ref{eq:8-kohnsham}) self-consistently in the oscillator basis
+then gives
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrr}
+\toprule
+$N$ & $E$ (Kohn-Sham) & $E$ (Hartree-Fock) & $E$ (exact)\\
+\midrule
+$1$ & $0.54752674$  & $0.50000000$  & $0.50000000$\\
+$2$ & $2.72022768$  & $2.66308878$  & $2.65923049$\\
+$3$ & $6.45108052$  & $6.39016133$  & ---\\
+$4$ & $11.68602229$ & $11.62305385$ & ---\\
+\bottomrule
+\end{tabular}
+\caption{Kohn-Sham with a local exchange functional, Hartree-Fock and the
+exact answer for $N$ spinless fermions in a one-dimensional trap with a
+softened Coulomb repulsion, in a basis of eight oscillator orbitals.  The
+Hartree-Fock column reproduces Table~\ref{tab:hfgain}; the exact value for
+$N=2$ comes from full diagonalisation in the same basis.}
+\label{tab:ksresults}
+\end{table}
+
+Note first that the exact two-particle energy, $2.65923049$, lies
+$-3.86\times10^{-3}$ below the Hartree-Fock value, which is the correlation
+energy quoted in Eq.~(\ref{eq:2-correlation}) -- the three chapters are
+consistent.  Note next that Kohn-Sham lies \emph{above} both.  This is not a
+failure of the variational principle, because we have used exchange only and
+put no correlation functional in at all; it is the error of treating exchange
+locally, compounded by a second defect that we now isolate.
+
+\subsection{The self-interaction error}
+\label{sec:selfinteraction}
+
+\index{self-interaction error}
+Take a single particle.  There is nothing for it to interact with, so the
+exact energy is the oscillator ground state, $0.5$.  Hartree-Fock gives
+exactly that: in Eq.~(\ref{eq:8-hfcoordinate}) the direct term with $l=k$ is
+cancelled term by term by the exchange term with $l=k$, and a Slater
+determinant is rigorously free of self-interaction.
+
+A local functional cannot do this, because it sees only the density, and the
+density of one electron is indistinguishable from the density of half of two.
+The program reports, for $N=1$:
+\begin{equation}
+  \mathcal{U}_{\mathrm{H}} = 0.60855522,
+  \qquad
+  E_x^{\mathrm{LDA}} = -0.56166291,
+  \qquad
+  \mathcal{U}_{\mathrm{H}} + E_x^{\mathrm{LDA}} = 0.04689232,
+  \label{eq:8-sie}
+\end{equation}
+where the sum should vanish identically.  The residue $0.047$ is the
+\emph{self-interaction error}, and it accounts for almost all of the
+$0.0475$ by which Kohn-Sham misses the exact one-particle energy.
+
+This single number explains a long list of known LDA failures: anions are
+overbound, reaction barriers too low, band gaps too small, and charge is
+over-delocalised, because an electron is spuriously repelled by itself and
+spreads out to reduce that repulsion.  Self-interaction corrections remove it
+explicitly, orbital by orbital; hybrid functionals reduce it by mixing in a
+fraction of exact exchange, which is self-interaction free by construction.
+
+\subsection{How local is too local?}
+\label{sec:howlocal}
+
+We can isolate the error of \emph{locality} alone, cleanly, by evaluating on
+one and the same density both the exact exchange energy of the determinant
+and the local estimate:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrr}
+\toprule
+$N$ & $E_x$ (exact) & $E_x$ (local) & ratio\\
+\midrule
+$1$ & $-0.60855522$ & $-0.56166291$ & $0.9229$\\
+$2$ & $-1.33077771$ & $-1.27749456$ & $0.9600$\\
+$3$ & $-2.11087395$ & $-2.05548416$ & $0.9738$\\
+$4$ & $-2.92523775$ & $-2.86866697$ & $0.9807$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The local approximation recovers $92\%$ of the exchange energy for one
+particle and $98\%$ for four, improving steadily as the density smooths out
+on the scale of the local Fermi wavelength.  This is the behaviour the
+construction promises, and the corresponding figure for real atoms in three
+dimensions is close to $90\%$ -- an error of the order of ten per cent in a
+large term, which is exactly why gradient corrections were needed before
+density functional theory became quantitative for chemistry.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:ch8summary}
+
+Density functional theory rests on an exact statement -- the ground-state
+density determines the Hamiltonian -- and on an approximation that the theorem
+itself does not supply.  The Hohenberg-Kohn theorems guarantee a universal
+functional $F[n]$ and a variational principle for it, but they are existence
+theorems; all the many-body difficulty of the preceding chapters survives,
+relocated inside $F[n]$.
+
+The Kohn-Sham construction is what makes the theory workable.  By
+reintroducing orbitals for the kinetic energy -- the one contribution that a
+local approximation handles badly, as Thomas-Fermi showed -- it keeps shell
+structure exactly and leaves only a small remainder to be approximated.  What
+is left is a self-consistent one-body problem of exactly the same form as
+Hartree-Fock, Eq.~(\ref{eq:6-hfequations}), differing in a single term: a
+local multiplicative $v_{\mathrm{xc}}$ in place of the non-local exchange
+operator.
+
+The local density approximation takes that remainder from the electron gas of
+Chapter~\ref{chap:hartrefock}, and its success rests less on the density
+being slowly varying -- it never is -- than on the exchange-correlation hole
+sum rule, which fixes the quantity the energy is most sensitive to.  Its two
+characteristic failures are visible in a system with four particles: exchange
+treated locally is wrong by a few per cent, and the self-interaction that
+Hartree-Fock cancels identically survives.
+
+It is worth being clear about where this method sits relative to the others in
+this book.  Configuration interaction, coupled cluster and the random-phase
+approximation are systematically improvable: there is a hierarchy, and one
+can in principle climb it towards the exact answer.  Density functional
+theory is not of that kind.  There is no sequence of functionals converging to
+$F[n]$, and no internal estimate of the error.  What it offers instead is a
+cost that scales gently enough to treat thousands of atoms, and an accuracy
+that -- for reasons that are now partly understood -- is far better than the
+crudeness of the approximations would suggest.
+
+The program \texttt{dft.py} performs every calculation of this chapter, and
+the notebook \texttt{dft.ipynb} runs it cell by cell.
+
+%----------------------------------------------------------------------
+\section{Exercises}
+\label{sec:ch8exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: densities and density matrices}
+\label{ex:8-densities}
+\addcontentsline{toc}{subsection}{Exercise 1: densities and density matrices}
+
+\begin{enumerate}
+  \item[a)] Show that Eq.~(\ref{eq:8-densityoperator}) and
+  Eq.~(\ref{eq:8-onebodydensity}) define the same quantity, and that
+  $\int n(\bm{r})\ud{^3\bm{r}}=N$.
+  \item[b)] Derive Eq.~(\ref{eq:8-densitydeterminant}) for a single Slater
+  determinant, and show that $\rho^{(1)}$ is then the projector onto the
+  occupied orbitals.
+  \item[c)] Derive the factorisation~(\ref{eq:8-factorisation}) from Wick's
+  theorem, and verify that the diagonal vanishes at $x_1=x_2$.
+  \item[d)] Show that for a correlated state the eigenvalues of
+  $\rho^{(1)}$ are strictly between zero and one, and relate this to the
+  occupation numbers of Section~\ref{sec:naturalorbitals}.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Insert Eq.~(\ref{eq:8-densityoperator}) into the expectation value and use the
+fact that $\Psi$ is antisymmetric, so that every term of
+$\sum_i\delta(\bm{r}-\bm{r}_i)$ contributes equally:
+\begin{equation}
+  \bracket{\Psi}{\hat{n}(\bm{r})}{\Psi}
+   = N\int\ud{^3\bm{r}_2}\cdots\ud{^3\bm{r}_N}
+     \left\vert\Psi(\bm{r},\bm{r}_2,\dots)\right\vert^2 ,
+  \label{eq:8-exa1}
+\end{equation}
+which is Eq.~(\ref{eq:8-onebodydensity}).  Integrating over $\bm{r}$ restores
+the full normalisation integral, giving $N\cdot1=N$.
+
+\paragraph{Answer to b).}
+For a determinant $\rho^{(1)}(x';x)=\sum_{i=1}^{N}\psi_i(x')\psi_i^{*}(x)$,
+which follows from Eq.~(\ref{eq:8-rho1}) by expanding the determinant and
+noting that only terms pairing the same orbital in bra and ket survive the
+integration over the remaining $N-1$ coordinates.  Setting $x'=x$ gives
+Eq.~(\ref{eq:8-densitydeterminant}).  Regarded as an operator,
+$\rho^{(1)}=\sum_i\ketbra{\psi_i}{\psi_i}$, so $(\rho^{(1)})^2=\rho^{(1)}$
+by orthonormality and $\mathrm{tr}\,\rho^{(1)}=N$: a projector of rank $N$,
+which is Exercise~\ref{ex:6-determinants}d) in coordinate language.
+
+\paragraph{Answer to c).}
+Write the pair density as
+$\bracket{\Phi_0}{\hat{\psi}^{\dagger}(y_1)\hat{\psi}^{\dagger}(y_2)
+\hat{\psi}(x_2)\hat{\psi}(x_1)}{\Phi_0}$ and apply Wick's theorem.  Only
+contractions pairing a creation with an annihilation operator survive, and
+there are exactly two ways to do it: $(y_1x_1)(y_2x_2)$ and
+$(y_1x_2)(y_2x_1)$, the second differing from the first by one interchange
+and hence carrying a minus sign.  Each contraction is a factor
+$\rho^{(1)}$, giving Eq.~(\ref{eq:8-factorisation}).  On the diagonal with
+$x_1=x_2$ the two terms become $n(x_1)^2$ and $\vert\rho^{(1)}(x_1;x_1)
+\vert^2=n(x_1)^2$, which cancel.
+
+\paragraph{Answer to d).}
+$\rho^{(1)}$ is Hermitian and positive semi-definite, so its eigenvalues
+$n_k$ are real and non-negative; they sum to $N$.  For fermions no eigenvalue
+can exceed one, since $n_k=\bracket{\Psi}{\hat{a}^{\dagger}_k\hat{a}_k}{\Psi}
+\le1$ by the Pauli principle.  Equality for exactly $N$ of them forces
+$\rho^{(1)}$ to be idempotent, hence forces $\Psi$ to be a single
+determinant.  Any correlated state therefore has all $n_k$ strictly inside
+$[0,1]$, and the departure of the largest from unity is the diagnostic used
+in Table~\ref{tab:natural}.
+
+\subsection*{Exercise 2: the Hohenberg-Kohn theorems}
+\label{ex:8-hk}
+\addcontentsline{toc}{subsection}{Exercise 2: the Hohenberg-Kohn theorems}
+
+\begin{enumerate}
+  \item[a)] Reproduce the proof of the first theorem, stating exactly where
+  non-degeneracy is used.
+  \item[b)] Show that the theorem determines $v_{\mathrm{ext}}$ only up to an
+  additive constant, and explain why that is harmless.
+  \item[c)] Prove the second theorem from the first, and state what
+  ``universal'' means.
+  \item[d)] Explain the $v$-representability problem and how the Levy-Lieb
+  constrained search, Eq.~(\ref{eq:8-levylieb}), removes it.
+  \item[e)] The theorems say the density determines everything.  Why, then,
+  can we not obtain excitation energies from $E[n]$?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+See Eqs.~(\ref{eq:8-hkineq1})--(\ref{eq:8-hkcontradiction}).  Non-degeneracy
+enters in making the variational inequality \emph{strict}: if the ground state
+were degenerate, $\Psi^{(2)}$ might be another ground state of
+$\hat{H}^{(1)}$ and the inequality would become an equality, so that adding
+the two relations would give $E^{(1)}+E^{(2)}\le E^{(1)}+E^{(2)}$ -- true, and
+no contradiction.  This is exactly the loophole that the Levy-Lieb
+formulation closes.
+
+\paragraph{Answer to b).}
+Adding a constant $c$ to $v_{\mathrm{ext}}$ adds $Nc$ to every eigenvalue
+and changes no eigenstate, hence no density.  The map from densities to
+potentials therefore cannot possibly resolve the constant, and does not need
+to: energy differences, densities and all observables are unaffected.  It is
+the same ambiguity as the zero of a potential in elementary mechanics.
+
+\paragraph{Answer to c).}
+By the first theorem $n_0$ determines $v_{\mathrm{ext}}$, hence $\hat{H}$,
+hence its ground state $\Psi[n]$.  So
+$F_{\mathrm{HK}}[n]=\bracket{\Psi[n]}{\hat{T}+\hat{V}}{\Psi[n]}$ is a
+functional of $n$ alone.  ``Universal'' means that $F$ contains no reference
+to $v_{\mathrm{ext}}$: the very same functional applies to a hydrogen atom, a
+copper crystal and a stretch of DNA, since $\hat{T}$ and $\hat{V}$ are
+properties of electrons.  For any trial $n$, the Rayleigh-Ritz principle
+gives $E[n]=F[n]+\int v_{\mathrm{ext}}n \ge E_0$, with equality only at
+$n=n_0$.
+
+\paragraph{Answer to d).}
+The construction of $F_{\mathrm{HK}}$ requires that $n$ be the ground-state
+density of \emph{some} potential in the admissible family -- that it be
+$v$-representable.  Densities are known that are not, and no useful
+characterisation of the $v$-representable ones exists.  Levy and Lieb
+sidestep the issue by defining $F$ through a minimisation over all
+antisymmetric wave functions yielding the given density,
+Eq.~(\ref{eq:8-levylieb}).  This requires only $N$-representability, which is
+easy to characterise for a one-body density -- positivity, correct
+normalisation and finite $\int\vert\nabla n^{1/2}\vert^2$ suffice -- and it
+handles degenerate ground states.
+
+\paragraph{Answer to e).}
+The theorems concern the ground state.  The variational principle
+$E[n]\ge E_0$ singles out the minimum and says nothing about stationary
+points corresponding to excited states, and the functional $F[n]$ was
+constructed from ground-state wave functions only.  Excitations require
+extra structure: time-dependent density functional theory obtains them from
+the linear response of the density, which is formally the density-functional
+analogue of the random-phase approximation of
+Chapter~\ref{chap:mfapplications}, with the exchange-correlation kernel
+$\delta v_{\mathrm{xc}}/\delta n$ playing the part of the residual
+interaction in $A$ and $B$.
+
+\subsection*{Exercise 3: from the electron gas to a functional}
+\label{ex:8-gas}
+\addcontentsline{toc}{subsection}{Exercise 3: from the electron gas to a functional}
+
+\begin{enumerate}
+  \item[a)] Derive the Thomas-Fermi kinetic density~(\ref{eq:8-tf}) from the
+  kinetic energy of Chapter~\ref{chap:hartrefock}, and confirm it numerically.
+  \item[b)] Derive the local exchange energy~(\ref{eq:8-ldaexchange}) and show
+  that it reproduces the $-0.916/r_s$ of Section~\ref{sec:egenergy}.
+  \item[c)] Show that $v_x=\tfrac43\epsilon_x$ for the local exchange
+  functional, and explain why the factor is not one.
+  \item[d)] Derive the one-dimensional analogue~(\ref{eq:8-lda1d}) and the
+  kinetic density $t[n]=(\pi^2/6)n^3$.
+  \item[e)] Verify the exchange-hole sum rule~(\ref{eq:8-sumrule})
+  analytically.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Equation~(\ref{eq:6-egkineticdensity}) gives the kinetic energy per particle
+as $\tfrac35\hbar^2k_F^2/2m$; multiplying by $n$ and using
+$k_F=(3\pi^2n)^{1/3}$ gives the energy per unit volume
+\begin{equation}
+  t_0[n] = \frac{3}{10}\frac{\hbar^2}{m}\left(3\pi^2\right)^{2/3}n^{5/3},
+  \label{eq:8-exa3}
+\end{equation}
+which is Eq.~(\ref{eq:8-tf}).  The program compares the two expressions at
+three densities and finds them identical to eight digits.
+
+\paragraph{Answer to b).}
+The exchange energy is
+$E_x=-\tfrac12\iint v(\vert\bm{r}-\bm{r}'\vert)
+\vert\rho^{(1)}(\bm{r};\bm{r}')\vert^2$, the second term of
+Eq.~(\ref{eq:8-pairdiagonal}) integrated against the interaction.  For the
+uniform gas $\rho^{(1)}$ depends only on $s=\vert\bm{r}-\bm{r}'\vert$ and
+equals $3n[\sin y-y\cos y]/y^3$ with $y=k_Fs$; doing the integral with
+$v=e^2/s$ gives $E_x/V=-\tfrac34(3/\pi)^{1/3}n^{4/3}$, hence
+Eq.~(\ref{eq:8-ldaexchange}).  Evaluating at $n=3/(4\pi r_0^3)$,
+\begin{equation}
+  \epsilon_x = -\frac{3}{4}\left(\frac{3}{\pi}\right)^{1/3}
+    \left(\frac{3}{4\pi}\right)^{1/3}\frac{1}{r_s}
+   = -\frac{0.4582}{r_s}\ \text{Ha}
+   = -\frac{0.9163}{r_s}\ \text{Ry},
+  \label{eq:8-exb3}
+\end{equation}
+which is the exchange term of Eq.~(\ref{eq:6-egenergy}).
+
+\paragraph{Answer to c).}
+$E_x=\int n\epsilon_x(n)$ with $\epsilon_x\propto n^{1/3}$, so the integrand
+is $\propto n^{4/3}$ and
+\begin{equation}
+  v_x = \frac{\ud{}}{\ud{n}}\left[n\epsilon_x(n)\right]
+      = \frac{4}{3}\epsilon_x(n).
+  \label{eq:8-exc3}
+\end{equation}
+The factor is not one because $v_x$ is a functional derivative, not an energy
+per particle: changing the density at a point changes both the number of
+electrons there and the energy each of them carries.  The distinction is the
+same as that between $\sum_i\varepsilon_i$ and the total energy in
+Eq.~(\ref{eq:8-kstotalenergy}), and forgetting it is a standard first error.
+
+\paragraph{Answer to d).}
+For a spinless one-dimensional gas, $n=\int_{-k_F}^{k_F}\ud{k}/2\pi=k_F/\pi$,
+so $k_F=\pi n$, and
+$\rho^{(1)}(s)=\int_{-k_F}^{k_F}(\ud{k}/2\pi)e^{iks}=\sin(k_Fs)/\pi s$.
+Inserting into the exchange integral and using the symmetry of the two
+half-lines to cancel the factor $\tfrac12$ gives Eq.~(\ref{eq:8-lda1d}).  For
+the kinetic energy,
+$T/L=\int_{-k_F}^{k_F}(\ud{k}/2\pi)(k^2/2)=k_F^3/6\pi=(\pi^2/6)n^3$.
+
+\paragraph{Answer to e).}
+Substituting Eq.~(\ref{eq:8-paircorrelation}),
+\begin{equation}
+  \frac{4}{3\pi}\int_0^{\infty}\ud{y}\,y^2\left[g(y)-1\right]
+   = -\frac{4}{3\pi}\cdot\frac{9}{2}
+     \int_0^{\infty}\ud{y}\,\frac{(\sin y-y\cos y)^2}{y^4}
+   = -\frac{6}{\pi}\cdot\frac{\pi}{6} = -1,
+  \label{eq:8-exe3}
+\end{equation}
+using the standard integral
+$\int_0^{\infty}(\sin y-y\cos y)^2y^{-4}\ud{y}=\pi/6$.  The program obtains
+$-0.9976$ by direct quadrature, the residue being the slowly decaying
+oscillatory tail.
+
+\subsection*{Exercise 4: the Kohn-Sham equations}
+\label{ex:8-kohnsham}
+\addcontentsline{toc}{subsection}{Exercise 4: the Kohn-Sham equations}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:8-kohnsham}) by varying
+  Eq.~(\ref{eq:8-ksenergy}) with respect to the orbitals subject to
+  orthonormality.
+  \item[b)] Derive the total-energy expression~(\ref{eq:8-kstotalenergy}) and
+  explain each correction term.
+  \item[c)] Compare Eqs.~(\ref{eq:8-hfcoordinate})
+  and~(\ref{eq:8-kscoordinate}) term by term.  Which is variational, and with
+  respect to what?
+  \item[d)] Why is $T_s[n]$, and not $T[n]$, computed from the orbitals?
+  What is the difference, and where does it go?
+  \item[e)] Show that for one electron the exact $E_{\mathrm{xc}}$ must
+  satisfy $E_{\mathrm{xc}}[n]=-\mathcal{U}_{\mathrm{H}}[n]$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Write $T_s$ and $n$ in terms of the orbitals and impose
+$\int\psi_i^{*}\psi_j=\delta_{ij}$ with multipliers $\varepsilon_{ij}$.
+Varying with respect to $\psi_i^{*}$,
+\begin{equation}
+  -\frac{\hbar^2}{2m}\nabla^2\psi_i
+  + \left[v_{\mathrm{ext}}
+    + \frac{\delta\mathcal{U}_{\mathrm{H}}}{\delta n}
+    + \frac{\delta E_{\mathrm{xc}}}{\delta n}\right]
+    \frac{\delta n}{\delta\vert\psi_i\vert^2}\psi_i
+  = \sum_j\varepsilon_{ij}\psi_j ,
+  \label{eq:8-exa4}
+\end{equation}
+and since $\delta n/\delta\vert\psi_i\vert^2=1$ the bracket is exactly
+$v_{\mathrm{KS}}$.  A unitary rotation among the occupied orbitals
+diagonalises $\varepsilon_{ij}$ without changing the density -- the same
+freedom as in Section~\ref{sec:detbasis} -- giving
+Eq.~(\ref{eq:8-kohnsham}).
+
+\paragraph{Answer to b).}
+Multiplying Eq.~(\ref{eq:8-kohnsham}) by $\psi_i^{*}$, integrating and
+summing over the occupied orbitals gives
+$\sum_i\varepsilon_i=T_s+\int v_{\mathrm{KS}}n$.  Substituting
+$v_{\mathrm{KS}}$ from Eq.~(\ref{eq:8-kspotential}) and comparing with
+Eq.~(\ref{eq:8-ksenergy}),
+\begin{equation}
+  E = \sum_i\varepsilon_i
+    - \underbrace{\int v_{\mathrm{H}}n}_{=2\mathcal{U}_{\mathrm{H}}}
+    - \int v_{\mathrm{xc}}n
+    + \mathcal{U}_{\mathrm{H}} + E_{\mathrm{xc}} ,
+  \label{eq:8-exb4}
+\end{equation}
+which is Eq.~(\ref{eq:8-kstotalenergy}).  The band sum counts the Hartree
+energy twice, once for each partner, so one copy is removed; and it contains
+$\int v_{\mathrm{xc}}n$, which is not $E_{\mathrm{xc}}$, so the former is
+subtracted and the latter added.  This is the same double-counting
+correction as Exercise~\ref{ex:6-hfequations}b).
+
+\paragraph{Answer to c).}
+The kinetic, external and Hartree terms are identical.  The difference is the
+last term: Hartree-Fock has a non-local exchange \emph{operator}, acting
+differently on each orbital, exact for a determinant and containing no
+correlation; Kohn-Sham has a local multiplicative \emph{potential}, the same
+for all orbitals, approximate, but containing correlation as well.
+Hartree-Fock is variational with respect to the true energy -- it is a
+genuine upper bound on $E_0$.  Kohn-Sham is variational only with respect to
+the energy of the model functional it is given; with an approximate
+$E_{\mathrm{xc}}$ the result may lie above or below the exact energy, as
+Table~\ref{tab:ksresults} shows.
+
+\paragraph{Answer to d).}
+$T[n]$, the true kinetic energy of the interacting system, is not accessible
+from the density; that was the problem in the first place.  $T_s[n]$, the
+kinetic energy of the non-interacting system with the same density, is
+computed exactly from its orbitals.  The difference $T[n]-T_s[n]$ is small --
+it is a correlation effect -- and it is folded into $E_{\mathrm{xc}}$ by the
+definition~(\ref{eq:8-excdefinition}).  The whole construction is the
+observation that this is a far better place to put the difficulty than the
+kinetic energy itself.
+
+\paragraph{Answer to e).}
+For $N=1$ the exact energy contains no electron-electron interaction at all.
+But Eq.~(\ref{eq:8-ksenergy}) contains $\mathcal{U}_{\mathrm{H}}[n]$, which is
+non-zero for any density.  The exact functional must therefore cancel it
+exactly, $E_{\mathrm{xc}}[n]=-\mathcal{U}_{\mathrm{H}}[n]$ for any one-electron
+density.  The local density approximation violates this: the program finds a
+residue $0.0469$ for the harmonic trap, Eq.~(\ref{eq:8-sie}).  Imposing the
+one-electron condition exactly is the content of the Perdew-Zunger
+self-interaction correction.
+
+\subsection*{Exercise 5: numerical explorations}
+\label{ex:8-numerical}
+\addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{dft.py}, reproduce Table~\ref{tab:ksresults} and
+  plot the Kohn-Sham, Hartree-Fock and non-interacting densities for $N=4$.
+  Where do they differ most?
+  \item[b)] Vary the interaction strength and follow the ratio
+  $E_x^{\mathrm{local}}/E_x^{\mathrm{exact}}$.  Does the local approximation
+  improve or deteriorate as the interaction is made stronger?
+  \item[c)] Implement the Perdew-Zunger self-interaction correction for
+  $N=1$ -- subtract $\mathcal{U}_{\mathrm{H}}[n_i]+E_x[n_i]$ orbital by
+  orbital -- and check that the one-particle energy returns to $0.5$.
+  \item[d)] Solve the Thomas-Fermi equation for the trap directly by
+  minimising over $n(x)$ on a grid, and compare the resulting density with
+  the Kohn-Sham one.  Is the shell structure visible?
+  \item[e)] Add a crude gradient correction,
+  $E_x\to E_x-\beta\int\vert\nabla n\vert^2/n^{4/3}$, and tune $\beta$ to fit
+  the exact exchange energies of Section~\ref{sec:howlocal}.  Does one value
+  work for all $N$?
+\end{enumerate}
+
+\paragraph{Answer.}
+Some pointers.  In a) the densities differ most in the tails, where the
+Kohn-Sham density is too diffuse -- the signature of self-interaction, since a
+spuriously self-repelled electron spreads out.  In b) the ratio deteriorates
+as the interaction strengthens, because exchange grows relative to the
+kinetic energy and the errors in it become more visible; this is the same
+trend that made the mean field fail at strong coupling in
+Section~\ref{sec:fcihubbard}.  In c) the correction is exact by construction
+for one particle and the energy returns to $0.5$ to machine precision; the
+interesting question is what it does for $N>1$, where it is no longer exact
+and can over-correct.  In d) the Thomas-Fermi density is a smooth dome with
+no oscillations, in contrast to the $N$ visible maxima of the Kohn-Sham
+density -- the clearest single illustration of what orbitals buy.  In e) a
+single $\beta$ does not fit all $N$; the failure of a one-parameter gradient
+correction is precisely why the construction of gradient functionals is done
+by imposing exact constraints instead of fitting.
