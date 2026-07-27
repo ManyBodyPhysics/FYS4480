@@ -1,3 +1,1385 @@
-\chapter{Mean-field applications}
+\chapter{Mean-field applications: TDA and RPA}
 \label{chap:mfapplications}
 %=============================================================================
+
+Chapter~\ref{chap:hartrefock} ended with a matrix.  Expanding the
+Hartree-Fock energy to second order in the amplitudes of a Thouless rotation
+produced the stability matrix~(\ref{eq:6-stabilitymatrix}), and we remarked in
+passing that it is the matrix of the random-phase approximation.  This chapter
+makes good on that remark.  We shall see that the same two blocks $A$ and $B$,
+arranged Hermitian, decide whether the mean field is a minimum, and arranged
+non-Hermitian, give the excitation energies of the system.  Stability and
+spectroscopy are two readings of one calculation.
+
+The vehicle is a schematic model with two competing interactions -- a pairing
+term that scatters whole pairs between levels, and a particle-hole term that
+breaks them.  At zero particle-hole strength it reduces exactly to the pairing
+model of Section~\ref{sec:pairingmodel}, so every number can be checked
+against Table~\ref{tab:pairing}; switching the particle-hole term on makes the
+particle-hole channel non-trivial and lets us watch two mean fields compete.
+We solve the model exactly by the methods of Chapter~\ref{chap:fci}, then in
+the Tamm-Dancoff approximation, then in the random-phase approximation on the
+Hartree-Fock state, and finally in the quasiparticle random-phase
+approximation built on a BCS vacuum.  Comparing four approximations against
+one exact answer, in a system small enough that nothing is hidden, is the
+point of the exercise.
+
+%----------------------------------------------------------------------
+\section{The pairing plus particle-hole model}
+\label{sec:pairingphmodel}
+
+\index{pairing model!with particle-hole interaction}
+We take $L$ doubly degenerate, equally spaced single-particle levels
+$p=1,\dots,L$, each carrying a spin label $\sigma=\pm$, occupied by $N$
+spin-$\tfrac12$ fermions.  The Hamiltonian is
+$\hat{H}=\hat{H}_0+\hat{V}_{\mathrm{pair}}+\hat{V}_{\mathrm{ph}}$ with
+\begin{align}
+  \hat{H}_0 &= \xi\sum_{p\sigma}(p-1)\,
+    \hat{a}^{\dagger}_{p\sigma}\hat{a}_{p\sigma},
+  \label{eq:7-H0}\\
+  \hat{V}_{\mathrm{pair}} &= -\frac{g}{2}\sum_{pq}
+    \hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}
+    \hat{a}_{q-}\hat{a}_{q+},
+  \label{eq:7-Vpair}\\
+  \hat{V}_{\mathrm{ph}} &= -\frac{f}{2}\sum_{pqr}
+    \left(\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}
+      \hat{a}_{q-}\hat{a}_{r+} + \mathrm{h.c.}\right).
+  \label{eq:7-Vph}
+\end{align}
+The one-body term gives level $p$ the energy $\xi(p-1)$; we set $\xi=1$
+throughout.  The pairing term, met already in
+Section~\ref{sec:pairingmodel}, moves a complete pair -- both spin components
+of one level -- from level $q$ to level $p$.  The particle-hole term removes a
+spin-down particle from level $q$ and a spin-up particle from level $r$ and
+deposits a pair at level $p$; when $q\ne r$ it therefore \emph{breaks} a pair,
+which is exactly what the pairing term cannot do.
+
+Both terms conserve $N_+$ and $N_-$ separately, so
+$S_z=(N_+-N_-)/2$ is a good quantum number and the low-lying spectrum lives in
+the balanced sector $S_z=0$.  For $N=L=4$ the full space has
+$\binom{8}{4}=70$ determinants, of which $36$ have $S_z=0$.
+
+Two limits organise everything that follows.
+
+\paragraph{At $f=0$.}
+The model is the pairing model of Chapter~\ref{chap:systems}.  The seniority
+-- the number of unpaired particles -- is conserved, the ground state has
+seniority zero, and the exact energies are those of
+Table~\ref{tab:pairing}.  The program \texttt{rpa.py} reproduces them:
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rlll}
+\toprule
+$g$ & $E_{\mathrm{ref}}$ & $E_0$ (this chapter) & Table~\ref{tab:pairing}\\
+\midrule
+$-1.00$ & $3.000000$ & $2.77987014$ & $2.77987014$\\
+$-0.50$ & $2.500000$ & $2.43688426$ & $2.43688426$\\
+$0.00$  & $2.000000$ & $2.00000000$ & $2.00000000$\\
+$0.50$  & $1.500000$ & $1.41677428$ & $1.41677428$\\
+$1.00$  & $1.000000$ & $0.63554847$ & $0.63554847$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{At $g=0$.}
+Only the pair-breaking term survives, and the seniority is maximally violated.
+For intermediate $f/g$ the two mechanisms compete, and the interesting
+question -- the one the whole chapter is about -- is which mean field to build
+the fluctuations on.
+
+%----------------------------------------------------------------------
+\section{Exact diagonalisation}
+\label{sec:phexact}
+
+The exact solution is Chapter~\ref{chap:fci} applied without modification.
+Determinants are bit strings, as in Section~\ref{sec:bitrep}; the Hamiltonian
+is built by applying each term of Eqs.~(\ref{eq:7-H0})--(\ref{eq:7-Vph}) to
+every basis state and routing the result back to its index with the
+accumulated fermion sign; and the lowest eigenvalues follow from the
+algorithms of Chapter~\ref{chap:linalg} -- a dense solve when the matrix is
+small enough, Lanczos when it is not.
+
+Restricting to $S_z=0$ already cuts the dimension from $70$ to $36$, an
+instance of the general remark of Section~\ref{sec:cipractical} that
+symmetries are worth exploiting.  For $g=0.5$ and $f=0.05g$ the lowest exact
+eigenvalues are
+\begin{equation}
+  E_0=1.347133,\quad E_1=2.710867,\quad E_2=2.711098,\quad E_3=3.413340,
+  \label{eq:7-exactexample}
+\end{equation}
+with the near-degeneracy of $E_1$ and $E_2$ split only by the small
+particle-hole term.  These are the numbers every approximation in this chapter
+will be measured against.
+
+%----------------------------------------------------------------------
+\section{The Hartree-Fock reference}
+\label{sec:phhartreefock}
+
+Both approximations to come are built on a stationary mean field, so we solve
+the Hartree-Fock equations of Section~\ref{sec:hfcoefficients} first.  The
+antisymmetrised two-body matrix elements are read off the two-particle sector
+of $\hat{V}=\hat{H}-\hat{H}_0$,
+\begin{equation}
+  \bar{v}_{abcd}
+   = \left(\hat{a}^{\dagger}_{a}\hat{a}^{\dagger}_{b}\bket{0}\right)^{\dagger}
+     \hat{V}\,
+     \left(\hat{a}^{\dagger}_{c}\hat{a}^{\dagger}_{d}\bket{0}\right),
+  \label{eq:7-vbar}
+\end{equation}
+and the self-consistent field of Section~\ref{sec:scf} does the rest:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rrrrl}
+\toprule
+$g$ & $f$ & $E_{\mathrm{HF}}$ & iterations & Hartree-Fock energies\\
+\midrule
+$0.70$ & $0.00$ & $1.30000$ & $2$ & $-0.350,\ -0.350,\ 0.650,\ 0.650,\dots$\\
+$0.70$ & $0.05$ & $1.19709$ & $20$ & $-0.404,\ -0.404,\ 0.600,\ 0.600,\dots$\\
+$1.00$ & $0.50$ & $-0.26976$ & $40$ & $-1.505,\ -1.505,\ 0.119,\ 0.119,\dots$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The first row is the case of Section~\ref{sec:hfnothing} again: with pure
+pairing the filled Fermi sea is already the Hartree-Fock solution, the
+iteration converges immediately, and the only effect of the interaction is to
+lower each occupied level by $g/2$ while leaving the empty ones alone.  The
+particle-hole term does connect the reference to a $1p$-$1h$ state, so the
+mean field must rotate the orbitals until Brillouin's theorem,
+Eq.~(\ref{eq:6-brillouin}), is restored, and the iteration becomes
+non-trivial.
+
+%----------------------------------------------------------------------
+\section{The equations of motion}
+\label{sec:eom}
+
+\index{equations of motion}
+Rather than derive TDA and RPA separately, we obtain both from a single
+principle.  Suppose the exact eigenstates satisfy
+$\hat{H}\bket{\nu}=E_{\nu}\bket{\nu}$ and define, for each excited state, an
+operator $\hat{Q}^{\dagger}_{\nu}$ with
+\begin{equation}
+  \bket{\nu} = \hat{Q}^{\dagger}_{\nu}\bket{0},
+  \qquad
+  \hat{Q}_{\nu}\bket{0} = 0,
+  \label{eq:7-phonon}
+\end{equation}
+where $\bket{0}$ is the exact ground state.  Such an operator always exists --
+$\hat{Q}^{\dagger}_{\nu}=\ketbra{\nu}{0}$ will do -- and it satisfies
+\begin{equation}
+  \left[\hat{H},\hat{Q}^{\dagger}_{\nu}\right]\bket{0}
+   = \omega_{\nu}\hat{Q}^{\dagger}_{\nu}\bket{0},
+  \qquad
+  \omega_{\nu} = E_{\nu}-E_0 .
+  \label{eq:7-eom}
+\end{equation}
+Taking the matrix element of Eq.~(\ref{eq:7-eom}) with an arbitrary variation
+$\delta\hat{Q}$ and using $\hat{Q}_{\nu}\bket{0}=0$ to symmetrise, one arrives
+at the \emph{equation-of-motion} form
+\begin{equation}
+  \boxed{\;
+  \bracket{0}{\left[\delta\hat{Q},\left[\hat{H},
+    \hat{Q}^{\dagger}_{\nu}\right]\right]}{0}
+   = \omega_{\nu}\,
+     \bracket{0}{\left[\delta\hat{Q},
+       \hat{Q}^{\dagger}_{\nu}\right]}{0} .
+  \;}
+  \label{eq:7-eomdouble}
+\end{equation}
+This is still exact.  It becomes an approximation as soon as we (i) restrict
+the operators $\hat{Q}^{\dagger}$ to a manageable family, and (ii) replace the
+unknown exact ground state $\bket{0}$ by something we can compute.  Every
+method in this chapter is a choice of those two things.
+
+The double commutator on the left has a virtue worth noticing: it is
+symmetric in the two operators, so each of them can be evaluated with fewer
+contractions than the raw product would need.  This is why the RPA matrices
+are traditionally written as double commutators, and it is how the program
+computes them -- literally, as expectation values of
+$[\hat{O}^{\dagger}_K,[\hat{H},\hat{O}_L]]$ in the chosen reference, with
+nothing transcribed by hand.
+
+%----------------------------------------------------------------------
+\section{The Tamm-Dancoff approximation}
+\label{sec:tda}
+
+\index{Tamm-Dancoff approximation}
+The simplest choice is to build the excitation from one particle-hole pair
+only, and to take the Hartree-Fock determinant for the ground state:
+\begin{equation}
+  \hat{Q}^{\dagger}_{\nu} = \sum_{mi}X^{\nu}_{mi}\,
+    \hat{a}^{\dagger}_{m}\hat{a}_{i},
+  \qquad
+  \bket{0}\ \longrightarrow\ \bket{\mathrm{HF}},
+  \label{eq:7-tdaoperator}
+\end{equation}
+with $i,j,\dots$ labelling occupied and $m,n,\dots$ unoccupied Hartree-Fock
+orbitals.  Since $\hat{a}^{\dagger}_{m}\hat{a}_{i}$ does annihilate the
+determinant when acting to the left, condition~(\ref{eq:7-phonon}) holds
+exactly, and the right-hand side of Eq.~(\ref{eq:7-eomdouble}) reduces to
+$\delta_{mn}\delta_{ij}$.  What remains is an ordinary Hermitian eigenvalue
+problem,
+\begin{equation}
+  \sum_{nj}A_{mi,nj}X^{\nu}_{nj} = \omega_{\nu}X^{\nu}_{mi},
+  \label{eq:7-tdaequation}
+\end{equation}
+with
+\begin{equation}
+  A_{mi,nj}
+   = \bracket{\mathrm{HF}}{\left[\hat{a}^{\dagger}_{i}\hat{a}_{m},
+       \left[\hat{H},\hat{a}^{\dagger}_{n}\hat{a}_{j}\right]\right]}
+     {\mathrm{HF}}
+   = \left(\varepsilon_m-\varepsilon_i\right)
+     \delta_{mn}\delta_{ij} + \bar{v}_{mjin}.
+  \label{eq:7-Amatrix}
+\end{equation}
+
+There is a plainer way to say what this is.  The matrix $A$ is nothing but the
+Hamiltonian restricted to the space of $1p$-$1h$ determinants, measured from
+the reference energy,
+\begin{equation}
+  A_{mi,nj}
+   = \bracket{\Phi^m_i}{\hat{H}}{\Phi^n_j}
+     - E_{\mathrm{HF}}\,\delta_{mn}\delta_{ij}.
+  \label{eq:7-Aisci}
+\end{equation}
+The program checks this identity directly and finds agreement to
+$3\times10^{-15}$.  So the Tamm-Dancoff approximation is exactly the
+configuration-interaction truncation of Section~\ref{sec:citruncations}
+applied to excited states: keep the reference and all single excitations,
+diagonalise, and read off the excitation energies.  It is CIS, no more and no
+less, and it inherits both the variational property -- every TDA root is an
+upper bound to the corresponding exact excitation energy within that space --
+and the defect, that the ground state is left uncorrelated.
+
+%----------------------------------------------------------------------
+\section{The random-phase approximation}
+\label{sec:rpa}
+
+\index{random-phase approximation}
+The Tamm-Dancoff ground state is a single determinant, which we know is wrong.
+The random-phase approximation improves it by allowing the phonon to
+\emph{de}-excite as well as excite,
+\begin{equation}
+  \hat{Q}^{\dagger}_{\nu} = \sum_{mi}\left(
+    X^{\nu}_{mi}\,\hat{a}^{\dagger}_{m}\hat{a}_{i}
+    - Y^{\nu}_{mi}\,\hat{a}^{\dagger}_{i}\hat{a}_{m}\right).
+  \label{eq:7-rpaoperator}
+\end{equation}
+The second term does not annihilate a Slater determinant acting to the right,
+so the condition $\hat{Q}_{\nu}\bket{0}=0$ can no longer be satisfied by the
+Hartree-Fock state.  It defines instead a new, correlated ground state
+$\bket{\mathrm{RPA}}$ -- one that we never construct explicitly, but whose
+existence is the whole content of the approximation.
+
+To make progress we need the norm on the right of
+Eq.~(\ref{eq:7-eomdouble}), which requires the commutator of two
+particle-hole operators,
+\begin{equation}
+  \left[\hat{a}^{\dagger}_{i}\hat{a}_{m},
+    \hat{a}^{\dagger}_{n}\hat{a}_{j}\right]
+   = \delta_{mn}\hat{a}^{\dagger}_{i}\hat{a}_{j}
+   - \delta_{ij}\hat{a}^{\dagger}_{n}\hat{a}_{m}.
+  \label{eq:7-phcommutator}
+\end{equation}
+This is an operator, not a number.  The \emph{quasiboson approximation}
+replaces it by its expectation value in the reference determinant,
+\begin{equation}
+  \left[\hat{a}^{\dagger}_{i}\hat{a}_{m},
+    \hat{a}^{\dagger}_{n}\hat{a}_{j}\right]
+  \ \longrightarrow\
+  \bracket{\mathrm{HF}}{\left[\hat{a}^{\dagger}_{i}\hat{a}_{m},
+    \hat{a}^{\dagger}_{n}\hat{a}_{j}\right]}{\mathrm{HF}}
+   = \delta_{mn}\delta_{ij},
+  \label{eq:7-quasiboson}
+\end{equation}
+which is to say that particle-hole pairs are treated as bosons.  It is exact
+when the occupations are exactly zero and one and nothing else is going on;
+it fails to the extent that the true ground state has particles above the
+Fermi level, and it is the origin of every pathology of the method.
+
+With Eq.~(\ref{eq:7-quasiboson}), Eq.~(\ref{eq:7-eomdouble}) becomes the
+\emph{RPA eigenvalue problem}
+\begin{equation}
+  \boxed{\;
+  \begin{pmatrix} A & B\\ -B^{*} & -A^{*}\end{pmatrix}
+  \begin{pmatrix} X^{\nu}\\ Y^{\nu}\end{pmatrix}
+   = \omega_{\nu}
+  \begin{pmatrix} X^{\nu}\\ Y^{\nu}\end{pmatrix} ,
+  \;}
+  \label{eq:7-rpaequation}
+\end{equation}
+with $A$ as before and
+\begin{equation}
+  B_{mi,nj}
+   = -\bracket{\mathrm{HF}}{\left[\hat{a}^{\dagger}_{i}\hat{a}_{m},
+       \left[\hat{H},\hat{a}^{\dagger}_{j}\hat{a}_{n}\right]\right]}
+     {\mathrm{HF}}
+   = \bar{v}_{mnij}.
+  \label{eq:7-Bmatrix}
+\end{equation}
+The program verifies both closed forms against the double commutators to
+better than $10^{-13}$.  Setting $B=0$ discards the $Y$ amplitudes and returns
+the Tamm-Dancoff equation, so TDA is RPA with the ground-state correlations
+switched off.
+
+Equation~(\ref{eq:7-rpaequation}) is not Hermitian.  Its eigenvalues come in
+pairs $\pm\omega_{\nu}$ -- if $(X,Y)$ solves it with $\omega$, then
+$(Y^{*},X^{*})$ solves it with $-\omega$ -- and they need not be real.  The
+physical solutions are the positive ones, normalised by
+\begin{equation}
+  \sum_{mi}\left(\vert X^{\nu}_{mi}\vert^2
+    - \vert Y^{\nu}_{mi}\vert^2\right) = 1,
+  \label{eq:7-rpanorm}
+\end{equation}
+a metric that is indefinite rather than positive, which is precisely why real
+eigenvalues are not guaranteed.
+
+%----------------------------------------------------------------------
+\section{RPA and the stability of the mean field}
+\label{sec:rpastability}
+
+We can now close the loop with Chapter~\ref{chap:hartrefock}.  The blocks $A$
+and $B$ of Eqs.~(\ref{eq:7-Amatrix}) and~(\ref{eq:7-Bmatrix}) are, term for
+term, the blocks of the stability matrix~(\ref{eq:6-stabilitymatrix}); only
+the arrangement differs,
+\begin{equation}
+  \hat{M}_{\mathrm{stab}} =
+  \begin{pmatrix} A & B\\ B^{*} & A^{*}\end{pmatrix}
+  \ \ \text{(Hermitian)},
+  \qquad
+  \hat{M}_{\mathrm{RPA}} =
+  \begin{pmatrix} A & B\\ -B^{*} & -A^{*}\end{pmatrix}
+  \ \ \text{(not Hermitian)} .
+  \label{eq:7-twoarrangements}
+\end{equation}
+The relation between them is exact and easy to state.  Writing
+$\bm{\eta}=\mathrm{diag}(\bm{1},-\bm{1})$ for the metric of
+Eq.~(\ref{eq:7-rpanorm}), we have
+$\hat{M}_{\mathrm{RPA}}=\bm{\eta}\,\hat{M}_{\mathrm{stab}}$.  If
+$\hat{M}_{\mathrm{stab}}$ is positive definite it has a Hermitian square root,
+and
+\begin{equation}
+  \hat{M}_{\mathrm{stab}}^{1/2}\,\bm{\eta}\,\hat{M}_{\mathrm{stab}}^{1/2}
+  \label{eq:7-similarity}
+\end{equation}
+is Hermitian and similar to $\hat{M}_{\mathrm{RPA}}$, so the RPA frequencies
+are real.  Conversely, if $\hat{M}_{\mathrm{stab}}$ has a negative
+eigenvalue the argument fails and imaginary roots appear.  Hence
+
+\begin{equation}
+  \boxed{\;
+  \text{the RPA frequencies are real}
+  \iff
+  \hat{M}_{\mathrm{stab}}\ge0
+  \iff
+  \text{the mean field is a local minimum.}
+  \;}
+  \label{eq:7-stabilityequivalence}
+\end{equation}
+
+The Lipkin model of Sections~\ref{sec:lipkin} and~\ref{sec:lipkininstability}
+shows this happening.  Feeding the same blocks into both arrangements:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rrrl}
+\toprule
+$\chi$ & $\lambda_{\min}(\hat{M}_{\mathrm{stab}})$
+  & imaginary roots & lowest real RPA root\\
+\midrule
+$0.25$ & $\phantom{-}0.75$ & $0$ & $0.968246$\\
+$0.50$ & $\phantom{-}0.50$ & $0$ & $0.866025$\\
+$0.90$ & $\phantom{-}0.10$ & $0$ & $0.435890$\\
+$1.00$ & $\phantom{-}0.00$ & $0$ & $0.000000$\\
+$1.50$ & $-0.50$ & $2$ & ---\\
+$2.00$ & $-1.00$ & $2$ & ---\\
+\bottomrule
+\end{tabular}
+\caption{The Lipkin model with $N=4$, $\varepsilon=1$, $W=0$.  The lowest
+eigenvalue of the Hermitian stability matrix and the RPA spectrum built from
+the same blocks cross zero together at $\chi=1$.  Beyond that the collective
+root is imaginary and no excitation energy can be quoted.}
+\label{tab:rpastability}
+\end{table}
+
+The collective root goes \emph{soft} -- falls to zero -- exactly at $\chi=1$,
+where the deformed solution of
+Section~\ref{sec:lipkininstability} appears, and becomes imaginary beyond it.
+This is the general pattern, and it is one of the most useful things RPA does:
+a vanishing frequency announces a mean-field phase transition, and an
+imaginary one says the reference is a saddle point.  The excitation spectrum
+and the stability analysis are the same calculation read two ways.
+
+For the pairing plus particle-hole model the particle-hole stability matrix
+never goes negative -- $\lambda_{\min}$ stays at or above $1$ for every
+coupling we consider, including $g=4$, $f=2$.  The particle-hole channel is
+simply not where this model becomes collective.  Its instability is in the
+pairing channel, and reaching it requires a different mean field, which is the
+subject of Sections~\ref{sec:bcs} and~\ref{sec:qrpa}.
+
+%----------------------------------------------------------------------
+\section{The RPA ground state and its correlation energy}
+\label{sec:rpacorrelation}
+
+Because $\hat{Q}_{\nu}\bket{\mathrm{RPA}}=0$ with $\hat{Q}$ containing the
+de-excitation piece, the RPA ground state contains particle-hole pairs.  One
+can show, and Exercise~\ref{ex:7-thouless} asks for the argument, that
+$\bket{\mathrm{RPA}}$ has the form
+\begin{equation}
+  \bket{\mathrm{RPA}}
+   = \mathcal{N}\exp\left\{\frac{1}{2}\sum_{mnij}
+     Z_{mi,nj}\,\hat{a}^{\dagger}_{m}\hat{a}_{i}
+       \hat{a}^{\dagger}_{n}\hat{a}_{j}\right\}\bket{\mathrm{HF}},
+  \qquad
+  \bm{Z} = \bm{Y}^{*}\left(\bm{X}^{*}\right)^{-1},
+  \label{eq:7-rpagroundstate}
+\end{equation}
+an exponential of $2p$-$2h$ operators acting on the Hartree-Fock determinant.
+The reader will recognise the structure of Thouless' theorem,
+Eq.~(\ref{eq:6-thouless}), with two-body operators in place of one-body ones,
+and the structure of the coupled-cluster ansatz,
+Eq.~(\ref{eq:5-ccsd}), with the doubles amplitude fixed by the RPA amplitudes
+rather than solved for independently.  RPA is a doubles theory in disguise.
+
+Its energy relative to Hartree-Fock is
+\begin{equation}
+  E^{\mathrm{RPA}}_{\mathrm{corr}}
+   = \frac{1}{2}\left(\sum_{\nu}\omega_{\nu} - \mathrm{Tr}\,A\right),
+  \label{eq:7-rpacorrelation}
+\end{equation}
+a remarkably compact result: the correlation energy is half the difference
+between the sum of the RPA frequencies and the sum of the TDA ones.  Since
+each RPA root lies below the corresponding TDA root, the correction is always
+negative -- RPA always lowers the energy.  For $g=0.7$, $f=0.05$ the program
+gives $\mathrm{Tr}\,A=38.423313$ and $\sum_{\nu}\omega_{\nu}=37.824314$, hence
+$E_{\mathrm{corr}}=-0.299500$.
+
+%----------------------------------------------------------------------
+\section{Results in the particle-hole channel}
+\label{sec:phresults}
+
+We can now compare.  The table gives, for four combinations of the two
+couplings, the Hartree-Fock energy, the RPA-corrected ground-state energy, the
+exact ground-state energy, and the lowest excitation energy in the three
+treatments.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{7pt}
+\begin{tabular}{rrrrrrrr}
+\toprule
+$g$ & $f$ & $E_{\mathrm{HF}}$
+  & $E_{\mathrm{HF}}+E_{\mathrm{corr}}$ & $E_{\mathrm{exact}}$
+  & $\omega_1^{\mathrm{TDA}}$ & $\omega_1^{\mathrm{RPA}}$
+  & $\omega_1^{\mathrm{exact}}$\\
+\midrule
+$0.50$ & $0.025$ & $1.44927$ & $1.29898$ & $1.34713$
+  & $1.2748$ & $1.2448$ & $1.3637$\\
+$0.70$ & $0.050$ & $1.19709$ & $0.89759$ & $0.96976$
+  & $1.3992$ & $1.3412$ & $1.5972$\\
+$1.00$ & $0.050$ & $0.89709$ & $0.36862$ & $0.45058$
+  & $1.5492$ & $1.4488$ & $1.9425$\\
+$1.00$ & $0.500$ & $-0.26976$ & $-1.73461$ & $-1.69174$
+  & $1.8111$ & $1.6445$ & $2.8596$\\
+\bottomrule
+\end{tabular}
+\caption{The pairing plus particle-hole model with $N=L=4$, $\xi=1$.
+Hartree-Fock, RPA and exact ground-state energies, and the lowest excitation
+energy in the Tamm-Dancoff and random-phase approximations compared with the
+exact one.}
+\label{tab:phresults}
+\end{table}
+
+Three things are worth reading off.
+
+First, RPA always lowers the energy below Hartree-Fock, by construction, and
+here it \emph{overshoots} the exact answer in every row.  This is the standard
+behaviour: the quasiboson approximation, by treating particle-hole pairs as
+bosons that can be created without limit, over-counts the ground-state
+correlations.  The overshoot grows with the coupling, from $0.048$ at $g=0.5$
+to $0.043$ at $g=1$, $f=0.5$ -- modest here, but in a strongly collective
+system RPA can overbind badly and eventually collapse altogether.
+
+Second, $\omega_1^{\mathrm{RPA}}<\omega_1^{\mathrm{TDA}}$ in every row.  The
+$B$ block always pushes the collective root down, for the same reason it
+lowers the ground state: it adds correlations to the ground state, and the
+excitation energy is measured from a lower floor.
+
+Third, both approximations put the lowest excitation well below the exact
+one, and the gap widens as the pairing strength grows -- at $g=1$, $f=0.5$
+the exact first excitation is $2.86$ against an RPA value of $1.64$.  This is
+not a failure of arithmetic but of the choice of channel.  The particle-hole
+phonon knows nothing about pairing correlations, and in this model the
+low-lying spectrum is shaped by them.
+
+\paragraph{A closed form.}
+For pure pairing the particle-hole problem collapses.  All sixteen
+particle-hole pairs are degenerate, the matrices reduce to multiples of simple
+structures, and one finds
+\begin{equation}
+  \omega^{\mathrm{TDA}} = \xi + \frac{g}{2},
+  \qquad
+  \omega^{\mathrm{RPA}} = \sqrt{\xi^2+g\xi}
+   = \sqrt{\left(\xi+\tfrac{g}{2}\right)^2-\left(\tfrac{g}{2}\right)^2},
+  \label{eq:7-closedform}
+\end{equation}
+the second being the classic $\sqrt{A^2-B^2}$ of a two-level RPA problem with
+$A=\xi+g/2$ and $B=g/2$.  The program confirms both to eight digits:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rllll}
+\toprule
+$g$ & TDA & $\xi+g/2$ & RPA & $\sqrt{1+g}$\\
+\midrule
+$0.5$ & $1.25000000$ & $1.25000000$ & $1.22474487$ & $1.22474487$\\
+$1.0$ & $1.50000000$ & $1.50000000$ & $1.41421356$ & $1.41421356$\\
+$2.0$ & $2.00000000$ & $2.00000000$ & $1.73205081$ & $1.73205081$\\
+$3.0$ & $2.50000000$ & $2.50000000$ & $2.00000000$ & $2.00000000$\\
+$5.0$ & $3.50000000$ & $3.50000000$ & $2.44948974$ & $2.44948974$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Equation~(\ref{eq:7-closedform}) is worth staring at.  The RPA root is real
+for all $g>-\xi$, so the particle-hole channel of the pure pairing model never
+goes unstable, however strong the pairing.  The instability is elsewhere, and
+finding it requires a mean field that can break a different symmetry.
+
+%----------------------------------------------------------------------
+\section{BCS: the pairing mean field}
+\label{sec:bcs}
+
+\index{BCS theory}\index{pairing gap}
+The pairing interaction is
+$-G\sum_{pq}\hat{P}^{\dagger}_{p}\hat{P}_{q}$ with
+$\hat{P}^{\dagger}_{p}=\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}$ and
+$G=g/2$.  Its natural mean field is not of Hartree-Fock type at all, because
+the object that acquires an expectation value is
+$\langle\hat{P}^{\dagger}_{p}\rangle$, which does not conserve particle
+number.  The trial state is the BCS wave function
+\begin{equation}
+  \bket{\mathrm{BCS}} = \prod_{p}\left(u_p + v_p\,
+    \hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}\right)\bket{0},
+  \qquad u_p^2+v_p^2 = 1,
+  \label{eq:7-bcs}
+\end{equation}
+a product over levels in which each level is empty with amplitude $u_p$ and
+occupied by a pair with amplitude $v_p$.  It is a superposition of states with
+different particle numbers, so the number is fixed only on average, by
+minimising $\bracket{\mathrm{BCS}}{\hat{H}-\lambda\hat{N}}{\mathrm{BCS}}$ with
+$\lambda$ adjusted until $\langle\hat{N}\rangle=N$.
+
+Because the trial state is a product over levels, every expectation value is
+available in closed form.  Writing $u_p=\cos\theta_p$, $v_p=\sin\theta_p$,
+\begin{equation}
+  \langle\hat{N}\rangle = 2\sum_p v_p^2,
+  \qquad
+  \langle\hat{H}_0\rangle = 2\sum_p \varepsilon_p v_p^2,
+  \label{eq:7-bcsN}
+\end{equation}
+and, using $\langle\hat{P}^{\dagger}_p\hat{P}_q\rangle = u_pv_pu_qv_q$ for
+$p\ne q$ and $v_p^2$ for $p=q$,
+\begin{equation}
+  \langle\hat{H}\rangle
+   = 2\sum_p\varepsilon_p v_p^2
+   - S\left[\sum_p v_p^2
+     + \sum_{p\ne q}u_pv_pu_qv_q\right],
+  \qquad
+  S = \frac{g}{2} + f .
+  \label{eq:7-bcsenergy}
+\end{equation}
+The program checks Eq.~(\ref{eq:7-bcsenergy}) against the expectation value
+computed directly in the $2^{2L}$-dimensional Fock space and finds agreement
+to $5\times10^{-16}$.
+
+\paragraph{The particle-hole term as extra pairing.}
+Equation~(\ref{eq:7-bcsenergy}) contains a small surprise.  Only the $q=r$
+part of $\hat{V}_{\mathrm{ph}}$ survives in the BCS state -- for $q\ne r$ the
+operator $\hat{a}_{q-}\hat{a}_{r+}$ leaves two broken pairs, and the BCS state
+has none -- and $\hat{a}_{q-}\hat{a}_{q+}=\hat{P}_q$ exactly.  Seen from the
+BCS vacuum, therefore, the particle-hole term \emph{is} a pairing term, and
+the whole problem depends on $g$ and $f$ only through the combination
+$g+2f$.  The program confirms it:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rrrll}
+\toprule
+$g$ & $f$ & $g+2f$ & $E_{\mathrm{BCS}}$ & gap $\Delta$\\
+\midrule
+$1.4$ & $0.0$ & $1.4$ & $0.515684$ & $0.789218$\\
+$1.2$ & $0.1$ & $1.4$ & $0.515684$ & $0.789218$\\
+$0.8$ & $0.3$ & $1.4$ & $0.515684$ & $0.789218$\\
+$0.0$ & $0.7$ & $1.4$ & $0.515684$ & $0.789218$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This is a clean illustration of a general point: a mean field sees only that
+part of the interaction which can be written as a one-body field in its own
+channel.  Hartree-Fock and BCS decompose the same $\hat{V}$ differently, and
+each is blind to what the other sees.
+
+\paragraph{The pairing transition.}
+With $\Delta=S\sum_p u_pv_p$ the pairing gap, the solution of the BCS
+equations for $f=0$ is
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{rrrl}
+\toprule
+$g$ & $\Delta$ & $\lambda$ & $v_p^2$\\
+\midrule
+$0.40$ & $0.00000$ & $1.2500$ & $1.000,\ 1.000,\ 0.000,\ 0.000$\\
+$0.80$ & $0.00000$ & $1.2500$ & $1.000,\ 1.000,\ 0.000,\ 0.000$\\
+$1.00$ & $0.00000$ & $1.2500$ & $1.000,\ 1.000,\ 0.000,\ 0.000$\\
+$1.20$ & $0.46716$ & $1.2000$ & $0.984,\ 0.925,\ 0.075,\ 0.016$\\
+$1.60$ & $1.05608$ & $1.1000$ & $0.934,\ 0.783,\ 0.217,\ 0.066$\\
+$2.00$ & $1.54088$ & $1.0000$ & $0.887,\ 0.709,\ 0.291,\ 0.113$\\
+\bottomrule
+\end{tabular}
+\caption{The BCS solution of the pairing model with $L=4$ levels and $N=4$
+particles.  Below $g_c=1.07037$ the only solution is the normal Fermi sea;
+above it a gap opens and the occupations become fractional.}
+\label{tab:bcsgap}
+\end{table}
+
+Below a critical coupling the only solution is the normal Fermi sea, with
+$\Delta=0$ and sharp occupations; above it a gap opens and the occupation
+numbers spread.  The condition for a non-trivial solution, obtained by
+linearising the gap equation about $\Delta=0$, is
+\begin{equation}
+  1 = 2S\left[\frac{1}{3\xi+S}+\frac{1}{\xi+S}\right],
+  \label{eq:7-gc}
+\end{equation}
+whose root is $S_c=0.53519$, so that $g_c=1.07037$ at $f=0$ -- exactly the
+value the program locates by bisection.
+
+Two comments.  The transition is \emph{sharp} even though the system is
+finite, but that sharpness is an artefact of the mean field: the exact
+ground-state energy of Table~\ref{tab:pairing} is perfectly smooth through
+$g_c$, and nothing whatever happens there.  Mean-field phase transitions in
+finite systems are approximations to smooth crossovers.  And above $g_c$ the
+reference has stopped being an eigenstate of $\hat{N}$, which is a broken
+symmetry, with all that this implies for the fluctuations built on top of it.
+
+%----------------------------------------------------------------------
+\section{Quasiparticle RPA}
+\label{sec:qrpa}
+
+\index{quasiparticle random-phase approximation}\index{QRPA}
+The BCS state is a vacuum, not for particles, but for the Bogoliubov
+quasiparticles
+\begin{equation}
+  \hat{\alpha}^{\dagger}_{p+} = u_p\hat{a}^{\dagger}_{p+}
+    - v_p\hat{a}_{p-},
+  \qquad
+  \hat{\alpha}^{\dagger}_{p-} = u_p\hat{a}^{\dagger}_{p-}
+    + v_p\hat{a}_{p+},
+  \label{eq:7-bogoliubov}
+\end{equation}
+which satisfy $\hat{\alpha}_{p\sigma}\bket{\mathrm{BCS}}=0$.  The program
+verifies this to $3\times10^{-17}$.  These are the natural elementary
+excitations of the paired system, and the quasiparticle random-phase
+approximation builds collective modes out of \emph{pairs} of them,
+\begin{equation}
+  \hat{Q}^{\dagger}_{\nu} = \sum_{a<b}\left(
+    X^{\nu}_{ab}\,\hat{\alpha}^{\dagger}_{a}\hat{\alpha}^{\dagger}_{b}
+    - Y^{\nu}_{ab}\,\hat{\alpha}_{b}\hat{\alpha}_{a}\right).
+  \label{eq:7-qrpaoperator}
+\end{equation}
+The structure of Eq.~(\ref{eq:7-eomdouble}) is unchanged; only the reference
+and the elementary operators are different, so the same routine produces
+\begin{equation}
+  A_{ab,cd} = \bracket{\mathrm{BCS}}{\left[
+    \hat{\alpha}_{b}\hat{\alpha}_{a},
+    \left[\hat{H}',
+      \hat{\alpha}^{\dagger}_{c}\hat{\alpha}^{\dagger}_{d}\right]\right]}
+    {\mathrm{BCS}},
+  \qquad
+  B_{ab,cd} = -\bracket{\mathrm{BCS}}{\left[
+    \hat{\alpha}_{b}\hat{\alpha}_{a},
+    \left[\hat{H}',
+      \hat{\alpha}_{d}\hat{\alpha}_{c}\right]\right]}{\mathrm{BCS}},
+  \label{eq:7-qrpaAB}
+\end{equation}
+and the same eigenvalue problem~(\ref{eq:7-rpaequation}).  For $L=4$ there are
+$2L=8$ quasiparticle states and hence $2L(2L-1)/2=28$ two-quasiparticle
+operators.
+
+Two features require attention, and they are the physics of this section.
+
+\subsection{The spurious mode}
+\label{sec:spurious}
+
+\index{spurious state}\index{Goldstone mode}
+The BCS state breaks the $U(1)$ symmetry generated by $\hat{N}$.  Whenever a
+mean field breaks a continuous symmetry of the Hamiltonian, the generator of
+that symmetry produces an exact zero mode of the RPA equations -- a Goldstone
+mode.  The argument is short: since $[\hat{H},\hat{N}]=0$, the amplitudes
+\begin{equation}
+  X^{\mathrm{sp}}_{K} = \bracket{\mathrm{BCS}}{
+    \left[\hat{O}_K,\hat{N}\right]}{\mathrm{BCS}},
+  \qquad
+  Y^{\mathrm{sp}}_{K} = \bracket{\mathrm{BCS}}{
+    \left[\hat{O}^{\dagger}_K,\hat{N}\right]}{\mathrm{BCS}}
+  \label{eq:7-spurious}
+\end{equation}
+satisfy $\hat{M}_{\mathrm{RPA}}\,(X^{\mathrm{sp}},Y^{\mathrm{sp}})^{T}=0$.
+Physically the mode is not an excitation at all: it is the rotation of the
+BCS phase, which costs nothing and merely moves the system to a state with a
+different average particle number.
+
+The standard device is to build the QRPA with the \emph{cranked} Hamiltonian
+\begin{equation}
+  \hat{H}' = \hat{H} - \lambda\hat{N},
+  \label{eq:7-cranked}
+\end{equation}
+using the same $\lambda$ that the BCS equations extremise, which places the
+spurious root at zero where it can be discarded.  In finite arithmetic it does
+not land exactly on zero, and because the RPA metric is singular there it may
+emerge as a small \emph{imaginary} pair rather than a small real one.  This is
+worth emphasising, since it is easily mistaken for an instability:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrrr}
+\toprule
+$g$ & $\Delta$ & $\vert\omega_{\mathrm{sp}}\vert$
+  & overlap with $\hat{N}$ & imaginary roots\\
+\midrule
+$1.20$ & $0.46716$ & $1.14\times10^{-4}$ & $1.000000$ & $0$\\
+$1.40$ & $0.78922$ & $1.83\times10^{-4}$ & $1.000000$ & $0$\\
+$1.60$ & $1.05608$ & $2.59\times10^{-4}$ & $1.000000$ & $0$\\
+$1.80$ & $1.30338$ & $1.64\times10^{-4}$ & $1.000000$ & $0$\\
+$2.00$ & $1.54088$ & $2.77\times10^{-4}$ & $1.000000$ & $0$\\
+\bottomrule
+\end{tabular}
+\caption{The spurious mode of the QRPA for the pairing model, $f=0$.  The
+root nearest zero has unit overlap with the amplitudes~(\ref{eq:7-spurious})
+built from the number operator, identifying it beyond doubt.  Once it is
+removed, no imaginary eigenvalues remain at any coupling.}
+\label{tab:spurious}
+\end{table}
+
+The overlap with the number-operator amplitudes is one to six decimal places,
+which identifies the near-zero root beyond any doubt.  Once it is removed, the
+QRPA matrix has no imaginary eigenvalues anywhere in the superfluid regime.
+The lesson generalises: before declaring a mean field unstable on the strength
+of an imaginary RPA root, check whether the root is a spurious mode in
+disguise.  The test is cheap -- compute the amplitudes~(\ref{eq:7-spurious})
+for each broken symmetry and take overlaps.
+
+\subsection{The mode content}
+\label{sec:modecontent}
+
+The second feature is that quasiparticles mix particle number, so a
+two-quasiparticle phonon need not conserve it.  Building the phonon operator
+explicitly, applying it to the BCS vacuum and taking the expectation value of
+$\hat{N}$ separates the modes cleanly:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrl}
+\toprule
+$\omega_{\nu}$ & $\langle\Delta\hat{N}\rangle$ & character\\
+\midrule
+\multicolumn{3}{l}{\emph{$g=2.0$, $f=0$; exact excitations
+  $3.3274$, $3.3274$, $3.4897$, $4.2536$}}\\
+$2.6015$ & $0.0000$ & excitation of the $N$-particle system\\
+$2.9212$ & $0.0000$ & excitation of the $N$-particle system (fourfold)\\
+$3.7879$ & $-0.3566$ & pairing vibration\\
+$3.7879$ & $+0.3566$ & pairing vibration\\
+\bottomrule
+\end{tabular}
+\caption{QRPA phonons at $g=2$, classified by the average particle number
+they carry.  Modes with $\langle\Delta\hat{N}\rangle=0$ are excitations
+within the $N$-particle system; the others connect towards $N\pm2$ and are
+the pairing vibrations.  The shift is not quantised because the BCS vacuum is
+not an eigenstate of $\hat{N}$.}
+\label{tab:modecontent}
+\end{table}
+
+Only the $\langle\Delta\hat{N}\rangle=0$ modes are directly comparable with
+the exact spectrum of the $N$-particle system; the others describe transitions
+to the neighbouring even systems and would be compared with $E_0(N\pm2)$.
+Notice that even the comparable ones lie well below the exact excitations --
+$2.60$ and $2.92$ against $3.33$ and $3.49$ -- the same downward bias RPA
+showed in the particle-hole channel.
+
+%----------------------------------------------------------------------
+\section{Everything against everything}
+\label{sec:allresults}
+
+We can now put the four treatments side by side.  For pure pairing, where the
+exact answers are those of Chapter~\ref{chap:systems}:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{9pt}
+\begin{tabular}{rrrrrr}
+\toprule
+$g$ & $E_{\mathrm{exact}}$ & $E_{\mathrm{HF}}$
+  & $E_{\mathrm{HF}}+E^{\mathrm{RPA}}_{\mathrm{corr}}$
+  & $E_{\mathrm{BCS}}$
+  & $E_{\mathrm{BCS}}+E^{\mathrm{QRPA}}_{\mathrm{corr}}$\\
+\midrule
+$0.40$ & $\phantom{-}1.548001$ & $1.60000$ & $\phantom{-}1.51748$
+  & $\phantom{-}1.60000$ & $\phantom{-}1.46366$\\
+$0.60$ & $\phantom{-}1.277449$ & $1.40000$ & $\phantom{-}1.22390$
+  & $\phantom{-}1.40000$ & $\phantom{-}1.08964$\\
+$0.80$ & $\phantom{-}0.973552$ & $1.20000$ & $\phantom{-}0.90179$
+  & $\phantom{-}1.20000$ & $\phantom{-}0.62540$\\
+$1.00$ & $\phantom{-}0.635548$ & $1.00000$ & $\phantom{-}0.55459$
+  & $\phantom{-}1.00000$ & $-0.01157$\\
+$1.20$ & $\phantom{-}0.264504$ & $0.80000$ & $\phantom{-}0.18506$
+  & $\phantom{-}0.78522$ & $-0.40860$\\
+$1.40$ & $-0.137035$ & $0.60000$ & $-0.20453$
+  & $\phantom{-}0.51568$ & $-0.67091$\\
+$1.60$ & $-0.565660$ & $0.40000$ & $-0.61230$
+  & $\phantom{-}0.20452$ & $-1.04351$\\
+$2.00$ & $-1.489652$ & $0.00000$ & $-1.47622$
+  & $-0.50353$ & $-1.94223$\\
+\bottomrule
+\end{tabular}
+\caption{Ground-state energies for the pure pairing model, $N=L=4$, $\xi=1$.
+The Hartree-Fock energy is the unperturbed reference, since the pairing
+interaction cannot couple it to a $1p$-$1h$ state.  The BCS energy departs
+from it only above $g_c=1.07$.}
+\label{tab:allresults}
+\end{table}
+
+The table repays reading across.
+
+\emph{Hartree-Fock} does nothing at all, exactly as
+Section~\ref{sec:hfnothing} predicted: $E_{\mathrm{HF}}=2-g$ is the
+unperturbed reference energy for every $g$.  The whole correlation energy has
+to come from the fluctuations.
+
+\emph{Particle-hole RPA} supplies almost all of it, and tracks the exact curve
+remarkably closely -- $-0.61230$ against $-0.565660$ at $g=1.6$ -- crossing it
+between $g=1.6$ and $g=2$.  It is slightly under-bound at weak coupling and
+slightly over-bound at strong coupling.  That a particle-hole theory should do
+this well on a pure pairing interaction is a reminder that the labels
+``particle-hole'' and ``pairing'' refer to how a calculation is organised, not
+to a partition of the physics.
+
+\emph{BCS} improves on Hartree-Fock only above $g_c$, and then only modestly.
+A mean field that merely smears the occupation numbers cannot reproduce a
+genuinely correlated ground state; at $g=2$ it recovers $0.50$ of the required
+$1.49$.
+
+\emph{QRPA} on top of BCS overshoots badly, and
+Section~\ref{sec:modecontent} says why: the two-quasiparticle space contains
+pairing vibrations reaching towards $N\pm2$, and the standard
+formula~(\ref{eq:7-rpacorrelation}) counts every root.  Restoring particle
+number by projection is necessary before BCS plus QRPA becomes quantitative
+for a system this small.  In a heavy nucleus, with many levels and a small
+relative number fluctuation, the same machinery is far better behaved -- which
+is why it remains a standard tool there.
+
+\begin{notebox}
+\textbf{What to take away.}  Both approximations of this chapter are the
+\emph{same} approximation applied to different reference states and different
+elementary operators: linearise the equations of motion, replace the
+commutator of two elementary excitations by its expectation value in the
+reference, and diagonalise.  Everything that follows -- the $\pm\omega$
+pairing of the roots, the indefinite metric, the possibility of imaginary
+frequencies, the correlation-energy formula, the appearance of Goldstone modes
+whenever the reference breaks a symmetry -- follows from that one step, and is
+independent of which channel one is working in.  The quality of the answer,
+however, is not: it depends entirely on whether the reference has already
+captured the physics, and the two halves of Table~\ref{tab:allresults} show
+the same interaction treated well and badly by that criterion.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:ch7summary}
+
+The Tamm-Dancoff approximation diagonalises the Hamiltonian in the
+$1p$-$1h$ space; it is the excited-state version of the CIS truncation of
+Chapter~\ref{chap:fci}, and its matrix $A$ is the Hamiltonian restricted to
+that space, measured from the reference.  The random-phase approximation adds
+the de-excitation amplitudes $Y$, which correlates the ground state, lowers
+every root, and turns the Hermitian eigenvalue problem into the non-Hermitian
+one of Eq.~(\ref{eq:7-rpaequation}).  The blocks $A$ and $B$ that appear there
+are precisely the blocks of Chapter~\ref{chap:hartrefock}'s stability matrix,
+and the RPA frequencies are real exactly when the mean field is a local
+minimum: excitation spectrum and stability analysis are one calculation.
+
+Applied to a model with competing pairing and particle-hole interactions, the
+approximations behave as their construction demands.  Particle-hole RPA is
+stable at every coupling and does surprisingly well on the ground-state
+energy, while systematically underestimating the excitation energies.  BCS
+finds the pairing instability that the particle-hole channel cannot see, at
+the price of breaking particle-number conservation, and QRPA built on it
+carries a spurious Goldstone mode which must be identified and removed --
+by its overlap with the number-operator amplitudes, not by inspecting the
+spectrum alone.
+
+The program \texttt{rpa.py} performs every calculation quoted here, and the
+notebook \texttt{tdarpa.ipynb} runs it cell by cell.  All the matrices are
+built as literal double commutators, so the same routine serves the
+particle-hole and the quasiparticle case, and the textbook formulas
+(\ref{eq:7-Amatrix}) and (\ref{eq:7-Bmatrix}) are checked against them rather
+than assumed.
+
+%----------------------------------------------------------------------
+\section{Exercises}
+\label{sec:ch7exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the model and its limits}
+\label{ex:7-model}
+\addcontentsline{toc}{subsection}{Exercise 1: the model and its limits}
+
+\begin{enumerate}
+  \item[a)] Show that $\hat{V}_{\mathrm{pair}}$ and $\hat{V}_{\mathrm{ph}}$
+  both conserve $N_+$ and $N_-$ separately, and hence that $S_z$ is a good
+  quantum number.  What is the dimension of the $S_z=0$ sector for $N=L=4$?
+  \item[b)] Show that at $f=0$ the seniority is conserved, and that at
+  $f\ne0$ it is not.  Which matrix elements does the particle-hole term
+  supply that the pairing term does not?
+  \item[c)] Verify with \texttt{rpa.py} that the $f=0$ spectrum reproduces
+  Table~\ref{tab:pairing}, and that the ground state at $f=0$ lies entirely
+  in the seniority-zero subspace.
+  \item[d)] For $g=0.5$, $f=0.05g$ the two lowest excited states are split by
+  only $2\times10^{-4}$.  Explain the near-degeneracy.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Every term of Eq.~(\ref{eq:7-Vpair}) contains one $\hat{a}^{\dagger}_{p+}$ and
+one $\hat{a}_{q+}$, so $N_+$ is unchanged, and likewise for $N_-$.  In
+Eq.~(\ref{eq:7-Vph}) the operator
+$\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}\hat{a}_{q-}\hat{a}_{r+}$ again
+creates and destroys one particle of each spin.  Hence
+$[\hat{H},\hat{N}_{\pm}]=0$ and $S_z=(N_+-N_-)/2$ is conserved.  For $N=L=4$
+the balanced sector requires two spin-up and two spin-down particles among
+four levels each, so its dimension is $\binom{4}{2}^2=36$, against
+$\binom{8}{4}=70$ for the full space.
+
+\paragraph{Answer to b).}
+The pairing term moves both members of a pair together, so the number of
+unpaired particles -- the seniority -- is unchanged, as
+Exercise~\ref{ex:5-blocks}c) showed.  The particle-hole term with $q\ne r$
+removes a spin-down from level $q$ and a spin-up from a \emph{different}
+level $r$, leaving unpaired particles behind at both, and deposits a pair at
+$p$.  It therefore changes the seniority by two.  These are exactly the matrix
+elements that connect the seniority-zero subspace to the rest of the $S_z=0$
+space, and they are why the full $36$-dimensional problem must be solved once
+$f\ne0$.
+
+\paragraph{Answer to c).}
+Running \texttt{demo\_model()} prints the $f=0$ energies alongside
+Table~\ref{tab:pairing}; they agree to all eight digits shown.  Projecting the
+ground-state eigenvector onto the determinants with broken pairs gives zero to
+machine precision.
+
+\paragraph{Answer to d).}
+At $f=0$ the first excited state of the seniority-zero problem is doubly
+degenerate by the symmetry of the level scheme.  The particle-hole term lifts
+the degeneracy, but only at order $f$, and $f=0.025$ here; the splitting
+$2.711098-2.710867=2.3\times10^{-4}$ is of order $f^2/\xi$, consistent with
+the degeneracy being lifted at second order.
+
+\subsection*{Exercise 2: from the equations of motion to TDA and RPA}
+\label{ex:7-eom}
+\addcontentsline{toc}{subsection}{Exercise 2: from the equations of motion to TDA and RPA}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:7-eomdouble}) from Eq.~(\ref{eq:7-eom}),
+  stating where $\hat{Q}_{\nu}\bket{0}=0$ is used.
+  \item[b)] Show that with the operator~(\ref{eq:7-tdaoperator}) and a Slater
+  determinant reference, Eq.~(\ref{eq:7-eomdouble}) reduces to the Hermitian
+  problem~(\ref{eq:7-tdaequation}), and evaluate
+  $A_{mi,nj}$ using Wick's theorem.
+  \item[c)] Show that the Tamm-Dancoff matrix is the Hamiltonian restricted
+  to the $1p$-$1h$ space, Eq.~(\ref{eq:7-Aisci}), and hence that TDA is CIS.
+  \item[d)] With the operator~(\ref{eq:7-rpaoperator}), derive
+  Eq.~(\ref{eq:7-rpaequation}) and identify precisely where the quasiboson
+  approximation enters.
+  \item[e)] Show that if $(X,Y)$ solves Eq.~(\ref{eq:7-rpaequation}) with
+  frequency $\omega$, then $(Y^{*},X^{*})$ solves it with $-\omega$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Take the matrix element of Eq.~(\ref{eq:7-eom}) with
+$\bracket{0}{\delta\hat{Q}\,\cdot}{\,}$:
+$\bracket{0}{\delta\hat{Q}[\hat{H},\hat{Q}^{\dagger}_{\nu}]}{0}
+=\omega_{\nu}\bracket{0}{\delta\hat{Q}\hat{Q}^{\dagger}_{\nu}}{0}$.
+Now use $\hat{Q}_{\nu}\bket{0}=0$, and its adjoint
+$\bracket{0}{\hat{Q}^{\dagger}_{\nu}}{}=0$, to add for free the terms
+$\bracket{0}{[\hat{H},\hat{Q}^{\dagger}_{\nu}]\delta\hat{Q}}{0}$ and
+$\omega_{\nu}\bracket{0}{\hat{Q}^{\dagger}_{\nu}\delta\hat{Q}}{0}$, which
+vanish because $\delta\hat{Q}$ is itself a de-excitation operator.
+Subtracting turns both sides into commutators and gives
+Eq.~(\ref{eq:7-eomdouble}).  The symmetrised form is preferable because the
+double commutator can be evaluated with fewer contractions, and because it is
+manifestly Hermitian.
+
+\paragraph{Answer to b).}
+With $\delta\hat{Q}=\hat{a}^{\dagger}_{i}\hat{a}_{m}$ and
+$\hat{Q}^{\dagger}=\sum_{nj}X_{nj}\hat{a}^{\dagger}_{n}\hat{a}_{j}$ the
+right-hand side of Eq.~(\ref{eq:7-eomdouble}) is
+$\sum_{nj}X_{nj}\bracket{\mathrm{HF}}{[\hat{a}^{\dagger}_{i}\hat{a}_{m},
+\hat{a}^{\dagger}_{n}\hat{a}_{j}]}{\mathrm{HF}}=X_{mi}$ by
+Eq.~(\ref{eq:7-phcommutator}), exactly and without approximation, because the
+expectation value of $\hat{a}^{\dagger}_{i}\hat{a}_{j}$ in a determinant is
+$\delta_{ij}$ for occupied indices and zero otherwise.  The left-hand side is
+$\sum_{nj}A_{mi,nj}X_{nj}$ with $A$ given by
+Eq.~(\ref{eq:7-Amatrix}); evaluating the double commutator with the
+generalised Wick theorem of Section~\ref{sec:wickgeneral} gives the one-body
+piece $(\varepsilon_m-\varepsilon_i)\delta_{mn}\delta_{ij}$ from $\hat{H}_0$
+and the single surviving contraction $\bar{v}_{mjin}$ from the interaction.
+
+\paragraph{Answer to c).}
+The $1p$-$1h$ determinants are orthonormal, and the Condon-Slater rules of
+Section~\ref{sec:wickapps} give
+\begin{equation}
+  \bracket{\Phi^m_i}{\hat{H}}{\Phi^n_j}
+  = E_{\mathrm{HF}}\delta_{mn}\delta_{ij}
+  + \left(\varepsilon_m-\varepsilon_i\right)\delta_{mn}\delta_{ij}
+  + \bar{v}_{mjin},
+  \label{eq:7-exc1}
+\end{equation}
+which is $E_{\mathrm{HF}}\delta+A_{mi,nj}$.  Diagonalising $A$ is therefore
+diagonalising $\hat{H}$ in the space spanned by $\bket{\mathrm{HF}}$ and all
+singles -- CIS -- and reading the eigenvalues relative to the reference.  The
+reference itself decouples by Brillouin's theorem, which is why it does not
+appear in $A$.  The program checks
+$\max|A-(\bm{H}_{1p1h}-E_{\mathrm{HF}})| = 3\times10^{-15}$.
+
+\paragraph{Answer to d).}
+Now $\delta\hat{Q}$ ranges over both
+$\hat{a}^{\dagger}_{i}\hat{a}_{m}$ and $\hat{a}^{\dagger}_{m}\hat{a}_{i}$, so
+Eq.~(\ref{eq:7-eomdouble}) becomes a pair of coupled equations for $X$ and
+$Y$.  The left-hand sides give $A$ and $B$ as in
+Eqs.~(\ref{eq:7-Amatrix}) and~(\ref{eq:7-Bmatrix}).  The right-hand sides
+require
+$\bracket{\mathrm{RPA}}{[\hat{a}^{\dagger}_{i}\hat{a}_{m},
+\hat{a}^{\dagger}_{n}\hat{a}_{j}]}{\mathrm{RPA}}$ in the \emph{correlated}
+ground state, which we do not have.  Replacing it by its value in the
+Hartree-Fock determinant, Eq.~(\ref{eq:7-quasiboson}), is the quasiboson
+approximation, and it is the only approximation made.  It produces the norm
+matrix $\bm{\eta}=\mathrm{diag}(\bm{1},-\bm{1})$; the minus sign, from the
+second row, is what makes Eq.~(\ref{eq:7-rpaequation}) non-Hermitian.
+
+\paragraph{Answer to e).}
+Take the complex conjugate of Eq.~(\ref{eq:7-rpaequation}) and interchange the
+two blocks of rows:
+$A^{*}X^{*}+B^{*}Y^{*}=\omega^{*}X^{*}$ and
+$-BY^{*}-AX^{*}=\omega^{*}Y^{*}$, that is
+\begin{equation}
+  \begin{pmatrix}A & B\\ -B^{*} & -A^{*}\end{pmatrix}
+  \begin{pmatrix}Y^{*}\\ X^{*}\end{pmatrix}
+  = -\omega^{*}\begin{pmatrix}Y^{*}\\ X^{*}\end{pmatrix}.
+  \label{eq:7-exe2}
+\end{equation}
+So the spectrum is symmetric about zero.  If $\omega$ is real this is the
+partner $-\omega$; if it is complex the four roots
+$\pm\omega,\pm\omega^{*}$ appear together, which is why imaginary
+frequencies arrive in pairs.
+
+\subsection*{Exercise 3: RPA, stability and Thouless}
+\label{ex:7-thouless}
+\addcontentsline{toc}{subsection}{Exercise 3: RPA, stability and Thouless}
+
+\begin{enumerate}
+  \item[a)] Show that $\hat{M}_{\mathrm{RPA}}=\bm{\eta}
+  \hat{M}_{\mathrm{stab}}$ with $\bm{\eta}=\mathrm{diag}(\bm{1},-\bm{1})$,
+  and deduce Eq.~(\ref{eq:7-stabilityequivalence}).
+  \item[b)] Reproduce Table~\ref{tab:rpastability} for the Lipkin model and
+  show that the collective root behaves as
+  $\omega=\varepsilon\sqrt{1-\chi^2}$ near the transition.
+  \item[c)] Verify Eq.~(\ref{eq:7-closedform}) for the pure pairing model by
+  computing $A$ and $B$ analytically in the particle-hole channel.
+  \item[d)] Show that $\hat{Q}_{\nu}\bket{\mathrm{RPA}}=0$ is solved by
+  Eq.~(\ref{eq:7-rpagroundstate}), and compare its structure with Thouless'
+  theorem and with the coupled-cluster ansatz.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Multiplying $\hat{M}_{\mathrm{stab}}$ on the left by $\bm{\eta}$ flips the
+sign of its second block row, turning $(B^{*},A^{*})$ into
+$(-B^{*},-A^{*})$, which is $\hat{M}_{\mathrm{RPA}}$.  If
+$\hat{M}_{\mathrm{stab}}>0$ it has a positive-definite Hermitian square root
+$\bm{S}$, and
+$\bm{S}^{-1}\hat{M}_{\mathrm{RPA}}\bm{S}
+=\bm{S}^{-1}\bm{\eta}\bm{S}^{2}\bm{S}
+=\bm{S}\bm{\eta}\bm{S}$, which is Hermitian.  Similar matrices have the same
+spectrum, so the RPA eigenvalues are real.  If $\hat{M}_{\mathrm{stab}}$ has a
+negative eigenvalue the square root is no longer Hermitian and the argument
+collapses; the roots may then be imaginary, and for a single negative
+direction they are.
+
+\paragraph{Answer to b).}
+Section~\ref{sec:lipkininstability} gives
+$\Delta+A=\varepsilon\bm{I}$ and $\bm{B}=V(\bm{J}-\bm{I})$, whose largest
+eigenvalue is $V(N-1)=\varepsilon\chi$.  Since $A$ and $B$ commute in this
+model, the RPA roots are
+$\omega=\sqrt{A^2-B^2}$ evaluated eigenvalue by eigenvalue, and the collective
+one is
+\begin{equation}
+  \omega = \sqrt{\varepsilon^2-\varepsilon^2\chi^2}
+   = \varepsilon\sqrt{1-\chi^2}.
+  \label{eq:7-exb3}
+\end{equation}
+This vanishes at $\chi=1$ and is imaginary beyond, reproducing
+Table~\ref{tab:rpastability}: at $\chi=0.9$ it gives
+$\sqrt{1-0.81}=0.43589$, exactly the tabulated value.  Note also the square
+root singularity: the mode softens with infinite slope as the transition is
+approached, which is the mean-field signature of a second-order transition.
+
+\paragraph{Answer to c).}
+With pure pairing the Hartree-Fock orbitals are the original ones, the
+occupied levels shifted down by $g/2$, so $\varepsilon_m-\varepsilon_i$ for
+the lowest particle-hole pair is $\xi+g/2$.  The interaction contributes
+$\bar{v}_{mjin}$ to $A$ and $\bar{v}_{mnij}$ to $B$; for the pairing force
+only the terms in which $m,n$ and $i,j$ are spin partners of the same level
+survive, giving a diagonal $A=\xi+g/2$ and $B=g/2$ in the collective channel.
+Then $\omega=\sqrt{A^2-B^2}=\sqrt{(\xi+g/2)^2-(g/2)^2}=\sqrt{\xi^2+g\xi}$,
+which is Eq.~(\ref{eq:7-closedform}).  Since $\xi^2+g\xi>0$ for all $g>-\xi$,
+the particle-hole channel never becomes unstable.
+
+\paragraph{Answer to d).}
+Write $\bket{\mathrm{RPA}}=\mathcal{N}e^{\hat{S}}\bket{\mathrm{HF}}$ with
+$\hat{S}=\tfrac12\sum Z_{mi,nj}\hat{a}^{\dagger}_{m}\hat{a}_{i}
+\hat{a}^{\dagger}_{n}\hat{a}_{j}$.  Since the particle-hole operators commute
+among themselves in the quasiboson approximation,
+$[\hat{a}^{\dagger}_{i}\hat{a}_{m},\hat{S}]
+=\sum_{nj}Z_{mi,nj}\hat{a}^{\dagger}_{n}\hat{a}_{j}$, and imposing
+$\hat{Q}_{\nu}e^{\hat{S}}\bket{\mathrm{HF}}=0$ gives
+$Y^{\nu}=\bm{Z}\,\bm{X}^{\nu}$ in matrix form, hence
+$\bm{Z}=\bm{Y}^{*}(\bm{X}^{*})^{-1}$.  The structure is the same as Thouless'
+theorem, Eq.~(\ref{eq:6-thouless}), with $2p$-$2h$ operators in place of the
+$1p$-$1h$ ones -- so the RPA ground state stands to the doubles as a Slater
+determinant does to the singles.  It is also the coupled-cluster doubles
+ansatz $e^{\hat{T}_2}\bket{\Phi_0}$ of Eq.~(\ref{eq:5-ccsd}), with the
+amplitudes fixed by the RPA equations rather than determined by their own
+nonlinear equations.  RPA is thus an approximation to coupled-cluster doubles,
+and the comparison between the two is a standard way of exposing what the
+quasiboson approximation costs.
+
+\subsection*{Exercise 4: BCS}
+\label{ex:7-bcs}
+\addcontentsline{toc}{subsection}{Exercise 4: BCS}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:7-bcsenergy}), being explicit about the
+  $p=q$ and $p\ne q$ contributions.
+  \item[b)] Show that only the $q=r$ part of $\hat{V}_{\mathrm{ph}}$ has a
+  non-zero expectation value in the BCS state, and hence that the problem
+  depends on $g$ and $f$ only through $g+2f$.
+  \item[c)] Derive the critical condition~(\ref{eq:7-gc}) and solve it for
+  $S_c$ and $g_c$.
+  \item[d)] Verify that the Bogoliubov quasiparticles~(\ref{eq:7-bogoliubov})
+  annihilate the BCS state and obey the fermion anticommutation relations.
+  \item[e)] Compare the BCS ground-state energy with the exact one through
+  the transition and comment on the sharpness of the mean-field transition.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+$\bket{\mathrm{BCS}}$ is a product over levels, so
+$\langle\hat{N}\rangle=2\sum_p v_p^2$ and
+$\langle\hat{H}_0\rangle=2\sum_p\varepsilon_p v_p^2$ immediately.  For the
+interaction, $\hat{P}_q$ acting on the product picks out the $v_q$ term and
+leaves level $q$ empty; $\hat{P}^{\dagger}_p$ in the bra does the same at $p$.
+For $p=q$ the two operations are on the same level and the overlap is
+$v_p^2$; for $p\ne q$ the surviving overlap has $u_p$ at $p$ and $u_q$ at $q$,
+giving $u_pv_pu_qv_q$.  Assembling,
+$\sum_{pq}\langle\hat{P}^{\dagger}_p\hat{P}_q\rangle
+=\sum_p v_p^2+\sum_{p\ne q}u_pv_pu_qv_q$, and multiplying by $-S$ gives
+Eq.~(\ref{eq:7-bcsenergy}).
+
+\paragraph{Answer to b).}
+$\hat{a}_{q-}\hat{a}_{r+}$ with $q\ne r$ leaves an unpaired particle at each
+of $q$ and $r$; the resulting state has two broken pairs and is orthogonal to
+anything $\hat{P}^{\dagger}_p$ can produce from
+$\bket{\mathrm{BCS}}$, which contains only paired levels.  For $q=r$,
+$\hat{a}_{q-}\hat{a}_{q+}=\hat{P}_q$ exactly, so the term reduces to
+$-\tfrac{f}{2}\sum_{pq}\hat{P}^{\dagger}_p\hat{P}_q$ and its Hermitian
+conjugate contributes an equal amount.  The total is
+$-f\sum_{pq}\hat{P}^{\dagger}_p\hat{P}_q$, which added to
+$-\tfrac{g}{2}\sum_{pq}\hat{P}^{\dagger}_p\hat{P}_q$ gives the single
+strength $S=g/2+f$, that is $g\to g+2f$.  The program confirms that
+$(g,f)=(1.4,0)$, $(1.2,0.1)$, $(0.8,0.3)$ and $(0,0.7)$ give identical
+energies and gaps.
+
+\paragraph{Answer to c).}
+Linearise about $\Delta=0$.  There $v_p^2=1$ for the two lowest levels and
+zero above, so the self-energy shifts them to
+$\tilde{\varepsilon}_p=\varepsilon_p-S$ for $p\le2$ and leaves
+$\tilde{\varepsilon}_p=\varepsilon_p$ above.  With $\varepsilon_p=0,1,2,3$
+this gives $(-S,\,1-S,\,2,\,3)$, and the chemical potential sits midway
+between the highest occupied and lowest empty level,
+$\lambda=(3-S)/2$.  The linearised gap equation
+$1=(S/2)\sum_p|\tilde{\varepsilon}_p-\lambda|^{-1}$ becomes
+\begin{equation}
+  1 = \frac{S}{2}\left[\frac{2}{(3+S)/2}\cdot 1
+    + \frac{2}{(1+S)/2}\cdot 1\right]\cdot\frac12\cdot 2
+   = 2S\left[\frac{1}{3+S}+\frac{1}{1+S}\right],
+  \label{eq:7-exc4}
+\end{equation}
+which is Eq.~(\ref{eq:7-gc}) with $\xi=1$.  Solving numerically gives
+$S_c=0.53519$ and $g_c=2S_c=1.07037$ at $f=0$, matching the bisection in the
+program.
+
+\paragraph{Answer to d).}
+$\hat{\alpha}_{p+}\bket{\mathrm{BCS}}
+=(u_p\hat{a}_{p+}-v_p\hat{a}^{\dagger}_{p-})
+\prod_q(u_q+v_q\hat{P}^{\dagger}_q)\bket{0}$.  Only the factor at level $p$
+matters; acting on $(u_p+v_p\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-})$
+gives $u_pv_p\hat{a}^{\dagger}_{p-}-v_pu_p\hat{a}^{\dagger}_{p-}=0$.  For the
+anticommutators,
+\begin{equation}
+  \left\{\hat{\alpha}_{p+},\hat{\alpha}^{\dagger}_{p+}\right\}
+   = u_p^2\left\{\hat{a}_{p+},\hat{a}^{\dagger}_{p+}\right\}
+   + v_p^2\left\{\hat{a}^{\dagger}_{p-},\hat{a}_{p-}\right\}
+   = u_p^2+v_p^2 = 1,
+  \label{eq:7-exd4}
+\end{equation}
+the cross terms
+vanishing because they pair two creation or two annihilation operators.  The
+normalisation $u_p^2+v_p^2=1$ is exactly what makes the transformation
+canonical.  The program checks
+$\max\Vert\hat{\alpha}_a\bket{\mathrm{BCS}}\Vert=3\times10^{-17}$.
+
+\paragraph{Answer to e).}
+From Table~\ref{tab:allresults}, $E_{\mathrm{BCS}}=E_{\mathrm{HF}}$ exactly
+below $g_c=1.07$ and departs from it above.  The exact energy, by contrast,
+runs smoothly through $g_c$ with no feature of any kind: at $g=1.0$, $1.2$ and
+$1.4$ it is $0.6355$, $0.2645$ and $-0.1370$, a perfectly regular sequence.
+The mean-field transition is therefore an artefact of restricting the trial
+state to a product form.  What is physical is the crossover -- the gradual
+build-up of pair correlations -- and what is spurious is its sharpness, and
+with it the broken symmetry.  For a large system the crossover narrows and the
+mean-field picture becomes accurate; for four particles it does not.
+
+\subsection*{Exercise 5: QRPA and the spurious mode}
+\label{ex:7-qrpa}
+\addcontentsline{toc}{subsection}{Exercise 5: QRPA and the spurious mode}
+
+\begin{enumerate}
+  \item[a)] Show that if $[\hat{H},\hat{F}]=0$ while the reference is not an
+  eigenstate of $\hat{F}$, then the amplitudes~(\ref{eq:7-spurious}) built
+  from $\hat{F}$ give an exact zero mode of the RPA equations.
+  \item[b)] Explain why cranking with $\hat{H}'=\hat{H}-\lambda\hat{N}$
+  places the spurious root at zero, and why the root may come out as a small
+  \emph{imaginary} pair rather than a small real one.
+  \item[c)] Reproduce Table~\ref{tab:spurious} and confirm the unit overlap.
+  What would you conclude if the overlap were small?
+  \item[d)] Classify the QRPA phonons at $g=2$ by
+  $\langle\Delta\hat{N}\rangle$, and explain why the shift is not quantised
+  at $\pm2$.
+  \item[e)] Explain why $E^{\mathrm{QRPA}}_{\mathrm{corr}}$ overshoots so
+  badly in Table~\ref{tab:allresults}, and suggest what would fix it.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Because $[\hat{H},\hat{F}]=0$, the operator $\hat{F}$ generates a family of
+states $e^{\imath\theta\hat{F}}\bket{\mathrm{ref}}$ all with the same energy.
+If the reference is not an eigenstate of $\hat{F}$ these are genuinely
+different states, so the energy surface has a flat direction, and the second
+derivative -- which is what $\hat{M}_{\mathrm{stab}}$ is -- has a zero
+eigenvalue along it.  Algebraically, substituting the
+amplitudes~(\ref{eq:7-spurious}) into the left-hand side of
+Eq.~(\ref{eq:7-eomdouble}) gives
+$\bracket{\mathrm{ref}}{[\delta\hat{Q},[\hat{H},\hat{F}]]}{\mathrm{ref}}=0$
+identically, so $\omega=0$.
+
+\paragraph{Answer to b).}
+The BCS state extremises $\hat{H}-\lambda\hat{N}$, not $\hat{H}$, so it is
+$\hat{H}'$ whose energy surface is flat at the BCS point and whose second
+derivative therefore has the exact zero eigenvalue.  Building the QRPA from
+$\hat{H}$ instead displaces the spurious root to a small non-zero value and
+contaminates the physical ones.  The root may emerge imaginary because the RPA
+metric $\bm{\eta}$ is singular in the spurious direction: there
+$\sum(|X|^2-|Y|^2)=0$, the mode cannot be normalised, and rounding errors of
+either sign are amplified into a small $\pm\imath\epsilon$ pair.  This is a
+property of the numerics, not of the physics.
+
+\paragraph{Answer to c).}
+\texttt{demo\_qrpa()} prints the table.  The overlap between the near-zero
+eigenvector and the amplitudes~(\ref{eq:7-spurious}) is $1.000000$ throughout,
+so the root is unambiguously the number mode.  Were the overlap small, the
+conclusion would be the opposite and far more interesting: a genuine soft mode,
+signalling that the BCS solution is about to become unstable against some
+other deformation, exactly as the Lipkin collective root does at $\chi=1$.
+The two cases look identical in the spectrum alone, which is why the overlap
+test matters.
+
+\paragraph{Answer to d).}
+Running \texttt{classify\_modes} gives $\langle\Delta\hat{N}\rangle=0$ to
+machine precision for the roots at $2.6015$ and $2.9212$, and
+$\pm0.357$ for the pair at $3.7879$.  The shift is not $\pm2$ because
+$\bket{\mathrm{BCS}}$ is not an eigenstate of $\hat{N}$: it is a wave packet
+in particle number, and $\langle\hat{N}\rangle$ in the phonon state measures
+the \emph{mean} of a shifted packet, not a quantum number.  What is exact and
+meaningful is the vanishing of the shift for the modes that stay within the
+$N$-particle system, which is enforced by symmetry.  Number projection would
+restore the quantisation.
+
+\paragraph{Answer to e).}
+Two effects compound.  First, Eq.~(\ref{eq:7-rpacorrelation}) sums over
+\emph{all} roots, and the two-quasiparticle space contains pairing vibrations
+that describe the neighbouring $N\pm2$ systems; their zero-point energy has no
+business in the correlation energy of the $N$-particle system.  Second, the
+quasiboson approximation is worse here than in the particle-hole channel,
+because the BCS occupations are fractional and the commutator of two
+two-quasiparticle operators is correspondingly further from a $c$-number.  The
+cure for the first is particle-number projection before or after variation;
+the cure for the second is a renormalised QRPA that keeps the leading
+correction to Eq.~(\ref{eq:7-quasiboson}).  Both are standard, and both are
+essential for a system with only four particles; in a heavy nucleus the
+relative number fluctuation $\Delta N/N$ is small and plain QRPA is adequate.
+
+\subsection*{Exercise 6: numerical explorations}
+\label{ex:7-numerical}
+\addcontentsline{toc}{subsection}{Exercise 6: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{rpa.py}, plot the exact, TDA and RPA lowest
+  excitation energies against $g$ for $f=0.05g$ and for $f=0.5g$, and comment
+  on where the approximations fail.
+  \item[b)] Repeat Table~\ref{tab:allresults} for $L=6$ and $N=6$.  Does
+  RPA improve or deteriorate as the system grows?
+  \item[c)] Compute the RPA correlation energy from
+  Eq.~(\ref{eq:7-rpacorrelation}) and, separately, as the difference between
+  the exact and Hartree-Fock energies.  Plot the ratio against $g$.
+  \item[d)] Find, by sweeping $f$ at fixed $g$, the coupling at which the
+  particle-hole stability matrix of this model first acquires a negative
+  eigenvalue -- or show that it never does within the range you can reach.
+  \item[e)] Restrict the QRPA correlation energy to the
+  $\langle\Delta\hat{N}\rangle=0$ modes and compare with
+  Table~\ref{tab:allresults}.  How much of the overshoot does this remove?
+\end{enumerate}
+
+\paragraph{Answer.}
+These are open-ended; a few pointers.  In b) the RPA correlation energy is an
+extensive quantity while the quasiboson error per phonon is not, so RPA
+generally improves in relative terms as the level space grows -- the opposite
+of truncated configuration interaction, whose size-consistency error grows
+(Section~\ref{sec:sizeconsistency}).  In c) the ratio starts near one at small
+$g$ and drifts past it as RPA begins to overshoot; the crossing point is a
+useful single number for characterising where the method turns over.  In d)
+the answer for this model is that it never does within any reasonable range,
+since Eq.~(\ref{eq:7-closedform}) is real for all $g>-\xi$ and the
+particle-hole term only stiffens the matrix; the instability is in the pairing
+channel, which requires the BCS reference to see.  In e) removing the
+pairing-vibration roots takes out a large part of the overshoot but not all of
+it, since the quasiboson approximation remains; the residual is a fair
+estimate of what number projection alone cannot fix.

@@ -42,6 +42,22 @@
      - The electron gas as example: closed-form HF, band width, the vanishing
        effective mass, E_0/N = 2.21/r_s^2 - 0.916/r_s and the bound minimum
      - FCI and HF, diagrammatic representations and critical discussions
+
+### Mean-field applications: TDA and RPA  (chapter7.tex, done)
+     - The pairing + particle-hole model (Hjorth-Jensen, Dean, Hagen, Kvaal,
+       J. Phys. G 37, 064035 (2010), Sec. 2.1); reduces to the chapter-4
+       pairing model at f = 0
+     - Exact diagonalization in the S_z = 0 sector
+     - The equations of motion; TDA as CIS; RPA and the quasiboson approximation
+     - RPA matrix = chapter-6 stability matrix in a different arrangement:
+       real frequencies <=> stable mean field.  Soft mode at the Lipkin
+       transition.
+     - The RPA correlation energy and the RPA ground state as exp(Z_2)|HF>
+     - BCS, the pairing gap and the (spurious) finite-system transition
+     - QRPA: the Goldstone mode from broken U(1), identified by its overlap
+       with the number operator, and the Delta N = 0 vs pairing-vibration
+       mode content
+     - Still to add if wanted: number projection, renormalised QRPA, HFB
 ###  Many-body perturbation theory
      - Time dependent and time-independent representation
      - Brillouin-Wigner and Rayleigh-Schrødinger pert theory

@@ -402,6 +402,11 @@ class BCS:
 
     # ------------------------------------------------------------------
     def _minimise(self, lam, starts=6, seed=7):
+        """Minimise <H - lambda N> over the angles, from several starts.
+
+        The energy surface has several local minima -- the normal solution and
+        the paired ones -- so a single start is not safe near the transition.
+        """
         from scipy.optimize import minimize
         rng = np.random.default_rng(seed)
 
@@ -424,20 +429,26 @@ class BCS:
                 best, best_value = res.x, res.fun
         return best
 
-    def solve(self, tol=1e-10):
-        """Bisect the chemical potential so that <N> = N."""
+    def solve(self, tol=1e-12, max_bisections=80):
+        """Bisect the chemical potential so that <N> = N.
+
+        The bisection uses a cheap single start; the final lambda is then
+        polished with the full multi-start minimisation, which is what
+        matters for picking out the global minimum near the transition.
+        """
         lo, hi = -10.0, 20.0
-        theta = None
-        for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        for _ in range(max_bisections):
             mid = 0.5 * (lo + hi)
-            theta = self._minimise(mid)
+            theta = self._minimise(mid, starts=3)
             n = self.particles_expectation(theta)
-            if abs(n - self.N) < 1e-9 or hi - lo < tol:
+            if abs(n - self.N) < 1e-11 or hi - lo < tol:
                 break
             if n > self.N:
                 hi = mid
             else:
                 lo = mid
+        theta = self._minimise(mid, starts=6)
         u, v = np.cos(theta), np.sin(theta)
         self.theta, self.u, self.v, self.lam = theta, u, v, mid
         self.gap = self.strength * (u * v).sum()
