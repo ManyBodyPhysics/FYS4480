@@ -18,20 +18,29 @@
      - Derivation of expressions for different parts of Hamiltonians, 1b, 2b, 3b etc
      - Add material on how to use sympy alternatively develop exercises where one writes codes for using Wick's theorem
      - Wigner-Jordan transformation and 2nd quantization
-     - Baker-Campbell-Hausdorf (BCH)
-     - Suzuki-Trotter as an approximation to BCH
+     - Baker-Campbell-Hausdorf (BCH) -- now developed in chapter6.tex
+     - Suzuki-Trotter as an approximation to BCH -- now in chapter6.tex
 ### FCI and diagrams and particle-hole representations
      - Basics of FCI
      - Rewriting in terms of a particle-hole picture
      - Discuss slater determinants and similarity transformations and algorithms for solving eigenvalue problems
      - May discuss eigenvector continuation
      - Introduce a diagrammatic representation
-### Mean-field theories
+### Mean-field theories  (chapter6.tex, done)
      - Hartree-Fock in coordinate space and 2nd quantization
+     - Variational calculus and Lagrange multipliers
+     - The density matrix and the self-consistent field algorithm
      - Thouless theorem
+     - Baker-Campbell-Hausdorff and Suzuki-Trotter (moved here from the
+       2nd-quantization chapter, since Thouless' theorem needs BCH and the
+       same algebra returns in coupled cluster and in quantum simulation)
      - Slater dets in HF theory
+     - Stability of the HF solution; the stability matrix is the RPA matrix.
+       Worked instability: the Lipkin model at chi = 1.  Worked non-example:
+       the pairing model, where HF gains nothing.
      - DFT links
-     - The electron gas as example
+     - The electron gas as example: closed-form HF, band width, the vanishing
+       effective mass, E_0/N = 2.21/r_s^2 - 0.916/r_s and the bound minimum
      - FCI and HF, diagrammatic representations and critical discussions
 ###  Many-body perturbation theory
      - Time dependent and time-independent representation

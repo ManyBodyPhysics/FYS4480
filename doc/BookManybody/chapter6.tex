@@ -1,2 +1,2220 @@
 \chapter{Mean-field approaches}
 \label{chap:hartrefock}
+%=============================================================================
+
+Chapter~\ref{chap:fci} showed that the exact answer is a superposition of an
+exponentially large number of Slater determinants, and that we cannot afford
+it.  This chapter takes the opposite tack.  Instead of adding determinants we
+keep exactly one and ask which one is best.  The answer is Hartree-Fock
+theory, and it is the foundation on which every method in the remaining
+chapters is built: perturbation theory expands about it, coupled cluster
+exponentiates corrections to it, and the truncated configuration interaction
+of Section~\ref{sec:citruncations} is measured against it.
+
+Chapter~\ref{chap:mbphys} already wrote down the Hartree-Fock equations,
+Eq.~(\ref{eq:2-hfequations}), and deferred their derivation.  We supply it
+here, in two independent ways -- by varying the expansion coefficients of the
+orbitals, and by varying the determinant itself in second quantization.  The
+second route requires Thouless' theorem, which characterises what a
+``nearby determinant'' means, and Thouless' theorem in turn rests on the
+Baker-Campbell-Hausdorff expansion.  That expansion is worth a section of its
+own, because the same algebra reappears in the Trotter splitting used for time
+evolution and for quantum simulation later in the book.  Armed with it we can
+ask not merely whether the Hartree-Fock solution is stationary but whether it
+is a minimum, and we close with the one many-body system for which the whole
+programme can be carried through analytically: the infinite homogeneous
+electron gas.
+
+%----------------------------------------------------------------------
+\section{Why a mean field?}
+\label{sec:whyhf}
+
+\index{Hartree-Fock theory}
+Hartree-Fock theory is an algorithm for finding an approximate ground state of
+a given Hamiltonian.  It has two ingredients.  The first is a single-particle
+basis defined by its own eigenvalue problem,
+\begin{equation}
+  \hat{h}^{\mathrm{HF}}\psi_{\alpha} = \varepsilon_{\alpha}\psi_{\alpha},
+  \qquad
+  \hat{h}^{\mathrm{HF}} = \hat{t} + \hat{u}_{\mathrm{ext}}
+    + \hat{u}^{\mathrm{HF}},
+  \label{eq:6-hfhamiltonian}
+\end{equation}
+in which $\hat{u}^{\mathrm{HF}}$ is a one-body potential still to be
+determined.  The second is the prescription for determining it: choose
+$\hat{u}^{\mathrm{HF}}$ so that
+\begin{equation}
+  E^{\mathrm{HF}} = \bracket{\Phi_0}{\hat{H}}{\Phi_0}
+  \label{eq:6-hfenergy}
+\end{equation}
+is stationary, with $\bket{\Phi_0}$ a single Slater determinant built from the
+$N$ lowest solutions of Eq.~(\ref{eq:6-hfhamiltonian}).  The variational
+principle of Section~\ref{sec:variational} then guarantees
+$E^{\mathrm{HF}}\ge E_0$, so whatever we obtain is an upper bound on the exact
+ground-state energy.
+
+We shall see that the resulting one-body operator is precisely the operator
+$\hat{f}$ that appears when the Hamiltonian is normal-ordered with respect to
+the reference determinant.  For a specific matrix element,
+\begin{equation}
+  \bracket{p}{\hat{h}^{\mathrm{HF}}}{q}
+  = \bracket{p}{\hat{f}}{q}
+  = \bracket{p}{\hat{t}+\hat{u}_{\mathrm{ext}}}{q}
+    + \sum_{i\le F}\langle pi\vert\hat{v}\vert qi\rangle_{\mathrm{AS}},
+  \label{eq:6-fockmatrixelement}
+\end{equation}
+so that
+\begin{equation}
+  \bracket{p}{\hat{u}^{\mathrm{HF}}}{q}
+  = \sum_{i\le F}\langle pi\vert\hat{v}\vert qi\rangle_{\mathrm{AS}} .
+  \label{eq:6-hfpotential}
+\end{equation}
+The sum runs over all single-particle states below the Fermi level, and this
+is the whole content of the mean-field idea: the two-body interaction, summed
+over the other fermions, creates an effective one-body field in which a given
+fermion moves.
+
+Two features of Eq.~(\ref{eq:6-hfpotential}) deserve emphasis.  It brings an
+explicit \emph{medium dependence}, since the potential felt by a particle
+depends on which states are occupied; and it brings an explicit dependence on
+the interaction, so different interactions give different mean fields even at
+the same density.  For atoms and molecules there is an external potential
+$\hat{u}_{\mathrm{ext}}$ -- the attraction of the nuclei.  For nuclei there is
+none: a nucleus is a self-bound system, held together by the interaction
+between its own constituents, and the entire one-body field must be generated
+by Eq.~(\ref{eq:6-hfpotential}).
+
+%----------------------------------------------------------------------
+\section{Variational calculus and Lagrange multipliers}
+\label{sec:varcalculus}
+
+\index{variational calculus}\index{Lagrange multipliers}
+Before deriving the Hartree-Fock equations we recall the machinery, in its
+simplest setting.  The calculus of variations deals with problems in which the
+quantity to be made stationary is an integral,
+\begin{equation}
+  E[\Phi] = \int_a^b f\!\left(\Phi(x),
+    \frac{\partial\Phi}{\partial x}, x\right)\ud{x} .
+  \label{eq:6-functional}
+\end{equation}
+The difficulty is that although $f$ is a known function of $\Phi$,
+$\partial\Phi/\partial x$ and $x$, the dependence of $\Phi$ on $x$ is not
+known: the limits are fixed but the path is not.  In our case the unknowns are
+the single-particle wave functions, and the constraints are the integrals
+expressing their orthonormality.  Constraints of this kind are handled with
+Lagrange multipliers.
+
+Take one particle in three dimensions, with
+\begin{equation}
+  E = \int \psi^{*}\hat{H}\psi\,\ud{x}\ud{y}\ud{z},
+  \qquad
+  \int \psi^{*}\psi\,\ud{x}\ud{y}\ud{z} = 1,
+  \qquad
+  \hat{H} = -\frac{1}{2}\nabla^2 + V .
+  \label{eq:6-oneparticle}
+\end{equation}
+Integrating the kinetic term by parts, with $\psi$ vanishing at the
+boundaries,
+\begin{equation}
+  \int \psi^{*}\left(-\frac{1}{2}\nabla^2\right)\psi\,\ud{x}\ud{y}\ud{z}
+  = \int \frac{1}{2}\nabla\psi^{*}\cdot\nabla\psi\,\ud{x}\ud{y}\ud{z},
+  \label{eq:6-byparts}
+\end{equation}
+so that the constrained variation reads
+\begin{equation}
+  \delta\left\{\int\left(\frac{1}{2}\nabla\psi^{*}\cdot\nabla\psi
+    + V\psi^{*}\psi - \lambda\psi^{*}\psi\right)
+    \ud{x}\ud{y}\ud{z}\right\} = 0 .
+  \label{eq:6-constrainedvariation}
+\end{equation}
+Writing the integrand as
+\begin{equation}
+  f = \frac{1}{2}\left(\psi^{*}_x\psi_x + \psi^{*}_y\psi_y
+      + \psi^{*}_z\psi_z\right) + V\psi^{*}\psi - \lambda\psi^{*}\psi,
+  \label{eq:6-integrand}
+\end{equation}
+with subscripts denoting partial derivatives, the Euler-Lagrange equation for
+$\psi^{*}$,
+\begin{equation}
+  \frac{\partial f}{\partial\psi^{*}}
+  - \frac{\partial}{\partial x}\frac{\partial f}{\partial\psi^{*}_x}
+  - \frac{\partial}{\partial y}\frac{\partial f}{\partial\psi^{*}_y}
+  - \frac{\partial}{\partial z}\frac{\partial f}{\partial\psi^{*}_z} = 0,
+  \label{eq:6-eulerlagrange}
+\end{equation}
+gives
+\begin{equation}
+  -\frac{1}{2}\nabla^2\psi + V\psi = \lambda\psi .
+  \label{eq:6-schrodinger}
+\end{equation}
+The multiplier is the energy, and the stationarity condition is nothing but
+the Schr\"odinger equation.  This is the pattern we shall meet again: a
+constrained variation produces an eigenvalue problem, and the multiplier
+enforcing normalisation turns out to be the eigenvalue.  It happened already
+in Section~\ref{sec:cieigenvalue}, where the same manipulation produced the
+full configuration-interaction equation, and it will happen once more below.
+
+%----------------------------------------------------------------------
+\section{Determinants under a linear change of basis}
+\label{sec:detbasis}
+
+\index{determinant!under a change of basis}
+One property of determinants is needed before we can vary the coefficients,
+and it is worth isolating because it explains why the whole construction is
+consistent.
+
+A determinant is linear in each column separately.  For a $2\times2$ example,
+\begin{equation}
+  \begin{vmatrix}
+    \alpha_1 b_{11}+\alpha_2 b_{12} & a_{12}\\
+    \alpha_1 b_{21}+\alpha_2 b_{22} & a_{22}
+  \end{vmatrix}
+  = \alpha_1\begin{vmatrix} b_{11} & a_{12}\\ b_{21} & a_{22}\end{vmatrix}
+  + \alpha_2\begin{vmatrix} b_{12} & a_{12}\\ b_{22} & a_{22}\end{vmatrix},
+  \label{eq:6-multilinear2}
+\end{equation}
+and in general, for an $n\times n$ matrix in which one column is a linear
+combination $\sum_k c_k b_{jk}$,
+\begin{equation}
+  \det\left(\dots\ \textstyle\sum_k c_k b_{jk}\ \dots\right)
+  = \sum_{k=1}^{n} c_k \det\left(\dots\ b_{jk}\ \dots\right),
+  \label{eq:6-multilinear}
+\end{equation}
+where the omitted columns are the same on both sides.  Applying this to
+\emph{every} column in turn gives the product rule
+\begin{equation}
+  \det(\bm{B}\bm{C}) = \det(\bm{B})\,\det(\bm{C}),
+  \label{eq:6-productrule}
+\end{equation}
+which we already used in Section~\ref{sec:determinants}.  The reader is
+encouraged to check the case $n=2$ explicitly.
+
+Now let the new orbitals be expanded in a fixed orthonormal basis, as in
+Eq.~(\ref{eq:newbasis}),
+\begin{equation}
+  \psi_p(x) = \sum_{\lambda}C_{p\lambda}\phi_{\lambda}(x).
+  \label{eq:6-newbasis}
+\end{equation}
+The Slater determinant built from the $\psi$'s is
+\begin{equation}
+  \frac{1}{\sqrt{N!}}
+  \begin{vmatrix}
+    \sum_{\lambda}C_{p\lambda}\phi_{\lambda}(x_1) & \dots
+      & \sum_{\lambda}C_{p\lambda}\phi_{\lambda}(x_N)\\
+    \vdots & & \vdots\\
+    \sum_{\lambda}C_{t\lambda}\phi_{\lambda}(x_1) & \dots
+      & \sum_{\lambda}C_{t\lambda}\phi_{\lambda}(x_N)
+  \end{vmatrix}
+  = \det(\bm{C})\;\Phi(\phi),
+  \label{eq:6-detcdetphi}
+\end{equation}
+with $\Phi(\phi)$ the determinant of the original basis functions.  If
+$\bm{C}$ is unitary then $|\det(\bm{C})|=1$ and the two determinants differ by
+a phase only.  Two consequences follow, and both are used constantly.
+
+First, orthonormality is preserved.  If $\bm{v}_j^{T}\bm{v}_i=\delta_{ij}$ and
+$\bm{w}_i=\bm{U}\bm{v}_i$ with $\bm{U}$ unitary, then
+\begin{equation}
+  \bm{w}_j^{\dagger}\bm{w}_i
+  = \bm{v}_j^{\dagger}\bm{U}^{\dagger}\bm{U}\bm{v}_i
+  = \bm{v}_j^{\dagger}\bm{v}_i = \delta_{ij},
+  \label{eq:6-unitarypreserves}
+\end{equation}
+which is Section~\ref{sec:unitary} restated.  So if $\braket{\alpha}{\beta}
+=\delta_{\alpha\beta}$ then $\braket{p}{q}=\delta_{pq}$, and a unitary change
+of coefficients never spoils the basis we are working in.
+
+Second, a Slater determinant is invariant, up to a phase, under any unitary
+mixing of its occupied orbitals.  The determinant does not know which
+particular orbitals were used to build it, only which $N$-dimensional subspace
+they span.  This is why the Hartree-Fock solution is properly a statement
+about a subspace, and why the individual orbitals are determined only up to
+such a mixing -- the freedom that is fixed, conventionally, by demanding that
+the Fock matrix be diagonal.
+
+\begin{notebox}
+\textbf{Where this comes from.}  Every ingredient of this section already
+appeared in Chapter~\ref{chap:linalg}: multilinearity and the product rule
+in Section~\ref{sec:determinants}, unitary transformations in
+Section~\ref{sec:unitary}, and the practical evaluation of
+$\det(\bm{C})$ by LU decomposition in Section~\ref{sec:lu}.  The last is not
+an idle remark: in variational Monte Carlo the ratio of two such determinants
+is evaluated millions of times, which is why
+Section~\ref{sec:slaterupdate} developed the Sherman-Morrison update instead.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The Hartree-Fock equations by varying the coefficients}
+\label{sec:hfcoefficients}
+
+\index{Hartree-Fock equations!derivation}
+We can now carry out the derivation that Chapter~\ref{chap:mbphys} postponed.
+The energy functional of a single determinant, Eq.~(\ref{eq:EHF}), is
+\begin{equation}
+  E[\Phi] = \sum_{\mu=1}^{N}\bracket{\mu}{\hat{h}_0}{\mu}
+    + \frac{1}{2}\sum_{\mu=1}^{N}\sum_{\nu=1}^{N}
+      \langle\mu\nu\vert\hat{v}\vert\mu\nu\rangle_{\mathrm{AS}} ,
+  \label{eq:6-energyfunctional}
+\end{equation}
+and inserting Eq.~(\ref{eq:6-newbasis}) turns it into a function of the
+coefficients,
+\begin{equation}
+  E[\Phi^{\mathrm{HF}}]
+  = \sum_{i=1}^{N}\sum_{\alpha\beta}C^{*}_{i\alpha}C_{i\beta}
+      \bracket{\alpha}{\hat{h}_0}{\beta}
+  + \frac{1}{2}\sum_{i,j=1}^{N}\sum_{\alpha\beta\gamma\delta}
+      C^{*}_{i\alpha}C^{*}_{j\beta}C_{i\gamma}C_{j\delta}
+      \langle\alpha\beta\vert\hat{v}\vert\gamma\delta\rangle_{\mathrm{AS}} .
+  \label{eq:6-Efunctional}
+\end{equation}
+Greek indices run over the whole fixed basis, Latin indices over the $N$
+occupied orbitals.
+
+The coefficients are not free: orthonormality of the new orbitals requires
+\begin{equation}
+  \braket{i}{j} = \delta_{ij}
+  = \sum_{\alpha\beta}C^{*}_{i\alpha}C_{i\beta}\braket{\alpha}{\beta}
+  = \sum_{\alpha}C^{*}_{i\alpha}C_{i\alpha},
+  \label{eq:6-cconstraint}
+\end{equation}
+so we introduce one multiplier $\epsilon_i$ per occupied orbital and minimise
+\begin{equation}
+  F[\Phi^{\mathrm{HF}}] = E[\Phi^{\mathrm{HF}}]
+    - \sum_{i=1}^{N}\epsilon_i\sum_{\alpha}C^{*}_{i\alpha}C_{i\alpha}.
+  \label{eq:6-lagrangian}
+\end{equation}
+The coefficients and their complex conjugates may be varied independently --
+the real and imaginary parts are two independent real variations, and it is
+equivalent and more convenient to use $C$ and $C^{*}$ -- so we impose
+\begin{equation}
+  \frac{\partial}{\partial C^{*}_{i\alpha}}
+  \left[E[\Phi^{\mathrm{HF}}]
+    - \sum_{j}\epsilon_j\sum_{\beta}C^{*}_{j\beta}C_{j\beta}\right] = 0 .
+  \label{eq:6-variationC}
+\end{equation}
+Differentiating Eq.~(\ref{eq:6-Efunctional}) is straightforward.  The one-body
+term contributes $\sum_{\beta}C_{i\beta}\bracket{\alpha}{\hat{h}_0}{\beta}$.
+In the two-body term $C^{*}_{i\alpha}$ appears twice, once as
+$C^{*}_{i\alpha}$ and once as $C^{*}_{j\beta}$ with $j=i$; the two
+contributions are equal by the antisymmetry of
+$\langle\alpha\beta\vert\hat{v}\vert\gamma\delta\rangle_{\mathrm{AS}}$ under
+the simultaneous interchange of both pairs, and they cancel the factor
+$\tfrac12$.  The result is
+\begin{equation}
+  \sum_{\beta}C_{i\beta}\bracket{\alpha}{\hat{h}_0}{\beta}
+  + \sum_{j=1}^{N}\sum_{\beta\gamma\delta}
+      C^{*}_{j\beta}C_{j\delta}C_{i\gamma}
+      \langle\alpha\beta\vert\hat{v}\vert\gamma\delta\rangle_{\mathrm{AS}}
+  = \epsilon_i^{\mathrm{HF}}C_{i\alpha}.
+  \label{eq:6-hfraw}
+\end{equation}
+Relabelling the dummy indices so that the coefficient $C_{i\beta}$ can be
+factored out of both terms,
+\begin{equation}
+  \sum_{\beta}\left\{\bracket{\alpha}{\hat{h}_0}{\beta}
+    + \sum_{j=1}^{N}\sum_{\gamma\delta}C^{*}_{j\gamma}C_{j\delta}
+      \langle\alpha\gamma\vert\hat{v}\vert\beta\delta\rangle_{\mathrm{AS}}
+    \right\}C_{i\beta} = \epsilon_i^{\mathrm{HF}}C_{i\alpha}.
+  \label{eq:6-hfbraced}
+\end{equation}
+Defining the Hartree-Fock, or Fock, matrix
+\begin{equation}
+  h^{\mathrm{HF}}_{\alpha\beta}
+  = \bracket{\alpha}{\hat{h}_0}{\beta}
+  + \sum_{j=1}^{N}\sum_{\gamma\delta}C^{*}_{j\gamma}C_{j\delta}
+    \langle\alpha\gamma\vert\hat{v}\vert\beta\delta\rangle_{\mathrm{AS}},
+  \label{eq:6-fockmatrix}
+\end{equation}
+the condition becomes
+\begin{equation}
+  \boxed{\;
+  \sum_{\beta}h^{\mathrm{HF}}_{\alpha\beta}C_{i\beta}
+    = \epsilon_i^{\mathrm{HF}}C_{i\alpha}
+  \;}
+  \label{eq:6-hfequations}
+\end{equation}
+This is Eq.~(\ref{eq:2-hfequations}), now derived.  It is a standard Hermitian
+eigenvalue problem, solvable by the Householder reduction and QL iteration of
+Sections~\ref{sec:householder} and~\ref{sec:qlalgorithm}, or by Lanczos,
+Section~\ref{sec:lanczos}, when the basis is large -- with the one
+complication that the matrix depends on its own eigenvectors.
+
+If the fixed basis is chosen as the eigenbasis of $\hat{h}_0$, which is the
+usual choice, the first term is diagonal,
+\begin{equation}
+  h^{\mathrm{HF}}_{\alpha\beta}
+  = \epsilon_{\alpha}\delta_{\alpha\beta}
+  + \sum_{j=1}^{N}\sum_{\gamma\delta}C^{*}_{j\gamma}C_{j\delta}
+    \langle\alpha\gamma\vert\hat{v}\vert\beta\delta\rangle_{\mathrm{AS}},
+  \label{eq:6-fockdiagonal}
+\end{equation}
+and Eq.~(\ref{eq:6-hfequations}) can be written compactly as
+$\bm{h}^{\mathrm{HF}}\bm{C} = \bm{\epsilon}^{\mathrm{HF}}\bm{C}$.
+
+An important practical point is visible in Eq.~(\ref{eq:6-fockdiagonal}): no
+integrals need to be recomputed during the iteration.  The matrix elements
+$\bracket{\alpha}{\hat{h}_0}{\beta}$ and
+$\langle\alpha\gamma\vert\hat{v}\vert\beta\delta\rangle_{\mathrm{AS}}$ are
+tabulated once and for all; every subsequent iteration is a contraction of
+those tables with the current coefficients, followed by a diagonalisation.
+The cost of storing them is the $n^4$ scaling discussed in
+Section~\ref{sec:twobodycost}, and it is the reason the factorisations of
+Section~\ref{sec:twobodyfact} matter.
+
+%----------------------------------------------------------------------
+\section{The density matrix and the self-consistent field algorithm}
+\label{sec:scf}
+
+\index{density matrix}\index{self-consistent field}
+The double sum over the occupied orbitals in Eq.~(\ref{eq:6-fockdiagonal})
+depends on the coefficients only through the combination
+\begin{equation}
+  \rho_{\gamma\delta}
+  = \sum_{i=1}^{N}\braket{\gamma}{i}\braket{i}{\delta}
+  = \sum_{i=1}^{N}C_{i\gamma}C^{*}_{i\delta},
+  \label{eq:6-densitymatrix}
+\end{equation}
+the one-body \emph{density matrix}, which is precisely the object introduced
+in Section~\ref{sec:naturalorbitals}.  It is the projector onto the occupied
+subspace, $\bm{\rho}^2=\bm{\rho}$ and $\mathrm{tr}\,\bm{\rho}=N$, which is the
+formal statement of the invariance found in Section~\ref{sec:detbasis}: the
+Fock matrix depends on the occupied subspace, not on the particular orbitals
+chosen to span it.  With it,
+\begin{equation}
+  h^{\mathrm{HF}}_{\alpha\beta}
+  = \epsilon_{\alpha}\delta_{\alpha\beta}
+  + \sum_{\gamma\delta}\rho_{\gamma\delta}
+    \langle\alpha\gamma\vert\hat{v}\vert\beta\delta\rangle_{\mathrm{AS}} .
+  \label{eq:6-fockdensity}
+\end{equation}
+Building $\bm{\rho}$ once per iteration and contracting it with the stored
+two-body table is the efficient way to organise the calculation.
+
+The algorithm is then an iteration of the kind discussed in
+Section~\ref{sec:iterative}, with a diagonalisation replacing a single sweep.
+
+\begin{enumerate}
+  \item Start from a guess, conventionally $C^{(0)}_{i\alpha}
+    =\delta_{i\alpha}$, which makes the reference determinant the one built
+    from the $N$ lowest eigenstates of $\hat{h}_0$.  Random orthonormal
+    vectors work too, and are sometimes preferable because they avoid
+    convergence onto a symmetry-constrained saddle point.
+  \item Build $\bm{\rho}$ from Eq.~(\ref{eq:6-densitymatrix}) and
+    $\bm{h}^{\mathrm{HF}}$ from Eq.~(\ref{eq:6-fockdensity}).
+  \item Diagonalise, obtaining $C^{(1)}_{i\alpha}$ and
+    $\epsilon_i^{\mathrm{HF}(1)}$.
+  \item Repeat from step 2 until the single-particle energies stop moving,
+    \begin{equation}
+      \frac{1}{m}\sum_{p}\left\vert
+        \epsilon_p^{(n)}-\epsilon_p^{(n-1)}\right\vert \le \lambda,
+      \label{eq:6-convergence}
+    \end{equation}
+    with $m$ the number of single-particle states and $\lambda$ a prescribed
+    tolerance, typically $10^{-8}$ or smaller.
+\end{enumerate}
+
+The program \texttt{hartreefock.py} implements exactly this loop.  For the
+system of Section~\ref{sec:energyfunctional} -- spinless fermions in a
+one-dimensional oscillator trap with a softened Coulomb repulsion, in a basis
+of eight oscillator orbitals -- it reproduces Table~\ref{tab:hfgain}, and the
+gain over the unoptimised determinant grows with the particle number:
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rrlll}
+\toprule
+$N$ & iterations & $E$(reference) & $E$(Hartree-Fock) & gain\\
+\midrule
+$2$ & $17$ & $2.69018342$  & $2.66308878$  & $-2.71\times10^{-2}$\\
+$3$ & $17$ & $6.46801021$  & $6.39016133$  & $-7.78\times10^{-2}$\\
+$4$ & $17$ & $11.77084712$ & $11.62305385$ & $-1.48\times10^{-1}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Brillouin's theorem.}
+\index{Brillouin's theorem}
+At convergence the Fock matrix is diagonal in its own eigenbasis, so its
+occupied-unoccupied block vanishes,
+\begin{equation}
+  f_{ai} = 0
+  \qquad\Longleftrightarrow\qquad
+  \bracket{\Phi_0}{\hat{H}}{\Phi_i^a} = 0 .
+  \label{eq:6-brillouin}
+\end{equation}
+The program reports $\max|f_{ai}| = 8.7\times10^{-11}$ for $N=4$, at the
+prescribed tolerance.  This is Brillouin's theorem, met first in
+Section~\ref{sec:wickapps} and used in Section~\ref{sec:cimatrix} to empty the
+$0p0h$--$1p1h$ block of the configuration-interaction matrix.  We can now see
+what it means: the Hartree-Fock solution is the choice of single-particle
+basis that decouples the reference from all single excitations.  Everything
+left over is carried by the doubles and higher, which is why
+Eq.~(\ref{eq:5-energyeq}) contained only doubles and why both perturbation
+theory and coupled-cluster theory start there.
+
+%----------------------------------------------------------------------
+\section{Hartree-Fock in second quantization}
+\label{sec:hfsecondquant}
+
+The derivation of Section~\ref{sec:hfcoefficients} varied the orbitals.  We
+now vary the determinant, which is more abstract but far better suited to the
+question of stability, and which is the natural language given
+Chapter~\ref{chap:secondquant}.
+
+Our ansatz is the determinant
+\begin{equation}
+  \bket{\Phi_0} = \bket{c}
+  = \hat{a}^{\dagger}_{i}\hat{a}^{\dagger}_{j}\cdots
+    \hat{a}^{\dagger}_{l}\bket{0},
+  \label{eq:6-cstate}
+\end{equation}
+and we seek $\hat{u}^{\mathrm{HF}}$ such that
+$E_0^{\mathrm{HF}}=\bracket{c}{\hat{H}}{c}$ is a local minimum.  The
+stationarity condition is that the energy does not change to first order under
+any variation of the determinant,
+\begin{equation}
+  \bracket{\delta c}{\hat{H}}{c} = 0
+  \label{eq:6-stationarity}
+\end{equation}
+for every admissible $\bket{\delta c}$.  To make this precise we must know
+what the admissible variations are -- that is, what the neighbourhood of a
+Slater determinant looks like inside the space of Slater determinants.  That
+is the content of Thouless' theorem.
+
+%----------------------------------------------------------------------
+\section{Thouless' theorem}
+\label{sec:thouless}
+
+\index{Thouless' theorem}
+\begin{theorem}[Thouless]
+Any Slater determinant $\bket{c'}$ that is not orthogonal to a given
+determinant $\bket{c}=\prod_{i=1}^{n}\hat{a}^{\dagger}_{\alpha_i}\bket{0}$ can
+be written as
+\begin{equation}
+  \bket{c'} = \exp\left\{\sum_{a>F}\sum_{i\le F}
+    C_{ai}\,\hat{a}^{\dagger}_{a}\hat{a}_{i}\right\}\bket{c} .
+  \label{eq:6-thouless}
+\end{equation}
+\end{theorem}
+
+In words: every determinant in the neighbourhood of $\bket{c}$ is obtained
+from it by an exponentiated linear combination of one-particle-one-hole
+excitations.  This is a strong statement.  It says that the manifold of Slater
+determinants is parametrised, near any point, by the $(n-N)\times N$
+amplitudes $C_{ai}$ and by nothing else -- so the Hartree-Fock variation has
+exactly that many degrees of freedom.
+
+\paragraph{Step one: the exponential collapses.}
+The exponential of a sum of operators factorises into a product of
+exponentials only when the operators commute.  When they do not, the
+Baker-Campbell-Hausdorff formula of Section~\ref{sec:bch} supplies the
+correction.  Here we are lucky: for particle indices $a,b>F$ and hole indices
+$i,j\le F$, the two index sets are disjoint, and a short calculation with the
+anticommutation relations of Chapter~\ref{chap:secondquant} gives
+\begin{equation}
+  \left[\hat{a}^{\dagger}_{a}\hat{a}_{i},\,
+        \hat{a}^{\dagger}_{b}\hat{a}_{j}\right] = 0 .
+  \label{eq:6-phcommute}
+\end{equation}
+Indeed, since $i\ne b$ we may write
+$\hat{a}_{i}\hat{a}^{\dagger}_{b}=-\hat{a}^{\dagger}_{b}\hat{a}_{i}$, and
+likewise $\hat{a}_{j}\hat{a}^{\dagger}_{a}
+=-\hat{a}^{\dagger}_{a}\hat{a}_{j}$; both orderings then reduce to
+$-\hat{a}^{\dagger}_{a}\hat{a}^{\dagger}_{b}\hat{a}_{i}\hat{a}_{j}$ and the
+commutator vanishes.  Writing
+\begin{equation}
+  \hat{T} = \sum_{i\le F}\hat{T}_i,
+  \qquad
+  \hat{T}_i = \sum_{a>F}C_{ai}\hat{a}^{\dagger}_{a}\hat{a}_{i},
+  \label{eq:6-Tsplit}
+\end{equation}
+we therefore have $e^{\hat{T}}=\prod_i e^{\hat{T}_i}$.  Moreover each factor
+truncates, because
+\begin{equation}
+  \hat{T}_i^2 = \sum_{ab>F}C_{ai}C_{bi}\,
+    \hat{a}^{\dagger}_{a}\hat{a}_{i}\hat{a}^{\dagger}_{b}\hat{a}_{i} = 0 ,
+  \label{eq:6-Tsquared}
+\end{equation}
+since the rightmost $\hat{a}_i$ empties the hole $i$ and the second one then
+annihilates the state -- an instance of $(\hat{a}_i)^n=0$ for $n>1$.  Hence
+\begin{equation}
+  \bket{c'} = \prod_{i\le F}
+    \left\{1+\sum_{a>F}C_{ai}\hat{a}^{\dagger}_{a}\hat{a}_{i}\right\}\bket{c}.
+  \label{eq:6-thoulessproduct}
+\end{equation}
+Note carefully that the product in
+Eq.~(\ref{eq:6-thoulessproduct}) is \emph{not} the same as
+$1+\hat{T}$: the cross terms $\hat{T}_i\hat{T}_j$ with $i\ne j$ survive and
+describe $2p$-$2h$ admixtures.  Dropping them is legitimate only for
+infinitesimal amplitudes, which is exactly the situation in the stability
+analysis below.
+
+\paragraph{Step two: the product is a determinant.}
+Insert $\bket{c}=\hat{a}^{\dagger}_{i_1}\hat{a}^{\dagger}_{i_2}\cdots
+\hat{a}^{\dagger}_{i_n}\bket{0}$ into
+Eq.~(\ref{eq:6-thoulessproduct}).  The factor labelled $i_1$ acts only on
+$\hat{a}^{\dagger}_{i_1}$, the factor labelled $i_2$ only on
+$\hat{a}^{\dagger}_{i_2}$, and so on, so the product reorganises into
+\begin{align}
+  \bket{c'}
+  &= \left(1+\sum_{a>F}C_{ai_1}\hat{a}^{\dagger}_{a}\hat{a}_{i_1}\right)
+     \hat{a}^{\dagger}_{i_1}
+     \left(1+\sum_{a>F}C_{ai_2}\hat{a}^{\dagger}_{a}\hat{a}_{i_2}\right)
+     \hat{a}^{\dagger}_{i_2}\cdots\bket{0}
+     \nonumber\\
+  &= \prod_{i\le F}\left(\hat{a}^{\dagger}_{i}
+     + \sum_{a>F}C_{ai}\hat{a}^{\dagger}_{a}\right)\bket{0} .
+  \label{eq:6-thoulessdet}
+\end{align}
+Defining a new creation operator
+\begin{equation}
+  \hat{b}^{\dagger}_{i} = \hat{a}^{\dagger}_{i}
+    + \sum_{a>F}C_{ai}\hat{a}^{\dagger}_{a},
+  \label{eq:6-newb}
+\end{equation}
+we have $\bket{c'}=\prod_i \hat{b}^{\dagger}_{i}\bket{0}$, which has exactly
+the form of a Slater determinant.  The rotated state is a single determinant,
+not a superposition: this is the whole point.
+
+\paragraph{Step three: it is the general determinant.}
+Equation~(\ref{eq:6-newb}) looks less general than it should, because the sum
+runs only over states above the Fermi level.  Consider therefore the most
+general one,
+\begin{equation}
+  \tilde{b}^{\dagger}_{i} = \sum_{p}f_{ip}\hat{a}^{\dagger}_{p},
+  \qquad
+  \bket{\tilde{c}} = \prod_{i}\tilde{b}^{\dagger}_{i}\bket{0},
+  \label{eq:6-generalb}
+\end{equation}
+with $f$ unitary, and require only that
+$\braket{c}{\tilde{c}}\ne0$.  Expanding,
+\begin{equation}
+  \braket{c}{\tilde{c}}
+  = \bbra{0}\hat{a}_{i_n}\cdots\hat{a}_{i_1}
+    \left(\sum_{p}f_{i_1p}\hat{a}^{\dagger}_{p}\right)\cdots
+    \left(\sum_{t}f_{i_nt}\hat{a}^{\dagger}_{t}\right)\bket{0}
+  = \det\left(f_{ip}\right)_{i,p\le F},
+  \label{eq:6-overlapdet}
+\end{equation}
+the determinant of the occupied block of $f$: only the terms with $p$ below
+the Fermi level survive the vacuum expectation value, and summing over the
+permutations reconstructs the determinant.  The hypothesis
+$\braket{c}{\tilde{c}}\ne0$ says exactly that this determinant is non-zero, so
+the occupied block is invertible, and intermediate normalisation lets us
+rescale to $\det(f_{ip})=1$.  With $f^{-1}$ available we can form
+\begin{equation}
+  \sum_{i}f^{-1}_{ki}\tilde{b}^{\dagger}_{i}
+  = \sum_{i}\sum_{p}f^{-1}_{ki}f_{ip}\hat{a}^{\dagger}_{p}
+  = \hat{a}^{\dagger}_{k}
+    + \sum_{p>F}\left(\sum_{i\le F}f^{-1}_{ki}f_{ip}\right)
+      \hat{a}^{\dagger}_{p},
+  \label{eq:6-finverse}
+\end{equation}
+where the terms with $p\le F$ have collapsed to $\delta_{kp}$.  Setting
+$C_{pk}=\sum_{i\le F}f^{-1}_{ki}f_{ip}$ returns
+Eq.~(\ref{eq:6-newb}) exactly.  Since a unitary mixing of the
+$\tilde{b}^{\dagger}$ changes the determinant only by a factor, as
+Section~\ref{sec:detbasis} showed, $\bket{\tilde{c}}$ and $\bket{c'}$ are the
+same state.  The theorem is proved.
+
+\paragraph{Numerical check.}
+The program \texttt{hartreefock.py} verifies each step explicitly for six
+orbitals and three particles, with random amplitudes of size $0.3$:
+$\max|[\hat{T}_i,\hat{T}_j]| = 2.8\times10^{-17}$,
+$\max|\hat{T}_i^2| = 0$,
+$\bket{c'}$ agrees with $\prod_i\hat{b}^{\dagger}_i\bket{0}$ to
+$5.6\times10^{-17}$, the overlap $\braket{c}{c'}$ is exactly one, and
+$\det(f_{ip})=1$.  The difference between $e^{\hat{T}}\bket{c}$ and
+$(1+\hat{T})\bket{c}$ falls by a factor of four each time the amplitudes are
+halved, confirming that the discarded piece is second order.
+
+\paragraph{What it buys us.}
+Thouless' theorem lets us write any nearby determinant as
+\begin{equation}
+  \bket{c'} = \bket{c} + \bket{\delta c},
+  \qquad
+  \bket{c'} \simeq \left(1+\sum_{ai}\delta C_{ai}
+    \hat{a}^{\dagger}_{a}\hat{a}_{i}\right)\bket{c}
+  \label{eq:6-firstvariation}
+\end{equation}
+to first order in the amplitudes.  The stationarity
+condition~(\ref{eq:6-stationarity}) then reads
+\begin{equation}
+  \sum_{ai}\delta C^{*}_{ai}\,
+    \bracket{c}{\hat{a}^{\dagger}_{i}\hat{a}_{a}\hat{H}}{c} = 0
+  \quad\text{for arbitrary }\delta C
+  \qquad\Longrightarrow\qquad
+  \bracket{\Phi_i^a}{\hat{H}}{\Phi_0} = 0 ,
+  \label{eq:6-hfcondition}
+\end{equation}
+which is Brillouin's theorem again, Eq.~(\ref{eq:6-brillouin}).  The two
+derivations therefore agree: varying the orbitals and varying the determinant
+give the same equations.  What the second route adds is the ability to go to
+second order, which is the subject of Section~\ref{sec:hfstability}.
+
+%----------------------------------------------------------------------
+\section{The Baker-Campbell-Hausdorff expansion}
+\label{sec:bch}
+
+\index{Baker-Campbell-Hausdorff formula}
+Thouless' theorem needed only the trivial case of the following result, but
+the general case is used repeatedly later -- in the similarity transformation
+of coupled-cluster theory, in the interaction picture, and in the Trotter
+splitting of the next section -- so we develop it here.
+
+For two operators $X$ and $Y$ that do not commute, $e^{X}e^{Y}\ne e^{X+Y}$.
+The Baker-Campbell-Hausdorff formula states that the product is nevertheless
+a single exponential, $e^{X}e^{Y}=e^{Z}$, with
+\begin{equation}
+  Z = X + Y + \frac{1}{2}[X,Y]
+    + \frac{1}{12}\Big([X,[X,Y]] + [Y,[Y,X]]\Big)
+    - \frac{1}{24}\big[Y,[X,[X,Y]]\big] + \cdots
+  \label{eq:6-bch}
+\end{equation}
+Every term beyond the first is a nested commutator of $X$ and $Y$.  No
+ordinary products appear, which is the essential structural statement: if $X$
+and $Y$ belong to a Lie algebra, so does $Z$.  The coefficients
+$\tfrac12,\tfrac1{12},\tfrac1{24},\dots$ involve Bernoulli numbers and were
+first given in general by Dynkin.
+
+\paragraph{Derivation of the first terms.}
+Expand both sides in powers and match order by order.  With
+$Z=X+Y+A_2+A_3+\cdots$, where $A_n$ collects the terms of total degree $n$,
+\begin{equation}
+  e^{X}e^{Y} = I + (X+Y)
+    + \frac{1}{2}\left(X^2+2XY+Y^2\right)
+    + \bigO(3),
+  \qquad
+  e^{Z} = I + Z + \frac{1}{2}Z^2 + \bigO(3).
+  \label{eq:6-bchmatch}
+\end{equation}
+At first order, $A_1$ is absent and $Z^{(1)}=X+Y$.  At second order the
+left-hand side supplies $\tfrac12(X^2+2XY+Y^2)$ while
+$\tfrac12(X+Y)^2=\tfrac12(X^2+XY+YX+Y^2)$; the difference is
+$\tfrac12(XY-YX)=\tfrac12[X,Y]$, which must therefore be supplied by $A_2$,
+\begin{equation}
+  A_2 = \frac{1}{2}[X,Y].
+  \label{eq:6-bchA2}
+\end{equation}
+The same procedure at third order, using the Jacobi identity
+$[X,[Y,W]]+[Y,[W,X]]+[W,[X,Y]]=0$ to reduce the independent structures, gives
+\begin{equation}
+  A_3 = \frac{1}{12}\big[X,[X,Y]\big] - \frac{1}{12}\big[Y,[X,Y]\big]
+      = \frac{1}{12}\Big([X,[X,Y]] + [Y,[Y,X]]\Big).
+  \label{eq:6-bchA3}
+\end{equation}
+
+\paragraph{When the series terminates.}
+If $[X,Y]$ commutes with both $X$ and $Y$ -- in particular if it is a multiple
+of the identity, $[X,Y]=c\,I$ -- then every higher commutator vanishes and
+\begin{equation}
+  e^{X}e^{Y} = \exp\left(X+Y+\tfrac12[X,Y]\right)
+  \label{eq:6-bchcentral}
+\end{equation}
+is exact.  This is the case for canonically conjugate operators,
+$[\hat{x},\hat{p}]=\imath\hbar$, from which the Weyl form of the
+displacement operator follows, and for the ladder operators of the harmonic
+oscillator, $[\hat{a},\hat{a}^{\dagger}]=1$.  It is also, trivially, the case
+in Thouless' theorem, where by Eq.~(\ref{eq:6-phcommute}) the commutator is
+zero and the series stops at the first term.
+
+\paragraph{How good is a truncation?}
+For the two nilpotent matrices
+$X=\left(\begin{smallmatrix}0 & 0.1\\ 0 & 0\end{smallmatrix}\right)$ and
+$Y=\left(\begin{smallmatrix}0 & 0\\ 0.1 & 0\end{smallmatrix}\right)$,
+\texttt{hartreefock.py} gives
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{clr}
+\toprule
+order & terms kept & $\Vert e^{X}e^{Y}-e^{Z_n}\Vert$\\
+\midrule
+$1$ & $X+Y$ & $7.071\times10^{-3}$\\
+$2$ & $+\ \tfrac12[X,Y]$ & $2.379\times10^{-4}$\\
+$3$ & $+\ \tfrac1{12}\big([X,[X,Y]]+[Y,[Y,X]]\big)$ & $1.190\times10^{-5}$\\
+$4$ & $-\ \tfrac1{24}\big[Y,[X,[X,Y]]\big]$ & $4.757\times10^{-7}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Each additional commutator gains between one and two orders of magnitude for
+amplitudes of this size.  The series is asymptotic rather than convergent in
+general, and the gain per order shrinks as the operators grow; the practical
+lesson is that BCH is a small-parameter expansion, and the small parameter is
+the size of the commutator relative to the operators themselves.
+
+%----------------------------------------------------------------------
+\section{The Trotter-Suzuki splitting}
+\label{sec:trotter}
+
+\index{Trotter formula}\index{Suzuki-Trotter decomposition}
+The most common use of Eq.~(\ref{eq:6-bch}) is in reverse.  Suppose we can
+exponentiate $H_1$ and $H_2$ separately but not their sum -- the standard
+situation, with $H_1$ the kinetic energy, diagonal in momentum space, and
+$H_2$ the potential, diagonal in coordinate space.  Setting
+$X=-\imath H_1\Delta$ and $Y=-\imath H_2\Delta$ in
+Eq.~(\ref{eq:6-bch}),
+\begin{equation}
+  e^{-\imath H_1\Delta}e^{-\imath H_2\Delta}
+  = \exp\left(-\imath (H_1+H_2)\Delta
+      - \frac{1}{2}[H_1,H_2]\Delta^2 + \bigO(\Delta^3)\right),
+  \label{eq:6-trotterbch}
+\end{equation}
+so a single split step is correct to first order in $\Delta$, with an error
+governed by the commutator.  Dividing the evolution into $N$ steps of length
+$t/N$ gives the Lie-Trotter product formula
+\begin{equation}
+  e^{-\imath(H_1+H_2)t}
+  = \lim_{N\to\infty}\left(e^{-\imath H_1 t/N}
+      e^{-\imath H_2 t/N}\right)^{N},
+  \label{eq:6-trotter}
+\end{equation}
+whose error at finite $N$ is $\bigO(t^2/N)$.
+
+Symmetrising the step cancels the leading commutator.  The second-order, or
+Strang, splitting
+\begin{equation}
+  S_2(\Delta) = e^{-\imath H_1\Delta/2}\,e^{-\imath H_2\Delta}\,
+                e^{-\imath H_1\Delta/2}
+  = e^{-\imath(H_1+H_2)\Delta} + \bigO(\Delta^3)
+  \label{eq:6-strang}
+\end{equation}
+has a local error governed by the double commutators $[H_1,[H_1,H_2]]$ and
+$[H_2,[H_1,H_2]]$, hence a global error $\bigO(t^3/N^2)$.  Suzuki's recursive
+construction generalises this to any even order, at the cost of more
+exponentials per step and, from fourth order on, of steps with negative
+coefficients.
+
+For a single qubit with $\hat{H}=\sigma_x+\sigma_z$, so that
+$[\sigma_x,\sigma_z]=-2\imath\sigma_y\ne0$, and $t=1$,
+\texttt{hartreefock.py} finds
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rllll}
+\toprule
+$N$ & first order & ratio & second order & ratio\\
+\midrule
+$1$  & $1.130\times10^{0}$  & --- & $4.436\times10^{-1}$ & ---\\
+$2$  & $5.125\times10^{-1}$ & $2.21$ & $1.006\times10^{-1}$ & $4.41$\\
+$4$  & $2.493\times10^{-1}$ & $2.06$ & $2.443\times10^{-2}$ & $4.12$\\
+$8$  & $1.238\times10^{-1}$ & $2.01$ & $6.061\times10^{-3}$ & $4.03$\\
+$16$ & $6.177\times10^{-2}$ & $2.00$ & $1.513\times10^{-3}$ & $4.01$\\
+$32$ & $3.087\times10^{-2}$ & $2.00$ & $3.779\times10^{-4}$ & $4.00$\\
+$64$ & $1.543\times10^{-2}$ & $2.00$ & $9.448\times10^{-5}$ & $4.00$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Doubling $N$ halves the first-order error and quarters the second-order one,
+exactly as the leading terms of Eq.~(\ref{eq:6-bch}) predict.  The ratios
+approach their asymptotic values from above, which is the usual signature of
+higher-order terms still contributing at small $N$.
+
+\begin{notebox}
+\textbf{Why this belongs in a chapter on mean fields.}  The immediate reason
+is that Thouless' theorem is a statement about an exponential of one-body
+operators, and the reason it is so simple is that those operators commute.
+The longer-range reason is that the same expansion controls three later
+developments.  In coupled-cluster theory the similarity-transformed
+Hamiltonian $e^{-\hat{T}}\hat{H}e^{\hat{T}}$ is expanded by the
+Baker-Hausdorff lemma
+$e^{-X}Ye^{X}=Y-[X,Y]+\tfrac1{2!}[X,[X,Y]]-\cdots$, and terminates exactly at
+the fourth commutator because $\hat{H}$ contains at most two-body terms.  In
+time-dependent Hartree-Fock and in real-time methods generally, the propagator
+is built by splitting.  And in quantum computing the Trotter formula is how a
+Hamiltonian is turned into a circuit: each exponential
+$e^{-\imath H_j\Delta}$ becomes a gate, Eq.~(\ref{eq:6-trotter}) fixes how
+many of them are needed, and the trade-off between circuit depth and
+accuracy is precisely the trade-off between $N$ and the error above.  A
+first-order scheme needs $N=\bigO(t^2/\varepsilon)$ steps for an accuracy
+$\varepsilon$; a second-order scheme needs only
+$N=\bigO(t^{3/2}/\sqrt{\varepsilon})$.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Stability of the Hartree-Fock solution}
+\label{sec:hfstability}
+
+\index{Hartree-Fock theory!stability}
+The variational condition~(\ref{eq:6-hfcondition}) guarantees only that
+$\bracket{c}{\hat{H}}{c}$ is \emph{stationary}.  A stationary point may be a
+minimum, a maximum or a saddle, and which one it is matters: a Hartree-Fock
+solution sitting on a saddle point is a poor reference for perturbation theory
+or coupled cluster, because the corrections it generates are organised about
+the wrong state.  Thouless' theorem lets us settle the question by going to
+second order.
+
+We ask whether
+\begin{equation}
+  \frac{\bracket{c'}{\hat{H}}{c'}}{\braket{c'}{c'}}
+  \ \ge\ \bracket{c}{\hat{H}}{c} = E_0
+  \label{eq:6-stabilitycondition}
+\end{equation}
+for every nearby determinant $\bket{c'}=\bket{c}+\bket{\delta c}$.  By
+Thouless' theorem,
+\begin{equation}
+  \bket{c'} = \exp\left\{\sum_{a>F}\sum_{i\le F}\delta C_{ai}
+    \hat{a}^{\dagger}_{a}\hat{a}_{i}\right\}\bket{c}
+  = \left\{1+\sum_{ai}\delta C_{ai}\hat{a}^{\dagger}_{a}\hat{a}_{i}
+    +\frac{1}{2!}\sum_{abij}\delta C_{ai}\delta C_{bj}
+      \hat{a}^{\dagger}_{a}\hat{a}_{i}\hat{a}^{\dagger}_{b}\hat{a}_{j}
+    +\cdots\right\}\bket{c},
+  \label{eq:6-cprimeexpansion}
+\end{equation}
+with the amplitudes $\delta C$ small.  With intermediate normalisation
+$\braket{c'}{c}=1$ the norm is
+\begin{equation}
+  \braket{c'}{c'} = 1 + \sum_{a>F}\sum_{i\le F}\vert\delta C_{ai}\vert^2
+    + \bigO(\delta C^3).
+  \label{eq:6-cprimenorm}
+\end{equation}
+
+\paragraph{The energy to second order.}
+Expanding the numerator and using the Hartree-Fock
+condition~(\ref{eq:6-hfcondition}) to kill the terms linear in $\delta C$,
+\begin{align}
+  \bracket{c'}{\hat{H}}{c'}
+  &= \bracket{c}{\hat{H}}{c}
+   + \sum_{ab>F}\sum_{ij\le F}\delta C^{*}_{ai}\delta C_{bj}
+     \bracket{c}{\hat{a}^{\dagger}_{i}\hat{a}_{a}\hat{H}
+       \hat{a}^{\dagger}_{b}\hat{a}_{j}}{c}
+   \nonumber\\
+  &\quad
+   + \frac{1}{2!}\sum_{ab>F}\sum_{ij\le F}\delta C_{ai}\delta C_{bj}
+     \bracket{c}{\hat{H}\hat{a}^{\dagger}_{a}\hat{a}_{i}
+       \hat{a}^{\dagger}_{b}\hat{a}_{j}}{c}
+   \nonumber\\
+  &\quad
+   + \frac{1}{2!}\sum_{ab>F}\sum_{ij\le F}\delta C^{*}_{ai}\delta C^{*}_{bj}
+     \bracket{c}{\hat{a}^{\dagger}_{j}\hat{a}_{b}\hat{a}^{\dagger}_{i}
+       \hat{a}_{a}\hat{H}}{c}
+   + \cdots
+  \label{eq:6-energysecondorder}
+\end{align}
+Each of these expectation values is evaluated with Wick's theorem,
+Section~\ref{sec:wicktheorem}.  The first of them is the $1p$-$1h$ matrix
+element computed in Section~\ref{sec:wickapps},
+\begin{align}
+  \bracket{c}{\{\hat{a}^{\dagger}_{i}\hat{a}_{a}\}\hat{H}
+    \{\hat{a}^{\dagger}_{b}\hat{a}_{j}\}}{c}
+  &= \sum_{pq}\bracket{p}{\hat{h}_0}{q}
+     \bracket{c}{\{\hat{a}^{\dagger}_{i}\hat{a}_{a}\}
+       \{\hat{a}^{\dagger}_{p}\hat{a}_{q}\}
+       \{\hat{a}^{\dagger}_{b}\hat{a}_{j}\}}{c}
+   \nonumber\\
+  &\quad + \frac{1}{4}\sum_{pqrs}\langle pq\vert\hat{v}\vert rs\rangle
+     \bracket{c}{\{\hat{a}^{\dagger}_{i}\hat{a}_{a}\}
+       \{\hat{a}^{\dagger}_{p}\hat{a}^{\dagger}_{q}\hat{a}_{s}\hat{a}_{r}\}
+       \{\hat{a}^{\dagger}_{b}\hat{a}_{j}\}}{c},
+  \label{eq:6-onephonemat}
+\end{align}
+and collecting the surviving contractions gives
+\begin{equation}
+  E_0\sum_{ai}\vert\delta C_{ai}\vert^2
+  + \sum_{ai}\vert\delta C_{ai}\vert^2
+    \left(\varepsilon_a-\varepsilon_i\right)
+  - \sum_{ijab}\langle aj\vert\hat{v}\vert bi\rangle
+    \,\delta C^{*}_{ai}\delta C_{bj}.
+  \label{eq:6-firstblock}
+\end{equation}
+The third line of Eq.~(\ref{eq:6-energysecondorder}) is the Hermitian
+conjugate of the second, since
+$\bracket{a}{\hat{A}}{b}=\left(\bracket{b}{\hat{A}^{\dagger}}{a}\right)^{*}$
+and $\hat{H}$ is Hermitian, and the second evaluates to
+\begin{equation}
+  \frac{1}{2}\sum_{ijab}\langle ab\vert\hat{v}\vert ij\rangle
+    \,\delta C^{*}_{ai}\delta C^{*}_{bj} .
+  \label{eq:6-secondblock}
+\end{equation}
+
+\paragraph{The stability matrix.}
+Define the two antisymmetrised blocks
+\begin{equation}
+  A_{ai,bj} = -\langle aj\vert\hat{v}\vert bi\rangle_{\mathrm{AS}},
+  \qquad
+  B_{ai,bj} = \langle ab\vert\hat{v}\vert ij\rangle_{\mathrm{AS}},
+  \label{eq:6-ABblocks}
+\end{equation}
+together with the diagonal matrix of unperturbed excitation energies
+\begin{equation}
+  \Delta_{ai,bj}
+    = \left(\varepsilon_a-\varepsilon_i\right)
+      \delta_{ab}\delta_{ij}.
+  \label{eq:6-Delta}
+\end{equation}
+Then Eqs.~(\ref{eq:6-firstblock}) and~(\ref{eq:6-secondblock}) combine into
+\begin{align}
+  \bracket{c'}{\hat{H}}{c'}
+  &= \left(1+\sum_{ai}\vert\delta C_{ai}\vert^2\right)
+     \bracket{c}{\hat{H}}{c}
+   + \sum_{ai}\vert\delta C_{ai}\vert^2
+     \left(\varepsilon^{\mathrm{HF}}_a-\varepsilon^{\mathrm{HF}}_i\right)
+   + \sum_{ijab}A_{ai,bj}\,\delta C^{*}_{ai}\delta C_{bj}
+   \nonumber\\
+  &\quad
+   + \frac{1}{2}\sum_{ijab}B^{*}_{ai,bj}\,\delta C_{ai}\delta C_{bj}
+   + \frac{1}{2}\sum_{ijab}B_{ai,bj}\,
+       \delta C^{*}_{ai}\delta C^{*}_{bj}
+   + \bigO(\delta C^3),
+  \label{eq:6-energyquadratic}
+\end{align}
+so that, dividing by the norm~(\ref{eq:6-cprimenorm}),
+\begin{equation}
+  \frac{\bracket{c'}{\hat{H}}{c'}}{\braket{c'}{c'}}
+  = E_0 + \frac{\Delta E}
+    {1+\sum_{ai}\vert\delta C_{ai}\vert^2},
+  \qquad
+  \Delta E = \frac{1}{2}\bracket{\chi}{\hat{M}}{\chi},
+  \label{eq:6-deltaE}
+\end{equation}
+with the composite vector and matrix
+\begin{equation}
+  \chi = \begin{bmatrix}\delta C & \delta C^{*}\end{bmatrix}^{T},
+  \qquad
+  \hat{M} = \begin{pmatrix}
+    \Delta + A & B\\
+    B^{*} & \Delta + A^{*}
+  \end{pmatrix}.
+  \label{eq:6-stabilitymatrix}
+\end{equation}
+
+The conclusion is now immediate.  The denominator in
+Eq.~(\ref{eq:6-deltaE}) is positive, so the Hartree-Fock solution is a local
+minimum if and only if
+\begin{equation}
+  \boxed{\;
+  \Delta E = \frac{1}{2}\bracket{\chi}{\hat{M}}{\chi} \ \ge\ 0
+  \quad\text{for every }\chi
+  \;}
+  \label{eq:6-stabilitycriterion}
+\end{equation}
+that is, if and only if every eigenvalue of $\hat{M}$ is non-negative.  A
+necessary but not sufficient condition, obtained by restricting $\chi$ to the
+upper block, is that
+\begin{equation}
+  \left(\varepsilon_a-\varepsilon_i\right)\delta_{ab}\delta_{ij}
+  + A_{ai,bj} \ \ge\ 0
+  \label{eq:6-necessary}
+\end{equation}
+as a matrix.  This is cheap to test and is the usual first check.
+
+\begin{notebox}
+\textbf{The stability matrix is the RPA matrix.}  The upper-left block
+$\Delta+A$ is exactly the matrix diagonalised in the Tamm-Dancoff
+approximation: it is the Hamiltonian restricted to the $1p$-$1h$ space,
+measured from the reference energy.  The full $\hat{M}$, with its off-diagonal
+$B$ blocks, is the matrix of the random-phase approximation.  So the statement
+``the Hartree-Fock solution is stable'' and the statement ``the RPA
+frequencies are real'' are one and the same, and an imaginary RPA frequency is
+not a numerical accident but a signal that the mean field itself is wrong.
+This is why Chapter~\ref{chap:fci} could describe TDA and RPA as truncations
+of full configuration interaction and why they belong immediately after this
+chapter: they are the second derivative of the Hartree-Fock energy surface.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{An explicit instability: the Lipkin model}
+\label{sec:lipkininstability}
+
+The Lipkin model of Section~\ref{sec:lipkin} is the standard illustration,
+because everything can be computed in closed form.  Take $W=0$, so that
+\begin{equation}
+  \hat{H} = \varepsilon\hat{J}_z
+    + \frac{V}{2}\left(\hat{J}_+^2+\hat{J}_-^2\right),
+  \label{eq:6-lipkinH}
+\end{equation}
+with $N$ particles in two $N$-fold degenerate levels separated by
+$\varepsilon$.  The natural mean-field ansatz rotates every single-particle
+state by the same angle $\alpha$ in the two-level space,
+\begin{equation}
+  \hat{b}^{\dagger}_{p} = \cos\!\left(\tfrac{\alpha}{2}\right)
+    \hat{a}^{\dagger}_{p-}
+    + \sin\!\left(\tfrac{\alpha}{2}\right)\hat{a}^{\dagger}_{p+},
+  \label{eq:6-lipkinrotation}
+\end{equation}
+which is a Thouless rotation with $C_{ai}=\tan(\alpha/2)\,\delta_{pq}$.  The
+resulting energy is the classic result
+\begin{equation}
+  \frac{E(\alpha)}{N} = -\frac{\varepsilon}{2}\cos\alpha
+    - \frac{\varepsilon\chi}{4}\sin^2\alpha,
+  \qquad
+  \chi = \frac{\vert V\vert (N-1)}{\varepsilon},
+  \label{eq:6-lipkinmeanfield}
+\end{equation}
+where $\chi$ is the dimensionless coupling.  Differentiating,
+\begin{equation}
+  \frac{1}{N}\frac{\ud{E}}{\ud{\alpha}}
+   = \frac{\varepsilon}{2}\sin\alpha
+     \left(1-\chi\cos\alpha\right),
+  \label{eq:6-lipkinderivative}
+\end{equation}
+so there are two stationary points: the \emph{spherical} solution
+$\alpha=0$, which exists always, and a \emph{deformed} solution
+$\cos\alpha=1/\chi$, which exists only for $\chi\ge1$.  The second
+derivative at $\alpha=0$ is
+\begin{equation}
+  \frac{1}{N}\left.\frac{\ud{^2E}}{\ud{\alpha^2}}\right\vert_{\alpha=0}
+   = \frac{\varepsilon}{2}\left(1-\chi\right),
+  \label{eq:6-lipkinsecond}
+\end{equation}
+which changes sign at $\chi=1$.  The spherical solution turns from a minimum
+into a maximum exactly where the deformed solution appears, which is the
+signature of a continuous symmetry-breaking transition.
+
+The stability matrix says the same thing without any reference to the
+parametrisation~(\ref{eq:6-lipkinrotation}).  Because the interaction
+in Eq.~(\ref{eq:6-lipkinH}) changes $J_z$ by two units, it has no matrix
+element within the $1p$-$1h$ space, so $A=0$ and $\Delta+A=\varepsilon\bm{I}$.
+The block $B$ has matrix elements $\pm V$ connecting different pairs, and its
+largest eigenvalue is $\vert V\vert(N-1)$.  The lowest eigenvalue of
+$\hat{M}$ is therefore
+\begin{equation}
+  \lambda_{\min} = \varepsilon - \vert V\vert(N-1)
+    = \varepsilon\left(1-\chi\right),
+  \label{eq:6-lipkinlowest}
+\end{equation}
+which is exactly Eq.~(\ref{eq:6-lipkinsecond}) up to the factor $N/2$.
+The program \texttt{hartreefock.py} builds $\hat{M}$ numerically from the
+Hamiltonian in the determinant basis, for $N=4$ and $\varepsilon=1$:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{9pt}
+\begin{tabular}{rrrrrl}
+\toprule
+$\chi$ & $\lambda_{\min}(\hat{M})$ & $\alpha_{\min}$
+  & $E_{\mathrm{mf}}$ & $E_{\mathrm{exact}}$ & solution\\
+\midrule
+$0.25$ & $\phantom{-}0.75$ & $0.000000$ & $-2.000000$ & $-2.020726$ & spherical\\
+$0.50$ & $\phantom{-}0.50$ & $0.000000$ & $-2.000000$ & $-2.081666$ & spherical\\
+$0.90$ & $\phantom{-}0.10$ & $0.000000$ & $-2.000000$ & $-2.253886$ & spherical\\
+$1.00$ & $\phantom{-}0.00$ & $0.000000$ & $-2.000000$ & $-2.309401$ & critical\\
+$1.50$ & $-0.50$ & $0.841069$ & $-2.166667$ & $-2.645751$ & deformed\\
+$2.00$ & $-1.00$ & $1.047198$ & $-2.500000$ & $-3.055050$ & deformed\\
+\bottomrule
+\end{tabular}
+\caption{Stability of the spherical Hartree-Fock solution of the Lipkin model
+with $N=4$, $\varepsilon=1$ and $W=0$.  The lowest eigenvalue of the
+stability matrix crosses zero exactly at $\chi=1$, where the deformed
+minimum appears.  $E_{\mathrm{mf}}$ is the mean-field energy at the minimum
+and $E_{\mathrm{exact}}$ the exact ground-state energy.}
+\label{tab:lipkinstability}
+\end{table}
+
+Two lessons are worth drawing.  The first is that a solution can satisfy the
+Hartree-Fock equations perfectly and still be useless: for $\chi>1$ the
+spherical state is a genuine stationary point, obeys Brillouin's theorem, and
+is a saddle.  The second is that the deformed solution buys a lower energy by
+breaking a symmetry the exact ground state does not break -- at $\chi=2$ it
+gains $0.5$ but is still $0.55$ above the exact answer.  Symmetry breaking in
+a mean field is a device for capturing correlations cheaply, and the symmetry
+must eventually be restored, by projection or by a method that never broke it.
+
+%----------------------------------------------------------------------
+\section{When the mean field does nothing}
+\label{sec:hfnothing}
+
+It is instructive to see the opposite extreme.  Apply the same machinery to
+the pairing model of Section~\ref{sec:pairingmodel}, with four doubly
+degenerate levels and four particles.  The program reports
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rllll}
+\toprule
+$g$ & $E$(reference) & $E$(Hartree-Fock) & $E$(exact) & iterations\\
+\midrule
+$0.25$ & $1.75000000$ & $1.75000000$ & $1.73045985$ & $2$\\
+$0.50$ & $1.50000000$ & $1.50000000$ & $1.41677428$ & $2$\\
+$1.00$ & $1.00000000$ & $1.00000000$ & $0.63554847$ & $2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Hartree-Fock gains nothing at all.  The reason is the seniority conservation
+of Section~\ref{sec:fcipairing}: the pairing interaction moves complete pairs
+and cannot connect the reference to a $1p$-$1h$ state, so
+$\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$ identically, the Fock matrix is
+diagonal from the first iteration, and the self-consistency loop terminates
+without having moved.  The entire correlation energy -- $36\%$ of the
+reference energy at $g=1$ -- must come from the doubles, which is precisely
+what Table~\ref{tab:pairing} and Section~\ref{sec:citruncations} showed.
+
+The moral is that a mean field is only as useful as the one-body physics the
+interaction actually contains.  Where an interaction can be well approximated
+by an average field -- atoms, molecules, closed-shell nuclei -- Hartree-Fock
+does most of the work.  Where the interaction is intrinsically a
+pair-correlation effect -- pairing, superconductivity, the strongly coupled
+Hubbard model of Section~\ref{sec:fcihubbard} -- it does none, and one must
+either generalise the mean field, as Bardeen, Cooper and Schrieffer did by
+allowing the number of particles to fluctuate, or go beyond it.
+
+%----------------------------------------------------------------------
+\section{The infinite homogeneous electron gas}
+\label{sec:electrongas}
+
+\index{electron gas}
+The electron gas is very likely the only realistic model of an interacting
+many-particle system for which the Hartree-Fock equations can be solved in
+closed form.  Better still, the total energy and several other properties
+follow analytically to first order in the interaction, so the whole chapter
+can be tested against an exact mean-field answer.
+
+The model is defined by three assumptions:
+\begin{itemize}
+  \item the electrons feel no external force except the attraction of a
+    uniform, stationary background of positive charge;
+  \item the system as a whole is neutral;
+  \item there are $N$ electrons in a cubic box of side $L$ and volume
+    $\Omega=L^3$, containing a uniform positive charge of density $Ne/\Omega$.
+\end{itemize}
+It is a very good approximation for the valence electrons of a metal, and the
+three-dimensional gas is the cornerstone of the local-density approximation of
+density-functional theory.  Two-dimensional electron fluids occur on metal and
+liquid-helium surfaces and at metal-oxide-semiconductor interfaces.  For all
+its simplicity, the correlations of this system have resisted a satisfactory
+first-principles description by anything except quantum Monte Carlo; the
+diffusion Monte Carlo calculations of Ceperley, and of Ceperley and Tanatar,
+remain the benchmark in three and in two dimensions.  At low density the
+electrons localise into a lattice -- Wigner crystallisation, a direct
+consequence of the long range of the repulsion -- while at high density the
+system behaves as a liquid.  The infinite range of the Coulomb interaction
+also generates finite-size effects that are absent in nuclear or neutron
+matter, and that any finite calculation must handle with care.
+
+\subsection{Plane waves and periodic boundary conditions}
+\label{sec:egbasis}
+
+The system is homogeneous, so the single-particle states are plane waves
+normalised in the box,
+\begin{equation}
+  \psi_{\bm{k}\sigma}(\bm{r})
+   = \frac{1}{\sqrt{\Omega}}e^{\imath\bm{k}\cdot\bm{r}}\,\xi_{\sigma},
+  \qquad
+  \xi_{+1/2}=\begin{pmatrix}1\\0\end{pmatrix},
+  \quad
+  \xi_{-1/2}=\begin{pmatrix}0\\1\end{pmatrix},
+  \label{eq:6-planewave}
+\end{equation}
+and periodic boundary conditions restrict the wave numbers to
+\begin{equation}
+  k_i = \frac{2\pi n_i}{L},
+  \qquad i=x,y,z,
+  \qquad n_i = 0,\pm1,\pm2,\dots
+  \label{eq:6-pbc}
+\end{equation}
+The limit $L\to\infty$ is taken after the expectation values have been
+computed.  The kinetic energy operator is diagonal,
+\begin{equation}
+  \hat{T} = \sum_{\bm{k}\sigma}\frac{\hbar^2k^2}{2m}
+    \hat{a}^{\dagger}_{\bm{k}\sigma}\hat{a}_{\bm{k}\sigma},
+  \label{eq:6-kinetic}
+\end{equation}
+which is the same structure as the momentum-space Hubbard model of
+Section~\ref{sec:fcihubbard}: the plane-wave determinant is automatically the
+Hartree-Fock solution of a translationally invariant problem, since momentum
+conservation forces $f_{ai}=0$.  Everything in this section is therefore a
+calculation \emph{in} the Hartree-Fock basis, not a search for it.
+
+The full Hamiltonian has three pieces,
+\begin{equation}
+  \hat{H} = \hat{H}_{\mathrm{el}} + \hat{H}_{b} + \hat{H}_{\mathrm{el}-b},
+  \label{eq:6-threepieces}
+\end{equation}
+namely the electrons,
+\begin{equation}
+  \hat{H}_{\mathrm{el}} = \sum_{i=1}^{N}\frac{p_i^2}{2m}
+    + \frac{e^2}{2}\sum_{i\ne j}
+      \frac{e^{-\mu\vert\bm{r}_i-\bm{r}_j\vert}}
+           {\vert\bm{r}_i-\bm{r}_j\vert},
+  \label{eq:6-Hel}
+\end{equation}
+the background with itself,
+\begin{equation}
+  \hat{H}_{b} = \frac{e^2}{2}\iint \ud{\bm{r}}\ud{\bm{r}'}
+    \frac{n(\bm{r})n(\bm{r}')e^{-\mu\vert\bm{r}-\bm{r}'\vert}}
+         {\vert\bm{r}-\bm{r}'\vert},
+  \label{eq:6-Hb}
+\end{equation}
+with $n(\bm{r})=N/\Omega$, and the electrons with the background,
+\begin{equation}
+  \hat{H}_{\mathrm{el}-b} = -\frac{e^2}{2}\sum_{i=1}^{N}\int \ud{\bm{r}}
+    \frac{n(\bm{r})e^{-\mu\vert\bm{r}-\bm{x}_i\vert}}
+         {\vert\bm{r}-\bm{x}_i\vert}.
+  \label{eq:6-Helb}
+\end{equation}
+The factor $e^{-\mu r}$ is a convergence device: each integral is computed at
+finite $\mu$, and the limit $\mu\to0$ is taken at the end.  Individually the
+three terms diverge as $\mu^{-2}$,
+\begin{equation}
+  \hat{H}_{b} = \frac{e^2}{2}\frac{N^2}{\Omega}\frac{4\pi}{\mu^2},
+  \qquad
+  \hat{H}_{\mathrm{el}-b} = -e^2\frac{N^2}{\Omega}\frac{4\pi}{\mu^2},
+  \label{eq:6-divergences}
+\end{equation}
+and the direct term of the electron-electron repulsion supplies exactly the
+missing $+\tfrac12$.  The three divergences cancel, and what survives is the
+kinetic energy and the exchange term.  This cancellation is special to the
+Coulomb interaction and to a neutral system; for a short-ranged interaction,
+nuclear forces for example, both direct and exchange terms must be kept.  What
+remains is
+\begin{equation}
+  \hat{H} = \hat{H}_0 + \hat{H}_I,
+  \qquad
+  \hat{H}_0 = \sum_{\bm{k}\sigma}\frac{\hbar^2k^2}{2m}
+    \hat{a}^{\dagger}_{\bm{k}\sigma}\hat{a}_{\bm{k}\sigma},
+  \label{eq:6-egH0}
+\end{equation}
+\begin{equation}
+  \hat{H}_I = \frac{e^2}{2\Omega}\sum_{\sigma_1\sigma_2}
+    \sum_{\bm{q}\ne0,\bm{k},\bm{p}}\frac{4\pi}{q^2}\,
+    \hat{a}^{\dagger}_{\bm{k}+\bm{q},\sigma_1}
+    \hat{a}^{\dagger}_{\bm{p}-\bm{q},\sigma_2}
+    \hat{a}_{\bm{p}\sigma_2}\hat{a}_{\bm{k}\sigma_1},
+  \label{eq:6-egHI}
+\end{equation}
+with the $\bm{q}=0$ term -- the one that diverged -- removed by the
+background.
+
+\subsection{The interaction in momentum space}
+\label{sec:egmomentum}
+
+Equation~(\ref{eq:6-egHI}) deserves a derivation, since the same steps apply
+to any interaction depending only on the relative distance.  Starting from
+\begin{equation}
+  \hat{V} = \frac{1}{2}\sum_{\substack{\sigma_p\sigma_q\\ \sigma_r\sigma_s}}
+    \sum_{\substack{\bm{k}_p\bm{k}_q\\ \bm{k}_r\bm{k}_s}}
+    \langle \bm{k}_p\sigma_p,\bm{k}_q\sigma_q\vert\hat{v}\vert
+      \bm{k}_r\sigma_r,\bm{k}_s\sigma_s\rangle\,
+    \hat{a}^{\dagger}_{\bm{k}_p\sigma_p}
+    \hat{a}^{\dagger}_{\bm{k}_q\sigma_q}
+    \hat{a}_{\bm{k}_s\sigma_s}\hat{a}_{\bm{k}_r\sigma_r},
+  \label{eq:6-Vgeneral}
+\end{equation}
+insert the plane waves~(\ref{eq:6-planewave}).  The spin functions are
+orthonormal and $\hat{v}$ is spin independent, so
+\begin{equation}
+  \langle \bm{k}_p\sigma_p,\bm{k}_q\sigma_q\vert\hat{v}\vert
+    \bm{k}_r\sigma_r,\bm{k}_s\sigma_s\rangle
+  = \frac{\delta_{\sigma_p\sigma_r}\delta_{\sigma_q\sigma_s}}{\Omega^2}
+    \iint e^{-\imath\bm{k}_p\cdot\bm{r}_p}
+          e^{-\imath\bm{k}_q\cdot\bm{r}_q}\,v(r)\,
+          e^{\imath\bm{k}_r\cdot\bm{r}_p}
+          e^{\imath\bm{k}_s\cdot\bm{r}_q}
+      \ud{\bm{r}_p}\ud{\bm{r}_q}.
+  \label{eq:6-planewaveme}
+\end{equation}
+Change variables to $\bm{r}=\bm{r}_p-\bm{r}_q$ at fixed $\bm{r}_q$; the limits
+are unchanged, and the exponentials separate,
+\begin{equation}
+  = \frac{\delta_{\sigma_p\sigma_r}\delta_{\sigma_q\sigma_s}}{\Omega^2}
+    \int v(r)e^{\imath(\bm{k}_r-\bm{k}_p)\cdot\bm{r}}\ud{\bm{r}}
+    \int e^{\imath(\bm{k}_s-\bm{k}_q+\bm{k}_r-\bm{k}_p)\cdot\bm{r}_q}
+      \ud{\bm{r}_q}.
+  \label{eq:6-separated}
+\end{equation}
+The second integral is a Kronecker delta enforcing momentum conservation,
+\begin{equation}
+  \langle \bm{k}_p\sigma_p,\bm{k}_q\sigma_q\vert\hat{v}\vert
+    \bm{k}_r\sigma_r,\bm{k}_s\sigma_s\rangle
+  = \frac{\delta_{\sigma_p\sigma_r}\delta_{\sigma_q\sigma_s}}{\Omega}
+    \,\delta_{\bm{k}_p+\bm{k}_q,\,\bm{k}_r+\bm{k}_s}
+    \int v(r)e^{\imath(\bm{k}_r-\bm{k}_p)\cdot\bm{r}}\ud{\bm{r}} .
+  \label{eq:6-momentumconservation}
+\end{equation}
+The matrix element vanishes unless
+$\bm{k}_p+\bm{k}_q=\bm{k}_r+\bm{k}_s$.  Using this to eliminate one summation
+variable and writing $\bm{p}=\bm{k}_p+\bm{k}_q-\bm{k}_r$,
+$\bm{k}=\bm{k}_r$ and $\bm{q}=\bm{k}_p-\bm{k}_r$,
+\begin{equation}
+  \hat{V} = \frac{1}{2\Omega}\sum_{\sigma\sigma'}
+    \sum_{\bm{k}\bm{p}\bm{q}}
+    \left[\int v(r)e^{-\imath\bm{q}\cdot\bm{r}}\ud{\bm{r}}\right]
+    \hat{a}^{\dagger}_{\bm{k}+\bm{q},\sigma}
+    \hat{a}^{\dagger}_{\bm{p}-\bm{q},\sigma'}
+    \hat{a}_{\bm{p}\sigma'}\hat{a}_{\bm{k}\sigma}.
+  \label{eq:6-Vmomentum}
+\end{equation}
+For the screened Coulomb interaction the bracket is
+$4\pi e^2/(\mu^2+q^2)$, which becomes $4\pi e^2/q^2$ as $\mu\to0$, giving
+Eq.~(\ref{eq:6-egHI}).  The structure -- a momentum transfer $\bm{q}$ shared
+between two particles -- is exactly the Hubbard interaction of
+Eq.~(\ref{eq:5-hubbardmom}), with $4\pi e^2/q^2$ in place of the constant $U$.
+
+\subsection{The reference energy}
+\label{sec:egreference}
+
+With $\bket{\Phi_0}$ the filled Fermi sea, the kinetic energy follows from the
+contractions of Section~\ref{sec:wickapps},
+\begin{equation}
+  \bracket{\Phi_0}{\hat{T}}{\Phi_0}
+   = \sum_{i\le F}\frac{\hbar^2k_i^2}{2m}\cdot 2
+   = \frac{2\Omega}{(2\pi)^3}\frac{\hbar^2}{2m}
+     \int_0^{k_F}4\pi k^4\ud{k}
+   = \frac{\hbar^2\Omega}{10\pi^2 m}k_F^5,
+  \label{eq:6-egkinetic}
+\end{equation}
+the factor two being the spin degeneracy.  The same density of states fixes
+the particle number,
+\begin{equation}
+  N = \frac{2\Omega}{(2\pi)^3}\cdot\frac{4}{3}\pi k_F^3
+    = \frac{\Omega}{3\pi^2}k_F^3
+  \qquad\Longrightarrow\qquad
+  k_F = \left(\frac{3\pi^2N}{\Omega}\right)^{1/3},
+  \label{eq:6-kF}
+\end{equation}
+so that
+\begin{equation}
+  \frac{\bracket{\Phi_0}{\hat{T}}{\Phi_0}}{N}
+   = \frac{3}{5}\frac{\hbar^2k_F^2}{2m}
+   = \frac{\hbar^2(3\pi^2)^{5/3}}{10\pi^2 m}\rho^{2/3},
+  \qquad \rho = \frac{N}{\Omega}.
+  \label{eq:6-egkineticdensity}
+\end{equation}
+For the interaction, only two classes of contraction survive: either
+$\bm{k}+\bm{q}=\bm{p}$ with $\sigma=\sigma'$, or $\bm{q}=0$.  The first is the
+exchange term, the second the direct one, and
+\begin{equation}
+  \bracket{\Phi_0}{\hat{V}}{\Phi_0}
+   = \frac{1}{2\Omega}\left(N^2\int v(r)\ud{\bm{r}}
+     - N\sum_{\bm{q}}\int v(r)e^{-\imath\bm{q}\cdot\bm{r}}\ud{\bm{r}}\right),
+  \label{eq:6-egpotential}
+\end{equation}
+valid for any interaction depending only on $r$.  For the electron gas the
+first term is cancelled by the background, as we saw, and only the exchange
+term remains.
+
+\subsection{The single-particle energy}
+\label{sec:egsingleparticle}
+
+The Hartree-Fock single-particle energy is the kinetic energy plus the
+exchange self-energy,
+\begin{equation}
+  \varepsilon_{k}^{\mathrm{HF}}
+   = \frac{\hbar^2k^2}{2m}
+   - \frac{e^2}{\Omega^2}\sum_{p\le k_F}
+     \int \ud{\bm{r}}\,e^{\imath(\bm{p}-\bm{k})\cdot\bm{r}}
+     \int \ud{\bm{r}'}
+     \frac{e^{\imath(\bm{k}-\bm{p})\cdot\bm{r}'}}
+          {\vert\bm{r}-\bm{r}'\vert},
+  \label{eq:6-egsp}
+\end{equation}
+and we shall show that it evaluates to
+\begin{equation}
+  \boxed{\;
+  \varepsilon_{k}^{\mathrm{HF}}
+   = \frac{\hbar^2k^2}{2m}
+   - \frac{e^2k_F}{2\pi}\left[2
+     + \frac{k_F^2-k^2}{kk_F}
+       \ln\left\vert\frac{k+k_F}{k-k_F}\right\vert\right].
+  \;}
+  \label{eq:6-egspclosed}
+\end{equation}
+
+Insert the convergence factor $e^{-\mu\vert\bm{r}-\bm{r}'\vert}$ and replace
+the sum by an integral, $\sum_{\bm{p}}\to\Omega(2\pi)^{-3}\int\ud{\bm{p}}$,
+\begin{equation}
+  \lim_{\mu\to0}\frac{e^2}{\Omega(2\pi)^3}
+    \iint \ud{\bm{r}}\ud{\bm{r}'}
+    \frac{e^{-\mu\vert\bm{r}-\bm{r}'\vert}}{\vert\bm{r}-\bm{r}'\vert}
+    \int \ud{\bm{p}}\,
+      e^{\imath(\bm{p}-\bm{k})\cdot(\bm{r}-\bm{r}')} .
+  \label{eq:6-egstep1}
+\end{equation}
+Change variables to $\bm{x}=\bm{r}-\bm{r}'$ and $\bm{y}=\bm{r}'$.  The
+integrand no longer depends on $\bm{y}$, whose integral gives $\Omega$, and
+the $\bm{x}$ integral in spherical coordinates is
+\begin{equation}
+  \int \ud{\bm{x}}\,e^{\imath(\bm{p}-\bm{k})\cdot\bm{x}}
+    \frac{e^{-\mu x}}{x}
+  = 4\pi\int_0^{\infty}
+    \frac{\sin\left(\vert\bm{p}-\bm{k}\vert x\right)}
+         {\vert\bm{p}-\bm{k}\vert}e^{-\mu x}\ud{x}
+  = \frac{4\pi}{\mu^2+\vert\bm{p}-\bm{k}\vert^2}.
+  \label{eq:6-egstep2}
+\end{equation}
+The limit $\mu\to0$ is now harmless, and we are left with
+\begin{equation}
+  \frac{e^2}{2\pi^2}\int_{p\le k_F}
+    \frac{\ud{\bm{p}}}{\vert\bm{p}-\bm{k}\vert^2}
+  = \frac{e^2}{\pi}\int_0^{k_F}p^2\ud{p}
+    \int_{-1}^{1}\frac{\ud{u}}{p^2+k^2-2pku},
+  \label{eq:6-egstep3}
+\end{equation}
+having set $u=\cos\theta$.  The angular integral is elementary,
+\begin{equation}
+  \int_{-1}^{1}\frac{\ud{u}}{p^2+k^2-2pku}
+   = \frac{1}{pk}\ln\left\vert\frac{p+k}{p-k}\right\vert,
+  \label{eq:6-egangular}
+\end{equation}
+so the exchange term becomes
+\begin{equation}
+  \frac{e^2}{k\pi}\int_0^{k_F}p\,
+    \ln\left\vert\frac{p+k}{p-k}\right\vert\ud{p}
+  = \frac{e^2}{k\pi}\left[kk_F
+    + \frac{k_F^2-k^2}{2}
+      \ln\left\vert\frac{k+k_F}{k-k_F}\right\vert\right],
+  \label{eq:6-egstep4}
+\end{equation}
+where the remaining integral is done by substituting $x=p+k$ and $y=p-k$.
+Rearranging gives Eq.~(\ref{eq:6-egspclosed}).
+
+\subsection{Dimensionless form, band width and effective mass}
+\label{sec:egdimensionless}
+
+Introduce the radius $r_0$ of the sphere whose volume is the volume per
+electron,
+\begin{equation}
+  \rho = \frac{k_F^3}{3\pi^2} = \frac{3}{4\pi r_0^3}
+  \qquad\Longrightarrow\qquad
+  k_F = \frac{(9\pi/4)^{1/3}}{r_0} = \frac{1.9192}{r_0},
+  \label{eq:6-rs}
+\end{equation}
+the Bohr radius $a_0=\hbar^2/me^2$ and the dimensionless density parameter
+$r_s=r_0/a_0$, which lies between about $2$ and $6$ for most metals.  With
+$x=k/k_F$ and
+\begin{equation}
+  F(x) = \frac{1}{2} + \frac{1-x^2}{4x}
+    \ln\left\vert\frac{1+x}{1-x}\right\vert,
+  \label{eq:6-Fx}
+\end{equation}
+Equation~(\ref{eq:6-egspclosed}) becomes
+\begin{equation}
+  \varepsilon_{k}^{\mathrm{HF}}
+   = \frac{\hbar^2k^2}{2m} - \frac{2e^2k_F}{\pi}F(x),
+  \qquad
+  \frac{\varepsilon_{k}^{\mathrm{HF}}}{\varepsilon_0^{F}}
+   = x^2 - \frac{4}{\pi k_F a_0}F(x)
+   = x^2 - 0.663\,r_s\,F(x),
+  \label{eq:6-egdimensionless}
+\end{equation}
+where $\varepsilon_0^{F}=\hbar^2k_F^2/2m$ is the free energy at the Fermi
+surface.  The function $F$ is smooth except at $x=1$, where it takes the value
+$\tfrac12$ but has an infinite derivative; at $x=0$ it equals $1$.  The
+program \texttt{hartreefock.py} tabulates the result for $r_s=4$:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rrrr}
+\toprule
+$x=k/k_F$ & $F(x)$ & $\varepsilon_k^{\mathrm{HF}}/\varepsilon_0^{F}$
+  & $\varepsilon_k^{(0)}/\varepsilon_0^{F}$\\
+\midrule
+$0.00$ & $1.000000$ & $-2.652000$ & $0.0000$\\
+$0.25$ & $0.978899$ & $-2.533540$ & $0.0625$\\
+$0.50$ & $0.911980$ & $-2.168570$ & $0.2500$\\
+$0.75$ & $0.783779$ & $-1.516081$ & $0.5625$\\
+$1.00$ & $0.500000$ & $-0.326000$ & $1.0000$\\
+$1.25$ & $0.252812$ & $\phantom{-}0.892042$ & $1.5625$\\
+$1.50$ & $0.164700$ & $\phantom{-}1.813214$ & $2.2500$\\
+$2.00$ & $0.088020$ & $\phantom{-}3.766570$ & $4.0000$\\
+\bottomrule
+\end{tabular}
+\caption{The Hartree-Fock single-particle energy of the three-dimensional
+electron gas at $r_s=4$, compared with the free-particle energy.  The
+exchange term lowers every state and lowers the bottom of the band far more
+than the top.}
+\label{tab:eghf}
+\end{table}
+
+\paragraph{Band width.}
+The width of the occupied band is
+\begin{equation}
+  \Delta\varepsilon^{\mathrm{HF}}
+   = \varepsilon_{k_F}^{\mathrm{HF}} - \varepsilon_{0}^{\mathrm{HF}} .
+  \label{eq:6-bandwidth}
+\end{equation}
+At $r_s=4$ the two entries of Table~\ref{tab:eghf} give $-0.326$ and
+$-2.652$, hence $\Delta\varepsilon^{\mathrm{HF}}=2.326$ in units of
+$\varepsilon_0^{F}$.  In general, using $F(1)=\tfrac12$ and $F(0)=1$,
+\begin{equation}
+  \Delta\varepsilon^{\mathrm{HF}}
+   = 1 + \frac{0.663}{2}r_s
+   = 1 + 0.3315\,r_s ,
+  \label{eq:6-bandwidthformula}
+\end{equation}
+which reproduces $2.326$ at $r_s=4$.  The free gas has a band width of exactly
+one, so exchange more than doubles it -- an effect of the right sign but, as
+experiment shows, considerably too large.
+
+\paragraph{Effective mass and level density.}
+Expanding about the Fermi surface,
+\begin{equation}
+  \varepsilon_k^{\mathrm{HF}} = \varepsilon_{k_F}^{\mathrm{HF}}
+    + \left(\frac{\partial\varepsilon_k^{\mathrm{HF}}}
+      {\partial k}\right)_{k_F}(k-k_F) + \cdots
+  \label{eq:6-taylor}
+\end{equation}
+and comparing with the free-particle expansion
+$\varepsilon_k^{(0)}=\hbar^2k_F^2/2m+(\hbar^2k_F/m)(k-k_F)+\cdots$ defines the
+effective mass
+\begin{equation}
+  m^{*}_{\mathrm{HF}}
+   \equiv \hbar^2k_F\left(
+     \frac{\partial\varepsilon_k^{\mathrm{HF}}}{\partial k}
+   \right)^{-1}_{k_F}
+   = \frac{2m}{2-0.663\,r_s\,F'(1)} .
+  \label{eq:6-effectivemass}
+\end{equation}
+Here is the difficulty: $F'(x)$ diverges logarithmically as $x\to1$, so the
+slope of $\varepsilon^{\mathrm{HF}}_k$ is infinite at the Fermi surface and
+$m^{*}_{\mathrm{HF}}\to0$.  Approaching from below, the program finds
+$m^{*}/m = 0.256, 0.185, 0.144, 0.118, 0.100$ at
+$1-x=10^{-2},\dots,10^{-6}$: the ratio creeps towards zero like
+$1/\ln(1-x)$.  Since the level density is
+\begin{equation}
+  n(\varepsilon) = \frac{\Omega k^2}{2\pi^2}
+    \left(\frac{\partial\varepsilon}{\partial k}\right)^{-1},
+  \label{eq:6-leveldensity}
+\end{equation}
+it vanishes at the Fermi surface.
+
+This is qualitatively wrong.  Metals have a finite density of states at the
+Fermi level -- it is what gives them a linear specific heat and a finite Pauli
+susceptibility.  The culprit is the $1/q^2$ singularity of the bare Coulomb
+interaction at small momentum transfer, which Hartree-Fock treats without any
+screening.  In a real metal the other electrons rearrange to screen it, and
+the effective interaction falls off exponentially beyond the screening length.
+Summing the diagrams that produce that screening is precisely what the
+random-phase approximation does, and it restores a finite effective mass.  So
+the electron gas illustrates both what a mean field does well and where it
+must fail, and it points directly to the next method.
+
+\subsection{The energy per electron}
+\label{sec:egenergy}
+
+Collecting the kinetic energy~(\ref{eq:6-egkineticdensity}) and the exchange
+term, and measuring energies in Rydberg, $e^2/2a_0=13.606$~eV, the
+Hartree-Fock energy per electron is
+\begin{equation}
+  \boxed{\;
+  \frac{E_0}{N} = \frac{e^2}{2a_0}
+    \left[\frac{2.21}{r_s^2}-\frac{0.916}{r_s}\right].
+  \;}
+  \label{eq:6-egenergy}
+\end{equation}
+The two coefficients are not empirical:
+\begin{equation}
+  \frac{3}{5}\left(\frac{9\pi}{4}\right)^{2/3} = 2.2099,
+  \qquad
+  \frac{3}{2\pi}\left(\frac{9\pi}{4}\right)^{1/3} = 0.9163,
+  \label{eq:6-egcoefficients}
+\end{equation}
+as \texttt{hartreefock.py} confirms.  The first term is the kinetic energy,
+which scales as $\rho^{2/3}\propto r_s^{-2}$ and dominates at high density;
+the second is exchange, which scales as $\rho^{1/3}\propto r_s^{-1}$ and wins
+at low density.  Because they carry opposite signs and different powers, their
+sum has a minimum:
+\begin{equation}
+  \frac{\ud{}}{\ud{r_s}}\left[\frac{2.21}{r_s^2}
+    - \frac{0.916}{r_s}\right] = 0
+  \qquad\Longrightarrow\qquad
+  r_s = \frac{2\times2.21}{0.916} = 4.83,
+  \label{eq:6-egminimum}
+\end{equation}
+at which $E_0/N = -0.0949$~Ry $=-1.29$~eV.  The values along the curve are
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rr}
+\toprule
+$r_s$ & $E_0/N$ [Ry]\\
+\midrule
+$1.00$ & $\phantom{-}1.294000$\\
+$2.00$ & $\phantom{-}0.094500$\\
+$3.00$ & $-0.059778$\\
+$4.00$ & $-0.090875$\\
+$4.83$ & $-0.094916$\\
+$6.00$ & $-0.091278$\\
+$8.00$ & $-0.079969$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The electron gas is therefore \emph{bound} already at the Hartree-Fock level,
+at a density lying squarely in the range observed in the alkali metals.  This
+is a real success: exchange alone, with no correlation whatsoever, explains
+why a metal is stable against expansion.  The binding energy is too small by
+roughly a factor of two -- the missing part is the correlation energy, which
+for this system is about $-0.06$~Ry near equilibrium -- and the equilibrium
+density is somewhat too low, but the mechanism is right.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:ch6summary}
+
+Hartree-Fock theory is the variational principle of
+Section~\ref{sec:variational} applied to the smallest interesting trial space:
+a single Slater determinant, with the orbitals free.  The stationarity
+condition is a nonlinear eigenvalue problem,
+Eq.~(\ref{eq:6-hfequations}), solved by iterating a linear one -- the
+self-consistent field.  Its solution is characterised by Brillouin's theorem,
+$\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$, which is exactly the statement that
+the reference decouples from all single excitations and which is why every
+post-Hartree-Fock method begins at the doubles.
+
+Thouless' theorem makes the geometry precise: the neighbourhood of a
+determinant, inside the manifold of determinants, is parametrised by
+$e^{\hat{T}}$ with $\hat{T}$ a linear combination of one-particle-one-hole
+operators.  Because those operators commute, the exponential collapses, and
+the Baker-Campbell-Hausdorff series -- which controls the general case and
+reappears in the Trotter splitting and in coupled-cluster theory -- reduces
+to its first term.  Going to second order in $\hat{T}$ produces the stability
+matrix~(\ref{eq:6-stabilitymatrix}), whose positivity decides whether the
+stationary point is a minimum, and which is the same matrix that the
+random-phase approximation diagonalises.
+
+The two model calculations bracket the range of behaviour.  For the pairing
+model the mean field does nothing at all, since the interaction conserves
+seniority.  For the Lipkin model it does too much: beyond $\chi=1$ the
+symmetric solution goes unstable and a symmetry-broken one takes over, buying
+energy at the cost of a broken symmetry that must later be restored.  Between
+them lies the electron gas, where the whole programme goes through
+analytically, predicts a bound system at a realistic density, and yet gets the
+effective mass qualitatively wrong for want of screening.
+
+The program \texttt{hartreefock.py} carries out every calculation of this
+chapter, and the notebook \texttt{hartreefock.ipynb} runs it cell by cell.
+
+%----------------------------------------------------------------------
+\section{Exercises}
+\label{sec:ch6exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: determinants and unitary transformations}
+\label{ex:6-determinants}
+\addcontentsline{toc}{subsection}{Exercise 1: determinants and unitary transformations}
+
+\begin{enumerate}
+  \item[a)] Verify Eq.~(\ref{eq:6-multilinear2}) by direct expansion, and
+  then prove Eq.~(\ref{eq:6-multilinear}) for a general $n$.
+  \item[b)] Use a) to prove the product rule
+  $\det(\bm{B}\bm{C})=\det(\bm{B})\det(\bm{C})$ for $n=2$, and convince
+  yourself that the argument generalises.
+  \item[c)] Show that a Slater determinant is invariant, up to a phase, under
+  any unitary mixing of its occupied orbitals, and that the one-body density
+  matrix~(\ref{eq:6-densitymatrix}) is strictly invariant.
+  \item[d)] Show that $\bm{\rho}^2=\bm{\rho}$ and
+  $\mathrm{tr}\,\bm{\rho}=N$, and explain what these two statements say about
+  the occupied subspace.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Expanding the left-hand side of Eq.~(\ref{eq:6-multilinear2}),
+\begin{equation}
+  (\alpha_1b_{11}+\alpha_2b_{12})a_{22}
+  - (\alpha_1b_{21}+\alpha_2b_{22})a_{12}
+  = \alpha_1(b_{11}a_{22}-b_{21}a_{12})
+  + \alpha_2(b_{12}a_{22}-b_{22}a_{12}),
+  \label{eq:6-exa1}
+\end{equation}
+which is the right-hand side.  For general $n$, use the Leibniz formula
+$\det(\bm{A})=\sum_{\pi}\mathrm{sgn}(\pi)\prod_j a_{\pi(j)j}$.  Exactly one
+factor in each product comes from column $j$; substituting
+$a_{ij}\to\sum_k c_kb_{ik}$ in that column and interchanging the two sums
+gives $\sum_k c_k\sum_{\pi}\mathrm{sgn}(\pi)b_{\pi(j)k}\prod_{l\ne j}
+a_{\pi(l)l}$, which is Eq.~(\ref{eq:6-multilinear}).
+
+\paragraph{Answer to b).}
+Write $\bm{A}=\bm{B}\bm{C}$, so that column $j$ of $\bm{A}$ is
+$\sum_k C_{kj}\bm{b}_k$ with $\bm{b}_k$ the columns of $\bm{B}$.  Applying
+Eq.~(\ref{eq:6-multilinear}) to both columns of a $2\times2$ matrix,
+\begin{equation}
+  \det(\bm{A}) = \sum_{k_1k_2}C_{k_11}C_{k_22}
+    \det\left(\bm{b}_{k_1}\ \bm{b}_{k_2}\right) .
+  \label{eq:6-exb1}
+\end{equation}
+Terms with $k_1=k_2$ vanish, and the two surviving terms combine to
+$(C_{11}C_{22}-C_{21}C_{12})\det(\bm{b}_1\ \bm{b}_2)
+=\det(\bm{C})\det(\bm{B})$.  For general $n$ the same expansion leaves only
+the $n!$ terms with distinct $k$'s, each carrying the sign of the
+corresponding permutation, and the sum is again $\det(\bm{C})\det(\bm{B})$.
+
+\paragraph{Answer to c).}
+Let $\psi'_i=\sum_j U_{ij}\psi_j$ with $\bm{U}$ unitary and $i,j$ running over
+the occupied orbitals.  By Eq.~(\ref{eq:6-detcdetphi}) the new determinant is
+$\det(\bm{U})$ times the old one, and $|\det(\bm{U})|=1$ for a unitary matrix,
+so the two states differ by a phase and describe the same physics.  The
+density matrix is $\bm{\rho}'=\bm{U}^{\dagger}\bm{\rho}\bm{U}$ evaluated on
+the occupied block; since $\bm{\rho}$ is the projector onto the span of the
+occupied orbitals and $\bm{U}$ merely rotates within that span, $\bm{\rho}$ is
+unchanged exactly, not merely up to a phase.
+
+\paragraph{Answer to d).}
+With orthonormal orbitals,
+$\rho_{\gamma\delta}=\sum_i C_{i\gamma}C^{*}_{i\delta}$ gives
+\begin{equation}
+  (\bm{\rho}^2)_{\gamma\delta}
+  = \sum_{i j\lambda}C_{i\gamma}C^{*}_{i\lambda}C_{j\lambda}C^{*}_{j\delta}
+  = \sum_{ij}\delta_{ij}C_{i\gamma}C^{*}_{j\delta}
+  = \rho_{\gamma\delta},
+  \label{eq:6-exd1}
+\end{equation}
+and $\mathrm{tr}\,\bm{\rho}=\sum_i\sum_{\gamma}|C_{i\gamma}|^2=N$.  A
+Hermitian idempotent is a projector, and its trace is the dimension of the
+space it projects onto.  So $\bm{\rho}$ is the projector onto the
+$N$-dimensional occupied subspace, and its eigenvalues are $N$ ones and the
+rest zeros.  Together these say that a Hartree-Fock solution is a choice of
+subspace, and that only for a Slater determinant are the occupation numbers
+exactly zero and one -- for a correlated state the eigenvalues of $\bm{\rho}$
+are the fractional natural occupations of
+Section~\ref{sec:naturalorbitals}.
+
+\subsection*{Exercise 2: the Hartree-Fock equations}
+\label{ex:6-hfequations}
+\addcontentsline{toc}{subsection}{Exercise 2: the Hartree-Fock equations}
+
+\begin{enumerate}
+  \item[a)] Carry out the differentiation in Eq.~(\ref{eq:6-variationC})
+  in full, and confirm that the factor $\tfrac12$ in the two-body term is
+  cancelled by the two ways in which $C^{*}_{i\alpha}$ can appear.
+  \item[b)] Show that the Hartree-Fock energy is \emph{not} the sum of the
+  single-particle energies, and derive the correct relation
+  \begin{equation*}
+    E^{\mathrm{HF}} = \sum_{i=1}^{N}\varepsilon_i^{\mathrm{HF}}
+      - \frac{1}{2}\sum_{i,j=1}^{N}
+        \langle ij\vert\hat{v}\vert ij\rangle_{\mathrm{AS}} .
+  \end{equation*}
+  \item[c)] Interpret $\varepsilon_i^{\mathrm{HF}}$ physically by computing
+  the energy needed to remove a particle from orbital $i$, assuming the
+  remaining orbitals do not relax.  (This is Koopmans' theorem.)
+  \item[d)] Show directly from Eq.~(\ref{eq:6-fockmatrix}) that at
+  self-consistency $f_{ai}=0$, and hence that
+  $\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The one-body term of Eq.~(\ref{eq:6-Efunctional}) is linear in
+$C^{*}_{i\alpha}$ and differentiates to
+$\sum_{\beta}C_{i\beta}\bracket{\alpha}{\hat{h}_0}{\beta}$.  In the two-body
+term $C^{*}_{i\alpha}$ can be either the first starred factor, with the sum
+over $j$ free, or the second, with the roles of the index pairs exchanged.
+Relabelling the dummy indices of the second contribution and using
+\begin{equation}
+  \langle\alpha\beta\vert\hat{v}\vert\gamma\delta\rangle_{\mathrm{AS}}
+  = \langle\beta\alpha\vert\hat{v}\vert\delta\gamma\rangle_{\mathrm{AS}}
+  \label{eq:6-exa2}
+\end{equation}
+shows the two are identical, so together they cancel the $\tfrac12$ and give
+the second term of Eq.~(\ref{eq:6-hfraw}).
+
+\paragraph{Answer to b).}
+Multiply Eq.~(\ref{eq:6-hfequations}) by $C^{*}_{i\alpha}$ and sum over
+$\alpha$ and over the occupied $i$:
+\begin{equation}
+  \sum_{i=1}^{N}\varepsilon_i^{\mathrm{HF}}
+  = \sum_{i=1}^{N}\bracket{i}{\hat{h}_0}{i}
+  + \sum_{i,j=1}^{N}\langle ij\vert\hat{v}\vert ij\rangle_{\mathrm{AS}} .
+  \label{eq:6-exb2}
+\end{equation}
+Comparing with Eq.~(\ref{eq:6-energyfunctional}), which carries a factor
+$\tfrac12$ on the two-body term, gives the stated relation.  The interaction
+energy is counted twice in the sum of single-particle energies -- once for
+each partner -- and half of it must be removed.  This is the standard
+double-counting correction, and forgetting it is one of the commonest errors
+in a first Hartree-Fock code.
+
+\paragraph{Answer to c).}
+Removing a particle from orbital $i$ without relaxing the others changes the
+energy by
+\begin{equation}
+  E^{\mathrm{HF}}(N) - E^{\mathrm{HF}}(N-1)
+  = \bracket{i}{\hat{h}_0}{i}
+    + \sum_{j\ne i}\langle ij\vert\hat{v}\vert ij\rangle_{\mathrm{AS}}
+  = \varepsilon_i^{\mathrm{HF}},
+  \label{eq:6-exc2}
+\end{equation}
+using $\langle ii\vert\hat{v}\vert ii\rangle_{\mathrm{AS}}=0$.  So each
+Hartree-Fock eigenvalue is, in the frozen-orbital approximation, minus the
+ionisation energy from that orbital.  This is Koopmans' theorem.  It is only
+an approximation, because in reality the remaining orbitals relax -- an effect
+that lowers the energy of the $(N-1)$-particle system and therefore makes the
+true ionisation energy smaller than $-\varepsilon_i^{\mathrm{HF}}$.
+Correlation works in the opposite direction, and for atoms the two errors
+partly cancel, which is why Koopmans' theorem is more accurate than it has any
+right to be.
+
+\paragraph{Answer to d).}
+At self-consistency the coefficients diagonalise the Fock matrix, so in the
+Hartree-Fock basis $f_{pq}=\varepsilon_p\delta_{pq}$ and in particular
+$f_{ai}=0$ for $a>F\ge i$.  By the Condon-Slater rules of
+Section~\ref{sec:wickapps}, the matrix element of $\hat{H}$ between the
+reference and a single excitation is
+\begin{equation}
+  \bracket{\Phi_0}{\hat{H}}{\Phi_i^a}
+  = \bracket{a}{\hat{h}_0}{i}
+    + \sum_{j\le F}\langle aj\vert\hat{v}\vert ij\rangle_{\mathrm{AS}}
+  = f_{ai} = 0 .
+  \label{eq:6-exd2}
+\end{equation}
+This is the identity that makes the Hartree-Fock determinant the natural
+reference for everything that follows.
+
+\subsection*{Exercise 3: Thouless' theorem}
+\label{ex:6-thouless}
+\addcontentsline{toc}{subsection}{Exercise 3: Thouless' theorem}
+
+\begin{enumerate}
+  \item[a)] Prove Eq.~(\ref{eq:6-phcommute}) from the anticommutation
+  relations, being explicit about where the disjointness of the particle and
+  hole index sets is used.
+  \item[b)] Show that $\hat{T}_i^2=0$ and hence that
+  $e^{\hat{T}}=\prod_i(1+\hat{T}_i)$.  Explain why this is \emph{not} the
+  same as $1+\hat{T}$, and identify what the difference describes.
+  \item[c)] Verify all of this numerically with \texttt{hartreefock.py} for
+  six orbitals and three particles, and check that the discarded piece scales
+  as the square of the amplitudes.
+  \item[d)] Show that $\braket{c}{\tilde{c}}=\det(f_{ip})$ over the occupied
+  block, and explain why the hypothesis $\braket{c}{\tilde{c}}\ne0$ is exactly
+  what is needed for the proof to go through.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Take $a,b>F$ and $i,j\le F$, so that all four indices in a given product are
+distinct except possibly $a=b$ or $i=j$.  Since $i\ne b$,
+$\hat{a}_{i}\hat{a}^{\dagger}_{b}=-\hat{a}^{\dagger}_{b}\hat{a}_{i}$, whence
+\begin{equation}
+  \hat{a}^{\dagger}_{a}\hat{a}_{i}\hat{a}^{\dagger}_{b}\hat{a}_{j}
+  = -\hat{a}^{\dagger}_{a}\hat{a}^{\dagger}_{b}\hat{a}_{i}\hat{a}_{j} .
+  \label{eq:6-exa3}
+\end{equation}
+Since $j\ne a$, the same step on the reversed product gives
+\begin{equation}
+  \hat{a}^{\dagger}_{b}\hat{a}_{j}\hat{a}^{\dagger}_{a}\hat{a}_{i}
+  = -\hat{a}^{\dagger}_{b}\hat{a}^{\dagger}_{a}\hat{a}_{j}\hat{a}_{i}
+  = -\hat{a}^{\dagger}_{a}\hat{a}^{\dagger}_{b}\hat{a}_{i}\hat{a}_{j},
+  \label{eq:6-exb3}
+\end{equation}
+where the second equality interchanges both the two creation operators and
+the two annihilation operators, contributing two signs that cancel.  The two
+products are equal, so the commutator vanishes.  The disjointness of the index
+sets is what allowed both anticommutations to be performed without generating
+a delta function; this is why the result is special to particle-hole
+operators and fails for general $\hat{a}^{\dagger}_p\hat{a}_q$.
+
+\paragraph{Answer to b).}
+$\hat{T}_i^2$ contains $\hat{a}_{i}\cdots\hat{a}_{i}$, and by
+Eq.~(\ref{eq:6-exa3}) the two annihilation operators can be brought adjacent;
+$\hat{a}_i^2=0$, so $\hat{T}_i^2=0$ and $e^{\hat{T}_i}=1+\hat{T}_i$.
+Combining with a) gives
+$e^{\hat{T}}=\prod_i e^{\hat{T}_i}=\prod_i(1+\hat{T}_i)$.  Expanding the
+product,
+\begin{equation}
+  \prod_i(1+\hat{T}_i) = 1 + \sum_i\hat{T}_i
+    + \sum_{i<j}\hat{T}_i\hat{T}_j + \cdots
+    = 1 + \hat{T} + \bigO(\hat{T}^2),
+  \label{eq:6-exb4}
+\end{equation}
+so the difference from $1+\hat{T}$ consists of the cross terms
+$\hat{T}_i\hat{T}_j$ with $i\ne j$, which are $2p$-$2h$, $3p$-$3h$, \dots\
+excitations.  They are second and higher order in the amplitudes, which is
+why the linearisation is exact for an infinitesimal variation and why the
+stability analysis of Section~\ref{sec:hfstability}, which works to second
+order in the energy but first order in the state, is consistent.
+
+\paragraph{Answer to c).}
+The class \texttt{ThoulessRotation} reports
+$\max|[\hat{T}_i,\hat{T}_j]|=2.8\times10^{-17}$,
+$\max|\hat{T}_i^2|=0$ exactly, agreement between $e^{\hat{T}}\bket{c}$ and
+$\prod_i\hat{b}^{\dagger}_i\bket{0}$ to $5.6\times10^{-17}$, an overlap
+$\braket{c}{c'}=1$ and $\det(f)=1$ over the occupied block.  Scaling the
+amplitudes by $s$ and comparing $e^{s\hat{T}}\bket{c}$ with
+$(1+s\hat{T})\bket{c}$ gives errors $3.68\times10^{-2}$,
+$9.20\times10^{-3}$, $2.30\times10^{-3}$, $5.75\times10^{-4}$ and
+$1.44\times10^{-4}$ for $s=0.4,0.2,0.1,0.05,0.025$: each halving of $s$
+divides the error by four, confirming the $\bigO(s^2)$ scaling.
+
+\paragraph{Answer to d).}
+Expanding Eq.~(\ref{eq:6-generalb}) and taking the overlap with
+$\bbra{c}=\bbra{0}\hat{a}_{i_n}\cdots\hat{a}_{i_1}$, only terms in which every
+$\hat{a}^{\dagger}_p$ carries an index below the Fermi level survive, and each
+must be contracted with a distinct $\hat{a}_{i_k}$.  Summing over the
+assignments with their signs reconstructs
+$\sum_{\pi}\mathrm{sgn}(\pi)\prod_k f_{i_k\pi(i_k)}=\det(f_{ip})$ over the
+occupied block.  The proof needs $f$ restricted to that block to be
+invertible, since $f^{-1}$ appears in Eq.~(\ref{eq:6-finverse}); a
+non-vanishing determinant is precisely invertibility.  Geometrically, if
+$\braket{c}{\tilde{c}}=0$ the two determinants have no overlap and
+$\bket{\tilde{c}}$ is not in the neighbourhood of $\bket{c}$ at all -- one
+cannot reach it by an infinitesimal rotation, and Thouless' theorem makes no
+claim about it.
+
+\subsection*{Exercise 4: BCH and Trotter}
+\label{ex:6-bch}
+\addcontentsline{toc}{subsection}{Exercise 4: BCH and Trotter}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:6-bchA2}) by matching the power series of
+  $e^{X}e^{Y}$ and $e^{Z}$ to second order.
+  \item[b)] Show that if $[X,Y]=cI$ then Eq.~(\ref{eq:6-bchcentral}) is
+  exact, and use it to derive the Weyl form
+  $e^{\imath a\hat{x}/\hbar}e^{\imath b\hat{p}/\hbar}
+  = e^{-\imath ab/2\hbar}e^{\imath(a\hat{x}+b\hat{p})/\hbar}$.
+  \item[c)] Use Eq.~(\ref{eq:6-bch}) to show that the leading error of the
+  first-order splitting is $-\tfrac{1}{2}[H_1,H_2]\Delta^2$, and verify that
+  the symmetric formula~(\ref{eq:6-strang}) cancels it.  Which commutators
+  govern the leading error of $S_2$?
+  \item[d)] Prove the Baker-Hausdorff lemma
+  $e^{-X}Ye^{X}=Y-[X,Y]+\tfrac1{2!}[X,[X,Y]]-\cdots$ and explain why the
+  corresponding series in coupled-cluster theory terminates.
+  \item[e)] Reproduce the two tables of Sections~\ref{sec:bch}
+  and~\ref{sec:trotter} with \texttt{hartreefock.py}, and estimate how many
+  Trotter steps a first- and a second-order scheme need for an accuracy
+  $\varepsilon=10^{-3}$ at $t=1$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+See Eq.~(\ref{eq:6-bchmatch}) and the discussion following it.  The essential
+observation is that $\tfrac12(X+Y)^2$ symmetrises the cross term into
+$\tfrac12(XY+YX)$, whereas $e^{X}e^{Y}$ produces $XY$ with unit weight; the
+deficit is $\tfrac12(XY-YX)$.
+
+\paragraph{Answer to b).}
+If $[X,Y]=cI$ then $[X,[X,Y]]=[Y,[X,Y]]=0$ and every term of
+Eq.~(\ref{eq:6-bch}) beyond $\tfrac12[X,Y]$ contains at least one such double
+commutator.  For $X=\imath a\hat{x}/\hbar$ and $Y=\imath b\hat{p}/\hbar$ we
+have $[X,Y]=-(ab/\hbar^2)[\hat{x},\hat{p}]=-\imath ab/\hbar$, so
+\begin{equation}
+  e^{X}e^{Y} = \exp\left(\frac{\imath}{\hbar}(a\hat{x}+b\hat{p})
+    - \frac{\imath ab}{2\hbar}\right)
+  = e^{-\imath ab/2\hbar}\,
+    e^{\imath(a\hat{x}+b\hat{p})/\hbar}.
+  \label{eq:6-exb5}
+\end{equation}
+The same argument applied to $[\hat{a},\hat{a}^{\dagger}]=1$ gives the
+normal-ordered form of the coherent-state displacement operator.
+
+\paragraph{Answer to c).}
+Setting $X=-\imath H_1\Delta$, $Y=-\imath H_2\Delta$ in
+Eq.~(\ref{eq:6-bch}), the second term is
+$\tfrac12[X,Y]=-\tfrac12[H_1,H_2]\Delta^2$, which is
+Eq.~(\ref{eq:6-trotterbch}).  For the symmetric product, write
+$S_2(\Delta)=e^{X/2}e^{Y}e^{X/2}$; applying BCH twice, the $[X,Y]$
+contributions from the two half-steps enter with opposite signs and cancel
+exactly.  What survives at the next order is a combination of
+$[H_1,[H_1,H_2]]$ and $[H_2,[H_1,H_2]]$ multiplying $\Delta^3$.  This is also
+visible from symmetry alone: $S_2(-\Delta)=S_2(\Delta)^{-1}$, so the error
+must be an odd function of $\Delta$ and cannot contain a $\Delta^2$ term.
+
+\paragraph{Answer to d).}
+Define $G(\lambda)=e^{-\lambda X}Ye^{\lambda X}$.  Then
+$G'(\lambda)=e^{-\lambda X}[Y,X]e^{\lambda X}=-e^{-\lambda X}[X,Y]
+e^{\lambda X}$, and iterating,
+$G^{(n)}(0)=(-1)^n\,\mathrm{ad}_X^n(Y)$ with
+$\mathrm{ad}_X(Y)=[X,Y]$.  Taylor-expanding about $\lambda=0$ and setting
+$\lambda=1$ gives the lemma.  In coupled-cluster theory $X=\hat{T}$ is a
+sum of excitation operators, all of which commute with one another, and
+$Y=\hat{H}$ contains at most two-body terms.  Each commutator with $\hat{T}$
+must contract at least one annihilation operator of $\hat{H}$, and $\hat{H}$
+has only four, so the series terminates exactly after the fourth commutator --
+which is why coupled cluster is a finite, not an asymptotic, expansion.
+
+\paragraph{Answer to e).}
+The tables are reproduced by \texttt{demo\_bch()} and
+\texttt{demo\_trotter()}.  Reading off the first-order column, the error is
+about $1.0/N$, so $\varepsilon=10^{-3}$ requires $N\approx10^{3}$ steps.  The
+second-order error is about $0.39/N^2$, giving $N\approx20$.  The second-order
+scheme costs about $50\%$ more exponentials per step, so it is cheaper by more
+than an order of magnitude here -- and the advantage grows as the accuracy
+demand tightens, which is why practical quantum-simulation circuits are never
+built at first order.
+
+\subsection*{Exercise 5: stability and the Lipkin model}
+\label{ex:6-stability}
+\addcontentsline{toc}{subsection}{Exercise 5: stability and the Lipkin model}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:6-cprimenorm}) for the norm of the rotated
+  determinant, keeping track of which terms are second order.
+  \item[b)] Starting from Eq.~(\ref{eq:6-energyquadratic}), obtain
+  Eq.~(\ref{eq:6-deltaE}) and the stability
+  matrix~(\ref{eq:6-stabilitymatrix}).  Why does $\chi$ contain both
+  $\delta C$ and $\delta C^{*}$?
+  \item[c)] For the Lipkin model with $W=0$, show that $A=0$ and that the
+  largest eigenvalue of $B$ is $|V|(N-1)$, and hence recover
+  Eq.~(\ref{eq:6-lipkinlowest}).
+  \item[d)] Derive the mean-field energy~(\ref{eq:6-lipkinmeanfield}) from
+  the rotation~(\ref{eq:6-lipkinrotation}), and locate both stationary
+  points.
+  \item[e)] Reproduce Table~\ref{tab:lipkinstability} and comment on the gap
+  between $E_{\mathrm{mf}}$ and $E_{\mathrm{exact}}$ on either side of
+  $\chi=1$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Expanding Eq.~(\ref{eq:6-cprimeexpansion}) and taking the overlap with
+itself, the zeroth-order term gives $1$; the cross terms between the constant
+and the linear piece vanish, since
+$\bracket{c}{\hat{a}^{\dagger}_a\hat{a}_i}{c}=0$ for $a>F\ge i$; and the
+linear piece with itself gives
+$\sum_{abij}\delta C^{*}_{ai}\delta C_{bj}\braket{\Phi_i^a}{\Phi_j^b}
+=\sum_{ai}|\delta C_{ai}|^2$ by the orthonormality of the excited
+determinants.  Terms involving the quadratic piece of the expansion are of
+third order or higher when paired with the linear one, and of fourth order
+with themselves.
+
+\paragraph{Answer to b).}
+Subtract $(1+\sum|\delta C|^2)E_0$ from Eq.~(\ref{eq:6-energyquadratic}) and
+divide by the norm; what is left over the norm is $\Delta E$.  Collecting the
+terms, those proportional to $\delta C^{*}\delta C$ assemble into
+$\chi^{\dagger}$ times the diagonal blocks $\Delta+A$, and those proportional
+to $\delta C\delta C$ and $\delta C^{*}\delta C^{*}$ into the off-diagonal
+blocks $B$ and $B^{*}$.  The doubled vector $\chi$ is needed precisely because
+the quadratic form is not Hermitian in $\delta C$ alone: the terms
+$B\,\delta C^{*}\delta C^{*}$ pair two conjugated amplitudes, and only by
+treating $\delta C$ and $\delta C^{*}$ as independent components of a single
+vector can the whole expression be written as a Hermitian form.  This doubling
+is exactly the structure of the RPA equations, where it produces the pairs of
+solutions $\pm\omega$.
+
+\paragraph{Answer to c).}
+With $W=0$ the interaction is $(V/2)(\hat{J}_+^2+\hat{J}_-^2)$, which changes
+$J_z$ by $\pm2$, so it has no matrix element within the $1p$-$1h$ space and
+$A_{ai,bj}=0$; the diagonal block is $\Delta=\varepsilon\bm{I}$, since every
+particle-hole excitation costs $\varepsilon$.  For $B$, the operator
+$\hat{J}_-^2$ connects the reference to a $2p$-$2h$ state in which levels $p$
+and $q$ are both excited, giving $B_{ai,bj}=V$ for $p\ne q$ and zero for
+$p=q$; that is, $\bm{B}=V(\bm{J}-\bm{I})$ within each spin block, with
+$\bm{J}$ the matrix of ones.  Its eigenvalues are $V(N-1)$, once, and $-V$,
+$N-1$ times.  Because $\hat{M}$ has the form
+$\left(\begin{smallmatrix}\varepsilon\bm{I} & \bm{B}\\ \bm{B} &
+\varepsilon\bm{I}\end{smallmatrix}\right)$, its eigenvalues are
+$\varepsilon\pm b$ with $b$ an eigenvalue of $\bm{B}$, and the smallest is
+$\varepsilon-|V|(N-1)=\varepsilon(1-\chi)$.
+
+\paragraph{Answer to d).}
+Under the rotation~(\ref{eq:6-lipkinrotation}) the quasispin vector rotates
+rigidly, $\langle\hat{J}_z\rangle=-\tfrac{N}{2}\cos\alpha$ and
+$\langle\hat{J}_x\rangle=\tfrac{N}{2}\sin\alpha$.  The one-body term gives
+$-\tfrac{N\varepsilon}{2}\cos\alpha$ directly.  For the interaction,
+$\hat{J}_+^2+\hat{J}_-^2=2(\hat{J}_x^2-\hat{J}_y^2)$, and evaluating this in
+the rotated determinant -- where the $N$ particles are uncorrelated, so that
+$\langle\hat{J}_x^2\rangle=\langle\hat{J}_x\rangle^2+\bigO(N)$ -- gives
+$-\tfrac{N\varepsilon\chi}{4}\sin^2\alpha$ with
+$\chi=|V|(N-1)/\varepsilon$, the factor $N-1$ rather than $N$ arising because
+a particle does not interact with itself.  Setting the
+derivative~(\ref{eq:6-lipkinderivative}) to zero gives $\sin\alpha=0$ or
+$\cos\alpha=1/\chi$, the second having a solution only when $\chi\ge1$.
+
+\paragraph{Answer to e).}
+The table is produced by \texttt{demo\_stability()}.  Below $\chi=1$ the
+mean-field energy is flat at $-N\varepsilon/2=-2$ while the exact energy falls
+steadily, so the error grows: the mean field is stable but increasingly
+inadequate, and the missing energy is pure correlation.  At $\chi=1.5$ and
+$2.0$ the deformed solution recovers part of it -- $0.167$ and $0.5$
+respectively -- but remains $0.48$ and $0.56$ above the exact answer.  The
+deformed state breaks the symmetry of $\hat{H}$ under the rotation generated
+by $\hat{J}_z$ parity, which the exact ground state respects, so part of the
+remaining error is spurious and would be removed by projecting the broken
+symmetry back out.
+
+\subsection*{Exercise 6: the electron gas}
+\label{ex:6-electrongas}
+\addcontentsline{toc}{subsection}{Exercise 6: the electron gas}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:6-Vmomentum}) for a general interaction
+  $v(r)$, and specialise it to the screened Coulomb interaction.
+  \item[b)] Show that $\hat{H}_b$ and $\hat{H}_{\mathrm{el}-b}$ take the
+  forms~(\ref{eq:6-divergences}), and that together with the direct term of
+  the electron-electron repulsion they cancel in the thermodynamic limit.
+  \item[c)] Carry out the steps from Eq.~(\ref{eq:6-egsp}) to
+  Eq.~(\ref{eq:6-egspclosed}).
+  \item[d)] Compute the Hartree-Fock effective mass $m^{*}_{\mathrm{HF}}$ and
+  the level density $n(\varepsilon_F^{\mathrm{HF}})$, and comment on the
+  result.
+  \item[e)] Show that the energy per electron is
+  Eq.~(\ref{eq:6-egenergy}), plot it, and explain why the system is bound.
+  Compute the pressure $P=-(\partial E/\partial\Omega)_N$ and the bulk
+  modulus $B=-\Omega(\partial P/\partial\Omega)_N$, and comment.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+See Eqs.~(\ref{eq:6-planewaveme})--(\ref{eq:6-Vmomentum}).  For the screened
+Coulomb interaction the Fourier transform is
+\begin{equation}
+  \int \frac{e^2e^{-\mu r}}{r}e^{-\imath\bm{q}\cdot\bm{r}}\ud{\bm{r}}
+  = \frac{4\pi e^2}{\mu^2+q^2}
+  \ \xrightarrow[\mu\to0]{}\ \frac{4\pi e^2}{q^2},
+  \label{eq:6-exa6}
+\end{equation}
+which is Eq.~(\ref{eq:6-egstep2}) again.  The $q^{-2}$ divergence at small
+momentum transfer is the signature of the infinite range of the interaction,
+and it is the source of every difficulty in this section.
+
+\paragraph{Answer to b).}
+Both are elementary integrals of $e^{-\mu r}/r$ over the box with a constant
+density $n=N/\Omega$: $\int \ud{\bm{r}}\,e^{-\mu r}/r=4\pi/\mu^2$, whence
+$\hat{H}_b=\tfrac{e^2}{2}n^2\Omega\cdot 4\pi/\mu^2
+=\tfrac{e^2}{2}\tfrac{N^2}{\Omega}\tfrac{4\pi}{\mu^2}$ and
+$\hat{H}_{\mathrm{el}-b}=-e^2\tfrac{N^2}{\Omega}\tfrac{4\pi}{\mu^2}$, twice as
+large and of opposite sign.  The direct term of
+Eq.~(\ref{eq:6-egpotential}) is $\tfrac{N^2}{2\Omega}\int v(r)\ud{\bm{r}}
+=\tfrac{e^2}{2}\tfrac{N^2}{\Omega}\tfrac{4\pi}{\mu^2}$, and the three sum to
+zero.  Physically: a neutral system has no monopole, so the $\bm{q}=0$
+component of the interaction must drop out, and it is only the separation into
+three individually divergent pieces that made the cancellation look accidental.
+
+\paragraph{Answer to c).}
+See Eqs.~(\ref{eq:6-egstep1})--(\ref{eq:6-egstep4}).  The last integral is
+\begin{equation}
+  \int_0^{k_F}p\ln\left\vert\frac{p+k}{p-k}\right\vert\ud{p}
+  = kk_F + \frac{k_F^2-k^2}{2}
+    \ln\left\vert\frac{k+k_F}{k-k_F}\right\vert ,
+  \label{eq:6-exc6}
+\end{equation}
+which may be checked by differentiating with respect to $k_F$, or numerically.
+
+\paragraph{Answer to d).}
+Differentiating Eq.~(\ref{eq:6-egdimensionless}),
+\begin{equation}
+  \frac{m^{*}_{\mathrm{HF}}}{m}
+  = \frac{2}{2-0.663\,r_s\,F'(1)},
+  \qquad
+  F'(x) \sim -\frac{1}{2}\ln\left\vert\frac{2}{1-x}\right\vert
+  \ \ \text{as } x\to1 .
+  \label{eq:6-exd6}
+\end{equation}
+Since $F'(1)=-\infty$, the denominator diverges and
+$m^{*}_{\mathrm{HF}}\to0$; the program gives $0.256$, $0.185$, $0.144$,
+$0.118$ and $0.100$ at $1-x=10^{-2},\dots,10^{-6}$, decreasing like the
+reciprocal logarithm.  By Eq.~(\ref{eq:6-leveldensity}) the level density is
+proportional to $m^{*}$ and therefore vanishes at the Fermi surface.  This
+contradicts experiment: the electronic specific heat of a metal is linear in
+$T$ with a coefficient proportional to $n(\varepsilon_F)$, and it is measured
+to be finite.  The failure is traceable to the unscreened $1/q^2$, and it is
+repaired by the random-phase approximation, which replaces it by a screened
+interaction with a finite range.
+
+\paragraph{Answer to e).}
+The kinetic term is Eq.~(\ref{eq:6-egkineticdensity}); writing
+$k_F=(9\pi/4)^{1/3}/r_0$ and measuring in Rydberg,
+\begin{equation}
+  \frac{\langle\hat{T}\rangle}{N}
+  = \frac{3}{5}\frac{\hbar^2k_F^2}{2m}
+  = \frac{e^2}{2a_0}\,\frac{3}{5}
+    \left(\frac{9\pi}{4}\right)^{2/3}\frac{1}{r_s^2}
+  = \frac{e^2}{2a_0}\frac{2.21}{r_s^2},
+  \label{eq:6-exe6}
+\end{equation}
+and the exchange term evaluates similarly to $-0.916/r_s$ in the same units.
+The system is bound because the two terms carry opposite signs and different
+powers of $r_s$: the kinetic repulsion, $\propto r_s^{-2}$, dominates at high
+density and the exchange attraction, $\propto r_s^{-1}$, at low density, so
+their sum has a minimum, at $r_s=4.83$ with $E_0/N=-0.0949$~Ry.  For the
+pressure, with $\Omega\propto Nr_0^3$ so that
+$\partial/\partial\Omega=-(r_s/3\Omega)\,\partial/\partial r_s$,
+\begin{equation}
+  P = -\left(\frac{\partial E}{\partial\Omega}\right)_N
+    = \frac{\rho\,r_s}{3}\frac{\ud{}}{\ud{r_s}}
+      \left(\frac{E_0}{N}\right)
+    = \frac{e^2\rho}{2a_0}\frac{1}{3}
+      \left[-\frac{4.42}{r_s^2}+\frac{0.916}{r_s}\right],
+  \label{eq:6-exe7}
+\end{equation}
+which vanishes exactly at the equilibrium $r_s$, as it must, is negative
+(the gas would contract) at higher density and positive at lower.  The bulk
+modulus $B=-\Omega(\partial P/\partial\Omega)_N$ is positive at the minimum,
+confirming mechanical stability, and its measured values in the alkali metals
+are of the right order but consistently smaller than the Hartree-Fock
+prediction -- correlation softens the gas.

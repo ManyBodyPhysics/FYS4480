@@ -19,9 +19,11 @@ chapter4.tex       Physical systems and models: Lipkin, pairing,
                    Fermi-Hubbard, Calogero-Sutherland
 chapter5.tex       Full configuration interaction: the CI expansion, the
                    eigenvalue problem, the exponential wall, truncations
+chapter6.tex       Mean-field approaches: Hartree-Fock, Thouless' theorem,
+                   BCH and Trotter, stability, the infinite electron gas
 add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
 calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  combinatorial.tex
-FYS4480*.pdf
+week40.do.txt  pmm.tex  FYS4480*.pdf
                    staging files and handwritten notes, merged into the
                    chapters above; not included by book.tex
 variationalmc.tex  Variational Monte Carlo
@@ -50,7 +52,7 @@ The build is clean: no errors, no undefined references or citations.
 2. Most `\part`s in `book.tex` have their `\input` lines commented out —
    work in progress.
 3. `book.tex` loads `pstricks` and `[dvips]{epsfig}`, though nothing in
-   chapters 1–5 uses them. Dropping them would allow a plain `pdflatex` route.
+   chapters 1–6 uses them. Dropping them would allow a plain `pdflatex` route.
 
 ## LaTeX conventions
 
@@ -67,11 +69,16 @@ The build is clean: no errors, no undefined references or citations.
 - Equations: numbered `equation` environments with labels in the pattern
   `\label{eq:2-1a}` (chapter number, running index, letter suffix). Reference
   as `Eq.~(\ref{eq:2-1a})`.
-- All five chapters use numbered `\section{...}`. Chapters 1--3 end with an
+- All six chapters use numbered `\section{...}`. Chapters 1--3 end with an
   `Exercises` section containing warm-up exercises followed by the weekly
-  FYS4480 sessions and their answers; chapters 4 and 5 relegate the long
+  FYS4480 sessions and their answers; chapters 4--6 relegate the long
   derivations to their exercises, each with a worked solution written as
   `\subsection*{Exercise N: title}` followed by `\paragraph{Answer to a).}`.
+- `\Det{...}` expands to `{|\bfv{#1}|}`, so it takes a *matrix symbol*, not an
+  arbitrary expression — `\Det{\bm{A}}` is fine, `\Det{\sum_k c_k b_{jk}}`
+  breaks. Use `\det(...)` for expressions. `\bra`/`\ket` are not defined;
+  use `\bbra`/`\bket`, `\braket{}{}` and `\bracket{}{}{}`.
+- svmono provides `theorem`, used in chapter 6 for Thouless' theorem.
 - `book.tex` also defines `\wmark`, `\wline`, `\wlineb` and `\wstrut` for the
   Wick contraction lines of Chapter 3, and a `notebox` environment for the
   many-body and quantum-computing connection boxes.
@@ -99,7 +106,9 @@ nearest existing week rather than inventing one. Each file is standalone.
 
 Recurring model systems across the weeks: the **Lipkin model**, the **pairing
 model**, the **electron gas** (`electrongas.tex`), and simple harmonic-oscillator
-systems.
+systems. `week40.do.txt` (Hartree-Fock, Thouless, stability, the electron gas)
+was merged into `chapter6.tex`, together with the BCH/Trotter material from
+`pmm.tex`.
 
 ## Jupyter-book target
 
@@ -108,7 +117,8 @@ markdown front matter (`intro.md`, `teachers.md`, `textbooks.md`) and chapter
 notebooks. `linearalgebra.ipynb` is the companion to `chapter1.tex` and
 `manybodybasics.ipynb` to `chapter2.tex`, `wicktheorem.ipynb` to the Wick
 sections of `chapter3.tex`, and `models.ipynb` plus `Hubbard.ipynb` to
-`chapter4.tex` and `fullci.ipynb` to `chapter5.tex`; the older set is `notation.ipynb`,
+`chapter4.tex`, `fullci.ipynb` to `chapter5.tex` and `hartreefock.ipynb` to
+`chapter6.tex`; the older set is `notation.ipynb`,
 `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
 `vmcdmc.ipynb`, … New book material that includes runnable code should have a
 notebook counterpart, and new notebooks must be registered in `_toc.yml`.
@@ -140,8 +150,12 @@ written for chapters 1 and 2 are:
 | `wick.py` | 3 | Vacuum expectation values by anticommutation and by Wick contractions |
 | `models.py` | 4 | Lipkin, pairing, Hubbard and Calogero: matrices, spectra, exact limits |
 | `fci.py` | 5 | Determinants as bit strings, pairing and Hubbard FCI, truncations, size consistency, Hilbert-space growth |
+| `hartreefock.py` | 6 | SCF with the density matrix, Thouless rotations, the stability matrix, BCH and Trotter errors, the electron gas |
 
-Every number quoted in chapters 1–5 comes from one of these; each file runs
+All of these run on `numpy` alone except `hartreefock.py`, which also needs
+`scipy.linalg` for `expm`/`logm`; the notebooks additionally use `matplotlib`.
+
+Every number quoted in chapters 1–6 comes from one of these; each file runs
 as a script and prints the tables that appear in the text. **If you change a
 program, re-run it and update the corresponding table.** The older programs
 `CCD_PairingModel.py`, `NeutronMatterCCD_Ladders.py`, `ucc.py`, `ho1dim.py` and
