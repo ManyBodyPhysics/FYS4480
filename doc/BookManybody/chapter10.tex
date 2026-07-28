@@ -1,5 +1,1370 @@
-
-
-1;95;0c\chapter{Coupled cluster theory}
+\chapter{Coupled cluster theory}
 \label{chap:cctheory}
 %=============================================================================
+
+Three defects have followed us through the last five chapters.  Truncated
+configuration interaction, Section~\ref{sec:sizeconsistency}, is variational
+but not size consistent, so it becomes useless for large systems.
+Perturbation theory, Chapter~\ref{chap:mbpt}, is size extensive but not
+variational, and its series need not converge.  The random-phase
+approximation, Chapter~\ref{chap:mfapplications}, sums one class of
+contributions to all orders but collapses when the mean field goes unstable.
+
+Coupled-cluster theory repairs the first two at once.  It is size extensive
+by construction, it sums infinite classes of contributions, it is
+systematically improvable by raising the excitation rank, and its cost grows
+as a modest power of the basis size rather than exponentially.  It is not
+variational -- that is the price -- but in practice this matters far less than
+one might fear.  It is, by a wide margin, the most successful many-body method
+in use: nuclei up to lead have been computed with it, and in quantum chemistry
+it is the standard against which everything else is measured.
+
+The idea is a single change of ansatz.  Where configuration interaction writes
+$\bket{\Psi}=(1+\hat{C})\bket{\Phi_0}$, coupled cluster writes
+$\bket{\Psi}=e^{\hat{T}}\bket{\Phi_0}$.  Everything follows from that
+exponential, and this chapter follows it through: the similarity-transformed
+Hamiltonian, the reason its expansion terminates exactly, the projected
+equations, and then full derivations of the doubles and the singles-and-doubles
+amplitude equations.  We work algebraically throughout, as in
+Chapter~\ref{chap:mbpt}; the diagrammatic language is a separate subject.  The
+pairing model of Section~\ref{sec:pairingmodel} serves as the worked example,
+and we compare against every method the book has developed.
+
+%----------------------------------------------------------------------
+\section{The exponential ansatz}
+\label{sec:exponentialansatz}
+
+\index{coupled cluster!ansatz}\index{cluster operator}
+We start, as always, from a reference determinant
+\begin{equation}
+  \bket{\Phi_0} = \prod_{i\le F}\hat{a}^{\dagger}_i\bket{0},
+  \label{eq:10-reference}
+\end{equation}
+usually but not necessarily the Hartree-Fock state of
+Chapter~\ref{chap:hartrefock}.  The exact state is written
+\begin{equation}
+  \boxed{\;
+  \bket{\Psi} = e^{\hat{T}}\bket{\Phi_0},
+  \;}
+  \label{eq:10-ansatz}
+\end{equation}
+with the \emph{cluster operator}
+\begin{equation}
+  \hat{T} = \hat{T}_1 + \hat{T}_2 + \cdots + \hat{T}_N,
+  \label{eq:10-clusteroperator}
+\end{equation}
+\begin{align}
+  \hat{T}_1 &= \sum_{ia}t_i^a\,\hat{a}^{\dagger}_a\hat{a}_i,
+  \label{eq:10-T1}\\
+  \hat{T}_2 &= \frac{1}{4}\sum_{ijab}t_{ij}^{ab}\,
+    \hat{a}^{\dagger}_a\hat{a}^{\dagger}_b\hat{a}_j\hat{a}_i,
+  \label{eq:10-T2}\\
+  \hat{T}_3 &= \frac{1}{36}\sum_{ijkabc}t_{ijk}^{abc}\,
+    \hat{a}^{\dagger}_a\hat{a}^{\dagger}_b\hat{a}^{\dagger}_c
+    \hat{a}_k\hat{a}_j\hat{a}_i,
+  \label{eq:10-T3}
+\end{align}
+and so on.  The factors $1/4$ and $1/36$ compensate the repeated counting of
+antisymmetric index pairs, $(2!)^2$ and $(3!)^2$.  The amplitudes are
+antisymmetric under interchange of the occupied or of the virtual indices.
+
+Two features of $\hat{T}$ decide everything that follows.
+
+\paragraph{The cluster operators commute.}
+Every term of $\hat{T}$ consists of particle creation and hole annihilation
+operators only -- $\hat{a}^{\dagger}_a$ with $a>F$ and $\hat{a}_i$ with
+$i\le F$ -- and never the reverse.  The same argument as in
+Eq.~(\ref{eq:6-phcommute}) therefore gives
+\begin{equation}
+  \left[\hat{T}_m,\hat{T}_n\right] = 0
+  \label{eq:10-Tcommute}
+\end{equation}
+for all $m,n$.  This is what makes the exponential tractable.
+
+\paragraph{Excitations cannot be undone.}
+Because $\hat{T}$ only excites, $\hat{T}^{n}$ produces at least $n$
+particle-hole pairs, and acting on a state with $N$ particles it must vanish
+for large enough $n$.  The exponential is therefore a finite sum in any given
+matrix element.
+
+\paragraph{Why exponentiate at all?}
+Expanding Eq.~(\ref{eq:10-ansatz}),
+\begin{equation}
+  e^{\hat{T}} = 1 + \hat{T}_1 + \left(\hat{T}_2
+    + \tfrac12\hat{T}_1^2\right)
+    + \left(\hat{T}_3 + \hat{T}_1\hat{T}_2
+      + \tfrac16\hat{T}_1^3\right) + \cdots,
+  \label{eq:10-expansion}
+\end{equation}
+we see that the coefficient of a $2p$-$2h$ determinant is
+$t_{ij}^{ab}+t_i^at_j^b-t_i^bt_j^a$, and so on.  Comparing with the
+configuration-interaction expansion
+$\bket{\Psi}=(1+\hat{C}_1+\hat{C}_2+\cdots)\bket{\Phi_0}$ of
+Eq.~(\ref{eq:5-ciexpansion}), the two are related by
+\begin{equation}
+  \hat{C}_1 = \hat{T}_1,
+  \qquad
+  \hat{C}_2 = \hat{T}_2 + \tfrac12\hat{T}_1^2,
+  \qquad
+  \hat{C}_3 = \hat{T}_3 + \hat{T}_1\hat{T}_2 + \tfrac16\hat{T}_1^3,
+  \label{eq:10-CtoT}
+\end{equation}
+and so forth.  The exponential does not add anything the linear expansion
+cannot represent; the two are equivalent if both are complete.  What it does
+is \emph{reorganise}: the high-rank coefficients are built from products of
+low-rank ones rather than treated as independent.  When $\hat{T}$ is
+truncated, that reorganisation is exactly what survives.
+
+This is the point.  Truncating $\hat{C}$ at doubles discards the quadruple
+excitations entirely, and Section~\ref{sec:sizeconsistency} showed that this
+destroys size consistency because a product of two doubles on separate
+subsystems \emph{is} a quadruple.  Truncating $\hat{T}$ at doubles keeps that
+quadruple, as $\tfrac12\hat{T}_2^2$, with its amplitude fixed by the doubles
+rather than free.  Nothing else needs to be said: the disease of
+Chapter~\ref{chap:fci} is cured by construction.
+
+%----------------------------------------------------------------------
+\section{The similarity-transformed Hamiltonian}
+\label{sec:similaritytransform}
+
+\index{similarity transformation}
+Insert Eq.~(\ref{eq:10-ansatz}) into the Schr\"odinger equation
+$\hat{H}\bket{\Psi}=E\bket{\Psi}$ and multiply from the left by
+$e^{-\hat{T}}$:
+\begin{equation}
+  \boxed{\;
+  \overline{H}\bket{\Phi_0} = E\bket{\Phi_0},
+  \qquad
+  \overline{H} \equiv e^{-\hat{T}}\hat{H}e^{\hat{T}} .
+  \;}
+  \label{eq:10-transformed}
+\end{equation}
+This is worth pausing on.  A similarity transformation does not change the
+spectrum -- if $\hat{H}\bket{E}=E\bket{E}$ then
+$\overline{H}\,e^{-\hat{T}}\bket{E}=E\,e^{-\hat{T}}\bket{E}$ -- so
+$\overline{H}$ has exactly the same eigenvalues as $\hat{H}$.  What the
+transformation does is move the correlation out of the wave function and into
+the operator.  Coupled cluster is the search for a transformation that makes
+the \emph{uncorrelated} reference an exact eigenstate.
+
+Because $e^{\hat{T}}$ is not unitary -- $\hat{T}$ is not anti-Hermitian --
+$\overline{H}$ is not Hermitian.  That is a genuine cost: left and right
+eigenvectors differ, and expectation values require both.  It also brings a
+large benefit, as we are about to see.
+
+Normal-ordering with respect to the reference, Section~\ref{sec:normalordering},
+splits the Hamiltonian as $\hat{H}=E_{\mathrm{ref}}+\hat{H}_N$ with
+\begin{equation}
+  \hat{H}_N = \sum_{pq}f_{pq}\left\{\hat{a}^{\dagger}_p\hat{a}_q\right\}
+    + \frac{1}{4}\sum_{pqrs}\langle pq\Vert rs\rangle
+      \left\{\hat{a}^{\dagger}_p\hat{a}^{\dagger}_q
+        \hat{a}_s\hat{a}_r\right\},
+  \label{eq:10-HN}
+\end{equation}
+where $f_{pq}$ is the Fock matrix of Eq.~(\ref{eq:6-fockmatrix}) and
+$\langle pq\Vert rs\rangle$ the antisymmetrised two-body element.  Since
+$E_{\mathrm{ref}}$ is a number it commutes with $\hat{T}$, so
+\begin{equation}
+  \overline{H} = E_{\mathrm{ref}} + \overline{H}_N,
+  \qquad
+  \overline{H}_N = e^{-\hat{T}}\hat{H}_Ne^{\hat{T}},
+  \label{eq:10-HbarN}
+\end{equation}
+and Eq.~(\ref{eq:10-transformed}) becomes
+$\overline{H}_N\bket{\Phi_0}=\Delta E\bket{\Phi_0}$ with
+$\Delta E=E-E_{\mathrm{ref}}$ the correlation energy.
+
+%----------------------------------------------------------------------
+\section{Why the expansion terminates}
+\label{sec:termination}
+
+\index{Baker-Campbell-Hausdorff formula!in coupled cluster}
+The Baker-Hausdorff lemma of Exercise~\ref{ex:6-bch}d) gives
+\begin{equation}
+  \overline{H}_N = \hat{H}_N + \left[\hat{H}_N,\hat{T}\right]
+    + \frac{1}{2!}\left[\left[\hat{H}_N,\hat{T}\right],\hat{T}\right]
+    + \frac{1}{3!}\left[\left[\left[\hat{H}_N,\hat{T}\right],
+      \hat{T}\right],\hat{T}\right] + \cdots
+  \label{eq:10-bch}
+\end{equation}
+For a general operator this is an infinite series.  Here it is not, and the
+reason is Eq.~(\ref{eq:10-Tcommute}).
+
+Because the cluster operators commute with one another, no commutator in
+Eq.~(\ref{eq:10-bch}) can be non-zero by a $\hat{T}$ acting on another
+$\hat{T}$: every $\hat{T}$ must contract with $\hat{H}_N$ directly.  In the
+language of Section~\ref{sec:contractions}, each $\hat{T}$ must be
+\emph{connected} to $\hat{H}_N$.  But $\hat{H}_N$ contains at most four
+operators that can be contracted -- two annihilation operators and two
+creation operators in its two-body part -- so at most four cluster operators
+can attach to it.  Hence
+\begin{equation}
+  \boxed{\;
+  \overline{H}_N = \hat{H}_N + \left[\hat{H}_N,\hat{T}\right]
+    + \frac{1}{2!}\left[\left[\hat{H}_N,\hat{T}\right],\hat{T}\right]
+    + \frac{1}{3!}\left[\cdots\right]
+    + \frac{1}{4!}\left[\cdots\right],
+  \;}
+  \label{eq:10-bchfinite}
+\end{equation}
+and the series stops \emph{exactly} at the fourfold commutator.  Every term
+is connected, which is why one writes $\overline{H}_N=(\hat{H}_Ne^{\hat{T}})_c$
+with the subscript denoting connected terms only.
+
+This is the technical heart of the method, and it is worth appreciating what
+has been bought.  The non-Hermiticity of $\overline{H}_N$, which looked like
+a defect, is precisely what makes the expansion finite: a unitary
+transformation with anti-Hermitian $\hat{T}$ would contain de-excitation
+operators, those would not commute among themselves, and the series would
+never terminate.  Unitary coupled-cluster theory, which we meet again in the
+quantum-computing chapters, pays exactly that price.
+
+%----------------------------------------------------------------------
+\section{The coupled-cluster equations}
+\label{sec:ccequations}
+
+Equation~(\ref{eq:10-transformed}) says $\bket{\Phi_0}$ is an eigenstate of
+$\overline{H}$.  Projecting it onto the reference and onto each excited
+determinant turns that statement into a computable set of conditions:
+\begin{align}
+  \Delta E &= \bracket{\Phi_0}{\overline{H}_N}{\Phi_0},
+  \label{eq:10-energyeq}\\
+  0 &= \bracket{\Phi_i^a}{\overline{H}_N}{\Phi_0},
+  \label{eq:10-singleseq}\\
+  0 &= \bracket{\Phi_{ij}^{ab}}{\overline{H}_N}{\Phi_0},
+  \label{eq:10-doubleseq}
+\end{align}
+and so on up the excitation ladder.  The first line gives the energy once the
+amplitudes are known; the rest determine them.
+
+Read physically, Eqs.~(\ref{eq:10-singleseq}) and~(\ref{eq:10-doubleseq}) say
+that the similarity-transformed Hamiltonian has \emph{no} matrix elements
+connecting the reference to $1p$-$1h$ or $2p$-$2h$ states.  The reference has
+been decoupled from the simple excitations.  It has not been decoupled from
+everything: with $\hat{T}=\hat{T}_1+\hat{T}_2$, the operator $\overline{H}_N$
+still connects $\bket{\Phi_0}$ to $3p$-$3h$ and $4p$-$4h$ states, and that
+residual coupling is the entire error of CCSD.
+
+\begin{notebox}
+\textbf{Why is CCD not exact?}  A similarity transformation preserves all
+eigenvalues, so one might expect the transformed problem to be exactly
+soluble.  The resolution is that we are not solving the transformed problem
+exactly either.  With $\hat{T}=\hat{T}_2$ the full $\overline{H}_N$ contains
+up to six-body terms -- $\hat{H}_N$ has four contractible operators, and each
+$\hat{T}_2$ adds two more -- and it is that full operator which would
+reproduce the exact energy.  What we impose is only that the $2p$-$2h$ block
+of $\overline{H}_N$ vanishes.  Coupled cluster at any finite truncation is
+therefore a similarity transformation \emph{plus} a projection, and the
+projection is where the approximation lives.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The correlation energy}
+\label{sec:ccenergy}
+
+Evaluating Eq.~(\ref{eq:10-energyeq}) is the easiest part of the calculation.
+Only terms of $\overline{H}_N$ that de-excite by exactly the amount
+$\hat{T}$ excites can contribute, so at most two cluster operators can
+attach, and
+\begin{equation}
+  \Delta E = \bracket{\Phi_0}{\hat{H}_N\left(1+\hat{T}_1+\hat{T}_2
+    +\tfrac12\hat{T}_1^2\right)}{\Phi_0}_c .
+  \label{eq:10-energyterms}
+\end{equation}
+The one-body part of $\hat{H}_N$ contracts with $\hat{T}_1$, the two-body part
+with $\hat{T}_2$ and with $\tfrac12\hat{T}_1^2$, and nothing else survives:
+\begin{equation}
+  \boxed{\;
+  \Delta E = \sum_{ia}f_{ia}\,t_i^a
+    + \frac{1}{4}\sum_{ijab}\langle ij\Vert ab\rangle\,t_{ij}^{ab}
+    + \frac{1}{2}\sum_{ijab}\langle ij\Vert ab\rangle\,t_i^at_j^b .
+  \;}
+  \label{eq:10-ccsdenergy}
+\end{equation}
+In a Hartree-Fock basis $f_{ia}=0$ by Brillouin's theorem,
+Eq.~(\ref{eq:6-brillouin}), and the first term disappears.  The singles then
+enter the energy only through the last term, quadratically -- which is why
+CCSD energies are often close to CCD energies even when the singles
+amplitudes are not small.
+
+Notice also that Eq.~(\ref{eq:10-ccsdenergy}) has exactly the form of the
+configuration-interaction correlation energy, Eq.~(\ref{eq:9-fciDE}), with
+$C_{ij}^{ab}$ replaced by $t_{ij}^{ab}+t_i^at_j^b-t_i^bt_j^a$.  That
+combination will appear so often that it is given a name,
+\begin{equation}
+  \tau_{ij}^{ab} = t_{ij}^{ab} + t_i^at_j^b - t_i^bt_j^a,
+  \label{eq:10-tau}
+\end{equation}
+and its half-weighted cousin
+\begin{equation}
+  \tilde{\tau}_{ij}^{ab} = t_{ij}^{ab}
+    + \tfrac12\left(t_i^at_j^b - t_i^bt_j^a\right).
+  \label{eq:10-tautilde}
+\end{equation}
+
+%----------------------------------------------------------------------
+\section{Deriving the CCD equations}
+\label{sec:ccdderivation}
+
+\index{coupled cluster!doubles}
+We derive the doubles equation first, with $\hat{T}=\hat{T}_2$ alone.  This is
+the \emph{coupled-cluster doubles} approximation, and it is exact for any
+system whose interaction cannot produce a $1p$-$1h$ excitation -- the pairing
+model, nuclear matter on a momentum grid -- and the leading approximation in
+a Hartree-Fock basis for everything else.
+
+The equation to satisfy is
+$\bracket{\Phi_{ij}^{ab}}{\overline{H}_N}{\Phi_0}=0$ with
+\begin{equation}
+  \overline{H}_N = \left(\hat{H}_N e^{\hat{T}_2}\right)_c
+   = \left(\hat{H}_N\left[1+\hat{T}_2
+     + \tfrac12\hat{T}_2^2\right]\right)_c .
+  \label{eq:10-ccdexpansion}
+\end{equation}
+The series stops at $\hat{T}_2^2$: a third $\hat{T}_2$ would need two more
+contractible operators in $\hat{H}_N$ than it has, once the two free particle
+and two free hole lines of the $2p$-$2h$ projection are accounted for.
+
+We take the three terms in turn.  Throughout we use the permutation
+operators
+\begin{equation}
+  P(ij)X_{ij} = X_{ij}-X_{ji},
+  \qquad
+  P(ab)X^{ab} = X^{ab}-X^{ba},
+  \label{eq:10-permutation}
+\end{equation}
+and their product
+$P(ij)P(ab)X_{ij}^{ab}=X_{ij}^{ab}-X_{ji}^{ab}-X_{ij}^{ba}+X_{ji}^{ba}$,
+which enforce the antisymmetry of the amplitudes under interchange of the
+two occupied or the two virtual labels.  Repeated indices are summed.
+
+\paragraph{No cluster operator.}
+$\bracket{\Phi_{ij}^{ab}}{\hat{H}_N}{\Phi_0}$ is the Condon-Slater matrix
+element between the reference and a double excitation,
+Section~\ref{sec:wickapps}, which is simply
+\begin{equation}
+  \langle ab\Vert ij\rangle .
+  \label{eq:10-ccd0}
+\end{equation}
+This is the driving term: without it all amplitudes would vanish.
+
+\paragraph{One cluster operator.}
+$\bracket{\Phi_{ij}^{ab}}{\left(\hat{H}_N\hat{T}_2\right)_c}{\Phi_0}$
+requires all four external lines of the projection to be accounted for, with
+$\hat{T}_2$ supplying two particle and two hole lines and $\hat{H}_N$
+connecting to the rest.  Enumerating the ways to contract, the one-body part
+of $\hat{H}_N$ can attach to a particle line or to a hole line,
+\begin{equation}
+  P(ab)\sum_c f_{bc}\,t_{ij}^{ac}
+  - P(ij)\sum_k f_{kj}\,t_{ik}^{ab},
+  \label{eq:10-ccd1a}
+\end{equation}
+and the two-body part in three distinct ways -- both particle lines, both hole
+lines, or one of each:
+\begin{equation}
+  \frac{1}{2}\sum_{cd}\langle ab\Vert cd\rangle\,t_{ij}^{cd}
+  + \frac{1}{2}\sum_{kl}\langle kl\Vert ij\rangle\,t_{kl}^{ab}
+  + P(ij)P(ab)\sum_{kc}\langle kb\Vert cj\rangle\,t_{ik}^{ac}.
+  \label{eq:10-ccd1b}
+\end{equation}
+These three are the \emph{particle-particle ladder}, the \emph{hole-hole
+ladder} and the \emph{ring} term.  The factors $\tfrac12$ compensate the
+double counting of the two equivalent contractions in each ladder; the ring
+has no such factor because the two lines are inequivalent, and instead
+carries the full permutation $P(ij)P(ab)$.
+
+\paragraph{Two cluster operators.}
+$\tfrac12\bracket{\Phi_{ij}^{ab}}{\left(\hat{H}_N\hat{T}_2^2\right)_c}
+{\Phi_0}$ needs both $\hat{T}_2$ connected to $\hat{H}_N$, which forces the
+two-body part and uses all four of its contractible operators.  Only
+$\langle kl\Vert cd\rangle$ with two hole and two particle indices can do
+this.  There are four distinct topologies, according to how the four
+contractions are distributed between the two amplitudes:
+\begin{align}
+  &+\frac{1}{4}\sum_{klcd}\langle kl\Vert cd\rangle\,
+     t_{ij}^{cd}\,t_{kl}^{ab}
+  \nonumber\\
+  &+ P(ij)P(ab)\,\frac{1}{2}\sum_{klcd}\langle kl\Vert cd\rangle\,
+     t_{ik}^{ac}\,t_{jl}^{bd}
+  \nonumber\\
+  &- P(ij)\,\frac{1}{2}\sum_{klcd}\langle kl\Vert cd\rangle\,
+     t_{ik}^{cd}\,t_{lj}^{ab}
+  \nonumber\\
+  &- P(ab)\,\frac{1}{2}\sum_{klcd}\langle kl\Vert cd\rangle\,
+     t_{kl}^{ac}\,t_{ij}^{db}.
+  \label{eq:10-ccd2}
+\end{align}
+The first is the product of a hole-hole and a particle-particle ladder; the
+second is a ring on each side; the third and fourth attach both indices of
+one amplitude to the interaction and leave the other amplitude as a spectator.
+
+\paragraph{The result.}
+Collecting Eqs.~(\ref{eq:10-ccd0})--(\ref{eq:10-ccd2}) and writing the
+diagonal Fock elements on the left, the CCD amplitude equation is
+\begin{align}
+  D_{ij}^{ab}\,t_{ij}^{ab}
+  &= \langle ab\Vert ij\rangle
+   + P(ab)\sum_c f_{bc}^{\,\prime}\,t_{ij}^{ac}
+   - P(ij)\sum_k f_{kj}^{\,\prime}\,t_{ik}^{ab}
+  \nonumber\\
+  &\quad
+   + \frac{1}{2}\sum_{cd}\langle ab\Vert cd\rangle\,t_{ij}^{cd}
+   + \frac{1}{2}\sum_{kl}\langle kl\Vert ij\rangle\,t_{kl}^{ab}
+   + P(ij)P(ab)\sum_{kc}\langle kb\Vert cj\rangle\,t_{ik}^{ac}
+  \nonumber\\
+  &\quad
+   + \frac{1}{4}\sum_{klcd}\langle kl\Vert cd\rangle\,t_{ij}^{cd}t_{kl}^{ab}
+   + \frac{1}{2}P(ij)P(ab)\sum_{klcd}\langle kl\Vert cd\rangle\,
+     t_{ik}^{ac}t_{jl}^{bd}
+  \nonumber\\
+  &\quad
+   - \frac{1}{2}P(ij)\sum_{klcd}\langle kl\Vert cd\rangle\,
+     t_{ik}^{cd}t_{lj}^{ab}
+   - \frac{1}{2}P(ab)\sum_{klcd}\langle kl\Vert cd\rangle\,
+     t_{kl}^{ac}t_{ij}^{db},
+  \label{eq:10-ccd}
+\end{align}
+with the energy denominator
+\begin{equation}
+  D_{ij}^{ab} = f_{ii}+f_{jj}-f_{aa}-f_{bb}
+   = \varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b
+  \label{eq:10-denominator}
+\end{equation}
+and $f'$ the off-diagonal part of the Fock matrix, which vanishes in a
+canonical Hartree-Fock basis.
+
+Equation~(\ref{eq:10-ccd}) is a set of coupled quadratic equations, one for
+each amplitude, and it is solved by iteration: start from
+$t_{ij}^{ab}=\langle ab\Vert ij\rangle/D_{ij}^{ab}$, which is the second-order
+perturbation amplitude of Eq.~(\ref{eq:9-firstordercoefficients}), evaluate
+the right-hand side, divide by $D$, and repeat.
+
+\paragraph{Intermediates.}
+Evaluated naively, the quadratic terms cost $\bigO(n^8)$.  Factoring them
+through intermediates that are built once per iteration reduces this to
+$\bigO(n^6)$, which is what makes the method usable.  Defining
+\begin{align}
+  \chi_{kj} &= \frac{1}{2}\sum_{lcd}
+    \langle kl\Vert cd\rangle\,t_{jl}^{cd},
+  &
+  \chi_{cb} &= -\frac{1}{2}\sum_{kld}
+    \langle kl\Vert cd\rangle\,t_{kl}^{bd},
+  \nonumber\\
+  \chi_{klij} &= \frac{1}{2}\sum_{cd}
+    \langle kl\Vert cd\rangle\,t_{ij}^{cd},
+  &
+  \chi_{bkcj} &= \frac{1}{2}\sum_{ld}
+    \langle kl\Vert cd\rangle\,t_{lj}^{db},
+  \label{eq:10-intermediates}
+\end{align}
+the last four lines of Eq.~(\ref{eq:10-ccd}) become
+\begin{equation}
+  -P(ij)\sum_k t_{ik}^{ab}\chi_{kj}
+  + P(ab)\sum_c t_{ij}^{ac}\chi_{cb}
+  + \frac{1}{2}\sum_{kl}t_{kl}^{ab}\chi_{klij}
+  + P(ij)P(ab)\sum_{kc}t_{ik}^{ac}\chi_{bkcj},
+  \label{eq:10-intermediateform}
+\end{equation}
+each a single matrix multiplication.  This is how the program implements it,
+and how every production code does.
+
+%----------------------------------------------------------------------
+\section{Deriving the CCSD equations}
+\label{sec:ccsdderivation}
+
+\index{coupled cluster!singles and doubles}
+With $\hat{T}=\hat{T}_1+\hat{T}_2$ the derivation is the same in principle and
+far longer in practice, because $\hat{T}_1$ can appear up to four times.  We
+give the result in the standard factored form, which is both the clearest
+statement and the one that is implemented.
+
+The organising trick is to collect the recurring combinations into
+intermediates.  Three carry two indices,
+\begin{align}
+  F_{ae} &= f_{ae}^{\,\prime}
+    - \frac{1}{2}\sum_m f_{me}t_m^a
+    + \sum_{mf}t_m^f\langle ma\Vert fe\rangle
+    - \frac{1}{2}\sum_{mnf}\tilde{\tau}_{mn}^{af}
+      \langle mn\Vert ef\rangle,
+  \label{eq:10-Fae}\\
+  F_{mi} &= f_{mi}^{\,\prime}
+    + \frac{1}{2}\sum_e t_i^e f_{me}
+    + \sum_{en}t_n^e\langle mn\Vert ie\rangle
+    + \frac{1}{2}\sum_{nef}\tilde{\tau}_{in}^{ef}
+      \langle mn\Vert ef\rangle,
+  \label{eq:10-Fmi}\\
+  F_{me} &= f_{me}
+    + \sum_{nf}t_n^f\langle mn\Vert ef\rangle,
+  \label{eq:10-Fme}
+\end{align}
+and three carry four,
+\begin{align}
+  W_{mnij} &= \langle mn\Vert ij\rangle
+    + P(ij)\sum_e t_j^e\langle mn\Vert ie\rangle
+    + \frac{1}{4}\sum_{ef}\tau_{ij}^{ef}\langle mn\Vert ef\rangle,
+  \label{eq:10-Wmnij}\\
+  W_{abef} &= \langle ab\Vert ef\rangle
+    - P(ab)\sum_m t_m^b\langle am\Vert ef\rangle
+    + \frac{1}{4}\sum_{mn}\tau_{mn}^{ab}\langle mn\Vert ef\rangle,
+  \label{eq:10-Wabef}\\
+  W_{mbej} &= \langle mb\Vert ej\rangle
+    + \sum_f t_j^f\langle mb\Vert ef\rangle
+    - \sum_n t_n^b\langle mn\Vert ej\rangle
+    \nonumber\\
+  &\quad
+    - \sum_{nf}\left(\tfrac12 t_{jn}^{fb} + t_j^ft_n^b\right)
+      \langle mn\Vert ef\rangle .
+  \label{eq:10-Wmbej}
+\end{align}
+These are the intermediates of Stanton, Gauss, Watts and Bartlett, and their
+structure repays a moment's attention: each is a bare integral, plus
+corrections in which the amplitudes dress it.  $F_{ae}$ and $F_{mi}$ are the
+Fock matrix dressed by correlation; $W_{mnij}$ and $W_{abef}$ are the
+hole-hole and particle-particle ladders dressed likewise; and $W_{mbej}$ is
+the dressed ring.
+
+With them, the amplitude equations take a compact form.  The singles:
+\begin{align}
+  D_i^a\,t_i^a
+  &= f_{ia}
+   + \sum_e t_i^e F_{ae}
+   - \sum_m t_m^a F_{mi}
+   + \sum_{me}t_{im}^{ae}F_{me}
+  \nonumber\\
+  &\quad
+   - \sum_{nf}t_n^f\langle na\Vert if\rangle
+   - \frac{1}{2}\sum_{mef}t_{im}^{ef}\langle ma\Vert ef\rangle
+   - \frac{1}{2}\sum_{men}t_{mn}^{ae}\langle nm\Vert ei\rangle,
+  \label{eq:10-ccsdsingles}
+\end{align}
+with $D_i^a=\varepsilon_i-\varepsilon_a$.  The doubles:
+\begin{align}
+  D_{ij}^{ab}\,t_{ij}^{ab}
+  &= \langle ij\Vert ab\rangle
+   + P(ab)\sum_e t_{ij}^{ae}
+     \left(F_{be}-\tfrac12\sum_m t_m^b F_{me}\right)
+  \nonumber\\
+  &\quad
+   - P(ij)\sum_m t_{im}^{ab}
+     \left(F_{mj}+\tfrac12\sum_e t_j^e F_{me}\right)
+  \nonumber\\
+  &\quad
+   + \frac{1}{2}\sum_{mn}\tau_{mn}^{ab}W_{mnij}
+   + \frac{1}{2}\sum_{ef}\tau_{ij}^{ef}W_{abef}
+  \nonumber\\
+  &\quad
+   + P(ij)P(ab)\sum_{me}\left(t_{im}^{ae}W_{mbej}
+     - t_i^et_m^a\langle mb\Vert ej\rangle\right)
+  \nonumber\\
+  &\quad
+   + P(ij)\sum_e t_i^e\langle ab\Vert ej\rangle
+   - P(ab)\sum_m t_m^a\langle mb\Vert ij\rangle .
+  \label{eq:10-ccsddoubles}
+\end{align}
+
+\paragraph{Reading the equations.}
+Several structural features are worth noting, and each connects to an earlier
+chapter.
+
+\emph{Setting all amplitudes on the right to zero} leaves
+$D_{ij}^{ab}t_{ij}^{ab}=\langle ij\Vert ab\rangle$, which is the first-order
+perturbation amplitude, and $D_i^at_i^a=f_{ia}$, which vanishes in a
+Hartree-Fock basis.  The first iteration of a coupled-cluster calculation is
+therefore an MP2 calculation, exactly as
+Eq.~(\ref{eq:9-firstordercoefficients}) said.
+
+\emph{Setting $\hat{T}_1=0$} makes $\tau=\tilde\tau=t_2$, kills the last two
+lines of Eq.~(\ref{eq:10-ccsddoubles}) and reduces the intermediates to those
+of Eq.~(\ref{eq:10-intermediates}); Eq.~(\ref{eq:10-ccd}) is recovered.
+
+\emph{The singles equation is not driven} in a Hartree-Fock basis: with
+$f_{ia}=0$ the leading surviving term is
+$-\tfrac12\sum_{mef}t_{im}^{ef}\langle ma\Vert ef\rangle$, which is first
+order in $t_2$ and hence second order in the interaction.
+Singles therefore start one order later than doubles, which is Brillouin's
+theorem showing up again.
+
+\emph{The equations are nonlinear} in both $t_1$ and $t_2$, and it is the
+nonlinearity that performs the infinite resummations.  The
+Section~\ref{sec:ccdcontent} makes that statement quantitative.
+
+\begin{notebox}
+\textbf{Cost.}  The most expensive term in Eq.~(\ref{eq:10-ccsddoubles}) is
+the particle-particle ladder, $\tfrac12\tau_{ij}^{ef}W_{abef}$, which costs
+$\bigO(n_o^2n_v^4)$.  With $n_o$ occupied and $n_v$ virtual orbitals the
+total scales as $n^6$, against the exponential scaling of full configuration
+interaction, Section~\ref{sec:exponentialwall}.  This single fact is why
+coupled cluster reaches systems that configuration interaction cannot
+approach: for a hundred orbitals, $n^6=10^{12}$ operations is a large but
+finite calculation, while $\binom{100}{50}\approx10^{29}$ determinants is not.
+Adding triples, CCSDT, costs $n^8$; the perturbative CCSD(T) approximation
+costs $n^7$ and is the standard compromise.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Coupled cluster as a resummation of perturbation theory}
+\label{sec:ccdcontent}
+
+\index{coupled cluster!and perturbation theory}
+Chapter~\ref{chap:mbpt} built the correlation energy as a series in the
+interaction and found that it may converge slowly or not at all.  Coupled
+cluster contains the same series, but does not sum it term by term.  The
+relation can be made exact and, for the pairing model, checked numerically to
+every digit.
+
+The CCD amplitude equation~(\ref{eq:10-ccd}) is \emph{quadratic} in the
+amplitudes -- nothing of higher degree appears -- so it may be written
+\begin{equation}
+  D\,t = C + L[t] + Q[t,t],
+  \label{eq:10-quadratic}
+\end{equation}
+with $C$ the driving integral, $L$ the linear terms and $Q$ the bilinear ones.
+Expanding $t=\sum_k t^{(k)}$ with $t^{(k)}$ of order $k$ in the interaction and
+collecting powers,
+\begin{equation}
+  D\,t^{(1)} = C,
+  \qquad
+  D\,t^{(k)} = L\!\left[t^{(k-1)}\right]
+    + \sum_{i+j=k-1}Q\!\left[t^{(i)},t^{(j)}\right],
+  \label{eq:10-orderbyorder}
+\end{equation}
+since $L$ and $Q$ each carry one power of the interaction.  The energy
+contribution of $t^{(k)}$ is of order $k+1$.
+
+This is a perturbation expansion, and it is the M\o{}ller-Plesset one: the
+first amplitude is $\langle ab\Vert ij\rangle/D_{ij}^{ab}$ and the first
+energy is MP2.  The program checks the identification against the
+Rayleigh-Schr\"odinger machinery of Chapter~\ref{chap:mbpt}, computed
+independently in the determinant basis:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrr}
+\toprule
+$g$ & order & from CCD & from MBPT\\
+\midrule
+$0.50$ & $2$ & $-0.0623931624$ & $-0.0623931624$\\
+       & $3$ & $-0.0165183724$ & $-0.0165183724$\\
+       & $4$ & $-0.0038210766$ & $-0.0038210766$\\
+$1.00$ & $2$ & $-0.2190476190$ & $-0.2190476190$\\
+       & $3$ & $-0.1004988662$ & $-0.1004988662$\\
+       & $4$ & $-0.0403096858$ & $-0.0403096858$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+They agree to every digit through fourth order.  That CCD reproduces MP2 and
+MP3 exactly is general -- those orders contain only doubles.  That it also
+gets MP4 right here is special to the pairing model, where the interaction
+produces neither singles nor triples and the quadruple excitations enter only
+through the disconnected $\tfrac12\hat{T}_2^2$ that the exponential already
+supplies.  For a general interaction, MP4 contains connected triples that CCD
+does not have, and the agreement stops at third order.
+
+\paragraph{A warning about partitions.}
+The numbers above are \emph{not} those of Chapter~\ref{chap:mbpt}, and the
+difference is instructive.  There we took $\hat{H}_0$ to be the bare one-body
+operator; here the denominators contain the Fock matrix, whose occupied
+elements are shifted down by $g/2$.  For the pairing model the second-order
+energy in the two partitions is
+\begin{equation}
+  \Delta E^{(2)}_{\text{one-body}} = -\frac{7}{24}g^2,
+  \qquad
+  \Delta E^{(2)}_{\text{M\o{}ller-Plesset}}
+   = -\frac{g^2}{4}\left[\frac{1}{2+g}+\frac{2}{4+g}
+     +\frac{1}{6+g}\right],
+  \label{eq:10-twopartitions}
+\end{equation}
+which differ already at order $g^3$: at $g=1$ they give $-0.2917$ and
+$-0.2190$.  Section~\ref{sec:partitions} warned that a perturbative number
+without its partition is meaningless, and here is the warning in force.
+Coupled cluster uses the M\o{}ller-Plesset partition because the Fock operator
+is what makes the singles vanish at first order.
+
+\paragraph{Summing the series.}
+The point of the exponential is that the expansion need not be summed term by
+term.  For the pairing model:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{9pt}
+\small
+\begin{tabular}{rrrr}
+\toprule
+order & $g=0.5$ & $g=1.0$ & $g=1.5$\\
+\midrule
+$2$ & $-6.24\times10^{-2}$ & $-2.19\times10^{-1}$ & $-4.40\times10^{-1}$\\
+$3$ & $-1.65\times10^{-2}$ & $-1.00\times10^{-1}$ & $-2.68\times10^{-1}$\\
+$4$ & $-3.82\times10^{-3}$ & $-4.03\times10^{-2}$ & $-1.43\times10^{-1}$\\
+$5$ & $-6.58\times10^{-4}$ & $-1.23\times10^{-2}$ & $-5.86\times10^{-2}$\\
+$6$ & $-2.98\times10^{-5}$ & $-1.31\times10^{-3}$ & $-9.80\times10^{-3}$\\
+$7$ & $+3.49\times10^{-5}$ & $+1.62\times10^{-3}$ & $+1.16\times10^{-2}$\\
+\midrule
+sum of $16$ & $-0.0833623$ & $-0.3695742$ & $-0.8857526$\\
+CCD & $-0.0833623$ & $-0.3695572$ & $-0.8841653$\\
+\bottomrule
+\end{tabular}
+\caption{The order-by-order content of coupled-cluster doubles for the
+pairing model, and its resummation.  The expansion converges back onto the
+CCD energy; solving the nonlinear equation reaches the same answer directly
+and without the intermediate oscillation.}
+\label{tab:ccdorders}
+\end{table}
+
+The series does converge here -- but slowly, and non-monotonically, changing
+sign at seventh order.  Solving Eq.~(\ref{eq:10-ccd}) by iteration reaches
+the same number in twenty-odd steps, with no reference to the order
+structure at all.  That is the practical content of ``infinite resummation'':
+not that new physics appears, but that the physics already present in the
+series is obtained without having to sum it.
+
+The classes summed are those the truncation can represent.  The
+particle-particle ladder term of Eq.~(\ref{eq:10-ccd}), iterated, sums the
+ladder series to all orders; the ring term sums the ring series, which is
+what the random-phase approximation of Chapter~\ref{chap:mfapplications} does
+in its own channel; and the quadratic terms couple them.  CCD is neither a
+ladder theory nor a ring theory but a self-consistent combination of both.
+
+%----------------------------------------------------------------------
+\section{The pairing model}
+\label{sec:ccpairing}
+
+We now do the calculation.  The pairing Hamiltonian of
+Section~\ref{sec:pairingmodel},
+\begin{equation}
+  \hat{H} = \xi\sum_{p\sigma}(p-1)\,
+    \hat{a}^{\dagger}_{p\sigma}\hat{a}_{p\sigma}
+  - \frac{g}{2}\sum_{pq}\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}
+    \hat{a}_{q-}\hat{a}_{q+},
+  \label{eq:10-pairing}
+\end{equation}
+has $\langle p{+}\,p{-}\Vert q{+}\,q{-}\rangle=-g/2$ and nothing else.  Two
+consequences follow immediately, and both simplify the calculation
+enormously.
+
+First, the interaction moves complete pairs, so it has no matrix element
+between the reference and a $1p$-$1h$ state.  Hence $t_i^a=0$ identically and
+CCSD reduces to CCD.  The program verifies this: the singles amplitudes come
+out as exactly zero, and the two energies agree to every digit.
+
+Second, only three of the interaction channels are non-zero --
+$\langle ab\Vert cd\rangle$, $\langle ab\Vert ij\rangle$ and
+$\langle ij\Vert kl\rangle$.  There is no $\langle ab\Vert id\rangle$ or
+$\langle ai\Vert jb\rangle$, because those would require breaking a pair.  The
+ring term of Eq.~(\ref{eq:10-ccd}) therefore vanishes, and only the two
+ladders and the quadratic terms survive.
+
+The Fock matrix is diagonal, with
+\begin{equation}
+  \varepsilon_i = \xi(p_i-1) - \frac{g}{2},
+  \qquad
+  \varepsilon_a = \xi(p_a-1),
+  \label{eq:10-pairingfock}
+\end{equation}
+the occupied levels shifted down by $g/2$ and the empty ones untouched --
+which is the Hartree-Fock solution found in Section~\ref{sec:hfnothing}.
+Taking four levels and four particles, the results are
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{7pt}
+\small
+\begin{tabular}{rrrrrrr}
+\toprule
+$g$ & $E_{\mathrm{ref}}$ & MP2 & CCD & FCI & CCD error & iterations\\
+\midrule
+$0.25$ & $1.75000$ & $1.73320261$ & $1.73045621$ & $1.73045985$
+  & $-3.6\times10^{-6}$ & $13$\\
+$0.50$ & $1.50000$ & $1.43760684$ & $1.41663766$ & $1.41677428$
+  & $-1.4\times10^{-4}$ & $18$\\
+$1.00$ & $1.00000$ & $0.78095238$ & $0.63044275$ & $0.63554847$
+  & $-5.1\times10^{-3}$ & $26$\\
+$1.50$ & $0.50000$ & $0.05974026$ & $-0.38416526$ & $-0.34819051$
+  & $-3.6\times10^{-2}$ & $30$\\
+$2.00$ & $0.00000$ & $-0.70833333$ & $-1.60959440$ & $-1.48965216$
+  & $-1.2\times10^{-1}$ & $31$\\
+\bottomrule
+\end{tabular}
+\caption{Coupled-cluster doubles for the pairing model with four doubly
+degenerate levels and four particles, $\xi=1$.  The reference energy is the
+Hartree-Fock energy $2-g$ of Chapter~\ref{chap:hartrefock}, and the exact
+column is the full configuration interaction of Chapter~\ref{chap:fci}.}
+\label{tab:ccdpairing}
+\end{table}
+
+At weak coupling CCD is very nearly exact -- four parts in a million at
+$g=0.25$, where MP2 is already wrong in the third decimal.  It
+over-correlates, and the error grows with the coupling, reaching $0.12$ at
+$g=2$.  What is missing is the \emph{connected} quadruple excitations: the
+exponential supplies the $4p$-$4h$ amplitude as $\tfrac12\hat{T}_2^2$, the
+disconnected part only, and for four particles in four levels the connected
+part is not negligible once the interaction is strong.  Including $\hat{T}_4$
+would make the calculation exact, since the exact state has no components
+beyond $4p$-$4h$.
+
+%----------------------------------------------------------------------
+\section{When singles matter}
+\label{sec:ccsinglesmatter}
+
+To see CCSD do something CCD cannot, we need an interaction that breaks
+pairs.  The pairing plus particle-hole model of
+Section~\ref{sec:pairingphmodel} is exactly that: its particle-hole term
+\begin{equation}
+  \hat{V}_{\mathrm{ph}} = -\frac{f}{2}\sum_{pqr}
+    \left(\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}
+      \hat{a}_{q-}\hat{a}_{r+} + \mathrm{h.c.}\right)
+  \label{eq:10-phterm}
+\end{equation}
+connects the reference to $1p$-$1h$ states and the singles amplitudes are no
+longer zero.  We run the calculation twice, once on the bare oscillator
+reference and once on the Hartree-Fock reference of
+Chapter~\ref{chap:hartrefock}, where Brillouin's theorem holds.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+\small
+\begin{tabular}{rrrrrrrr}
+\toprule
+$g$ & $f$ & CCD & CCSD & CCSD (HF) & FCI
+  & $\max|t_1|$ & $\max|t_1|$ (HF)\\
+\midrule
+$0.50$ & $0.025$ & $1.3476038$ & $1.3469075$ & $1.3469088$ & $1.3471327$
+  & $1.1\times10^{-2}$ & $5.4\times10^{-4}$\\
+$0.70$ & $0.050$ & $0.9707634$ & $0.9681476$ & $0.9681644$ & $0.9697588$
+  & $1.9\times10^{-2}$ & $1.5\times10^{-3}$\\
+$1.00$ & $0.050$ & $0.4447429$ & $0.4423659$ & $0.4424119$ & $0.4505823$
+  & $1.7\times10^{-2}$ & $1.8\times10^{-3}$\\
+$0.50$ & $0.250$ & $0.6033126$ & $0.5467210$ & $0.5472745$ & $0.5511916$
+  & $8.4\times10^{-2}$ & $7.3\times10^{-3}$\\
+$1.00$ & $0.500$ & $-1.6764657$ & $-1.7957374$ & $-1.7805416$ & $-1.6917367$
+  & $1.0\times10^{-1}$ & $1.3\times10^{-2}$\\
+\bottomrule
+\end{tabular}
+\caption{CCD and CCSD for the pairing plus particle-hole model of
+Chapter~\ref{chap:mfapplications}, on the bare oscillator reference and on
+the Hartree-Fock reference.}
+\label{tab:ccsdph}
+\end{table}
+
+Three things to read off.
+
+\emph{The singles matter.}  At $g=0.5$, $f=0.25$ they move the energy from
+$0.6033$ to $0.5467$ against an exact $0.5512$, turning a nine per cent error
+into one of under one per cent.
+
+\emph{Brillouin's theorem is visible.}  The singles amplitudes are an order of
+magnitude smaller on the Hartree-Fock reference, because there they start at
+second order in the interaction rather than first,
+Eq.~(\ref{eq:10-ccsdsingles}).  This is the practical reason for working in a
+Hartree-Fock basis: not that the singles vanish, but that they are small.
+
+\emph{Coupled cluster is not invariant under a change of reference.}  The two
+CCSD columns are close but not identical.  A truncated cluster operator
+depends on the determinant it is built from, and only the untruncated theory
+is reference-independent.  In a Hartree-Fock basis, where $\hat{T}_1$ has
+little to do, the dependence is weak -- which is the usual situation and the
+usual justification.
+
+Note also the last row.  At $g=1$, $f=0.5$ the particle-hole term is strong,
+CCSD overshoots the exact energy by $0.11$, and CCD -- which cannot see the
+singles at all -- happens to be closer.  This is not a reason to prefer CCD.
+It is a reminder that an uncontrolled error can have either sign, and that
+agreement at a single point proves nothing.
+
+%----------------------------------------------------------------------
+\section{Size extensivity}
+\label{sec:ccextensivity}
+
+\index{size extensivity!coupled cluster}
+The property that motivated the whole construction can now be verified.  For
+two non-interacting subsystems $A$ and $B$, the cluster operator separates,
+$\hat{T}=\hat{T}_A+\hat{T}_B$, the two pieces commute, and therefore
+\begin{equation}
+  e^{\hat{T}}\bket{\Phi_0}
+   = e^{\hat{T}_A}e^{\hat{T}_B}\bket{\Phi_A}\bket{\Phi_B}
+   = \left(e^{\hat{T}_A}\bket{\Phi_A}\right)
+     \left(e^{\hat{T}_B}\bket{\Phi_B}\right).
+  \label{eq:10-factorises}
+\end{equation}
+The wave function factorises exactly, and the energy is therefore additive --
+at any truncation level, since $\hat{T}_A$ and $\hat{T}_B$ are truncated
+independently.  This is the whole argument; it is one line, and it is the
+reason coupled cluster exists.
+
+The program confirms it for identical copies of a three-level pairing system:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrr}
+\toprule
+$g$ & $E(1)$ & $E(2)-2E(1)$ & $E(3)-3E(1)$\\
+\midrule
+$0.25$ & $-0.012167069342$ & $0$ & $0$\\
+$0.50$ & $-0.050059379847$ & $-2.1\times10^{-13}$ & $-3.2\times10^{-13}$\\
+$1.00$ & $-0.205303400091$ & $\phantom{-}5.6\times10^{-17}$
+  & $-3.0\times10^{-13}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Exact to machine precision.  Compare Section~\ref{sec:sizeconsistency},
+where doubles configuration interaction -- the \emph{linear} theory with the
+same excitation rank -- had errors growing from $6\times10^{-5}$ to
+$1.1\times10^{-2}$ over the same range of couplings.  The
+two methods keep the same excitations; only the ansatz differs; and that
+difference decides whether the method can be used on a solid.
+
+%----------------------------------------------------------------------
+\section{Everything against everything}
+\label{sec:cccomparison}
+
+The pairing model has now been treated by every method in this book.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\small
+\begin{tabular}{rrrrrrrr}
+\toprule
+$g$ & HF & MBPT2 & MBPT3 & CID & HF + RPA & CCD & FCI\\
+\midrule
+$0.25$ & $1.75000$ & $1.73177$ & $1.73047$ & $1.73051$ & $1.71635$
+  & $1.7304562$ & $1.7304598$\\
+$0.50$ & $1.50000$ & $1.42708$ & $1.41667$ & $1.41760$ & $1.37450$
+  & $1.4166377$ & $1.4167743$\\
+$1.00$ & $1.00000$ & $0.70833$ & $0.62500$ & $0.64891$ & $0.55459$
+  & $0.6304428$ & $0.6355485$\\
+$1.50$ & $0.50000$ & $-0.15625$ & $-0.43750$ & $-0.29113$ & $-0.40625$
+  & $-0.3841653$ & $-0.3481905$\\
+$2.00$ & $0.00000$ & $-1.16667$ & $-1.83333$ & $-1.35209$ & $-1.47622$
+  & $-1.6095944$ & $-1.4896522$\\
+\midrule
+\multicolumn{8}{l}{\emph{errors}}\\
+$0.25$ & & $1.3\times10^{-3}$ & $8.9\times10^{-6}$ & $4.7\times10^{-5}$
+  & $-1.4\times10^{-2}$ & $-3.6\times10^{-6}$ & \\
+$0.50$ & & $1.0\times10^{-2}$ & $-1.1\times10^{-4}$ & $8.2\times10^{-4}$
+  & $-4.2\times10^{-2}$ & $-1.4\times10^{-4}$ & \\
+$1.00$ & & $7.3\times10^{-2}$ & $-1.1\times10^{-2}$ & $1.3\times10^{-2}$
+  & $-8.1\times10^{-2}$ & $-5.1\times10^{-3}$ & \\
+$1.50$ & & $1.9\times10^{-1}$ & $-8.9\times10^{-2}$ & $5.7\times10^{-2}$
+  & $-5.8\times10^{-2}$ & $-3.6\times10^{-2}$ & \\
+$2.00$ & & $3.2\times10^{-1}$ & $-3.4\times10^{-1}$ & $1.4\times10^{-1}$
+  & $1.3\times10^{-2}$ & $-1.2\times10^{-1}$ & \\
+\bottomrule
+\end{tabular}
+\caption{The pairing model treated by every method of this book:
+Hartree-Fock (Chapter~\ref{chap:hartrefock}), second- and third-order
+perturbation theory and doubles configuration interaction
+(Chapters~\ref{chap:mbpt} and~\ref{chap:fci}), the random-phase
+approximation (Chapter~\ref{chap:mfapplications}), coupled-cluster doubles,
+and full configuration interaction as the exact reference.}
+\label{tab:cccomparison}
+\end{table}
+
+At weak and moderate coupling coupled cluster is the best of the five, by two
+to three orders of magnitude at $g=0.25$ and by a factor of two over
+third-order perturbation theory at $g=1$.  Unlike the perturbation series it
+does not fall apart as the coupling grows: at $g=2$, where MBPT3 is wrong by
+$0.34$, CCD is wrong by $0.12$.
+
+It does not win everywhere.  At $g=2$ the random-phase approximation happens
+to be closer, which is a reminder that a method summing a different class of
+contributions can prevail in the regime it was designed for.  And CCD is not
+variational -- the errors change sign across the table -- so a single number
+carries no guarantee.
+
+What distinguishes it is that no other entry in the table is simultaneously
+size extensive, systematically improvable and accurate across the whole
+range.  Configuration interaction is variational but not extensive;
+perturbation theory is extensive but divergent; the random-phase
+approximation is neither systematically improvable nor stable.  Coupled
+cluster is extensive by construction, improvable by raising the rank of
+$\hat{T}$, and polynomial in cost.  That combination is why it, and not the
+others, became the standard.
+
+%----------------------------------------------------------------------
+\section{Beyond CCSD}
+\label{sec:beyondccsd}
+
+\index{coupled cluster!triples}\index{CCSD(T)}
+The hierarchy continues.  Including $\hat{T}_3$ gives CCSDT, with a third
+amplitude equation
+\begin{equation}
+  0 = \bracket{\Phi_{ijk}^{abc}}{\overline{H}_N}{\Phi_0},
+  \label{eq:10-triples}
+\end{equation}
+whose structure is the same -- a driving term, linear terms, and nonlinear
+couplings -- and whose length is formidable.  The cost rises to $n^8$.
+
+Empirically, CCSD recovers around $90\%$ of the correlation energy of a
+well-behaved system and CCSDT around $99\%$.  Since the triples are expensive
+and their effect modest, the standard compromise is to compute them
+perturbatively rather than iteratively.  Approximating
+\begin{equation}
+  t_{ijk}^{abc} \approx
+    \frac{N_{ijk}^{abc}\!\left(t_1,t_2;\langle pq\Vert rs\rangle\right)}
+         {D_{ijk}^{abc}},
+  \qquad
+  D_{ijk}^{abc} = \varepsilon_i+\varepsilon_j+\varepsilon_k
+    -\varepsilon_a-\varepsilon_b-\varepsilon_c,
+  \label{eq:10-perturbativetriples}
+\end{equation}
+with a numerator built from the converged singles and doubles, gives
+CCSD(T) at a cost of $n^7$ and with no iteration.  This method is accurate
+enough, and cheap enough, to have earned the name ``the gold standard of
+quantum chemistry''.
+
+Two further directions deserve mention.  Because $\overline{H}_N$ is not
+Hermitian, its left and right eigenvectors differ, and computing properties
+other than the energy requires both -- this is the price of the exponential
+noted in Section~\ref{sec:similaritytransform}.  And diagonalising
+$\overline{H}_N$ in the space of excited determinants, rather than merely
+demanding that its $1p$-$1h$ and $2p$-$2h$ blocks vanish, gives excitation
+energies: this is equation-of-motion coupled cluster, and it stands to the
+present chapter as the random-phase approximation of
+Chapter~\ref{chap:mfapplications} stands to Hartree-Fock.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:ch10summary}
+
+Coupled-cluster theory replaces the linear ansatz
+$(1+\hat{C})\bket{\Phi_0}$ by the exponential $e^{\hat{T}}\bket{\Phi_0}$.
+The two are equivalent when complete, and they differ decisively when
+truncated: the exponential builds high-rank excitations as products of
+low-rank ones, so truncating $\hat{T}$ at doubles retains the disconnected
+quadruples that truncating $\hat{C}$ discards.  That single reorganisation
+makes the method size extensive at every truncation level, which
+configuration interaction is not.
+
+Requiring $e^{-\hat{T}}\hat{H}e^{\hat{T}}$ to have the reference as an
+eigenstate turns the Schr\"odinger equation into the projected equations
+(\ref{eq:10-energyeq})--(\ref{eq:10-doubleseq}).  Because the cluster
+operators commute among themselves, every $\hat{T}$ in the
+Baker-Campbell-Hausdorff series must connect to $\hat{H}_N$, which has only
+four contractible operators; the expansion therefore terminates exactly at
+the fourfold commutator.  The non-Hermiticity that this exploits is the same
+non-Hermiticity that complicates properties -- one cannot have the one
+without the other.
+
+The resulting equations, (\ref{eq:10-ccd}) for doubles and
+(\ref{eq:10-ccsdsingles})--(\ref{eq:10-ccsddoubles}) for singles and doubles,
+are nonlinear and are solved by iteration.  Their first iteration is MP2;
+their order-by-order expansion is M\o{}ller-Plesset perturbation theory,
+verified here through fourth order; and solving them to convergence sums that
+expansion within the retained excitation classes.  For the pairing model CCD
+is accurate to four parts in a million at weak coupling and still the best
+method available at strong coupling, while remaining exactly size extensive.
+
+The program \texttt{coupledcluster.py} performs every calculation of this
+chapter.
+
+%----------------------------------------------------------------------
+\section{Exercises}
+\label{sec:ch10exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the exponential ansatz}
+\label{ex:10-ansatz}
+\addcontentsline{toc}{subsection}{Exercise 1: the exponential ansatz}
+
+\begin{enumerate}
+  \item[a)] Prove Eq.~(\ref{eq:10-Tcommute}), that the cluster operators
+  commute, and identify exactly where the particle-hole structure is used.
+  \item[b)] Derive the relations~(\ref{eq:10-CtoT}) between the
+  configuration-interaction and cluster amplitudes, and extend them to
+  $\hat{C}_4$.
+  \item[c)] Show that for two non-interacting subsystems the exponential
+  ansatz factorises, Eq.~(\ref{eq:10-factorises}), and that the linear ansatz
+  truncated at doubles does not.
+  \item[d)] Why does the exponential series terminate when acting on an
+  $N$-particle determinant?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Take two terms of $\hat{T}$, each a string of particle creation and hole
+annihilation operators.  Since particle and hole indices are disjoint, every
+annihilation operator in one string anticommutes with every creation operator
+in the other, with no delta function generated.  Moving one string past the
+other therefore produces a sign $(-1)^{n_1n_2}$ from the interchange, and the
+same sign appears in the reverse ordering, so the two products are equal.
+This is Eq.~(\ref{eq:6-phcommute}) generalised, and it is exactly the
+disjointness of the index sets that makes it work.
+
+\paragraph{Answer to b).}
+Expand $e^{\hat{T}}$ and collect terms by excitation rank.  Rank one gives
+$\hat{C}_1=\hat{T}_1$; rank two, $\hat{C}_2=\hat{T}_2+\tfrac12\hat{T}_1^2$;
+rank three, $\hat{C}_3=\hat{T}_3+\hat{T}_1\hat{T}_2+\tfrac16\hat{T}_1^3$; and
+rank four,
+\begin{equation}
+  \hat{C}_4 = \hat{T}_4 + \hat{T}_1\hat{T}_3
+    + \tfrac12\hat{T}_2^2 + \tfrac12\hat{T}_1^2\hat{T}_2
+    + \tfrac{1}{24}\hat{T}_1^4 .
+  \label{eq:10-exb1}
+\end{equation}
+The term $\tfrac12\hat{T}_2^2$ is the one that matters: it is present in CCD,
+where $\hat{T}_3=\hat{T}_4=\hat{T}_1=0$, and absent from CID.
+
+\paragraph{Answer to c).}
+With no interaction between the subsystems, no amplitude can carry indices
+from both, so $\hat{T}=\hat{T}_A+\hat{T}_B$ with $[\hat{T}_A,\hat{T}_B]=0$.
+Hence $e^{\hat{T}}=e^{\hat{T}_A}e^{\hat{T}_B}$ and, since the operators act
+on disjoint orbitals, the state factorises.  The energy of a product state
+under $\hat{H}_A+\hat{H}_B$ is the sum of the two energies.  For the linear
+ansatz, $(1+\hat{C}_2^A+\hat{C}_2^B)$ is \emph{not} the product
+$(1+\hat{C}_2^A)(1+\hat{C}_2^B)$: the cross term
+$\hat{C}_2^A\hat{C}_2^B$ is a quadruple excitation, which CID has thrown
+away.  This is Section~\ref{sec:sizeconsistency} in one line.
+
+\paragraph{Answer to d).}
+Each application of $\hat{T}$ annihilates at least one hole, and there are
+only $N$ holes.  Hence $\hat{T}^{n}\bket{\Phi_0}=0$ for $n>N$, and more
+sharply for a truncated $\hat{T}$: with $\hat{T}=\hat{T}_2$ the series stops
+at $\hat{T}_2^{N/2}$.
+
+\subsection*{Exercise 2: the similarity transformation}
+\label{ex:10-similarity}
+\addcontentsline{toc}{subsection}{Exercise 2: the similarity transformation}
+
+\begin{enumerate}
+  \item[a)] Show that $\overline{H}=e^{-\hat{T}}\hat{H}e^{\hat{T}}$ has the
+  same eigenvalues as $\hat{H}$ for any $\hat{T}$.
+  \item[b)] What condition on $\hat{T}$ would make $\overline{H}$ Hermitian?
+  Why does coupled cluster not impose it?
+  \item[c)] Prove that the Baker-Campbell-Hausdorff series terminates at the
+  fourfold commutator, and say precisely which property of $\hat{H}_N$ is
+  used.
+  \item[d)] If a similarity transformation preserves all eigenvalues, why is
+  the CCD energy not exact?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+If $\hat{H}\bket{E}=E\bket{E}$ then
+\begin{equation}
+  \overline{H}\left(e^{-\hat{T}}\bket{E}\right)
+   = e^{-\hat{T}}\hat{H}e^{\hat{T}}e^{-\hat{T}}\bket{E}
+   = e^{-\hat{T}}\hat{H}\bket{E}
+   = E\,e^{-\hat{T}}\bket{E},
+  \label{eq:10-exa2}
+\end{equation}
+so $e^{-\hat{T}}\bket{E}$ is an eigenstate of $\overline{H}$ with the same
+eigenvalue.  The map $\bket{E}\mapsto e^{-\hat{T}}\bket{E}$ is invertible, so
+the spectra coincide.  Note that eigen\emph{values} are preserved but
+eigen\emph{vectors} are not, and neither are norms: $\overline{H}$ is not
+Hermitian and its left and right eigenvectors differ, satisfying
+$\braket{L_\alpha}{R_\beta}=\delta_{\alpha\beta}$.
+
+\paragraph{Answer to b).}
+$\overline{H}$ is Hermitian if $e^{\hat{T}}$ is unitary, that is if
+$\hat{T}^{\dagger}=-\hat{T}$.  Coupled cluster does not impose it because an
+anti-Hermitian $\hat{T}$ contains de-excitation operators
+$\hat{a}^{\dagger}_i\hat{a}_a$ as well as excitations, those do not commute
+with the excitations, and the Baker-Campbell-Hausdorff series then never
+terminates.  One would gain Hermiticity and lose the finite expansion.
+Unitary coupled cluster makes precisely that trade, and is used where the
+exponential can be realised directly rather than expanded -- on a quantum
+computer, for instance.
+
+\paragraph{Answer to c).}
+By Eq.~(\ref{eq:10-Tcommute}) no commutator can be made non-zero by one
+$\hat{T}$ acting on another, so in
+$[[\cdots[\hat{H}_N,\hat{T}],\ldots],\hat{T}]$ every $\hat{T}$ must be
+contracted with $\hat{H}_N$ itself.  Each such contraction consumes one of
+$\hat{H}_N$'s operators that can be contracted to the right -- and its
+two-body part has exactly four, $\hat{a}^{\dagger}_p\hat{a}^{\dagger}_q$ and
+$\hat{a}_s\hat{a}_r$ in normal-ordered form.  A fifth $\hat{T}$ has nothing
+left to attach to, so the term vanishes.  The property used is that
+$\hat{H}_N$ is \emph{at most two-body}; a three-body force would extend the
+series to the sixfold commutator.
+
+\paragraph{Answer to d).}
+Because we do not solve the transformed problem exactly either.  With
+$\hat{T}=\hat{T}_2$ the full $\overline{H}_N$ contains up to six-body terms,
+and it is that operator whose spectrum equals the exact one.  What CCD
+imposes is only that the $2p$-$2h$ block of $\overline{H}_N$ vanish -- the
+reference is decoupled from doubles but not from triples and quadruples.
+Coupled cluster at finite truncation is a similarity transformation
+\emph{plus} a projection, and the error lives in the projection.
+
+\subsection*{Exercise 3: deriving the CCD equations}
+\label{ex:10-ccd}
+\addcontentsline{toc}{subsection}{Exercise 3: deriving the CCD equations}
+
+\begin{enumerate}
+  \item[a)] Show that the expansion~(\ref{eq:10-ccdexpansion}) stops at
+  $\hat{T}_2^2$ when projected onto a $2p$-$2h$ state.
+  \item[b)] Derive the linear terms~(\ref{eq:10-ccd1a})
+  and~(\ref{eq:10-ccd1b}) and explain the factors $\tfrac12$ and the
+  permutation operators.
+  \item[c)] Derive the four quadratic terms~(\ref{eq:10-ccd2}).
+  \item[d)] Verify that setting all amplitudes on the right-hand side to zero
+  gives the MP2 amplitude.
+  \item[e)] Show that the intermediates~(\ref{eq:10-intermediates}) reduce
+  the cost of the quadratic terms from $\bigO(n^8)$ to $\bigO(n^6)$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+A $2p$-$2h$ projection supplies two hole and two particle external lines.
+Each $\hat{T}_2$ must connect to $\hat{H}_N$, consuming two of its
+contractible operators, and $\hat{H}_N$ has four.  Two cluster operators
+therefore exhaust it, and a third has nothing to attach to.
+
+\paragraph{Answer to b).}
+Use the generalised Wick theorem of Section~\ref{sec:wickgeneral} on
+$\bracket{\Phi_{ij}^{ab}}{\hat{H}_N\hat{T}_2}{\Phi_0}$.  The one-body part
+can contract with either a particle or a hole line of the amplitude, giving
+the two terms of Eq.~(\ref{eq:10-ccd1a}); the permutation operators appear
+because the external labels $a,b$ and $i,j$ must be antisymmetrised.  For the
+two-body part, contracting both of its creation operators with the amplitude's
+particle lines gives the particle-particle ladder, both annihilation
+operators with the hole lines gives the hole-hole ladder, and one of each
+gives the ring.  The factor $\tfrac12$ in each ladder compensates the two
+equivalent ways of assigning the summed pair of indices; the ring has
+inequivalent lines and instead carries the full $P(ij)P(ab)$.
+
+\paragraph{Answer to c).}
+Now both $\hat{T}_2$ connect to $\hat{H}_N$, which forces the two-body part
+and uses all four of its operators, so only
+$\langle kl\Vert cd\rangle$ contributes.  The four topologies are fixed by
+how the four contractions are shared: two with each amplitude in the ``ladder
+times ladder'' pattern (first term), one particle and one hole with each
+(second term, the ring-ring), or both particle and both hole indices with one
+amplitude leaving the other a spectator (third and fourth).  The combinatorial
+factors follow by counting equivalent assignments as in b).
+
+\paragraph{Answer to d).}
+Setting $t=0$ on the right leaves
+$D_{ij}^{ab}t_{ij}^{ab}=\langle ab\Vert ij\rangle$, so
+\begin{equation}
+  t_{ij}^{ab} = \frac{\langle ab\Vert ij\rangle}
+    {\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b},
+  \label{eq:10-exd3}
+\end{equation}
+which is Eq.~(\ref{eq:9-firstordercoefficients}).  Substituting into
+Eq.~(\ref{eq:10-ccsdenergy}) gives the MP2 energy.  The program checks this
+against the closed form
+$-\tfrac{g^2}{4}[1/(2+g)+2/(4+g)+1/(6+g)]$ for the pairing model.
+
+\paragraph{Answer to e).}
+Written out, a term such as
+$\sum_{klcd}\langle kl\Vert cd\rangle t_{ik}^{ac}t_{jl}^{bd}$ has four free
+external indices and four summed ones, hence $\bigO(n^8)$.  Building
+$\chi_{bkcj}=\tfrac12\sum_{ld}\langle kl\Vert cd\rangle t_{lj}^{db}$ first
+costs $\bigO(n^6)$ -- four free, two summed -- and contracting it with the
+remaining amplitude costs $\bigO(n^6)$ again.  The saving is the standard one
+of never forming an object with more indices than necessary, and it is what
+makes the $n^6$ scaling of CCSD achievable.
+
+\subsection*{Exercise 4: CCSD and its perturbative content}
+\label{ex:10-ccsd}
+\addcontentsline{toc}{subsection}{Exercise 4: CCSD and its perturbative content}
+
+\begin{enumerate}
+  \item[a)] Derive the energy expression~(\ref{eq:10-ccsdenergy}) and explain
+  why no term with three or more cluster operators appears.
+  \item[b)] Show that Eqs.~(\ref{eq:10-ccsdsingles})
+  and~(\ref{eq:10-ccsddoubles}) reduce to the CCD equation when
+  $\hat{T}_1=0$.
+  \item[c)] Show that in a Hartree-Fock basis the singles amplitudes are of
+  second order in the interaction while the doubles are of first order.
+  \item[d)] Establish the order-by-order recursion~(\ref{eq:10-orderbyorder})
+  and show that the first two energies are MP2 and MP3.
+  \item[e)] Why does CCD reproduce MP4 for the pairing model but not in
+  general?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+$\bracket{\Phi_0}{\overline{H}_N}{\Phi_0}$ requires that the excitation
+produced by the cluster operators be exactly undone by $\hat{H}_N$, which can
+de-excite by at most two ranks.  Hence at most $\hat{T}_2$ or
+$\tfrac12\hat{T}_1^2$ can appear, plus $\hat{T}_1$ against the one-body part.
+Three cluster operators would produce at least a $3p$-$3h$ excitation, which
+$\hat{H}_N$ cannot annihilate.
+
+\paragraph{Answer to b).}
+With $\hat{T}_1=0$ we have $\tau=\tilde\tau=t_2$; the last two lines of
+Eq.~(\ref{eq:10-ccsddoubles}) vanish, as does the second half of the ring
+term; and the intermediates collapse to
+$F_{ae}\to f'_{ae}-\tfrac12 t_2\!\cdot\!v$,
+$W_{mnij}\to\langle mn\Vert ij\rangle+\tfrac14 t_2\!\cdot\!v$ and so on,
+which are exactly the combinations of
+Eq.~(\ref{eq:10-intermediates}).  What remains is Eq.~(\ref{eq:10-ccd}).
+
+\paragraph{Answer to c).}
+In a Hartree-Fock basis $f_{ia}=0$, so the driving term of
+Eq.~(\ref{eq:10-ccsdsingles}) vanishes.  The leading surviving term is
+$-\tfrac12\sum_{mef}t_{im}^{ef}\langle ma\Vert ef\rangle$, first order in
+$t_2$; since $t_2$ is itself first order in the interaction, $t_1$ is second
+order.  The doubles, by contrast, are driven directly by
+$\langle ij\Vert ab\rangle$ and are first order.  The program shows this
+concretely: the singles amplitudes of the pairing plus particle-hole model
+drop by an order of magnitude when the reference is rotated to the
+Hartree-Fock one.
+
+\paragraph{Answer to d).}
+The CCD equation is quadratic, so $D t=C+L[t]+Q[t,t]$ exactly.  Substituting
+$t=\sum_k t^{(k)}$ and noting that $C$, $L$ and $Q$ each carry one power of
+the interaction, the terms of order $k$ are
+$L[t^{(k-1)}]$ and $Q[t^{(i)},t^{(j)}]$ with $i+j=k-1$, which is
+Eq.~(\ref{eq:10-orderbyorder}).  The first amplitude is the MP2 one by d) of
+the previous exercise, and its energy is MP2.  The second satisfies
+$Dt^{(2)}=L[t^{(1)}]$, whose energy contribution is the sum of the
+particle-particle ladder, hole-hole ladder and ring contractions of two MP2
+amplitudes -- which is precisely the third-order energy.
+
+\paragraph{Answer to e).}
+At fourth order the exact energy receives contributions from singles,
+doubles, triples and quadruples.  CCD has the doubles, and it has the
+quadruples in their disconnected form $\tfrac12\hat{T}_2^2$, which is the
+whole of the fourth-order quadruple contribution.  It lacks the singles and
+the connected triples.  For the pairing model those are absent anyway -- the
+interaction cannot produce a $1p$-$1h$ or a $3p$-$3h$ excitation -- so CCD is
+complete at fourth order and the program finds exact agreement.  For a
+general interaction the connected triples are present and CCD misses them, so
+agreement stops at third order.  This is exactly why CCSD(T) exists.
+
+\subsection*{Exercise 5: numerical explorations}
+\label{ex:10-numerical}
+\addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{coupledcluster.py}, reproduce
+  Table~\ref{tab:ccdpairing} and extend it to six and eight levels.  Does the
+  CCD error grow or shrink with the size of the space?
+  \item[b)] Verify the size-extensivity result for four and five subsystems,
+  and compare with doubles configuration interaction over the same range.
+  \item[c)] Add $\hat{T}_4$ to the pairing calculation, or equivalently solve
+  the seniority-zero problem exactly, and confirm that the remaining CCD
+  error is entirely due to connected quadruples.
+  \item[d)] Study the convergence of the CCD iteration as a function of $g$.
+  At what coupling does it stop converging, and how does that compare with
+  the radius of convergence of the perturbation series in
+  Section~\ref{sec:convergence}?
+  \item[e)] Implement the CCSD(T) correction of
+  Eq.~(\ref{eq:10-perturbativetriples}) for the pairing plus particle-hole
+  model and see how much of the remaining error it removes.
+\end{enumerate}
+
+\paragraph{Answer.}
+Some pointers.  In a) the relative error shrinks as the space grows, because
+the neglected connected quadruples become a smaller fraction of a larger
+correlation energy -- the opposite of the trend for truncated configuration
+interaction, whose size-consistency error grows.  In b) the coupled-cluster
+error stays at machine precision for any number of subsystems, while the CID
+error grows roughly linearly.  In c) the pairing model with four levels has
+no $6p$-$6h$ states, so CCD plus connected quadruples is exact, and the
+difference from CCD is precisely the number in the error column of
+Table~\ref{tab:ccdpairing}.  In d) the CCD iteration continues to converge
+well past the point where the perturbation series diverges, which is the
+practical meaning of resummation; it eventually fails too, and the failure is
+associated with the same physics that made the mean field unstable in
+Chapter~\ref{chap:hartrefock}.  In e) the perturbative triples remove a large
+part of the residual error at weak coupling and much less of it at strong
+coupling, where the expansion underlying them is itself unreliable.

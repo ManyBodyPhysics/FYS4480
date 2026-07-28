@@ -89,10 +89,22 @@
        partition
      - Still to add: the diagrammatic representation and the linked-diagram
        theorem from time-dependent theory (deliberately left out for now)
-###  Coupled cluster theories, standard and unitary
-     - Derivation of equations for singles and doubles, reminder on unitary transformations
-     - non-hermiticity
-     - Specialize to CCD case and compare with FCI and MBPT
+###  Coupled cluster theories, standard and unitary  (chapter10.tex, done)
+     - The exponential ansatz, C vs T amplitudes, and why the exponential
+       cures the size-consistency failure of CID
+     - The similarity-transformed Hamiltonian; non-hermiticity as the price
+       of a terminating BCH expansion (exactly at the fourfold commutator)
+     - Full algebraic derivation of the CCD equations (three ladder/ring
+       linear terms, four quadratic topologies) and of the CCSD singles and
+       doubles equations with the Stanton-Gauss-Watts-Bartlett intermediates
+     - CC as a resummation of MBPT: the order-by-order expansion reproduces
+       MP2, MP3 and (for the pairing model) MP4 exactly
+     - Pairing model worked example with the CCD code from week48.ipynb;
+       CCSD on the pairing+particle-hole model where singles are non-zero
+     - Size extensivity verified to machine precision for 2 and 3 subsystems
+     - Comparison against HF, MBPT2/3, CID, RPA and FCI
+     - Still to add: unitary CC (deferred to the quantum-computing chapters),
+       equation-of-motion CC, the diagrammatic derivation, CCSD(T)
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
 ###  SRG and IMSRG
