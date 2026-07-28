@@ -1,0 +1,500 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% Minimal, clean beamer setup
+\usetheme{default}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Packages
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{physics}
+\usepackage{bm}
+\usepackage{mathtools, amsmath, amssymb}
+\usepackage{cancel}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathmorphing,positioning}
+
+% Handy macros
+\newcommand{\NO}[1]{:\!#1\!:}                         % normal ordering
+\newcommand{\con}{\;\;\raisebox{0.2ex}{\tiny$\contraction{}{}{}{}$}\;} % visual contraction hint (optional)
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Hn}{H_0}
+\newcommand{\V}{V}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Qcal}{\mathcal{Q}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Wop}{W}
+\newcommand{\Wopb}{\bar{W}}
+\newcommand{\Order}{\mathcal{T}}                       % (time) ordering symbol placeholder
+\newcommand{\ketPhi}{\ket{\Phi}}                      % reference (Slater) determinant
+\newcommand{\braPhi}{\bra{\Phi}}
+\newcommand{\Egs}{E}
+\newcommand{\Z}{\mathcal{Z}}
+\newcommand{\C}{\mathrm{C}}                           % connected
+\DeclareMathOperator{\Tr}{Tr}
+
+% Title
+\title{\Large The Linked Diagram Theorem in Time-Independent Many-Body Theory}
+\author{MHJ, old notes}
+\date{}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% =======================
+% LECTURE 1
+% =======================
+\section*{Lecture 1: Statement, Setup, and Diagrammatics}
+
+\begin{frame}{Roadmap: Two 45-minute Lectures}
+\textbf{Lecture 1 (foundations)}\vspace{0.3em}
+\begin{itemize}
+  \item Setup: $\Hn$, $\V$, reference $\ketPhi$, projectors $\Pcal,\Qcal$
+  \item Rayleigh--Schr\"odinger (RS) MBPT and vacuum-to-vacuum amplitude
+  \item Diagrammatics for ground-state energy corrections
+  \item \textbf{Statement of the Linked Diagram (Linked-Cluster) Theorem}
+\end{itemize}
+\textbf{Lecture 2 (derivation)}\vspace{0.3em}
+\begin{itemize}
+  \item Proof via cumulants / logarithm of the vacuum amplitude
+  \item Cancellation of unlinked diagrams and normalization
+  \item Explicit low-order examples (up to 3rd order)
+  \item Practical notes: algorithmic generation and bookkeeping
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hamiltonian Partition and Reference State}
+We consider
+\[
+H=\Hn+\V,\qquad \Hn\ket{\Phi}=E_0\ket{\Phi},
+\]
+with $\ket{\Phi}$ a Slater determinant (closed-shell, non-degenerate). Define projection operators
+\[
+\Pcal=\ketPhi\braPhi,\qquad \Qcal=1-\Pcal.
+\]
+\smallskip
+\textbf{Goal:} Compute the exact ground-state energy $\Egs$ as an expansion in $\V$ centered at $\ketPhi$.
+\end{frame}
+
+\begin{frame}{RS Energy Expansion (Time-Independent MBPT)}
+Let $\ket{\Psi}$ be the exact ground state, normalized as $\braket{\Phi}{\Psi}=1$ (intermediate normalization). Then
+\[
+\Egs = E_0 + \Delta E, \qquad \Delta E = \sum_{n\ge 1} E^{(n)}.
+\]
+Standard RS formulas (compactly):
+\[
+E^{(1)}=\matrixel{\Phi}{\V}{\Phi},\qquad
+E^{(2)}=\sum_{\nu\neq 0}\frac{\abs{\matrixel{\Phi}{\V}{\nu}}^2}{E_0-E_\nu^{(0)}},\quad \dots
+\]
+\textbf{Diagrammatically:} each term $\leftrightarrow$ collection of Goldstone diagrams (closed, vacuum diagrams) built from $\V$ and $\Hn$ lines/propagators.
+\end{frame}
+
+\begin{frame}{Normal Ordering and Contractions (Assumed Known)}
+Write (w.r.t.\ $\ketPhi$):
+\[
+\V=\NO{\V} + \underbrace{\wick{\c1 a^\dagger \c1 a}}_{\text{contractions}} + \cdots
+\]
+Wick's theorem (time-independent version) reduces expectation values to sums of products of contractions.\medskip
+
+\textbf{Diagram rules (Goldstone):} vertices for $\V$, lines for particle/hole propagators, symmetry factors $S$, energy denominators from ordered integrals / resolvents.
+\end{frame}
+
+\begin{frame}{Vacuum-to-Vacuum Amplitude and Generating Picture}
+Introduce a bookkeeping parameter $\lambda$:
+\[
+H(\lambda)=\Hn+\lambda \V.
+\]
+Define the (adiabatic) vacuum-to-vacuum amplitude
+\[
+\Z(\lambda) \equiv \braPhi \Omega(\lambda) \ketPhi,
+\]
+where $\Omega(\lambda)$ denotes the M\o ller wave operator that maps $\ketPhi$ to the interacting state in the adiabatic limit.
+\smallskip
+
+\textbf{Heuristic:} Many-body \emph{vacuum diagrams} (closed diagrams) contribute to $\Z$. \emph{Connected} vacuum diagrams contribute to $\log\Z$.
+\end{frame}
+
+\begin{frame}{Statement: Linked Diagram (Linked-Cluster) Theorem}
+\textbf{Theorem.} \emph{For time-independent MBPT with intermediate normalization, the ground-state energy correction $\Delta E$ is given by the sum of \emph{linked} (connected) vacuum diagrams only. Unlinked (disconnected) vacuum diagrams cancel order by order due to normalization and exponentiation.}
+\[
+\boxed{\;\Delta E = \sum_{\text{connected vacuum diagrams}} \text{(value of diagram)}\;}
+\]
+Equivalently: if $\Z$ is the sum of all (linked and unlinked) vacuum diagrams,
+\[
+\log \Z = \sum_{\text{connected vacuum diagrams}},
+\]
+and the energy shift follows from the $\lambda$-derivative of $\log\Z$ at $\lambda=1$ (or from standard RS expressions).
+\end{frame}
+
+\begin{frame}{Connected vs.\ Unlinked: A Visual Reminder}
+\centering
+\begin{tikzpicture}[scale=1.0, every node/.style={font=\small}]
+% Connected bubble
+\draw[thick] (0,0) circle (0.7);
+\node at (0,-1.1){Connected};
+
+% Unlinked pair
+\draw[thick] (4,0.3) circle (0.5);
+\draw[thick] (5.2,-0.3) circle (0.5);
+\node at (4.6,-1.1){Unlinked (disconnected)};
+\end{tikzpicture}
+
+\smallskip
+In algebra: products of lower-order \emph{connected} contributions generate \emph{unlinked} composites; these are precisely removed by the logarithm/normalization.
+\end{frame}
+
+\begin{frame}{Goldstone Diagrams for Energy: Examples}
+\begin{columns}
+\column{0.55\textwidth}
+\textbf{Second order}
+\[
+E^{(2)} = \sum_{\substack{ab \\ ij}} 
+\frac{\abs{\matrixel{ij}{\V}{ab}}^2}{\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b}
+\]
+(one connected bubble)
+\medskip
+
+\textbf{Third order}
+\[
+E^{(3)} = \sum \frac{\matrixel{\Phi}{\V}{\nu}\matrixel{\nu}{\V}{\mu}\matrixel{\mu}{\V}{\Phi}}
+{(E_0-E_\nu^{(0)})(E_0-E_\mu^{(0)})}
+\]
+(topologies: ring, ladder, crossed-ladder)
+\column{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.9]
+% Simple bubble
+\draw[thick] (0,0) circle (0.9);
+\draw[thick] (-0.5,0.6) -- (0.5,-0.6);
+\draw[thick] (-0.5,-0.6) -- (0.5,0.6);
+\node at (0,-1.3){2nd order};
+\end{tikzpicture}
+
+\medskip
+
+\begin{tikzpicture}[scale=0.9]
+% Ring-like
+\draw[thick] (0,0) circle (1.0);
+\foreach \a in {30,150,270}
+  \fill (\a:1.0) circle (2pt);
+\draw[thick] (30:1.0) -- (150:1.0);
+\draw[thick] (150:1.0) -- (270:1.0);
+\draw[thick] (270:1.0) -- (30:1.0);
+\node at (0,-1.4){3rd order (ring)};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Key Takeaways from Lecture 1}
+\begin{itemize}
+  \item Energies in RS-MBPT are sums over vacuum (closed) diagrams built from $\V$.
+  \item \textbf{Linked-Cluster Theorem:} only connected vacuum diagrams contribute to $\Delta E$.
+  \item The mechanism is combinatorial: unlinked diagrams exponentiate and cancel against normalization; \(\log \Z\) generates connected clusters.
+\end{itemize}
+Next: formal derivation via cumulant (connected) expansion.
+\end{frame}
+
+% =======================
+% LECTURE 2
+% =======================
+\section*{Lecture 2: Derivation and Examples}
+
+\begin{frame}{Plan for Lecture 2}
+\begin{enumerate}
+  \item Define the vacuum functional $\Z(\lambda)$ and its perturbative expansion
+  \item Show: $\log \Z(\lambda)$ collects only connected vacuum diagrams
+  \item Extract $\Delta E$ from $\log \Z$
+  \item Work through explicit 2nd and 3rd order to see cancellation of unlinked pieces
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Vacuum Functional and Expansion}
+Introduce an adiabatic regulator (formal):
+\[
+\Z(\lambda)=\frac{\braPhi \Omega(\lambda)\ketPhi}{\braket{\Phi}{\Phi}}
+= \sum_{n=0}^{\infty}\frac{\lambda^n}{n!}\,\braPhi \V^n \ketPhi_{\text{connected+disconnected}},
+\]
+where Wick reduces $\braPhi \V^n \ketPhi$ to sums of complete contractions.
+\smallskip
+
+\textbf{Cluster decomposition:} any complete contraction decomposes uniquely into a product of \emph{connected} contractions (clusters).
+\end{frame}
+
+\begin{frame}{Combinatorics of Clusters $\Rightarrow$ Exponentiation}
+Let $C_n$ denote the sum of all connected vacuum contractions with $n$ vertices of $\V$. Then every disconnected contraction is a product of connected pieces:
+\[
+\Z(\lambda)= 1 + \sum_{n\ge 1} \frac{\lambda^n}{n!}\Big(\text{all contractions}\Big)
+= \exp\!\left(\sum_{n\ge 1}\frac{\lambda^n}{n!}\, C_n\right).
+\]
+\textbf{Thus,}
+\[
+\boxed{\log\Z(\lambda)=\sum_{n\ge 1}\frac{\lambda^n}{n!}\, C_n \equiv \sum_{\text{connected vacuum diagrams}}.}
+\]
+This is the \emph{linked-cluster (connected) expansion}.
+\end{frame}
+
+\begin{frame}{Extracting the Energy from $\log \Z$}
+With intermediate normalization ($\braket{\Phi}{\Psi}=1$) one can show
+\[
+\Delta E = \left.\frac{d}{d\lambda}\log\Z(\lambda)\right|_{\lambda=1}.
+\]
+Expanded:
+\[
+\Delta E = \sum_{n\ge 1}\frac{1}{n!}\, C_n,
+\]
+where $C_n$ are the $n$-th order \emph{connected} (linked) vacuum diagrams evaluated with the usual Goldstone rules (including symmetry factors, energy denominators).
+\end{frame}
+
+\begin{frame}{Sketch of the Proof (1): Wick and Cumulants}
+\textbf{Idea:} Write $\Z=\exp W$ with $W=\log\Z$, and interpret $W$ as the \emph{cumulant} generating functional of vacuum contractions.
+\begin{itemize}
+  \item Introduce sources $J$ linearly coupled to $\V$ or to field bilinears, expand $\Z[J]$.
+  \item Cumulants (derivatives of $W[J]$ at $J=0$) pick out \emph{connected} correlation functions only.
+  \item Setting $J$-structure to reproduce insertions of $\V$ yields $C_n$ as the $n$-point connected vacuum objects.
+\end{itemize}
+This establishes $\log \Z = \sum \text{connected}$ non-constructively but generally.
+\end{frame}
+
+\begin{frame}{Sketch of the Proof (2): Direct Counting}
+Alternatively, count how many times a product of connected pieces appears in $\Z$ vs.\ $\log\Z$:
+\[
+\Z = \sum_{\{m_k\}}\prod_{k\ge 1}\frac{1}{m_k!}\Big(\frac{C_k}{k!}\Big)^{m_k},
+\]
+where $m_k$ is the multiplicity of $k$-vertex connected components and $\sum_k k\,m_k=n$ at $n$-th order.
+\[
+\log\Z = \sum_{k\ge 1} \frac{C_k}{k!},
+\]
+which follows from the exponential formula in combinatorics (the set-partition theorem). Hence only connected contributions survive in $\log\Z$.
+\end{frame}
+
+\begin{frame}{Cancellation of Unlinked Diagrams in Energy}
+Energy from RS can also be written as
+\[
+\Egs = \frac{\braPhi H \ket{\Psi}}{\braket{\Phi}{\Psi}}
+= E_0 + \frac{\braPhi \V \ket{\Psi}}{\braket{\Phi}{\Psi}}.
+\]
+Expanding numerator and denominator in $\lambda$:
+\[
+\frac{N(\lambda)}{D(\lambda)}=\frac{\sum_n \lambda^n N_n}{1+\sum_{m\ge 1}\lambda^m D_m}
+= \sum_{r\ge 0} \lambda^r \Big(N_r - \sum_{m=1}^r D_m N_{r-m} + \cdots\Big),
+\]
+and one finds precisely that terms factorizing into products of lower-order vacuum pieces cancel against the denominator. The survivors are the \emph{linked} contributions, reproducing $\dv{\lambda}\log\Z$.
+\end{frame}
+
+\begin{frame}{Goldstone Rules Refresher (for Energy Diagrams)}
+\begin{itemize}
+  \item Place $n$ interaction vertices $\V$; connect lines respecting fermionic statistics.
+  \item Assign particle/hole propagators; each closed fermion loop $\Rightarrow$ a factor $(-1)$.
+  \item Symmetry factor $S$: divide by automorphisms that leave the diagram invariant.
+  \item Energy denominator: product over intermediate-state energy differences (or via resolvent method).
+  \item Sum over all internal indices (spin, orbitals); overall factor $1/n!$ from perturbative expansion cancels overcountings.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Explicit 2nd Order: Linked Only}
+For a two-body $\V=\tfrac{1}{4}\sum \bar{v}_{pqrs} a_p^\dagger a_q^\dagger a_s a_r$,
+\[
+E^{(2)} = \frac{1}{4}\sum_{ijab} \frac{\abs{\bar{v}_{ijab}}^2}{\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b},
+\]
+which corresponds to the single \emph{connected} bubble diagram.\medskip
+
+Any attempt to form products of first-order pieces is null because $E^{(1)}$ for normal-ordered $V$ vanishes in a Hartree–Fock reference (or is absorbed in $\Hn$), illustrating the absence/cancellation of unlinked composites at this order.
+\end{frame}
+
+\begin{frame}{Explicit 3rd Order: Topologies and Cancellations}
+At third order, connected topologies include (schematically): ring, ladder, and crossed-ladder. Their analytical expressions (one example):
+\[
+E^{(3)}_{\text{lad}}=\frac{1}{8}\sum_{\substack{ijab\\kc}}
+\frac{\bar{v}_{ijab}\,\bar{v}_{bk cj}\,\bar{v}_{ci ka}}
+{(\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b)\,(\varepsilon_i+\varepsilon_k-\varepsilon_a-\varepsilon_c)}.
+\]
+Unlinked structures (products of a connected 2nd-order bubble with a disconnected 1st-order tadpole, etc.) cancel once the denominator normalization (or $\log\Z$) is accounted for.
+\end{frame}
+
+
+\begin{frame}{Alternative Derivation Route: Bloch Equation}
+Let $\Omega$ be the wave operator, $\ket{\Psi}=\Omega\ketPhi$, with the Bloch equation
+\[
+[\Omega,\Hn]\Pcal = \Qcal(\V\Omega - \Omega \Wop)\Pcal,\qquad
+\Wop \equiv \Pcal H \Omega \Pcal.
+\]
+Expanding $\Omega=\sum_{n\ge 0}\Omega^{(n)}$ and $\Wop$ order by order, one can show algebraically that the $\Wop$ (energy) receives only \emph{connected} contributions, because the disconnected pieces generated in $\Omega$ cancel in $\Wop$ through $\Pcal$-projection and the commutator structure. This is equivalent to the cumulant proof.
+\end{frame}
+
+\begin{frame}{Summary of the Derivation}
+\begin{itemize}
+  \item Write the vacuum functional $\Z$ as a sum over all vacuum diagrams.
+  \item Use cluster decomposition $\Rightarrow$ $\Z=\exp\big(\sum \text{connected}\big)$.
+  \item Take $\log$ and differentiate: $\Delta E = \eval{\dv{\lambda}\log \Z(\lambda)}_{\lambda=1}$.
+  \item Hence $\Delta E$ equals the sum of values of \emph{connected} vacuum diagrams only.
+\end{itemize}
+This holds to all orders and underpins size-extensivity and additivity for noninteracting fragments.
+\end{frame}
+
+\begin{frame}{Practical Notes for Calculations}
+\begin{itemize}
+  \item Prefer normal-ordered Hamiltonians; $E^{(1)}$ often vanishes for HF reference.
+  \item Automate diagram generation: enumerate topologies, compute symmetry factors, energy denominators, and index sums.
+  \item Check size-extensivity: only linked diagrams ensure correct scaling with particle number.
+  \item Cross-validate: numerical MBPT vs.\ coupled-cluster (which sums linked \emph{connected} diagrams to infinite order via exponentiation of the cluster operator).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Worked Exercise (for Students)}
+\textbf{Task:} For a two-body interaction in an HF basis, derive $E^{(3)}_{\text{ring}}$ explicitly:
+\begin{enumerate}
+  \item Draw the connected ring topology and assign indices.
+  \item Write the algebraic expression using antisymmetrized matrix elements $\bar{v}_{pqrs}$.
+  \item Derive the energy denominators from intermediate-state energies.
+  \item Verify that any product of a 2nd-order connected and a 1st-order tadpole cancels in the normalized expression.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Take-Home Messages}
+\begin{itemize}
+  \item The linked (connected) nature of contributing diagrams to $\Delta E$ follows from general combinatorics (cumulants).
+  \item Unlinked diagrams exponentiate and cancel via normalization $\Rightarrow$ size-extensive energies.
+  \item The theorem guides practical many-body methods (MBPT, CC, MBPT-derived effective interactions).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Overview}
+  \begin{itemize}
+    \item \textbf{Fermion antisymmetry and sign}: How the Pauli principle and antisymmetric wavefunctions lead to sign factors in many-body perturbation theory.
+    \item \textbf{Goldstone diagram sign rules}: Derivation of the $(-1)$ sign rules using fermion permutation symmetry and Wick's theorem.
+    \item \textbf{Closed hole lines and loops}: Understanding the sign associated with each closed hole line and each closed loop in a Goldstone diagram.
+    \item \textbf{Equivalent lines and symmetry factors}: Role of equivalent line pairs (identical propagators) and how they contribute to the overall sign (and symmetry factor) of a diagram.
+    \item \textbf{Examples and proofs}: Step-by-step evaluation of example diagrams, with mathematical proofs of the sign rules and schematic diagrams illustrating the concepts.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Fermion Permutation Symmetry and Sign}
+  \textbf{Antisymmetric wavefunctions:} Fermionic $N$-particle states are antisymmetric under particle exchange. If two fermions are swapped, the many-body wavefunction gains a minus sign:
+  $$\Psi(\ldots, r_i, \ldots, r_j, \ldots) = -\,\Psi(\ldots, r_j, \ldots, r_i, \ldots).$$ 
+  In second quantization, creation/annihilation operators obey anticommutation: $a_p a_q^\dagger + a_q^\dagger a_p = \delta_{pq}$. This means exchanging the order of two fermion operators introduces a factor $-1$.
+  
+  \vspace{0.5em}
+  \textbf{Operator reordering:} Any term in a perturbation expansion involves a string of creation ($a^\dagger$) and annihilation ($a$) operators acting on the Fermi vacuum $|Φ_0\rangle$. The sign of a term is determined by the parity of the permutations required to rearrange these operators into a standard (normal-ordered) form 
+  \[
+    (-1)^P,\qquad P = \text{number of transpositions needed to reorder operators 
+  \]
+  
+  \textbf{Implication:} The need to swap fermion operators arises whenever we bring annihilation operators past creation operators or swap identical particles. This is the origin of sign rules in diagrammatic expansions.
+\end{frame}
+\end{document}
+
+
+\begin{frame}{Derivation of Sign Rules from Antisymmetry}
+  Consider a simple two-particle excitation from a closed-shell reference $|Φ_0\rangle$ (with occupied orbitals $i,j$ and virtual orbitals $a,b$). The second-quantized operator for this double excitation might appear as:
+  \[
+    a_a^\dagger a_b^\dagger\,a_j\,a_i\,,
+  \] 
+  acting on $|Φ_0\rangle$. To evaluate this, we must move the annihilation operators $a_i, a_j$ to the right to act on $|Φ_0\rangle$. Each commutation (anticommutation) of fermion operators yields a $-1$:
+  \begin{itemize}
+    \item $a_i$ acting on $|Φ_0\rangle$ (which is $a_1^\dagger a_2^\dagger\cdots a_N^\dagger|0\rangle$) must be anticommuted past the creation operators $a_1^\dagger,\ldots,a_{i-1}^\dagger$ that were created before it in $|Φ_0\rangle$. This introduces $(-1)^{i-1}$.
+    \item Similarly, $a_j$ (with $j>i$ for example) must pass the remaining $a_1^\dagger,\ldots,a_{j-1}^\dagger$ (excluding $a_i^\dagger$ which was removed), introducing another $(-1)^{j-2}$.
+  \end{itemize}
+  The overall sign from reordering $a_a^\dagger a_b^\dagger a_j a_i$ to normal order $a_1^\dagger\cdots a_N^\dagger a_i a_j$ is the product of such factors. In this example:
+  \[
+    (-1)^{\,i-1} \times (-1)^{\,j-2} = (-1)^{\,i+j-3}\,,
+  \] 
+  which is a single $-1$ if $i+j-3$ is odd (i.e., if the permutation is odd). This matches the expectation that exchanging two fermions (or performing an odd number of swaps) yields a minus sign.
+  
+  \vspace{0.5em}
+  More generally, Wick’s theorem pairs up creation and annihilation operators (contractions). The sign of each Wick contraction term is $(-1)^P$ where $P$ counts the operator swaps needed to achieve those pairings 
+  Rather than counting each swap manually, we can deduce a general rule based on diagram topology.
+\end{frame}
+
+\begin{frame}{Goldstone Diagram Sign Rule: $(-1)^{h+l}$}
+  In Goldstone diagrams (time-ordered many-body perturbation diagrams), we can determine the sign directly from the diagram’s structure:
+  \[
+    \text{Sign}(D) \;=\; (-1)^{\,h + l}\,,
+  \] 
+  where 
+  \begin{itemize}
+    \item $h$ = number of \textbf{hole lines} (internal lines associated with occupied states in the reference), and 
+    \item $l$ = number of \textbf{closed loops} in the diagram 
+  \end{itemize}
+  Each hole line contributes a factor of $-1$, and each closed loop of fermion lines contributes a factor of $-1$ to the overall sign 
+    This rule emerges from the antisymmetry considerations:
+  \begin{itemize}
+    \item A \emph{hole line} represents an annihilation from the Fermi sea and a later creation (filling the hole). Removing an occupied particle requires swapping that annihilation operator past all other occupied operators, yielding $-1$ per hole.
+    \item A \emph{closed loop} (a cycle of propagators returning to the starting point) effectively introduces an additional exchange among fermions. In field-theoretic terms, a closed fermion loop carries a $-1$ sign. Graphically in Goldstone diagrams, each independent loop adds one more $-1$ factor 
+  \end{itemize}
+  \textbf{Example:} A second-order energy diagram with two hole lines ($h=2$) and forming one closed loop ($l=1$) has $\text{Sign} = (-1)^{2+1} = (-1)^3 = -1$ 
+  (Indeed, the second-order correlation energy in a fermionic system comes in with a negative sign.)
+\end{frame}
+
+\begin{frame}{Closed Hole Lines and Closed Loops}
+  \textbf{Closed hole line:} In a Goldstone diagram, a hole line begins and ends at the Fermi vacuum (ground state). Such a line corresponds to an excitation out of the Fermi sea and the eventual return of that particle to the sea. Because the fermion was removed and reinserted, the operation entails an exchange with the Fermi sea. Each closed hole line contributes one minus sign. Equivalently, an internal occupied propagator (hole) yields $-1$ 
+  
+  \textbf{Closed loop:} A closed loop is a cycle of connected propagators and vertices that forms a ring. For example, two hole lines $i,j$ interacting with two particle lines $a,b$ (in a ring-like topology) form one loop. Such a loop can be seen as an exchange cycle involving multiple fermions. A closed loop contributes an additional $-1$ on top of the individual hole contributions 
+  This is analogous to the well-known result that a closed fermion loop in Feynman diagrams yields a $-1$ factor.
+  
+  \textbf{Multiple loops:} If a diagram has multiple disjoint loops, each loop contributes $-1$. The total sign is therefore the product of $-1$ for each hole line and each loop, i.e. $(-1)^{h+l}$. For instance, adding one extra hole line \emph{and} one extra loop to a diagram introduces two additional minus signs, which multiply to give a positive contribution.
+  
+  \vspace{0.3em}
+  \textit{Aside:} For the purpose of counting $l$, note that even a non-propagating hole (a contracted hole pair created and annihilated at the same interaction) counts as a hole line, and if it forms its own closed cycle it also contributes as a loop [oai_citation:12‡arxiv.org](https://arxiv.org/pdf/1509.00161#:~:text=Fermion%20sign%20of%20a%20single,38). 
+\end{frame}
+
+\begin{frame}{Equivalent Line Pairs and Symmetry Factors}
+  Not all diagram permutations lead to distinct terms. \textbf{Equivalent lines} are multiple propagator lines that connect the same two vertices in the same way. For example, two identical particle lines connecting the same pair of interaction vertices are considered equivalent. Exchanging such equivalent lines does not produce a new diagram; it corresponds to the same term counted twice.
+  
+  \textbf{Symmetry factor for equivalent lines:} For each set of $n$ equivalent lines in a diagram, one must divide by $n!$ to correct for overcounting. In most common cases, this appears as a factor of $\frac{1}{2}$ for each pair of equivalent lines
+  This factor is \emph{not a new source of a minus sign}, but it reduces the diagram’s weight to account for identical permutations. 
+  
+  \textbf{Example:} If an interaction connects two fermions via two parallel identical paths (say two identical interaction lines between the same states), those two lines are equivalent. Swapping them does not change the topology. We therefore include a factor $\frac{1}{2}$ in the algebraic expression of that diagram to avoid double-counting its contribution 
+  For $n=3$ equivalent lines (rare in simple MBPT), a factor $1/3! = 1/6$ would be included, and so on.
+  
+  \vspace{0.3em}
+  \textit{Note:} A related symmetry factor arises if a diagram has a mirror symmetry (e.g. two identical halves). This is effectively another way of saying there are equivalent sets of lines or vertices. Including the $\frac{1}{2}$ (or appropriate $1/n!$) ensures each unique diagram is counted only once.
+\end{frame}
+
+\begin{frame}{Example: Evaluating a Goldstone Diagram}
+  \textbf{Second-Order Energy Diagram:} Consider the second-order Goldstone diagram for correlation energy involving two holes $i,j$ and two particles $a,b$. One possible topology is a ring (often drawn as two hole lines going up from the Fermi sea, interacting with two particle lines coming down, with two interaction vertices linking them). In one interaction, hole $i$ scatters into particle $a$ and in the other, hole $j$ scatters into particle $b$ (direct term). Schematically:
+  \[
+    i \uparrow \-- V \-- a \downarrow \qquad j \uparrow \-- V \-- b \downarrow
+  \] 
+  (with $i,j$ starting at the Fermi sea and $a,b$ ending at high energy, and the dashed $V$ lines representing the two-body interactions).
+  
+  For this diagram:
+  \begin{itemize}
+    \item Number of hole lines $h = 2$ ($i$ and $j$ are two distinct hole propagators).
+    \item Number of loops $l = 1$ (the diagram forms one closed cycle connecting $i$ and $j$ through the two interactions and back to the Fermi sea).
+    \item \textbf{Sign} $= (-1)^{h+l} = (-1)^{2+1} = -1$ 
+  \end{itemize}
+  The algebraic contribution of this diagram (using Møller-Plesset perturbation theory notation) would be:
+  \[
+    E^{(2)}_{\text{dir}} = -\sum_{ijab}\frac{V_{ij}^{ab}\,V_{ij}^{ab}}{\epsilon_a + \epsilon_b - \epsilon_i - \epsilon_j}\,,
+  \] 
+  where the minus sign corresponds to $(-1)^{3}=-1$ as derived. Here $V_{ij}^{ab} = \langle ij||ab\rangle$ is an antisymmetrized two-electron integral (symmetric in exchanging $i\leftrightarrow j$ or $a\leftrightarrow b$, and with implicit antisymmetry $V_{ij}^{ab}=-V_{ji}^{ab}$).
+  
+  \textbf{Exchange term:} Another second-order diagram has the two interactions crossed (hole $i$ goes to particle $b$, and $j$ to particle $a$). This exchange diagram also has $h=2$, $l=1$, giving sign $-1$. Its algebraic contribution is proportional to $\langle ij||ba\rangle$ which carries an additional minus relative to the direct term integrals, reflecting the same exchange antisymmetry. The diagrammatic $-1$ sign and the antisymmetric matrix element together ensure the correct overall sign.
+\end{frame}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item Fermion antisymmetry (Pauli exclusion principle) is the fundamental source of sign factors in many-body perturbation theory. Terms corresponding to an odd permutation of fermion operators pick up a negative sign 
+    \item In Goldstone diagrams, a clear rule encapsulates these sign factors: $\displaystyle \text{Sign} = (-1)^{\,h + l}$
+      One $-1$ arises for each hole line ($h$) and one for each independent closed loop ($l$) 
+    \item A “hole line” represents the removal and reinsertion of a fermion from the Fermi sea (an internal occupied propagator), and each such removal yields a $-1$ sign. A “closed loop” of fermion propagators adds another $-1$, analogous to a closed fermion loop in Feynman diagrams
+    \item When evaluating diagrams, one must also account for \textbf{equivalent lines}. Identical propagator lines connecting the same vertices lead to symmetry factors (like $1/2$ for a pair) to avoid double counting 
+
+      These factors adjust the magnitude (and are often discussed alongside sign rules) but do not themselves introduce negative signs.
+    \item We included examples (second-order diagrams) to illustrate how to apply these rules in practice. By following the $(-1)^{h+l}$ rule and including symmetry factors for equivalent lines, one can confidently determine the sign and weight of any Goldstone diagram term, ensuring the perturbation expansion respects the antisymmetry of fermions and avoids overcounting.
+  \end{itemize}
+\end{frame}
+
+\end{document}
+
+
