@@ -356,16 +356,22 @@ def pairing_ph_model(levels=4, particles=4, g=1.0, f=0.0, xi=1.0):
 
 
 def independent_copies(subsystems=2, levels_per=3, g=0.5, xi=1.0):
-    """Non-interacting copies of a pairing system, for the extensivity test."""
+    """Non-interacting copies of a pairing system, for the extensivity test.
+
+    The levels are ordered so that the lowest level of *every* subsystem
+    comes first: global level index  L = level * subsystems + subsystem,
+    with energy xi * level.  The reference determinant then puts one pair in
+    the lowest level of each subsystem, as it must.
+    """
     levels = subsystems * levels_per
     n = 2 * levels
-    h = np.diag([xi * ((o // 2) % levels_per)
-                 for o in range(n)]).astype(float)
+    energies = [xi * ((o // 2) // subsystems) for o in range(n)]
+    h = np.diag(energies).astype(float)
     v = np.zeros((n, n, n, n))
     for p in range(levels):
         for q in range(levels):
-            if p // levels_per != q // levels_per:
-                continue
+            if p % subsystems != q % subsystems:
+                continue                       # different subsystems
             _add_term(v, -0.5 * g, 2 * p, 2 * p + 1, 2 * q, 2 * q + 1)
     return h, v, 2 * subsystems
 
@@ -590,16 +596,13 @@ def demo_orders():
             eps = np.diag(fk)
             w = np.array([sum(eps[o] for o in range(8) if (s >> o) & 1)
                           for s in model.basis.states])
-            part = mbptmod.Partition(w=None, H=model.matrix(), h0_diagonal=w,
-                                     reference=model.basis.index[
-                                         model.reference]) \
-                if False else mbptmod.Partition(model.matrix(), w,
-                                                model.basis.index[
-                                                    model.reference])
+            part = mbptmod.Partition(model.matrix(), w,
+                                     model.basis.index[model.reference])
             rs = mbptmod.rayleigh_schrodinger(part, order=4)
             for k in (2, 3, 4):
-                print(f"{g if k == 2 else 0:6.2f} {k:7d} "
-                      f"{energies[k - 2]:16.10f} {rs[k - 1]:16.10f}")
+                label = f"{g:6.2f}" if k == 2 else " " * 6
+                print(f"{label} {k:7d} {energies[k - 2]:16.10f} "
+                      f"{rs[k - 1]:16.10f}")
     except Exception as exc:
         print(f"   (chapter 9's program not importable: {exc})")
     print()
@@ -686,16 +689,17 @@ def demo_extensivity():
     print("operators commute and exp(T_A + T_B) = exp(T_A) exp(T_B), so the")
     print("wave function factorises and the energy is additive.")
     print()
-    print("Two identical, non-interacting copies of a three-level pairing")
-    print("system:")
-    print(f"{'g':>6s} {'2 x one copy':>17s} {'two copies':>17s} "
-          f"{'error':>11s}")
+    print("Identical, non-interacting copies of a three-level pairing")
+    print("system, one pair in each:")
+    print(f"{'g':>6s} {'E(one copy)':>17s} {'E(2) - 2E(1)':>15s} "
+          f"{'E(3) - 3E(1)':>15s}")
     for g in (0.25, 0.5, 1.0):
-        h1, v1, n1 = independent_copies(subsystems=1, g=g)
-        h2, v2, n2 = independent_copies(subsystems=2, g=g)
-        e1 = ccd(fock_matrix(h1, v1, n1), v1, n1)["energy"]
-        e2 = ccd(fock_matrix(h2, v2, n2), v2, n2)["energy"]
-        print(f"{g:6.2f} {2 * e1:17.12f} {e2:17.12f} {e2 - 2 * e1:11.2e}")
+        e = []
+        for m in (1, 2, 3):
+            h, v, N = independent_copies(subsystems=m, g=g)
+            e.append(ccd(fock_matrix(h, v, N), v, N)["energy"])
+        print(f"{g:6.2f} {e[0]:17.12f} {e[1] - 2 * e[0]:15.2e} "
+              f"{e[2] - 3 * e[0]:15.2e}")
     print()
     print("Exact to machine precision at every coupling.  Compare with the")
     print("doubles configuration-interaction errors of chapter 5, which grew")
