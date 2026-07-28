@@ -25,10 +25,12 @@ chapter7.tex       Mean-field applications: the pairing + particle-hole model,
                    TDA, RPA, BCS and QRPA
 chapter8.tex       Density functional theory: density matrices, the
                    Hohenberg-Kohn theorems, Kohn-Sham, the LDA
+chapter9.tex       Many-body perturbation theory: Brillouin-Wigner and
+                   Rayleigh-Schroedinger to third order, four models
 add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
 calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  combinatorial.tex
-week40.do.txt  pmm.tex  dft.do.txt  pairing_ph_exact_diag.ipynb
-pairing_ph_rpa_qrpa.ipynb  FYS4480*.pdf
+week40.do.txt  pmm.tex  dft.do.txt  mbpt.ipynb
+pairing_ph_exact_diag.ipynb  pairing_ph_rpa_qrpa.ipynb  FYS4480*.pdf
                    staging files and handwritten notes, merged into the
                    chapters above; not included by book.tex
 variationalmc.tex  Variational Monte Carlo
@@ -57,7 +59,7 @@ The build is clean: no errors, no undefined references or citations.
 2. Most `\part`s in `book.tex` have their `\input` lines commented out —
    work in progress.
 3. `book.tex` loads `pstricks` and `[dvips]{epsfig}`, though nothing in
-   chapters 1–8 uses them. Dropping them would allow a plain `pdflatex` route.
+   chapters 1–9 uses them. Dropping them would allow a plain `pdflatex` route.
 
 ## LaTeX conventions
 
@@ -74,9 +76,9 @@ The build is clean: no errors, no undefined references or citations.
 - Equations: numbered `equation` environments with labels in the pattern
   `\label{eq:2-1a}` (chapter number, running index, letter suffix). Reference
   as `Eq.~(\ref{eq:2-1a})`.
-- All eight chapters use numbered `\section{...}`. Chapters 1--3 end with an
+- All nine chapters use numbered `\section{...}`. Chapters 1--3 end with an
   `Exercises` section containing warm-up exercises followed by the weekly
-  FYS4480 sessions and their answers; chapters 4--8 relegate the long
+  FYS4480 sessions and their answers; chapters 4--9 relegate the long
   derivations to their exercises, each with a worked solution written as
   `\subsection*{Exercise N: title}` followed by `\paragraph{Answer to a).}`.
 - `\Det{...}` expands to `{|\bfv{#1}|}`, so it takes a *matrix symbol*, not an
@@ -115,7 +117,9 @@ systems. `week40.do.txt` (Hartree-Fock, Thouless, stability, the electron gas)
 was merged into `chapter6.tex`, together with the BCH/Trotter material from
 `pmm.tex`. The two notebooks `pairing_ph_exact_diag.ipynb` and
 `pairing_ph_rpa_qrpa.ipynb` were merged into `chapter7.tex`, and
-`dft.do.txt` into `chapter8.tex`.
+`dft.do.txt` into `chapter8.tex`, and `mbpt.ipynb` into `chapter9.tex`.
+Chapter 9 is deliberately algebraic: the diagrammatic representation of
+perturbation theory has not been written yet.
 
 ## Jupyter-book target
 
@@ -125,8 +129,9 @@ notebooks. `linearalgebra.ipynb` is the companion to `chapter1.tex` and
 `manybodybasics.ipynb` to `chapter2.tex`, `wicktheorem.ipynb` to the Wick
 sections of `chapter3.tex`, and `models.ipynb` plus `Hubbard.ipynb` to
 `chapter4.tex`, `fullci.ipynb` to `chapter5.tex`, `hartreefock.ipynb` to
-`chapter6.tex`, `tdarpa.ipynb` to `chapter7.tex` and `dft.ipynb` to
-`chapter8.tex`; the older set is `notation.ipynb`,
+`chapter6.tex`, `tdarpa.ipynb` to `chapter7.tex`, `dft.ipynb` to
+`chapter8.tex` and `mbptheory.ipynb` to `chapter9.tex`; the older set is
+`notation.ipynb`,
 `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
 `vmcdmc.ipynb`, … New book material that includes runnable code should have a
 notebook counterpart, and new notebooks must be registered in `_toc.yml`.
@@ -161,19 +166,22 @@ written for chapters 1 and 2 are:
 | `hartreefock.py` | 6 | SCF with the density matrix, Thouless rotations, the stability matrix, BCH and Trotter errors, the electron gas |
 | `rpa.py` | 7 | Pairing + particle-hole model: exact diagonalization, TDA, RPA, BCS, QRPA, all matrices built as double commutators |
 | `dft.py` | 8 | LDA built from the uniform gas, the exchange hole, a Kohn-Sham solver in the chapter-6 basis, self-interaction and locality errors |
+| `mbpt.py` | 9 | Rayleigh-Schroedinger to any order by recursion, Brillouin-Wigner self-consistently, four models, size extensivity, convergence |
 
 All of these run on `numpy` alone except `hartreefock.py`, which also needs
 `scipy.linalg` for `expm`/`logm`; `rpa.py`, which needs `scipy.linalg`,
 `scipy.sparse` and `scipy.optimize`; and `dft.py`, which needs `scipy.linalg`
-and `scipy.interpolate`. The notebooks additionally use `matplotlib`.
-`rpa.py` takes about 20 s to run in full, everything else a few seconds.
+and `scipy.interpolate`. `mbpt.py` imports `fci.py`, `hartreefock.py` and
+`rpa.py` and reuses their model builders, so those three must stay importable.
+The notebooks additionally use `matplotlib`. `rpa.py` takes about 20 s to run
+in full, everything else a few seconds.
 
 The one-dimensional trap (harmonic well, softened Coulomb repulsion, eight
 oscillator orbitals, 401-point grid) recurs in chapters 1, 2, 6 and 8, and
 the same energies must come out of `slaterdeterminant.py`, `hartreefock.py`
 and `dft.py`. If you change the grid or the softening, re-run all three.
 
-Every number quoted in chapters 1–8 comes from one of these; each file runs
+Every number quoted in chapters 1–9 comes from one of these; each file runs
 as a script and prints the tables that appear in the text. **If you change a
 program, re-run it and update the corresponding table.** The older programs
 `CCD_PairingModel.py`, `NeutronMatterCCD_Ladders.py`, `ucc.py`, `ho1dim.py` and

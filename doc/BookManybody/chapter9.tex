@@ -2,3 +2,1242 @@
 \label{chap:mbpt}
 %=============================================================================
 
+Chapter~\ref{chap:fci} showed that the exact ground state is a superposition
+of all determinants, and that we cannot afford them.  Chapter~\ref{chap:hartrefock}
+found the best single determinant, and Chapter~\ref{chap:mfapplications}
+described the fluctuations about it.  Perturbation theory takes yet another
+route: it accepts the mean-field determinant as a starting point and generates
+corrections to it \emph{order by order} in the interaction, each order being a
+finite, well-defined sum that can be written down and evaluated.
+
+The appeal is obvious.  There is no matrix to diagonalise, no iteration to
+converge, and no variational parameters -- only sums over intermediate states,
+which for a two-body Hamiltonian are limited to particle-hole excitations of
+low rank.  The price is equally clear and we shall be blunt about it: the
+method is not variational, so nothing guarantees that a higher order is a
+better answer; and the series need not converge at all.
+
+This chapter develops the formalism algebraically.  There is a beautiful
+diagrammatic language for organising these sums, and it is indispensable
+beyond third order, but it is a separate subject and we leave it out here in
+order to keep the algebra visible.  We derive the two classical schemes --
+Brillouin-Wigner and Rayleigh-Schr\"odinger -- write out the first, second and
+third-order terms, and then apply them to the four models that have run
+through the book: the pairing model of Section~\ref{sec:pairingmodel}, the
+Lipkin model of Section~\ref{sec:lipkin}, the Hubbard model of
+Section~\ref{sec:hubbard}, and the pairing plus particle-hole model of
+Section~\ref{sec:pairingphmodel}.  Every number is compared with the exact
+answer and with the methods of the preceding chapters.
+
+%----------------------------------------------------------------------
+\section{An exact starting point}
+\label{sec:exactstart}
+
+\index{perturbation theory!many-body}
+We are interested in the ground state, and we assume it is dominated by a
+single determinant $\bket{\Phi_0}$ that solves an unperturbed problem,
+\begin{equation}
+  \hat{H}_0\bket{\Phi_0} = W_0\bket{\Phi_0},
+  \qquad
+  \hat{H} = \hat{H}_0 + \hat{H}_I .
+  \label{eq:9-partition}
+\end{equation}
+The exact state is expanded in the eigenstates of $\hat{H}_0$,
+\begin{equation}
+  \bket{\Psi_0} = \bket{\Phi_0}
+    + \sum_{m=1}^{\infty}C_m\bket{\Phi_m},
+  \label{eq:9-expansion}
+\end{equation}
+with intermediate normalisation $\braket{\Phi_0}{\Psi_0}=1$, exactly as in
+Section~\ref{sec:ciexpansion}.  Note that $\bket{\Psi_0}$ is therefore not
+normalised to unity; this is a convenience, not an approximation.
+
+Project the Schr\"odinger equation $\hat{H}\bket{\Psi_0}=E\bket{\Psi_0}$ onto
+the reference,
+\begin{equation}
+  \bracket{\Phi_0}{\hat{H}}{\Psi_0} = E\braket{\Phi_0}{\Psi_0} = E,
+  \label{eq:9-projectE}
+\end{equation}
+and subtract the corresponding statement for $\hat{H}_0$,
+\begin{equation}
+  \bracket{\Psi_0}{\hat{H}_0}{\Phi_0}
+   = W_0\braket{\Psi_0}{\Phi_0} = W_0 .
+  \label{eq:9-projectW}
+\end{equation}
+Both operators are Hermitian, so the two may be subtracted directly, giving
+\begin{equation}
+  \boxed{\;
+  \Delta E = E - W_0
+   = \bracket{\Phi_0}{\hat{H}_I}{\Psi_0} .
+  \;}
+  \label{eq:9-exactDE}
+\end{equation}
+This is exact, and we call $\Delta E$ the correlation energy.  Every
+perturbative derivation in this chapter starts from it.
+
+As it stands, however, Eq.~(\ref{eq:9-exactDE}) is a rewriting of the
+Schr\"odinger equation and nothing more: the right-hand side contains the
+unknown exact state.  To make progress we must expand $\bket{\Psi_0}$ in
+powers of $\hat{H}_I$.
+
+%----------------------------------------------------------------------
+\section{Projection operators and the resolvent}
+\label{sec:projection}
+
+\index{projection operators}\index{resolvent}
+Define the projector onto the reference and its complement,
+\begin{equation}
+  \hat{P} = \ketbra{\Phi_0}{\Phi_0},
+  \qquad
+  \hat{Q} = \sum_{m=1}^{\infty}\ketbra{\Phi_m}{\Phi_m}
+          = 1 - \hat{P},
+  \label{eq:9-PQ}
+\end{equation}
+so that our model space is one-dimensional.  Both are idempotent,
+$\hat{P}^2=\hat{P}$ and $\hat{Q}^2=\hat{Q}$, both commute with $\hat{H}_0$ --
+they are built from its eigenstates -- and $\hat{P}\hat{Q}=0$.  With
+intermediate normalisation,
+\begin{equation}
+  \bket{\Psi_0} = \left(\hat{P}+\hat{Q}\right)\bket{\Psi_0}
+   = \bket{\Phi_0} + \hat{Q}\bket{\Psi_0}.
+  \label{eq:9-PQdecomposition}
+\end{equation}
+
+Now introduce an energy parameter $\omega$, to be fixed later, and rewrite the
+Schr\"odinger equation by adding and subtracting
+$\omega\bket{\Psi_0}$,
+\begin{equation}
+  \left(\omega-\hat{H}_0\right)\bket{\Psi_0}
+   = \left(\omega-E+\hat{H}_I\right)\bket{\Psi_0}.
+  \label{eq:9-omegaform}
+\end{equation}
+Provided the operator on the left has an inverse -- the \emph{resolvent}, or
+unperturbed Green's function,
+\begin{equation}
+  \left(\omega-\hat{H}_0\right)^{-1}
+   = \frac{1}{\omega-\hat{H}_0},
+  \label{eq:9-resolvent}
+\end{equation}
+we may divide by it.  Multiplying from the left by $\hat{Q}$ and using
+\begin{equation}
+  \hat{Q}\frac{1}{\omega-\hat{H}_0}\hat{Q}
+   = \hat{Q}\frac{1}{\omega-\hat{H}_0}
+   = \frac{\hat{Q}}{\omega-\hat{H}_0},
+  \label{eq:9-Qcommutes}
+\end{equation}
+which holds because $\hat{Q}$ commutes with $\hat{H}_0$ and is idempotent, we
+obtain
+\begin{equation}
+  \bket{\Psi_0} = \bket{\Phi_0}
+    + \frac{\hat{Q}}{\omega-\hat{H}_0}
+      \left(\omega-E+\hat{H}_I\right)\bket{\Psi_0}.
+  \label{eq:9-implicit}
+\end{equation}
+
+Equation~(\ref{eq:9-implicit}) is still exact and still useless: it is a
+nonlinear equation for two unknowns, $E$ and $\bket{\Psi_0}$.  But it invites
+iteration.  Substituting the whole right-hand side into itself repeatedly,
+starting from the natural guess $\bket{\Psi_0}\to\bket{\Phi_0}$, gives
+\begin{equation}
+  \bket{\Psi_0} = \sum_{i=0}^{\infty}
+    \left\{\frac{\hat{Q}}{\omega-\hat{H}_0}
+      \left(\omega-E+\hat{H}_I\right)\right\}^{i}\bket{\Phi_0},
+  \label{eq:9-iterated}
+\end{equation}
+and, inserted into Eq.~(\ref{eq:9-exactDE}),
+\begin{equation}
+  \Delta E = \sum_{i=0}^{\infty}
+    \bracket{\Phi_0}{\hat{H}_I
+    \left\{\frac{\hat{Q}}{\omega-\hat{H}_0}
+      \left(\omega-E+\hat{H}_I\right)\right\}^{i}}{\Phi_0}.
+  \label{eq:9-generalseries}
+\end{equation}
+This is a genuine expansion in powers of $\hat{H}_I$.  Two things still spoil
+it: the undetermined parameter $\omega$, and the appearance of the exact
+energy $E$.  The two classical schemes are the two natural ways of disposing
+of them.
+
+%----------------------------------------------------------------------
+\section{Brillouin-Wigner perturbation theory}
+\label{sec:brillouinwigner}
+
+\index{Brillouin-Wigner perturbation theory}
+The first choice is $\omega=E$, which annihilates the awkward factor
+$(\omega-E)$ and leaves
+\begin{equation}
+  \Delta E = \bracket{\Phi_0}{
+    \hat{H}_I
+    + \hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I
+    + \hat{H}_I\frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I
+      \frac{\hat{Q}}{E-\hat{H}_0}\hat{H}_I
+    + \cdots}{\Phi_0}.
+  \label{eq:9-bwseries}
+\end{equation}
+Every term is explicit and the structure is simple: alternating interactions
+and resolvents.  The price is that $E$ appears in every denominator, so the
+equation must be solved self-consistently -- guess $E$, evaluate the
+right-hand side, update, repeat.
+
+There is more to be said.  Write $\hat{e}=E-\hat{H}_0$ and recall that
+$\hat{Q}$ commutes with $\hat{H}_0$ and is idempotent.  The geometric series
+\begin{equation}
+  \hat{Q}\frac{1}{\hat{e}-\hat{Q}\hat{H}_I\hat{Q}}
+   = \hat{Q}\left[\frac{1}{\hat{e}}
+     + \frac{1}{\hat{e}}\hat{Q}\hat{H}_I\hat{Q}\frac{1}{\hat{e}}
+     + \frac{1}{\hat{e}}\hat{Q}\hat{H}_I\hat{Q}\frac{1}{\hat{e}}
+       \hat{Q}\hat{H}_I\hat{Q}\frac{1}{\hat{e}}
+     + \cdots\right]\hat{Q}
+  \label{eq:9-geometric}
+\end{equation}
+resums Eq.~(\ref{eq:9-bwseries}) completely, giving the closed form
+\begin{equation}
+  \boxed{\;
+  \Delta E = \bracket{\Phi_0}{\hat{H}_I
+    + \hat{H}_I\hat{Q}
+      \frac{1}{E-\hat{H}_0-\hat{Q}\hat{H}_I\hat{Q}}
+      \hat{Q}\hat{H}_I}{\Phi_0}.
+  \;}
+  \label{eq:9-bwexact}
+\end{equation}
+This is not an approximation.  Solved self-consistently it returns the exact
+ground-state energy, and the program \texttt{mbpt.py} verifies that it does,
+for the pairing model, to eight digits at every coupling:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrrr}
+\toprule
+$g$ & BW(2) & BW(3) & BW resummed & FCI\\
+\midrule
+$0.25$ & $1.73328927$ & $1.73091635$ & $1.73045985$ & $1.73045985$\\
+$0.50$ & $1.43866884$ & $1.42314335$ & $1.41677428$ & $1.41677428$\\
+$1.00$ & $0.79140813$ & $0.70800963$ & $0.63554847$ & $0.63554847$\\
+$1.50$ & $0.09433209$ & $-0.10095126$ & $-0.34819051$ & $-0.34819051$\\
+$2.00$ & $-0.63318105$ & $-0.96772735$ & $-1.48965216$ & $-1.48965216$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Equation~(\ref{eq:9-bwexact}) is, in other words, one more disguise of the
+Schr\"odinger equation.  Its truncations are simple to write down and, for a
+single small system, converge quickly.  They also have a fatal defect, which
+Section~\ref{sec:sizeextensivity} exhibits.
+
+%----------------------------------------------------------------------
+\section{Rayleigh-Schr\"odinger perturbation theory}
+\label{sec:rayleighschrodinger}
+
+\index{Rayleigh-Schr\"odinger perturbation theory}
+The second choice is $\omega=W_0$, the \emph{unperturbed} reference energy,
+which removes the exact energy from the denominators at the cost of leaving
+$\Delta E$ in the numerators,
+\begin{equation}
+  \Delta E = \bracket{\Phi_0}{
+    \hat{H}_I
+    + \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}
+      \left(\hat{H}_I-\Delta E\right)
+    + \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}
+      \left(\hat{H}_I-\Delta E\right)
+      \frac{\hat{Q}}{W_0-\hat{H}_0}
+      \left(\hat{H}_I-\Delta E\right)
+    + \cdots}{\Phi_0}.
+  \label{eq:9-rsseries}
+\end{equation}
+One simplification is immediate.  Since $\Delta E$ is a number and $\hat{Q}$
+annihilates the reference,
+\begin{equation}
+  \hat{Q}\,\Delta E\bket{\Phi_0} = \Delta E\,\hat{Q}\bket{\Phi_0} = 0,
+  \label{eq:9-Qkills}
+\end{equation}
+so the rightmost $\Delta E$ in each term drops out and
+\begin{equation}
+  \Delta E = \bracket{\Phi_0}{
+    \hat{H}_I
+    + \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I
+    + \hat{H}_I\frac{\hat{Q}}{W_0-\hat{H}_0}
+      \left(\hat{H}_I-\Delta E\right)
+      \frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I
+    + \cdots}{\Phi_0}.
+  \label{eq:9-rsreduced}
+\end{equation}
+
+Equation~(\ref{eq:9-rsreduced}) is still implicit in $\Delta E$, and the
+resolution is to expand it too.  Writing
+\begin{equation}
+  \Delta E = \sum_{i=1}^{\infty}\Delta E^{(i)},
+  \label{eq:9-orderbyorder}
+\end{equation}
+and collecting powers of $\hat{H}_I$, we obtain the first three orders:
+\begin{align}
+  \Delta E^{(1)} &= \bracket{\Phi_0}{\hat{H}_I}{\Phi_0},
+  \label{eq:9-E1}\\[2pt]
+  \Delta E^{(2)} &= \bracket{\Phi_0}{\hat{H}_I
+    \frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I}{\Phi_0},
+  \label{eq:9-E2}\\[2pt]
+  \Delta E^{(3)} &= \bracket{\Phi_0}{\hat{H}_I
+      \frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I
+      \frac{\hat{Q}}{W_0-\hat{H}_0}\hat{H}_I}{\Phi_0}
+    - \bracket{\Phi_0}{\hat{H}_I}{\Phi_0}
+      \bracket{\Phi_0}{\hat{H}_I
+      \frac{\hat{Q}}{\left(W_0-\hat{H}_0\right)^2}
+      \hat{H}_I}{\Phi_0}.
+  \label{eq:9-E3}
+\end{align}
+In a basis of unperturbed determinants, writing $V_{mn}$ for the matrix
+elements of $\hat{H}_I$ and $D_m=W_0-W_m$ for the energy denominators, these
+read
+\begin{align}
+  \Delta E^{(1)} &= V_{00},
+  \label{eq:9-E1sum}\\
+  \Delta E^{(2)} &= \sum_{m\ne0}\frac{V_{0m}V_{m0}}{D_m},
+  \label{eq:9-E2sum}\\
+  \Delta E^{(3)} &= \sum_{m,n\ne0}
+      \frac{V_{0m}V_{mn}V_{n0}}{D_mD_n}
+    - V_{00}\sum_{m\ne0}\frac{V_{0m}V_{m0}}{D_m^2}.
+  \label{eq:9-E3sum}
+\end{align}
+
+The second term of Eq.~(\ref{eq:9-E3sum}) is the one to pay attention to.  It
+is the price of having removed $E$ from the denominators, and it appears for
+the first time at third order.  It is often called the \emph{renormalisation}
+term, and it is not small: for the pairing model at $g=0.5$ the program finds
+\begin{equation}
+  \underbrace{-0.02300347}_{\text{principal}}
+  - \underbrace{\left(-0.01258681\right)}_{\text{renormalisation}}
+  = \underbrace{-0.01041667}_{\Delta E^{(3)}},
+  \label{eq:9-renormexample}
+\end{equation}
+so the correction is larger than the answer.  Its function, as
+Section~\ref{sec:sizeextensivity} shows, is to cancel exactly those
+contributions that would otherwise make the energy scale wrongly with the
+size of the system.  This is the algebraic shadow of the linked-diagram
+theorem.
+
+\paragraph{Generating the series to any order.}
+Rather than extend Eqs.~(\ref{eq:9-E1})--(\ref{eq:9-E3}) by hand, one uses the
+standard recursion.  With $\hat{R}=\hat{Q}/(W_0-\hat{H}_0)$,
+\begin{equation}
+  \bket{\Psi^{(n)}} = \hat{R}\left[\hat{H}_I\bket{\Psi^{(n-1)}}
+    - \sum_{k=1}^{n-1}\Delta E^{(k)}\bket{\Psi^{(n-k)}}\right],
+  \qquad
+  \Delta E^{(n+1)} = \bracket{\Phi_0}{\hat{H}_I}{\Psi^{(n)}},
+  \label{eq:9-recursion}
+\end{equation}
+starting from $\bket{\Psi^{(0)}}=\bket{\Phi_0}$.  Unwinding two steps
+reproduces Eqs.~(\ref{eq:9-E2}) and~(\ref{eq:9-E3}) exactly, renormalisation
+term included, and the program checks the agreement numerically for all four
+models.  We use the recursion in Section~\ref{sec:convergence} to look at what
+the series does at high order.
+
+%----------------------------------------------------------------------
+\section{The wave operator, and the link to configuration interaction}
+\label{sec:waveoperator}
+
+\index{correlation operator}\index{wave operator}
+Before turning to numbers it is worth seeing what perturbation theory is
+doing to the wave function, because it connects directly to
+Chapter~\ref{chap:fci}.
+
+Recall the correlation operator of Eq.~(\ref{eq:5-correlationoperator}),
+\begin{equation}
+  \bket{\Psi_0} = \left(1+\hat{C}\right)\bket{\Phi_0},
+  \qquad
+  \hat{C} = \sum_{ai}C_i^a\hat{a}^{\dagger}_a\hat{a}_i
+    + \sum_{abij}C_{ij}^{ab}
+      \hat{a}^{\dagger}_a\hat{a}^{\dagger}_b\hat{a}_j\hat{a}_i
+    + \cdots
+  \label{eq:9-correlationoperator}
+\end{equation}
+In a configuration-interaction calculation the coefficients come out of a
+diagonalisation.  Perturbation theory produces them instead as an expansion,
+and it is instructive to see the two agree at lowest order.
+
+Take a Hartree-Fock basis, so that $\bracket{\Phi_0}{\hat{H}_I}{\Phi_i^a}=0$
+by Brillouin's theorem, Eq.~(\ref{eq:6-brillouin}).  A two-body interaction
+can connect the reference only to $2p$-$2h$ states, so
+Eq.~(\ref{eq:9-E2}) collapses to the single well-known expression
+\begin{equation}
+  \Delta E^{(2)} = \frac{1}{4}\sum_{abij}
+    \frac{\langle ij\vert\hat{v}\vert ab\rangle
+          \langle ab\vert\hat{v}\vert ij\rangle}
+         {\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b}.
+  \label{eq:9-mp2}
+\end{equation}
+Compare this with the exact correlation energy in the same basis,
+Eq.~(\ref{eq:5-energyeq}), which for a Hartree-Fock reference reduces to
+\begin{equation}
+  \Delta E = \sum_{abij}
+    \langle ij\vert\hat{v}\vert ab\rangle\,C_{ij}^{ab}.
+  \label{eq:9-fciDE}
+\end{equation}
+The two agree provided
+\begin{equation}
+  C_{ij}^{ab} = \frac{1}{4}
+    \frac{\langle ab\vert\hat{v}\vert ij\rangle}
+         {\varepsilon_i+\varepsilon_j-\varepsilon_a-\varepsilon_b},
+  \label{eq:9-firstordercoefficients}
+\end{equation}
+which is precisely the first-order perturbative estimate of the doubles
+amplitudes.  Second-order perturbation theory is thus configuration
+interaction with the doubles amplitudes taken to first order instead of being
+solved for.
+
+The difference matters.  Full configuration interaction determines
+$C_{ij}^{ab}$ to \emph{all} orders in the interaction, whereas
+Eq.~(\ref{eq:9-firstordercoefficients}) is the leading term of an expansion.
+Going to higher order in perturbation theory brings in successively more
+complicated correlations -- and, at fourth order and beyond, genuinely new
+excitation classes.  This is the sense in which the two hierarchies are
+complementary: configuration interaction truncates the \emph{excitation
+rank} and keeps all orders in the interaction; perturbation theory truncates
+the \emph{order in the interaction} and keeps all excitation ranks that can
+contribute.  Coupled-cluster theory, which we come to later, is designed to
+keep the best of both.
+
+\begin{notebox}
+\textbf{Choosing the partition.}  Nothing in the derivation fixed
+$\hat{H}_0$; only that it be soluble and that $\bket{\Phi_0}$ be one of its
+eigenstates.  Two choices are standard.  Taking $\hat{H}_0$ to be the
+one-body part of $\hat{H}$ -- in a Hartree-Fock basis, the Fock operator --
+is the M\o{}ller-Plesset partition, and it is what we use below.  Taking
+$\hat{H}_0$ to be the entire \emph{diagonal} of $\hat{H}$ in the determinant
+basis is the Epstein-Nesbet partition; then $\Delta E^{(1)}=0$ by
+construction and the denominators contain the diagonal interaction as well.
+The two sum to the same exact answer and disagree at every finite order.
+Section~\ref{sec:partitions} compares them, and finds that neither is
+uniformly better -- which is why a perturbative result quoted without its
+partition means nothing.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The pairing model}
+\label{sec:mbptpairing}
+
+We now apply all of this.  Take the pairing model of
+Section~\ref{sec:pairingmodel} with four doubly degenerate levels and four
+particles, $\xi=1$, and let $\hat{H}_0$ be the one-body part.  The reference
+is the determinant filling the two lowest levels, with $W_0=2$, and the
+first-order energy is
+\begin{equation}
+  \Delta E^{(1)} = \bracket{\Phi_0}{\hat{H}_I}{\Phi_0} = -g,
+  \label{eq:9-pairingE1}
+\end{equation}
+one factor $-g/2$ for each of the two occupied pairs.  The energy through
+first order is therefore $2-g$, which is exactly the Hartree-Fock energy of
+Section~\ref{sec:hfnothing}: for this interaction the mean field does
+nothing, and first-order perturbation theory reproduces it.  Every subsequent
+order is genuine correlation energy.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{7pt}
+\small
+\begin{tabular}{rrrrrrr}
+\toprule
+$g$ & $E_{\mathrm{ref}}$ & MBPT2 & MBPT3 & FCI & CID & HF + RPA\\
+\midrule
+$0.25$ & $1.75000$ & $1.73177083$ & $1.73046875$ & $1.73045985$
+  & $1.73050700$ & $1.71634735$\\
+$0.50$ & $1.50000$ & $1.42708333$ & $1.41666667$ & $1.41677428$
+  & $1.41759645$ & $1.37450235$\\
+$1.00$ & $1.00000$ & $0.70833333$ & $0.62500000$ & $0.63554847$
+  & $0.64890655$ & $0.55458933$\\
+$1.50$ & $0.50000$ & $-0.15625000$ & $-0.43750000$ & $-0.34819051$
+  & $-0.29113175$ & $-0.40624787$\\
+$2.00$ & $0.00000$ & $-1.16666667$ & $-1.83333333$ & $-1.48965216$
+  & $-1.35208670$ & $-1.47622319$\\
+\bottomrule
+\end{tabular}
+\caption{Rayleigh-Schr\"odinger perturbation theory for the pairing model
+with four levels and four particles, compared with full configuration
+interaction, with doubles configuration interaction
+(Section~\ref{sec:citruncations}) and with the particle-hole random-phase
+approximation (Section~\ref{sec:phresults}).}
+\label{tab:mbptpairing}
+\end{table}
+
+At $g=0.25$ the series is superb: second order is accurate to
+$1.3\times10^{-3}$ and third order to $9\times10^{-6}$.  By $g=1$ third order
+has crossed the exact answer, and at $g=2$ it lies $0.34$ below it while
+second order lies $0.32$ above.  Nothing prevents this.  Perturbation theory
+is not variational, and neither the sign nor the magnitude of the next
+correction is under any control.
+
+Contrast the behaviour of the two other approximations in the table.  Doubles
+configuration interaction is variational, so it stays above the exact answer
+at every coupling and degrades smoothly.  The random-phase approximation sums
+a restricted class of contributions to all orders; it is the worst of the
+three at $g=0.25$ and the best at $g=2$.
+
+%----------------------------------------------------------------------
+\section{How far can the series be trusted?}
+\label{sec:convergence}
+
+\index{perturbation series!convergence}
+The recursion~(\ref{eq:9-recursion}) lets us stop guessing and look.  The
+following table gives the size of the $n$-th term for the same model:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\small
+\begin{tabular}{rlllllrr}
+\toprule
+$g$ & $\vert E^{(2)}\vert$ & $\vert E^{(5)}\vert$
+  & $\vert E^{(10)}\vert$ & $\vert E^{(20)}\vert$
+  & $\vert E^{(40)}\vert$ & through $20$ & exact\\
+\midrule
+$0.50$ & $7.3\times10^{-2}$ & $3.6\times10^{-4}$ & $5.7\times10^{-8}$
+  & $2.6\times10^{-12}$ & $1.9\times10^{-22}$ & $1.4167743$ & $1.4167743$\\
+$1.00$ & $2.9\times10^{-1}$ & $1.2\times10^{-2}$ & $5.9\times10^{-5}$
+  & $2.8\times10^{-6}$ & $2.1\times10^{-10}$ & $0.6355478$ & $0.6355485$\\
+$1.50$ & $6.6\times10^{-1}$ & $8.8\times10^{-2}$ & $3.4\times10^{-3}$
+  & $9.2\times10^{-3}$ & $2.3\times10^{-3}$ & $-0.3532205$ & $-0.3481905$\\
+$2.00$ & $1.2\times10^{0}$ & $3.7\times10^{-1}$ & $6.0\times10^{-2}$
+  & $2.9\times10^{0}$ & $2.3\times10^{2}$ & $-3.7973859$ & $-1.4896522$\\
+$2.50$ & $1.8\times10^{0}$ & $1.1\times10^{0}$ & $5.6\times10^{-1}$
+  & $2.5\times10^{2}$ & $1.7\times10^{6}$ & $-240.36$ & $-2.7371418$\\
+\bottomrule
+\end{tabular}
+\caption{The magnitude of successive Rayleigh-Schr\"odinger terms for the
+pairing model.  At $g=0.5$ and $g=1$ the series converges to the exact
+energy; at $g=2$ and beyond the terms grow without limit.}
+\label{tab:convergence}
+\end{table}
+
+At $g=0.5$ and $g=1$ the terms fall away steadily and the partial sums
+reproduce the exact energy to the digits shown.  At $g=2$ and $g=2.5$ the
+terms grow by ten and by twelve orders of magnitude between the tenth and the
+fortieth, and the partial sums are worthless.  The radius of convergence lies
+somewhere between $g=1$ and $g=2$; $g=1.5$ sits close to it, and no finite
+number of terms settles the question there.
+
+This deserves to be taken seriously rather than noted in passing, because of
+how it looks from the inside.  At $g=1.5$ the first three orders are
+\begin{equation}
+  E_{\mathrm{ref}} = 0.50000,
+  \qquad
+  \text{through second} = -0.15625,
+  \qquad
+  \text{through third} = -0.43750,
+  \label{eq:9-innocuous}
+\end{equation}
+against an exact $-0.34819$.  Those numbers look entirely reasonable.
+Nothing in them warns that the series behind them may not converge, and in a
+realistic calculation one rarely has the exact answer to compare against.
+Truncating a perturbation series at low order is an act of faith, and the
+faith is sometimes misplaced.
+
+The underlying reason is the same one we have met twice already.  The
+expansion is about the reference determinant, and once the true ground state
+has stopped resembling it, the expansion has nothing left to say.  In
+Chapter~\ref{chap:hartrefock} the same coupling made the mean field unstable;
+in Chapter~\ref{chap:fci} it made truncated configuration interaction
+deteriorate.  Here it makes the series diverge.
+
+%----------------------------------------------------------------------
+\section{Size extensivity, and why Brillouin-Wigner is abandoned}
+\label{sec:sizeextensivity}
+
+\index{size extensivity}\index{linked-diagram theorem}
+Section~\ref{sec:sizeconsistency} showed that truncated configuration
+interaction fails a basic test: for two non-interacting subsystems it does not
+give twice the energy of one.  We now apply the same test to the two
+perturbation schemes, and the outcome is the sharpest distinction between
+them.
+
+Take $M$ identical, non-interacting copies of a small pairing system -- three
+levels holding one pair, with the interaction acting only within a subsystem.
+Any acceptable method must give exactly $M$ times the one-subsystem energy.
+The program finds, for $M=2$:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{lrrr}
+\toprule
+order & $2\times$ one copy & two copies & error\\
+\midrule
+\multicolumn{4}{l}{\emph{$g=0.5$}}\\
+first  & $-0.500000000$ & $-0.500000000$ & $0$\\
+second & $-0.093750000$ & $-0.093750000$ & $0$\\
+third  & $-0.007812500$ & $-0.007812500$ & $0$\\
+fourth & $\phantom{-}0.001098633$ & $\phantom{-}0.001098633$ & $0$\\
+BW(2)  & $-0.583666572$ & $-0.575845121$ & $7.8\times10^{-3}$\\
+\midrule
+\multicolumn{4}{l}{\emph{$g=1.0$}}\\
+first  & $-1.000000000$ & $-1.000000000$ & $0$\\
+second & $-0.375000000$ & $-0.375000000$ & $0$\\
+third  & $-0.062500000$ & $-0.062500000$ & $0$\\
+fourth & $\phantom{-}0.017578125$ & $\phantom{-}0.017578125$ & $0$\\
+BW(2)  & $-1.296377095$ & $-1.249140538$ & $4.7\times10^{-2}$\\
+\bottomrule
+\end{tabular}
+\caption{Size extensivity for two non-interacting copies of a three-level
+pairing system.  Rayleigh-Schr\"odinger is exact at every order, to machine
+precision; Brillouin-Wigner truncated at second order is not, and the error
+grows with the coupling.}
+\label{tab:extensivity}
+\end{table}
+
+Rayleigh-Schr\"odinger is exact \emph{at every order separately}, to machine
+precision.  This is the linked-diagram theorem in its most concrete form.
+The unlinked contributions -- terms in which the intermediate state contains
+excitations in both subsystems with no interaction connecting them -- would
+individually scale as $M^2$, and they are cancelled exactly by the
+renormalisation term of Eq.~(\ref{eq:9-E3sum}) and by its analogues at higher
+order.  That is what the term is for.
+
+Brillouin-Wigner has no such term.  Its denominators contain the exact energy,
+which is itself extensive, so the denominators of a two-subsystem calculation
+differ from those of a one-subsystem calculation and the two can never match.
+The error is $7.8\times10^{-3}$ at $g=0.5$ and grows to $4.7\times10^{-2}$ at
+$g=1$, and it would grow linearly with the number of subsystems.  For a
+calculation on bulk matter this is fatal, and it is the reason
+Brillouin-Wigner theory, for all its formal elegance and rapid convergence on
+small systems, is not used in many-body physics.
+
+%----------------------------------------------------------------------
+\section{The Lipkin model}
+\label{sec:mbptlipkin}
+
+The Lipkin model of Section~\ref{sec:lipkin}, with $W=0$, is instructive
+because almost everything can be done in closed form.  The interaction
+$(V/2)(\hat{J}_+^2+\hat{J}_-^2)$ changes $J_z$ by exactly two units, so
+\begin{equation}
+  \Delta E^{(1)} = \bracket{\Phi_0}{\hat{H}_I}{\Phi_0} = 0
+  \label{eq:9-lipkinE1}
+\end{equation}
+identically, and the reference energy is the unperturbed $-N\varepsilon/2$.
+The reference couples to exactly one state, $\bket{J,-J+2}$, at an excitation
+energy $2\varepsilon$, with matrix element
+$\tfrac{V}{2}\sqrt{2N(N-1)}$, so
+\begin{equation}
+  \Delta E^{(2)} = -\frac{N(N-1)V^2}{4\varepsilon},
+  \label{eq:9-lipkinE2}
+\end{equation}
+which the program confirms to ten digits.
+
+The third order vanishes identically, and for a reason worth stating.  The
+principal term of Eq.~(\ref{eq:9-E3sum}) requires a matrix element $V_{mn}$
+between two states both reachable from the reference; but every such state
+has $J_z=-J+2$, and $\hat{H}_I$ changes $J_z$ by two units, so $V_{mn}=0$.
+The renormalisation term carries a factor $V_{00}=0$.  Hence
+$\Delta E^{(3)}=0$ exactly.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{rrrrrr}
+\toprule
+$\chi$ & $E_{\mathrm{ref}}$ & through $\Delta E^{(2)}$
+  & through $\Delta E^{(3)}$ & exact & HF + RPA\\
+\midrule
+$0.25$ & $-2.00000$ & $-2.02083333$ & $-2.02083333$ & $-2.02072594$
+  & $-2.02109449$\\
+$0.50$ & $-2.00000$ & $-2.08333333$ & $-2.08333333$ & $-2.08166600$
+  & $-2.08796735$\\
+$0.75$ & $-2.00000$ & $-2.18750000$ & $-2.18750000$ & $-2.17944947$
+  & $-2.21691233$\\
+$0.90$ & $-2.00000$ & $-2.27000000$ & $-2.27000000$ & $-2.25388553$
+  & $-2.35114625$\\
+$1.00$ & $-2.00000$ & $-2.33333333$ & $-2.33333333$ & $-2.30940108$
+  & $-2.58578643$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Here perturbation theory and the random-phase approximation may be compared
+directly, and the comparison is revealing.  Both are close to the exact
+answer at small $\chi$, with perturbation theory slightly the better of the
+two.  As $\chi$ grows the two part company.  The RPA collective frequency
+$\omega=\varepsilon\sqrt{1-\chi^2}$ of Section~\ref{sec:rpastability} goes
+soft as $\chi\to1$, and since the correlation energy is
+$\tfrac12(\sum_{\nu}\omega_{\nu}-\mathrm{Tr}\,A)$ the softening drives it
+steadily more negative: at $\chi=1$ RPA gives $-2.586$ against an exact
+$-2.309$, an overshoot of $0.28$.  Beyond $\chi=1$ the frequencies turn
+imaginary and the method stops altogether.
+
+Perturbation theory does much better numerically -- $-2.333$ at $\chi=1$ --
+but it does so silently.  It produces a perfectly ordinary number at the
+coupling where the mean field becomes unstable, and would go on producing
+ordinary numbers beyond it.  RPA is less accurate here and more informative:
+its collapse is a diagnosis.  Whether one prefers a method that fails loudly
+or one that fails quietly depends on whether an exact answer is available for
+comparison, and in a real calculation it is not.
+
+%----------------------------------------------------------------------
+\section{The Hubbard model}
+\label{sec:mbpthubbard}
+
+For the Hubbard model of Section~\ref{sec:hubbard} we work in the momentum
+basis, where the plane-wave determinant is the Hartree-Fock solution
+(Section~\ref{sec:fcihubbard}) and the first-order energy is the Hartree shift
+$UN_{\uparrow}N_{\downarrow}/L$.  Six sites at half filling give
+$\Delta E^{(1)}=3U/2$.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{6pt}
+\small
+\begin{tabular}{rrrrrrr}
+\toprule
+$U/t$ & $E_{\mathrm{ref}}$ & MBPT2 & MBPT3 & MBPT4 & FCI & CID\\
+\midrule
+$1$ & $-6.50000$ & $-6.60069444$ & $-6.60069444$ & $-6.60117251$
+  & $-6.60115829$ & $-6.59980159$\\
+$2$ & $-5.00000$ & $-5.40277778$ & $-5.40277778$ & $-5.41042685$
+  & $-5.40945685$ & $-5.38877703$\\
+$4$ & $-2.00000$ & $-3.61111111$ & $-3.61111111$ & $-3.73349623$
+  & $-3.66870618$ & $-3.41192866$\\
+$8$ & $\phantom{-}4.00000$ & $-2.44444444$ & $-2.44444444$
+  & $-4.40260631$ & $-2.04813089$ & $-0.36779217$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Two features stand out.  The third-order energy vanishes identically at this
+filling -- the two middle columns agree to every digit, for every $U$ -- so we
+have included fourth order as well.  This is special to the half-filled ring
+with a momentum-independent interaction; the pairing model of
+Section~\ref{sec:mbptpairing} has a perfectly good third-order term, and one
+should not expect the cancellation to survive a change of filling or of
+interaction.
+
+The second feature is the familiar one.  At $U/t=1$ second order is already
+within $5\times10^{-4}$ of the exact energy.  At $U/t=8$ fourth order
+overshoots it by more than a factor of two.  This is the strong-correlation
+regime of Section~\ref{sec:fcihubbard} seen through the perturbation series:
+the reference determinant has ceased to be a good starting point, and the
+expansion about it fails.
+
+%----------------------------------------------------------------------
+\section{The pairing plus particle-hole model}
+\label{sec:mbptpairingph}
+
+The model of Chapter~\ref{chap:mfapplications} is the most interesting of the
+four, because its particle-hole term breaks pairs and therefore couples the
+reference to $1p$-$1h$ states.  The second-order sum splits accordingly, and
+we may look at the two pieces separately:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+\small
+\begin{tabular}{rrrrrrrr}
+\toprule
+$g$ & $f$ & $E_{\mathrm{ref}}$ & $E^{(2)}_{1p1h}$
+  & $E^{(2)}_{2p2h}$ & MBPT2 & MBPT3 & exact\\
+\midrule
+$0.50$ & $0.025$ & $1.45000$ & $-0.00072917$ & $-0.08856250$
+  & $1.36070833$ & $1.34684681$ & $1.34713265$\\
+$0.70$ & $0.050$ & $1.20000$ & $-0.00291667$ & $-0.18800000$
+  & $1.00908333$ & $0.96643444$ & $0.96975878$\\
+$1.00$ & $0.050$ & $0.90000$ & $-0.00291667$ & $-0.35425000$
+  & $0.54283333$ & $0.43194111$ & $0.45058234$\\
+$1.00$ & $0.500$ & $0.00000$ & $-0.29166667$ & $-1.30000000$
+  & $-1.59166667$ & $-2.25388889$ & $-1.69173670$\\
+\bottomrule
+\end{tabular}
+\caption{Perturbation theory for the pairing plus particle-hole model, with
+the second-order energy split by the excitation rank of the intermediate
+state.}
+\label{tab:mbptph}
+\end{table}
+
+The singles contribution is small but non-zero, and it is entirely an
+artefact of our choice of basis: in a Hartree-Fock basis it would vanish
+identically by Brillouin's theorem.  This is one more reason -- beyond the
+variational one of Chapter~\ref{chap:hartrefock} -- for doing perturbation
+theory on a Hartree-Fock reference.
+
+For the three weakly coupled rows the series behaves well, third order
+sitting within a few parts in a thousand of the exact answer.  The last row
+is the interesting one.  With $f=0.5g$ the particle-hole term is strong, and
+third order overshoots by $0.56$.  Chapter~\ref{chap:mfapplications} found
+RPA overshooting the same row in the same direction, $-1.73461$ against
+$-1.69174$, but by only $0.04$.  Summing a restricted class of contributions
+to all orders is, here, an order of magnitude safer than summing all of them
+to third order.
+
+%----------------------------------------------------------------------
+\section{Does the partition matter?}
+\label{sec:partitions}
+
+Nothing forced our choice of $\hat{H}_0$, and it is worth checking how much
+the answer depends on it.  Taking the whole diagonal of $\hat{H}$ instead of
+its one-body part gives the Epstein-Nesbet partition.
+
+For three of our four models the two partitions give \emph{identical} results,
+and the reason is worth seeing.  The diagonal of $\hat{H}_I$ is the same on
+every determinant the reference can reach, so the two choices of $\hat{H}_0$
+differ by a constant, which cancels in every energy denominator:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lr}
+\toprule
+model & spread of $\mathrm{diag}(\hat{H}_I)$\\
+\midrule
+pairing & $1.000000$\\
+Lipkin & $0.000000$\\
+Hubbard & $0.000000$\\
+pairing $+$ particle-hole & $2.000000$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For the pairing model the spread is non-zero over the whole space, but the
+interaction conserves seniority, so every determinant the reference reaches
+has the same number of complete pairs and hence the same diagonal.  Only the
+pairing plus particle-hole model, whose particle-hole term breaks pairs and
+contributes $-f$ per complete pair, has a genuinely varying diagonal within
+the active space.  There the two partitions do disagree:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{7pt}
+\begin{tabular}{rrrrrrr}
+\toprule
+$g$ & $f$ & \multicolumn{2}{c}{one-body}
+  & \multicolumn{2}{c}{Epstein-Nesbet} & exact\\
+ & & $+\Delta E^{(2)}$ & $+\Delta E^{(3)}$
+  & $+\Delta E^{(2)}$ & $+\Delta E^{(3)}$ & \\
+\midrule
+$0.50$ & $0.25$ & $0.60208333$ & $0.51930556$ & $0.62435065$
+  & $0.51885823$ & $0.55119157$\\
+$1.00$ & $0.50$ & $-1.59166667$ & $-2.25388889$ & $-1.44791667$
+  & $-2.25694444$ & $-1.69173670$\\
+$1.50$ & $0.75$ & $-4.58125000$ & $-6.81625000$ & $-4.17225275$
+  & $-6.82273352$ & $-4.34336785$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both partitions sum to the same exact answer, but at any finite order they
+disagree, and neither is uniformly better: at second order Epstein-Nesbet
+wins the last row and loses the first two, and at third order the two are
+almost indistinguishable and both are very poor.  There is no theorem saying
+one partition is better than another.  The choice is part of the
+approximation, and a perturbative number quoted without its partition means
+nothing.
+
+%----------------------------------------------------------------------
+\section{Everything against everything}
+\label{sec:mbptcomparison}
+
+The pairing model is the one system every chapter has now treated, so we
+collect the results.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{rrrrrrr}
+\toprule
+$g$ & HF & MBPT2 & MBPT3 & CID & HF + RPA & FCI\\
+\midrule
+$0.25$ & $1.75000$ & $1.731771$ & $1.730469$ & $1.730507$ & $1.716347$
+  & $1.730460$\\
+$0.50$ & $1.50000$ & $1.427083$ & $1.416667$ & $1.417596$ & $1.374502$
+  & $1.416774$\\
+$1.00$ & $1.00000$ & $0.708333$ & $0.625000$ & $0.648907$ & $0.554589$
+  & $0.635548$\\
+$1.50$ & $0.50000$ & $-0.156250$ & $-0.437500$ & $-0.291132$ & $-0.406248$
+  & $-0.348191$\\
+$2.00$ & $0.00000$ & $-1.166667$ & $-1.833333$ & $-1.352087$ & $-1.476223$
+  & $-1.489652$\\
+\midrule
+\multicolumn{7}{l}{\emph{errors}}\\
+$0.25$ & & $1.3\times10^{-3}$ & $8.9\times10^{-6}$ & $4.7\times10^{-5}$
+  & $-1.4\times10^{-2}$ & \\
+$0.50$ & & $1.0\times10^{-2}$ & $-1.1\times10^{-4}$ & $8.2\times10^{-4}$
+  & $-4.2\times10^{-2}$ & \\
+$1.00$ & & $7.3\times10^{-2}$ & $-1.1\times10^{-2}$ & $1.3\times10^{-2}$
+  & $-8.1\times10^{-2}$ & \\
+$1.50$ & & $1.9\times10^{-1}$ & $-8.9\times10^{-2}$ & $5.7\times10^{-2}$
+  & $-5.8\times10^{-2}$ & \\
+$2.00$ & & $3.2\times10^{-1}$ & $-3.4\times10^{-1}$ & $1.4\times10^{-1}$
+  & $1.3\times10^{-2}$ & \\
+\bottomrule
+\end{tabular}
+\caption{The pairing model treated by every method of the book so far.
+Hartree-Fock from Chapter~\ref{chap:hartrefock}, doubles configuration
+interaction from Chapter~\ref{chap:fci}, the random-phase approximation from
+Chapter~\ref{chap:mfapplications}, and full configuration interaction as the
+exact reference.}
+\label{tab:mbptcomparison}
+\end{table}
+
+The errors are where the interest lies.  Hartree-Fock does nothing at all,
+since the pairing interaction cannot couple the reference to a $1p$-$1h$
+state.  Beyond that, the ordering changes with the coupling and no method
+wins everywhere.  At $g=0.25$ third-order perturbation theory is best by
+three orders of magnitude, and the random-phase approximation is the worst of
+the four.  At $g=2$ the ordering has reversed completely: RPA is best, and
+the perturbation series -- which by then is diverging -- is the worst.
+Doubles configuration interaction is the only one of the four that is
+variational, so it alone is guaranteed to stay above the exact answer, and it
+alone degrades gracefully.
+
+None of this is an argument for one method over another.  It is an argument
+for knowing which regime one is in, and for having more than one method
+available.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:ch9summary}
+
+Perturbation theory begins from the exact identity
+$\Delta E=\bracket{\Phi_0}{\hat{H}_I}{\Psi_0}$ and turns it into a series by
+iterating the resolvent equation~(\ref{eq:9-implicit}).  The free parameter
+$\omega$ chooses the scheme.  Setting $\omega=E$ gives Brillouin-Wigner,
+whose denominators contain the exact energy, which must therefore be found
+self-consistently, and whose full resummation is exact.  Setting $\omega=W_0$
+gives Rayleigh-Schr\"odinger, whose denominators are known in advance but
+whose higher orders carry renormalisation terms.
+
+Those renormalisation terms are the whole point.  They cancel the unlinked
+contributions exactly, which makes Rayleigh-Schr\"odinger size extensive at
+every order -- verified here to machine precision -- while Brillouin-Wigner
+is not.  That single property decides the matter for many-body physics.
+
+Applied to four models, the series behaves as its construction demands: very
+accurate when the reference determinant is good, and worthless when it is
+not.  It is not variational, so it may approach the exact answer from either
+side and cross it; and it need not converge at all, as the pairing model
+demonstrates beyond $g\approx1.5$, with no warning visible in the first three
+orders.
+
+What perturbation theory offers in exchange is a systematic, order-by-order
+recipe requiring no diagonalisation, applicable where configuration
+interaction is far out of reach, and -- crucially -- correct in its scaling
+with system size.  The next step is to keep that property while summing
+selected contributions to all orders, which is what coupled-cluster theory
+does.
+
+The program \texttt{mbpt.py} performs every calculation of this chapter.
+The accompanying notebook runs it cell by cell.
+
+%----------------------------------------------------------------------
+\section{Exercises}
+\label{sec:ch9exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the exact starting point}
+\label{ex:9-exact}
+\addcontentsline{toc}{subsection}{Exercise 1: the exact starting point}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:9-exactDE}), stating where intermediate
+  normalisation and the hermiticity of $\hat{H}$ and $\hat{H}_0$ are used.
+  \item[b)] Show that $\hat{P}$ and $\hat{Q}$ of Eq.~(\ref{eq:9-PQ}) are
+  idempotent, orthogonal and commute with $\hat{H}_0$, and prove
+  Eq.~(\ref{eq:9-Qcommutes}).
+  \item[c)] Obtain Eq.~(\ref{eq:9-implicit}) from
+  Eq.~(\ref{eq:9-omegaform}), and explain why it is exact but useless as it
+  stands.
+  \item[d)] Why does the iteration~(\ref{eq:9-iterated}) start from
+  $\bket{\Phi_0}$ rather than from any other determinant?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Projecting $\hat{H}\bket{\Psi_0}=E\bket{\Psi_0}$ onto $\bbra{\Phi_0}$ gives
+$\bracket{\Phi_0}{\hat{H}}{\Psi_0}=E\braket{\Phi_0}{\Psi_0}$, and
+intermediate normalisation sets the overlap to one, so the right-hand side is
+$E$.  Similarly $\bracket{\Psi_0}{\hat{H}_0}{\Phi_0}=W_0$.  Since both
+operators are Hermitian we may read the second as
+$\bracket{\Phi_0}{\hat{H}_0}{\Psi_0}=W_0$ and subtract:
+$\bracket{\Phi_0}{\hat{H}-\hat{H}_0}{\Psi_0}=E-W_0$, which is
+Eq.~(\ref{eq:9-exactDE}).  Without hermiticity the two matrix elements could
+not be identified and the derivation fails -- which is a real restriction for
+non-Hermitian formulations such as coupled-cluster theory.
+
+\paragraph{Answer to b).}
+$\hat{P}^2=\ketbra{\Phi_0}{\Phi_0}\ketbra{\Phi_0}{\Phi_0}=\hat{P}$ by
+normalisation, and $\hat{Q}^2=\hat{Q}$ by orthonormality of the $\Phi_m$;
+$\hat{P}\hat{Q}=0$ since the reference is excluded from the sum.  Both are
+built from eigenstates of $\hat{H}_0$, so
+$\hat{H}_0\hat{Q}=\sum_m W_m\ketbra{\Phi_m}{\Phi_m}=\hat{Q}\hat{H}_0$.  Any
+function of $\hat{H}_0$ is therefore also diagonal in the same basis, and
+$\hat{Q}f(\hat{H}_0)\hat{Q}=\hat{Q}^2f(\hat{H}_0)=\hat{Q}f(\hat{H}_0)$, which
+is Eq.~(\ref{eq:9-Qcommutes}).
+
+\paragraph{Answer to c).}
+Divide Eq.~(\ref{eq:9-omegaform}) by $(\omega-\hat{H}_0)$, multiply from the
+left by $\hat{Q}$, use Eq.~(\ref{eq:9-Qcommutes}), and add
+$\bket{\Phi_0}=\hat{P}\bket{\Psi_0}$ from
+Eq.~(\ref{eq:9-PQdecomposition}).  It is exact because no term has been
+dropped.  It is useless because it is one equation in two unknowns,
+$\bket{\Psi_0}$ and $E$, with the unknown state appearing on both sides.
+
+\paragraph{Answer to d).}
+Any starting vector would generate a formally correct series, but the
+iteration converges usefully only if the starting vector already has a large
+overlap with the target.  $\bket{\Phi_0}$ is chosen precisely because it is
+assumed to dominate $\bket{\Psi_0}$ -- and when that assumption fails, as at
+strong coupling in Section~\ref{sec:convergence}, the series fails with it.
+
+\subsection*{Exercise 2: the two schemes}
+\label{ex:9-schemes}
+\addcontentsline{toc}{subsection}{Exercise 2: the two schemes}
+
+\begin{enumerate}
+  \item[a)] Set $\omega=E$ in Eq.~(\ref{eq:9-generalseries}) and obtain the
+  Brillouin-Wigner series~(\ref{eq:9-bwseries}).
+  \item[b)] Derive the resummation~(\ref{eq:9-bwexact}) using the geometric
+  series~(\ref{eq:9-geometric}), and explain why it is exact.
+  \item[c)] Set $\omega=W_0$ and obtain Eq.~(\ref{eq:9-rsseries}); then show
+  that Eq.~(\ref{eq:9-Qkills}) reduces it to
+  Eq.~(\ref{eq:9-rsreduced}).
+  \item[d)] Expand Eq.~(\ref{eq:9-rsreduced}) order by order and derive
+  Eqs.~(\ref{eq:9-E1})--(\ref{eq:9-E3}).  At which order does the
+  renormalisation term first appear, and why not earlier?
+  \item[e)] Verify that the recursion~(\ref{eq:9-recursion}) reproduces
+  $\Delta E^{(2)}$ and $\Delta E^{(3)}$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+With $\omega=E$ the factor $(\omega-E+\hat{H}_I)$ collapses to $\hat{H}_I$,
+and the $i$-th term of Eq.~(\ref{eq:9-generalseries}) becomes $i$ factors of
+$\hat{H}_I\hat{Q}/(E-\hat{H}_0)$ acting on $\hat{H}_I\bket{\Phi_0}$, which is
+Eq.~(\ref{eq:9-bwseries}).
+
+\paragraph{Answer to b).}
+Identify the bracketed sum in Eq.~(\ref{eq:9-geometric}) as the expansion of
+$(\hat{e}-\hat{Q}\hat{H}_I\hat{Q})^{-1}$ in powers of
+$\hat{Q}\hat{H}_I\hat{Q}$, with $\hat{e}=E-\hat{H}_0$.  Substituting it into
+Eq.~(\ref{eq:9-bwseries}) collapses the whole series into
+Eq.~(\ref{eq:9-bwexact}).  It is exact because the geometric series has been
+resummed, not truncated: no term of Eq.~(\ref{eq:9-bwseries}) has been
+discarded.  Equivalently, Eq.~(\ref{eq:9-bwexact}) is what one gets by
+solving the Schr\"odinger equation exactly in the $\hat{Q}$ space and
+substituting the result back, which is a Feshbach projection and involves no
+approximation at all.
+
+\paragraph{Answer to c).}
+With $\omega=W_0$ the factor becomes $(W_0-E+\hat{H}_I)=(\hat{H}_I-\Delta E)$
+since $\Delta E=E-W_0$, giving Eq.~(\ref{eq:9-rsseries}).  The rightmost
+factor always acts directly on $\bket{\Phi_0}$; there $\Delta E$ is a number
+and $\hat{Q}\bket{\Phi_0}=0$, so that piece vanishes and each term loses its
+final $\Delta E$, leaving Eq.~(\ref{eq:9-rsreduced}).
+
+\paragraph{Answer to d).}
+Count powers of $\hat{H}_I$, remembering that $\Delta E$ is itself of first
+order and higher.  At order one only $\bracket{\Phi_0}{\hat{H}_I}{\Phi_0}$
+survives.  At order two only the second term of
+Eq.~(\ref{eq:9-rsreduced}) contributes, since the $\Delta E$ in the third
+term would make it third order.  At order three the third term contributes
+both with $\hat{H}_I$ in the middle -- the principal term -- and with
+$-\Delta E^{(1)}$ in the middle, which gives
+$-V_{00}\sum_m V_{0m}V_{m0}/D_m^2$.  The renormalisation term cannot appear
+earlier because it needs at least two resolvents, hence at least three
+interactions.
+
+\paragraph{Answer to e).}
+With $\bket{\Psi^{(0)}}=\bket{\Phi_0}$ the recursion gives
+$\bket{\Psi^{(1)}}=\hat{R}\hat{H}_I\bket{\Phi_0}$, whence
+$\Delta E^{(2)}=\bracket{\Phi_0}{\hat{H}_I\hat{R}\hat{H}_I}{\Phi_0}$, which
+is Eq.~(\ref{eq:9-E2}).  At the next step
+\begin{equation}
+  \bket{\Psi^{(2)}} = \hat{R}\left[\hat{H}_I\hat{R}\hat{H}_I
+    - \Delta E^{(1)}\hat{R}\hat{H}_I\right]\bket{\Phi_0},
+  \label{eq:9-exe2}
+\end{equation}
+and projecting with $\bbra{\Phi_0}\hat{H}_I$ gives exactly the two terms of
+Eq.~(\ref{eq:9-E3}), the second carrying $\hat{R}^2$ as required.  The
+program checks the agreement numerically for all four models.
+
+\subsection*{Exercise 3: the models to third order}
+\label{ex:9-models}
+\addcontentsline{toc}{subsection}{Exercise 3: the models to third order}
+
+\begin{enumerate}
+  \item[a)] For the pairing model show that
+  $\Delta E^{(1)}=-g$ and that the energy through first order is the
+  Hartree-Fock energy of Section~\ref{sec:hfnothing}.
+  \item[b)] For the pairing model with four levels and two pairs, evaluate
+  $\Delta E^{(2)}$ by hand and compare with $-\tfrac{7}{24}g^2$, obtained in
+  Exercise~\ref{ex:5-pairingfci}d).
+  \item[c)] For the Lipkin model derive Eq.~(\ref{eq:9-lipkinE2}) and prove
+  that $\Delta E^{(3)}=0$ identically.
+  \item[d)] Explain why the Hubbard model at half filling has
+  $\Delta E^{(3)}=0$ but $\Delta E^{(4)}\ne0$, and why this should not be
+  expected in general.
+  \item[e)] For the pairing plus particle-hole model, show that the
+  $1p$-$1h$ part of $\Delta E^{(2)}$ vanishes in a Hartree-Fock basis.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The pairing interaction
+$-\tfrac{g}{2}\sum_{pq}\hat{a}^{\dagger}_{p+}\hat{a}^{\dagger}_{p-}
+\hat{a}_{q-}\hat{a}_{q+}$ has a diagonal contribution only from $p=q$, giving
+$-\tfrac{g}{2}$ for each occupied pair.  The reference has two, so
+$\Delta E^{(1)}=-g$ and $W_0+\Delta E^{(1)}=2-g$.
+Section~\ref{sec:hfnothing} found the Hartree-Fock energy to be exactly the
+reference energy, because $\bracket{\Phi_0}{\hat{H}}{\Phi_i^a}=0$ by
+seniority conservation.  The two agree, as they must: first-order
+perturbation theory \emph{is} the mean-field energy when the reference is the
+Hartree-Fock determinant.
+
+\paragraph{Answer to b).}
+Only the four seniority-zero determinants reachable by moving one pair
+contribute.  Their unperturbed excitation energies relative to the reference
+are $2,4,4,6$ and each matrix element is $-g/2$, so
+\begin{equation}
+  \Delta E^{(2)} = \frac{g^2}{4}
+    \left(\frac{1}{-2}+\frac{1}{-4}+\frac{1}{-4}+\frac{1}{-6}\right)
+   = -\frac{7}{24}g^2,
+  \label{eq:9-exb3}
+\end{equation}
+which is Eq.~(\ref{eq:5-exb3}).  At $g=0.5$ this gives $-0.0729$, and the
+program's numerical value is $-0.07291667$.
+
+\paragraph{Answer to c).}
+The reference is $\bket{J,-J}$ with $J=N/2$.  The operator
+$(V/2)\hat{J}_+^2$ takes it to $\bket{J,-J+2}$ with matrix element
+\begin{equation}
+  \frac{V}{2}\sqrt{J(J+1)-(-J)(-J+1)}\,\sqrt{J(J+1)-(-J+1)(-J+2)}
+   = \frac{V}{2}\sqrt{2N(N-1)},
+  \label{eq:9-exc3}
+\end{equation}
+and the unperturbed excitation energy is $2\varepsilon$.  Hence
+\begin{equation}
+  \Delta E^{(2)}
+   = -\frac{V^2\,2N(N-1)/4}{2\varepsilon}
+   = -\frac{N(N-1)V^2}{4\varepsilon}.
+  \label{eq:9-exc3b}
+\end{equation}
+For the third order, every intermediate state reachable from the reference
+has $J_z=-J+2$; but $\hat{H}_I$ changes $J_z$ by exactly two units, so
+$V_{mn}=0$ between any two of them and the principal term vanishes.  The
+renormalisation term carries $V_{00}=0$.  Hence $\Delta E^{(3)}=0$ exactly,
+and the vanishing is a consequence of the selection rule, not an accident of
+the parameters.
+
+\paragraph{Answer to d).}
+The interaction is momentum-independent and couples only opposite spins, and
+at half filling the ring is particle-hole symmetric.  Under these conditions
+the third-order contributions cancel among themselves, and the program finds
+$\Delta E^{(3)}$ to be zero to machine precision for every $U$.  The
+cancellation is a property of this filling and this interaction: change
+either -- or take the pairing model, where the third order is a perfectly
+ordinary non-zero number -- and it disappears.  The fourth order is not
+protected by the same argument and is not zero.
+
+\paragraph{Answer to e).}
+The $1p$-$1h$ part of $\Delta E^{(2)}$ is
+$\sum_{ai}|\bracket{\Phi_0}{\hat{H}_I}{\Phi_i^a}|^2/D$, and by Brillouin's
+theorem, Eq.~(\ref{eq:6-brillouin}), every numerator vanishes in the
+Hartree-Fock basis.  In the unperturbed oscillator basis used in
+Table~\ref{tab:mbptph} it does not, and the residue is a measure of how far
+the reference is from the Hartree-Fock solution.  This is the practical
+argument for building perturbation theory on a Hartree-Fock reference: it
+removes an entire class of contributions at every order.
+
+\subsection*{Exercise 4: size extensivity}
+\label{ex:9-extensivity}
+\addcontentsline{toc}{subsection}{Exercise 4: size extensivity}
+
+\begin{enumerate}
+  \item[a)] For two non-interacting subsystems, show that the second-order
+  energy is exactly additive.
+  \item[b)] Show that the principal term of $\Delta E^{(3)}$ alone is
+  \emph{not} additive, and that adding the renormalisation term makes it so.
+  \item[c)] Explain why Brillouin-Wigner theory fails this test at every
+  truncation order.
+  \item[d)] Reproduce Table~\ref{tab:extensivity} and extend it to three and
+  four subsystems.  How does the Brillouin-Wigner error scale?
+  \item[e)] Relate all of this to the size-consistency failure of truncated
+  configuration interaction in Section~\ref{sec:sizeconsistency}.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+With $\hat{H}=\hat{H}_A+\hat{H}_B$ and no coupling, the reference is a
+product and any singly excited intermediate state lives entirely in $A$ or
+entirely in $B$.  The sum in Eq.~(\ref{eq:9-E2sum}) therefore splits into two
+disjoint sums, and the denominators of the $A$ states involve only $A$
+excitation energies.  Hence $\Delta E^{(2)}(AB)=\Delta E^{(2)}(A)
++\Delta E^{(2)}(B)$.
+
+\paragraph{Answer to b).}
+At third order the intermediate states $m$ and $n$ may lie in different
+subsystems: $m$ an excitation of $A$ and $n$ an excitation of $B$.  Such a
+term is \emph{unlinked} -- no interaction connects the two -- and it
+contributes $V_{00}$ times a product of $A$ and $B$ second-order-like
+factors, which scales as the square of the system size.  Written out, these
+are exactly the terms
+$V_{00}\sum_m V_{0m}V_{m0}/D_m^2$, and the renormalisation term subtracts
+them identically.  What survives is linked and additive.  The program
+verifies additivity to machine precision through fourth order.
+
+\paragraph{Answer to c).}
+Brillouin-Wigner denominators contain the exact energy $E=W_0+\Delta E$, and
+$\Delta E$ is extensive.  Doubling the system therefore changes every
+denominator, so the two-subsystem sum cannot reduce to twice the
+one-subsystem sum, at any truncation order.  There is no renormalisation term
+available to repair this because the scheme has none: that was the whole
+point of setting $\omega=E$.
+
+\paragraph{Answer to d).}
+The extension is a one-line change to the demonstration.  The
+Brillouin-Wigner error grows roughly linearly with the number of subsystems
+for weak coupling, so the \emph{energy per subsystem} drifts -- which is the
+practical statement of the failure.  For a calculation on bulk matter,
+where the number of subsystems is effectively infinite, no useful answer
+survives.
+
+\paragraph{Answer to e).}
+They are the same defect wearing two hats.  Truncated configuration
+interaction fails because a product of two double excitations is a
+quadruple, which the truncation discards; Brillouin-Wigner fails because its
+denominators do not factorise.  In both cases the symptom is an energy that
+does not scale linearly with the system size, and in both cases the cure is
+to make the ansatz multiplicative -- $e^{\hat{T}}$ instead of $1+\hat{C}$,
+Eq.~(\ref{eq:5-ccsd}) -- which is coupled-cluster theory.  Rayleigh-Schr\"odinger
+achieves the same scaling order by order through the cancellation of unlinked
+terms, which is why it, and not Brillouin-Wigner, is the perturbative
+starting point for many-body theory.
+
+\subsection*{Exercise 5: numerical explorations}
+\label{ex:9-numerical}
+\addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{mbpt.py}, reproduce Table~\ref{tab:mbptpairing} and
+  extend it to sixth order.  Does every additional order help?
+  \item[b)] Reproduce Table~\ref{tab:convergence} and locate the radius of
+  convergence of the pairing series as accurately as you can.  Why is this
+  harder than it looks?
+  \item[c)] Compare the two partitions of Section~\ref{sec:partitions} for
+  the pairing plus particle-hole model over a range of $f/g$.  Is there a
+  regime where one is clearly preferable?
+  \item[d)] For the Hubbard model, verify that $\Delta E^{(3)}=0$ and check
+  whether it survives a change of filling or the addition of a
+  next-nearest-neighbour hopping.
+  \item[e)] Implement a Pad\'e resummation of the pairing series and see
+  whether it extends the useful range beyond the radius of convergence.
+\end{enumerate}
+
+\paragraph{Answer.}
+A few pointers.  In a) the answer is no: at $g=1$ the fourth-order term
+overshoots and the fifth brings it back, the partial sums oscillating about
+the exact value -- convergence is not monotone and no individual order is
+guaranteed to improve matters.  In b) the difficulty is that near the radius
+of convergence the terms decrease so slowly that any finite number of them is
+consistent with either behaviour; the ratio test needs terms of very high
+order, and those are contaminated by round-off once they have fallen many
+orders of magnitude below the leading ones.  In c) neither partition wins
+uniformly, but Epstein-Nesbet is the more stable at second order when the
+diagonal interaction is large, which is the regime it was designed for.  In
+d) the cancellation is fragile: it does not survive a filling that breaks
+particle-hole symmetry.  In e) Pad\'e approximants do extend the useful
+range, sometimes dramatically, because they can represent the singularity
+that limits the Taylor series -- which is a reminder that a divergent series
+is not necessarily a useless one.

@@ -75,11 +75,20 @@
      - Still to add if wanted: GGA construction from exact constraints,
        time-dependent DFT as the density-functional analogue of RPA,
        DFT for nuclei (Skyrme functionals)
-###  Many-body perturbation theory
-     - Time dependent and time-independent representation
-     - Brillouin-Wigner and Rayleigh-Schrødinger pert theory
-     - Diagrammatic representation
-     - Linked-diagram theorem based on time-dependent theory
+###  Many-body perturbation theory  (chapter9.tex, done -- algebraic only)
+     - The exact result Delta E = <Phi_0|H_I|Psi_0>, P/Q projections, the
+       resolvent expansion with a free parameter omega
+     - Brillouin-Wigner (omega = E), its exact resummation, and its failure
+       of size extensivity
+     - Rayleigh-Schroedinger (omega = W_0) to first, second and third order,
+       with the renormalisation term; the recursion to arbitrary order
+     - The wave operator and the link to FCI: C_ij^ab to first order
+     - All four models to third order (pairing, Lipkin, Hubbard, pairing+ph)
+       with comparison against HF, CID, RPA and FCI
+     - Convergence of the series, and the Moller-Plesset vs Epstein-Nesbet
+       partition
+     - Still to add: the diagrammatic representation and the linked-diagram
+       theorem from time-dependent theory (deliberately left out for now)
 ###  Coupled cluster theories, standard and unitary
      - Derivation of equations for singles and doubles, reminder on unitary transformations
      - non-hermiticity
