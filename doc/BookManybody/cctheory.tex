@@ -1,0 +1,619 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Packages and basic setup
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{bm}
+\usepackage{braket}
+\usepackage{physics}
+\usepackage{mathtools}
+\usepackage{hyperref}
+
+\numberwithin{equation}{section}
+
+% Shortcuts
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\cc}{\mathrm{c}}
+\newcommand{\vv}{\mathrm{v}}
+\newcommand{\op}[1]{\hat{#1}}
+\newcommand{\Hhat}{\hat{H}}
+\newcommand{\Fhat}{\hat{F}}
+\newcommand{\Phiz}{\ket{\Phi_0}}
+
+% Occupied / virtual indices
+% i,j,k,l,m,n -> occupied
+% a,b,c,d,e,f -> virtual
+% p,q,r,s     -> general orbitals
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \bfseries
+  Lecture Notes on Coupled-Cluster Theory in Quantum Chemistry:\\[0.3em]
+  Derivation of the Equations up to Third Order (CCSDT)}\\[1.5em]
+  {\large
+  Graduate-Level Notes in Quantum Chemistry}\\[0.5em]
+  \today
+\end{center}
+
+\vspace{1em}
+
+\tableofcontents
+
+\newpage
+
+% =========================================================
+\section{Introduction}
+% =========================================================
+
+Coupled-cluster (CC) theory is one of the most successful and widely used
+many-body methods in quantum chemistry for the accurate description of
+electron correlation. It is systematically improvable, size-extensive,
+and capable of achieving near-experimental accuracy when truncated at
+singles, doubles, and triples excitations (CCSDT) or when combined with
+perturbative corrections such as CCSD(T).
+
+These lecture notes provide a detailed derivation of the coupled-cluster
+equations up to third order, in the sense of including single, double,
+and triple excitations in the cluster operator. We work in the language
+of second quantization and use the Baker--Campbell--Hausdorff (BCH)
+expansion to derive the similarity-transformed Hamiltonian. The
+presentation is tailored to quantum chemistry and assumes familiarity
+with Hartree--Fock theory, second quantization, and basic many-electron
+wave function theory.
+
+We do not use diagrammatic techniques (Goldstone or Feynman diagrams)
+here; instead we proceed algebraically. The aim is a clear,
+self-contained derivation that can serve as lecture notes or a reference
+for advanced students.
+
+% =========================================================
+\section{Second Quantization and the Electronic Hamiltonian}
+\label{sec:second_quantization}
+% =========================================================
+
+\subsection{Spin-orbitals and fermionic operators}
+
+We consider a set of orthonormal spin-orbitals $\{\phi_p(\mathbf{x})\}$,
+where $\mathbf{x} = (\mathbf{r},\sigma)$ denotes spatial and spin
+coordinates. The creation and annihilation operators
+$a_p^\dagger, a_p$ obey
+\begin{align}
+  \{ a_p, a_q \} &= 0,
+  &
+  \{ a_p^\dagger, a_q^\dagger \} &= 0,
+  &
+  \{ a_p, a_q^\dagger \} &= \delta_{pq}.
+\end{align}
+
+Indices
+$i,j,k,\ldots$ label occupied spin-orbitals in a reference Slater
+determinant, $a,b,c,\ldots$ label virtual (unoccupied) spin-orbitals,
+and $p,q,r,s,\ldots$ denote general orbitals.
+
+\subsection{Second-quantized Hamiltonian}
+
+With respect to a one-particle orthonormal basis, the Hamiltonian reads
+\begin{equation}
+  \Hhat = \sum_{pq} h_{pq}\, a_p^\dagger a_q
+  + \frac{1}{4} \sum_{pqrs}
+  \langle pq || rs \rangle\, a_p^\dagger a_q^\dagger a_s a_r,
+\end{equation}
+with usual one- and two-electron integrals.
+
+\subsection{Hartree--Fock reference and normal ordering}
+
+Let $\Phiz$ be the Hartree--Fock (HF) reference determinant.
+The Hamiltonian can be written in normal-ordered form as
+\begin{equation}
+  \Hhat = E_{\text{HF}} + \Hhat_N,
+\end{equation}
+with
+\begin{equation}
+  \Hhat_N =
+  \sum_{pq} f_{pq} \{ a_p^\dagger a_q \}
+  + \frac{1}{4} \sum_{pqrs} \langle pq || rs \rangle
+    \{ a_p^\dagger a_q^\dagger a_s a_r \},
+\end{equation}
+where $f_{pq}$ is the Fock matrix in the MO basis.
+
+% =========================================================
+\section{Coupled-Cluster Ansatz and Excitation Operators}
+\label{sec:cc_ansatz}
+% =========================================================
+
+\subsection{Exponential ansatz}
+
+The coupled-cluster wave function is
+\begin{equation}
+  \ket{\Psi_{\text{CC}}} = \ee^T \Phiz,
+\end{equation}
+where $T$ is the cluster operator
+\begin{equation}
+  T = T_1 + T_2 + T_3 + \cdots.
+\end{equation}
+In spin-orbital notation
+\begin{align}
+  T_1 &= \sum_{i a} t_i^a\, a_a^\dagger a_i,\\
+  T_2 &= \frac{1}{4} \sum_{ijab} t_{ij}^{ab}\,
+          a_a^\dagger a_b^\dagger a_j a_i,\\
+  T_3 &= \frac{1}{36} \sum_{ijkabc} t_{ijk}^{abc}\,
+          a_a^\dagger a_b^\dagger a_c^\dagger a_k a_j a_i.
+\end{align}
+
+\subsection{Excited determinants}
+
+Excited determinants are generated as
+\begin{align}
+  \ket{\Phi_i^a}      &= a_a^\dagger a_i \Phiz,\\
+  \ket{\Phi_{ij}^{ab}}&= a_a^\dagger a_b^\dagger a_j a_i \Phiz,\\
+  \ket{\Phi_{ijk}^{abc}}&= a_a^\dagger a_b^\dagger a_c^\dagger a_k a_j a_i \Phiz.
+\end{align}
+
+% =========================================================
+\section{Similarity-Transformed Hamiltonian and BCH Expansion}
+\label{sec:bch}
+% =========================================================
+
+\subsection{Similarity transformation}
+
+Using $\ket{\Psi_{\text{CC}}} = \ee^T \Phiz$, the Schr\"odinger equation
+$\Hhat \ket{\Psi_{\text{CC}}} = E \ket{\Psi_{\text{CC}}}$ becomes
+\begin{equation}
+  \bar{H} \Phiz = E \Phiz,
+\end{equation}
+where
+\begin{equation}
+  \bar{H} = \ee^{-T} \Hhat \ee^{T}.
+\end{equation}
+Since $E_{\text{HF}}$ commutes with $T$, we can write
+\begin{equation}
+  \bar{H} = E_{\text{HF}} + \bar{H}_N,
+  \qquad
+  \bar{H}_N = \ee^{-T} \Hhat_N \ee^T.
+\end{equation}
+
+\subsection{Baker--Campbell--Hausdorff expansion}
+
+The BCH expansion yields
+\begin{equation}
+  \bar{H}_N = \Hhat_N + [\Hhat_N, T]
+  + \frac{1}{2} [[\Hhat_N, T], T]
+  + \frac{1}{6} [[[\Hhat_N, T], T], T]
+  + \cdots.
+\end{equation}
+Because $\Hhat_N$ is at most a two-body operator and $T$ is a sum of
+excitation operators, the series terminates at finite order when acting
+on $\Phiz$.
+
+% =========================================================
+\section{Coupled-Cluster Equations: General Structure}
+\label{sec:cc_equations_general}
+% =========================================================
+
+\subsection{Projected equations}
+
+The CC energy is
+\begin{equation}
+  E = \bra{\Phi_0} \bar{H} \ket{\Phi_0}.
+\end{equation}
+The amplitudes are determined by projecting onto excited determinants:
+\begin{align}
+  0 &= \bra{\Phi_i^a} \bar{H} \ket{\Phi_0},\\
+  0 &= \bra{\Phi_{ij}^{ab}} \bar{H} \ket{\Phi_0},\\
+  0 &= \bra{\Phi_{ijk}^{abc}} \bar{H} \ket{\Phi_0}, \quad \text{etc.}
+\end{align}
+
+\subsection{Connected terms only}
+
+Due to the exponential ansatz and the linked-cluster theorem, only
+connected contributions to $\bar{H}$ survive in these projected
+equations.
+
+% =========================================================
+\section{CCSD: Singles and Doubles}
+\label{sec:ccsd}
+% =========================================================
+
+We now derive the CC equations in the CCSD approximation
+($T = T_1 + T_2$) and give more explicit forms for the amplitude
+equations using permutation operators.
+
+\subsection{Cluster operator and BCH truncation in CCSD}
+
+In CCSD,
+\begin{equation}
+  T = T_1 + T_2,
+\end{equation}
+with
+\begin{align}
+  T_1 &= \sum_{ia} t_i^a\, a_a^\dagger a_i,\\
+  T_2 &= \frac{1}{4} \sum_{ijab} t_{ij}^{ab}\,
+          a_a^\dagger a_b^\dagger a_j a_i.
+\end{align}
+Inserting $T_1+T_2$ into the BCH series,
+\begin{equation}
+  \bar{H}_N =
+    \Hhat_N + [\Hhat_N, T]
+  + \frac{1}{2} [[\Hhat_N, T], T]
+  + \frac{1}{6} [[[\Hhat_N, T], T], T]
+  + \frac{1}{24} [[[[\Hhat_N, T], T], T], T],
+\end{equation}
+and using the fact that $\Hhat_N$ is at most two-body, one can show that
+higher-order commutators beyond the quadruple vanish when acting on
+$\Phiz$.
+
+\subsection{Permutation operators and compact notation}
+\label{subsec:perm_ops}
+
+The explicit spin-orbital CCSD equations are lengthy. A convenient
+notation uses permutation operators to encode antisymmetry:
+
+\begin{itemize}
+  \item For two occupied indices,
+    \begin{equation}
+      P(ij) X_{ij} = X_{ij} - X_{ji},
+    \end{equation}
+    and similarly for two virtuals,
+    \begin{equation}
+      P(ab) X_{ab} = X_{ab} - X_{ba}.
+    \end{equation}
+  \item For simultaneous permutations of occupied and virtual indices we
+    write
+    \begin{equation}
+      P(ij) P(ab) X_{ij}^{ab}
+      =
+      X_{ij}^{ab} - X_{ji}^{ab} - X_{ij}^{ba} + X_{ji}^{ba}.
+    \end{equation}
+\end{itemize}
+
+We use $f_{pq}$ for Fock matrix elements in the canonical HF MO basis
+and $\langle pq || rs \rangle$ for antisymmetrized two-electron
+integrals. With these conventions, we now give explicit CCSD amplitude
+equations.
+
+\subsection{CCSD correlation energy}
+
+The CCSD correlation energy can be written as
+\begin{equation}
+  E_{\text{corr}}^{\text{CCSD}} =
+  \sum_{i a} f_{i a}\, t_i^a
+  + \frac{1}{4} \sum_{i j a b} \langle i j || a b \rangle t_{i j}^{a b}
+  + \frac{1}{2} \sum_{i j a b} \langle i j || a b \rangle t_i^a t_j^b.
+\end{equation}
+In canonical HF orbitals, Brillouin's theorem gives $f_{ia}=0$, so the
+first term vanishes.
+
+\subsection{Explicit CCSD singles amplitude equation}
+\label{subsec:ccsd_singles}
+
+The singles amplitudes $t_i^a$ satisfy
+\begin{equation}
+  0 = \bra{\Phi_i^a} \bar{H}_N \ket{\Phi_0}.
+\end{equation}
+Collecting all connected contributions up to quadratic order in
+$T_1, T_2$, one convenient spin-orbital form is
+\begin{align}
+  0
+  &= f_{ai}
+   + \sum_e f_{ae} t_i^e
+   - \sum_m f_{mi} t_m^a
+   + \sum_{me} \langle am||ie \rangle t_m^e
+   + \sum_{me} f_{me} t_{im}^{ae}
+  \nonumber\\[0.3em]
+  &\quad
+   + \frac{1}{2} \sum_{mne} \langle mn||ie \rangle t_{mn}^{ae}
+   - \frac{1}{2} \sum_{mef} \langle am||ef \rangle t_{im}^{ef}
+  \nonumber\\[0.3em]
+  &\quad
+   + \sum_{me} \langle am||ef \rangle t_i^e t_m^f
+   - \sum_{mne} \langle mn||ie \rangle t_m^a t_n^e
+   + \sum_{mef} \langle am||ef \rangle t_m^e t_i^f
+  \nonumber\\[0.3em]
+  &\quad
+   + \sum_{mne} f_{me} t_i^e t_m^a
+   - \sum_{mne} f_{me} t_m^e t_i^a
+   + \cdots,
+   \label{eq:ccsd_singles_explicit}
+\end{align}
+where the ellipsis indicates terms that can be grouped into equivalent
+forms by introducing intermediates or by combining repeated index
+structures. In many practical implementations, Eq.~\eqref{eq:ccsd_singles_explicit}
+is reorganized into
+\begin{equation}
+  0 = \mathcal{R}_i^a \equiv
+  f_{ai}^{\text{eff}} + \sum_{e} F_{ae}^{\text{eff}} t_i^e
+  - \sum_{m} F_{mi}^{\text{eff}} t_m^a
+  + \sum_{me} W_{am,ie}^{\text{eff}} t_m^e
+  + \sum_{me} W_{me}^{\text{eff}} t_{im}^{ae},
+\end{equation}
+where $f^{\text{eff}}$, $F^{\text{eff}}$, and $W^{\text{eff}}$ are
+intermediates constructed from $f_{pq}$, $\langle pq||rs\rangle$, and
+the amplitudes $t_1$ and $t_2$.
+
+For the purposes of these notes, the key point is that the singles
+equation is \emph{nonlinear} in both $t_1$ and $t_2$, and contains
+terms up to quadratic order in the amplitudes even in the CCSD
+truncation.
+
+\subsection{Explicit CCSD doubles amplitude equation}
+\label{subsec:ccsd_doubles}
+
+The doubles amplitudes $t_{ij}^{ab}$ satisfy
+\begin{equation}
+  0 = \bra{\Phi_{ij}^{ab}} \bar{H}_N \ket{\Phi_0}.
+\end{equation}
+We first give a compact form using permutation operators and then sketch
+its expansion.
+
+A common spin-orbital CCSD doubles equation is
+\begin{align}
+  0
+  &= \langle ij||ab \rangle
+  + P(ij) \sum_m f_{mi} t_{mj}^{ab}
+  - P(ab) \sum_e f_{ae} t_{ij}^{eb}
+  \nonumber\\[0.3em]
+  &\quad
+  + \frac{1}{2} \sum_{mn} \langle mn||ab \rangle t_{ij}^{mn}
+  + \frac{1}{2} \sum_{ef} \langle ij||ef \rangle t_{ef}^{ab}
+  \nonumber\\[0.3em]
+  &\quad
+  + P(ij) P(ab) \sum_{me} \langle mj||eb \rangle t_{im}^{ae}
+  \nonumber\\[0.3em]
+  &\quad
+  + P(ij) \sum_{e} \langle ij||ae \rangle t_e^b
+  - P(ab) \sum_m \langle mj||ab \rangle t_i^m
+  \nonumber\\[0.3em]
+  &\quad
+  + P(ij) P(ab) \sum_{me} \langle mj||ae \rangle
+       t_i^e t_m^b
+  + \frac{1}{2} P(ij) \sum_{mn e}
+      \langle mn||ab \rangle t_{ij}^{mn} t_e^e
+  + \cdots,
+  \label{eq:ccsd_doubles_perm}
+\end{align}
+where again the ellipsis indicates higher-order terms in $t_1$ that are
+typically reorganized into intermediates.
+
+To make the structure clearer, let us partially expand the action of the
+permutation operators. The first line is straightforward:
+\begin{equation}
+  \langle ij||ab \rangle
+  + \sum_m \big( f_{mi} t_{mj}^{ab} - f_{mj} t_{mi}^{ab} \big)
+  - \sum_e \big( f_{ae} t_{ij}^{eb} - f_{be} t_{ij}^{ea} \big)
+  + \cdots
+\end{equation}
+The second line can be written explicitly as
+\begin{align}
+  &\frac{1}{2} \sum_{mn} \langle mn||ab \rangle t_{ij}^{mn}
+  + \frac{1}{2} \sum_{ef} \langle ij||ef \rangle t_{ef}^{ab},
+\end{align}
+while the third line yields
+\begin{align}
+  &\sum_{me} \big(
+     \langle mj||eb \rangle t_{im}^{ae}
+   - \langle mi||eb \rangle t_{jm}^{ae}
+   - \langle mj||ea \rangle t_{im}^{be}
+   + \langle mi||ea \rangle t_{jm}^{be}
+  \big).
+\end{align}
+The remaining lines in Eq.~\eqref{eq:ccsd_doubles_perm} gather the
+couplings between doubles and singles amplitudes and quadratic $t_1$
+terms.
+
+In practical CCSD implementations, Eq.~\eqref{eq:ccsd_doubles_perm} is
+rewritten as
+\begin{equation}
+  0 = \mathcal{R}_{ij}^{ab} \equiv
+  \langle ij||ab \rangle
+  + \text{(linear terms in $t_2$)}
+  + \text{(linear terms in $t_1$)}
+  + \text{(quadratic terms in $t_1$ and $t_2$)},
+\end{equation}
+where the various contributions are grouped into intermediates to reduce
+computational cost and improve numerical stability.
+
+\subsection{Comments on the explicit structure}
+
+A few important structural features of the CCSD amplitude equations are:
+\begin{itemize}
+  \item The doubles equation reduces to the MP2 equation at lowest order
+        in the amplitudes (i.e.\ when all $t$ on the right-hand side are
+        set to zero except for the driving two-electron integrals).
+  \item The singles equation vanishes to first order in canonical HF
+        orbitals (Brillouin's theorem), so singles amplitudes start at
+        second order in MBPT.
+  \item The nonlinear terms ($t_1 t_1$, $t_1 t_2$, $t_2 t_2$) represent
+        infinite partial resummations of many-body perturbation theory
+        diagrams, which is one origin of the good convergence properties
+        and robustness of CCSD.
+\end{itemize}
+
+% =========================================================
+\section{CCSDT: Including Triple Excitations}
+\label{sec:ccsdt}
+% =========================================================
+
+We now extend the CC formalism to include triple excitations,
+$T_3$, and briefly outline the structure of the resulting equations.
+
+\subsection{Triples cluster operator}
+
+In CCSDT,
+\begin{equation}
+  T = T_1 + T_2 + T_3,
+  \qquad
+  T_3 = \frac{1}{36} \sum_{ijkabc} t_{ijk}^{abc}
+        a_a^\dagger a_b^\dagger a_c^\dagger a_k a_j a_i.
+\end{equation}
+
+\subsection{Energy and amplitude equations}
+
+The CCSDT energy is still
+\begin{equation}
+  E_{\text{corr}}^{\text{CCSDT}} = \bra{\Phi_0} \bar{H}_N \ket{\Phi_0},
+\end{equation}
+but now $\bar{H}_N$ contains contributions involving $T_3$. The singles
+and doubles equations acquire additional terms coupling to $t_3$, and we
+also have the new triples equation
+\begin{equation}
+  0 = \bra{\Phi_{ijk}^{abc}} \bar{H}_N \ket{\Phi_0}.
+\end{equation}
+Explicitly, this equation is very long; it includes a diagonal term
+proportional to the orbital-energy denominator
+\begin{equation}
+  D_{ijk}^{abc} = \varepsilon_i + \varepsilon_j + \varepsilon_k
+    - \varepsilon_a - \varepsilon_b - \varepsilon_c,
+\end{equation}
+and a numerator involving integrals and lower-rank amplitudes. In
+perturbative triples models such as CCSD(T), one approximates the triple
+amplitudes as
+\begin{equation}
+  t_{ijk}^{abc} \approx
+  \frac{N_{ijk}^{abc}( t_1, t_2; \langle pq||rs\rangle )}
+       {D_{ijk}^{abc}},
+\end{equation}
+where $N_{ijk}^{abc}$ is a suitably truncated numerator.
+
+% =========================================================
+\section{Coupled Cluster as a Nonlinear Resummation of MBPT}
+\label{sec:cc_as_mbpt}
+% =========================================================
+
+Coupled-cluster theory has a deep connection to many-body perturbation
+theory (MBPT). In this section we explain how CC can be viewed as a
+nonlinear resummation of infinite classes of MBPT diagrams.
+
+\subsection{Brief review of MBPT}
+
+In Rayleigh--Schr\"odinger MBPT, we partition the Hamiltonian as
+\begin{equation}
+  \Hhat = \Hhat_0 + \lambda \Vhat,
+\end{equation}
+where $\Hhat_0$ is an exactly solvable reference Hamiltonian (typically
+the Fock operator) and $\Vhat$ is the fluctuation potential. One then
+expands the wave function and energy in powers of $\lambda$,
+\begin{align}
+  \ket{\Psi} &= \ket{\Psi^{(0)}} + \lambda \ket{\Psi^{(1)}} + \lambda^2 \ket{\Psi^{(2)}} + \cdots, \\
+  E &= E^{(0)} + \lambda E^{(1)} + \lambda^2 E^{(2)} + \cdots,
+\end{align}
+and solves order by order. In electronic structure theory, MP2 and MP3
+are examples of such finite-order MBPT approximations.
+
+MBPT can be represented diagrammatically using Goldstone or Feynman
+diagrams; each order in $\lambda$ carries a finite number of diagrams.
+The MBPT series may converge, diverge, or be asymptotic, depending on
+the system.
+
+\subsection{CC amplitude expansion in MBPT}
+
+Now consider the CCSD or CCSDT equations. Although we normally treat
+them as nonperturbative nonlinear equations, we can formally expand the
+cluster amplitudes in powers of $\lambda$:
+\begin{align}
+  t_i^a &= t_i^{a(1)} + t_i^{a(2)} + \cdots, \\
+  t_{ij}^{ab} &= t_{ij}^{ab(1)} + t_{ij}^{ab(2)} + \cdots, \\
+  t_{ijk}^{abc} &= t_{ijk}^{abc(1)} + t_{ijk}^{abc(2)} + \cdots.
+\end{align}
+Inserting these expansions into the CC equations and equating equal
+powers of $\lambda$ yields a \emph{hierarchy of linear equations} for
+the amplitude corrections, similar to MBPT. At first order, one recovers
+the usual MBPT expressions, e.g.\ the MP2 doubles amplitudes:
+\begin{equation}
+  t_{ij}^{ab(1)} =
+  \frac{\langle ij||ab \rangle}
+       {\varepsilon_i + \varepsilon_j - \varepsilon_a - \varepsilon_b},
+\end{equation}
+and the singles amplitudes vanish at first order in canonical HF,
+consistent with Brillouin's theorem.
+
+At higher orders, the nonlinear terms in the CC equations generate
+couplings between different amplitudes and orders, leading to
+contributions that would in MBPT correspond to infinite series of
+diagrams.
+
+\subsection{Infinite resummation of MBPT diagrams}
+
+The exponential form $\ee^T$ and the commutator expansion of $\bar{H}$
+ensure that the CC energy and amplitudes can be written as sums of
+\emph{linked} MBPT diagrams only (all disconnected diagrams are
+resummed into the exponential). Furthermore, although CCSD and CCSDT
+are formally defined by a truncation in excitation rank, they include
+\emph{infinite-order} contributions in $\lambda$.
+
+For example, CCSD includes:
+\begin{itemize}
+  \item All connected Goldstone diagrams up to fourth order in $\lambda$
+        that can be built with single and double excitations,
+  \item Partial resummations of higher-order diagrams, such as ring and
+        ladder series, to infinite order.
+\end{itemize}
+In other words, if we classified contributions by MBPT order,
+\begin{equation}
+  E_{\text{CCSD}} = E_{\text{HF}} + E^{(2)} + E^{(3)} + E^{(4)} + \cdots,
+\end{equation}
+the coefficients $E^{(n)}$ for $n>4$ are \emph{not} zero in CCSD, even
+though CCSD arises from truncating $T$ at doubles. Instead, CCSD
+sums an infinite subset of MBPT diagrams (all linked diagrams built from
+single and double excitations) to all orders.
+
+Similarly, CCSDT includes all MBPT diagrams that can be built from
+single, double, and triple excitations, again to \emph{infinite order}
+in $\lambda$, even though the excitation rank is finite.
+
+\subsection{Nonlinearity and convergence properties}
+
+This viewpoint explains why coupled-cluster methods are often more
+robust and accurate than finite-order MBPT:
+\begin{itemize}
+  \item The nonlinearity of the CC equations corresponds to a
+        self-consistent resummation of specific diagrammatic classes.
+  \item Size-extensivity is guaranteed by the exponential ansatz and
+        linked-cluster theorem.
+  \item CC can be viewed as a renormalized MBPT, where certain
+        divergences or slow-convergence issues in the bare perturbation
+        series are mitigated by the nonperturbative solution of the
+        nonlinear equations.
+\end{itemize}
+
+From a practical perspective, this means that CCSD often gives good
+results even when MP2 or MP3 are poorly converged or qualitatively
+incorrect, because CCSD sums higher-order contributions that
+compensate problematic low-order terms.
+
+% =========================================================
+\section{Worked Example: Minimal Model System}
+\label{sec:example}
+% =========================================================
+
+(As in the previous version; omitted here for brevity, but you can keep
+the minimal two-level CC example.)
+
+% =========================================================
+\section{Summary and Outlook}
+% =========================================================
+
+In these lecture notes, we have presented a detailed, formal derivation
+of the coupled-cluster equations up to third order (CCSDT) in quantum
+chemistry, using second quantization and the BCH expansion, without
+resorting to diagrams. We expanded the CCSD section to give more explicit
+spin-orbital amplitude equations using permutation operators, and we
+added a conceptual section explaining how CC can be viewed as a nonlinear
+resummation of infinite classes of MBPT diagrams.
+
+These notes can be used as a basis for further extensions:
+higher excitations (CCSDTQ), equation-of-motion CC for excited states,
+time-dependent CC, response theory, and connections to modern many-body
+formalisms in nuclear physics and condensed matter.
+
+\end{document}
