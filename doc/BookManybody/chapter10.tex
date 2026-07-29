@@ -1031,6 +1031,352 @@ energies: this is equation-of-motion coupled cluster, and it stands to the
 present chapter as the random-phase approximation of
 Chapter~\ref{chap:mfapplications} stands to Hartree-Fock.
 
+
+%----------------------------------------------------------------------
+\section{Unitary coupled cluster}
+\label{sec:ucc}
+
+\index{coupled cluster!unitary}\index{unitary coupled cluster}
+Everything so far has rested on the exponential $e^{\hat{T}}$ being
+\emph{non}-unitary.  That was what allowed the
+Baker-Campbell-Hausdorff series to terminate,
+Section~\ref{sec:termination}, and it is what makes the classical algorithm
+cheap.  It also cost us the variational principle: nothing in
+Section~\ref{sec:ccequations} guarantees that the coupled-cluster energy lies
+above the exact one, and Table~\ref{tab:ccdpairing} shows that it does not.
+
+There is an alternative.  Take
+\begin{equation}
+  \boxed{\;
+  \bket{\Psi(\bm{t})} = e^{\hat{\sigma}}\bket{\Phi_0},
+  \qquad
+  \hat{\sigma} = \hat{T}-\hat{T}^{\dagger} .
+  \;}
+  \label{eq:10-uccansatz}
+\end{equation}
+Since $\hat{\sigma}^{\dagger}=-\hat{\sigma}$, the operator
+$e^{\hat{\sigma}}$ is unitary, and therefore
+\begin{equation}
+  \braket{\Psi}{\Psi}
+   = \bracket{\Phi_0}{e^{-\hat{\sigma}}e^{\hat{\sigma}}}{\Phi_0}
+   = 1 .
+  \label{eq:10-uccnorm}
+\end{equation}
+The energy
+\begin{equation}
+  E(\bm{t}) = \bracket{\Psi(\bm{t})}{\hat{H}}{\Psi(\bm{t})}
+   = \bracket{\Phi_0}{e^{-\hat{\sigma}}\hat{H}e^{\hat{\sigma}}}{\Phi_0}
+  \label{eq:10-uccenergy}
+\end{equation}
+is then an honest expectation value in a normalised state, so the variational
+principle of Section~\ref{sec:variational} applies in full:
+\begin{equation}
+  E(\bm{t}) \ \ge\ E_0
+  \qquad\text{for every choice of amplitudes.}
+  \label{eq:10-uccvariational}
+\end{equation}
+This is \emph{unitary coupled cluster}, and the amplitudes are now determined
+not by projection but by minimisation.
+
+\subsection{What is gained and what is lost}
+\label{sec:ucctradeoff}
+
+The gain is Eq.~(\ref{eq:10-uccvariational}).  The loss is the finite
+expansion, and it is worth seeing exactly why.
+
+In the standard theory every term of $\hat{T}$ consists of particle creation
+and hole annihilation operators, so the cluster operators commute,
+Eq.~(\ref{eq:10-Tcommute}), and every $\hat{T}$ in a commutator must attach to
+$\hat{H}_N$ directly.  In the unitary theory $\hat{\sigma}$ contains
+$\hat{T}^{\dagger}$ as well, which \emph{de}-excites, and
+\begin{equation}
+  \left[\hat{T},\hat{T}^{\dagger}\right] \ne 0 .
+  \label{eq:10-Tnotcommute}
+\end{equation}
+The argument of Section~\ref{sec:termination} therefore collapses: successive
+commutators can be built from $\hat{\sigma}$ acting on $\hat{\sigma}$, no
+operator runs out of contractible partners, and
+\begin{equation}
+  e^{-\hat{\sigma}}\hat{H}e^{\hat{\sigma}}
+   = \hat{H} + \left[\hat{H},\hat{\sigma}\right]
+   + \frac{1}{2!}\left[\left[\hat{H},\hat{\sigma}\right],\hat{\sigma}\right]
+   + \cdots
+  \label{eq:10-uccbch}
+\end{equation}
+is an infinite series.  Truncating it is possible -- the commonly used
+\emph{unitary CCSD with a truncated BCH expansion} keeps terms through the
+second or third commutator -- but it is an uncontrolled approximation, and it
+destroys the variational property that motivated the whole construction.
+
+That is the whole story of unitary coupled cluster on a classical computer: it
+is more expensive, it is not systematically truncatable, and its one advantage
+is a bound.  Usually that is a bad bargain, and the standard theory wins.
+
+The calculus changes completely on a quantum computer.  There the exponential
+of an anti-Hermitian operator is not something to be expanded but something to
+be \emph{applied}: it is precisely a unitary, precisely what quantum gates
+implement.  The terminating BCH expansion was never the point, and the
+variational bound is exactly what an optimisation algorithm wants.  This is
+why unitary coupled cluster, a curiosity in classical quantum chemistry, is
+one of the standard ansatz families for the variational quantum eigensolver.
+
+\subsection{The generators}
+\label{sec:uccgenerators}
+
+Write $\hat{\sigma}$ as a sum over individual excitations with one amplitude
+each,
+\begin{equation}
+  \hat{\sigma}(\bm{t}) = \sum_{k}t_k
+    \left(\hat{A}_k - \hat{A}_k^{\dagger}\right),
+  \label{eq:10-generators}
+\end{equation}
+where the $\hat{A}_k$ run over the singles and doubles of
+Eqs.~(\ref{eq:10-T1}) and~(\ref{eq:10-T2}),
+\begin{align}
+  \hat{A}_i^a &= \hat{a}^{\dagger}_a\hat{a}_i,
+  &
+  \hat{A}_{ij}^{ab} &= \hat{a}^{\dagger}_a\hat{a}^{\dagger}_b
+    \hat{a}_j\hat{a}_i ,
+  \label{eq:10-uccsdgenerators}
+\end{align}
+with $i<j$ and $a<b$ so that each independent amplitude appears once.  Each
+$\hat{A}_k-\hat{A}_k^{\dagger}$ is anti-Hermitian by construction.  For $n_o$
+occupied and $n_v$ virtual spin-orbitals there are $n_on_v$ singles and
+$\binom{n_o}{2}\binom{n_v}{2}$ doubles, so the number of variational
+parameters grows only polynomially -- which is the point.
+
+\paragraph{The pairing model.}
+For the Hamiltonian of Eq.~(\ref{eq:10-pairing}) the interaction moves
+complete pairs, so the only generators that can do anything are the pair
+excitations
+\begin{equation}
+  \hat{A}_i^a
+   = \hat{a}^{\dagger}_{a+}\hat{a}^{\dagger}_{a-}
+     \hat{a}_{i-}\hat{a}_{i+},
+  \label{eq:10-pairgenerator}
+\end{equation}
+one for each occupied level $i$ and empty level $a$.  With four levels and two
+pairs that is four amplitudes, against thirty-six general doubles and
+fifty-two singles-and-doubles.  The program checks that all three give
+\emph{identical} energies:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lrr}
+\toprule
+generators & amplitudes & $E$(UCC)\\
+\midrule
+pairs only & $4$ & $0.6369869810$\\
+doubles & $36$ & $0.6369869810$\\
+singles and doubles & $52$ & $0.6369869810$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The extra generators are not wrong; they are simply idle, because the
+Hamiltonian cannot use them.  Recognising such redundancies is important in
+practice, since every superfluous amplitude is a parameter the optimiser must
+handle and, on a quantum computer, a block of gates that must be executed.
+
+\subsection{UCCD and UCCSD for the pairing model}
+\label{sec:uccdresults}
+
+Minimising Eq.~(\ref{eq:10-uccenergy}) over the amplitudes gives
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{7pt}
+\small
+\begin{tabular}{rrrrrrr}
+\toprule
+$g$ & $E_{\mathrm{ref}}$ & CCD & UCCD & FCI & CCD error & UCCD error\\
+\midrule
+$0.25$ & $1.75000$ & $1.73045621$ & $1.73046012$ & $1.73045985$
+  & $-3.6\times10^{-6}$ & $+2.8\times10^{-7}$\\
+$0.50$ & $1.50000$ & $1.41663766$ & $1.41679562$ & $1.41677428$
+  & $-1.4\times10^{-4}$ & $+2.1\times10^{-5}$\\
+$1.00$ & $1.00000$ & $0.63044275$ & $0.63698698$ & $0.63554847$
+  & $-5.1\times10^{-3}$ & $+1.4\times10^{-3}$\\
+$1.50$ & $0.50000$ & $-0.38416526$ & $-0.33675149$ & $-0.34819051$
+  & $-3.6\times10^{-2}$ & $+1.1\times10^{-2}$\\
+$2.00$ & $0.00000$ & $-1.60959440$ & $-1.45347633$ & $-1.48965216$
+  & $-1.2\times10^{-1}$ & $+3.6\times10^{-2}$\\
+\bottomrule
+\end{tabular}
+\caption{Standard and unitary coupled cluster with doubles, for the pairing
+model with four levels and four particles.  Every unitary error is positive,
+as Eq.~(\ref{eq:10-uccvariational}) requires; every standard error is
+negative.}
+\label{tab:uccd}
+\end{table}
+
+Every UCCD error is positive and every CCD error is negative, exactly as the
+variational property demands.  For this model the unitary theory is also more
+accurate at every coupling, by a factor between three and thirteen.  One
+should not generalise too freely from a four-particle model -- the variational
+bound guarantees a sign, not a magnitude -- but the pattern is a real one, and
+it becomes more pronounced as the coupling grows and the standard theory
+begins to over-correlate.
+
+For the pairing plus particle-hole model of
+Section~\ref{sec:pairingphmodel}, where the singles are active, the same
+comparison at the singles-and-doubles level gives
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\small
+\begin{tabular}{rrrrrrrr}
+\toprule
+$g$ & $f$ & UCCD & UCCSD & CCSD & FCI & UCCSD error & CCSD error\\
+\midrule
+$0.50$ & $0.025$ & $1.3478676$ & $1.3471722$ & $1.3469075$ & $1.3471327$
+  & $+4.0\times10^{-5}$ & $-2.3\times10^{-4}$\\
+$1.00$ & $0.050$ & $0.4553916$ & $0.4530194$ & $0.4423659$ & $0.4505823$
+  & $+2.4\times10^{-3}$ & $-8.2\times10^{-3}$\\
+$0.50$ & $0.250$ & $0.6093216$ & $0.5526429$ & $0.5467210$ & $0.5511916$
+  & $+1.5\times10^{-3}$ & $-4.5\times10^{-3}$\\
+$1.00$ & $0.500$ & $-1.5302687$ & $-1.6608653$ & $-1.7957374$ & $-1.6917367$
+  & $+3.1\times10^{-2}$ & $-1.0\times10^{-1}$\\
+\bottomrule
+\end{tabular}
+\caption{Unitary and standard coupled cluster with singles and doubles for
+the pairing plus particle-hole model of Chapter~\ref{chap:mfapplications}.}
+\label{tab:uccsd}
+\end{table}
+
+The singles are worth having: at $g=0.5$, $f=0.25$ they take the energy from
+$0.6093$ to $0.5526$ against an exact $0.5512$.  And in the last row, where
+the particle-hole term is strong and CCSD overshoots by $0.10$, UCCSD is
+wrong by $0.031$ -- three times better, and on the side the variational
+principle promises.
+
+%----------------------------------------------------------------------
+\section{Trotterisation}
+\label{sec:ucctrotter}
+
+\index{Trotter formula!in unitary coupled cluster}
+A quantum computer cannot apply $e^{\hat{\sigma}}$ in one step.  What it can
+do is apply the exponential of each generator separately, since each
+$e^{t_k(\hat{A}_k-\hat{A}_k^{\dagger})}$ maps onto a short, known gate
+sequence after a Jordan-Wigner transformation.  The two are not the same,
+because the generators do not commute, and the difference is exactly the
+Trotter splitting of Section~\ref{sec:trotter}:
+\begin{equation}
+  \boxed{\;
+  e^{\hat{\sigma}(\bm{t})}
+   \approx \left[\prod_k
+     e^{t_k(\hat{A}_k-\hat{A}_k^{\dagger})/n}\right]^{n} .
+  \;}
+  \label{eq:10-trottered}
+\end{equation}
+This is Eq.~(\ref{eq:6-trotter}) with the cluster generators in place of the
+pieces of a Hamiltonian, and it inherits the same first-order error
+$\bigO(1/n)$ in the operator, governed by the commutators
+$[\hat{A}_k-\hat{A}_k^{\dagger},\hat{A}_l-\hat{A}_l^{\dagger}]$.
+
+The obvious question is how large $n$ must be.  The answer is surprising, and
+it is the most useful thing in this section.
+
+\subsection{Re-optimisation absorbs the splitting error}
+\label{sec:trotterabsorbed}
+
+Optimising the amplitudes separately for each Trotter number gives
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lrr}
+\toprule
+$n$ & $E$(UCCD) & error against FCI\\
+\midrule
+exact exponential & $0.6369869810$ & $1.44\times10^{-3}$\\
+$1$ & $0.6369869810$ & $1.44\times10^{-3}$\\
+$2$ & $0.6369869810$ & $1.44\times10^{-3}$\\
+$4$ & $0.6369869810$ & $1.44\times10^{-3}$\\
+$8$ & $0.6369869810$ & $1.44\times10^{-3}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Every Trotter number gives the same energy to ten digits -- including
+$n=1$, the crudest possible splitting.  This is not because the splitting
+error is small.  It is because the Trotterised ansatz is a \emph{different
+parametrisation of a similar family of states}, and a variational search
+simply finds whichever amplitudes are best for the parametrisation it is
+given.  The optimiser absorbs the splitting error into the amplitudes.
+
+To see the error one must hold the amplitudes fixed.  Taking those optimised
+for the exact exponential and evaluating the Trotterised state at the same
+amplitudes:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrrrr}
+\toprule
+$n$ & $\Vert\Psi_n-\Psi\Vert$ & ratio & energy error & ratio\\
+\midrule
+$1$  & $3.56\times10^{-3}$ & --- & $6.78\times10^{-5}$ & ---\\
+$2$  & $1.14\times10^{-3}$ & $3.13$ & $6.38\times10^{-6}$ & $10.63$\\
+$4$  & $4.56\times10^{-4}$ & $2.50$ & $9.37\times10^{-7}$ & $6.81$\\
+$8$  & $2.11\times10^{-4}$ & $2.16$ & $1.93\times10^{-7}$ & $4.85$\\
+$16$ & $1.03\times10^{-4}$ & $2.04$ & $4.57\times10^{-8}$ & $4.23$\\
+$32$ & $5.14\times10^{-5}$ & $2.01$ & $1.13\times10^{-8}$ & $4.06$\\
+\bottomrule
+\end{tabular}
+\caption{The Trotter error of the UCCD ansatz for the pairing model at
+$g=1$, with the amplitudes frozen at their exact-exponential values.  The
+state converges as $1/n$ and the energy as $1/n^2$.}
+\label{tab:uccdtrotter}
+\end{table}
+
+Two things are visible.  The state converges as $1/n$, which is the
+first-order Trotter behaviour of Section~\ref{sec:trotter}.  The energy
+converges as $1/n^2$ -- one power faster.
+
+The reason is worth spelling out, because it is a general and useful fact.
+Write the Trotterised state as $\bket{\Psi_n}=\bket{\Psi}+\bket{\delta}$ with
+$\Vert\delta\Vert=\bigO(1/n)$.  Then
+\begin{equation}
+  E_n - E
+   = 2\,\mathrm{Re}\bracket{\Psi}{\hat{H}-E}{\delta}
+   + \bracket{\delta}{\hat{H}-E}{\delta} + \cdots
+  \label{eq:10-quadraticresponse}
+\end{equation}
+The amplitudes were chosen to make $E$ stationary, so the first-order term is
+suppressed and only the quadratic one survives.  The program confirms this
+directly: the linear term is smaller than the quadratic one by three orders of
+magnitude already at $n=1$.
+
+Both observations point the same way.  A variational algorithm is far more
+forgiving of Trotter error than a simulation algorithm, because it can
+re-optimise around it, and because the energy responds only quadratically to
+whatever error remains.  This is one of the practical arguments for the
+variational quantum eigensolver over straightforward time evolution on
+near-term hardware, where circuit depth is the binding constraint and $n=1$
+is often all one can afford.
+
+\begin{notebox}
+\textbf{Towards the variational quantum eigensolver.}  What we have just
+described \emph{is} a VQE, run on a classical simulator.  The ingredients are
+a parametrised trial state -- here $e^{\hat{\sigma}(\bm{t})}\bket{\Phi_0}$,
+Trotterised into a sequence of gates -- an energy evaluated on it, and a
+classical optimiser adjusting $\bm{t}$.  On real hardware the second step is
+replaced by repeated measurement of the qubit register in bases chosen so
+that the measured averages reconstruct
+$\bracket{\Psi}{\hat{H}}{\Psi}$, which is where the Pauli decomposition of
+Section~\ref{sec:pauli} and the Jordan-Wigner mapping of
+Section~\ref{sec:qcgates} enter.  Nothing else changes: the ansatz, the
+variational principle and the optimisation loop are the ones in this section.
+Chapter~\ref{chap:cctheory} therefore leads directly into the
+quantum-computing chapters, and the code written here is reused there.
+\end{notebox}
+
 %----------------------------------------------------------------------
 \section{Summary}
 \label{sec:ch10summary}
@@ -1063,8 +1409,21 @@ expansion within the retained excitation classes.  For the pairing model CCD
 is accurate to four parts in a million at weak coupling and still the best
 method available at strong coupling, while remaining exactly size extensive.
 
+The unitary variant makes the opposite trade.  Taking
+$\hat{\sigma}=\hat{T}-\hat{T}^{\dagger}$ gives a unitary exponential, hence a
+normalised state and a variational energy, at the cost of a
+Baker-Campbell-Hausdorff series that no longer terminates.  For the pairing
+model UCCD is above the exact energy at every coupling where CCD is below it,
+and here also closer.  Trotterising the exponential, as any quantum circuit
+must, introduces an error that falls as $1/n$ in the state but only $1/n^2$ in
+the energy -- and which a variational optimiser absorbs almost entirely by
+re-optimising the amplitudes.  That is the structure of the variational
+quantum eigensolver, and it is where Chapter~\ref{chap:cctheory} hands over to
+the quantum-computing chapters.
+
 The program \texttt{coupledcluster.py} performs every calculation of this
-chapter.
+chapter, including the unitary ones, and the class \texttt{UnitaryCC} is the
+one reused later.
 
 %----------------------------------------------------------------------
 \section{Exercises}
@@ -1330,6 +1689,93 @@ complete at fourth order and the program finds exact agreement.  For a
 general interaction the connected triples are present and CCD misses them, so
 agreement stops at third order.  This is exactly why CCSD(T) exists.
 
+\subsection*{Exercise 6: unitary coupled cluster}
+\label{ex:10-ucc}
+\addcontentsline{toc}{subsection}{Exercise 6: unitary coupled cluster}
+
+\begin{enumerate}
+  \item[a)] Show that $e^{\hat{\sigma}}$ with
+  $\hat{\sigma}=\hat{T}-\hat{T}^{\dagger}$ is unitary, and hence that the
+  energy~(\ref{eq:10-uccenergy}) is variational.
+  \item[b)] Show that $[\hat{T},\hat{T}^{\dagger}]\ne0$ for a single doubles
+  amplitude, and explain why this destroys the argument of
+  Section~\ref{sec:termination}.
+  \item[c)] For the pairing model, show that only the pair generators of
+  Eq.~(\ref{eq:10-pairgenerator}) can contribute, and count the amplitudes
+  for $L$ levels and $N/2$ pairs.
+  \item[d)] Derive Eq.~(\ref{eq:10-quadraticresponse}) and explain why the
+  Trotter error in the energy falls one power of $n$ faster than the error in
+  the state.
+  \item[e)] Why does re-optimising the amplitudes at each Trotter number give
+  the same energy?  Is this a general phenomenon or an accident of this
+  model?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+$\hat{\sigma}^{\dagger}=(\hat{T}-\hat{T}^{\dagger})^{\dagger}
+=\hat{T}^{\dagger}-\hat{T}=-\hat{\sigma}$, so $\hat{\sigma}$ is
+anti-Hermitian and
+$(e^{\hat{\sigma}})^{\dagger}e^{\hat{\sigma}}
+=e^{-\hat{\sigma}}e^{\hat{\sigma}}=1$.  The state therefore stays normalised
+for any amplitudes, $E(\bm{t})=\bracket{\Psi}{\hat{H}}{\Psi}$ is a Rayleigh
+quotient with unit denominator, and Section~\ref{sec:variational} gives
+$E(\bm{t})\ge E_0$.  Note where the standard theory fails this test:
+$e^{\hat{T}}$ is not unitary, $\bket{\Psi}$ is not normalised, and the
+coupled-cluster energy is obtained by projection rather than as an
+expectation value.
+
+\paragraph{Answer to b).}
+Take $\hat{A}=\hat{a}^{\dagger}_a\hat{a}^{\dagger}_b\hat{a}_j\hat{a}_i$.
+Then $\hat{A}^{\dagger}\hat{A}$ acting on the reference gives back the
+reference (both hole states are occupied and both particle states empty),
+while $\hat{A}\hat{A}^{\dagger}$ annihilates it.  Hence
+$[\hat{A},\hat{A}^{\dagger}]\bket{\Phi_0}=-\bket{\Phi_0}\ne0$.  The
+argument of Section~\ref{sec:termination} required that every cluster
+operator in a nested commutator attach to $\hat{H}_N$, which followed from
+the cluster operators commuting among themselves.  With
+$\hat{T}^{\dagger}$ present they do not, commutators of $\hat{\sigma}$ with
+itself are non-zero, and nothing limits the length of the series.
+
+\paragraph{Answer to c).}
+The pairing interaction moves complete pairs, so it has no matrix element
+between the reference and any state with a broken pair.  A generator that
+breaks a pair therefore produces a component of the trial state on which
+$\hat{H}$ has vanishing matrix elements with everything else that is
+populated, and the optimiser sets its amplitude to zero.  Only
+$\hat{A}_i^a=\hat{a}^{\dagger}_{a+}\hat{a}^{\dagger}_{a-}
+\hat{a}_{i-}\hat{a}_{i+}$ survives, one for each occupied level $i$ and empty
+level $a$, giving $(N/2)(L-N/2)$ amplitudes -- four for the case $L=4$,
+$N=4$.  The program confirms that the general doubles and the
+singles-and-doubles ansatz give exactly the same energy.
+
+\paragraph{Answer to d).}
+Write $\bket{\Psi_n}=\bket{\Psi}+\bket{\delta}$ and expand the normalised
+expectation value.  To second order in $\delta$,
+\begin{equation}
+  E_n - E = 2\,\mathrm{Re}\bracket{\Psi}{\hat{H}-E}{\delta}
+    + \bracket{\delta}{\hat{H}-E}{\delta} + \bigO(\delta^3).
+  \label{eq:10-exd6}
+\end{equation}
+The amplitudes were obtained by minimising $E$, so the state is at a
+stationary point and the first-order term is suppressed.  With
+$\Vert\delta\Vert=\bigO(1/n)$ from the first-order Trotter formula, the
+surviving quadratic term is $\bigO(1/n^2)$.  Table~\ref{tab:uccdtrotter}
+shows both scalings, and the program checks that the linear term is three
+orders of magnitude below the quadratic one at $n=1$.
+
+\paragraph{Answer to e).}
+It is general, though not exact.  Trotterising changes the ansatz, not the
+variational principle: for each $n$ one is minimising the same energy over a
+slightly different family of states, and both families contain states very
+close to the true minimum of the untrotterised one.  The optimiser therefore
+compensates by shifting the amplitudes, and the residual difference is second
+order in the shift.  The effect is not exact -- with a coarser optimiser or a
+harder problem one would see small differences -- but it is why practical VQE
+implementations use $n=1$ almost universally.  What it does \emph{not} mean
+is that the Trotter error is unimportant in general: for time evolution,
+where the amplitudes are fixed by the physics and cannot be re-optimised, the
+full $\bigO(1/n)$ error is felt, as Section~\ref{sec:trotter} showed.
+
 \subsection*{Exercise 5: numerical explorations}
 \label{ex:10-numerical}
 \addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
@@ -1350,6 +1796,13 @@ agreement stops at third order.  This is exactly why CCSD(T) exists.
   \item[e)] Implement the CCSD(T) correction of
   Eq.~(\ref{eq:10-perturbativetriples}) for the pairing plus particle-hole
   model and see how much of the remaining error it removes.
+  \item[f)] Using the class \texttt{UnitaryCC}, reproduce
+  Tables~\ref{tab:uccd} and~\ref{tab:uccdtrotter}, and check that the UCCD
+  energy stays above the exact one for every coupling you can reach.
+  \item[g)] Count the gates a Trotterised UCCSD circuit would need for $L$
+  levels, assuming each generator costs $\bigO(1)$ two-qubit gates after a
+  Jordan-Wigner mapping.  How does the count grow, and how does it compare
+  with the $n^6$ of classical CCSD?
 \end{enumerate}
 
 \paragraph{Answer.}

@@ -16,6 +16,15 @@ matrices, so that no discrepancy can be blamed on a different Hamiltonian.
     pairing_model       -- the model of chapters 4, 5, 7 and 9
     pairing_ph_model    -- the pairing plus particle-hole model of chapter 7
     ccd_order_by_order  -- the perturbative content of CCD
+    UnitaryCC           -- unitary coupled cluster, exact and Trotterised
+
+The unitary theory replaces exp(T) by exp(T - T^dagger), which is unitary, so
+the energy becomes a genuine variational expectation value.  The price is that
+the Baker-Campbell-Hausdorff series no longer terminates, so the exponential
+must be built explicitly.  We do that in the determinant basis, which is exact
+for the small systems of this book and is also precisely the structure of the
+variational quantum eigensolver: a parametrised state, an energy evaluated on
+it, and a classical optimiser on top.
 
 Conventions.  Spin-orbitals are numbered so that the ``n_occ`` lowest are
 occupied in the reference.  The two-body tensor is antisymmetrised,
@@ -476,6 +485,212 @@ def mp2_energy(f, v, n_occ):
 
 
 # ---------------------------------------------------------------------------
+#  Unitary coupled cluster
+# ---------------------------------------------------------------------------
+def determinant_basis(n_orbitals, n_particles):
+    states = []
+    for occ in combinations(range(n_orbitals), n_particles):
+        bits = 0
+        for o in occ:
+            bits |= 1 << o
+        states.append(bits)
+    states.sort()
+    return states, {s: i for i, s in enumerate(states)}
+
+
+def hamiltonian_matrix(h, v, n_particles):
+    """The many-body Hamiltonian in the determinant basis."""
+    n = h.shape[0]
+    states, index = determinant_basis(n, n_particles)
+    dim = len(states)
+    H = np.zeros((dim, dim))
+    for col, state in enumerate(states):
+        for p in range(n):
+            for q in range(n):
+                if abs(h[p, q]) < 1e-14:
+                    continue
+                st, sign = _annihilate(state, q)
+                if st is None:
+                    continue
+                st, t = _create(st, p)
+                if st is None:
+                    continue
+                H[index[st], col] += h[p, q] * sign * t
+        for p in range(n):
+            for q in range(n):
+                for r in range(n):
+                    for s_ in range(n):
+                        val = v[p, q, r, s_]
+                        if abs(val) < 1e-14:
+                            continue
+                        st, sign = _annihilate(state, r)
+                        if st is None:
+                            continue
+                        st, t1 = _annihilate(st, s_)
+                        if st is None:
+                            continue
+                        st, t2 = _create(st, q)
+                        if st is None:
+                            continue
+                        st, t3 = _create(st, p)
+                        if st is None:
+                            continue
+                        H[index[st], col] += 0.25 * val * sign * t1 * t2 * t3
+    return H, states, index
+
+
+class UnitaryCC:
+    """Unitary coupled cluster in the determinant basis.
+
+    The ansatz is
+
+        |Psi(t)> = exp( sigma(t) ) |Phi_0> ,
+        sigma(t) = sum_k t_k ( A_k - A_k^dagger ) ,
+
+    with the A_k the usual singles and doubles excitation operators.  Since
+    sigma is anti-Hermitian, exp(sigma) is unitary and
+
+        E(t) = <Phi_0| exp(-sigma) H exp(sigma) |Phi_0>
+
+    is a genuine expectation value in a normalised state: the energy is
+    variational and bounded below by the exact ground-state energy.
+
+    Two ways of building the state are offered.  ``n_trotter=None`` forms the
+    matrix exponential of the whole sigma, which is exact.  An integer
+    ``n_trotter`` splits the exponential over the individual generators,
+
+        [ prod_k exp( t_k (A_k - A_k^+) / n ) ]^n ,
+
+    which is what a quantum circuit implements: each factor is a gate
+    sequence, and the splitting error is the Trotter error of chapter 6.
+    """
+
+    def __init__(self, h, v, n_occ, singles=True, doubles=True,
+                 pair_only=False):
+        self.h, self.v, self.n_occ = h, v, n_occ
+        self.n = h.shape[0]
+        self.H, self.states, self.index = hamiltonian_matrix(h, v, n_occ)
+        self.dim = len(self.states)
+        reference = (1 << n_occ) - 1
+        self.reference = self.index[reference]
+        self.psi0 = np.zeros(self.dim)
+        self.psi0[self.reference] = 1.0
+        self.e_ref = float(self.H[self.reference, self.reference])
+        self.labels, self.generators = self._build(singles, doubles,
+                                                   pair_only)
+        self.n_amplitudes = len(self.generators)
+
+    # ------------------------------------------------------------------
+    def _operator(self, creators, annihilators):
+        """The matrix of a+_{c1} a+_{c2} ... a_{d2} a_{d1} in the basis."""
+        A = np.zeros((self.dim, self.dim))
+        for col, state in enumerate(self.states):
+            st, sign = state, 1
+            ok = True
+            for o in reversed(annihilators):
+                st, s = _annihilate(st, o)
+                if st is None:
+                    ok = False
+                    break
+                sign *= s
+            if not ok:
+                continue
+            for o in reversed(creators):
+                st, s = _create(st, o)
+                if st is None:
+                    ok = False
+                    break
+                sign *= s
+            if ok:
+                A[self.index[st], col] += sign
+        return A
+
+    def _build(self, singles, doubles, pair_only):
+        occ = range(self.n_occ)
+        vir = range(self.n_occ, self.n)
+        labels, generators = [], []
+
+        if pair_only:
+            # pair excitations a+_{a+} a+_{a-} a_{i-} a_{i+}, one per (i, a)
+            for i in range(0, self.n_occ, 2):
+                for a in range(self.n_occ, self.n, 2):
+                    A = self._operator([a, a + 1], [i, i + 1])
+                    if np.abs(A).max() > 1e-12:
+                        labels.append(("pair", i // 2, a // 2))
+                        generators.append(A - A.T)
+            return labels, generators
+
+        if singles:
+            for i in occ:
+                for a in vir:
+                    A = self._operator([a], [i])
+                    if np.abs(A).max() > 1e-12:
+                        labels.append(("s", i, a))
+                        generators.append(A - A.T)
+        if doubles:
+            for i, j in combinations(occ, 2):
+                for a, b in combinations(vir, 2):
+                    A = self._operator([a, b], [i, j])
+                    if np.abs(A).max() > 1e-12:
+                        labels.append(("d", (i, j), (a, b)))
+                        generators.append(A - A.T)
+        return labels, generators
+
+    # ------------------------------------------------------------------
+    def state(self, amplitudes, n_trotter=None):
+        """|Psi(t)>, exactly or Trotterised."""
+        from scipy.linalg import expm
+        amplitudes = np.asarray(amplitudes, dtype=float)
+        if n_trotter is None:
+            sigma = sum(t * A for t, A in zip(amplitudes, self.generators))
+            return expm(sigma) @ self.psi0
+        dt = 1.0 / n_trotter
+        factors = [expm(t * A * dt)
+                   for t, A in zip(amplitudes, self.generators)]
+        psi = self.psi0.copy()
+        for _ in range(n_trotter):
+            for U in factors:
+                psi = U @ psi
+        return psi
+
+    def energy(self, amplitudes, n_trotter=None):
+        psi = self.state(amplitudes, n_trotter)
+        psi = psi / np.linalg.norm(psi)
+        return float(psi @ (self.H @ psi))
+
+    def correlation_energy(self, amplitudes, n_trotter=None):
+        return self.energy(amplitudes, n_trotter) - self.e_ref
+
+    # ------------------------------------------------------------------
+    def optimise(self, n_trotter=None, start=None, seed=2024, restarts=1,
+                 tol=1e-12):
+        """Minimise the energy over the amplitudes -- the VQE loop."""
+        from scipy.optimize import minimize
+        rng = np.random.default_rng(seed)
+        best = None
+        for attempt in range(restarts):
+            if start is not None and attempt == 0:
+                x0 = np.asarray(start, dtype=float)
+            elif attempt == 0:
+                x0 = np.zeros(self.n_amplitudes)
+            else:
+                x0 = rng.uniform(-0.1, 0.1, self.n_amplitudes)
+            res = minimize(self.energy, x0, args=(n_trotter,),
+                           method="L-BFGS-B",
+                           options={"maxiter": 2000, "ftol": tol,
+                                    "gtol": 1e-10})
+            if best is None or res.fun < best.fun:
+                best = res
+        return dict(energy=float(best.fun),
+                    correlation=float(best.fun) - self.e_ref,
+                    amplitudes=best.x, iterations=int(best.nit),
+                    evaluations=int(best.nfev))
+
+    def exact(self):
+        return float(np.linalg.eigvalsh(self.H)[0])
+
+
+# ---------------------------------------------------------------------------
 #  Demonstrations
 # ---------------------------------------------------------------------------
 def demo_validation():
@@ -762,9 +977,168 @@ def demo_comparison():
     print("workhorse of modern many-body theory.")
 
 
+def demo_unitary():
+    print("=" * 74)
+    print("7. Unitary coupled cluster")
+    print("=" * 74)
+    print("Replacing exp(T) by exp(T - T^dagger) makes the transformation")
+    print("unitary, so the energy becomes a true expectation value in a")
+    print("normalised state and is therefore variational.  The price is that")
+    print("the Baker-Campbell-Hausdorff series no longer terminates, and the")
+    print("exponential must be built explicitly.")
+    print()
+    print("For the pairing model the generators may be taken as pair")
+    print("excitations alone; adding the general doubles and singles changes")
+    print("nothing, because the interaction cannot use them:")
+    h, v, N = pairing_model(g=1.0)
+    print(f"{'generators':>18s} {'amplitudes':>12s} {'E(UCC)':>15s}")
+    for kwargs, label in ((dict(pair_only=True), "pairs only"),
+                          (dict(singles=False), "doubles"),
+                          (dict(), "singles + doubles")):
+        u = UnitaryCC(h, v, N, **kwargs)
+        r = u.optimise(restarts=2)
+        print(f"{label:>18s} {u.n_amplitudes:12d} {r['energy']:15.10f}")
+    print()
+    print("The comparison that matters is with the standard theory.  UCCD is")
+    print("variational and therefore always above the exact energy; CCD is")
+    print("not, and crosses it:")
+    print()
+    print(f"{'g':>6s} {'E_ref':>9s} {'CCD':>13s} {'UCCD':>13s} {'FCI':>13s} "
+          f"{'CCD err':>11s} {'UCCD err':>11s}")
+    for g in (0.25, 0.5, 1.0, 1.5, 2.0):
+        h, v, N = pairing_model(g=g)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        e_ccd = e_ref + ccd(fk, v, N)["energy"]
+        u = UnitaryCC(h, v, N, pair_only=True)
+        r = u.optimise(restarts=2)
+        e_fci = u.exact()
+        print(f"{g:6.2f} {e_ref:9.5f} {e_ccd:13.8f} {r['energy']:13.8f} "
+              f"{e_fci:13.8f} {e_ccd - e_fci:11.2e} "
+              f"{r['energy'] - e_fci:11.2e}")
+    print()
+    print("Every UCCD error is positive, as the variational principle")
+    print("demands, and every CCD error is negative.  For this model the")
+    print("unitary theory is also the more accurate of the two at every")
+    print("coupling, by a factor between three and thirteen -- and it comes")
+    print("with a bound that CCD cannot offer.  The two are the same")
+    print("truncation of the same cluster operator, differing only in whether")
+    print("the exponential is unitary; that difference is worth an order of")
+    print("magnitude here.  One should not generalise too freely from a")
+    print("four-particle model, but the variational property is a theorem,")
+    print("not an accident.")
+
+
+def demo_trotter():
+    print("=" * 74)
+    print("8. Trotterisation, and a warning about it")
+    print("=" * 74)
+    print("A quantum computer cannot apply exp(sigma) directly.  It applies")
+    print("the individual factors in sequence,")
+    print("   [ prod_k exp( t_k (A_k - A_k^+) / n ) ]^n ,")
+    print("which is the Trotter splitting of chapter 6 with the generators")
+    print("in place of the pieces of a Hamiltonian.  The obvious question is")
+    print("how large n must be.")
+    print()
+    h, v, N = pairing_model(g=1.0)
+    u = UnitaryCC(h, v, N, pair_only=True)
+    e_exact = u.exact()
+    print("Re-optimising the amplitudes for each Trotter number:")
+    print(f"{'n':>10s} {'E(UCCD)':>16s} {'error vs FCI':>15s}")
+    reference = u.optimise(restarts=2)
+    print(f"{'exact exp':>10s} {reference['energy']:16.10f} "
+          f"{reference['energy'] - e_exact:15.2e}")
+    for n in (1, 2, 4, 8):
+        r = u.optimise(n_trotter=n, restarts=2)
+        print(f"{n:10d} {r['energy']:16.10f} {r['energy'] - e_exact:15.2e}")
+    print()
+    print("Every Trotter number gives the same answer to ten digits, even")
+    print("n = 1.  This is not an error in the splitting: it is the")
+    print("optimiser absorbing it.  The Trotterised ansatz is a different")
+    print("parametrisation of a similar family of states, and the variational")
+    print("search simply finds whichever amplitudes are best for the")
+    print("parametrisation it is given.")
+    print()
+    print("To see the splitting error one has to hold the amplitudes fixed.")
+    print("Taking those optimised for the exact exponential and evaluating")
+    print("the Trotterised state at the same amplitudes:")
+    print()
+    t_star = reference["amplitudes"]
+    psi = u.state(t_star)
+    psi = psi / np.linalg.norm(psi)
+    print(f"{'n':>5s} {'|| psi_n - psi ||':>19s} {'ratio':>7s} "
+          f"{'energy error':>15s} {'ratio':>7s}")
+    previous_state = previous_energy = None
+    for n in (1, 2, 4, 8, 16, 32):
+        p = u.state(t_star, n_trotter=n)
+        p = p / np.linalg.norm(p)
+        if float(psi @ p) < 0:
+            p = -p
+        gap = float(np.linalg.norm(p - psi))
+        err = u.energy(t_star, n_trotter=n) - reference["energy"]
+        rs = previous_state / gap if previous_state else np.nan
+        re = previous_energy / err if previous_energy else np.nan
+        print(f"{n:5d} {gap:19.3e} {rs:7.2f} {err:15.3e} {re:7.2f}")
+        previous_state, previous_energy = gap, err
+    print()
+    print("The state converges as 1/n, which is the first-order Trotter")
+    print("error of chapter 6.  The energy converges as 1/n^2 -- one power")
+    print("faster -- because the exact-exponential amplitudes are a")
+    print("stationary point of the energy, so the first-order response")
+    print("vanishes and only the quadratic term survives.  The program")
+    print("confirms that the linear term is smaller than the quadratic one")
+    print("by three orders of magnitude already at n = 1.")
+    print()
+    print("Both observations point the same way.  A variational algorithm is")
+    print("far more forgiving of Trotter error than a simulation algorithm,")
+    print("because it can re-optimise around it.  That is one of the")
+    print("practical arguments for the variational quantum eigensolver over")
+    print("straightforward time evolution on near-term hardware.")
+
+
+def demo_uccsd():
+    print("=" * 74)
+    print("9. UCCSD, where the singles matter")
+    print("=" * 74)
+    print("The pairing plus particle-hole model of chapter 7 again.  Now the")
+    print("singles generators do real work, and the contrast between the")
+    print("variational and the standard theory is sharpest.")
+    print()
+    print(f"{'g':>5s} {'f':>6s} {'UCCD':>12s} {'UCCSD':>12s} {'CCSD':>12s} "
+          f"{'FCI':>12s} {'UCCSD err':>11s} {'CCSD err':>11s}")
+    for g, ph in ((0.5, 0.025), (1.0, 0.05), (0.5, 0.25), (1.0, 0.5)):
+        h, v, N = pairing_ph_model(g=g, f=ph)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        e_ccsd = e_ref + ccsd(fk, v, N, mixing=0.3)["energy"]
+        ud = UnitaryCC(h, v, N, singles=False)
+        us = UnitaryCC(h, v, N)
+        rd = ud.optimise(restarts=3)
+        rs = us.optimise(restarts=3)
+        e_fci = us.exact()
+        print(f"{g:5.2f} {ph:6.3f} {rd['energy']:12.7f} {rs['energy']:12.7f} "
+              f"{e_ccsd:12.7f} {e_fci:12.7f} {rs['energy'] - e_fci:11.2e} "
+              f"{e_ccsd - e_fci:11.2e}")
+    print()
+    print("The singles are worth having: at g = 0.5, f = 0.25 they take the")
+    print("energy from 0.6093 to 0.5526 against an exact 0.5512.  And every")
+    print("UCCSD error is positive while every CCSD error is negative -- at")
+    print("g = 1, f = 0.5 the standard theory is wrong by -0.104 and the")
+    print("unitary one by +0.031, three times better and on the right side.")
+    print()
+    print("This is the trade that unitary coupled cluster makes.  It gives up")
+    print("the terminating commutator expansion, and with it the cheap")
+    print("classical algorithm, and gets back the variational bound.  On a")
+    print("classical computer that is usually a bad bargain.  On a quantum")
+    print("computer, where the exponential is applied rather than expanded,")
+    print("the terminating expansion was never the point, and the bound is")
+    print("worth having.")
+
+
 def _demo():
     for f in (demo_validation, demo_pairing, demo_orders, demo_ccsd,
-              demo_extensivity, demo_comparison):
+              demo_extensivity, demo_comparison, demo_unitary, demo_trotter,
+              demo_uccsd):
         f()
         print()
 

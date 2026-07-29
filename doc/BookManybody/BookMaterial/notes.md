@@ -103,8 +103,14 @@
        CCSD on the pairing+particle-hole model where singles are non-zero
      - Size extensivity verified to machine precision for 2 and 3 subsystems
      - Comparison against HF, MBPT2/3, CID, RPA and FCI
-     - Still to add: unitary CC (deferred to the quantum-computing chapters),
-       equation-of-motion CC, the diagrammatic derivation, CCSD(T)
+     - Unitary coupled cluster (UCCD and UCCSD): the variational property,
+       why the BCH series no longer terminates, the pair generators for the
+       pairing model, Trotterisation linked to chapter 6, and the two key
+       numerical facts -- re-optimisation absorbs the splitting error, and
+       the energy error falls as 1/n^2 while the state error falls as 1/n
+     - The UnitaryCC class is the VQE ansatz, reused in chapter11.tex
+     - Still to add: equation-of-motion CC, the diagrammatic derivation,
+       CCSD(T)
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
 ###  SRG and IMSRG

@@ -28,11 +28,13 @@ chapter8.tex       Density functional theory: density matrices, the
 chapter9.tex       Many-body perturbation theory: Brillouin-Wigner and
                    Rayleigh-Schroedinger to third order, four models
 chapter10.tex      Coupled cluster theory: the exponential ansatz, full CCD
-                   and CCSD derivations, the pairing model
+                   and CCSD derivations, the pairing model, and unitary
+                   coupled cluster with Trotterisation (the VQE ansatz)
 add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
 calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  combinatorial.tex
 week40.do.txt  pmm.tex  dft.do.txt  mbpt.ipynb  cctheory.tex  week48.ipynb
-pairing_ph_exact_diag.ipynb  pairing_ph_rpa_qrpa.ipynb  FYS4480*.pdf
+pairing1.ipynb  pairing_ph_exact_diag.ipynb  pairing_ph_rpa_qrpa.ipynb
+FYS4480*.pdf
                    staging files and handwritten notes, merged into the
                    chapters above; not included by book.tex
 variationalmc.tex  Variational Monte Carlo
@@ -120,12 +122,17 @@ was merged into `chapter6.tex`, together with the BCH/Trotter material from
 `pmm.tex`. The two notebooks `pairing_ph_exact_diag.ipynb` and
 `pairing_ph_rpa_qrpa.ipynb` were merged into `chapter7.tex`, and
 `dft.do.txt` into `chapter8.tex`, and `mbpt.ipynb` into `chapter9.tex`.
-`cctheory.tex` and `week48.ipynb` were merged into `chapter10.tex`. Chapters
+`cctheory.tex`, `week48.ipynb` and `pairing1.ipynb` were merged into
+`chapter10.tex`. Chapters
 9 and 10 are deliberately algebraic: the diagrammatic representation has not
 been written yet. Note that the explicit CCSD equations in `cctheory.tex`
 contain several index errors (misplaced amplitude labels, a spurious
 `t_e^e`); chapter 10 uses the standard correct forms, validated numerically
-against FCI.
+against FCI. The `UnitaryCC` class of `coupledcluster.py` is written to be
+reused by `chapter11.tex` and the quantum-computing chapters: it builds the
+many-body Hamiltonian and the anti-Hermitian generators in the determinant
+basis, and offers both the exact exponential and the Trotterised product
+form.
 
 ## Jupyter-book target
 
@@ -173,7 +180,7 @@ written for chapters 1 and 2 are:
 | `rpa.py` | 7 | Pairing + particle-hole model: exact diagonalization, TDA, RPA, BCS, QRPA, all matrices built as double commutators |
 | `dft.py` | 8 | LDA built from the uniform gas, the exchange hole, a Kohn-Sham solver in the chapter-6 basis, self-interaction and locality errors |
 | `mbpt.py` | 9 | Rayleigh-Schroedinger to any order by recursion, Brillouin-Wigner self-consistently, four models, size extensivity, convergence |
-| `coupledcluster.py` | 10 | General spin-orbital CCSD with intermediates, CCD, a validating FCI in the same basis, the order-by-order expansion |
+| `coupledcluster.py` | 10 | General spin-orbital CCSD with intermediates, CCD, a validating FCI in the same basis, the order-by-order expansion, and `UnitaryCC` (UCCD/UCCSD, exact and Trotterised) |
 
 All of these run on `numpy` alone except `hartreefock.py`, which also needs
 `scipy.linalg` for `expm`/`logm`; `rpa.py`, which needs `scipy.linalg`,
