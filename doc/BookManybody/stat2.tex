@@ -1,0 +1,1949 @@
+
+%   add on random walks and connection with ergodicity and detailed balance
+%   show connection with eigenvalues of transition matrix and stable solution
+%   mention metropolis-hastings
+
+
+\chapter{Random walks and the Metropolis algorithm}\label{chap:mcrandom} 
+\begin{quotation}
+ The way that can be spoken of is not the  constant way. (Tao Te Ching, Book I, I.1) {\em Lao Tzu}
+\end{quotation}
+\abstract{We present the theory of random walks, Markov chains and present 
+the Metropolis algorithm.}
+
+\section{Motivation}
+In the previous chapter we discussed technical aspects of Monte Carlo integration
+such as algorithms for generating random numbers and integration of multidimensional 
+integrals.
+The latter topic served to illustrate two key topics in Monte Carlo simulations,
+namely a proper selection of variables and importance sampling. An intelligent selection
+of variables, good sampling techniques 
+and guiding functions can be crucial for the outcome of our Monte Carlo simulations.
+Examples of this will be demonstrated in the chapters on statistical and quantum physics
+applications. Here we make a detour from this main area of applications. The focus
+is on diffusion and random walks. Furthermore, we will use these topics to derive the famous Metropolis algorithm.
+
+The rationale for this is that the tricky part of an actual Monte Carlo simulation 
+resides in the appropriate selection of random states, and thereby numbers, 
+according to the probability distribution (PDF)
+at hand. 
+
+Suppose our PDF is given by the well-known normal distribution. Think of for
+example the velocity distribution of an  ideal gas in a container. In our simulations we
+could then  accept or reject new moves with a probability proportional to
+the normal distribution. This would parallel our example on the sixth dimensional
+integral in the previous chapter. However, in this case we would end up rejecting basically
+all moves since the probabilities are exponentially small in most cases. The result would
+be that we barely moved from the initial position. Our statistical averages would then
+be significantly biased and most likely not very reliable. 
+
+Instead, all Monte Carlo schemes used are based on Markov processes in order to generate new
+random states. A Markov process is a random walk with a selected probability for making a
+move. The new move is independent of the previous history of the system. 
+The Markov process is used repeatedly in Monte Carlo simulations in order to generate
+new random states. 
+The reason for choosing a Markov process is that when it is run for a 
+long enough time starting with a random state, 
+we will eventually reach the most likely state of the system.
+In thermodynamics, this means that after a certain number of Markov processes
+we reach an equilibrium distribution. 
+This mimicks the way a real system reaches 
+its most likely state at a given temperature of the surroundings. 
+
+To reach this distribution, the Markov process needs to obey two important conditions, that of
+ergodicity and detailed balance. These conditions impose constraints on our algorithms
+for accepting or rejecting new random states. The Metropolis algorithm discussed here 
+abides to both these constraints and is discussed in more detail in Section 
+\ref{sec:metropolis}. 
+The Metropolis algorithm is widely used in Monte Carlo 
+simulations of physical systems and the understanding of it rests within 
+the interpretation of random walks and Markov processes.
+However, before we do that we discuss the intimate link between
+random walks, Markov processes and the diffusion equation. In section 
+\ref{sec:profrandomdiff}
+we show that a Markov process is nothing but 
+the discretized version of the diffusion equation.
+Diffusion and random walks are discussed from a more experimental point of view in the 
+next section. There we show also a simple algorithm for random walks and discuss eventual
+physical implications. 
+We end this chapter with a discussion of one of the most used algorithms for generating new steps, namely the Metropolis
+algorithm. This algorithm, which is based on  Markovian random walks satisfies both the ergodicity and detailed balance
+requirements and is widely in applications of Monte Carlo simulations in the natural sciences.  
+The Metropolis algorithm is used in our studies of phase transitions in statistical physics and 
+the simulations of quantum mechanical systems.  
+\section{Diffusion Equation and Random Walks}\label{sec:diffrandom}
+Physical systems subject to random influences from the ambient have a long history,
+dating back to the famous experiments by the British Botanist R.~Brown on
+ pollen of different plants dispersed in water. This lead to the famous concept of Brownian
+motion. In general, small fractions of any system exhibit the same behavior when exposed 
+to random fluctuations of the medium. Although apparently non-deterministic, the rules
+obeyed by such Brownian systems are laid out within the framework of diffusion and 
+Markov chains. The fundamental works on Brownian motion were developed by A.~Einstein
+at the turn of the last century.
+
+Diffusion and the diffusion equation are central topics in both Physics and Mathematics,
+and their ranges of applicability span from stellar dynamics to the diffusion 
+of particles governed by Schr\"odinger's equation. The latter is, for a free particle, 
+nothing but the diffusion equation in complex time!
+
+Let us consider the one-dimensional diffusion equation. We study a large ensemble of particles
+performing Brownian motion along the $x$-axis. There is no interaction between the particles.
+
+We define $w(x,t)dx$ as the probability of finding a given number of particles in an
+interval of length $dx$ in $x\in [x, x+dx]$ at a time $t$. This quantity is our probability
+distribution function (PDF). The quantum physics equivalent of 
+$w(x,t)$ is the wave 
+function  itself. This diffusion interpretation of Schr\"odinger's equation forms the starting
+point for diffusion Monte Carlo techniques in quantum physics.
+
+Good overview texts are the books of Robert and Casella and Karatsas, see Refs.~\cite{robertcasella,karatsas}.
+
+\subsection{Diffusion Equation}
+From experiment there are strong indications that the flux of particles $j(x,t)$, viz., the number of particles passing $x$ at a time $t$ is proportional to the 
+gradient of $w(x,t)$. This proportionality is expressed mathematically through 
+\[
+    j(x,t) = -D\frac{\partial w(x,t)}{\partial x},
+\]
+where $D$ is the so-called diffusion constant, with dimensionality length$^2$ per time.
+If the number of particles is conserved, we have the continuity equation
+\[
+    \frac{\partial j(x,t)}{\partial x} = -\frac{\partial w(x,t)}{\partial t},
+\]
+which leads to
+\begin{equation}\label{eq:diffequation1}
+    \frac{\partial w(x,t)}{\partial t} = 
+    D\frac{\partial^2w(x,t)}{\partial x^2},
+\end{equation}
+which is the diffusion equation in one dimension. 
+
+With the probability distribution function $w(x,t)dx$ we can use the results from the
+previous chapter to compute expectation values such as  the mean distance
+\[
+   \langle x(t)\rangle = \int_{-\infty}^{\infty}xw(x,t)dx,
+\]
+or
+\[
+   \langle x^2(t)\rangle = \int_{-\infty}^{\infty}x^2w(x,t)dx, 
+\]
+which allows for the computation of the variance
+$\sigma^2=\langle x^2(t)\rangle-\langle x(t)\rangle^2$. Note well that 
+these expectation values are time-dependent. In a similar way we can also
+define expectation values of functions $f(x,t)$ as 
+\[
+   \langle f(x,t)\rangle = \int_{-\infty}^{\infty}f(x,t)w(x,t)dx.
+\]
+Since $w(x,t)$ is now treated as a PDF, it needs to obey the same criteria
+as discussed in the previous chapter. However, the normalization condition
+\[
+   \int_{-\infty}^{\infty}w(x,t)dx=1
+\]
+imposes significant constraints on $w(x,t)$. These are
+\[
+   w(x=\pm \infty,t)=0 \hspace{1cm} 
+   \frac{\partial^{n}w(x,t)}{\partial x^n}|_{x=\pm\infty} = 0,
+\]
+implying that when we study the time-derivative
+${\partial\langle x(t)\rangle}/{\partial t}$, we obtain after integration by parts and using 
+Eq.~(\ref{eq:diffequation1})  
+\[
+   \frac{\partial \langle x\rangle}{\partial t} = 
+   \int_{-\infty}^{\infty}x\frac{\partial w(x,t)}{\partial t}dx=
+   D\int_{-\infty}^{\infty}x\frac{\partial^2w(x,t)}{\partial x^2}dx,
+ \]
+leading to
+\[
+   \frac{\partial \langle x\rangle}{\partial t} = 
+   Dx\frac{\partial w(x,t)}{\partial x}|_{x=\pm\infty}-
+   D\int_{-\infty}^{\infty}\frac{\partial w(x,t)}{\partial x}dx,
+ \]
+implying that
+\[
+   \frac{\partial \langle x\rangle}{\partial t} = 0.
+ \]
+This means in turn that $\langle x\rangle$ is independent of time.
+If we choose the initial position $x(t=0)=0$,
+the average displacement $\langle x\rangle= 0$.
+If we link this discussion to a random walk in one dimension with equal probability
+of jumping to the left or right and with an initial position $x=0$, then our probability
+distribution remains centered around $\langle x\rangle= 0$ as function of time.
+However, the variance is not necessarily 0. Consider first
+\[
+   \frac{\partial \langle x^2\rangle}{\partial t} = 
+   Dx^2\frac{\partial w(x,t)}{\partial x}|_{x=\pm\infty}-
+   2D\int_{-\infty}^{\infty}x\frac{\partial w(x,t)}{\partial x}dx,
+ \]
+where we have performed an integration by parts as we did 
+for $\frac{\partial \langle x\rangle}{\partial t}$. A further integration by parts 
+results in  
+\[
+   \frac{\partial \langle x^2\rangle}{\partial t} = 
+   -Dxw(x,t)|_{x=\pm\infty}+
+   2D\int_{-\infty}^{\infty}w(x,t)dx=2D,
+ \]
+leading to
+\[
+   \langle x^2\rangle = 2Dt,
+ \]
+and the variance as 
+\begin{equation}\label{eq:variancediffeq}
+   \langle x^2\rangle-\langle x\rangle^2 = 2Dt.
+ \end{equation}
+The root mean square displacement after a time $t$ is then 
+\[
+   \sqrt{\langle x^2\rangle-\langle x\rangle^2} = \sqrt{2Dt}.
+ \]
+This should be contrasted to the displacement of a free particle with initial velocity
+$v_0$. In that case the distance from the initial position after a time $t$ is
+$x(t) = vt$ whereas for a diffusion process the root mean square value is 
+$\sqrt{\langle x^2\rangle-\langle x\rangle^2} \propto \sqrt{t}$.
+Since diffusion is strongly linked with random walks, we could say that a random walker
+escapes much more slowly from the starting point than would a free particle.
+We can vizualize the above in the following figure.
+In Fig.~\ref{fig:normal_distribution} we have assumed that our distribution is
+given by a normal distribution with variance $\sigma^2=2Dt$, centered at $x=0$. 
+The distribution reads
+\[
+    w(x,t)dx = \frac{1}{\sqrt{4\pi Dt}}\exp{(-\frac{x^2}{4Dt})}dx.
+\]
+At a time $t=2$s the new variance is $\sigma^2=4D$s, implying that the root mean square value
+is $\sqrt{\langle x^2\rangle-\langle x\rangle^2} = 2\sqrt{D}$.
+At a further time $t=8$ we have $\sqrt{\langle x^2\rangle-\langle x\rangle^2} = 4\sqrt{D}$.
+While time has elapsed by a factor of $4$, the root mean square has only changed by a factor
+of 2. 
+Fig.~\ref{fig:normal_distribution} demonstrates the spreadout of the distribution as time elapses.
+A typical example can be the diffusion of gas molecules in a container or the distribution of cream in a cup of coffee. In both cases we can assume that the  
+the initial distribution is represented by a normal distribution.
+\begin{figure}
+\begin{center}
+\input{figures/spread.tex}
+\caption{Time development of a normal distribution with variance $\sigma^2=2Dt$ and with 
+$D=1$m$^2$/s. The solid line
+represents the distribution at $t=2$s while the dotted line stands for $t=8$s.\label{fig:normal_distribution}}
+\end{center}
+\end{figure}
+\subsection{Random Walks}
+Consider now a random walker in one dimension, with probability $R$ of moving to the right
+and $L$ for moving to the left. 
+At $t=0$ we place the walker at $x=0$, as indicated in Fig.~\ref{fig:walker1dim}.
+The walker can then jump, with the above probabilities, either to the left or to the
+right for each time step. Note that in principle we could also have the possibility that the
+walker remains in the same position. This is not implemented in this example.
+Every step has length $\Delta x = l$. Time is discretized and we have a jump either to the left or
+to the right at every time step.
+\begin{figure}
+\setlength{\unitlength}{1cm}
+\begin{picture}(16,3)
+\thicklines
+\dottedline[$\bullet$]{2}(0,0)(14,0)
+\put(0,0){\line(1,0){14}}
+\put(0,0.5){\makebox(0,0){$..$}}
+\put(2,0.5){\makebox(0,0){$-3l$}}
+\put(4,0.5){\makebox(0,0){$-2$}}
+\put(6,0.5){\makebox(0,0){$-l$}}
+\put(8,0.5){\makebox(0,0){$x=0$}}
+\put(10,0.5){\makebox(0,0){$l$}}
+\put(12,0.5){\makebox(0,0){$2l$}}
+\put(14,0.5){\makebox(0,0){$3l$}}
+\put(16,0.5){\makebox(0,0){$..$}}
+\end{picture}
+\caption{One-dimensional walker which can jump either to 
+the left or to the right. Every step has length $\Delta x = l$.\label{fig:walker1dim}}
+\end{figure}
+Let us now assume that we have 
+equal probabilities for jumping to the left or to the right, i.e., 
+$L=R=1/2$.
+The average displacement
+after $n$ time steps is
+\[
+   \langle x(n)\rangle = \sum_{i}^{n} \Delta x_i = 0 \hspace{1cm} \Delta x_i=\pm l,
+\]
+since we have an equal probability of jumping either to the left or to right.
+The value of $\langle x(n)^2\rangle$ is
+\[
+   \langle x(n)^2\rangle = \left(\sum_{i}^{n} \Delta x_i\right)\left(\sum_{j}^{n} \Delta x_j\right)=\sum_{i}^{n} \Delta x_i^2+
+\sum_{i\ne j}^{n} \Delta x_i\Delta x_j=l^2n.
+\]
+For many enough steps the non-diagonal contribution is
+\[
+   \sum_{i\ne j}^{N} \Delta x_i\Delta x_j=0,
+\]
+since $\Delta x_{i,j} = \pm l$.
+The variance is then
+\begin{equation}
+   \langle x(n)^2\rangle - \langle x(n)\rangle^2 = l^2n.
+   \label{eq:rwvariance}
+\end{equation}
+It is also rather straightforward to compute the variance for $L\ne R$. The result is
+\[
+   \langle x(n)^2\rangle - \langle x(n)\rangle^2 = 4LRl^2n.
+\]
+In Eq.~(\ref{eq:rwvariance}) the variable $n$ represents the number of time
+steps. If we define $n=t/\Delta t$, we can then couple the variance result 
+from a random walk
+in one dimension with the variance  from the diffusion equation of Eq.~(\ref{eq:variancediffeq})
+by defining the diffusion constant as 
+\[
+   D = \frac{l^2}{\Delta t}.
+\]
+In the next section we show in detail that this is the case.
+
+The program below demonstrates the simplicity of the one-dimensional random walk algorithm.
+It is straightforward to extend this program to two or three dimensions as well.
+The input is the number of time steps, the probability for a move to the left or to the right
+and the total number of Monte Carlo samples. It computes the average displacement and the variance
+for one random walker for a given number of Monte Carlo samples. Each sample is thus to be 
+considered as one experiment with a given number of walks.
+The interesting part of the algorithm is described in the 
+function \lstinline{mc_sampling}. The other functions read or write the results from screen or file
+and are similar in structure to programs discussed previously.
+The main program reads the name of the output file from screen and sets up the arrays
+containing the walker's position after a given number of steps. The corresponding program for a two-dimensional
+random walk (not listed in the main text) is found under programs/chapter12/program2.cpp
+\begin{lstlisting}[title={\url{http://folk.uio.no/mhjensen/compphys/programs/chapter12/cpp/program1.cpp}}]
+/*
+  1-dim random walk program. 
+  A walker makes several trials steps with
+  a given number of walks per trial
+*/
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "lib.h"
+using namespace  std;
+
+// Function to read in data from screen, note call by reference
+void initialise(int&, int&, double&) ;
+// The Mc sampling for random walks
+void  mc_sampling(int, int, double, int *, int *);
+// prints to screen the results of the calculations 
+void  output(int, int, int *, int *);
+
+int main()
+{
+  int max_trials, number_walks; 
+  double move_probability;
+  // Read in data 
+  initialise(max_trials, number_walks, move_probability) ;
+  int *walk_cumulative = new int [number_walks+1];
+  int *walk2_cumulative = new int [number_walks+1];
+  for (int walks = 1; walks <= number_walks; walks++){   
+    walk_cumulative[walks] = walk2_cumulative[walks] = 0;
+  } // end initialization of vectors
+  // Do the mc sampling  
+  mc_sampling(max_trials, number_walks, move_probability, 
+              walk_cumulative, walk2_cumulative);
+  // Print out results 
+  output(max_trials, number_walks, walk_cumulative, 
+         walk2_cumulative);
+  delete [] walk_cumulative; // free memory
+  delete [] walk2_cumulative; 
+  return 0; 
+} // end main function
+\end{lstlisting}
+The  input and output functions are 
+\begin{lstlisting} 
+void initialise(int& max_trials, int& number_walks, double& move_probability) 
+{
+  cout << "Number of Monte Carlo trials ="; 
+  cin >> max_trials;
+  cout << "Number of attempted walks=";
+  cin >> number_walks;
+  cout << "Move probability=";
+  cin >> move_probability;
+}  // end of function initialise   
+
+
+void output(int max_trials, int number_walks, 
+            int *walk_cumulative, int *walk2_cumulative)
+{
+  ofstream ofile("testwalkers.dat");
+  for( int  i = 1; i <=  number_walks; i++){
+    double xaverage = walk_cumulative[i]/((double) max_trials);
+    double x2average = walk2_cumulative[i]/((double) max_trials);
+    double variance = x2average - xaverage*xaverage;
+    ofile << setiosflags(ios::showpoint | ios::uppercase);
+    ofile << setw(6) << i;
+    ofile << setw(15) << setprecision(8) << xaverage;
+    ofile << setw(15) << setprecision(8) << variance << endl;
+  }
+  ofile.close();
+}  // end of function output 
+\end{lstlisting}
+The algorithm is in the function \lstinline{mc_sampling} and tests the probability 
+of moving to the left or to the right by generating a random number.
+\begin{lstlisting}
+void mc_sampling(int max_trials, int number_walks, 
+                 double move_probability, int *walk_cumulative, 
+                 int *walk2_cumulative)
+{
+  long idum;
+  idum=-1;  // initialise random number generator
+  for (int trial=1; trial <= max_trials; trial++){
+    int position = 0;
+    for (int walks = 1; walks <= number_walks; walks++){   
+      if (ran0(&idum) <= move_probability) {
+	position += 1;
+      } 
+      else {
+	position -= 1;
+      }
+      walk_cumulative[walks] += position;
+      walk2_cumulative[walks] += position*position;
+    }  // end of loop over walks
+  } // end of loop over trials
+}   // end mc_sampling function  
+\end{lstlisting}
+Fig.~\ref{fig:random1sigma} shows that the variance increases linearly as function
+of the number of time steps, as expected from the closed-form results.
+Similarly, the mean displacement in Fig.~\ref{fig:random1x} oscillates around zero.
+\begin{figure}
+\begin{center}
+\input{figures/random1sigma.tex}
+\caption{Time development of $\sigma^2$
+ for a random walker. 100000
+Monte Carlo samples were used with the function ran1 and a seed set to  $-1$.\label{fig:random1sigma}}
+\end{center}
+\end{figure}
+\begin{figure}
+\begin{center}
+\input{figures/random1x.tex}
+\caption{Time development of $\langle x(t) \rangle $ for a random walker. 100000
+Monte Carlo samples were used with the function ran1 and a seed set to  $-1$.\label{fig:random1x}}
+\end{center}
+\end{figure}
+
+
+
+
+\section{Microscopic Derivation of the Diffusion Equation}\label{sec:profrandomdiff}
+
+When solving partial differential equations such as the diffusion equation numerically,
+the derivatives are always discretized. Recalling our discussions from Chapter 
+\ref{chap:differentiate}, we can rewrite the time derivative as
+\[
+    \frac{\partial w(x,t)}{\partial t} \approx 
+    \frac{w(i,n+1)-w(i,n)}{\Delta t},
+\]
+whereas the gradient is approximated as
+\[
+    D\frac{\partial^2w(x,t)}{\partial x^2}\approx 
+    D\frac{w(i+1,n)+w(i-1,n)-2w(i,n)}{(\Delta x)^2},
+\]
+resulting in the discretized diffusion equation
+\[
+   \frac{w(i,n+1)-w(i,n)}{\Delta t}=D\frac{w(i+1,n)+w(i-1,n)-2w(i,n)}{(\Delta x)^2},
+\]
+where $n$ represents a given time step and $i$ a step in the $x$-direction.
+The solution of such equations is discussed in our chapter on partial differential
+equations, see Chapter \ref{chap:partial}.
+The aim here is to show that we can derive the discretized diffusion equation from a Markov process
+and thereby demonstrate the close connection between the important physical process 
+diffusion and random walks. Random walks allow for an intuitive way of picturing the process
+of diffusion. In addition, as demonstrated in the previous section, it is easy to simulate a 
+random walk.
+
+\subsection{Discretized Diffusion Equation and Markov Chains}
+A Markov process allows in principle for a microscopic description of Brownian motion.
+As with the random walk studied in the previous section, we consider a particle 
+which moves along the  $x$-axis in the form of a series of jumps with step length 
+$\Delta x = l$. Time and space are discretized and the subsequent moves are
+statistically independent, i.e., the new move depends only on the previous step
+and not on the results from earlier trials. 
+We start at a position $x=jl=j\Delta x$ and move to 
+a new position $x =i\Delta x$ during a step $\Delta t=\epsilon$, where 
+$i\ge  0$ and $j\ge 0$ are integers. 
+The original probability distribution function (PDF) of the particles is given by  
+$w_i(t=0)$ where $i$ refers to a specific position on the grid in 
+Fig.~\ref{fig:walker1dim}, with $i=0$ representing $x=0$. 
+The function $w_i(t=0)$ is now the discretized version of $w(x,t)$.
+We can regard the discretized PDF as a vector.
+For the Markov process we have a transition probability from a position
+$x=jl$ to a position $x=il$ given by 
+\[
+   W_{ij}(\epsilon)=W(il-jl,\epsilon)=\left\{\begin{array}{cc}\frac{1}{2} & |i-j| = 1\\
+             0 & \mathrm{else} \end{array} \right. ,
+\]
+where $W_{ij}$ is normally called 
+the transition probability and we can represent it, see below,
+as a matrix. Note that this matrix is not a stochastic matrix as long as it is a finite matrix.
+Our new PDF $w_i(t=\epsilon)$ is now related to the PDF at
+$t=0$ through the relation 
+\[ 
+   w_i(t=\epsilon) =\sum_{j} W(j\rightarrow i)w_j(t=0).
+\]   
+This equation represents the discretized time-development of an original 
+PDF. It is a microscopic way of representing the process shown in
+Fig.~\ref{fig:normal_distribution}.
+Since both $W$ and $w$ represent probabilities, they have to be normalized, i.e., we require
+that at each time step we have 
+\[ 
+   \sum_i w_i(t) = 1, 
+\]
+and 
+\[ 
+   \sum_j W(j\rightarrow i) = 1,
+\]
+which applies for all $j$-values.
+The further constraints are
+$0 \le W_{ij} \le 1$  and  $0 \le w_{j} \le 1$.
+Note that the probability for remaining at the same place is in general 
+not necessarily equal zero. In our Markov process we allow only for jumps to the left or to 
+the right.
+
+The time development of our initial PDF can now be represented through the action of
+the transition probability matrix applied $n$ times. At a 
+time  $t_n=n\epsilon$ our initial distribution has developed into 
+\[
+   w_i(t_n) = \sum_jW_{ij}(t_n)w_j(0),
+\]
+and defining 
+\[
+   W(il-jl,n\epsilon)=(W^n(\epsilon))_{ij}
+\]
+we obtain 
+\[
+   w_i(n\epsilon) = \sum_j(W^n(\epsilon))_{ij}w_j(0),
+\]
+or in matrix form
+\be\label{eq:wfinal}
+   \hat{w}(n\epsilon) = \hat{W}^n(\epsilon)\hat{w}(0).
+\ee
+The matrix $\hat{W}$ can be written in terms of two matrices
+\[
+    \hat{W} = \frac{1}{2}\left(\hat{L}+\hat{R}\right),
+\]
+where $\hat{L}$ and $\hat{R}$ represent the transition probabilities for a
+jump to the left or the right, respectively.
+For a $4\times 4$ case we could write these matrices as
+\[ 
+   \hat{R} = \left(\begin{array}{cccc} 0 & 0 & 0 & 0\\                   
+                                 1 & 0 & 0 & 0\\                   
+                                 0 & 1 & 0 & 0\\                   
+                                 0 & 0 & 1 & 0\end{array} \right),
+\]                   
+and 
+\[ 
+   \hat{L} = \left(\begin{array}{cccc} 0 & 1 & 0 & 0\\                   
+                                 0 & 0 & 1 & 0\\                   
+                                 0 & 0 & 0 & 1\\                   
+                                 0 & 0 & 0 & 0\end{array} \right).
+\]                   
+However, 
+in principle these are infinite dimensional matrices since the number of time
+steps are very large or infinite. For the infinite case we can write these
+matrices 
+$R_{ij} = \delta_{i,(j+1)}$  and $L_{ij} =  \delta_{(i+1),j}$, implying that
+\be  \label{eq:rl1}
+   \hat{L}\hat{R}=\hat{R}\hat{L}=I,
+\ee
+which applies in the case of infinite matrices
+and 
+\be \label{eq:rl2}
+    \hat{L}=\hat{R}^{-1}
+\ee
+To see that $\hat{L}\hat{R}=\hat{R}\hat{L}=1$, perform e.g., the matrix multiplication
+\[
+    \hat{L}\hat{R}= \sum_{k}\hat{L}_{ik}\hat{R}_{kj}=\sum_k\delta_{(i+1),k}\delta_{k,(j+1)}
+     = \delta_{i+1,j+1}=\delta_{i,j},
+\]
+and only the diagonal matrix elements are different from zero. 
+
+
+For the first time step we have thus
+\[
+    \hat{W} = \frac{1}{2}\left(\hat{L}+\hat{R}\right),
+\]
+and using the properties in Eqs.~(\ref{eq:rl1}) and (\ref{eq:rl2})
+we have after two time steps
+\[
+   \hat{W}^2(2\epsilon)=\frac{1}{4}\left(\hat{L}^2+\hat{R}^2+2\hat{R}\hat{L}\right),
+\]
+and similarly after three time steps
+\[
+   \hat{W}^3(3\epsilon)=\frac{1}{8}
+      \left(\hat{L}^3+\hat{R}^3+3\hat{R}\hat{L}^2+3\hat{R}^2\hat{L}\right).
+\]
+Using the binomial formula
+\[
+\sum_{k=0}^{n}\left(\begin{array}{c} n\\k\end{array}\right)
+     \hat{a}^k\hat{b}^{n-k}=
+    (a+b)^n,
+\]ee
+we have that the transition matrix after $n$ time steps can be written as
+ \[
+\hat{W}^n(n\epsilon))=\frac{1}{2^n}\sum_{k=0}^{n}\left(\begin{array}{c} n\\k\end{array}\right)
+     \hat{R}^k\hat{L}^{n-k},
+\]
+or
+\[
+\hat{W}^n(n\epsilon))=\frac{1}{2^n}\sum_{k=0}^{n}\left(\begin{array}{c} n\\k\end{array}\right)
+     \hat{L}^{n-2k}=\frac{1}{2^n}\sum_{k=0}^{n}\left(\begin{array}{c} n\\k\end{array}\right)
+     \hat{R}^{2k-n},
+\]
+and using 
+$R_{ij}^m = \delta_{i,(j+m)}$  and $L_{ij}^m = \delta_{(i+m),j}$
+we arrive at
+\be\label{eq:binomialW}
+   W(il-jl,n\epsilon)=
+\left\{\begin{array}{cc}\frac{1}{2^n}\left(\begin{array}{c} n\\\frac{1}{2}(n+i-j)\end{array}\right) & |i-j| \le n \\
+                                             0 & \mathrm{else} \end{array} \right.,
+\ee
+and $n+i-j$ has to be an even number.
+We note that the transition matrix for a Markov process has three important properties:
+\begin{svgraybox}
+\begin{itemize} 
+\item It depends only on the difference in space $i-j$, it is thus homogenous in space.
+\item It is also isotropic in space since it is unchanged when we go from $(i,j)$ to $(-i,-j)$.
+\item It is homogenous in time since it depends only the difference between the initial time and 
+final time.
+\end{itemize}
+\end{svgraybox}
+If we place the walker at $x=0$ at $t=0$ we can represent the initial PDF 
+with $w_i(0) = \delta_{i,0}$. Using Eq.~(\ref{eq:wfinal}) we have 
+\[
+   w_i(n\epsilon) = \sum_j(W^n(\epsilon))_{ij}w_j(0)=\sum_j\frac{1}{2^n}\left(\begin{array}{c} n\\\frac{1}{2}(n+i-j)\end{array}\right)\delta_{j,0},
+\]
+resulting in
+\[
+   w_i(n\epsilon)=\frac{1}{2^n}\left(\begin{array}{c} n\\\frac{1}{2}(n+i)\end{array}\right) 
+   \hspace{1cm} |i| \le n .
+\]
+We can then use the recursion relation for the binomials 
+\be
+   \left(\begin{array}{c} n+1\\\frac{1}{2}(n+1+i)\end{array}\right)=
+    \left(\begin{array}{c} n\\\frac{1}{2}(n+i+1)\end{array}\right)+
+    \left(\begin{array}{c} n\\\frac{1}{2}(n+i-1)\end{array}\right)
+\label{eq:recbinomials}
+\ee
+to obtain the discretized diffusion equation. In order to achieve this,
+we define $x = il$, where $l$ and $i$ are integers, and $ t = n\epsilon$. We can then
+rewrite the probability distribution as 
+\[
+   w(x,t) = w(il,n\epsilon) = w_i(n\epsilon)=\frac{1}{2^n}\left(\begin{array}{c} n\\\frac{1}{2}(n+i)\end{array}\right) 
+   \hspace{1cm} |i| \le n,
+\]
+and rewrite Eq.~(\ref{eq:recbinomials}) as
+\[
+   w(x,t+\epsilon)=\frac{1}{2}w(x+l,t)+\frac{1}{2}w(x-l,t).
+\]
+Adding and subtracting $w(x,t)$ and multiplying both sides with 
+$l^2/\epsilon$ we have 
+\[
+      \frac{w(x,t+\epsilon)-w(x,t)}{\epsilon}=\frac{l^2}{2\epsilon}
+      \frac{w(x+l,t)-2w(x,t)+w(x-l,t)}{l^2}.
+\]
+If we identify $D=l^2/2\epsilon$ and $l=\Delta x$ and 
+$\epsilon = \Delta t$ we see that this is nothing but the discretized version of the
+diffusion equation. Taking the limits $\Delta x \rightarrow 0$ and
+$\Delta t \rightarrow 0$ we recover
+\[
+    \frac{\partial w(x,t)}{\partial t} =    D\frac{\partial^2w(x,t)}{\partial x^2},
+\]
+the diffusion equation.
+
+\subsubsection{An Illustrative Example}
+The following simple example may help in understanding the meaning of 
+the transition matrix $\hat{W}$ and the vector $\hat{w}$.
+Consider the $4\times 4$ matrix $\hat{W}$
+\[
+   \hat{W} = \left(\begin{array}{cccc} 1/4 & 1/9 & 3/8 & 1/3 \\                   
+                                       2/4 & 2/9 & 0 & 1/3\\                   
+                                       0   & 1/9 & 3/8 & 0\\
+                                       1/4 & 5/9&  2/8 & 1/3 \end{array} \right),
+\]
+and we choose our initial state as 
+\[
+\hat{w}(t=0)=  \left(\begin{array}{c} 1\\                   
+                                 0\\
+                                 0 \\                   
+                                 0 \end{array} \right).
+\]
+We note that both the vector and the matrix are properly normalized. Summing the vector elements gives one and
+summing over columns for the matrix results also in one.  Furthermore, the largest eigenvalue is one.
+We act then on $\hat{w}$ with $\hat{W}$.
+The first iteration is
+\[
+   \hat{w}(t=\epsilon) = \hat{W}\hat{w}(t=0),
+\]   
+resulting in
+\[
+\hat{w}(t=\epsilon)=  \left(\begin{array}{c} 1/4\\                   
+                                1/2 \\
+                                0.0 \\                   
+                                1/4 \end{array} \right).
+\]
+
+The next iteration results in 
+\[
+   \hat{w}(t=2\epsilon) = \hat{W}\hat{w}(t=\epsilon),
+\]   
+resulting in
+\[
+\hat{w}(t=2\epsilon)=  \left(\begin{array}{c} 0.201389\\
+   0.319444 \\
+   0.055556 \\
+   0.423611 \end{array} \right).
+\]
+Note that the vector $\hat{w}$ is always normalized to $1$. 
+We find the steady state of the system by solving the linear set of equations
+\[ {\bf w}(t=\infty) = {\bf Ww}(t=\infty). \]
+
+This linear set of equations reads
+\begin{eqnarray}
+ W_{11}w_1(t=\infty) +W_{12}w_2(t=\infty) +W_{13}w_3(t=\infty)+ W_{14}w_4(t=\infty)=&w_1(t=\infty) \nonumber \\
+W_{21}w_1(t=\infty) + W_{22}w_2(t=\infty) + W_{23}w_3(t=\infty)+ W_{24}w_4(t=\infty)=&w_2(t=\infty) \nonumber \\
+W_{31}w_1(t=\infty) + W_{32}w_2(t=\infty) + W_{33}w_3(t=\infty)+ W_{34}w_4(t=\infty)=&w_3(t=\infty) \nonumber \\
+W_{41}w_1(t=\infty) + W_{42}w_2(t=\infty) + W_{43}w_3(t=\infty)+ W_{44}w_4(t=\infty)=&w_4(t=\infty) \nonumber \\
+\end{eqnarray}
+with the constraint that 
+\[
+   \sum_i w_i(t=\infty) = 1, 
+\]
+yielding as solution
+\[
+\hat{w}(t=\infty)=  \left(\begin{array}{c}0.244318 \\                   
+                                 0.319602 \\  0.056818 \\  0.379261 \end{array} \right).
+\]
+Table \ref{tab:simplemodelw} demonstrates the convergence as a function of the number of iterations or
+time steps. After  twelve iterations we have reached the exact value with six leading digits. 
+\begin{table}
+\caption{Convergence to the steady state as function of number of iterations. \label{tab:simplemodelw}} 
+\begin{center}
+\begin{tabular}{rlllll}\hline
+Iteration &$w_1$   &$w_2$  &$w_3$&$w_4$\\\hline
+0  & 1.000000 &0.000000  &0.000000& 0.000000 \\
+1  & 0.250000 &0.500000  &0.000000& 0.250000 \\
+2  & 0.201389 &  0.319444 &  0.055556 &  0.423611 \\
+3  & 0.247878  &  0.312886  &  0.056327  &  0.382909 \\
+4   &0.245494  &  0.321106  &  0.055888  &  0.377513\\
+5   &0.243847  &  0.319941  &  0.056636  &  0.379575\\
+6   & 0.244274  &  0.319547  &  0.056788  &  0.379391\\
+7  &0.244333  &  0.319611  &  0.056801  &  0.379255\\
+8  &0.244314  &  0.319610  &  0.056813  &  0.379264\\
+9  &0.244317  &  0.319603  &  0.056817  &  0.379264\\
+10  &0.244318  &  0.319602  &  0.056818  &  0.379262\\
+11  &0.244318  &  0.319602  &  0.056818  &  0.379261\\
+12  &0.244318  &  0.319602  &  0.056818  &  0.379261\\
+$\hat{w}(t=\infty)$ & 0.244318  &  0.319602  &  0.056818  &  0.379261\\
+\hline
+\end{tabular} 
+\end{center}   
+\end{table}
+
+
+We have after $t$-steps
+\[
+   {\bf \hat{w}}(t) = {\bf \hat{W}^t\hat{w}}(0),
+\]
+with ${\bf \hat{w}}(0)$ the distribution at $t=0$ and ${\bf \hat{W}}$ representing the 
+transition probability matrix. 
+We can always expand ${\bf \hat{w}}(0)$ in terms of the right eigenvectors 
+${\bf \hat{v}}$ of ${\bf \hat{W}}$ as 
+\[
+    {\bf \hat{w}}(0)  = \sum_i\alpha_i{\bf \hat{v}}_i,
+\]
+resulting in 
+\[
+   {\bf \hat{w}}(t) = {\bf \hat{W}}^t{\bf \hat{w}}(0)={\bf \hat{W}}^t\sum_i\alpha_i{\bf \hat{v}}_i=
+\sum_i\lambda_i^t\alpha_i{\bf \hat{v}}_i,
+\]
+with $\lambda_i$ the $i^{\mathrm{th}}$ eigenvalue corresponding to  
+the eigenvector ${\bf \hat{v}}_i$. 
+
+If we assume that $\lambda_0$ is the largest eigenvector we see that in the limit $t\rightarrow \infty$,
+${\bf \hat{w}}(t)$ becomes proportional to the corresponding eigenvector 
+${\bf \hat{v}}_0$. This is our steady state or final distribution. 
+
+ 
+\subsection{Continuous Equations}
+
+Hitherto we have considered discretized versions of all equations. Our initial probability
+distribution function was then given by 
+\[
+   w_i(0) = \delta_{i,0},
+\]
+and its time-development after a given time step $\Delta t=\epsilon$ is
+\[ 
+   w_i(t) = \sum_{j}W(j\rightarrow i)w_j(t=0).
+\]   
+The continuous analog to $w_i(0)$ is
+\be
+   w({\bf x})\rightarrow \delta({\bf x}),
+\ee
+where we now have generalized the one-dimensional position $x$ to a generic-dimensional  
+vector ${\bf x}$. The Kroenecker $\delta$ function is replaced by the $\delta$ distribution
+function $\delta({\bf x})$ at  $t=0$.  
+
+The transition from a state $j$ to a state $i$ is now replaced by a transition
+to a state with position ${\bf y}$ from a state with position ${\bf x}$. 
+The discrete sum of transition probabilities can then be replaced by an integral
+and we obtain the new distribution at a time $t+\Delta t$ as 
+\[
+   w({\bf y},t+\Delta t)= \int W({\bf y}, {\bf x}, \Delta t)w({\bf x},t)d{\bf x},
+\]
+and after $m$ time steps we have
+\[
+   w({\bf y},t+m\Delta t)= \int W({\bf y}, {\bf x}, m\Delta t)w({\bf x},t)d{\bf x}.
+\]
+When equilibrium is reached we have
+\[
+   w({\bf y})= \int W({\bf y}, {\bf x}, t)w({\bf x})d{\bf x}.
+\]
+We can solve the equation for $w({\bf y},t)$ by making a Fourier transform to
+momentum space. 
+The PDF $w({\bf x},t)$ is related to its Fourier transform
+$\tilde{w}({\bf k},t)$ through
+\be\label{eq:fouriertransform}
+   w({\bf x},t) = \int_{-\infty}^{\infty}d{\bf k} \exp{(i{\bf kx})}\tilde{w}({\bf k},t),
+\ee
+and using the definition of the 
+$\delta$-function 
+\[
+   \delta({\bf x}) = \frac{1}{2\pi} \int_{-\infty}^{\infty}d{\bf k} \exp{(i{\bf kx})},
+\]
+ we see that
+\[
+   \tilde{w}({\bf k},0)=1/2\pi.
+\]
+We can then use the Fourier-transformed diffusion equation 
+\begin{equation}
+    \frac{\partial \tilde{w}({\bf k},t)}{\partial t} = -D{\bf k}^2\tilde{w}({\bf k},t),
+\end{equation}
+with the obvious solution
+\[
+   \tilde{w}({\bf k},t)=\tilde{w}({\bf k},0)\exp{\left[-(D{\bf k}^2t)\right)}=
+    \frac{1}{2\pi}\exp{\left[-(D{\bf k}^2t)\right]}. 
+\]
+Using Eq.~(\ref{eq:fouriertransform}) we obtain 
+\begin{equation}\label{eq:finalw}
+   w({\bf x},t)=\int_{-\infty}^{\infty}d{\bf k} \exp{\left[i{\bf kx}\right]}\frac{1}{2\pi}\exp{\left[-(D{\bf k}^2t)\right]}=
+    \frac{1}{\sqrt{4\pi Dt}}\exp{\left[-({\bf x}^2/4Dt)\right]}, 
+\end{equation}
+with the normalization condition
+\[
+   \int_{-\infty}^{\infty}w({\bf x},t)d{\bf x}=1.
+\]
+It is rather easy to verify by insertion that Eq.~(\ref{eq:finalw}) is a solution
+of the diffusion equation. The solution represents the probability of finding
+our random walker at position ${\bf x}$ at time $t$ if the initial distribution 
+was placed at ${\bf x}=0$ at $t=0$. 
+
+There is another interesting feature worth observing. The discrete transition probability $W$
+itself is given by a binomial distribution, see Eq.~(\ref{eq:binomialW}).
+The results from the central limit theorem, see Sect.~\ref{subsec:centrallimit}, state that 
+transition probability in the limit $n\rightarrow \infty$ converges to the normal 
+distribution. It is then possible to show that
+\[ 
+    W(il-jl,n\epsilon)\rightarrow W({\bf y}, {\bf x}, \Delta t)=
+    \frac{1}{\sqrt{4\pi D\Delta t}}\exp{\left[-(({\bf y}-{\bf x})^2/4D\Delta t)\right]},
+\]
+and that it satisfies the normalization condition and is itself a solution
+to the diffusion equation.
+
+
+%\subsection{ESKC equation and the Fokker-Planck equation}
+%In preparation for spring 2010.
+
+
+\subsection{Numerical Simulation}
+In the two previous subsections we have given evidence that a Markov process
+actually yields in the limit of infinitely many steps the diffusion equation.
+It links therefore in a physical intuitive way the fundamental process of diffusion 
+with  random walks. 
+It could therefore be of interest to visualize this connection through a numerical
+experiment. We saw in the previous subsection that one 
+possible solution to the diffusion equation is given by a normal distribution.
+In addition, the transition rate for a given number of steps develops from a 
+binomial distribution into a normal distribution in the limit of infinitely many
+steps. 
+To achieve this we construct in addition 
+a histogram which contains the number of times the walker was in a particular 
+position $x$. This is given by the variable \lstinline{probability},
+which is normalized in the output function. We have omitted the  
+initialization function, since this identical to program1.cpp or program2.cpp of this
+chapter. The array  \lstinline{probability} extends from \lstinline{-number_walks}
+to \lstinline{+number_walks}
+\begin{lstlisting}[title={\url{http://folk.uio.no/mhjensen/compphys/programs/chapter12/cpp/program2.cpp}}]
+/*
+  1-dim random walk program. 
+  A walker makes several trials steps with
+  a given number of walks per trial
+*/
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include "lib.h"
+using namespace  std;
+
+// Function to read in data from screen, note call by reference
+void initialise(int&, int&, double&) ;
+// The Mc sampling for random walks
+void  mc_sampling(int, int, double, int *, int *, int *);
+// prints to screen the results of the calculations 
+void  output(int, int, int *, int *, int *);
+
+int main()
+{
+  int max_trials, number_walks; 
+  double move_probability;
+  // Read in data 
+  initialise(max_trials, number_walks, move_probability) ;
+  int *walk_cumulative = new int [number_walks+1];
+  int *walk2_cumulative = new int [number_walks+1];
+  int *probability = new int [2*(number_walks+1)];
+  for (int walks = 1; walks <= number_walks; walks++){   
+    walk_cumulative[walks] = walk2_cumulative[walks] = 0;
+  }
+  for (int walks = 0; walks <= 2*number_walks; walks++){   
+    probability[walks] = 0;
+  } // end initialization of vectors
+  // Do the mc sampling  
+  mc_sampling(max_trials, number_walks, move_probability, 
+              walk_cumulative, walk2_cumulative, probability);
+  // Print out results 
+  output(max_trials, number_walks, walk_cumulative, 
+         walk2_cumulative, probability);
+  delete [] walk_cumulative; // free memory
+  delete [] walk2_cumulative; delete [] probability;
+  return 0; 
+} // end main function
+\end{lstlisting}
+The output function contains now the normalization of the probability as well
+and writes this to its own file.
+\begin{lstlisting}
+void output(int max_trials, int number_walks, 
+            int *walk_cumulative, int *walk2_cumulative, int * probability)
+{
+  ofstream ofile("testwalkers.dat");
+  ofstream probfile("probability.dat");
+  for( int  i = 1; i <=  number_walks; i++){
+    double xaverage = walk_cumulative[i]/((double) max_trials);
+    double x2average = walk2_cumulative[i]/((double) max_trials);
+    double variance = x2average - xaverage*xaverage;
+    ofile << setiosflags(ios::showpoint | ios::uppercase);
+    ofile << setw(6) << i;
+    ofile << setw(15) << setprecision(8) << xaverage;
+    ofile << setw(15) << setprecision(8) << variance << endl;
+  }
+  ofile.close();
+  // find norm of probability
+  double norm = 0.;
+  for( int  i = -number_walks; i <=  number_walks; i++){
+    norm += (double) probability[i+number_walks];
+  }
+  // write probability
+  for( int  i = -number_walks; i <=  number_walks; i++){
+    double histogram = probability[i+number_walks]/norm;
+    probfile << setiosflags(ios::showpoint | ios::uppercase);
+    probfile << setw(6) << i;
+    probfile << setw(15) << setprecision(8) << histogram << endl;
+  }
+  probfile.close();
+}  // end of function output 
+\end{lstlisting}
+The sampling part is still done in the same function, but contains now
+the setup of a histogram containing the number of times the walker visited 
+a given position $x$.
+\begin{lstlisting}
+void mc_sampling(int max_trials, int number_walks, 
+                 double move_probability, int *walk_cumulative, 
+                 int *walk2_cumulative, int *probability)
+{
+  long idum;
+  idum=-1;  // initialise random number generator
+  for (int trial=1; trial <= max_trials; trial++){
+    int position = 0;
+    for (int walks = 1; walks <= number_walks; walks++){   
+      if (ran0(&idum) <= move_probability) {
+	position += 1;
+      } 
+      else {
+	position -= 1;
+      }
+      walk_cumulative[walks] += position;
+      walk2_cumulative[walks] += position*position;
+      probability[position+number_walks] += 1;
+    }  // end of loop over walks
+  } // end of loop over trials
+}   // end mc_sampling function  
+\end{lstlisting}
+Fig.~\ref{fig:randomprobability} shows the resulting probability distribution after 
+$n$ steps
+\begin{figure} 
+\begin{center}
+\input{figures/randomprob.tex}
+\caption{Probability distribution for one walker after 10, 100 and 1000 steps.\label{fig:randomprobability}}
+\end{center}
+\end{figure}
+In  Fig.~\ref{fig:randomprobability} we have plotted the probability distribution function after a given number of time steps.
+Do you recognize the shape of the probabiliy distributions?
+
+
+
+
+\section{Entropy and Equilibrium Features}
+We use this section to motivate, in a physically intuitive way, the importance of the ergodic hypothesis via 
+a discussion of how a Markovian process reaches an equilibrium situation after a given number of random walks. 
+It serves then purpose of bridging the gap between a Markovian process and our discussion of the Metropolis 
+algorithm in the next section. 
+
+To achieve this, we will use the program from the previous section, see programs/chapter12/program3.cpp 
+and introduce
+the concept of entropy $S$. We discuss the thermodynamical meaning of the entropy and its 
+link with the second law of thermodynamics in the next chapter. 
+Here it will suffice to state that the entropy is a measure of the disorder of the system, thus a system which is fully 
+ordered and stays in its fundamental state (ground state) has zero entropy, while a disordered system has a large and
+nonzero entropy.
+
+The definition of the entropy $S$ (as a dimensionless quantity here) is
+\[
+   S = -\sum_i w_i ln(w_i),
+\]
+where $w_i$ is the probability of finding our system in a state $i$. For our one-dimensional random walk case discussed
+in the previous sections it represents the probability for being at position $i=i\Delta x$ after a given number of time steps.
+In order to test this, we start with the previous program but assume now that we have  $N$ random walkers at
+$i=0$ and $t=0$ and let these random walkers diffuse as function of time. This means simply an additional loop. 
+We compute then, as in the previous program 
+example, the probability distribution for $N$ walkers after a given number of steps $i$ along $x$ and 
+time steps $j$.
+We can then compute an entropy $S_j$ for a given number of time steps by summing over all probabilities $i$.
+We show this in Fig.~\ref{fig:entropyrandom}.
+\begin{figure} 
+\begin{center}
+\input{figures/entropy.tex}
+\caption{Entropy $S_j$ as function of number of time steps $j$ for a random walk in one dimension. Here we have used 
+100 walkers on a lattice of length from $L=-50$ to $L=50$ employing periodic boundary conditions meaning
+that if a walker reaches the point $x=L+1$ it is shifted to $x=-L$ and if $x=-L$ it is shifted to $x=L$. 
+\label{fig:entropyrandom}}
+\end{center}
+\end{figure}
+The code used to compute these results is in programs/chapter12/program4.cpp.
+Here we have used 
+100 walkers on a lattice of length from $L=-50$ to $L=50$ employing periodic boundary conditions meaning
+that if a walker reaches the point $x=L$ it is shifted to $x=-L$ and if $x=-L$ it is shifted to $x=L$.
+We see from Fig.~\ref{fig:entropyrandom} that for small time steps, where all particles $N$ 
+are in the same position or close to the initial position,
+the entropy is very small, reflecting the fact that we have an ordered state. As time elapses, the random walkers spread
+out in space (here in one dimension) and the entropy increases as there are more states, that is positions accesible 
+to the system. We say that the system shows an increased degree of disorder. 
+After several time steps, we see that the entropy  reaches a constant value, a situation called a steady state.
+This signals that the system has reached its equilibrium situation and that the random walkers spread out to
+occupy all possible available states. At equilibrium it means thus that all states
+are equally probable and this is not baked into any dynamical equations such as Newton's law of motion. It occurs
+because the system is allowed to explore all possibilities. An important hypothesis, which has never been proven rigorously
+but for certain systems, is the ergodic hypothesis which states that in equilibrium all available states of a closed
+system have equal probability. For a discussion of the ergodicity hypothesis and
+the Metropoli algorithm, see for example Ref.~\cite{robertcasella}. 
+This hypothesis states also that if we are able to simulate long enough, then one should be able to trace through all
+possible paths in the space of available states to reach the equilibrium situation. 
+Our Markov process should be able to reach any state of the system from any other state if we run for long enough.
+Markov processes fullfil the requirement of ergodicity since all new steps are independent of the previous ones 
+and the random walkers can thus explore with equal probability all possible positions. In general however, we know that
+physical processes are not independent of each other. The relation between ergodicity and physical systems is an  
+unsettled topic. 
+
+The Metropolis algorithm which we discuss in the next section is based on a Markovian process and fullfils
+the requirement of ergodicity. In addition, in the next section we impose the criterion of detailed balance.
+
+
+\section{The Metropolis Algorithm and Detailed Balance}\label{sec:metropolis}
+
+Let us recapitulate some of our results about Markov chains and random walks.
+\begin{itemize}
+\item The time development of our PDF $w(t)$, after one time-step from $t=0$ is given by
+\[
+   w_i(t=\epsilon) = W(j\rightarrow i)w_j(t=0).
+\]   
+This equation represents the discretized time-development of an original 
+PDF.  We can rewrite this as a 
+\[
+   w_i(t=\epsilon) = W_{ij}w_j(t=0).
+\]
+with the transition matrix $W$ for a random walk given by
+\[
+   W_{ij}(\epsilon)=W(il-jl,\epsilon)=\left\{\begin{array}{cc}\frac{1}{2} & |i-j| = 1\\
+                                             0 & \mathrm{else} \end{array} \right.
+\]
+We call $W_{ij}$ for the transition probability and we represent it
+as a matrix. 
+\item Both  $W$ and $w$ represent probabilities and they have to be normalized, meaning that at each time step we have 
+\[
+   \sum_i w_i(t) = 1, 
+\]
+and 
+\[ 
+   \sum_j W(j\rightarrow i) = 1.
+\]
+Here we have written the previous matrix $W_{ij}=W(j\rightarrow i)$.
+The further constraints are
+$0 \le W_{ij} \le 1$  and  $0 \le w_{j} \le 1$.
+\item We can thus write the action of $W$ as 
+\[
+   w_i(t+1) = \sum_jW_{ij}w_j(t),
+\]
+or as vector-matrix relation
+\[
+   {\bf \hat{w}}(t+1) = {\bf \hat{W}\hat{w}}(t),
+\]
+and if we have that $||{\bf \hat{w}}(t+1)-{\bf \hat{w}}(t)||\rightarrow 0$, we say that 
+we have reached the most likely state of the system, the so-called steady state or equilibrium state.
+Another way of phrasing this is
+       \be {\bf w}(t=\infty) = {\bf Ww}(t=\infty). \ee   
+\label{eq:finalstage}
+\end{itemize}
+
+In most situations, the transition probability $W_{ij}=W(j\rightarrow i)$ is not known\footnote{Note that the discrete equations here can easily be replaced by continuous ones.}. It can represent a complicated
+set of chemical reactions which we are not capable of modeling or, we are able to  write down and account for 
+all the boundary and the initial conditions
+needed to describe $W(j\rightarrow i)$.   A Markov chain is a process where this probability is in general unknown.
+The question then is how can we model anything under such a severe lack of knowledge? The Metropolis algorithm comes to our rescue here. Since $W(j\rightarrow i)$ is unknown, we model it as the product of two probabilities, 
+a probability for accepting the proposed move from the state $j$ to the state $j$, and a probability for making the transition to the state $i$ being in the state $j$. We label these probabilities $A(j\rightarrow i)$ and $T(j\rightarrow i)$, respectively.  Our total transition probability is then 
+\[
+W(j\rightarrow i)=T(j\rightarrow i)A(j\rightarrow i).
+\]
+The algorithm can then be expressed as
+\begin{itemize}
+\item
+We make a suggested move to the new state $i$ with some transition or moving probability $T_{j\rightarrow i}$.
+\item
+We accept this move to the new state with an acceptance probability $A_{j \rightarrow i}$. The new state $i$ is in turn
+used as our new starting point for the next move.  We reject this proposed moved with a $1-A_{j\rightarrow i}$
+and the original state $j$ is used again as a sample.
+\end{itemize}
+We wish to derive the required properties of the probabilities $T$ and $A$ such that
+$w_i^{(t\rightarrow \infty)} \rightarrow w_i$, starting
+from any distribution, will lead us to the correct distribution.
+
+We can now derive the dynamical process towards 
+equilibrium. To obtain this equation we note that after $t$ time steps the probability for being in a state $i$ is related 
+to the probability of being in a state $j$ and performing a transition to the new state together with the probability of actually being in the state $i$ and making a move to any of the possible states $j$ from the previous time step.
+We can express this as, assuming that $T$ and $A$ are time-independent, 
+\[
+w_i(t+1) = \sum_j \left [
+w_j(t)T_{j\rightarrow i} A_{j\rightarrow i} 
++w_i(t)T_{i\rightarrow j}\left ( 1- A_{i\rightarrow j} \right)
+\right ] \,.
+\]
+All probabilities are normalized, meaning that 
+$\sum_j T_{i\rightarrow j} = 1$. Using the latter, we can rewrite the previous equation as
+\[
+w_i(t+1) = w_i(t) +
+ \sum_j \left [
+w_j(t)T_{j\rightarrow i} A_{j\rightarrow i} 
+-w_i(t)T_{i\rightarrow j}A_{i\rightarrow j}\right ] \,,
+\]
+which can be rewritten as 
+\[
+w_i(t+1)-w_i(t) =  \sum_j \left [w_j(t)T_{j\rightarrow i} A_{j\rightarrow i} 
+-w_i(t)T_{i\rightarrow j}A_{i\rightarrow j}\right ] .
+\]
+This equation is very similar to the so-called Master equation, which relates the temporal dependence of 
+a PDF $w_i(t)$ to various transition rates. The equation can be derived from the so-called 
+Chapman-Einstein-Enskog-Kolmogorov equation, see for example Ref.~\cite{cd2001}. The equation is given as 
+\be
+\label{eq:masterequation}
+\frac{d w_i(t)}{dt} = \sum_j\left[ W(j\rightarrow i)w_j-W(i\rightarrow j)w_i\right],
+\ee 
+which simply states that the rate at which the systems moves from a state $j$
+to a final state $i$ (the first term on the right-hand side of the last equation) is balanced by the rate at which the system undergoes transitions from the state $i$ to a state $j$ (the second term). If we have reached the so-called steady state, then the temporal development is zero since we are now satisfying
+Eq.~(\ref{eq:finalstage}). This  means that in equilibrium we have
+\[
+\frac{d w_i(t)}{dt} = 0.
+\]
+
+
+In the limit $t\rightarrow \infty$ we require that the  two distributions $w_i(t+1)=w_i$ and $w_i(t)=w_i$
+and we have 
+\[
+ \sum_j w_jT_{j\rightarrow i} A_{j\rightarrow i}= \sum_j w_iT_{i\rightarrow j}A_{i\rightarrow j},
+\]
+which is the condition for balance when the most likely state (or steady state) has been reached.
+We see also that the right-hand side  can be  rewritten as 
+\[ 
+\sum_j w_iT_{i\rightarrow j}A_{i\rightarrow j}= \sum_j w_iW_{i\rightarrow j},
+\]
+and using the property that $\sum_j W_{i\rightarrow j}=1$, we can rewrite our equation
+as
+\[
+w_i= \sum_j w_jT_{j\rightarrow i} A_{j\rightarrow i}= \sum_j w_j W_{j\rightarrow i},
+\]
+which is nothing but the standard equation for a Markov chain when the steady state has been reached.
+
+However, the condition that the rates should equal each other is in general not sufficient
+to guarantee that we, after many simulations, generate the correct distribution.
+We may risk to end up with so-called cyclic solutions. To avoid this
+we therefore introduce an additional condition, namely that of detailed balance 
+       \[ W(j\rightarrow i)w_j= W(i\rightarrow j)w_i.  \]
+These equations were derived by Lars Onsager when studying irreversible processes, see Ref.~\cite{onsager1931}.
+At equilibrium detailed balance gives thus
+       \[ \frac{W(j\rightarrow i)}{W(i\rightarrow j)}=\frac{w_i}{w_j}.  \]
+Rewriting the last equation in terms of our transition probabilities $T$ and 
+acceptance probobalities $A$ we obtain
+\[ 
+w_j(t)T_{j\rightarrow i}A_{j\rightarrow i}= w_i(t)T_{i\rightarrow j}A_{i\rightarrow j}.
+\]
+Since we normally have an expression 
+for the probability distribution functions $w_i$,  we can rewrite the last equation as 
+\[ 
+\frac{T_{j\rightarrow i}A_{j\rightarrow i}}{T_{i\rightarrow j}A_{i\rightarrow j}}= \frac{w_i}{w_j}.
+\]
+In statistical physics this condition ensures that it is e.g., the 
+Boltzmann distribution which is generated when equilibrium is reached.
+
+We introduce  now the Boltzmann distribution 
+\[
+   w_i= \frac{\exp{(-\beta(E_i))}}{Z},
+\]
+which states that the probability of finding the system in a state $i$ with energy $E_i$ 
+at an inverse temperature $\beta = 1/k_BT$ is $w_i\propto \exp{(-\beta(E_i))}$.
+The denominator $Z$ is a normalization constant which ensures that the sum of all
+probabilities is normalized to one. It is defined as the sum of probabilities over all microstates
+$j$ of the system
+\[
+   Z=\sum_j \exp{(-\beta(E_i))}.
+\]
+From the partition function we can in principle generate all interesting quantities
+for a given system in equilibrium with its surroundings at a temperature $T$. This is
+demonstrated in the next chapter.
+
+With the probability distribution given by the Boltzmann distribution we are now in a position
+where we can generate expectation values for a given variable $A$ through the
+definition
+\[
+   \langle A \rangle = \sum_jA_jw_j=
+    \frac{\sum_jA_j\exp{(-\beta(E_j)}}{Z}.
+\]
+In general, most systems have an infinity of microstates making thereby the computation
+of $Z$ practically impossible and 
+a brute force Monte Carlo calculation over a given number of randomly selected microstates
+may therefore not yield those microstates which are important 
+at equilibrium. 
+To select the most important contributions we need to  
+use the condition for detailed balance. Since this is just given by the ratios of probabilities,
+we never need to evaluate the partition function $Z$.
+For the 
+Boltzmann distribution, detailed balance results in
+       \[ \frac{w_i}{w_j}= \exp{(-\beta(E_i-E_j))}. \]
+
+Let us now specialize to a system whose energy is defined by the orientation of single spins.
+Consider the state $i$, with given energy $E_i$ represented by the following $N$ spins
+\[
+\begin{array}{cccccccccc}
+\uparrow&\uparrow&\uparrow&\dots&\uparrow&\downarrow&\uparrow&\dots&\uparrow&\downarrow\\
+1&2&3&\dots& k-1&k&k+1&\dots&N-1&N\end{array}
+\]
+We are interested in the transition with one single  spinflip to a new state $j$ with energy $E_j$
+\[
+\begin{array}{cccccccccc}
+\uparrow&\uparrow&\uparrow&\dots&\uparrow&\uparrow&\uparrow&\dots&\uparrow&\downarrow\\
+1&2&3&\dots& k-1&k&k+1&\dots&N-1&N\end{array}
+\]
+This change from one microstate $i$ (or spin configuration)  to another microstate $j$ is the
+configuration space analogue to a random walk on a lattice. Instead of jumping from 
+one place to another in space, we 'jump' from one microstate to another.
+
+However, the selection of states has to generate a final distribution which is the
+Boltzmann distribution. This is again the same we saw for a random walker, for the discrete case we had 
+always a binomial distribution, whereas for the continuous case we had a normal distribution.
+The way we sample configurations should result, when equilibrium is established, in the 
+Boltzmann distribution. Else, our algorithm for selecting microstates is wrong.
+ 
+
+As stated above, we do in general not know the closed-form expression of the transition rate and we are free to model it as
+     $W(i\rightarrow j)=T(i\rightarrow j)A(i\rightarrow j)$.
+Our ratio between probabilities gives us
+\[ 
+\frac{A_{j\rightarrow i}}{A_{i\rightarrow j}}= \frac{w_iT_{i\rightarrow j}}{w_jT_{j\rightarrow i}}.
+\]
+The simplest form of the Metropolis algorithm (sometimes called for brute force Metropolis) assumes that 
+the transition probability $T(i\rightarrow j)$ is symmetric, implying that $T(i\rightarrow j)=T(j\rightarrow i)$.
+We obtain then (using the Boltzmann distribution)
+\[
+\frac{A(j\rightarrow i)}{A(i\rightarrow j)}= \exp{(-\beta(E_i-E_j))} .
+\]
+We are in this case interested in a new state $E_j$ whose energy is lower than 
+$E_i$, viz., $\Delta E = E_j-E_i \le 0$. A simple test would then be to accept only those
+microstates which lower the energy.  
+Suppose we have ten microstates with energy $E_0 \le E_1 \le E_2 \le E_3 \le \dots \le E_9$.
+Our desired energy is $E_0$.
+At a given temperature $T$ we start our simulation by randomly choosing state
+$E_9$. Flipping spins we may then find a path from $E_9\rightarrow E_8 \rightarrow E_7 \dots \rightarrow E_1 \rightarrow E_0$. 
+This would however lead to biased statistical averages since it would violate the ergodic hypothesis discussed
+in the previous section. This principle states  that 
+it should be possible for any Markov process to reach every possible state of the system
+from any starting point if the simulations is carried out for a long enough time.
+
+Any state in a Boltzmann distribution has a probability different from zero and if such 
+a state cannot be reached from a given starting point, then the system is not ergodic.
+This means that another possible path to $E_0$ could be 
+$E_9\rightarrow E_7 \rightarrow E_8 \dots \rightarrow E_9 \rightarrow E_5 \rightarrow E_0$ and so forth.
+Even though such a path could have a negligible probability it is still a possibility, and if
+we simulate long enough it should be included in our computation of an expectation value.
+
+Thus, we require that our algorithm should satisfy the principle of detailed balance and be ergodic. 
+The problem with our ratio
+\[
+\frac{A(j\rightarrow i)}{A(i\rightarrow j)}= \exp{(-\beta(E_i-E_j))}, 
+\]
+is that we do not know the acceptance probability. This equation only specifies the ratio of pairs of probabilities. Normally we want an algorithm which is as efficient as possible and maximizes the number of accepted moves. 
+Moreover, we know that the acceptance probability has $0$ as its smallest value and $1$ as its largest. 
+If we assume that the largest possible acceptance probability is $1$,  we adjust thereafter the other acceptance probability
+to this constraint. 
+
+To understand this better, assume that we have two energies, $E_i$ and $E_j$, with $E_i < E_j$. This means that the largest acceptance value must be 
+$A(j\rightarrow i)$ since we move to a state with lower energy.  It follows from also from the fact that the probability $w_i$ is larger than $w_j$. 
+The trick then is to fix this value to $A(j\rightarrow i)=1$. It means that 
+the other acceptance probability has to be 
+\[
+A(i\rightarrow j)= \exp{(-\beta(E_j-E_i))}.
+\]
+One possible way to encode this equation reads
+\[       
+A(j\rightarrow i)=\left\{\begin{array}{cc}
+\exp{(-\beta(E_i-E_j))} & E_i-E_j > 0 \\ 1 & else \end{array} \right.,  
+\]
+implying that if we move to a state with a lower energy, we always accept
+this move with acceptance probability $A(j\rightarrow i)=1$. If the energy is higher, we need to check
+this acceptance probability with the ratio between the probabilities  from our PDF.  From a practical point of view, 
+the above ratio is compared with a random number.
+If the ratio is smaller than a given random number we accept the move to a higher energy, else we stay in the same state. 
+
+Nothing hinders us obviously in choosing another acceptance ratio, like a weighting  of the two energies via
+\[
+A(j\rightarrow i)=\exp{(-\frac{1}{2}\beta(E_i-E_j))}.
+\]
+However, it is easy to see that such an acceptance ratio woud result in 
+fewer accepted moves.
+
+
+\subsection{Brief Summary}
+The Monte Carlo approach, combined with the theory for Markov chains can be summarized as follows:
+A Markov chain Monte Carlo method for the simulation of a distribution $w$ is any method producing an 
+ergodic Markov chain of events $x$ whose stationary distribution is $w$. The Metropolis algorithm can be phrased as
+\begin{svgraybox}
+\begin{itemize}
+\item Generate an initial value $x^{(i)}$.
+\item Generate a trial value $y_t$ with probability $T(y_t|x^{(i)})$. The latter quantity represents the probability of generating $y_t$ given $x^{(i)}$.
+\item Take a new value 
+\[ 
+x^{(i+1)}= \left\{\begin{array}{cc} y_t & \mathrm{with\hspace{0.1cm}probability} = A(x^{(i)}\rightarrow y_t) \\
+                                          x^{(i)}    & \mathrm{with \hspace{0.1cm}probability} = 1-A(x^{(i)}\rightarrow y_t)\end{array}\right .
+\] 
+\item We have defined the transition (acceptance) probability as 
+\[
+   A(x\rightarrow y)= \mathrm{min}\left\{\frac{w(y)T(x|y)}{w(x)T(y|x)},1\right\}.
+\]
+The distribution $f$ is often called the instrumental (we will relate it to the 
+jumping of a walker) or proposal distribution while $A$ is the Metropolis-Hastings
+acceptance probability.  When $T(y|x)$ is symmetric it is just called the Metropolis algorithm.
+\end{itemize}
+\end{svgraybox}
+Using the Metropolis algorithm we can in turn set up the general calculational scheme as 
+shown in Fig.~\ref{fig:chartFlowMetro}.
+\begin{figure}
+\begin{centering}
+\begin{tikzpicture}[scale=1., node distance = 2cm, auto]
+  \footnotesize
+    % Place nodes
+    \node [block] (init) {Initialize:\\
+    Establish an initial state, for example a position $x^{(i)}$};
+    \node [block, below of=init, node distance=2.0cm] (suggestMove) {Suggest a move $y_t$};
+    \node [block, below of=suggestMove] (evaluateAcceptance) {Compute acceptance ratio $A(x^{(i)}\rightarrow y_t)$};
+    \node [block, left of=evaluateAcceptance, node distance=4.5cm] (randomGenerator) {Generate a uniformly distributed variable $r$};
+    \node [decision, below of=evaluateAcceptance] (decide) {Is\\ $A(x^{(i)}\rightarrow y_t) \geq r$?};
+    \node [block, right of=decide, node distance=3.5 cm] (rejectMove) {Reject move: \\ $x^{(i+1)} = x^{(i)}$};
+    \node [block, below of=decide, node distance=2.2cm] (acceptMove) {Accept move:\\$x^{(i)} = y_t=x^{(i+1)}$};
+    \node [decision, below of=acceptMove, node distance=2.2cm] (lastMove) {Last move?};
+    \node [block, below of=lastMove, node distance=2.2cm] (getLocalEnergy) {Get local expectation values};
+    \node [decision, below of=getLocalEnergy] (decideMC) {Last MC step?};
+    \node [block, below of=decideMC, node distance=2.2cm] (collectSamples) {Collect samples};
+    \node [block, below of=collectSamples, node distance=2.2cm] (end) {End};
+    
+%     % Draw edges
+    \path [line] (init) -- (suggestMove);
+    \path [line] (suggestMove) -- (evaluateAcceptance);
+    \path [line] (evaluateAcceptance) -- (decide);
+    \path [line] (randomGenerator) |- (decide);
+    \path [line] (decide) -- node [, color=black] {yes}(acceptMove);
+    \path [line] (decide) -- node [, color=black] {no}(rejectMove);
+    \path [line] (acceptMove) -- (lastMove); 
+    \path [line] (lastMove) -- node [, color=black] {yes}(getLocalEnergy);
+    \path [line] (rejectMove) |- (lastMove);
+    \path [line] (getLocalEnergy) -- (decideMC);
+    \path [line] (decideMC) -- node [, color=black] {yes}(collectSamples);
+
+    % Define a style for shifting a coordinate upwards
+    % Note the curly brackets around the coordinate.
+    \tikzstyle{s}=[shift={(0mm,\radius)}]
+    \path[line] (lastMove.west) -- +(-1.0,0)  -- +(-1.0, 4.34) 
+% % % %     % Draw semicircle junction to indicate that the lines are
+% % % %     % not connected. Since we want the semicircle to have its center 
+% % % %     % where the lines intersect, we have to shift the intersection 
+% % % %     % coordinate using the 's' style to account for this.
+    arc(-90:90:\radius) -- +(0.0, 4.42) -- (suggestMove.west);
+    
+    \path [line] (decideMC.west) -- node [, color=black]{no} +(-1.7,0) --+(-1.7,9.05) arc(-90:90:\radius) --+(0.0,5.4) -- +(2.8,5.4);
+       
+    \path [line] (collectSamples) -- (end);
+
+\end{tikzpicture}\caption{Chart flow for the Metropolis algorithm.}\label{fig:chartFlowMetro}
+\end{centering}
+\end{figure}
+
+
+The dynamical equation can be written as
+\begin{equation}
+w_i(t+1) = \sum_j M_{ij}w_j(t)
+\end{equation}
+with the matrix $M$ given by
+\begin{equation}
+M_{ij} = \delta_{ij}\left [ 1 -\sum_k T_{i\rightarrow k} A_{i \rightarrow k}
+\right ] + T_{j\rightarrow i} A_{j\rightarrow i} \,.
+\end{equation}
+Summing over $i$ shows that $\sum_i M_{ij} = 1$, and since
+$\sum_k T_{i\rightarrow k} = 1$, and $A_{i \rightarrow k} \leq 1$, the
+elements of the matrix satisfy $M_{ij} \geq 0$. The matrix $M$ is therefore
+a stochastic matrix.
+
+The Metropolis method is simply the power method for computing the
+right eigenvector of $M$ with the largest magnitude eigenvalue.
+By construction, the correct probability distribution is a right eigenvector
+with eigenvalue $1$. Therefore, for the Metropolis method to converge
+to this result, one has to  show that $M$ has only one eigenvalue with this
+magnitude, and all other eigenvalues are smaller. 
+%develop examples here or in chapter 7 in connection with power method
+
+
+\section{Langevin and Fokker-Planck Equations}
+We end this chapter with a discussion and derivation of the Fokker-Planck and Langevin equations.
+These equations will in turn be used in our discussion on advanced Monte Carlo methods
+for quantum mechanical systems, see chapter for example chapter \ref{chap:improvedvmc}.
+
+\subsection{Fokker-Planck Equation}
+     For many physical systems initial distributions of a stochastic 
+variable $y$ tend to an equilibrium distribution $w_{\mathrm{equilibrium}}(y)$, 
+that is $w(y, t)\rightarrow w_{\mathrm{equilibrium}}(y)$ 
+as $t\rightarrow\infty$. In
+equilibrium, detailed balance constrains the transition rates
+\[
+     W(y\rightarrow y')w(y ) = W(y'\rightarrow y)w_{\mathrm{equilibrium}}(y),
+\]
+where $W(y'\rightarrow y)$ 
+is the probability per unit time that the system changes
+from a state $|y\rangle$ , characterized by the value $y$ 
+for the stochastic variable $Y$ , to a state $|y'\rangle$.
+
+Note that for a system in equilibrium the transition rate 
+$W(y'\rightarrow y)$ and
+the reverse $W(y\rightarrow y')$ may be very different. 
+
+
+Let us now assume that we have three probability distribution functions for times $t_0 < t' < t$, that is
+$w({\bf x}_0,t_0)$, $w({\bf x}',t')$ and $w({\bf x},t)$.
+We have then  
+\[
+   w({\bf x},t)= \int_{-\infty}^{\infty} W({\bf x}.t|{\bf x}'.t')w({\bf x}',t')d{\bf x}',
+\]
+and
+\[
+   w({\bf x},t)= \int_{-\infty}^{\infty} W({\bf x}.t|{\bf x}_0.t_0)w({\bf x}_0,t_0)d{\bf x}_0,
+\]
+and
+\[
+   w({\bf x}',t')= \int_{-\infty}^{\infty} W({\bf x}'.t'|{\bf x}_0,t_0)w({\bf x}_0,t_0)d{\bf x}_0.
+\]
+
+We can combine these equations and arrive at the 
+famous Einstein-Smoluchenski-Kolmogorov-Chapman (ESKC) relation
+\[
+ W({\bf x}t|{\bf x}_0t_0)  = \int_{-\infty}^{\infty} W({\bf x},t|{\bf x}',t')W({\bf x}',t'|{\bf x}_0,t_0)d{\bf x}'.
+\]
+We can replace the spatial dependence with a dependence upon say the velocity
+(or momentum), that is we have
+\[
+ W({\bf v},t|{\bf v}_0,t_0)  = \int_{-\infty}^{\infty} W({\bf v},t|{\bf v}',t')W({\bf v}',t'|{\bf v}_0,t_0)d{\bf x}'.
+\]
+
+We will now derive the Fokker-Planck equation. 
+We start from the ESKC equation
+\[
+ W({\bf x},t|{\bf x}_0,t_0)  = \int_{-\infty}^{\infty} W({\bf x},t|{\bf x}',t')W({\bf x}',t'|{\bf x}_0,t_0)d{\bf x}'.
+\]
+We define $s=t'-t_0$, $\tau=t-t'$ and $t-t_0=s+\tau$. We have then
+\[
+ W({\bf x},s+\tau|{\bf x}_0)  = \int_{-\infty}^{\infty} W({\bf x},\tau|{\bf x}')W({\bf x}',s|{\bf x}_0)d{\bf x}'.
+\]
+
+Assume now that $\tau$ is very small so that we can make an expansion 
+in terms of a small step $xi$, with ${\bf x}'={\bf x}-\xi$, that is
+\[
+ W({\bf x},s|{\bf x}_0)+\frac{\partial W}{\partial s}\tau +O(\tau^2) = \int_{-\infty}^{\infty} W({\bf x},\tau|{\bf x}-\xi)W({\bf x}-\xi,s|{\bf x}_0)d{\bf x}'.
+\]
+We assume that $W({\bf x},\tau|{\bf x}-\xi)$ takes non-negligible values only when $\xi$ is small. This is just another way of stating the Master equation!
+
+We say thus that ${\bf x}$ changes only by a small amount in the time interval $\tau$. 
+This means that we can make a Taylor expansion in terms of $\xi$, that is we
+expand
+\[
+W({\bf x},\tau|{\bf x}-\xi)W({\bf x}-\xi,s|{\bf x}_0) =
+\sum_{n=0}^{\infty}\frac{(-\xi)^n}{n!}\frac{\partial^n}{\partial x^n}\left[W({\bf x}+\xi,\tau|{\bf x})W({\bf x},s|{\bf x}_0)
+\right].
+\]
+We can then rewrite the ESKC equation as 
+\[
+\frac{\partial W}{\partial s}\tau=-W({\bf x},s|{\bf x}_0)+
+\sum_{n=0}^{\infty}\frac{(-\xi)^n}{n!}\frac{\partial^n}{\partial x^n}
+\left[W({\bf x},s|{\bf x}_0)\int_{-\infty}^{\infty} \xi^nW({\bf x}+\xi,\tau|{\bf x})d\xi\right].
+\]
+We have neglected higher powers of $\tau$ and have used that for $n=0$ 
+we get simply $W({\bf x},s|{\bf x}_0)$ due to normalization.
+
+We say thus that ${\bf x}$ changes only by a small amount in the time interval $\tau$. 
+This means that we can make a Taylor expansion in terms of $\xi$, that is we
+expand
+\[
+W({\bf x},\tau|{\bf x}-\xi)W({\bf x}-\xi,s|{\bf x}_0) =
+\sum_{n=0}^{\infty}\frac{(-\xi)^n}{n!}\frac{\partial^n}{\partial x^n}\left[W({\bf x}+\xi,\tau|{\bf x})W({\bf x},s|{\bf x}_0)
+\right].
+\]
+We simplify the above by introducing the moments 
+\[
+M_n=\frac{1}{\tau}\int_{-\infty}^{\infty} \xi^nW({\bf x}+\xi,\tau|{\bf x})d\xi=
+\frac{\langle [\Delta x(\tau)]^n\rangle}{\tau},
+\]
+resulting in
+\[
+\frac{\partial W({\bf x},s|{\bf x}_0)}{\partial s}=
+\sum_{n=1}^{\infty}\frac{(-\xi)^n}{n!}\frac{\partial^n}{\partial x^n}
+\left[W({\bf x},s|{\bf x}_0)M_n\right].
+\]
+
+When $\tau \rightarrow 0$ we assume that $\langle [\Delta x(\tau)]^n\rangle \rightarrow 0$ more rapidly than $\tau$ itself if $n > 2$. 
+When $\tau$ is much larger than the standard correlation time of 
+system then $M_n$ for $n > 2$ can normally be neglected.
+This means that fluctuations become negligible at large time scales.
+
+If we neglect such terms we can rewrite the ESKC equation as 
+\[
+\frac{\partial W({\bf x},s|{\bf x}_0)}{\partial s}=
+-\frac{\partial M_1W({\bf x},s|{\bf x}_0)}{\partial x}+
+\frac{1}{2}\frac{\partial^2 M_2W({\bf x},s|{\bf x}_0)}{\partial x^2}.
+\]
+
+In a more compact form we have
+\[
+\frac{\partial W}{\partial s}=
+-\frac{\partial M_1W}{\partial x}+
+\frac{1}{2}\frac{\partial^2 M_2W}{\partial x^2},
+\]
+which is the Fokker-Planck equation.  It is trivial to replace 
+position with velocity (momentum).
+
+The solution to this equation is a Gaussian distribution and can be used to constrain proposed transitions moves, that one can model the transition probabilities $T$ from our discussion of the Metropolis algorithm.
+\subsection{Langevin Equation}
+Consider a particle suspended in a liquid. 
+On its path through the liquid it will continuously collide with the liquid molecules. 
+Because on average the particle will collide more often on the front side than on the back side, it will experience a systematic force proportional with its velocity, 
+and directed opposite to its velocity. Besides this 
+systematic force the particle will experience a stochastic force  $ \vec{F}(t)$. 
+The equations of motion then read 
+\[ 
+ \frac{d\vec{r}}{dt} 	=  \vec{v},
+\] 	
+\[
+\frac{d\vec{v}}{dt} 	=  -\xi \vec{v}+\vec{F},
+\]
+The last equation is the Langevin equation. The original Langevin equation was meant to  describe 
+Brownian motion. It is a 
+stochastic differential equation used to describe the time evolution of 
+collective (normally macroscopic) variables that change only slowly with respect
+to the microscopic ones. The latter are responsible for the stochastic nature of the Langevin equation.
+We can say that we model our ignorance about the microscopic physics in a stochastic term.
+From the Langevin equation we can in turn derive for example the fluctuation dissipation theorem
+discussed below. To see, we need some information about the friction constant from hydrodynamics.
+From hydrodynamics  we know that the friction constant  $\xi$ is given by
+\[
+\xi =6\pi \eta a/m 
+\]
+where $\eta$ is the viscosity  of the solvent and $a$ is the radius of the particle.
+
+Solving the Langevin equation we get 
+\[
+\vec{v}(t)=\vec{v}_{0}e^{-\xi t}+\int_{0}^{t}d\tau e^{-\xi (t-\tau )}\vec{F }(\tau ). 
+\]
+
+If we want to get some useful information out of this, we have to average 
+over all possible realizations of 
+$ \vec{F}(t)$, with the initial velocity as a condition. A useful quantity is then
+ \[ 
+\langle \vec{v}(t)\cdot \vec{v}(t)\rangle_{\vec{v}_{0}}=v_{0}^{-\xi 2t}
++2\int_{0}^{t}d\tau e^{-\xi (2t-\tau)}\vec{v}_{0}\cdot \langle \vec{F}(\tau )\rangle_{\vec{v}_{0}}
+\]
+\[  	  	
+ +\int_{0}^{t}d\tau ^{\prime }\int_{0}^{t}d\tau e^{-\xi (2t-\tau -\tau ^{\prime })}
+\langle \vec{F}(\tau )\cdot \vec{F}(\tau ^{\prime })\rangle_{ \vec{v}_{0}}.
+\]
+
+In order to continue we have to make some assumptions 
+about the conditional averages of the stochastic forces. 
+In view of the chaotic character of the stochastic forces the following 
+assumptions seem to be appropriate.
+We assume that   
+\[ \langle \vec{F}(t)\rangle 	= 	0, \]
+and
+\[\langle \vec{F}(t)\cdot \vec{F}(t^{\prime })\rangle_{\vec{v}_{0}}=  C_{\vec{v}_{0}}\delta (t-t^{\prime }).
+\] 	
+We omit the subscript $\vec{v}_{0}$ when the quantity of interest 
+turns out to be independent of $\vec{v}_{0}$. Using the last three equations we get
+ \[
+\langle \vec{v}(t)\cdot \vec{v}(t)\rangle_{\vec{v}_{0}}=v_{0}^{2}e^{-2\xi t}+\frac{C_{\vec{v}_{0}}}{2\xi }(1-e^{-2\xi t}).\]
+
+For large $t$ this should be equal to the well-known result $3kT/m$, from which it follows that
+\[
+\langle \vec{F}(t)\cdot \vec{F}(t^{\prime })\rangle =6\frac{kT}{m}\xi \delta (t-t^{\prime }). \]
+This result is called the fluctuation-dissipation theorem.
+
+Integrating 
+ \[ 
+\vec{v}(t)=\vec{v}_{0}e^{-\xi t}+\int_{0}^{t}d\tau e^{-\xi (t-\tau )}\vec{F }(\tau ), \] 
+we get
+\[
+\vec{r}(t)=\vec{r}_{0}+\vec{v}_{0}\frac{1}{\xi }(1-e^{-\xi t})+
+\int_0^td\tau \int_0^{\tau}\tau ^{\prime } e^{-\xi (\tau -\tau ^{\prime })}\vec{F}(\tau ^{\prime }), \]
+from which we calculate the mean square displacement 
+\[
+\langle ( \vec{r}(t)-\vec{r}_{0})^{2}\rangle _{\vec{v}_{0}}=\frac{v_0^2}{\xi}(1-e^{-\xi t})^{2}+\frac{3kT}{m\xi ^{2}}(2\xi t-3+4e^{-\xi t}-e^{-2\xi t}). \]
+For very large $t$ this becomes
+\[
+\langle (\vec{r}(t)-\vec{r}_{0})^{2}\rangle =\frac{6kT}{m\xi }t \] 
+from which we get the Einstein relation  
+ \[ D= \frac{kT}{m\xi } \] 	
+where we have used $\langle (\vec{r}(t)-\vec{r}_{0})^{2}\rangle =6Dt$.
+
+The standard approach in for example quantum mechanical diffusion Monte Carlo calculations, is to use the Langevin equation
+to propose new moves (for examples new velocities or positions) since they will depend on the given probability distributions.
+These new proposed states or values are then used to compute the transition probability $T$, where the latter is the solution
+of for example the Fokker-Planck equation.
+ 
+\section{Exercises}
+%\subsection*{Exercise 9.1: Two dimensional randow walk}
+\begin{prob}
+Extend the first program discussed in this chapter  
+to a two-dimensional random walk with probability
+$1/4$ for a move to the right, left, up or down. Compute the variance for both the $x$ and $y$
+directions and the total variance.
+\end{prob}
+%\subsection*{Exercise 12.1: Two dimensional randow walk}
+\begin{prob}
+Use the second program 
+to fit the computed probability distribution with a normal distribution
+using your calculated values of $\sigma^2$ and $\langle x\rangle$.
+\end{prob}
+%\subsection*{Project 12.1: simulation of the Boltzmann distribution}
+\begin{prob}
+In this exercise the aim is to show that the Metropolis algorithm
+generates the Boltzmann distribution
+\[
+   P(\beta)=\frac{e^{-\beta E}}{Z},
+\]
+with $\beta=1/kT$ being the inverse temperature, $E$ is the energy of
+the system and
+$Z$ is the partition function. The only functions you will need are those
+to generate random numbers.
+
+We are going to study one single particle in equilibrium with 
+its surroundings, the latter modelled via a large heat bath
+with temperature $T$.
+
+The model used to describe this particle is that of an ideal gas
+in {\bf one} dimension and with velocity $-v$ or $v$. 
+We are interested in finding  $P(v)dv$, which expresses the probability
+for finding the system with a given velocity $v\in [v,v+dv]$.
+The energy for this one-dimensional system is
+\[
+  E=\frac{1}{2}kT=\frac{1}{2}v^2,
+\]
+with mass $m=1$.
+In order to simulate the Boltzmann distribution, your program
+should contain the following ingredients:  
+\begin{itemize}
+\item Reads in the temperature $T$, the number of Monte Carlo cycles, 
+and the initial velocity. You should also read in 
+the change in velocity $\delta v$ used in every Monte Carlo step. 
+Let the temperature have dimension energy.
+\item Thereafter you choose a maximum velocity given by for example  
+$v_{max}\sim 10\sqrt{T}$. This should include all relevant velocities which give a non-zero probability. But you need to check whether this is true or not. 
+
+Then you construct a velocity interval 
+defined by  $v_{max}$ and divide it in small intervals through 
+$v_{max}/N$,
+with $N\sim 100-1000$. 
+For each of these intervals your task is to find out how many times
+a given velocity during the Monte Carlo sampling appears 
+in each specific interval.
+\item The number of times a given velocity appears in a specific
+interval is used to construct a histogram representing 
+$P(v)dv$. To achieve this you should construct a vector 
+$P[N]$ which contains the number of times a given velocity 
+appears in the subinterval 
+$v,v+dv$. 
+\end{itemize}
+
+In order to find the number of velocities appearing in each interval
+we will employ the Metropolis algorithm. A pseudocode for this is
+\begin{lstlisting}
+   for( montecarlo_cycles=1; Max_cycles; montecarlo_cycles++) {
+      ...
+      // change speed as function of delta v
+      v_change = (2*ran1(&idum) -1 )* delta_v;
+      v_new = v_old+v_change;
+      // energy change
+      delta_E = 0.5*(v_new*v_new - v_old*v_old) ;
+      ......
+      // Metropolis algorithm begins here
+        if ( ran1(&idum) <= exp(-beta*delta_E)  ) {
+            accept_step = accept_step + 1 ;      
+            v_old = v_new ;
+            .....
+        }
+      // thereafter we must fill in  P[N] as a function of
+      // the new speed
+        P[?] = ...
+
+      // upgrade mean velocity, energy and variance
+         ...
+      }
+\end{lstlisting}
+
+
+\begin{enumerate}
+\item  Make your own algorithm which sets up the histogram
+$P(v)dv$, find mean velocity, energy $\langle E\rangle$, energy variance $\mathrm{Var}(E)$ 
+and the number of
+accepted steps for a given temperature. Study the change of the number of
+accepted moves as a function of $\delta v$.
+Compare the final energy with the closed form result
+$\langle E\rangle=kT/2$ for one dimension. Find also the closed-form expressions for the energy variance  and the mean velocity and compare your calculations with these results. 
+Use $T=4$ and set the intial velocity to zero, i.e., $v_0=0$. 
+Try different values of $\delta v$.
+Check the final result for the energy as a function 
+of the number of Monte Carlo cycles.
+
+\item   Repeat the calculation in the previous exercise but using now a normal distribution. Does that improve your results compared with the exact expressions?
+
+\item  Make thereafter a plot of  $\log{(P(v))}$ as function of $E$
+and see if you get a straight line. Comment the result.
+
+\item  In our analysis under [1) we have not discussed how the system reaches the most likely state, that is whether equilibrium has been reached or not.
+Make a plot of the mean velocity, energy, energy variance and the number of
+accepted steps for a given temperature as function of the number of
+Monte Carlo samples. Perform these calculations for several temperatures, namely $T=0.5$, $T=1$, $T=2$ and $T=10$ and comment your results. Can you find
+a rough measure for when the most likely state has been reached?
+
+\item 
+The analysis in point [4) 
+is rather rough and obviously user dependent, in the sense that it is
+very much up to the user to define when an equilibrium situation has been reached or not.
+To improve upon this, compute the so-called time autocorrelation function defined here as
+\[
+\phi(t)  = \frac{1}{t_{\mathrm{max}}-t}\sum_{t'=0}^{t_{\mathrm{max}}-t}\bar E(t')\bar E(t'+t)
+-\frac{1}{t_{\mathrm{max}}-t}\sum_{t'=0}^{t_{\mathrm{max}}-t}\bar E(t')\times
+\frac{1}{t_{\mathrm{max}}-t}\sum_{t'=0}^{t_{\mathrm{max}}-t}\bar E(t'+t)
+\]
+for the mean energy $E\bar (t)$ and plot it 
+as function of the number of Monte Carlo steps for the temperatures in [c).
+The time $t$ corresponds to a given number of Monte Carlo cycles.
+Can you extract an equilibration measure?  How does the correlation time behave
+as function of temperature?  Comment your results.  
+Be careful in choosing values of $t$, they should not be  too close to $t_{\mathrm{max}}$.
+Compute the autocorrelation function for all temperatures listed in [d) and compare your results with those in [d). Comment your results. 
+\item  In the previous analysis we computed the time autocorrelation  function. This quantity can be related to the covariance of our measurements. 
+To achieve this you need to store the results of all contributions to the measurements of the mean energy and its variance $\sigma_E^2$ given by     
+\[
+\sigma_E^2 =\frac{1}{n^2}\sum_{k=1}^n (E_k - \bar E)^2 +
+\frac{2}{n^2}\sum_{k<l} (E_k - \bar E)(E_l - \bar E)
+\]
+Here we assume that $n$ corresponds to the number of Monte Carlo samples in one
+experiment and that we repeat these experiments a given time.  We can assume here that we repeat these experiments $m=n$ times.  
+The value $\bar E$ is the mean energy while $E_{k,l}$ represent individual measurements. 
+The first term is the same as the error in the uncorrelated case.
+This means that the second
+term accounts for the error correction due to correlation between the
+measurements. For uncorrelated measurements this second term is zero.
+
+Computationally the uncorrelated first term is much easier to treat
+efficiently than the second.
+\[
+\mathrm{Var}(E) = \frac{1}{n}\sum_{k=1}^n (E_k - \langle E\rangle)^2 =
+\left(\frac{1}{n}\sum_{k=1}^n E_k^2\right) - \langle E\rangle^2
+\]
+We just accumulate separately the values $E_k^2$ and $E_k$ for every
+measurement $E_k$ we receive. The correlation term, though, has to be
+calculated at the end of the experiment since we need all the
+measurements to calculate the cross terms. Therefore, all measurements
+have to be stored throughout the experiment.
+
+Let us analyze the problem by splitting up the correlation term into
+partial sums of the form:
+\[
+f_d = \frac{1}{n}\sum_{k=1}^{n-d}(E_k - \langle E\rangle)(E_{k+d} - \langle E\rangle)
+\]
+The correlation term of the error can now be rewritten in terms of
+$f_d$:
+\[
+\frac{2}{n}\sum_{k<l} (E_k - \langle E\rangle)(E_l - \langle E\rangle) =
+2\sum_{d=1}^{n-1} f_d
+\]
+The value of $f_d$ reflects the correlation between measurements
+separated by the distance $d$ in the samples.  Notice that for
+$d=0$, $f$ is just the sample variance, $\mathrm{Var}(E)$. If we divide $f_d$
+by $\mathrm{Var}(E)$, we arrive at the so called \emph{autocorrelation
+  function}:
+\[
+\kappa_d = \frac{f_d}{\mathrm{Var}(E)}
+\]
+which gives us a useful measure of the correlation pair correlation
+starting always at $1$ for $d=0$.
+
+The sample variance can now be
+written in terms of the autocorrelation function:
+\bea
+\sigma_E^2 &=&
+\frac{1}{n}\mathrm{Var}(E)+\frac{2}{n}\cdot\mathrm{Var}(E)\sum_{d=1}^{n-1}
+\frac{f_d}{\mathrm{Var}(E)}\nonumber\\ &=&
+\left(1+2\sum_{d=1}^{n-1}\kappa_d\right)\frac{1}{n}\mathrm{Var}(E)\nonumber\\
+&=&\rule{0pt}{17pt}
+\frac{\tau}{n}\cdot\mathrm{Var}(E)
+\label{eq:error_estimate_corr_new}
+\eea
+and we see that $\sigma_E^2$ can be expressed in terms the
+uncorrelated sample variance times a correction factor $\tau$ which
+accounts for the correlation between measurements. We call this
+correction factor the \emph{autocorrelation time}:
+\[
+\tau = 1+2\sum_{d=1}^{n-1}\kappa_d
+\]
+%It is closely related to the area under the graph of the
+%autocorrelation function. 
+For a correlation free experiment, $\tau$
+equals 1. From the point of view of
+Eq.~(\ref{eq:error_estimate_corr_new}) we can interpret a sequential
+correlation as an effective reduction of the number of measurements by
+a factor $\tau$. The effective number of measurements becomes
+\bdm
+n_\mathrm{eff} = \frac{n}{\tau}
+\edm
+From the previous exercise you needed to store all experiments $E_k$ in order to compute the time autocorrelation function. You can reuse these data in this exercise and compute the full variance $\sigma_E^2$, the covariance, the 
+autocorrelation time $\tau$ and the effective number of measurements
+$n_\mathrm{eff}$. It is sufficient to choose only one of the temperatures.  Comment your results.
+Can you relate the correlation time $\tau$ to what you found [5)? What about the covariance and the time autocorrelation function? 
+
+\end{enumerate}
+
+\end{prob}
+
+
+\begin{prob}
+
+
+The aim of this exercise is to simulate financial transactions among financial agents
+using Monte Carlo methods. The final goal is to extract a distribution of income  as function
+of the income $m$.   From Pareto's work (V.~Pareto, 1897) it is known from empirical studies
+that the higher end of the distribution of money follows a distribution 
+\[
+w_m\propto m^{-1-\alpha},
+\]
+with $\alpha\in [1,2]$. We will here follow the analysis made by Patriarca {\em et al} \cite{patriarca2004}. 
+
+Here we will study numerically the relation between the microdynamical 
+relations among financial 
+agents and the  resulting macroscopic money distribution.
+
+We assume we have $N$ agents that exchange money in pairs $(i,j)$. We assume also that all agents
+start with the same amount of money $m_0 > 0$. At a given 'time step', we choose randomly a pair
+of agents $(i,j)$ and let a transaction take place. This means that agent $i$'s money $m_i$ changes
+to $m_i'$ and similarly we have $m_j\rightarrow m_j'$. 
+Money is conserved during a transaction, meaning that
+\begin{equation}
+m_i+m_j=m_i'+m_j'.
+\label{eq:conserve}
+\end{equation}
+The change is done via a random reassignement (a random number) $\epsilon$, meaning that
+\[
+m_i' = \epsilon(m_i+m_j),
+\]
+leading to
+\[
+m_j'= (1-\epsilon)(m_i+m_j).
+\]
+The number $\epsilon$ is extracted from a uniform distribution. 
+In this simple model, no agents are left with a debt, that is $m\ge 0$. 
+Due to the conservation law above, one can show that the system relaxes toward an equilibrium
+state given by a Gibbs distribution
+\[
+   w_m=\beta \exp{(-\beta m)},
+\]
+with 
+\[
+\beta = \frac{1}{\langle m\rangle},
+\]
+and $\langle m\rangle=\sum_i m_i/N=m_0$, the average money.
+It means that after equilibrium has been reached that the majority of agents is left with a small 
+number of money, while the number of richest agents, those with $m$ larger than a specific value $m'$,
+exponentially decreases with $m'$. 
+
+We assume that we have $N=500$ agents.   In each simulation, we need a sufficiently large number of transactions, say $10^7$. Our aim is find the final equilibrium distribution $w_m$. In order to do that we would need
+several runs of the above simulations, at least $10^3-10^4$ runs (experiments).  
+
+
+\begin{enumerate}
+\item[a)] Your task is to first set up an algorithm which simulates the above transactions with an initial
+amount $m_0$.
+The challenge here is to figure out a Monte Carlo  simulation  based on the
+above equations.  
+You will in particular need to make an algorithm which sets up a histogram as function of $m$.
+This histogram contains the number of times a value $m$ is registered and represents
+$w_m\Delta m$. You will need to set up a value for the interval $\Delta m$  (typically $0.01-0.05$).
+That means you need to account for the number of times you register an income in the interval
+$m,m+\Delta m$. The number of times you register this income, represents the value that enters the histogram.
+You will also need to find a criterion for when the equilibrium situation has been reached.
+
+\item[b)] Make thereafter a plot of  $\log{(w_m)}$ as function of $m$
+and see if you get a straight line. 
+Comment the result.
+
+\item[c)] We can then change our model to allow for a saving criterion, meaning that the agents save
+a fraction $\lambda$ of the money they have before the transaction is made. The final distribution will then no longer be given by Gibbs distribution. It could also include a taxation on financial transactions.
+
+The conservation law of Eq.~(\ref{eq:conserve}) holds, but the money to be shared in a transaction between
+agent $i$ and agent $j$ is now $(1-\lambda)(m_i+m_j)$. This means that we have 
+\[
+m_i' = \lambda m_i+\epsilon(1-\lambda)(m_i+m_j),
+\]
+and 
+\[
+m_j' = \lambda m_j+(1-\epsilon)(1-\lambda)(m_i+m_j),
+\]
+which can be written as 
+\[
+m_i'=m_i+\delta m
+\]
+and 
+\[
+m_j'=m_j-\delta m,
+\]
+with 
+\[
+\delta m=(1-\lambda)(\epsilon m_j-(1-\epsilon)m_i),
+\]
+showing how money is conserved during a transaction.
+Select values of $\lambda =0.25,0.5$ and $\lambda=0.9$ and try to extract the corresponding
+equilibrium distributions and compare these with the Gibbs distribution. Comment your results.
+If you have time, see if you can extract a parametrization of the above curves (see 
+Patriarca {\em et al} \cite{patriarca2004}) 
+\end{enumerate}
+
+\end{prob}
+
+
+
