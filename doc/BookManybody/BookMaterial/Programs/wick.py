@@ -13,11 +13,18 @@ operators can be evaluated in two entirely different ways:
 
   2. by Wick's theorem, as a signed sum over all ways of pairing the operators
      into contractions -- one term per perfect matching, and only the fully
-     contracted terms contribute.
+     contracted terms contribute;
 
-This program implements both and checks that they agree.  That check *is* the
-content of the theorem, and it is worth running once before trusting any
-hand calculation.
+  3. by Wick's generalised theorem, when the string comes to us as a product
+     of groups that are separately normal-ordered -- the bra, the operator
+     and the ket -- in which case only the contractions joining two different
+     groups survive.
+
+This program implements all three and checks that they agree.  That check
+*is* the content of the theorems, and it is worth running once before
+trusting any hand calculation.  The generalised theorem is checked twice
+over: under a vacuum expectation value, and as an identity between operators
+represented as matrices in a small Fock space.
 
 Operators are written as (index, dagger) pairs, so ('p', True) is
 a_p^dagger and ('p', False) is a_p.  Indices are symbolic: the result of a
@@ -234,6 +241,218 @@ def double_factorial(m):
 
 
 # ---------------------------------------------------------------------------
+#  Route 3: Wick's generalised theorem
+# ---------------------------------------------------------------------------
+#  The generalised theorem applies to a product of groups, each of which is
+#  already normal-ordered,
+#
+#      N[A_1 A_2 ...] N[B_1 B_2 ...] N[C_1 C_2 ...]
+#          = N[A_1 A_2 ... B_1 B_2 ... C_1 C_2 ...]
+#            + sum over all contractions BETWEEN DIFFERENT GROUPS.
+#
+#  Contractions inside a group are absent because a group in normal-ordered
+#  form has all its creation operators on the left, and a non-vanishing
+#  contraction needs an annihilation operator to the left of a creation
+#  operator.  The functions below check that statement in two ways: as an
+#  identity between vacuum expectation values, and -- more stringently -- as
+#  an identity between operators, represented as matrices in a finite Fock
+#  space.
+# ---------------------------------------------------------------------------
+def normal_order(ops):
+    """Bring a string into normal-ordered form.
+
+    Returns (sign, reordered), where reordered has all creation operators
+    first, the relative order inside each class being preserved, and sign is
+    the (-1)^kappa of the definition of the normal-ordered product: one
+    factor of -1 for every interchange of neighbouring fermion operators
+    needed to get there.
+    """
+    ops = tuple(ops)
+    creators = [o for o in ops if o[1]]
+    annihilators = [o for o in ops if not o[1]]
+    swaps = sum(1 for i, o in enumerate(ops) if not o[1]
+                for p in ops[i + 1:] if p[1])
+    return (-1) ** swaps, tuple(creators + annihilators)
+
+
+def is_normal_ordered(ops):
+    """True if no annihilation operator stands to the left of a creator."""
+    seen_annihilator = False
+    for _, dagger in ops:
+        if dagger and seen_annihilator:
+            return False
+        if not dagger:
+            seen_annihilator = True
+    return True
+
+
+def _inversions(sequence):
+    """Number of out-of-order pairs, i.e. the parity of a permutation."""
+    return sum(1 for i, x in enumerate(sequence)
+               for y in sequence[i + 1:] if y < x)
+
+
+def contraction_sign(pairs, n_ops):
+    """Sign of a (possibly partial) set of contractions.
+
+    The rule is the one of the text: bring the contracted operators next to
+    each other, leaving the uncontracted ones in their original relative
+    order, and count the interchanges.  For a fully contracted term this
+    reduces to (-1)^(number of crossings), matching_sign() above.
+    """
+    used = {i for pair in pairs for i in pair}
+    order = [i for pair in pairs for i in pair]
+    order += [k for k in range(n_ops) if k not in used]
+    return (-1) ** _inversions(order)
+
+
+def contraction_sets(n_ops, allowed=None):
+    """All sets of disjoint contractions, from the empty set upwards.
+
+    ``allowed(i, j)`` filters the admissible pairs; with allowed=None every
+    pair i < j is admissible, which is ordinary Wick.  Passing a filter that
+    rejects pairs inside the same group gives the generalised theorem.
+    """
+    def build(decided):
+        free = [k for k in range(n_ops) if k not in decided]
+        if not free:
+            yield []
+            return
+        first, rest = free[0], free[1:]
+        for tail in build(decided | {first}):       # first stays uncontracted
+            yield tail
+        for partner in rest:                        # or it is contracted
+            if allowed and not allowed(first, partner):
+                continue
+            for tail in build(decided | {first, partner}):
+                yield [(first, partner)] + tail
+    return build(frozenset())
+
+
+def _flatten(groups):
+    """Concatenate the groups and record which group each operator came from."""
+    ops, labels = [], []
+    for number, group in enumerate(groups):
+        for operator in group:
+            ops.append(operator)
+            labels.append(number)
+    return tuple(ops), labels
+
+
+def generalised_wick_vev(groups):
+    """<0| N[A...] N[B...] ... |0> from the generalised theorem.
+
+    Only the fully contracted terms survive the vacuum expectation value, and
+    every contraction line must join two different groups.
+    """
+    ops, labels = _flatten(groups)
+    n_ops = len(ops)
+    total = DeltaSum.zero()
+    for pairs in contraction_sets(n_ops,
+                                  lambda i, j: labels[i] != labels[j]):
+        if 2 * len(pairs) != n_ops:            # not fully contracted
+            continue
+        value = DeltaSum.one()
+        for i, j in pairs:
+            value = value * contraction(ops[i], ops[j])
+            if not value:
+                break
+        if value:
+            total = total + value * contraction_sign(pairs, n_ops)
+    return total
+
+
+def internal_contractions(group):
+    """The contractions of a group with itself, all of which should vanish."""
+    return [contraction(group[i], group[j])
+            for i in range(len(group)) for j in range(i + 1, len(group))]
+
+
+def count_matchings(sizes):
+    """(all perfect matchings, those with no line inside a group)."""
+    labels = [number for number, size in enumerate(sizes)
+              for _ in range(size)]
+    n_ops = len(labels)
+    every = inter = 0
+    for pairs in perfect_matchings(list(range(n_ops))):
+        every += 1
+        if all(labels[i] != labels[j] for i, j in pairs):
+            inter += 1
+    return every, inter
+
+
+# ---------------------------------------------------------------------------
+#  A finite Fock space, so that the theorem can be checked as an operator
+#  identity and not only under a vacuum expectation value
+# ---------------------------------------------------------------------------
+class FockSpace:
+    """Fermion operators as matrices on the 2^n states of a Fock space.
+
+    Basis states are bit patterns, orbital p occupying bit p, and the
+    Jordan-Wigner sign (-1)^(number of occupied orbitals below p) keeps the
+    anticommutation relations exact.
+    """
+
+    def __init__(self, n_orbitals):
+        self.n_orbitals = n_orbitals
+        self.dim = 1 << n_orbitals
+
+    def annihilate(self, p):
+        import numpy as np
+        matrix = np.zeros((self.dim, self.dim))
+        for state in range(self.dim):
+            if state & (1 << p):
+                sign = (-1) ** bin(state & ((1 << p) - 1)).count("1")
+                matrix[state ^ (1 << p), state] = sign
+        return matrix
+
+    def create(self, p):
+        return self.annihilate(p).T
+
+    def operator(self, op):
+        index, dagger = op
+        return self.create(index) if dagger else self.annihilate(index)
+
+    def string(self, ops):
+        import numpy as np
+        matrix = np.eye(self.dim)
+        for op in ops:
+            matrix = matrix @ self.operator(op)
+        return matrix
+
+    def normal_product(self, ops):
+        """N[ops] as a matrix: reorder, and carry the sign along."""
+        sign, reordered = normal_order(ops)
+        return sign * self.string(reordered)
+
+    def check_generalised(self, groups):
+        """max |LHS - RHS| of the generalised theorem, as an operator identity."""
+        import numpy as np
+        lhs = np.eye(self.dim)
+        for group in groups:
+            lhs = lhs @ self.normal_product(group)
+
+        ops, labels = _flatten(groups)
+        n_ops = len(ops)
+        rhs = np.zeros((self.dim, self.dim))
+        for pairs in contraction_sets(n_ops,
+                                      lambda i, j: labels[i] != labels[j]):
+            value = 1
+            for i, j in pairs:
+                value *= contraction(ops[i], ops[j]).substitute({})
+                if value == 0:
+                    break
+            if value == 0:
+                continue
+            used = {i for pair in pairs for i in pair}
+            rest = [ops[k] for k in range(n_ops) if k not in used]
+            remainder = (np.eye(self.dim) if not rest
+                         else self.normal_product(rest))
+            rhs = rhs + contraction_sign(pairs, n_ops) * value * remainder
+        return float(np.abs(lhs - rhs).max())
+
+
+# ---------------------------------------------------------------------------
 #  Convenience constructors
 # ---------------------------------------------------------------------------
 def c(index):
@@ -369,6 +588,77 @@ def _demo():
     print("be written down directly.  The anticommutation recursion offers no")
     print("such structure -- which is why it is unusable beyond four or six")
     print("operators by hand.")
+
+    print()
+    print("=" * 74)
+    print("8. Wick's generalised theorem")
+    print("=" * 74)
+    one_body = [[a("j"), a("i")], [c("p"), a("q")], [c("k"), c("l")]]
+    two_body = [[a("j"), a("i")], [c("p"), c("q"), a("s"), a("r")],
+                [c("k"), c("l")]]
+
+    print("The groups are the bra, the operator and the ket, each of them")
+    print("already normal-ordered.  Their internal contractions therefore")
+    print("vanish one by one:")
+    for name, groups in (("one-body", one_body), ("two-body", two_body)):
+        ordered = all(is_normal_ordered(g) for g in groups)
+        internal = [x for g in groups for x in internal_contractions(g) if x]
+        print(f"  {name}: groups normal-ordered: {ordered}, "
+              f"non-vanishing internal contractions: {len(internal)}")
+
+    print()
+    print("Only lines joining different groups are left, and there are far")
+    print("fewer of them than of pairings in general:")
+    print(f"{'groups':>16s} {'M':>4s} {'(M-1)!! matchings':>19s} "
+          f"{'between groups':>16s}")
+    for name, groups in (("one-body", one_body), ("two-body", two_body)):
+        sizes = [len(g) for g in groups]
+        every, inter = count_matchings(sizes)
+        label = "+".join(str(s) for s in sizes)
+        print(f"{label:>16s} {sum(sizes):4d} {every:19d} {inter:16d}")
+
+    print()
+    print("and the three routes agree on the matrix elements themselves:")
+    for name, groups in (("one-body", one_body), ("two-body", two_body)):
+        ops, _ = _flatten(groups)
+        brute = vacuum_expectation_bruteforce(ops)
+        full = vacuum_expectation_wick(ops)
+        general = generalised_wick_vev(groups)
+        print(f"  {name}: anticommutation == Wick: {brute == full}, "
+              f"Wick == generalised: {full == general}")
+        print(f"     {general}")
+
+    print()
+    print("=" * 74)
+    print("9. The generalised theorem as an operator identity")
+    print("=" * 74)
+    print("The checks above hold under a vacuum expectation value.  The")
+    print("theorem is stronger than that: it is an identity between")
+    print("operators.  We verify it by representing the operators as")
+    print("matrices in a small Fock space and comparing")
+    print("  N[A...] N[B...] ...   against   N[A...B...] + all cross terms.")
+    print()
+    space = FockSpace(4)
+    cases = [
+        ("N[a_1 a_0] N[a_0^+ a_2] N[a_2^+ a_3^+]",
+         [[a(1), a(0)], [c(0), a(2)], [c(2), c(3)]]),
+        ("N[a_1 a_0] N[a_0^+ a_1^+ a_3 a_2] N[a_2^+ a_3^+]",
+         [[a(1), a(0)], [c(0), c(1), a(3), a(2)], [c(2), c(3)]]),
+        ("N[a_0^+ a_1] N[a_1^+ a_0]",
+         [[c(0), a(1)], [c(1), a(0)]]),
+        ("N[a_0^+ a_1^+ a_1 a_0] N[a_2^+ a_3] N[a_3^+ a_2]",
+         [[c(0), c(1), a(1), a(0)], [c(2), a(3)], [c(3), a(2)]]),
+    ]
+    for label, groups in cases:
+        print(f"  max |LHS - RHS| = {space.check_generalised(groups):.1e}"
+              f"   for {label}")
+    print()
+    print("Ordinary Wick's theorem is the special case in which every group")
+    print("holds a single operator, so that every contraction is allowed:")
+    single = [a(0), c(1), a(2), c(0), c(2), a(1)]
+    residual = space.check_generalised([[op] for op in single])
+    print(f"  max |LHS - RHS| = {residual:.1e}   for a string of "
+          f"{len(single)} operators")
 
 
 if __name__ == "__main__":

@@ -577,6 +577,7 @@ as
 This is the form we will use in the rest of these lectures, assuming that we work with anti-symmetrized two-body matrix elements.
 
 \section{Particle-hole formalism}
+\label{sec:particlehole}
 
 The index conventions used here -- $i,j,k,l$ for hole states below the Fermi
 level, $a,b,c,d$ for particle states above it, and $p,q,r,s$ for either -- were
@@ -1369,9 +1370,186 @@ absent, precisely because that group is already normal-ordered and its
 internal contractions vanish by
 Eqs.~(\ref{eq:3-contraction2})--(\ref{eq:3-contraction4}).
 
-This is a substantial saving.  In the examples of the next section the naive
-count of pairings runs into the hundreds, while the number of contractions
-between different groups is a handful.
+This is a substantial saving, and it is worth putting a number on it before we
+prove anything.  The one-body matrix element of the next section has three
+groups of two operators each.  Its six operators admit $5!!=15$ pairings, of
+which only $8$ join two different groups.  The two-body matrix element has
+groups of two, four and two operators; its eight operators admit $7!!=105$
+pairings, of which only $24$ are between different groups.  The saving grows
+quickly with the size of the groups: for three groups of four operators the
+counts are $10\,395$ and $1728$.  All three numbers are produced by
+\texttt{wick.py}.
+
+%----------------------------------------------------------------------
+\section{Proof of the generalised theorem}
+\label{sec:wickgeneralproof}
+
+\index{Wick's theorem!proof of the generalised theorem}
+The proof needs no machinery beyond what we already have.  It rests on one
+observation about normal-ordered groups, and on the appending
+lemma~(\ref{eq:3-lemma}) that carried the proof of the ordinary theorem in
+Section~\ref{sec:wickproof}.
+
+Throughout we take each group to be \emph{written} in normal-ordered form,
+that is with its creation operators standing to the left of its annihilation
+operators.  This costs nothing: by the definition~(\ref{eq:3-normalorder}) any
+group may be brought into that arrangement at the price of a sign
+$(-1)^{\kappa}$, and since $N[\cdots]$ is unchanged by the same reordering the
+factor multiplies both sides of Eq.~(\ref{eq:3-wickgeneral}) and cancels.
+With the groups written this way, $N[A_1A_2\cdots]$ \emph{is} the product
+$A_1A_2\cdots$, and we may drop the brackets whenever it is convenient.
+
+\paragraph{Step 0: a group has no internal contractions.}
+Let $A_1A_2\cdots A_n$ be normal-ordered and pick two of its operators, $A_k$
+and $A_l$ with $k<l$.  Their contraction vanishes.  There are only two cases.
+If $A_k$ is a creation operator, then $A_l$ is either a creation operator,
+and the contraction vanishes by Eq.~(\ref{eq:3-contraction4}), or an
+annihilation operator standing to its right, and it vanishes by
+Eq.~(\ref{eq:3-contraction3}).  If instead $A_k$ is an annihilation operator,
+then everything to its right is an annihilation operator too, since the group
+is normal-ordered, and the contraction vanishes by
+Eq.~(\ref{eq:3-contraction2}).  Hence
+\begin{equation}
+  \wstrut
+  \wmark{g1}{A_k}\;\cdots\;\wmark{g2}{A_l}\wline[1.6ex]{g1}{g2}
+   = 0
+  \qquad\text{for any two operators of the same normal-ordered group.}
+  \label{eq:3-nointernal}
+\end{equation}
+This is the whole reason the internal contractions may be omitted from
+Eq.~(\ref{eq:3-wickgeneral}): they are not thrown away, they are zero.  It is
+also the reason the arrangement matters.  Written in the opposite order the
+pair $a_p^{\dagger}a_q$ becomes $a_q a_p^{\dagger}$, whose contraction is
+$\delta_{pq}$ and not zero at all, and the bookkeeping would have to be
+redone.
+
+\paragraph{Step 1: two groups.}
+We first prove
+\begin{equation}
+  N\left[A_1\cdots A_n\right]\,N\left[B_1\cdots B_m\right]
+   = N\left[A_1\cdots A_n B_1\cdots B_m\right]
+   + \sum_{A\text{--}B} N\left[A_1\cdots A_n B_1\cdots B_m\right] ,
+  \label{eq:3-wicktwogroups}
+\end{equation}
+where $\sum_{A\text{--}B}$ runs over all sets of disjoint contractions, each
+line joining an operator of the first group to an operator of the second.
+The proof is by induction on $m$, the number of operators in the second group.
+
+For $m=0$ there is nothing to prove.  For $m=1$ the statement is the appending
+lemma~(\ref{eq:3-lemma}) verbatim, with $\Omega=B_1$: it produces
+$N[A_1\cdots A_nB_1]$ together with the sum of the single contractions of
+$B_1$ with each of $A_1,\dots,A_n$, and every one of those lines joins the two
+groups.
+
+Assume now that Eq.~(\ref{eq:3-wicktwogroups}) holds for a second group of $m$
+operators, and append one more,
+\begin{equation}
+  N\left[A_1\cdots A_n\right]B_1\cdots B_m B_{m+1}
+   = \Big(N\left[A_1\cdots A_nB_1\cdots B_m\right]
+     + \sum_{A\text{--}B} N\left[\cdots\right]\Big) B_{m+1} .
+  \label{eq:3-twogroupstep}
+\end{equation}
+Every term on the right is a number -- the product of the contractions it
+carries -- multiplying a single normal-ordered product of the operators that
+are still uncontracted.  The lemma~(\ref{eq:3-lemma}) therefore applies to
+each of them separately, with $\Omega=B_{m+1}$, and each application yields
+two kinds of contribution:
+\begin{enumerate}
+\item[(a)] the term in which $B_{m+1}$ is absorbed into the normal-ordered
+  product, and
+\item[(b)] the contractions of $B_{m+1}$ with the uncontracted operators
+  inside the bracket.
+\end{enumerate}
+The partners available in (b) are of two sorts.  A partner taken from the
+first group gives a legitimate $A$--$B$ line.  A partner taken from
+$B_1,\dots,B_m$ gives a line internal to the second group, and it vanishes by
+Step~0, since $B_1\cdots B_{m+1}$ is normal-ordered and $B_{m+1}$ stands to
+the right of all of them.  Only the inter-group lines survive.
+
+Collecting the survivors, the term (a) of the leading piece is
+$N[A_1\cdots A_nB_1\cdots B_{m+1}]$, and every set of $A$--$B$ contractions of
+the $n+m+1$ operators appears exactly once: either it leaves $B_{m+1}$
+uncontracted, in which case it comes from case (a) applied to a contracted
+term of the induction hypothesis, or it contracts $B_{m+1}$ with some $A_k$,
+in which case it comes from case (b).  Each carries the sign
+(\ref{eq:3-crossingsign}) of the crossings of its lines, because the lemma
+appends $\Omega$ from the right and the sign it generates is precisely the
+number of operators the new line has to cross.  This is
+Eq.~(\ref{eq:3-wicktwogroups}) with $m+1$ in place of $m$, and the induction
+is complete.
+
+\paragraph{Step 2: any number of groups.}
+The general case now follows by a second induction, this time on the number of
+groups.  One group is trivial and two groups are Step~1.  Suppose
+Eq.~(\ref{eq:3-wickgeneral}) holds for $g$ groups, and multiply it from the
+right by one further normal-ordered group $N[H_1\cdots H_k]$.  Each term on
+the left-hand side is again a number times a single normal-ordered product, so
+Step~1 applies to each of them with $A$ standing for what is left of the first
+$g$ groups and $B$ for the new one.  It produces the uncontracted term and all
+contractions between $H$ and the remaining operators of the earlier groups --
+all of them inter-group lines -- and no contractions internal to $H$, by
+Step~1.
+
+Every admissible set of contractions of the $g+1$ groups is generated exactly
+once, because such a set splits uniquely into the lines that touch $H$ and
+those that do not: the latter are generated by the induction hypothesis at
+stage $g$, the former by the application of Step~1.  Hence
+Eq.~(\ref{eq:3-wickgeneral}) holds for $g+1$ groups. \hfill$\square$
+
+\paragraph{The corollary we shall actually use.}
+Taking the vacuum expectation value of Eq.~(\ref{eq:3-wickgeneral}) and using
+Eq.~(\ref{eq:3-normalvanishes}) once more, every term that still contains an
+uncontracted operator drops out and we are left with
+\begin{equation}
+  \boxed{\;
+  \langle 0\vert\,N\left[A_1A_2\cdots\right]
+   N\left[B_1B_2\cdots\right]N\left[C_1C_2\cdots\right]\,\vert 0\rangle
+   = \sum_{\substack{\text{fully contracted,}\\ \text{no line inside a group}}}
+     (-1)^{\nu}\,\prod \text{contractions} \;}
+  \label{eq:3-wickgeneralvev}
+\end{equation}
+with $\nu$ the number of crossings as in Eq.~(\ref{eq:3-crossingsign}).  This
+is the form in which the theorem is used in the next section and,
+relentlessly, in Chapters~\ref{chap:mbpt} and~\ref{chap:cctheory}.
+
+\paragraph{A remark on the Fermi vacuum.}
+Nothing in the argument used the fact that $\vert 0\rangle$ is the true
+vacuum.  Replacing $\vert 0\rangle$ by the reference determinant $\vert
+c\rangle$ of Section~\ref{sec:particlehole} and the operators $a_p$, $a_p^{\dagger}$
+by the quasiparticle operators $b_p$, $b_p^{\dagger}$ of
+Eq.~(\ref{eq:2-50a}), the definitions of normal ordering and of a contraction
+carry over word for word, and so do Steps~0, 1 and~2.  The only change is in
+the elementary contractions themselves: with respect to $\vert c\rangle$ the
+surviving contractions are
+\begin{equation}
+  \wstrut
+  \wmark{g3}{a_a}\,\wmark{g4}{a_b^{\dagger}}\wline[1.6ex]{g3}{g4}
+   = \delta_{ab}\quad (a,b>F),
+  \qquad
+  \wmark{g5}{a_i^{\dagger}}\,\wmark{g6}{a_j}\wline[1.6ex]{g5}{g6}
+   = \delta_{ij}\quad (i,j\le F),
+  \label{eq:3-fermicontractions}
+\end{equation}
+the second of which has no counterpart above: a hole state below the Fermi
+level is occupied in $\vert c\rangle$, so removing and replacing a particle
+there gives unity.  This particle-hole form of the generalised theorem is the
+one that generates the Hartree-Fock equations of Chapter~\ref{chap:hartrefock},
+the perturbation expansion of Chapter~\ref{chap:mbpt} and the coupled-cluster
+amplitude equations of Chapter~\ref{chap:cctheory}.
+
+\paragraph{Numerical verification.}
+The program \texttt{wick.py} checks all of this.  It confirms that the
+internal contractions of a normal-ordered group vanish, it counts the pairings
+quoted above, and it evaluates the one- and two-body matrix elements of the
+next section along three independent routes -- brute-force anticommutation,
+the ordinary theorem, and the generalised theorem -- and finds them identical.
+It then goes one step further.  Equation~(\ref{eq:3-wickgeneral}) is an
+identity between \emph{operators}, not merely between numbers, and the program
+verifies it as such by representing the creation and annihilation operators as
+matrices on the $2^n$ states of a small Fock space and comparing the two sides
+entry by entry.  The residual is zero to machine precision, for products of
+two, three and four groups, and for the ordinary theorem recovered as the
+special case in which every group holds a single operator.
 
 %----------------------------------------------------------------------
 \section{Applications: matrix elements between two-particle states}
