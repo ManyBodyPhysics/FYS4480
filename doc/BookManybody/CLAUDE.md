@@ -15,11 +15,13 @@ chapter2.tex       From linear algebra to many-body physics: Slater
                    determinants, the energy functional, Monte Carlo updates
 chapter3.tex       Second quantization, the particle-hole formalism and
                    Wick's theorem, with proofs of both the ordinary and the
-                   generalised theorem
+                   generalised theorem, the bit representation, the
+                   Jordan-Wigner transformation, and an exercise section
 chapter4.tex       Physical systems and models: Lipkin, pairing, pairing plus
                    a particle-hole term (the model of chapter 7, with a TikZ
                    level scheme showing 1p-1h and 2p-2h excitations),
-                   Fermi-Hubbard, Heisenberg, Calogero-Sutherland
+                   Fermi-Hubbard, Heisenberg, Calogero-Sutherland, and the
+                   qubit encodings of all of them (sec:qubitmodels)
 chapter5.tex       Full configuration interaction: the CI expansion, the
                    eigenvalue problem, the exponential wall, truncations
 chapter6.tex       Mean-field approaches: Hartree-Fock, Thouless' theorem,
@@ -149,7 +151,9 @@ form.
 markdown front matter (`intro.md`, `teachers.md`, `textbooks.md`) and chapter
 notebooks. `linearalgebra.ipynb` is the companion to `chapter1.tex` and
 `manybodybasics.ipynb` to `chapter2.tex`, `wicktheorem.ipynb` to the Wick
-sections of `chapter3.tex`, and `models.ipynb` plus `Hubbard.ipynb` to
+sections of `chapter3.tex`, `jordanwigner.ipynb` to the last section of
+`chapter3.tex` and `sec:qubitmodels` of `chapter4.tex`,
+and `models.ipynb` plus `Hubbard.ipynb` to
 `chapter4.tex`, `fullci.ipynb` to `chapter5.tex`, `hartreefock.ipynb` to
 `chapter6.tex`, `tdarpa.ipynb` to `chapter7.tex`, `dft.ipynb` to
 `chapter8.tex`, `mbptheory.ipynb` to `chapter9.tex` and
@@ -183,6 +187,7 @@ written for chapters 1 and 2 are:
 | `slaterdeterminant.py` | 2 | Slater determinants, energy functional, minimal SCF |
 | `slater_update.py` | 2 | Ratio $R$, Sherman-Morrison updates, nodal-surface stability |
 | `wick.py` | 3 | Vacuum expectation values by anticommutation, by Wick contractions and by the generalised theorem; the generalised theorem also checked as an operator identity in a small Fock space |
+| `jordanwigner.py` | 3, 4 | Jordan-Wigner operators as matrices, exact Pauli decomposition by traces, the anticommutator check, the hopping/pair/two-body identities, and the pairing and pairing+p-h Hamiltonians in both the 2L-qubit and the compact L-qubit encodings |
 | `models.py` | 4 | Lipkin, pairing, pairing+particle-hole, Hubbard, Heisenberg and Calogero: matrices, spectra, exact limits, Jordan-Wigner check |
 | `fci.py` | 5 | Determinants as bit strings, pairing and Hubbard FCI, truncations, size consistency, Hilbert-space growth |
 | `hartreefock.py` | 6 | SCF with the density matrix, Thouless rotations, the stability matrix, BCH and Trotter errors, the electron gas |

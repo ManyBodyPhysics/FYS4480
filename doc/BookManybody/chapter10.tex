@@ -1262,7 +1262,10 @@ principle promises.
 A quantum computer cannot apply $e^{\hat{\sigma}}$ in one step.  What it can
 do is apply the exponential of each generator separately, since each
 $e^{t_k(\hat{A}_k-\hat{A}_k^{\dagger})}$ maps onto a short, known gate
-sequence after a Jordan-Wigner transformation.  The two are not the same,
+sequence after the Jordan-Wigner transformation of
+Section~\ref{sec:jordanwigner}: the generator becomes a sum of Pauli strings
+by Eq.~(\ref{eq:3-jwtwobody}), and the exponential of each string is a
+standard rotation circuit.  The two are not the same,
 because the generators do not commute, and the difference is exactly the
 Trotter splitting of Section~\ref{sec:trotter}:
 \begin{equation}
@@ -1369,10 +1372,17 @@ Trotterised into a sequence of gates -- an energy evaluated on it, and a
 classical optimiser adjusting $\bm{t}$.  On real hardware the second step is
 replaced by repeated measurement of the qubit register in bases chosen so
 that the measured averages reconstruct
-$\bracket{\Psi}{\hat{H}}{\Psi}$, which is where the Pauli decomposition of
-Section~\ref{sec:pauli} and the Jordan-Wigner mapping of
-Section~\ref{sec:qcgates} enter.  Nothing else changes: the ansatz, the
-variational principle and the optimisation loop are the ones in this section.
+$\bracket{\Psi}{\hat{H}}{\Psi}$, which is where the Pauli matrices of
+Section~\ref{sec:pauli}, the gate model of Section~\ref{sec:qcgates} and the
+Jordan-Wigner mapping of Section~\ref{sec:jordanwigner} enter.  The
+Hamiltonian is written as the weighted sum of Pauli
+strings~(\ref{eq:3-paulisum}), each string is measured separately, and the
+results are added with their weights: the number of strings is the number of
+measurements.  For the pairing model used throughout this chapter those
+counts are in Table~\ref{tab:4-paulicounts}, and the compact encoding
+(\ref{eq:4-jwpairingcompact}) makes the $L=2$ case a five-term measurement on
+two qubits.  Nothing else changes: the ansatz, the variational principle and
+the optimisation loop are the ones in this section.
 Chapter~\ref{chap:cctheory} therefore leads directly into the
 quantum-computing chapters, and the code written here is reused there.
 \end{notebox}

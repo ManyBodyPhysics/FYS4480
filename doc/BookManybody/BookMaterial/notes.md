@@ -20,7 +20,17 @@
      - Adiabatic switching
      - Derivation of expressions for different parts of Hamiltonians, 1b, 2b, 3b etc
      - Add material on how to use sympy alternatively develop exercises where one writes codes for using Wick's theorem
-     - Wigner-Jordan transformation and 2nd quantization
+     - Wigner-Jordan transformation and 2nd quantization -- done, chapter3.tex
+       sec:jordanwigner, from week8.tex: parity strings, n_p = (1-Z_p)/2, the
+       hopping and pair identities (which differ only in the sign of the YY
+       channel), the eight weight-four strings of a general two-body term, and
+       the O(M^4) string count.  Note: week8.tex's four-term formula for the
+       pair-transfer operator is incomplete -- the correct decomposition has
+       eight strings, and week8's "p != q" in the compact pairing Hamiltonian
+       should read "p < q".  Both corrected and verified in jordanwigner.py
+     - Chapter 3 now has an exercise section (six exercises with answers,
+       covering normal ordering, Wick, the generalised theorem, the Fermi
+       vacuum and Jordan-Wigner)
      - Baker-Campbell-Hausdorf (BCH) -- now developed in chapter6.tex
      - Suzuki-Trotter as an approximation to BCH -- now in chapter6.tex
 ### Physical systems and models  (chapter4.tex, done)
@@ -37,8 +47,15 @@
        table from both sides, Bethe ansatz J(1/4 - ln 2) with finite-size
        scaling to N = 16, Jordan-Wigner back to spinless fermions (spectra
        verified identical, not just ground states)
+     - The models on a quantum computer (sec:qubitmodels): the general
+       two-body Hamiltonian as Pauli strings, the pairing Hamiltonian in the
+       full 2L-qubit encoding and in the compact one-qubit-per-level
+       (quasispin) encoding, and the fact that the particle-hole term makes
+       the compact encoding illegal -- leakage out of the seniority-zero
+       space is exactly f/2.  String counts in tab:4-paulicounts
      - Still to add if wanted: two-dimensional Heisenberg / Hubbard, the
-       XXZ anisotropy, spin gap and the Haldane conjecture
+       XXZ anisotropy, spin gap and the Haldane conjecture; Bravyi-Kitaev and
+       parity encodings worked out for the pairing model
 
 ### FCI and diagrams and particle-hole representations
      - Basics of FCI

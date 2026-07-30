@@ -35,8 +35,10 @@ symmetries that follow from those restrictions are what make the models
 tractable, and identifying them is the first step in every case.  The one
 exception is the Heisenberg model of Section~\ref{sec:heisenberg}, which is
 written in spin operators rather than in fermion operators; the Jordan-Wigner
-transformation of Section~\ref{sec:pauli} maps it back onto
+transformation of Section~\ref{sec:jordanwigner} maps it back onto
 Eq.~(\ref{eq:4-generalH}), and the mapping is instructive in its own right.
+Section~\ref{sec:qubitmodels} runs the same transformation the other way and
+puts all the models of this chapter on a qubit register.
 
 Throughout, the detailed algebra is relegated to the exercises at the end of
 the chapter, where full solutions are given.  The main text states each model,
@@ -824,8 +826,10 @@ transformation writes a spin-$\tfrac12$ chain as spinless fermions,
   \hat{S}^z_j = \hat{n}_j - \tfrac12,
   \label{eq:4-jordanwigner}
 \end{equation}
-the string of $(1-2\hat{n}_k)=(-1)^{\hat{n}_k}$ supplying exactly the sign
-that the bit-counting algorithm of Section~\ref{sec:bitrep} computes.  On a
+read backwards.  The string of $(1-2\hat{n}_k)=(-1)^{\hat{n}_k}$ is the
+parity string~(\ref{eq:3-paritystring}) of
+Section~\ref{sec:jordanwigner}, supplying exactly the sign that the
+bit-counting algorithm of Section~\ref{sec:bitrep} computes.  On a
 chain with nearest-neighbour couplings the strings cancel between the two
 sites of a bond, and Eq.~(\ref{eq:4-heisenbergH}) becomes
 \begin{equation}
@@ -957,6 +961,230 @@ exactly the eigenvalue distribution of a random matrix ensemble, with
 $\beta=2\lambda$ the Dyson index.  For our purposes it is above all a
 benchmark with a known answer for arbitrary $N$ -- something none of the other
 models in this chapter can offer.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The models on a quantum computer}
+\label{sec:qubitmodels}
+
+\index{Jordan-Wigner transformation!applied to the models}
+\index{Pauli strings}
+The models of this chapter are small, exactly solvable and highly structured,
+which is precisely why they are the ones people run on quantum hardware.  This
+section carries them across.  The tool is the Jordan-Wigner transformation of
+Section~\ref{sec:jordanwigner}; the goal is the Pauli
+form~(\ref{eq:3-paulisum}), $\hat{H}=\sum_{\alpha}h_{\alpha}P_{\alpha}$; and
+the lesson -- which is the same lesson as the seniority -- is that what one
+gets out depends on how much symmetry one is willing to exploit before
+starting.
+
+\paragraph{The general two-body Hamiltonian.}
+Everything follows from four identities established in
+Section~\ref{sec:jordanwigner}.  A diagonal one-body term becomes a sum of
+$I$ and $Z$ by Eq.~(\ref{eq:3-jwnumber}); an off-diagonal one-body term
+becomes the two strings of Eq.~(\ref{eq:3-jwhopping}); a pair-creation term
+becomes the two strings of Eq.~(\ref{eq:3-jwpairtransfer}), differing from
+the previous case only in one sign; and a two-body term with four distinct
+indices becomes the eight weight-four strings of Eq.~(\ref{eq:3-jwtwobody}).
+The general Hamiltonian~(\ref{eq:4-generalH}) is a sum of such terms, so its
+qubit image is a sum of $\bigO(M^4)$ Pauli strings on $M$ qubits, one qubit per
+spin-orbital.  Table~\ref{tab:3-paulicount} gave the counts.
+
+That is the generic situation, and it is not encouraging: the parity strings
+reach across the whole register, so the longest Pauli strings have weight $M$.
+Every one of the models below does better than generic, and each does so for a
+reason we have already met.
+
+\paragraph{The pairing model, one qubit per spin-orbital.}
+Order the spin-orbitals so that the two partners of a level are adjacent,
+$(1+,1-,2+,2-,\dots)$, which keeps the parity strings inside a level empty.
+With $L$ levels this needs $2L$ qubits.  The one-body part and the diagonal
+$p=q$ part of the interaction are then products of $I$ and $Z$ alone,
+\begin{equation}
+  \hat{H}_0 + \hat{V}_{\mathrm{diag}}
+   = \sum_{p}\left\{
+     \xi(p-1)\left[\left(I-Z_{p+}\right)+\left(I-Z_{p-}\right)\right]
+     - \frac{g}{8}\left(I-Z_{p+}\right)\left(I-Z_{p-}\right)
+     \right\},
+  \label{eq:4-jwpairingdiag}
+\end{equation}
+using $\hat{n}_{p\sigma}=(I-Z_{p\sigma})/2$ twice and
+$\hat{P}^{+}_p\hat{P}^{-}_p=\hat{n}_{p+}\hat{n}_{p-}$.  The pair-transfer
+terms with $p\ne q$ are the eight-string operators of
+Eq.~(\ref{eq:3-jwtwobody}), one set for each pair of levels.  For $L=2$,
+$\xi=1$ and $g=1$ the whole Hamiltonian is fifteen Pauli strings on four
+qubits,
+\begin{align}
+  \hat{H}
+   =\;& \tfrac{3}{4}\,IIII
+     - \tfrac{3}{8}\left(IIZI+IIIZ\right)
+     + \tfrac18\left(ZIII+IZII\right)
+     - \tfrac18\left(ZZII+IIZZ\right)\nonumber\\
+     & - \tfrac{1}{16}\Big(
+         XXXX + XYXY + XYYX + YXXY + YXYX + YYYY\nonumber\\
+     & \qquad\qquad - XXYY - YYXX
+       \Big),
+  \label{eq:4-jwpairingfull}
+\end{align}
+where the qubits are ordered $(1+,1-,2+,2-)$ and $XYXY$ means
+$X_{1+}Y_{1-}X_{2+}Y_{2-}$.  Seven diagonal strings, eight of weight four.
+The program \texttt{jordanwigner.py} produces this decomposition by taking
+traces against all $4^4=256$ Pauli strings, so it is exact and not a
+hand calculation to be trusted.
+
+\paragraph{The pairing model, one qubit per level.}
+We can do much better, and the reason is the seniority.  In the
+seniority-zero space of Section~\ref{sec:pairingmodel} a level is either
+empty or holds a complete pair, so its state is one bit, not two.  Make that
+precise with the local quasispin operators
+\begin{equation}
+  \hat{S}^{+}_p = \hat{P}^{+}_p = a^{\dagger}_{p+}a^{\dagger}_{p-},
+  \qquad
+  \hat{S}^{-}_p = \hat{P}^{-}_p = a_{p-}a_{p+},
+  \qquad
+  \hat{S}^{z}_p = \tfrac12\left(\hat{N}_p-1\right),
+  \label{eq:4-quasispinpair}
+\end{equation}
+with $\hat{N}_p=\hat{n}_{p+}+\hat{n}_{p-}$ the number of particles in level
+$p$.  Exercise~\ref{ex:4-quasispin} shows from the anticommutation relations
+alone that these obey
+\begin{equation}
+  \left[\hat{S}^{z}_p,\hat{S}^{\pm}_p\right] = \pm\hat{S}^{\pm}_p,
+  \qquad
+  \left[\hat{S}^{+}_p,\hat{S}^{-}_p\right] = 2\hat{S}^{z}_p,
+  \qquad
+  \left[\hat{S}^{\alpha}_p,\hat{S}^{\beta}_q\right] = 0
+  \quad (p\ne q),
+  \label{eq:4-quasispinalgebra}
+\end{equation}
+so each level carries its own $su(2)$ and the levels are independent.  This is
+the same algebra that organised the Lipkin model in
+Section~\ref{sec:lipkin}, and it is why the two models look so alike on a
+quantum computer.
+
+A spin one-half is a qubit.  Identifying $\bket{0}_p$ with an empty level and
+$\bket{1}_p$ with an occupied one,
+\begin{equation}
+  \hat{S}^{+}_p = \frac{X_p-\imath Y_p}{2},
+  \qquad
+  \hat{S}^{-}_p = \frac{X_p+\imath Y_p}{2},
+  \qquad
+  \hat{S}^{z}_p = -\frac{Z_p}{2},
+  \qquad
+  \hat{N}_p = I-Z_p ,
+  \label{eq:4-pairqubit}
+\end{equation}
+and the pairing Hamiltonian~(\ref{eq:4-pairingpairform}) collapses to
+\begin{equation}
+  \boxed{\;
+  \hat{H}
+   = \sum_{p=1}^{L}\left[\xi(p-1)-\frac{g}{4}\right]
+       \left(I-Z_p\right)
+     - \frac{g}{4}\sum_{p<q}\left(X_pX_q+Y_pY_q\right) \;}
+  \label{eq:4-jwpairingcompact}
+\end{equation}
+on $L$ qubits.  The derivation is two lines: the $p=q$ part of the
+interaction is $-\tfrac{g}{2}\sum_p\hat{S}^{+}_p\hat{S}^{-}_p
+=-\tfrac{g}{4}\sum_p(I-Z_p)$, which merges with the one-body term, and the
+$p\ne q$ part uses
+\begin{equation}
+  \hat{S}^{+}_p\hat{S}^{-}_q + \hat{S}^{+}_q\hat{S}^{-}_p
+   = \frac12\left(X_pX_q+Y_pY_q\right).
+  \label{eq:4-xyexchange}
+\end{equation}
+For two levels with $\xi=1$ and $g=1$ this is five strings on two qubits,
+\begin{equation}
+  \hat{H}^{(L=2)}
+   = \tfrac12\,II + \tfrac14\,ZI - \tfrac34\,IZ
+     - \tfrac14\left(XX+YY\right),
+  \label{eq:4-jwpairingtwolevels}
+\end{equation}
+against fifteen strings on four qubits in
+Eq.~(\ref{eq:4-jwpairingfull}).  Equation~(\ref{eq:4-xyexchange}) also
+identifies what kind of spin model the pairing Hamiltonian is: an $XY$ model
+with infinite-range couplings, in an inhomogeneous field.  Compare
+Eq.~(\ref{eq:4-heisenbergH}) -- the $XY$ model is the Heisenberg model with
+the $\hat{S}^z\hat{S}^z$ term removed, so the pairing model and the
+antiferromagnet are close relatives once both are on qubits.
+
+The compact form is a \emph{restriction}, not an approximation.  Its spectrum
+is exactly the seniority-zero part of the full spectrum at fixed particle
+number, level by level, and \texttt{jordanwigner.py} verifies this for $L=2$
+and $L=3$ and every pair number.  Nothing is lost as long as the physics stays
+in the seniority-zero space.
+
+\paragraph{What the particle-hole term costs.}
+And that is exactly what the particle-hole term of
+Section~\ref{sec:pairingph} destroys.  Once $f\ne0$ the seniority-zero space
+is no longer invariant -- Figure~\ref{fig:4-levels}(c) and~(d) are the states
+that leak out -- so the one-qubit-per-level encoding is simply not available.
+One has to go back to $2L$ qubits.  The leakage is easy to quantify: the
+largest matrix element connecting the seniority-zero block to the rest is
+$f/2$, exactly the $1p$--$1h$ matrix element of
+Table~\ref{tab:pairingphcoupling}, and it is zero if and only if $f=0$.
+
+The bill is presented in Table~\ref{tab:4-paulicounts}.  Adding the
+particle-hole term to $L=3$ takes the Hamiltonian from $34$ Pauli strings of
+weight at most four to $118$ strings of weight up to six, on the same six
+qubits, while the compact encoding that would have needed three qubits and ten
+strings is no longer legitimate at all.  Every one of those numbers is a
+direct cost on hardware: strings are measurements in a variational
+calculation, and weights are entangling gates in a Trotter step.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{9pt}
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Hamiltonian} & \textbf{Encoding} & \textbf{Qubits} &
+\textbf{Pauli strings} & \textbf{Largest weight}\\
+\midrule
+Pairing, $L=2$        & one per level   & $2$ & $5$   & $2$\\
+Pairing, $L=2$        & one per orbital & $4$ & $15$  & $4$\\
+Pairing $+$ p-h, $L=2$ & one per orbital & $4$ & $27$  & $4$\\
+\midrule
+Pairing, $L=3$        & one per level   & $3$ & $10$  & $2$\\
+Pairing, $L=3$        & one per orbital & $6$ & $34$  & $4$\\
+Pairing $+$ p-h, $L=3$ & one per orbital & $6$ & $118$ & $6$\\
+\bottomrule
+\end{tabular}
+\caption{The cost of putting the pairing model on a quantum computer.  The
+compact encoding halves the number of qubits and caps the Pauli weight at two,
+but it requires the seniority to be conserved.  The particle-hole term breaks
+that conservation, so the middle option becomes the only option and the count
+grows sharply.  Produced by \texttt{jordanwigner.py}.}
+\label{tab:4-paulicounts}
+\end{table}
+
+\paragraph{The other models.}
+The same reading applies to the rest of the chapter.  The Lipkin model of
+Section~\ref{sec:lipkin} is already written in quasispin operators, so it maps
+onto a small number of qubits directly, and the compressed encoding that uses
+$\lceil\log_2(2J+1)\rceil$ qubits for one $J$ block is the analogue of the
+pair-qubit trick here.  The Hubbard model of Section~\ref{sec:hubbard} needs
+one qubit per site and spin, and its hopping terms are the two strings of
+Eq.~(\ref{eq:3-jwhopping}), which is why orbital ordering matters so much for
+lattice models: a hop between distant sites in the chosen ordering drags a
+long parity chain behind it.  The Heisenberg model of
+Section~\ref{sec:heisenberg} is the easiest of all, because
+Eq.~(\ref{eq:4-heisenbergH}) is \emph{already} a sum of Pauli strings of
+weight two -- there is no transformation to perform, and no parity strings to
+pay for.  That is the point made in passing in
+Section~\ref{sec:heisenberg}, now with the cost of the alternative in view.
+
+\begin{notebox}
+\textbf{Quantum-computing connection.} All of this is preparation for the
+variational quantum eigensolver.  There one prepares a parametrised state
+$\bket{\Psi(\theta)}$ on the register, measures
+$\bracket{\Psi(\theta)}{\hat{H}}{\Psi(\theta)}$ by measuring each Pauli string
+of the decomposition separately, and minimises over $\theta$ classically.  The
+unitary coupled-cluster ansatz of Section~\ref{sec:ucc} supplies the state,
+the Trotter expansion of Section~\ref{sec:trotter} turns it into a circuit,
+and Eq.~(\ref{eq:4-jwpairingcompact}) supplies the observable.  The pairing
+model with $L=2$ is then a genuine two-qubit calculation which can be run on
+hardware; with the particle-hole term switched on it is a four-qubit
+calculation, which is a rather different proposition.
 \end{notebox}
 
 %----------------------------------------------------------------------
@@ -1610,8 +1838,98 @@ Eq.~(\ref{eq:4-heisenbergfermions}).  The function
 directly and confirms that the two Hamiltonians have identical spectra, not
 merely identical ground-state energies, for open chains of four to ten sites.
 
-\subsection*{Exercise 7: numerical explorations}
-\addcontentsline{toc}{subsection}{Exercise 7: numerical explorations}
+\subsection*{Exercise 7: quasispin and the qubit encodings}
+\label{ex:4-quasispin}
+\addcontentsline{toc}{subsection}{Exercise 7: quasispin and qubit encodings}
+
+\begin{enumerate}
+  \item[a)] Derive the quasispin algebra~(\ref{eq:4-quasispinalgebra}) from
+  the fermion anticommutation relations alone.
+  \item[b)] Verify Eq.~(\ref{eq:4-xyexchange}) and deduce the compact
+  form~(\ref{eq:4-jwpairingcompact}).
+  \item[c)] Write out the one-level pairing Hamiltonian
+  $\hat{H}=\varepsilon_p\hat{N}_p-g\,\hat{n}_{p+}\hat{n}_{p-}$ in the full
+  two-qubit space and show that it is diagonal.
+  \item[d)] Explain, without computing anything, why the compact encoding
+  cannot be used once $f\ne0$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+For the first commutator use $[\hat{N}_p,a^{\dagger}_{p\sigma}]
+=a^{\dagger}_{p\sigma}$, which follows from
+$\{a_{p\sigma},a^{\dagger}_{p\sigma}\}=1$.  Applying it twice,
+$[\hat{N}_p,a^{\dagger}_{p+}a^{\dagger}_{p-}]=2a^{\dagger}_{p+}
+a^{\dagger}_{p-}$, so
+\[
+  \left[\hat{S}^{z}_p,\hat{S}^{+}_p\right]
+   = \tfrac12\left[\hat{N}_p,\hat{S}^{+}_p\right]
+   = \hat{S}^{+}_p ,
+\]
+and the Hermitian conjugate gives the $-$ case.  For the second, expand
+\[
+  \hat{S}^{+}_p\hat{S}^{-}_p
+   = a^{\dagger}_{p+}a^{\dagger}_{p-}a_{p-}a_{p+}
+   = a^{\dagger}_{p+}\hat{n}_{p-}a_{p+}
+   = \hat{n}_{p+}\hat{n}_{p-},
+\]
+and, using $a_{p+}a^{\dagger}_{p+}=1-\hat{n}_{p+}$ twice,
+\[
+  \hat{S}^{-}_p\hat{S}^{+}_p
+   = a_{p-}a_{p+}a^{\dagger}_{p+}a^{\dagger}_{p-}
+   = \left(1-\hat{n}_{p+}\right)\left(1-\hat{n}_{p-}\right).
+\]
+Subtracting,
+$[\hat{S}^{+}_p,\hat{S}^{-}_p]=\hat{n}_{p+}+\hat{n}_{p-}-1
+=\hat{N}_p-1=2\hat{S}^{z}_p$.  Operators belonging to different levels
+involve disjoint sets of orbitals and each contains an even number of fermion
+operators, so they commute.
+
+\paragraph{Answer to b).}
+With $\hat{S}^{\pm}=(X\mp\imath Y)/2$ on each qubit,
+\[
+  \hat{S}^{+}_p\hat{S}^{-}_q
+   = \tfrac14\left(X_pX_q+Y_pY_q
+     +\imath X_pY_q-\imath Y_pX_q\right),
+\]
+and adding the term with $p$ and $q$ interchanged cancels the imaginary
+parts, leaving $\tfrac12(X_pX_q+Y_pY_q)$.  Hence
+$-\tfrac{g}{2}\sum_{p\ne q}\hat{S}^{+}_p\hat{S}^{-}_q
+=-\tfrac{g}{4}\sum_{p<q}(X_pX_q+Y_pY_q)$.  The diagonal $p=q$ terms give
+$-\tfrac{g}{2}\sum_p\hat{n}_{p+}\hat{n}_{p-}
+=-\tfrac{g}{4}\sum_p(I-Z_p)$ in the paired subspace, and the one-body term
+contributes $\xi(p-1)$ per particle, that is $2\xi(p-1)$ per pair, or
+$\xi(p-1)(I-Z_p)$.  Collecting gives
+Eq.~(\ref{eq:4-jwpairingcompact}).
+
+\paragraph{Answer to c).}
+Both terms are built from number operators, and
+$\hat{n}_{p\sigma}=(I-Z_{p\sigma})/2$, so
+\[
+  \hat{H}
+   = \frac{\varepsilon_p}{2}\left(2I-Z_{p+}-Z_{p-}\right)
+     - \frac{g}{4}\left(I-Z_{p+}\right)\left(I-Z_{p-}\right)
+   = \left(\varepsilon_p-\frac{g}{4}\right)I
+     - \left(\frac{\varepsilon_p}{2}-\frac{g}{4}\right)
+       \left(Z_{p+}+Z_{p-}\right)
+     - \frac{g}{4}Z_{p+}Z_{p-} .
+\]
+Only $I$ and $Z$ appear, so the Hamiltonian is diagonal in the computational
+basis and its eigenvalues can be read off: $0$, $\varepsilon_p$,
+$\varepsilon_p$ and $2\varepsilon_p-g$ for zero, one and two particles.  A
+single pair level needs no quantum computer.
+
+\paragraph{Answer to d).}
+The compact encoding assigns one qubit to a whole level, which presupposes
+that the level is either empty or fully occupied -- that is, that the
+seniority is zero.  The particle-hole term produces the states of
+Figure~\ref{fig:4-levels}(c) and~(d), in which a level carries a single
+unpaired particle, and those states have no representative in the compact
+Hilbert space.  Restricting to it would not be an approximation but a
+projection onto a subspace the Hamiltonian does not leave invariant, and the
+resulting energies would be wrong even qualitatively.
+
+\subsection*{Exercise 8: numerical explorations}
+\addcontentsline{toc}{subsection}{Exercise 8: numerical explorations}
 
 \begin{enumerate}
   \item[a)] Using \texttt{models.py}, plot the Lipkin ground-state energy and
