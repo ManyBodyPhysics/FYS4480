@@ -1835,3 +1835,604 @@ S=|0111000000000000\rangle
 \]
 which results in $|0001000000000000\rangle$. Counting the number of $1-$bits gives the phase.  Here you need however an algorithm for bitcounting. Several efficient ones available. 
 
+
+%----------------------------------------------------------------------
+\section{From fermions to qubits: the Jordan-Wigner transformation}
+\label{sec:jordanwigner}
+
+\index{Jordan-Wigner transformation}
+The bit representation of the previous section was introduced as a
+programming device.  It is more than that.  A Slater determinant \emph{is} a
+string of bits, and a register of qubits is a string of bits that a quantum
+computer can put into superposition.  The two are the same object, and the
+transformation that makes the identification precise -- the Jordan-Wigner
+transformation -- is the last piece of formalism this chapter needs.  It is
+what turns the Hamiltonians of Chapter~\ref{chap:systems} into something a
+quantum computer can be handed, and it is used again for the Trotter
+expansion of Section~\ref{sec:trotter} and for the unitary coupled-cluster
+ansatz of Chapter~\ref{chap:cctheory}.
+
+\paragraph{States are easy; operators are not.}
+A fermionic Fock state is specified by its occupation numbers,
+\begin{equation}
+  \bket{n_0 n_1 \cdots n_{M-1}},
+  \qquad n_p\in\{0,1\},
+  \label{eq:3-focknumbers}
+\end{equation}
+and this is already a string of $M$ bits.  We may therefore declare
+\begin{equation}
+  \bket{n_0 n_1\cdots n_{M-1}}_{\mathrm{Fock}}
+   \;\longleftrightarrow\;
+  \bket{n_0 n_1\cdots n_{M-1}}_{\mathrm{qubit}} ,
+  \label{eq:3-fockqubit}
+\end{equation}
+with $\bket{0}$ an empty orbital and $\bket{1}$ an occupied one, and be done
+with the states.  The work is entirely in the operators.  What we need is a
+dictionary
+\begin{equation}
+  a_p^{\dagger},\; a_p,\; \hat{n}_p=a_p^{\dagger}a_p
+  \;\longrightarrow\;
+  \text{sums of products of }I,\,X,\,Y,\,Z ,
+  \label{eq:3-operatordictionary}
+\end{equation}
+because those Pauli operators, and their tensor products, are what a quantum
+computer implements.  A product $P\in\{I,X,Y,Z\}^{\otimes M}$ is called a
+\emph{Pauli string}, and the goal of the whole exercise is to write
+\begin{equation}
+  \hat{H} = \sum_{\alpha} h_{\alpha}P_{\alpha} ,
+  \label{eq:3-paulisum}
+\end{equation}
+a weighted sum of Pauli strings.  Once a Hamiltonian is in that form one can
+estimate its expectation value term by term on hardware, build a Trotterised
+time evolution from it, or feed it to a variational algorithm.
+
+\paragraph{Why the obvious guess fails.}
+On a single qubit define
+\begin{equation}
+  \sigma^{+} = \frac{X-\imath Y}{2} = \ketbra{1}{0},
+  \qquad
+  \sigma^{-} = \frac{X+\imath Y}{2} = \ketbra{0}{1},
+  \label{eq:3-sigmapm}
+\end{equation}
+so that $\sigma^{+}$ fills an empty orbital and $\sigma^{-}$ empties a full
+one.  The obvious guess is $a_p^{\dagger}\sim\sigma_p^{+}$ and
+$a_p\sim\sigma_p^{-}$.  It is wrong, and it is wrong for the reason this
+whole chapter has been about.  Pauli operators on \emph{different} qubits
+commute,
+\[
+  \sigma_p^{-}\sigma_q^{-} = \sigma_q^{-}\sigma_p^{-}
+  \qquad (p\ne q),
+\]
+whereas fermion operators on different orbitals \emph{anti}commute,
+$a_pa_q=-a_qa_p$.  The naive map would describe distinguishable spins, not
+fermions, and would lose the antisymmetry that
+Eq.~(\ref{eq:2-3b}) built in at the very start.  The program
+\texttt{jordanwigner.py} quantifies the damage: with the naive map
+$\{\sigma_0^{-},\sigma_1^{-}\}$ has norm $2$ instead of $0$.
+
+\paragraph{The parity string.}
+The cure is to attach to each operator a factor that counts how many
+particles sit before it in the chosen ordering.  Since
+\[
+  Z\bket{0}=+\bket{0},
+  \qquad
+  Z\bket{1}=-\bket{1},
+\]
+the product $Z_0Z_1\cdots Z_{p-1}$ returns precisely
+\begin{equation}
+  \prod_{j=0}^{p-1}Z_j \;\longrightarrow\; (-1)^{n_0+n_1+\cdots+n_{p-1}}
+  \label{eq:3-paritystring}
+\end{equation}
+on a basis state.  This is exactly the phase $(-1)^{l}$ that the bit-counting
+algorithm at the end of Section~\ref{sec:bitrep} computes by masking and
+counting ones: the number of occupied orbitals that the operator has to be
+carried past.  The classical algorithm and the quantum operator are the same
+piece of bookkeeping.
+
+With that factor in place we may define
+\begin{equation}
+  \boxed{\;
+  a_p^{\dagger}
+   = \left(\prod_{j=0}^{p-1}Z_j\right)\frac{X_p-\imath Y_p}{2},
+  \qquad
+  a_p
+   = \left(\prod_{j=0}^{p-1}Z_j\right)\frac{X_p+\imath Y_p}{2} \;}
+  \label{eq:3-jwmap}
+\end{equation}
+which is the Jordan-Wigner transformation.  The string of $Z$'s is called the
+\emph{parity string}.  Note that it depends on an \emph{ordering} of the
+orbitals; different orderings give different Pauli strings for the same
+operator, all of them correct but not all of them equally convenient.
+
+\paragraph{It is a legal transformation.}
+Everything rests on the claim that Eq.~(\ref{eq:3-jwmap}) reproduces the
+anticommutation relations~(\ref{eq:2-5}), (\ref{eq:2-7}) and
+(\ref{eq:2-20}).  It does.  For $p=q$ the parity strings cancel, since
+$Z^2=I$, and
+\begin{equation}
+  a_p^{\dagger}a_p = \frac{I-Z_p}{2},
+  \qquad
+  a_pa_p^{\dagger} = \frac{I+Z_p}{2},
+  \qquad
+  \{a_p,a_p^{\dagger}\} = I .
+  \label{eq:3-jwsamesite}
+\end{equation}
+For $p<q$ the string attached to $a_q$ contains a $Z_p$ that the operator on
+site $p$ does not commute with, and it is that single anticommuting factor
+which converts the commuting Pauli algebra into the anticommuting fermion
+algebra.  The program \texttt{jordanwigner.py} builds the operators as
+explicit matrices and checks all three relations for up to five modes; the
+largest violation is zero to machine precision.
+
+\paragraph{Number operators and one-body terms.}
+The first entry of Eq.~(\ref{eq:3-jwsamesite}) is the single most useful
+identity in the subject,
+\begin{equation}
+  \hat{n}_p = a_p^{\dagger}a_p = \frac{I-Z_p}{2},
+  \label{eq:3-jwnumber}
+\end{equation}
+and it says that a diagonal one-body operator becomes a sum of $I$ and $Z$
+only,
+\begin{equation}
+  \sum_p \varepsilon_p a_p^{\dagger}a_p
+   \;\longrightarrow\;
+   \frac12\sum_p\varepsilon_p\left(I-Z_p\right) .
+  \label{eq:3-jwonebodydiagonal}
+\end{equation}
+A non-interacting Hamiltonian is therefore already diagonal on the qubit
+register: no circuit is needed to find its spectrum, only to prepare its
+eigenstates.  The off-diagonal, hopping-like combination is where the parity
+string first shows itself.  For $p<q$,
+\begin{equation}
+  a_p^{\dagger}a_q + a_q^{\dagger}a_p
+   \;\longrightarrow\;
+   \frac12\left(
+     X_pZ_{p+1}\cdots Z_{q-1}X_q
+     + Y_pZ_{p+1}\cdots Z_{q-1}Y_q
+   \right),
+  \label{eq:3-jwhopping}
+\end{equation}
+two strings whose length grows with $|p-q|$.  A hop has to know how many
+particles it jumps over, and the $Z$'s are how it finds out.
+
+\paragraph{Pair operators.}
+Creating two particles rather than moving one changes exactly one sign.  For
+$p<q$,
+\begin{equation}
+  a_p^{\dagger}a_q^{\dagger}
+   = \frac14\left(X_p-\imath Y_p\right)
+     Z_{p+1}\cdots Z_{q-1}
+     \left(X_q-\imath Y_q\right),
+  \label{eq:3-jwpaircreate}
+\end{equation}
+and the Hermitian combination that appears in every pairing Hamiltonian is
+\begin{equation}
+  a_p^{\dagger}a_q^{\dagger} + a_qa_p
+   \;\longrightarrow\;
+   \frac12\left(
+     X_pZ_{p+1}\cdots Z_{q-1}X_q
+     - Y_pZ_{p+1}\cdots Z_{q-1}Y_q
+   \right).
+  \label{eq:3-jwpairtransfer}
+\end{equation}
+Compare with Eq.~(\ref{eq:3-jwhopping}): the two operators differ only in the
+relative sign of the $XX$ and $YY$ channels.  That one sign is the difference
+between transporting a particle and creating a pair, and it is worth
+remembering, because it is the only thing that distinguishes the hopping term
+of the Hubbard model from the pair-transfer term of the pairing model once
+both are on a quantum computer.
+
+\paragraph{The general two-body term.}
+The two-body operator of Eq.~(\ref{eq:2-46b}) is a sum of terms
+$a_p^{\dagger}a_q^{\dagger}a_sa_r$.  When the four indices are distinct the
+Hermitian combination produces eight Pauli strings, each of weight four and
+each with coefficient $\tfrac18$.  For four consecutive orbitals
+$0<1<2<3$, so that all the intervening parity strings are empty,
+\texttt{jordanwigner.py} gives
+\begin{align}
+  a_0^{\dagger}a_1^{\dagger}a_3a_2 + \mathrm{h.c.}
+   = \frac18\Big(
+     &XXXX + XYXY + XYYX \nonumber\\
+     &+ YXXY + YXYX + YYYY \nonumber\\
+     &- XXYY - YYXX
+   \Big),
+  \label{eq:3-jwtwobody}
+\end{align}
+where $XYXY$ means $X_0Y_1X_2Y_3$ and so on.  This particular operator will
+reappear in Chapter~\ref{chap:systems}: read the four orbitals as
+$(p+,\,p-,\,q+,\,q-)$ and Eq.~(\ref{eq:3-jwtwobody}) is the pair-transfer
+term $\hat{P}^{+}_p\hat{P}^{-}_q+\mathrm{h.c.}$ of the pairing model.
+
+For a general two-body Hamiltonian on $M$ orbitals the number of distinct
+Pauli strings grows as $\bigO(M^4)$, and the longest of them span the whole
+register.  Table~\ref{tab:3-paulicount} gives the counts for a generic
+Hamiltonian, again computed rather than estimated.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{rrrr}
+\toprule
+$M$ & $4^M$ & Pauli strings & largest weight\\
+\midrule
+$2$ & $16$   & $6$   & $2$\\
+$3$ & $64$   & $19$  & $3$\\
+$4$ & $256$  & $55$  & $4$\\
+$5$ & $1024$ & $136$ & $5$\\
+$6$ & $4096$ & $292$ & $6$\\
+\bottomrule
+\end{tabular}
+\caption{Pauli strings in the Jordan-Wigner image of a generic one- plus
+two-body Hamiltonian on $M$ orbitals.  The count is a small fraction of the
+$4^M$ available strings and grows as $\bigO(M^4)$, but the largest weight is
+$M$: the parity chains reach across the entire register.  Computed by
+\texttt{jordanwigner.py}.}
+\label{tab:3-paulicount}
+\end{table}
+
+\paragraph{The price, and the alternatives.}
+The Jordan-Wigner transformation is exact and it is the easiest to derive,
+but the parity strings are a real cost.  An operator that is local in the
+orbital index becomes an operator of weight $\bigO(M)$ on the qubit register,
+which means deeper circuits and noisier measurements.  Two standard
+alternatives trade this differently.  The \emph{parity mapping} stores
+cumulative sums rather than occupations, moving the string from the
+annihilation operators to the number operators.  The \emph{Bravyi-Kitaev}
+mapping stores a balanced binary tree of partial sums and reduces the weight
+to $\bigO(\log M)$, at the cost of a considerably less transparent
+derivation.  For the models of this book, which are small and highly
+structured, Jordan-Wigner is the right choice, and the ordering of the
+orbitals can be chosen so that the strings that matter are short --
+Section~\ref{sec:qubitmodels} does exactly that for the pairing model.
+
+\begin{notebox}
+\textbf{Quantum-computing connection.} Equation~(\ref{eq:3-paulisum}) is the
+input to essentially every quantum algorithm for many-body systems.  In the
+variational quantum eigensolver of Chapter~\ref{chap:cctheory} the energy
+$\bracket{\Psi(\theta)}{\hat{H}}{\Psi(\theta)}$ is evaluated by measuring
+each Pauli string separately and adding the results with the weights
+$h_{\alpha}$, so the number of strings is the number of measurements.  In a
+Trotterised time evolution, Section~\ref{sec:trotter}, each string
+contributes one factor $\exp(-\imath h_{\alpha}P_{\alpha}\Delta t)$ to the
+circuit, so the number of strings is the circuit depth and the weight of each
+is the number of entangling gates it costs.  Both counts are what
+Table~\ref{tab:3-paulicount} is really about.
+\end{notebox}
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+The first four exercises drill the algebra of this chapter; the last two work
+through the Jordan-Wigner transformation by hand.  Full solutions follow each
+one.  Every numerical statement can be checked with \texttt{wick.py} or
+\texttt{jordanwigner.py}.
+
+\subsection*{Exercise 1: normal ordering and contractions}
+\label{ex:3-normalordering}
+\addcontentsline{toc}{subsection}{Exercise 1: normal ordering and contractions}
+
+\begin{enumerate}
+  \item[a)] Write $N\left[a_p a_q^{\dagger} a_r\right]$ out explicitly,
+  including the sign, and verify that its vacuum expectation value vanishes.
+  \item[b)] Evaluate all four elementary contractions directly from the
+  definition~(\ref{eq:3-contractiondef}), without using
+  Eq.~(\ref{eq:3-contractionvev}).
+  \item[c)] Show that the contraction of two operators is unchanged if both
+  are moved together through the same number of operators, and that
+  interchanging them changes its sign.  This is the content of the crossing
+  rule~(\ref{eq:3-crossingsign}).
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Normal ordering moves $a_q^{\dagger}$ to the front.  Carrying it past $a_p$
+costs one interchange, so
+\[
+  N\left[a_p a_q^{\dagger} a_r\right] = -\,a_q^{\dagger}a_p a_r .
+\]
+Its vacuum expectation value vanishes twice over: $a_r\bket{0}=0$ kills it
+from the right, and $\bbra{0}a_q^{\dagger}=0$ from the left.  This is
+Eq.~(\ref{eq:3-normalvanishes}), and it is the reason normal-ordered products
+are worth isolating in the first place.
+
+\paragraph{Answer to b).}
+From $xy = N[xy] + \text{contraction}$ we read the contraction off as
+$xy-N[xy]$.  For $a_pa_q^{\dagger}$ the anticommutator gives $a_pa_q^{\dagger}
+=\delta_{pq}-a_q^{\dagger}a_p$, and $N[a_pa_q^{\dagger}]=-a_q^{\dagger}a_p$,
+so the difference is $\delta_{pq}$.  The three other pairs are already in
+normal-ordered form up to a sign -- $a_pa_q$ and $a_p^{\dagger}a_q^{\dagger}$
+trivially, and $a_p^{\dagger}a_q$ because a creation operator standing to the
+left of an annihilation operator is what normal ordering means -- so
+$xy=N[xy]$ and the contraction is zero.  These are
+Eqs.~(\ref{eq:3-contraction1})--(\ref{eq:3-contraction4}).
+
+\paragraph{Answer to c).}
+A contraction is a number, and the only thing that can change when the
+contracted pair is moved is the sign accumulated from anticommuting past
+other operators.  Moving both members of the pair past one operator costs two
+interchanges, $(-1)^2=+1$, so nothing happens.  Interchanging the two
+contracted operators themselves costs one interchange and flips the sign.  For
+a set of contractions, each crossing of two contraction lines is exactly one
+such interchange of neighbours, whence $(-1)^{\nu}$ with $\nu$ the number of
+crossings.  The routine \texttt{matching\_sign} in \texttt{wick.py} implements
+this rule, and \texttt{contraction\_sign} shows that it agrees with the parity
+of the permutation that brings the contracted operators together.
+
+\subsection*{Exercise 2: four operators the hard way and the easy way}
+\label{ex:3-fouroperators}
+\addcontentsline{toc}{subsection}{Exercise 2: four operators}
+
+\begin{enumerate}
+  \item[a)] Evaluate $\bbra{0}a_sa_ra_p^{\dagger}a_q^{\dagger}\bket{0}$ by
+  repeated use of the anticommutation relations.
+  \item[b)] Evaluate the same quantity with Wick's theorem, listing the three
+  pairings and saying why two of them survive.
+  \item[c)] Interpret the result as an overlap between two-particle states.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Push the annihilation operators to the right.  With
+$a_ra_p^{\dagger}=\delta_{rp}-a_p^{\dagger}a_r$,
+\[
+  a_sa_ra_p^{\dagger}a_q^{\dagger}
+   = \delta_{rp}\,a_sa_q^{\dagger}
+     - a_sa_p^{\dagger}a_ra_q^{\dagger} ,
+\]
+and applying the same relation twice more to the second term gives, after
+taking the vacuum expectation value,
+\[
+  \bbra{0}a_sa_ra_p^{\dagger}a_q^{\dagger}\bket{0}
+   = \delta_{rp}\delta_{sq} - \delta_{sp}\delta_{rq} .
+\]
+Every intermediate term with an operator left over dies against the vacuum.
+
+\paragraph{Answer to b).}
+Four operators admit $3!!=3$ pairings.  The pairing that joins $a_s$ to $a_r$
+must also join $a_p^{\dagger}$ to $a_q^{\dagger}$, and both contractions
+vanish by Eqs.~(\ref{eq:3-contraction2}) and~(\ref{eq:3-contraction4}).  The
+two survivors join each annihilation operator to a creation operator standing
+to its right,
+\[
+  \bbra{0}a_sa_ra_p^{\dagger}a_q^{\dagger}\bket{0}
+   = \delta_{rp}\delta_{sq} - \delta_{sp}\delta_{rq} ,
+\]
+the minus sign coming from the single crossing of the two contraction lines
+in the second term.  Three terms written down, one discarded on sight, no
+permutations performed -- against four applications of the anticommutator in
+part a).  With eight operators the ratio is $105$ terms against $129$
+recursive calls, and by twelve operators the direct route is hopeless.
+
+\paragraph{Answer to c).}
+With $\bket{pq}=a_p^{\dagger}a_q^{\dagger}\bket{0}$ and
+$\bbra{rs}=\bbra{0}a_sa_r$ the result is
+$\braket{rs}{pq}=\delta_{rp}\delta_{sq}-\delta_{sp}\delta_{rq}$: two
+two-particle states overlap only if they contain the same pair of
+single-particle states, and the sign records whether the labels are in the
+same order.  This is antisymmetry, obtained without writing a single
+determinant.
+
+\subsection*{Exercise 3: the generalised theorem at work}
+\label{ex:3-generalised}
+\addcontentsline{toc}{subsection}{Exercise 3: the generalised theorem}
+
+\begin{enumerate}
+  \item[a)] Count the pairings of the eight operators in
+  $\bbra{0}\,a_ja_i\;a_p^{\dagger}a_q^{\dagger}a_sa_r\;
+  a_k^{\dagger}a_{\ell}^{\dagger}\,\bket{0}$, first without and then with the
+  restriction that no contraction may lie inside one of the three groups.
+  \item[b)] Explain why the restriction is legitimate here, and what would go
+  wrong if the operator group were written as $a_p^{\dagger}a_sa_q^{\dagger}
+  a_r$ instead.
+  \item[c)] Use the generalised theorem to show that a two-body operator has
+  vanishing matrix elements between determinants differing by more than two
+  single-particle states.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Eight operators admit $7!!=105$ pairings.  Requiring every contraction line to
+join two different groups, with group sizes $2$, $4$ and $2$, leaves $24$.
+The counts are produced by \texttt{count\_matchings} in \texttt{wick.py}, and
+of the $24$ only four survive the elementary contractions -- the four terms of
+Eq.~(\ref{eq:3-twobodyresult}).
+
+\paragraph{Answer to b).}
+Each of the three groups is written in normal-ordered form: the bra is two
+annihilation operators, the ket two creation operators, and the operator has
+its creation operators to the left.  By Eq.~(\ref{eq:3-nointernal}) all their
+internal contractions therefore vanish, and dropping them changes nothing.
+Written as $a_p^{\dagger}a_sa_q^{\dagger}a_r$ the group is no longer
+normal-ordered: the internal contraction of $a_s$ with $a_q^{\dagger}$ is
+$\delta_{sq}$, not zero, and those terms would have to be kept.  One would
+first bring the group into normal order using
+Eq.~(\ref{eq:3-normalorder}), at the price of an overall sign.
+
+\paragraph{Answer to c).}
+Let the bra and ket differ by $n$ single-particle states.  Every operator of
+the bra and of the ket must be contracted, and by the generalised theorem
+every contraction must reach a different group.  The operator group supplies
+only four operators, two creation and two annihilation, so at most two of the
+bra's holes and two of the ket's particles can be accounted for.  If $n>2$
+some operator of the bra has to contract with an operator of the ket, and
+those contractions vanish because the two determinants disagree there.  Hence
+the matrix element is zero, which is the Condon-Slater rule of
+Section~\ref{sec:wickapps} and the reason the configuration-interaction
+matrix of Chapter~\ref{chap:fci} is sparse.
+
+\subsection*{Exercise 4: normal ordering with respect to a Fermi vacuum}
+\label{ex:3-fermivacuum}
+\addcontentsline{toc}{subsection}{Exercise 4: normal ordering on a Fermi sea}
+
+\begin{enumerate}
+  \item[a)] With $\bket{c}$ the reference determinant of
+  Section~\ref{sec:phformalism}, evaluate the four contractions of $a_p$ and
+  $a_p^{\dagger}$ with respect to $\bket{c}$ and say which survive.
+  \item[b)] Use them to compute $\bracket{c}{\hat{H}_0}{c}$ for
+  $\hat{H}_0=\sum_{pq}\bracket{p}{\hat{h}_0}{q}a_p^{\dagger}a_q$.
+  \item[c)] Explain why the same argument fails if $\bket{c}$ is replaced by
+  a BCS state.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+With respect to $\bket{c}$ the quasiparticle operators are $b_a=a_a$ for
+$a>F$ and $b_i=a_i^{\dagger}$ for $i\le F$, and normal ordering means putting
+the $b^{\dagger}$'s to the left.  Two contractions survive,
+\[
+  \bracket{c}{a_aa_b^{\dagger}}{c}=\delta_{ab}\ (a,b>F),
+  \qquad
+  \bracket{c}{a_i^{\dagger}a_j}{c}=\delta_{ij}\ (i,j\le F),
+\]
+the second being new: a hole state is occupied in $\bket{c}$, so removing and
+replacing a particle there gives unity.  All contractions mixing a particle
+index with a hole index vanish, as do $\bracket{c}{a_pa_q}{c}$ and
+$\bracket{c}{a_p^{\dagger}a_q^{\dagger}}{c}$.
+
+\paragraph{Answer to b).}
+Only the fully contracted terms survive, and the only non-vanishing
+contraction of $a_p^{\dagger}a_q$ in the reference state is the hole one, so
+\[
+  \bracket{c}{\hat{H}_0}{c}
+   = \sum_{pq}\bracket{p}{\hat{h}_0}{q}\,\delta_{pq}\,\theta(F-p)
+   = \sum_{i\le F}\bracket{i}{\hat{h}_0}{i} ,
+\]
+the sum of the occupied single-particle energies.  This is
+Eq.~(\ref{eq:2-70d}) obtained in one line.
+
+\paragraph{Answer to c).}
+The whole construction rests on the reference state being a single
+determinant, so that $\bracket{c}{a_p^{\dagger}a_q}{c}$ is a Kronecker delta
+and every other contraction vanishes.  A BCS state is a superposition of
+determinants with different particle numbers, and
+$\bracket{\mathrm{BCS}}{a_pa_{\bar p}}{\mathrm{BCS}}$ -- the pairing tensor --
+is \emph{not} zero.  Wick's theorem still applies, but with an extra kind of
+contraction, and the bookkeeping becomes the generalised Wick theorem of
+Bogoliubov quasiparticles used in Chapter~\ref{chap:mfapplications}.
+
+\subsection*{Exercise 5: the Jordan-Wigner transformation by hand}
+\label{ex:3-jwbyhand}
+\addcontentsline{toc}{subsection}{Exercise 5: Jordan-Wigner by hand}
+
+\begin{enumerate}
+  \item[a)] Verify from Eq.~(\ref{eq:3-jwmap}) that
+  $\hat{n}_p=(I-Z_p)/2$ and that $\{a_p,a_p^{\dagger}\}=I$.
+  \item[b)] Show that $a_0$ and $a_1$ anticommute, and identify precisely
+  where the parity string does the work.
+  \item[c)] Derive the hopping identity~(\ref{eq:3-jwhopping}) for adjacent
+  orbitals $q=p+1$.
+  \item[d)] Derive the pair identity~(\ref{eq:3-jwpairtransfer}) for the same
+  pair and compare the two.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The parity strings of $a_p^{\dagger}$ and $a_p$ are identical and
+$Z^2=I$, so they cancel in any product of the two.  Hence
+$\hat{n}_p=\sigma_p^{+}\sigma_p^{-}=\ketbra{1}{0}\,\ketbra{0}{1}
+=\ketbra{1}{1}=(I-Z_p)/2$, using $Z=\ketbra{0}{0}-\ketbra{1}{1}$.  Likewise
+$a_pa_p^{\dagger}=\ketbra{0}{0}=(I+Z_p)/2$, and the two add to $I$.
+
+\paragraph{Answer to b).}
+Write $a_0=\sigma_0^{-}$ and $a_1=Z_0\sigma_1^{-}$.  Then
+\[
+  a_0a_1 = \sigma_0^{-}Z_0\,\sigma_1^{-},
+  \qquad
+  a_1a_0 = Z_0\sigma_0^{-}\,\sigma_1^{-},
+\]
+and the two differ only in the order of $\sigma_0^{-}$ and $Z_0$ on the first
+qubit.  Since $\sigma^{-}=\ketbra{0}{1}$ and $Z\ketbra{0}{1}=\ketbra{0}{1}$
+while $\ketbra{0}{1}Z=-\ketbra{0}{1}$, we have $\sigma_0^{-}Z_0=
+-Z_0\sigma_0^{-}$, so $a_0a_1=-a_1a_0$.  The anticommutation comes entirely
+from the single factor $Z_0$ in the string of $a_1$; without it the two
+operators would act on different qubits and simply commute.
+
+\paragraph{Answer to c).}
+For $q=p+1$ the strings cancel except for one factor,
+$a_p^{\dagger}a_{p+1}=\sigma_p^{+}Z_p\sigma_{p+1}^{-}=\sigma_p^{+}
+\sigma_{p+1}^{-}$, using $\sigma^{+}Z=\sigma^{+}$.  With
+$\sigma^{\pm}=(X\mp\imath Y)/2$,
+\[
+  \sigma_p^{+}\sigma_{p+1}^{-}
+   = \frac14\left(X_p-\imath Y_p\right)\left(X_{p+1}+\imath Y_{p+1}\right)
+   = \frac14\left(X_pX_{p+1}+Y_pY_{p+1}
+     +\imath X_pY_{p+1}-\imath Y_pX_{p+1}\right).
+\]
+Adding the Hermitian conjugate cancels the two imaginary terms and doubles
+the others, giving $\tfrac12(X_pX_{p+1}+Y_pY_{p+1})$.
+
+\paragraph{Answer to d).}
+The only change is that the second operator is a creation rather than an
+annihilation operator, so $\sigma^{-}_{p+1}\to\sigma^{+}_{p+1}$ and the sign
+of the $\imath Y_{p+1}$ term flips:
+\[
+  \sigma_p^{+}\sigma_{p+1}^{+}
+   = \frac14\left(X_pX_{p+1}-Y_pY_{p+1}
+     -\imath X_pY_{p+1}-\imath Y_pX_{p+1}\right),
+\]
+and adding the Hermitian conjugate leaves
+$\tfrac12(X_pX_{p+1}-Y_pY_{p+1})$.  The two operators are identical except
+for the relative sign of the $YY$ term.  On a quantum computer they cost
+exactly the same to measure and to exponentiate, which is a useful thing to
+know when one is comparing a hopping model with a pairing model.
+
+\subsection*{Exercise 6: a Hamiltonian on two qubits}
+\label{ex:3-twoqubit}
+\addcontentsline{toc}{subsection}{Exercise 6: a Hamiltonian on two qubits}
+
+Consider two orbitals, $p=0$ and $p=1$, with
+\[
+  \hat{H} = \varepsilon_0\hat{n}_0 + \varepsilon_1\hat{n}_1
+    + U\hat{n}_0\hat{n}_1
+    + t\left(a_0^{\dagger}a_1 + a_1^{\dagger}a_0\right).
+\]
+
+\begin{enumerate}
+  \item[a)] Map $\hat{H}$ to Pauli strings.
+  \item[b)] Write the $4\times4$ matrix in the basis
+  $\bket{00},\bket{01},\bket{10},\bket{11}$ and identify the block structure.
+  \item[c)] Diagonalise the one-particle block and check the answer against
+  the Pauli form.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Using $\hat{n}_p=(I-Z_p)/2$ and Eq.~(\ref{eq:3-jwhopping}),
+\[
+  \hat{H}
+   = \frac{\varepsilon_0+\varepsilon_1}{2}I
+     + \frac{U}{4}I
+     - \frac{2\varepsilon_0+U}{4}Z_0
+     - \frac{2\varepsilon_1+U}{4}Z_1
+     + \frac{U}{4}Z_0Z_1
+     + \frac{t}{2}\left(X_0X_1+Y_0Y_1\right),
+\]
+where the $U$ term has been expanded as
+$\hat{n}_0\hat{n}_1=(I-Z_0)(I-Z_1)/4$.  Six Pauli strings, none of weight
+greater than two -- which is the $M=2$ entry of
+Table~\ref{tab:3-paulicount}.
+
+\paragraph{Answer to b).}
+The $I$ and $Z$ terms are diagonal, and the $XX+YY$ term connects $\bket{01}$
+and $\bket{10}$ only, since
+$\tfrac12(X_0X_1+Y_0Y_1)=\ketbra{01}{10}+\ketbra{10}{01}$.  Hence
+\[
+  \hat{H} = \begin{pmatrix}
+    0 & 0 & 0 & 0\\
+    0 & \varepsilon_1 & t & 0\\
+    0 & t & \varepsilon_0 & 0\\
+    0 & 0 & 0 & \varepsilon_0+\varepsilon_1+U
+  \end{pmatrix},
+\]
+block diagonal in the particle number, as it must be: every term of
+$\hat{H}$ conserves $\hat{N}$, so no Pauli string can connect sectors with
+different numbers of $\bket{1}$'s.
+
+\paragraph{Answer to c).}
+The one-particle block has eigenvalues
+\[
+  E_{\pm} = \frac{\varepsilon_0+\varepsilon_1}{2}
+    \pm\sqrt{\left(\frac{\varepsilon_0-\varepsilon_1}{2}\right)^2+t^2} ,
+\]
+the familiar two-level result of Section~\ref{sec:hamiltonian}.  For
+$\varepsilon_0=\varepsilon_1$ the eigenvectors are
+$(\bket{01}\pm\bket{10})/\sqrt2$, maximally entangled states of the two
+qubits: a delocalised particle and an entangled register are the same thing
+seen from two sides.  The program \texttt{jordanwigner.py} builds this
+Hamiltonian, decomposes it and diagonalises it, and the three answers agree.
