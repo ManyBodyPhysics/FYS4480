@@ -16,8 +16,10 @@ chapter2.tex       From linear algebra to many-body physics: Slater
 chapter3.tex       Second quantization, the particle-hole formalism and
                    Wick's theorem, with proofs of both the ordinary and the
                    generalised theorem
-chapter4.tex       Physical systems and models: Lipkin, pairing,
-                   Fermi-Hubbard, Calogero-Sutherland
+chapter4.tex       Physical systems and models: Lipkin, pairing, pairing plus
+                   a particle-hole term (the model of chapter 7, with a TikZ
+                   level scheme showing 1p-1h and 2p-2h excitations),
+                   Fermi-Hubbard, Heisenberg, Calogero-Sutherland
 chapter5.tex       Full configuration interaction: the CI expansion, the
                    eigenvalue problem, the exponential wall, truncations
 chapter6.tex       Mean-field approaches: Hartree-Fock, Thouless' theorem,
@@ -92,8 +94,14 @@ The build is clean: no errors, no undefined references or citations.
   use `\bbra`/`\bket`, `\braket{}{}` and `\bracket{}{}{}`.
 - svmono provides `theorem`, used in chapter 6 for Thouless' theorem.
 - `book.tex` also defines `\wmark`, `\wline`, `\wlineb` and `\wstrut` for the
-  Wick contraction lines of Chapter 3, and a `notebox` environment for the
-  many-body and quantum-computing connection boxes.
+  Wick contraction lines of Chapter 3, `\levelpanel` plus the `pairarrow` and
+  `pharrow` TikZ styles for the single-particle level schemes of Chapter 4,
+  and a `notebox` environment for the many-body and quantum-computing
+  connection boxes.
+- `\levelpanel{tag}{x offset}{occupied slots}{caption}` draws one panel of
+  four doubly degenerate levels and leaves the coordinates `tag-p-u` and
+  `tag-p-d` behind, so excitation arrows are drawn *after* all the panels, in
+  the same `tikzpicture`. See `fig:4-levels`.
 - Add `\index{...}` entries for new terminology — the book has `\makeindex`.
 - Citations use `\cite{}` with `\bibliographystyle{unsrt}`; Springer styles
   (`spphys`, `spbasic`, `spmpsci`) are available if the publisher requires them.
@@ -175,7 +183,7 @@ written for chapters 1 and 2 are:
 | `slaterdeterminant.py` | 2 | Slater determinants, energy functional, minimal SCF |
 | `slater_update.py` | 2 | Ratio $R$, Sherman-Morrison updates, nodal-surface stability |
 | `wick.py` | 3 | Vacuum expectation values by anticommutation, by Wick contractions and by the generalised theorem; the generalised theorem also checked as an operator identity in a small Fock space |
-| `models.py` | 4 | Lipkin, pairing, Hubbard and Calogero: matrices, spectra, exact limits |
+| `models.py` | 4 | Lipkin, pairing, pairing+particle-hole, Hubbard, Heisenberg and Calogero: matrices, spectra, exact limits, Jordan-Wigner check |
 | `fci.py` | 5 | Determinants as bit strings, pairing and Hubbard FCI, truncations, size consistency, Hilbert-space growth |
 | `hartreefock.py` | 6 | SCF with the density matrix, Thouless rotations, the stability matrix, BCH and Trotter errors, the electron gas |
 | `rpa.py` | 7 | Pairing + particle-hole model: exact diagonalization, TDA, RPA, BCS, QRPA, all matrices built as double commutators |

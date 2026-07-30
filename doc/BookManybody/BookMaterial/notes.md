@@ -23,6 +23,23 @@
      - Wigner-Jordan transformation and 2nd quantization
      - Baker-Campbell-Hausdorf (BCH) -- now developed in chapter6.tex
      - Suzuki-Trotter as an approximation to BCH -- now in chapter6.tex
+### Physical systems and models  (chapter4.tex, done)
+     - Lipkin (quasispin SU(2)), pairing, Fermi-Hubbard, Calogero-Sutherland
+     - Pairing plus a particle-hole term, i.e. the chapter-7 model introduced
+       here rather than arriving unannounced in chapter 7.  Includes the TikZ
+       level scheme fig:4-levels with the reference determinant, the
+       seniority-conserving 2p-2h pair transfer, and the 1p-1h and
+       pair-breaking 2p-2h excitations that only V_ph reaches.  Key point:
+       the q = r terms of V_ph are just the pairing term again, so g -> g + 2f
+       in every seniority-conserving matrix element (verified in models.py)
+     - Quantum Heisenberg model, as the strong-coupling limit of Hubbard and
+       in its own right: 4-site ring E_0 = -2J checked against the Hubbard
+       table from both sides, Bethe ansatz J(1/4 - ln 2) with finite-size
+       scaling to N = 16, Jordan-Wigner back to spinless fermions (spectra
+       verified identical, not just ground states)
+     - Still to add if wanted: two-dimensional Heisenberg / Hubbard, the
+       XXZ anisotropy, spin gap and the Haldane conjecture
+
 ### FCI and diagrams and particle-hole representations
      - Basics of FCI
      - Rewriting in terms of a particle-hole picture
