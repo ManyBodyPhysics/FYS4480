@@ -14,7 +14,8 @@ chapter1.tex       Linear algebra: notation, then numerical linear algebra,
 chapter2.tex       From linear algebra to many-body physics: Slater
                    determinants, the energy functional, Monte Carlo updates
 chapter3.tex       Second quantization, the particle-hole formalism and
-                   Wick's theorem
+                   Wick's theorem, with proofs of both the ordinary and the
+                   generalised theorem
 chapter4.tex       Physical systems and models: Lipkin, pairing,
                    Fermi-Hubbard, Calogero-Sutherland
 chapter5.tex       Full configuration interaction: the CI expansion, the
@@ -173,7 +174,7 @@ written for chapters 1 and 2 are:
 | `svd.py` | 1 | SVD, pseudoinverse, Schmidt decomposition, two-body factorisation |
 | `slaterdeterminant.py` | 2 | Slater determinants, energy functional, minimal SCF |
 | `slater_update.py` | 2 | Ratio $R$, Sherman-Morrison updates, nodal-surface stability |
-| `wick.py` | 3 | Vacuum expectation values by anticommutation and by Wick contractions |
+| `wick.py` | 3 | Vacuum expectation values by anticommutation, by Wick contractions and by the generalised theorem; the generalised theorem also checked as an operator identity in a small Fock space |
 | `models.py` | 4 | Lipkin, pairing, Hubbard and Calogero: matrices, spectra, exact limits |
 | `fci.py` | 5 | Determinants as bit strings, pairing and Hubbard FCI, truncations, size consistency, Hilbert-space growth |
 | `hartreefock.py` | 6 | SCF with the density matrix, Thouless rotations, the stability matrix, BCH and Trotter errors, the electron gas |

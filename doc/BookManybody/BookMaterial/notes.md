@@ -8,8 +8,11 @@
      - Discuss ansazte for wave functions, discuss Dicke states
 ###  2nd quantization for bosons and fermions and more
      - Commutation rules and definition of creation and annihilation operators
-     - Proof of wick's theorem
-     - Discuss Wick's generalized theorem
+     - Proof of wick's theorem -- done in chapter3.tex, section "Proof of Wick's theorem"
+     - Discuss Wick's generalized theorem -- done in chapter3.tex, statement plus a full
+       proof (internal contractions vanish, two groups by induction on the appending
+       lemma, then any number of groups), with the Fermi-vacuum form and numerical
+       verification in wick.py
      - particle-hole picture
      - interaction, Schroedinger and Heisenberg pictures, pros and cons
      - time dependent wick's theorem
