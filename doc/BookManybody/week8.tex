@@ -1,0 +1,1354 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\usepackage{amsmath,amssymb,amsfonts,bm,mathtools}
+\usepackage{physics}
+\usepackage{braket}
+
+\title{Solving quantum mechanical problems with VQE algorithm}
+\author{Morten Hjorth-Jensen}
+\date{FYS5419/9419 Spring 2026, March 9-13}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}[plain,fragile]
+\frametitle{Plans for the week of March 10-14: Solving quantum mechanical problems with VQE algorithm}
+
+\begin{block}{}
+\begin{enumerate}
+\item Discussion of  our final model, the Lipkin model, a two-qubit and a four-qubit system, reminder from last week, code examples and theory
+
+
+
+\item Jordan-Wigner transformation
+
+\item Applications to other Hamiltonians, pairing Hamiltonian  (codes and theory)
+
+\item If we get time: Start discussion of Fourier transforms, continuous and discrete,, general motivation
+
+\item Discussions and work on project 1 during lab sessions
+\item \href{{https://youtu.be/C8vxBY-AmD8}}{Video of lecture}
+\item \href{{https://github.com/CompPhysics/QuantumComputingMachineLearning/blob/gh-pages/doc/HandWrittenNotes/2026/Notesweek8.pdf}}{Whiteboard notes}
+\end{enumerate}
+
+\noindent
+\end{block}
+\end{frame}
+
+
+
+\begin{frame}{Hamiltonian in terms of Pauli strings}
+We have seen during the previous weeks how to rewrite many-body Hamiltonians in terms of Pauli strings
+built from
+\[
+I,\qquad X,\qquad Y,\qquad Z,
+\]
+so that they are ready for quantum-computing implementations.
+
+\medskip
+
+\begin{itemize}
+\item the Lipkin Hamiltonian in quasispin form,
+\item detailed mappings to Pauli operators,
+\item compressed and direct qubit encodings,
+\item second-quantized fermionic operators \(a^\dagger,a\),
+\item the nuclear pairing Hamiltonian as a second worked example,
+\item a fuller Jordan--Wigner mapping from fermions to qubits.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Notation}
+We use:
+\begin{itemize}
+\item \(a_p^\dagger\): fermion creation operator in orbital \(p\),
+\item \(a_p\): fermion annihilation operator in orbital \(p\),
+\item \(n_p=a_p^\dagger a_p\): number operator,
+\item \(X_i,Y_i,Z_i\): Pauli operators on qubit \(i\),
+\item \(I_i\): identity on qubit \(i\).
+\end{itemize}
+
+Throughout, we use only
+\[
+a_p^\dagger,\qquad a_p.
+\]
+
+For quasispin systems we use collective operators
+\[
+J_x,\; J_y,\; J_z,\qquad J_\pm = J_x \pm i J_y.
+\]
+For pairing we use local quasispin operators
+\[
+S_p^\pm,\qquad S_p^z.
+\]
+\end{frame}
+
+\begin{frame}{Why Pauli decompositions matter}
+Quantum algorithms typically require a Hamiltonian of the form
+\[
+H = \sum_\alpha h_\alpha P_\alpha,
+\qquad
+P_\alpha \in \{I,X,Y,Z\}^{\otimes n}.
+\]
+
+Once a Hamiltonian is written in this way, one can:
+\begin{itemize}
+\item estimate energies in VQE,
+\item generate Trotterized time evolution,
+\item build QAOA circuits,
+\item exploit commutativity and measurement grouping.
+\end{itemize}
+
+So the main preprocessing step is:
+\begin{quote}
+rewrite the many-body Hamiltonian as a weighted sum of Pauli strings.
+\end{quote}
+\end{frame}
+
+% =========================================================
+\section{Part I: Lipkin Hamiltonian in quasispin form}
+% =========================================================
+
+\begin{frame}{Lipkin Hamiltonian}
+We consider the Lipkin Hamiltonian in quasispin representation
+\[
+H
+=
+\frac{\epsilon}{2}\left(J_z-\frac{N}{2}\right)
++
+\frac{V}{2}\left(J_+^2+J_-^2\right)
++
+\frac{W}{2}J_z^2.
+\]
+
+Here:
+\begin{itemize}
+\item \(N\) is the number of particles,
+\item \(\epsilon\) sets the one-body splitting,
+\item \(V\) controls pair scattering between the two levels,
+\item \(W\) weights the quadratic \(J_z^2\) term.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Quasispin algebra}
+The collective operators satisfy the \(su(2)\) algebra
+\[
+[J_x,J_y]=iJ_z,\qquad
+[J_y,J_z]=iJ_x,\qquad
+[J_z,J_x]=iJ_y,
+\]
+or, equivalently,
+\[
+[J_z,J_\pm]=\pm J_\pm,
+\qquad
+[J_+,J_-]=2J_z.
+\]
+
+The basis states are
+\[
+\ket{j,m},
+\qquad
+m=-j,-j+1,\dots,j,
+\]
+with
+\[
+J_z\ket{j,m}=m\ket{j,m}.
+\]
+\end{frame}
+
+\begin{frame}{Action of ladder operators}
+The ladder operators act as
+\[
+J_+\ket{j,m}
+=
+\sqrt{j(j+1)-m(m+1)}\ket{j,m+1},
+\]
+\[
+J_-\ket{j,m}
+=
+\sqrt{j(j+1)-m(m-1)}\ket{j,m-1}.
+\]
+
+Therefore
+\[
+J_+^2\ket{j,m}
+=
+\sqrt{j(j+1)-m(m+1)}
+\sqrt{j(j+1)-(m+1)(m+2)}
+\ket{j,m+2},
+\]
+and analogously for \(J_-^2\).
+\end{frame}
+
+\begin{frame}{Useful identity for the interaction term}
+Using
+\[
+J_\pm = J_x \pm iJ_y,
+\]
+we compute
+\[
+J_+^2 + J_-^2
+=
+(J_x+iJ_y)^2 + (J_x-iJ_y)^2
+=
+2(J_x^2-J_y^2).
+\]
+
+Hence the Lipkin Hamiltonian can also be written as
+\[
+H
+=
+\frac{\epsilon}{2}\left(J_z-\frac{N}{2}\right)
++
+V(J_x^2-J_y^2)
++
+\frac{W}{2}J_z^2.
+\]
+\end{frame}
+
+\begin{frame}{Two mapping strategies}
+There are two main strategies for turning the Lipkin Hamiltonian into Pauli strings:
+\begin{enumerate}
+\item \textbf{Compressed encoding of the quasispin basis}: encode the \((2j+1)\)-dimensional quasispin space into \(\lceil \log_2(2j+1)\rceil\) qubits.
+\item \textbf{Direct collective-spin mapping}: write
+\[
+J_\alpha = \frac12\sum_i \sigma_i^\alpha
+\]
+on a multi-qubit register and expand the Hamiltonian.
+\end{enumerate}
+
+We will use:
+\begin{itemize}
+\item compressed encoding for \(N=4\),
+\item direct collective mapping for \(N=6\).
+\end{itemize}
+\end{frame}
+
+\subsection{Case \(N=4\): compressed 3-qubit encoding}
+
+\begin{frame}{Four particles: quasispin dimension and encoding}
+For \(N=4\),
+\[
+j=\frac{N}{2}=2,
+\qquad
+2j+1 = 5.
+\]
+
+Thus the quasispin sector has dimension \(5\), which fits into \(3\) qubits since
+\[
+2^2=4<5\le 8=2^3.
+\]
+
+We choose the binary map
+\[
+\ket{2,-2}\leftrightarrow \ket{000},\quad
+\ket{2,-1}\leftrightarrow \ket{001},\quad
+\ket{2,0}\leftrightarrow \ket{010},
+\]
+\[
+\ket{2,1}\leftrightarrow \ket{011},\quad
+\ket{2,2}\leftrightarrow \ket{100}.
+\]
+
+The states \(\ket{101},\ket{110},\ket{111}\) are unphysical.
+\end{frame}
+
+\begin{frame}{Projectors and transition operators on qubits}
+For one qubit:
+\[
+\ket{0}\bra{0}=\frac{I+Z}{2},
+\qquad
+\ket{1}\bra{1}=\frac{I-Z}{2},
+\]
+\[
+\ket{1}\bra{0}=\frac{X-iY}{2},
+\qquad
+\ket{0}\bra{1}=\frac{X+iY}{2}.
+\]
+
+Therefore:
+\begin{itemize}
+\item diagonal operators are expanded with \(I\) and \(Z\),
+\item off-diagonal transitions are expanded with \(X\) and \(Y\),
+\item any finite operator in the encoded space can be written as a sum of Pauli strings.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Three-qubit form of \(J_z\)}
+Since
+\[
+J_z = \sum_{m=-2}^2 m\ket{m}\bra{m},
+\]
+we obtain
+\[
+J_z
+=
+-2\ket{000}\bra{000}
+-\ket{001}\bra{001}
++\ket{011}\bra{011}
++2\ket{100}\bra{100}.
+\]
+
+Expanding the projectors gives
+\[
+J_z
+=
+-\frac{1}{4} IZI
++\frac{1}{4} IZZ
+-\frac{1}{2} ZII
+-\frac{1}{2} ZIZ
+-\frac{3}{4} ZZI
+-\frac{1}{4} ZZZ.
+\]
+\end{frame}
+
+\begin{frame}{Three-qubit form of \(J_z^2\)}
+Similarly,
+\[
+J_z^2 = \sum_{m=-2}^2 m^2 \ket{m}\bra{m},
+\]
+which yields
+\[
+J_z^2
+=
+\frac{5}{4} III
++\frac{3}{4} IIZ
++IZI
++IZZ
++\frac{1}{4} ZII
+-\frac{1}{4} ZIZ.
+\]
+
+These formulas are exact on the physical 5-dimensional subspace.
+\end{frame}
+
+\begin{frame}{Three-qubit form of the ladder terms}
+For \(j=2\),
+\[
+J_+\ket{-2}=2\ket{-1},\qquad
+J_+\ket{-1}=\sqrt{6}\ket{0},
+\]
+\[
+J_+\ket{0}=\sqrt{6}\ket{1},\qquad
+J_+\ket{1}=2\ket{2}.
+\]
+
+Therefore
+\[
+J_+^2+J_-^2
+=
+\frac{3+\sqrt{6}}{2}\,IXI
++\frac{\sqrt{6}-3}{2}\,IXZ
++\frac{\sqrt{6}}{2}\,XXI
++\frac{\sqrt{6}}{2}\,XXZ
+\]
+\[
+\qquad
++\frac{\sqrt{6}}{2}\,YYI
++\frac{\sqrt{6}}{2}\,YYZ
++\frac{3+\sqrt{6}}{2}\,ZXI
++\frac{\sqrt{6}-3}{2}\,ZXZ.
+\]
+\end{frame}
+
+\begin{frame}{Final \(N=4\), 3-qubit Lipkin Hamiltonian}
+Substituting into
+\[
+H = \frac{\epsilon}{2}(J_z-2) + \frac{V}{2}(J_+^2+J_-^2) + \frac{W}{2}J_z^2
+\]
+gives
+\[
+H_{N=4}^{(3q)}
+=
+\left(-\epsilon+\frac{5W}{8}\right)III
++\frac{3W}{8}IIZ
++\left(-\frac{\epsilon}{8}+\frac{W}{2}\right)IZI
++\left(\frac{\epsilon}{8}+\frac{W}{2}\right)IZZ
+\]
+\[
++\left(-\frac{\epsilon}{4}+\frac{W}{8}\right)ZII
++\left(-\frac{\epsilon}{4}-\frac{W}{8}\right)ZIZ
+-\frac{3\epsilon}{8}ZZI
+-\frac{\epsilon}{8}ZZZ
+\]
+\[
++\frac{V(3+\sqrt{6})}{4}IXI
++\frac{V(\sqrt{6}-3)}{4}IXZ
++\frac{V\sqrt{6}}{4}XXI
++\frac{V\sqrt{6}}{4}XXZ
++\frac{V\sqrt{6}}{4}YYI
++\frac{V\sqrt{6}}{4}YYZ
++\frac{V(3+\sqrt{6})}{4}ZXI
++\frac{V(\sqrt{6}-3)}{4}ZXZ.
+\]
+\end{frame}
+
+\begin{frame}{Code-space penalty}
+Because the 3-qubit register has 8 basis states but only 5 are physical, one often adds
+\[
+H_{\mathrm{pen}} = \lambda P_{\mathrm{unphys}},
+\]
+where
+\[
+P_{\mathrm{unphys}}
+=
+\ket{101}\bra{101}
++\ket{110}\bra{110}
++\ket{111}\bra{111}.
+\]
+
+This energetically suppresses leakage outside the encoded quasispin space.
+\end{frame}
+
+\subsection{Case \(N=6\): direct 6-qubit mapping}
+
+\begin{frame}{Six particles: direct collective-spin realization}
+For \(N=6\), a simple and transparent mapping uses six qubits and defines
+\[
+J_x = \frac{1}{2}\sum_{i=1}^{6} X_i,
+\qquad
+J_y = \frac{1}{2}\sum_{i=1}^{6} Y_i,
+\qquad
+J_z = \frac{1}{2}\sum_{i=1}^{6} Z_i.
+\]
+
+This is not qubit-optimal, since the symmetric quasispin sector has dimension \(7\), but it leads to a very clean Pauli-string Hamiltonian.
+\end{frame}
+
+\begin{frame}{Expanding the collective squares}
+Using \(X_i^2=Y_i^2=Z_i^2=I\),
+\[
+J_x^2
+=
+\frac{1}{4}\sum_{i=1}^{6} I
++
+\frac{1}{4}\sum_{i\neq j} X_iX_j
+=
+\frac{6}{4}I + \frac{1}{2}\sum_{i<j} X_iX_j,
+\]
+and similarly
+\[
+J_y^2
+=
+\frac{6}{4}I + \frac{1}{2}\sum_{i<j} Y_iY_j,
+\]
+\[
+J_z^2
+=
+\frac{6}{4}I + \frac{1}{2}\sum_{i<j} Z_iZ_j.
+\]
+\end{frame}
+
+\begin{frame}{Interaction term on 6 qubits}
+Using
+\[
+J_+^2+J_-^2=2(J_x^2-J_y^2),
+\]
+we get
+\[
+\frac{V}{2}(J_+^2+J_-^2)
+=
+V(J_x^2-J_y^2)
+=
+\frac{V}{2}\sum_{i<j}(X_iX_j-Y_iY_j).
+\]
+
+Thus the interaction is an all-to-all two-body Pauli interaction.
+\end{frame}
+
+\begin{frame}{Linear and quadratic \(J_z\) terms on 6 qubits}
+For the linear term,
+\[
+\frac{\epsilon}{2}\left(J_z-\frac{N}{2}\right)
+=
+\frac{\epsilon}{2}\left(\frac12\sum_{i=1}^{6}Z_i - 3I\right)
+=
+\frac{\epsilon}{4}\sum_{i=1}^{6} Z_i - \frac{3\epsilon}{2}I.
+\]
+
+For the quadratic term,
+\[
+\frac{W}{2}J_z^2
+=
+\frac{W}{2}\left(\frac{6}{4}I+\frac12\sum_{i<j}Z_iZ_j\right)
+=
+\frac{3W}{4}I+\frac{W}{4}\sum_{i<j}Z_iZ_j.
+\]
+\end{frame}
+
+\begin{frame}{Final \(N=6\), 6-qubit Lipkin Hamiltonian}
+Collecting all terms gives
+\[
+H_{N=6}^{(6q)}
+=
+\left(-\frac{3\epsilon}{2}+\frac{3W}{4}\right)I
++
+\frac{\epsilon}{4}\sum_{i=1}^{6} Z_i
++
+\frac{V}{2}\sum_{i<j}(X_iX_j-Y_iY_j)
++
+\frac{W}{4}\sum_{i<j} Z_iZ_j.
+\]
+
+This is already directly usable in qubit-based quantum algorithms.
+\end{frame}
+
+\begin{frame}{Comparison of the two Lipkin mappings}
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+Case & Qubits & Main feature \\
+\hline
+\(N=4\), compressed & 3 & minimal encoding \\
+\(N=6\), direct & 6 & simplest Pauli structure \\
+\hline
+\end{tabular}
+\end{center}
+
+Compressed mappings save qubits but require code-space control.
+Direct mappings use more qubits but give very transparent Hamiltonians.
+\end{frame}
+
+% =========================================================
+\section{Part II: Fermions, Jordan--Wigner, and Pauli matrices}
+% =========================================================
+
+\begin{frame}{Second quantization for fermions}
+In fermionic many-body theory, the basic operators are
+\[
+a_p^\dagger,\qquad a_p,
+\]
+satisfying anticommutation relations
+\[
+\{a_p,a_q^\dagger\}=\delta_{pq},
+\qquad
+\{a_p,a_q\}=0,
+\qquad
+\{a_p^\dagger,a_q^\dagger\}=0.
+\]
+
+A general second-quantized Hamiltonian has the form
+\[
+H
+=
+\sum_{pq} h_{pq} a_p^\dagger a_q
++
+\frac{1}{4}\sum_{pqrs} v_{pqrs} a_p^\dagger a_q^\dagger a_s a_r.
+\]
+\end{frame}
+
+\begin{frame}{Occupation-number basis and qubits}
+A fermionic Fock basis state is specified by occupations
+\[
+\ket{n_0 n_1 \cdots n_{M-1}},
+\qquad
+n_p\in\{0,1\}.
+\]
+
+This is already a binary basis, so one may map it directly to \(M\) qubits:
+\[
+\ket{n_0 n_1 \cdots n_{M-1}}_{\mathrm{Fock}}
+\leftrightarrow
+\ket{n_0 n_1 \cdots n_{M-1}}_{\mathrm{qubit}}.
+\]
+
+The nontrivial part is not the basis mapping but the operator mapping:
+fermionic signs must be reproduced correctly on qubits.
+\end{frame}
+
+\begin{frame}{Why fermion-to-qubit mappings are needed}
+A quantum computer acts on qubits, not directly on fermionic Fock states.
+So we need a mapping
+\[
+a_p^\dagger,\; a_p,\; n_p=a_p^\dagger a_p
+\quad \longrightarrow \quad
+\text{Pauli strings}.
+\]
+
+The most common constructions are:
+\begin{itemize}
+\item Jordan--Wigner,
+\item Bravyi--Kitaev,
+\item parity mapping.
+\end{itemize}
+
+We focus here on Jordan--Wigner, since it is the most direct mathematically.
+\end{frame}
+
+\begin{frame}{Deriving the Jordan--Wigner idea}
+For a single qubit,
+\[
+\sigma^+ = \frac{X-iY}{2} = \ket{1}\bra{0},
+\qquad
+\sigma^- = \frac{X+iY}{2} = \ket{0}\bra{1}.
+\]
+
+If fermions were distinguishable, we could simply identify
+\[
+a_p^\dagger \sim \sigma_p^+,\qquad a_p \sim \sigma_p^-.
+\]
+
+But this fails because different fermionic modes must anticommute:
+\[
+a_p a_q = - a_q a_p \quad (p\neq q).
+\]
+
+So we must insert a parity string that counts the number of occupied orbitals before site \(p\).
+\end{frame}
+
+\begin{frame}{Jordan--Wigner transformation}
+For orbital \(p\), the Jordan--Wigner mapping is
+\[
+a_p^\dagger
+=
+\left(\prod_{j=0}^{p-1} Z_j\right)\frac{X_p-iY_p}{2},
+\qquad
+a_p
+=
+\left(\prod_{j=0}^{p-1} Z_j\right)\frac{X_p+iY_p}{2}.
+\]
+
+The string of \(Z\)'s ensures the correct fermionic sign structure.
+It is often called the \emph{parity string}.
+\end{frame}
+
+\begin{frame}{Why the parity string works}
+Recall that
+\[
+Z \ket{0} = +\ket{0},\qquad Z\ket{1} = -\ket{1}.
+\]
+
+Therefore
+\[
+\prod_{j=0}^{p-1} Z_j
+\]
+returns a factor
+\[
+(-1)^{n_0+n_1+\cdots+n_{p-1}}
+\]
+on a basis state.
+
+This is exactly the fermionic sign picked up when a creation or annihilation operator is moved through all earlier occupied orbitals in the canonical ordering.
+\end{frame}
+
+\begin{frame}{Checking the canonical anticommutator}
+Using the Jordan--Wigner map, one can verify
+\[
+a_p a_p^\dagger + a_p^\dagger a_p = I.
+\]
+
+Indeed, since the parity string squares to the identity,
+\[
+a_p^\dagger a_p
+=
+\frac{1-Z_p}{2},
+\qquad
+a_p a_p^\dagger
+=
+\frac{1+Z_p}{2},
+\]
+and therefore
+\[
+a_p a_p^\dagger + a_p^\dagger a_p
+=
+\frac{1+Z_p}{2}+\frac{1-Z_p}{2}=I.
+\]
+\end{frame}
+
+\begin{frame}{Number operators under Jordan--Wigner}
+A key identity is
+\[
+n_p = a_p^\dagger a_p = \frac{1-Z_p}{2}.
+\]
+
+Thus one-body diagonal terms become sums of \(I\) and \(Z\):
+\[
+\sum_p \epsilon_p a_p^\dagger a_p
+\quad \longrightarrow \quad
+\sum_p \epsilon_p \frac{1-Z_p}{2}.
+\]
+
+This is one of the most useful simplifications in practical qubit Hamiltonians.
+\end{frame}
+
+\begin{frame}{Nearest-neighbor hopping example}
+For \(p<q\), one finds
+\[
+a_p^\dagger a_q + a_q^\dagger a_p
+\]
+maps to
+\[
+\frac12
+\left(
+X_p Z_{p+1}\cdots Z_{q-1} X_q
++
+Y_p Z_{p+1}\cdots Z_{q-1} Y_q
+\right).
+\]
+
+So hopping terms become nonlocal Pauli strings because of the fermionic parity chain.
+\end{frame}
+
+\begin{frame}{Pair creation operator in full orbital space}
+Consider a time-reversed pair \((p,\bar p)\) with \(p<\bar p\).
+Then
+\[
+P_p^\dagger = a_p^\dagger a_{\bar p}^\dagger.
+\]
+
+Using Jordan--Wigner,
+\[
+a_p^\dagger a_{\bar p}^\dagger
+=
+\left(\prod_{j=0}^{p-1} Z_j\right)\frac{X_p-iY_p}{2}
+\left(\prod_{j=0}^{\bar p-1} Z_j\right)\frac{X_{\bar p}-iY_{\bar p}}{2}.
+\]
+
+After cancelling the common prefix, one gets a Pauli string with a parity chain between \(p\) and \(\bar p\).
+\end{frame}
+
+\begin{frame}{Explicit formula for \(a_p^\dagger a_q^\dagger\)}
+For \(p<q\),
+\[
+a_p^\dagger a_q^\dagger
+=
+\frac14
+(X_p-iY_p)\,
+Z_{p+1}\cdots Z_{q-1}\,
+(X_q-iY_q).
+\]
+
+Expanding this product gives
+\[
+a_p^\dagger a_q^\dagger
+=
+\frac14\Big(
+X_p Z\cdots Z X_q
+- i X_p Z\cdots Z Y_q
+- i Y_p Z\cdots Z X_q
+- Y_p Z\cdots Z Y_q
+\Big),
+\]
+where the intermediate \(Z\)-string runs from \(p+1\) to \(q-1\).
+\end{frame}
+
+\begin{frame}{Hermitian pair transfer operator}
+A very common Hermitian combination is
+\[
+a_p^\dagger a_q^\dagger + a_q a_p.
+\]
+
+Under Jordan--Wigner this becomes
+\[
+\frac12
+\left(
+X_p Z_{p+1}\cdots Z_{q-1} X_q
+-
+Y_p Z_{p+1}\cdots Z_{q-1} Y_q
+\right).
+\]
+
+This is the pairing analogue of the familiar hopping identity, with a sign change between the \(XX\) and \(YY\) channels.
+\end{frame}
+
+% =========================================================
+\section{Part III: Quasispin algebra from second quantization}
+% =========================================================
+
+\begin{frame}{Local pairing operators}
+For each time-reversed pair \((p,\bar p)\), define
+\[
+P_p^\dagger = a_p^\dagger a_{\bar p}^\dagger,
+\qquad
+P_p = a_{\bar p} a_p,
+\]
+and the pair number operator
+\[
+N_p = a_p^\dagger a_p + a_{\bar p}^\dagger a_{\bar p}.
+\]
+
+Now define local quasispin operators
+\[
+S_p^+ = P_p^\dagger,
+\qquad
+S_p^- = P_p,
+\qquad
+S_p^z = \frac12(N_p-1).
+\]
+\end{frame}
+
+\begin{frame}{Commutator \([S_p^z,S_p^+]\)}
+We derive the quasispin algebra directly from fermion operators.
+
+Using
+\[
+S_p^z = \frac12(N_p-1),\qquad S_p^+ = a_p^\dagger a_{\bar p}^\dagger,
+\]
+we compute
+\[
+[S_p^z,S_p^+]
+=
+\frac12[N_p,a_p^\dagger a_{\bar p}^\dagger].
+\]
+
+Since
+\[
+[N_p,a_p^\dagger]=a_p^\dagger,\qquad [N_p,a_{\bar p}^\dagger]=a_{\bar p}^\dagger,
+\]
+it follows that
+\[
+[N_p,a_p^\dagger a_{\bar p}^\dagger]
+=
+2 a_p^\dagger a_{\bar p}^\dagger.
+\]
+
+Hence
+\[
+[S_p^z,S_p^+] = S_p^+.
+\]
+\end{frame}
+
+\begin{frame}{Commutator \([S_p^z,S_p^-]\)}
+Similarly,
+\[
+[S_p^z,S_p^-]
+=
+\frac12[N_p,a_{\bar p}a_p].
+\]
+
+Using
+\[
+[N_p,a_p]=-a_p,\qquad [N_p,a_{\bar p}]=-a_{\bar p},
+\]
+we find
+\[
+[N_p,a_{\bar p}a_p] = -2 a_{\bar p}a_p.
+\]
+
+Therefore
+\[
+[S_p^z,S_p^-] = -S_p^-.
+\]
+\end{frame}
+
+\begin{frame}{Commutator \([S_p^+,S_p^-]\)}
+Now compute
+\[
+[S_p^+,S_p^-]
+=
+a_p^\dagger a_{\bar p}^\dagger a_{\bar p} a_p
+-
+a_{\bar p} a_p a_p^\dagger a_{\bar p}^\dagger.
+\]
+
+The first term is
+\[
+a_p^\dagger a_{\bar p}^\dagger a_{\bar p} a_p
+=
+a_p^\dagger n_{\bar p} a_p
+=
+n_p n_{\bar p}.
+\]
+
+The second term becomes
+\[
+a_{\bar p}(1-n_p)a_{\bar p}^\dagger
+=
+(1-n_p)(1-n_{\bar p}).
+\]
+
+Subtracting yields
+\[
+[S_p^+,S_p^-]
+=
+n_p+n_{\bar p}-1
+=
+N_p-1
+=
+2S_p^z.
+\]
+\end{frame}
+
+\begin{frame}{Local quasispin algebra}
+We have proved
+\[
+[S_p^z,S_p^\pm] = \pm S_p^\pm,
+\qquad
+[S_p^+,S_p^-] = 2S_p^z.
+\]
+
+So for each pair level \(p\), the operators
+\[
+S_p^+,\qquad S_p^-,\qquad S_p^z
+\]
+generate an \(su(2)\) algebra.
+
+For different levels \(p\neq q\), the operators commute:
+\[
+[S_p^\alpha,S_q^\beta]=0.
+\]
+
+Thus a pairing model is naturally a sum of commuting local quasispins.
+\end{frame}
+
+\begin{frame}{Collective quasispin}
+Defining
+\[
+S^\pm = \sum_p S_p^\pm,
+\qquad
+S^z = \sum_p S_p^z,
+\]
+we immediately get the collective algebra
+\[
+[S^z,S^\pm]=\pm S^\pm,
+\qquad
+[S^+,S^-]=2S^z.
+\]
+
+This is the precise sense in which the pairing problem can be rewritten as a spin problem.
+It also explains the close analogy with the Lipkin Hamiltonian.
+\end{frame}
+
+% =========================================================
+\section{Part IV: Nuclear pairing Hamiltonian}
+% =========================================================
+
+\begin{frame}{Nuclear pairing Hamiltonian}
+A standard reduced pairing Hamiltonian is
+\[
+H_{\mathrm{pair}}
+=
+\sum_{p} \epsilon_p \, N_p
+-
+G \sum_{p,q} P_p^\dagger P_q,
+\]
+where
+\[
+N_p = a_p^\dagger a_p + a_{\bar p}^\dagger a_{\bar p},
+\]
+\[
+P_p^\dagger = a_p^\dagger a_{\bar p}^\dagger,
+\qquad
+P_p = a_{\bar p} a_p.
+\]
+
+Here \(p\) and \(\bar p\) denote time-reversed partners.
+\end{frame}
+
+\begin{frame}{Pairing Hamiltonian in quasispin form}
+Using
+\[
+S_p^+ = P_p^\dagger,\qquad
+S_p^- = P_p,\qquad
+S_p^z = \frac12(N_p-1),
+\]
+the pairing Hamiltonian becomes
+\[
+H_{\mathrm{pair}}
+=
+\sum_p \epsilon_p (2S_p^z+1)
+-
+G \sum_{p,q} S_p^+ S_q^-.
+\]
+
+Thus the pairing Hamiltonian is an interacting quasispin Hamiltonian.
+This is the natural starting point for compact qubit encodings.
+\end{frame}
+
+\begin{frame}{One pair level as one qubit}
+For a single pair \((p,\bar p)\), the paired subspace is two-dimensional:
+\[
+\ket{0}_p \equiv \text{pair unoccupied},
+\qquad
+\ket{1}_p \equiv \text{pair occupied}.
+\]
+
+In this reduced subspace, we may identify
+\[
+S_p^+ = \frac{X_p-iY_p}{2},
+\qquad
+S_p^- = \frac{X_p+iY_p}{2},
+\qquad
+S_p^z = -\frac{Z_p}{2}.
+\]
+
+Also,
+\[
+N_p = 1-Z_p.
+\]
+\end{frame}
+
+\begin{frame}{Pairing Hamiltonian in pair-qubit form}
+Substituting
+\[
+N_p = 1-Z_p,
+\qquad
+P_p^\dagger = \frac{X_p-iY_p}{2},
+\qquad
+P_p = \frac{X_p+iY_p}{2},
+\]
+we obtain
+\[
+H_{\mathrm{pair}}
+=
+\sum_p \epsilon_p(1-Z_p)
+-
+G\sum_{p,q} S_p^+S_q^-.
+\]
+
+Since
+\[
+S_p^+S_q^- + S_q^+S_p^-
+=
+\frac12(X_pX_q+Y_pY_q),
+\]
+the interaction becomes an \(XY\)-type coupling between pair qubits.
+\end{frame}
+
+\begin{frame}{Explicit pairing Hamiltonian for \(\Omega\) pair levels}
+For \(\Omega\) pair orbitals, the pairing Hamiltonian in the paired subspace can be written as
+\[
+H_{\mathrm{pair}}
+=
+\sum_{p=1}^{\Omega} \epsilon_p (1-Z_p)
+-
+\frac{G}{2}\sum_{p\ne q}(X_pX_q+Y_pY_q)
+-
+G\sum_p S_p^+S_p^-.
+\]
+
+Since
+\[
+S_p^+S_p^- = \frac{1-Z_p}{2},
+\]
+this yields
+\[
+H_{\mathrm{pair}}
+=
+\sum_{p=1}^{\Omega}\left(\epsilon_p-\frac{G}{2}\right)(1-Z_p)
+-
+\frac{G}{2}\sum_{p\ne q}(X_pX_q+Y_pY_q).
+\]
+\end{frame}
+
+\begin{frame}{Example: two pair levels in pair-qubit space}
+For two pair orbitals \(p=1,2\), the paired-subspace Hamiltonian becomes
+\[
+H_{\mathrm{pair}}^{(2)}
+=
+\left(\epsilon_1-\frac{G}{2}\right)(1-Z_1)
++
+\left(\epsilon_2-\frac{G}{2}\right)(1-Z_2)
+-
+\frac{G}{2}(X_1X_2+Y_1Y_2).
+\]
+
+This is a compact two-qubit Hamiltonian ready for variational or time-evolution algorithms.
+\end{frame}
+
+\begin{frame}{Full orbital-space example: one pair level}
+Now keep the two fermionic orbitals \(p\) and \(\bar p\) explicitly as two qubits.
+The one-level pairing Hamiltonian is
+\[
+H = \epsilon_p(n_p+n_{\bar p}) - G\, a_p^\dagger a_{\bar p}^\dagger a_{\bar p} a_p.
+\]
+
+Using Jordan--Wigner,
+\[
+n_p=\frac{1-Z_p}{2},\qquad
+n_{\bar p}=\frac{1-Z_{\bar p}}{2}.
+\]
+
+Also
+\[
+a_p^\dagger a_{\bar p}^\dagger a_{\bar p} a_p = n_p n_{\bar p}.
+\]
+
+Therefore
+\[
+H
+=
+\frac{\epsilon_p}{2}(2 - Z_p - Z_{\bar p})
+-
+\frac{G}{4}(1-Z_p)(1-Z_{\bar p}).
+\]
+\end{frame}
+
+\begin{frame}{Expanded one-pair full-orbital Pauli form}
+Expanding the previous result gives
+\[
+H
+=
+\left(\epsilon_p-\frac{G}{4}\right)I
++
+\left(-\frac{\epsilon_p}{2}+\frac{G}{4}\right)Z_p
++
+\left(-\frac{\epsilon_p}{2}+\frac{G}{4}\right)Z_{\bar p}
+-
+\frac{G}{4} Z_p Z_{\bar p}.
+\]
+
+So even the full-orbital one-pair Hamiltonian reduces to a simple two-qubit diagonal Pauli Hamiltonian.
+\end{frame}
+
+\begin{frame}{Full orbital-space example: pair transfer between two levels}
+Consider two pair levels \(p\) and \(q\), with orbitals
+\[
+(p,\bar p,q,\bar q).
+\]
+
+A pairing transfer term is
+\[
+P_p^\dagger P_q + P_q^\dagger P_p
+=
+a_p^\dagger a_{\bar p}^\dagger a_{\bar q} a_q
++
+a_q^\dagger a_{\bar q}^\dagger a_{\bar p} a_p.
+\]
+
+Under Jordan--Wigner, this becomes a Hermitian sum of four-qubit Pauli strings.
+\end{frame}
+
+\begin{frame}{Explicit Pauli decomposition of pair transfer}
+Assume the orbital ordering
+\[
+p < \bar p < q < \bar q.
+\]
+
+Then one finds
+\[
+P_p^\dagger P_q + P_q^\dagger P_p
+=
+\frac{1}{8}
+\Big(
+X_p X_{\bar p} X_q X_{\bar q}
+-
+X_p Y_{\bar p} Y_q X_{\bar q}
+\]
+\[
+\qquad
+-
+Y_p X_{\bar p} X_q Y_{\bar q}
++
+Y_p Y_{\bar p} Y_q Y_{\bar q}
+\Big)
+\]
+up to the parity-string conventions induced by the chosen ordering.
+In adjacent pair ordering, the intermediate \(Z\)-chains cancel within the paired sector, leaving a compact four-body expression.
+\end{frame}
+
+\begin{frame}{Interpretation of the full-orbital pairing terms}
+This explicit decomposition shows:
+\begin{itemize}
+\item full fermionic orbital space leads to longer Pauli strings,
+\item pair-qubit reduction produces shorter and more structured qubit Hamiltonians,
+\item both are exact, but they operate in different Hilbert spaces.
+\end{itemize}
+
+So there is a practical tradeoff:
+\begin{itemize}
+\item full-space mappings are fully general,
+\item reduced quasispin/pair encodings are more compact when the physics is dominated by seniority-zero pairing.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Lipkin versus pairing: structural comparison}
+Both Hamiltonians admit spin-like descriptions:
+\begin{itemize}
+\item Lipkin:
+\[
+H_{\mathrm{Lipkin}}
+=
+\frac{\epsilon}{2}\left(J_z-\frac{N}{2}\right)
++\frac{V}{2}(J_+^2+J_-^2)
++\frac{W}{2}J_z^2,
+\]
+\item Pairing:
+\[
+H_{\mathrm{pair}}
+=
+\sum_p \epsilon_p N_p - G\sum_{p,q} P_p^\dagger P_q.
+\]
+\end{itemize}
+
+Both become sums of Pauli strings after:
+\begin{itemize}
+\item choosing an encoding,
+\item expressing collective or pair operators in terms of \(X,Y,Z\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{General recipe: from second quantization to qubits}
+For a fermionic Hamiltonian:
+\begin{enumerate}
+\item write the Hamiltonian in terms of \(a_p^\dagger,a_p\),
+\item decide whether a reduced quasispin or pair-qubit subspace is appropriate,
+\item otherwise apply Jordan--Wigner or a related mapping,
+\item simplify number and pair operators,
+\item collect the resulting Pauli strings.
+\end{enumerate}
+
+For collective-spin models:
+\begin{enumerate}
+\item write the model in \(J_x,J_y,J_z\) or ladder-operator form,
+\item choose compressed or direct qubit encoding,
+\item expand diagonal and off-diagonal matrix elements into Pauli strings.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Summary}
+In this expanded version we added:
+\begin{itemize}
+\item a fuller Jordan--Wigner derivation,
+\item a formal derivation of the quasispin algebra directly from second quantization,
+\item explicit Pauli decompositions for small pairing examples in full orbital space,
+\item and a more systematic comparison of compact versus full-space encodings.
+\end{itemize}
+
+The unifying message is:
+\[
+\text{fermions or collective spins}
+\;\longrightarrow\;
+\text{spin algebra}
+\;\longrightarrow\;
+\text{Pauli strings}.
+\]
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Quantum Fourier transform: Overarching motivation}
+
+We will start with a reminder on Fourier theory and in particular on discrete Fourier transforms (DFTs).  There are many
+motivations for the DFTs. For those of you familiar with signal
+processing, harmonic oscillations, and many other areas of
+applications, Fourier transforms are almost standard kitchen
+items. 
+
+But first some general motivation for Quantum Fourier Transforms (QFTs).
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Quantum Fourier Transforms (QFTs)}
+
+\begin{enumerate}
+\item QFTs are the quantum analogue of the Discrete Fourier Transforms (DFTs).
+
+\item They  play a crucial role in quantum algorithms like Shor’s Algorithm and Quantum Phase Estimation.
+
+\item QFTs provide an \emph{exponential speedup} over classical Fourier Transform methods.
+\end{enumerate}
+
+\noindent
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Why Quantum Fourier Transforms and exponential speedup}
+
+\begin{enumerate}
+\item Classical Discrete Fourier Transforms (DFTs) require $O(N^2)$ operations.
+
+\item The Fast Fourier Transform (FFT) improves this to $O(N \log N)$ operations.
+
+\item QFTs reduce complexity to $O((\log N)^2)$ using quantum gates.
+\end{enumerate}
+
+\noindent
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Quantum Fourier Transforms and quantum parallelism}
+
+\begin{enumerate}
+\item QFTs act on a \emph{superposition} of states, processing all inputs simultaneously.
+
+\item This is crucial in algorithms like:
+\begin{enumerate}
+
+ \item Shor’s Algorithm for factoring large numbers.
+
+ \item Quantum Phase Estimation (QPE) for eigenvalue extraction.
+\end{enumerate}
+
+\noindent
+\end{enumerate}
+
+\noindent
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Quantum Fourier Transforms and implementations}
+
+\begin{enumerate}
+\item QFTs require only \emph{Hadamard gates and controlled-phase gates}.
+
+\item A 3-qubit QFT circuit uses only $O(n^2)$.
+
+\item This makes QFTs highly efficient for \emph{quantum hardware}.
+\end{enumerate}
+
+\noindent
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Quantum Fourier Transform and Applications in Quantum Computing}
+
+\begin{enumerate}
+\item \textbf{Shor’s Algorithm:} Uses QFTs to find periodicity in modular exponentiation.
+
+\item \textbf{Quantum Phase Estimation (QPE):} QFTs extract eigenvalues of unitary matrices.
+
+\item \textbf{Quantum Signal Processing:} QFTs enable spectral analysis on quantum data. Important for AI applications.
+\end{enumerate}
+
+\noindent
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Quantum Fourier Transforms and Reduced Memory Complexity (not covered)}
+
+\begin{enumerate}
+\item Classical DFTs require $O(N)$ space.
+
+\item QFT store Fourier-transformed coefficients \emph{implicitly} in qubit amplitudes.
+
+\item Only $O(n)$ qubits are needed for a size $N = 2^n$ transformation.
+\end{enumerate}
+
+\noindent
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Quantum Fourier Transforms and Quantum Signal Processing (not covered in this course)}
+
+QFTs enable applications such as:
+\begin{enumerate}
+\item Quantum spectral analysis.
+
+\item Quantum image processing.
+
+\item Quantum filtering and denoising.
+\end{enumerate}
+
+\noindent
+These can enhance AI, cryptography, and data processing.
+\end{frame}
+
+\begin{frame}[plain,fragile]
+\frametitle{Why Quantum Fourier Transforms? Brief summary}
+
+\begin{enumerate}
+\item Quantum Fourier Transforms provide \emph{exponential speedup}
+
+\item They enable key quantum algorithms like \emph{Shor’s Algorithm} and \emph{Quantum Phase Estimation}.
+
+\item QFTs are  more efficient in \emph{memory usage and circuit complexity} than classical methods.
+
+\item Future quantum applications in \emph{signal processing, AI, and cryptography} will heavily rely on QFT.
+\end{enumerate}
+
+\noindent
+\end{frame}
+
+\end{document}

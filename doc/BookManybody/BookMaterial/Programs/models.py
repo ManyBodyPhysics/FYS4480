@@ -557,6 +557,42 @@ def bethe_energy_per_site():
     return 0.25 - np.log(2.0)
 
 
+def jordan_wigner_chain(sites, J=1.0):
+    """The Heisenberg open chain rewritten in spinless fermions.
+
+    The Jordan-Wigner transformation
+
+        S^+_j = c^+_j prod_{k<j} (1 - 2 n_k),   S^z_j = n_j - 1/2
+
+    turns the nearest-neighbour Heisenberg chain into
+
+        H = (J/2) sum_j (c^+_j c_{j+1} + h.c.)
+            + J sum_j (n_j - 1/2)(n_{j+1} - 1/2),
+
+    the strings cancelling between the two sites of a bond.  This function
+    builds the fermionic form directly, in the full 2^N Fock space and with
+    the fermion signs put in by hand, so that its spectrum can be compared
+    with HeisenbergChain.  They agree exactly, which is the point.
+    """
+    dim = 1 << sites
+    H = np.zeros((dim, dim))
+    for state in range(dim):
+        for j in range(sites - 1):
+            n_j = (state >> j) & 1
+            n_k = (state >> (j + 1)) & 1
+            H[state, state] += J * (n_j - 0.5) * (n_k - 0.5)
+            for a, b in ((j, j + 1), (j + 1, j)):        # c^+_a c_b
+                if not (state >> b) & 1 or (state >> a) & 1:
+                    continue
+                intermediate = state & ~(1 << b)
+                sign = (-1) ** bin(intermediate
+                                   & ((1 << b) - 1)).count("1")
+                sign *= (-1) ** bin(intermediate
+                                    & ((1 << a) - 1)).count("1")
+                H[intermediate | (1 << a), state] += 0.5 * J * sign
+    return H
+
+
 # ---------------------------------------------------------------------------
 class CalogeroModel:
     """The Calogero model: N particles on a line with inverse-square coupling,
@@ -785,6 +821,22 @@ def _demo():
     print("the deviation falls off roughly as 1/N^2 -- slowly, which is why")
     print("the one-dimensional chain needed an exact solution rather than a")
     print("diagonalisation.")
+
+    print()
+    print("Finally, the Jordan-Wigner transformation of the open chain: the")
+    print("spin model and the spinless-fermion model must have the same")
+    print("spectrum, not merely the same ground state.")
+    print()
+    print(f"{'N':>4s} {'E_0 (spins)':>16s} {'E_0 (fermions)':>16s} "
+          f"{'spectra agree':>15s}")
+    for n in (4, 6, 8, 10):
+        spins = HeisenbergChain(sites=n, J=1.0, pbc=False,
+                                magnetisation=None).matrix()
+        fermions = jordan_wigner_chain(n, J=1.0)
+        a = np.sort(np.linalg.eigvalsh(spins))
+        b = np.sort(np.linalg.eigvalsh(fermions))
+        print(f"{n:4d} {a[0]:16.10f} {b[0]:16.10f} "
+              f"{str(bool(np.allclose(a, b))):>15s}")
 
     print()
     print("=" * 74)

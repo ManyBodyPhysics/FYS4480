@@ -396,8 +396,9 @@ and it is worth separating them.
 \begin{itemize}
 \item When $q=r$ the operator is
   $a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{q+}$, which is the pairing term
-  again.  These pieces merely renormalise $g\to g+f$; they move whole pairs
-  and change nothing structurally.
+  again.  Together with its Hermitian conjugate, which contributes the same
+  sum over again, these pieces merely renormalise $g\to g+2f$; they move whole
+  pairs and change nothing structurally.
 \item When $q=p$ and $r\ne p$ -- more transparently, in the Hermitian
   conjugate, $a^{\dagger}_{r+}a^{\dagger}_{p-}a_{p-}a_{p+}
   = a^{\dagger}_{r+}\hat{n}_{p-}a_{p+}$ -- a \emph{single} spin-up particle is
@@ -475,7 +476,7 @@ Hamiltonian connects directly to the reference, classified by excitation rank
 and seniority, together with the matrix element.  At $f=0$ there are four such
 determinants and they are all of type~(b).  At $f\ne0$ two further families
 appear, exactly as the figure suggests, and the seniority-zero matrix element
-picks up the promised $g\to g+f$.
+picks up the promised $g\to g+2f$.
 
 \begin{table}[h]
 \centering
@@ -491,7 +492,7 @@ $2p$--$2h$ & $0$ & $4$ & $-g/2$\\
 \midrule
 \multicolumn{4}{l}{\emph{$g=1$, $f=0.05$}}\\
 $1p$--$1h$ & $2$ & $8$ & $\pm f/2$\\
-$2p$--$2h$ & $0$ & $4$ & $-(g+f)/2$\\
+$2p$--$2h$ & $0$ & $4$ & $-(g+2f)/2$\\
 $2p$--$2h$ & $2$ & $8$ & $\pm f/2$\\
 \bottomrule
 \end{tabular}
@@ -678,11 +679,189 @@ model remains unsolved.
 \end{notebox}
 
 %----------------------------------------------------------------------
+\section{The quantum Heisenberg model}
+\label{sec:heisenberg}
+
+\index{Heisenberg model}
+The strong-coupling limit of the previous section produced a model of
+localised spins, and that model deserves a section of its own.  At half
+filling and $U\gg t$ there is no room for an electron to hop, the charge
+degrees of freedom are frozen out, and all that is left on each site is a spin
+one-half.  What remains is the \emph{quantum Heisenberg model},
+\begin{equation}
+  \boxed{\;
+  \hat{H} = J\sum_{\langle ij\rangle}\bm{S}_i\cdot\bm{S}_j
+    - h\sum_i \hat{S}^z_i \;}
+  \label{eq:4-heisenbergH}
+\end{equation}
+with $\bm{S}_i=\tfrac12\bm{\sigma}_i$ built from the Pauli matrices of
+Section~\ref{sec:pauli}, and $h$ an external field which we shall usually set
+to zero.  For $J>0$ neighbouring spins prefer to be antiparallel and the model
+is antiferromagnetic; for $J<0$ it is ferromagnetic.
+
+Written out with $\hat{S}^{\pm}=\hat{S}^x\pm i\hat{S}^y$ the exchange term is
+\begin{equation}
+  \bm{S}_i\cdot\bm{S}_j
+   = \hat{S}^z_i\hat{S}^z_j
+     + \frac12\left(\hat{S}^+_i\hat{S}^-_j
+                    + \hat{S}^-_i\hat{S}^+_j\right),
+  \label{eq:4-heisenbergflipflop}
+\end{equation}
+which is how one implements it.  In the basis of $\bket{\uparrow\downarrow
+\uparrow\cdots}$ configurations the first term is diagonal, contributing
+$\pm J/4$ per bond according to whether the two spins are parallel or not,
+and the second -- the flip-flop term -- exchanges an antiparallel pair.  It is
+worth pausing on what is \emph{absent} here.  Spin operators on different
+sites commute, so unlike every fermionic model in this chapter there is no
+Jordan-Wigner string and no sign to track: the matrix elements of
+Eq.~(\ref{eq:4-heisenbergflipflop}) are $+J/2$ and nothing else.  That single
+fact is why spin models are the natural first target for quantum simulation.
+
+\paragraph{Symmetries.}
+The flip-flop term moves one unit of $S^z$ from one site to another, so the
+total magnetisation $\hat{S}^z_{\mathrm{tot}}=\sum_i\hat{S}^z_i$ commutes with
+$\hat{H}$ and the matrix is block diagonal in it; the ground state of the
+antiferromagnet lies in the $S^z_{\mathrm{tot}}=0$ sector, of dimension
+$\binom{N}{N/2}$.  The full $SU(2)$ is a symmetry as well, $[\hat{H},\bm{S}^2
+_{\mathrm{tot}}]=0$, which is the same structure met in the Lipkin model of
+Section~\ref{sec:lipkin} and in the $S$, $S_z$ classification of the pairing
+model.  On a ring, translations give a further decomposition into momentum
+sectors, and on a bipartite lattice the Marshall sign rule fixes the sign of
+every amplitude in the ground state, which is what makes the
+antiferromagnetic Heisenberg model free of the sign problem in quantum
+Monte Carlo.
+
+\paragraph{Checking the mapping from the Hubbard model.}
+Section~\ref{sec:hubbard} predicted that the half-filled Hubbard ring at
+strong coupling becomes the Heisenberg antiferromagnet with $J=4t^2/U$, and
+that the four-site ring should approach $-3J$: $-2J$ from the exchange and
+$-J$ from the constant $-\tfrac14\hat{n}_i\hat{n}_j$ term on four bonds.  We
+can now verify both halves separately.  Diagonalising
+Eq.~(\ref{eq:4-heisenbergH}) directly on the four-site ring gives
+\begin{equation}
+  E_0 = -2J,
+  \qquad
+  \langle\bm{S}_i\cdot\bm{S}_{i+1}\rangle = -\tfrac12,
+  \qquad
+  \langle\bm{S}_i\cdot\bm{S}_{i+2}\rangle = +\tfrac14,
+  \label{eq:4-heisenberg4ring}
+\end{equation}
+the four nearest-neighbour bonds accounting for the whole energy.  And the
+Hubbard energies of Table~\ref{tab:hubbardstrong}, with the constant $-J$
+removed, converge on that number:
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rrr}
+\toprule
+$U/t$ & $E_0^{\mathrm{Hubbard}}/J$ & $E_0^{\mathrm{Hubbard}}/J+1$\\
+\midrule
+$8$   & $-2.640470$ & $-1.640470$\\
+$16$  & $-2.891457$ & $-1.891457$\\
+$32$  & $-2.971283$ & $-1.971283$\\
+$64$  & $-2.992713$ & $-1.992713$\\
+$128$ & $-2.998171$ & $-1.998171$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The last column tends to $-2$, which is Eq.~(\ref{eq:4-heisenberg4ring}).  The
+two models really are the same at low energy, and we have now checked the
+statement from both sides.
+
+\paragraph{The Bethe ansatz and finite-size scaling.}
+The one-dimensional spin-$\tfrac12$ chain is one of the very few interacting
+many-body systems solved exactly in the thermodynamic limit.  Bethe's ansatz
+gives the ground-state energy per site of the infinite antiferromagnetic
+chain as
+\begin{equation}
+  \frac{E_0}{NJ} \;\longrightarrow\; \frac14 - \ln 2 = -0.4431471806\ldots,
+  \label{eq:4-bethe}
+\end{equation}
+a number that no perturbative expansion in $J$ produces, since $J$ is the only
+scale in the problem.  Table~\ref{tab:heisenberg} compares it with exact
+diagonalisation of finite rings.  The convergence is instructive: the finite
+chains lie \emph{below} the Bethe value and the deviation falls off as
+$1/N^2$, so that even sixteen sites -- a matrix of dimension $12\,870$ in the
+$S^z_{\mathrm{tot}}=0$ sector -- is still $0.7\%$ away.  Extracting the
+thermodynamic limit from small systems is hard, and this is the cheapest
+illustration of why.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrlll}
+\toprule
+$N$ & dimension & $E_0/J$ & $E_0/(NJ)$ & deviation\\
+\midrule
+$4$  & $6$     & $-2.00000000$ & $-0.50000000$ & $-0.056853$\\
+$6$  & $20$    & $-2.80277564$ & $-0.46712927$ & $-0.023982$\\
+$8$  & $70$    & $-3.65109341$ & $-0.45638668$ & $-0.013239$\\
+$10$ & $252$   & $-4.51544635$ & $-0.45154464$ & $-0.008397$\\
+$12$ & $924$   & $-5.38739092$ & $-0.44894924$ & $-0.005802$\\
+$14$ & $3432$  & $-6.26354953$ & $-0.44739640$ & $-0.004249$\\
+$16$ & $12870$ & $-7.14229636$ & $-0.44639352$ & $-0.003246$\\
+\midrule
+$\infty$ & --- & --- & $-0.44314718$ & $\phantom{-}0$\\
+\bottomrule
+\end{tabular}
+\caption{The spin-$\tfrac12$ antiferromagnetic Heisenberg ring, $J=1$, $h=0$,
+diagonalised in the $S^z_{\mathrm{tot}}=0$ sector.  The last row is the
+Bethe-ansatz result~(\ref{eq:4-bethe}) and the last column is
+$E_0/(NJ)-(\tfrac14-\ln2)$.  Beyond twelve sites the matrix is stored sparsely
+and the lowest eigenvalue found by the Lanczos algorithm of
+Section~\ref{sec:lanczos}.}
+\label{tab:heisenberg}
+\end{table}
+
+\paragraph{Back to fermions.}
+Equation~(\ref{eq:4-heisenbergH}) is not of the
+form~(\ref{eq:4-generalH}), but it can be put there.  The Jordan-Wigner
+transformation writes a spin-$\tfrac12$ chain as spinless fermions,
+\begin{equation}
+  \hat{S}^+_j = c^{\dagger}_j\prod_{k<j}\left(1-2\hat{n}_k\right),
+  \qquad
+  \hat{S}^z_j = \hat{n}_j - \tfrac12,
+  \label{eq:4-jordanwigner}
+\end{equation}
+the string of $(1-2\hat{n}_k)=(-1)^{\hat{n}_k}$ supplying exactly the sign
+that the bit-counting algorithm of Section~\ref{sec:bitrep} computes.  On a
+chain with nearest-neighbour couplings the strings cancel between the two
+sites of a bond, and Eq.~(\ref{eq:4-heisenbergH}) becomes
+\begin{equation}
+  \hat{H} = \frac{J}{2}\sum_j
+      \left(c^{\dagger}_jc_{j+1}+\mathrm{h.c.}\right)
+    + J\sum_j
+      \left(\hat{n}_j-\tfrac12\right)\left(\hat{n}_{j+1}-\tfrac12\right),
+  \label{eq:4-heisenbergfermions}
+\end{equation}
+a hopping term plus a nearest-neighbour density-density interaction: the
+Hubbard model of the previous section with the on-site $U$ replaced by an
+inter-site one.  Dropping the $\hat{S}^z\hat{S}^z$ piece leaves the $XY$
+model, which is free fermions and diagonal in momentum space.  Everything in
+this book applies to Eq.~(\ref{eq:4-heisenbergfermions}) without
+modification.
+
+\begin{notebox}
+\textbf{Why this model matters.} The Heisenberg model is the standard model of
+quantum magnetism, and the reference system for essentially every numerical
+method invented for correlated systems -- the density-matrix renormalisation
+group was developed on it, and it is the benchmark for tensor networks,
+quantum Monte Carlo and neural-network wave functions alike.  It is also the
+model closest to a quantum computer: written in Pauli matrices,
+Eq.~(\ref{eq:4-heisenbergH}) is already a sum of tensor products of
+one- and two-qubit operators, with none of the Jordan-Wigner overhead that
+fermionic Hamiltonians incur, so the Trotter circuits of
+Chapter~\ref{chap:hartrefock} and the variational quantum eigensolver apply to
+it directly.
+\end{notebox}
+
+%----------------------------------------------------------------------
 \section{The Calogero-Sutherland model}
 \label{sec:calogero}
 
 \index{Calogero-Sutherland model}
-The three models above are solvable because a symmetry cuts the Hilbert space
+The models above are all solvable because a symmetry cuts the Hilbert space
 down to a manageable size.  The Calogero-Sutherland
 model~\cite{calogero1971,sutherland1971} is solvable for a different and much
 rarer reason: it is \emph{integrable}, and its ground state is known in closed
@@ -781,35 +960,44 @@ models in this chapter can offer.
 \end{notebox}
 
 %----------------------------------------------------------------------
-\section{What the four models have in common}
+\section{What the models have in common}
 \label{sec:modelssummary}
 
-Table~\ref{tab:models} collects the four.  The pattern is worth stating
+Table~\ref{tab:models} collects them.  The pattern is worth stating
 explicitly, because it is the pattern of the whole subject.
 
 \begin{table}[h]
 \centering
 \renewcommand{\arraystretch}{1.3}
-\setlength{\tabcolsep}{7pt}
+\setlength{\tabcolsep}{4pt}
+\small
 \begin{tabular}{lllll}
 \toprule
-\textbf{Model} & \textbf{Single-particle space} & \textbf{Interaction} &
+\textbf{Model} & \textbf{One-body space} & \textbf{Interaction} &
 \textbf{Symmetry used} & \textbf{Exactly solvable}\\
 \midrule
-Lipkin   & two levels, degeneracy $\Omega$ & pair transfer, spin exchange
+Lipkin   & two levels, degeneracy $\Omega$ & pair transfer, exchange
          & $SU(2)$ quasispin & yes, block by block\\
 Pairing  & $L$ doubly degenerate levels & pair transfer
          & $S$, $S_z$, seniority & yes, small $L$\\
+Pairing $+$ p-h & $L$ doubly degenerate levels & $+$ pair breaking
+         & $S_z$ only & yes, small $L$\\
 Hubbard  & lattice sites & on-site $U$
          & $N_{\uparrow}$, $N_{\downarrow}$, momentum & 1D only\\
+Heisenberg & spins on a lattice & exchange $\bm{S}_i\cdot\bm{S}_j$
+         & $S^z_{\mathrm{tot}}$, $SU(2)$ & 1D only\\
 Calogero & continuum, $N$ particles & inverse square
          & integrability & yes, any $N$\\
 \bottomrule
 \end{tabular}
-\caption{The four models of this chapter.  Each is the general
+\caption{The models of this chapter.  Each is the general
 Hamiltonian~(\ref{eq:4-generalH}) with a drastically restricted set of
-two-body matrix elements, and in each case a symmetry reduces the dimension
-of the problem.}
+two-body matrix elements -- the Heisenberg model after the Jordan-Wigner
+transformation~(\ref{eq:4-jordanwigner}) -- and in each case a symmetry
+reduces the dimension of the problem.  The third row is the second row with
+one term added, and the price of that term is visible in the fourth column:
+the seniority is gone, and with it the reduction from thirty-six dimensions
+to six.}
 \label{tab:models}
 \end{table}
 
@@ -1262,8 +1450,168 @@ Eq.~(\ref{eq:4-calogeroenergy}) for $N=2$.  Solving the relative problem
 numerically on a grid, as in Section~\ref{sec:schrodiag}, reproduces
 $\omega(\lambda+\tfrac12)$ to better than $10^{-5}$; see \texttt{models.py}.
 
-\subsection*{Exercise 5: numerical explorations}
-\addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
+\subsection*{Exercise 5: the particle-hole term}
+\label{ex:4-pairingph}
+\addcontentsline{toc}{subsection}{Exercise 5: the particle-hole term}
+
+\begin{enumerate}
+  \item[a)] Show that $\hat{V}_{\mathrm{ph}}$ of Eq.~(\ref{eq:4-Vph})
+  conserves $N_+$ and $N_-$ separately, and hence that $S_z$ remains a good
+  quantum number.
+  \item[b)] Isolate the $q=r$ part of the sum and show that, together with its
+  Hermitian conjugate, it is the pairing interaction with $g$ replaced by
+  $2f$.  Deduce the diagonal matrix element of $\hat{H}$ in the reference
+  determinant of Figure~\ref{fig:4-levels}(a) for $L=4$, $N=4$.
+  \item[c)] Let $\bket{c}$ be that reference determinant and let
+  $\bket{\Phi_1}$ be the one-particle-one-hole determinant of
+  Figure~\ref{fig:4-levels}(c).  Show that
+  $\bracket{\Phi_1}{\hat{V}_{\mathrm{pair}}}{c}=0$ and evaluate
+  $\bracket{\Phi_1}{\hat{V}_{\mathrm{ph}}}{c}$.
+  \item[d)] Show that the seniority is not conserved once $f\ne0$, by
+  exhibiting a state of seniority two that $\hat{H}$ reaches from $\bket{c}$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Every term of $\hat{V}_{\mathrm{ph}}$ contains
+$a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{r+}$: one spin-up operator is
+created and one destroyed, and likewise for spin down.  So
+$[\hat{V}_{\mathrm{ph}},\hat{N}_+]=[\hat{V}_{\mathrm{ph}},\hat{N}_-]=0$, and
+since $S_z=(\hat{N}_+-\hat{N}_-)/2$ it commutes with $S_z$ as well.  Note that
+this is weaker than the pairing case: there $\hat{V}_{\mathrm{pair}}$ commutes
+with $\hat{S}^2$ too, and with the seniority operator; here neither holds.
+
+\paragraph{Answer to b).}
+Setting $q=r$ in Eq.~(\ref{eq:4-Vph}) gives
+\[
+  -\frac{f}{2}\sum_{pq} a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{q+} ,
+\]
+which is $\hat{V}_{\mathrm{pair}}$ with $g\to f$.  Its Hermitian conjugate is
+$-\tfrac{f}{2}\sum_{pq}a^{\dagger}_{q+}a^{\dagger}_{q-}a_{p-}a_{p+}$, and
+relabelling $p\leftrightarrow q$ shows it to be the same sum again.  The two
+together therefore contribute $\hat{V}_{\mathrm{pair}}$ with $g\to2f$, so in
+every seniority-conserving matrix element $g$ is replaced by $g+2f$.  For
+$L=4$, $N=4$ the reference has complete pairs in levels $1$ and $2$, so
+\[
+  \bracket{c}{\hat{H}}{c}
+   = \underbrace{2\xi(0)+2\xi(1)}_{\hat{H}_0}
+     \;-\;\frac{g+2f}{2}\times 2
+   = 2\xi - (g+2f),
+\]
+which is $0.9$ for $\xi=1$, $g=1$, $f=0.05$ -- the first entry of
+Table~\ref{tab:pairingph}.
+
+\paragraph{Answer to c).}
+$\bket{\Phi_1}$ differs from $\bket{c}$ in a single spin-orbital: the
+spin-up particle of level $2$ has moved to level $3$.  A two-body operator can
+connect determinants differing by one orbital only through its
+``$\hat{n}$-contracted'' pieces, and $\hat{V}_{\mathrm{pair}}$ has none: every
+term $a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{q+}$ changes the occupation of
+level $q$ by two and of level $p$ by two, so the two determinants must differ
+by an even number of orbitals in \emph{each} spin channel.  Hence
+$\bracket{\Phi_1}{\hat{V}_{\mathrm{pair}}}{c}=0$, and the particle-hole
+channel of the pure pairing model is empty.
+
+For $\hat{V}_{\mathrm{ph}}$ take the Hermitian-conjugate term with
+$r=3$, $p=q=2$,
+\[
+  -\frac{f}{2}\,a^{\dagger}_{3+}a^{\dagger}_{2-}a_{2-}a_{2+}
+   = -\frac{f}{2}\,a^{\dagger}_{3+}\hat{n}_{2-}a_{2+},
+\]
+which acting on $\bket{c}$ gives exactly $\bket{\Phi_1}$, since level $2$ is
+full.  Collecting the signs from the anticommutations,
+$\bracket{\Phi_1}{\hat{V}_{\mathrm{ph}}}{c}=\pm f/2$, the sign depending on
+the ordering convention for the spin-orbitals.  This is the entry $\pm f/2$ of
+Table~\ref{tab:pairingphcoupling}, and \texttt{models.py} confirms that all
+eight one-particle-one-hole determinants have matrix elements of this
+magnitude.
+
+\paragraph{Answer to d).}
+Take $p=3$, $q=2$, $r=1$ in Eq.~(\ref{eq:4-Vph}):
+$a^{\dagger}_{3+}a^{\dagger}_{3-}a_{2-}a_{1+}$ removes the spin-down particle
+from level $2$ and the spin-up particle from level $1$ and deposits a complete
+pair in level $3$.  The result is Figure~\ref{fig:4-levels}(d): levels $1$ and
+$2$ each retain a single, unpaired particle, so the seniority is two, while
+$\bket{c}$ had seniority zero.  A single application of $\hat{H}$ therefore
+changes the seniority, and the seniority-zero space of
+Section~\ref{sec:pairingmodel} is no longer invariant.
+
+\subsection*{Exercise 6: the Heisenberg model}
+\label{ex:4-heisenberg}
+\addcontentsline{toc}{subsection}{Exercise 6: the Heisenberg model}
+
+\begin{enumerate}
+  \item[a)] Verify Eq.~(\ref{eq:4-heisenbergflipflop}) from the definitions
+  $\hat{S}^{\pm}=\hat{S}^x\pm i\hat{S}^y$, and show that
+  $[\hat{H},\hat{S}^z_{\mathrm{tot}}]=0$.
+  \item[b)] Solve the two-site problem exactly, and identify the singlet and
+  the triplet.
+  \item[c)] For the four-site ring, use the value $E_0=-2J$ quoted in
+  Eq.~(\ref{eq:4-heisenberg4ring}) together with translational invariance to
+  deduce $\langle\bm{S}_i\cdot\bm{S}_{i+1}\rangle$, and then obtain
+  $\langle\bm{S}_i\cdot\bm{S}_{i+2}\rangle$ from the fact that the ground
+  state is a total spin singlet.
+  \item[d)] Verify the Jordan-Wigner
+  transformation~(\ref{eq:4-jordanwigner}): show that the strings cancel for a
+  nearest-neighbour bond and that Eq.~(\ref{eq:4-heisenbergfermions}) follows.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+$\hat{S}^+_i\hat{S}^-_j+\hat{S}^-_i\hat{S}^+_j
+ = 2(\hat{S}^x_i\hat{S}^x_j+\hat{S}^y_i\hat{S}^y_j)$, since the cross terms
+$i(\hat{S}^y_i\hat{S}^x_j-\hat{S}^x_i\hat{S}^y_j)$ cancel between the two
+products.  Adding $\hat{S}^z_i\hat{S}^z_j$ gives
+Eq.~(\ref{eq:4-heisenbergflipflop}).  For the commutator, note that
+$\hat{S}^z_i\hat{S}^z_j$ is diagonal and that $\hat{S}^+_i\hat{S}^-_j$ raises
+$S^z$ on site $i$ and lowers it on site $j$, leaving the sum unchanged.
+
+\paragraph{Answer to b).}
+With one bond, $\hat{H}=J\bm{S}_1\cdot\bm{S}_2
+ = \tfrac{J}{2}\left(\bm{S}^2_{\mathrm{tot}}
+   -\bm{S}^2_1-\bm{S}^2_2\right)
+ = \tfrac{J}{2}\left(S(S+1)-\tfrac32\right)$.
+The singlet $S=0$ has $E=-3J/4$ and the triplet $S=1$ has $E=+J/4$: the
+familiar splitting, and the reason a bond wants to be a singlet.  The gap is
+$J$.
+
+\paragraph{Answer to c).}
+Translational invariance makes all four nearest-neighbour bonds equivalent, so
+$E_0=4J\langle\bm{S}_i\cdot\bm{S}_{i+1}\rangle=-2J$ gives
+$\langle\bm{S}_i\cdot\bm{S}_{i+1}\rangle=-\tfrac12$.  For the second, use
+\[
+  0 = \langle\bm{S}^2_{\mathrm{tot}}\rangle
+    = \sum_{ij}\langle\bm{S}_i\cdot\bm{S}_j\rangle
+    = 4\cdot\tfrac34 + 8\langle\bm{S}_i\cdot\bm{S}_{i+1}\rangle
+      + 4\langle\bm{S}_i\cdot\bm{S}_{i+2}\rangle ,
+\]
+where the singlet ground state has $\bm{S}^2_{\mathrm{tot}}=0$, each site
+contributes $\bm{S}_i^2=\tfrac34$, there are eight ordered nearest-neighbour
+pairs and four ordered next-nearest ones.  Solving,
+$\langle\bm{S}_i\cdot\bm{S}_{i+2}\rangle
+ = -\tfrac14(3-4)=+\tfrac14$.  Both values are confirmed by
+\texttt{models.py}.  The positive next-nearest-neighbour correlation is the
+antiferromagnet: sites two apart are on the same sublattice.
+
+\paragraph{Answer to d).}
+Write $K_j=\prod_{k<j}(1-2\hat{n}_k)$, so that
+$\hat{S}^+_j=c^{\dagger}_jK_j$ and $\hat{S}^-_j=K_jc_j$.  For $j$ and $j+1$,
+$K_jK_{j+1}=(1-2\hat{n}_j)$, since every factor with $k<j$ appears twice and
+$(1-2\hat{n}_k)^2=1$.  Then
+\[
+  \hat{S}^+_j\hat{S}^-_{j+1}
+   = c^{\dagger}_j(1-2\hat{n}_j)c_{j+1}
+   = c^{\dagger}_jc_{j+1},
+\]
+because $c^{\dagger}_j$ acts only on states with $\hat{n}_j=0$, where the
+factor is unity.  The strings have cancelled.  With
+$\hat{S}^z_j=\hat{n}_j-\tfrac12$ the diagonal term is
+$J(\hat{n}_j-\tfrac12)(\hat{n}_{j+1}-\tfrac12)$, and collecting both gives
+Eq.~(\ref{eq:4-heisenbergfermions}).  The function
+\texttt{jordan\_wigner\_chain} in \texttt{models.py} builds the fermionic form
+directly and confirms that the two Hamiltonians have identical spectra, not
+merely identical ground-state energies, for open chains of four to ten sites.
+
+\subsection*{Exercise 7: numerical explorations}
+\addcontentsline{toc}{subsection}{Exercise 7: numerical explorations}
 
 \begin{enumerate}
   \item[a)] Using \texttt{models.py}, plot the Lipkin ground-state energy and
