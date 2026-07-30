@@ -2,20 +2,23 @@
 \label{chap:systems}
 %=============================================================================
 
-The three preceding chapters built a formalism.  This one puts it to work on
-four systems.
+The three preceding chapters built a formalism.  This one puts it to work on a
+handful of systems.
 
 The models collected here share a property that makes them invaluable: each is
 simple enough to be solved exactly, at least for small numbers of particles,
 yet each contains a genuine many-body mechanism.  The Lipkin model has a
 collective mode driven by a two-body interaction that scatters pairs across a
-gap; the pairing model has superfluid correlations; the Fermi-Hubbard model
-has the competition between kinetic delocalisation and on-site repulsion that
-drives the Mott transition; and the Calogero-Sutherland model is exactly
-solvable for arbitrary particle number, with a ground state that is a pure
-Jastrow function.  Because the exact answer is available, these models are the
-benchmarks against which every approximate method in the rest of this book is
-measured.
+gap; the pairing model has superfluid correlations, and a small pair-breaking
+addition to it turns the particle-hole channel on and gives us the model that
+carries the whole of Chapter~\ref{chap:mfapplications}; the Fermi-Hubbard
+model has the competition between kinetic delocalisation and on-site repulsion
+that drives the Mott transition; its own strong-coupling limit is the quantum
+Heisenberg model, the simplest interacting spin system there is; and the
+Calogero-Sutherland model is exactly solvable for arbitrary particle number,
+with a ground state that is a pure Jastrow function.  Because the exact answer
+is available, these models are the benchmarks against which every approximate
+method in the rest of this book is measured.
 
 They also share a structure.  Every one of them is written as
 \begin{equation}
@@ -29,7 +32,11 @@ Chapter~\ref{chap:secondquant}, with a particular and very restricted choice
 of matrix elements.  What differs between them is which single-particle
 states there are and which matrix elements are allowed to be non-zero.  The
 symmetries that follow from those restrictions are what make the models
-tractable, and identifying them is the first step in every case.
+tractable, and identifying them is the first step in every case.  The one
+exception is the Heisenberg model of Section~\ref{sec:heisenberg}, which is
+written in spin operators rather than in fermion operators; the Jordan-Wigner
+transformation of Section~\ref{sec:pauli} maps it back onto
+Eq.~(\ref{eq:4-generalH}), and the mapping is instructive in its own right.
 
 Throughout, the detailed algebra is relegated to the exercises at the end of
 the chapter, where full solutions are given.  The main text states each model,
@@ -342,6 +349,217 @@ perturbation theory, coupled cluster with doubles, and full configuration
 interaction on the same axes and watch each one fail at a different coupling.
 The second midterm of FYS4480 does exactly this, and the exercises at the end
 of this chapter set up the ingredients.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Breaking the pairs: a particle-hole interaction}
+\label{sec:pairingph}
+
+\index{pairing model!with particle-hole interaction}
+\index{seniority}
+The pairing model is almost too well behaved.  Its interaction moves pairs and
+does nothing else, so the seniority -- the number of particles that are not
+part of a complete pair -- is a constant of the motion, and the whole
+calculation collapses into the $\binom{L}{n}$-dimensional seniority-zero space.
+That is a blessing when one wants exact answers cheaply, but it is a
+liability when one wants to test methods, because an entire class of
+excitations is simply absent.  In particular the \emph{particle-hole} channel,
+in which a single particle is lifted across the Fermi level leaving one hole
+behind, is empty: the pairing interaction has no matrix element between the
+reference determinant and any one-particle-one-hole state.  The
+Tamm-Dancoff and random-phase approximations of
+Chapter~\ref{chap:mfapplications} are built entirely on that channel, and on
+the pure pairing model they have nothing to say.
+
+The cure is one extra term.  We keep the level scheme of
+Eq.~(\ref{eq:4-pairingH}) and add an interaction that creates a pair while
+removing two particles which need not be partners,
+\begin{equation}
+  \hat{H} = \hat{H}_0 + \hat{V}_{\mathrm{pair}} + \hat{V}_{\mathrm{ph}},
+  \qquad
+  \hat{V}_{\mathrm{ph}} = -\frac{f}{2}\sum_{pqr}
+    \left(a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{r+}
+      + \mathrm{h.c.}\right),
+  \label{eq:4-Vph}
+\end{equation}
+with $\hat{H}_0$ and $\hat{V}_{\mathrm{pair}}$ exactly as in
+Eq.~(\ref{eq:4-pairingH}).  The new strength $f$ is a second knob.  At $f=0$
+we recover the pairing model and every number of Table~\ref{tab:pairing}; at
+$g=0$ only pair breaking survives; and in between the two mechanisms compete.
+This is the model of Chapter~\ref{chap:mfapplications}, introduced here so
+that it sits alongside the others rather than arriving unannounced.
+
+\paragraph{What the extra term actually does.}
+The triple sum in Eq.~(\ref{eq:4-Vph}) hides three quite different processes,
+and it is worth separating them.
+
+\begin{itemize}
+\item When $q=r$ the operator is
+  $a^{\dagger}_{p+}a^{\dagger}_{p-}a_{q-}a_{q+}$, which is the pairing term
+  again.  These pieces merely renormalise $g\to g+f$; they move whole pairs
+  and change nothing structurally.
+\item When $q=p$ and $r\ne p$ -- more transparently, in the Hermitian
+  conjugate, $a^{\dagger}_{r+}a^{\dagger}_{p-}a_{p-}a_{p+}
+  = a^{\dagger}_{r+}\hat{n}_{p-}a_{p+}$ -- a \emph{single} spin-up particle is
+  carried from level $p$ to level $r$ while its former partner stays put.
+  This is a one-particle-one-hole excitation, and it is the process the
+  pairing interaction cannot perform.
+\item When $q$, $r$ and $p$ are all different, two particles are removed from
+  two different levels and a pair is deposited in a third.  The result is a
+  two-particle-two-hole determinant with two unpaired particles.
+\end{itemize}
+
+Figure~\ref{fig:4-levels} shows the level scheme and one representative of
+each excitation.  Panel~(a) is the reference determinant $\bket{c}$ with the
+two lowest levels filled; panel~(b) is the only kind of excitation the pairing
+term can produce, a whole pair moved across the Fermi level; panels~(c)
+and~(d) are the one-particle-one-hole and pair-breaking
+two-particle-two-hole determinants that only $\hat{V}_{\mathrm{ph}}$ can
+reach.
+
+\begin{figure}[htbp]
+\centering
+\newcommand{\levelpanel}[4]{%
+  \begin{scope}[xshift=#2]
+    \foreach \p in {1,2,3,4}{%
+      \draw[thick,black!75] (-0.10,{0.74*(\p-1)}) -- (1.40,{0.74*(\p-1)});
+      \coordinate (#1-\p-u) at (0.38,{0.74*(\p-1)});
+      \coordinate (#1-\p-d) at (0.92,{0.74*(\p-1)});
+      \fill[white] (#1-\p-u) circle (0.105);
+      \fill[white] (#1-\p-d) circle (0.105);
+      \draw (#1-\p-u) circle (0.105);
+      \draw (#1-\p-d) circle (0.105);
+    }
+    \foreach \s in {#3}{\fill (#1-\s) circle (0.105);}
+    \draw[dashed,black!55] (-0.28,{0.74*1.5}) -- (1.58,{0.74*1.5});
+    \node[below,align=center,font=\footnotesize] at (0.65,-0.34) {#4};
+  \end{scope}}
+\begin{tikzpicture}[x=1cm,y=1cm,
+   pairarrow/.style={-{Stealth[length=5pt,width=4pt]},thick,Blue3,
+                     shorten >=2.5pt,shorten <=2.5pt},
+   pharrow/.style={-{Stealth[length=5pt,width=4pt]},thick,Red3,
+                   shorten >=2.5pt,shorten <=2.5pt}]
+
+\levelpanel{A}{0cm}{1-u,1-d,2-u,2-d}%
+  {(a) reference $\vert c\rangle$\\ seniority $0$}
+\levelpanel{B}{2.55cm}{1-u,1-d,3-u,3-d}%
+  {(b) $2p$--$2h$, $\hat{V}_{\mathrm{pair}}$\\ seniority $0$}
+\levelpanel{C}{5.10cm}{1-u,1-d,2-d,3-u}%
+  {(c) $1p$--$1h$, $\hat{V}_{\mathrm{ph}}$\\ seniority $2$}
+\levelpanel{D}{7.65cm}{1-d,2-u,3-u,3-d}%
+  {(d) $2p$--$2h$, $\hat{V}_{\mathrm{ph}}$\\ seniority $2$}
+
+\draw[pairarrow] (B-2-u) to[bend left=50] (B-3-u);
+\draw[pairarrow] (B-2-d) to[bend right=50] (B-3-d);
+\draw[pharrow]   (C-2-u) to[bend left=50] (C-3-u);
+\draw[pharrow]   (D-2-d) to[bend right=50] (D-3-d);
+\draw[pharrow]   (D-1-u) to[out=155,in=205,looseness=1.1] (D-3-u);
+
+\node[left,font=\footnotesize] at (-0.20,0)    {$p=1$};
+\node[left,font=\footnotesize] at (-0.20,0.74) {$p=2$};
+\node[left,font=\footnotesize] at (-0.20,1.48) {$p=3$};
+\node[left,font=\footnotesize] at (-0.20,2.22) {$p=4$};
+\node[right,font=\footnotesize] at (9.25,{0.74*1.5}) {$\varepsilon_F$};
+\node[font=\footnotesize] at (0.38,2.62) {$+$};
+\node[font=\footnotesize] at (0.92,2.62) {$-$};
+\node[left,font=\footnotesize] at (-0.20,2.62) {$\sigma=$};
+\end{tikzpicture}
+\caption{Single-particle levels of the pairing model with $L=4$ doubly
+degenerate levels, $\varepsilon_p=(p-1)\xi$, and $N=4$ particles.  Each level
+carries two slots, $\sigma=+$ and $\sigma=-$; a filled circle is an occupied
+spin-orbital and an open circle an empty one, so an open circle below
+$\varepsilon_F$ is a hole.  (a) The reference determinant.  (b) A
+two-particle-two-hole excitation produced by the pairing term
+$\hat{V}_{\mathrm{pair}}$: a complete pair is carried from level $2$ to level
+$3$ and the seniority stays zero.  (c) A one-particle-one-hole excitation and
+(d) a pair-breaking two-particle-two-hole excitation, both of which require
+the particle-hole term $\hat{V}_{\mathrm{ph}}$ of Eq.~(\ref{eq:4-Vph}) and
+both of which have seniority two.  In the pure pairing model panels (c) and
+(d) are unreachable from (a).}
+\label{fig:4-levels}
+\end{figure}
+
+\paragraph{The price: the seniority-zero space is no longer closed.}
+Because $\hat{V}_{\mathrm{ph}}$ breaks pairs, we can no longer work with the
+six pair configurations of Section~\ref{sec:pairingmodel}.  What survives is
+the weaker statement that both terms conserve $N_+$ and $N_-$ separately, so
+$S_z=(N_+-N_-)/2$ is still a good quantum number.  For $L=4$ and $N=4$ the
+full space has $\binom{8}{4}=70$ determinants and the balanced sector
+$S_z=0$ has $36$ -- six times the seniority-zero dimension, and the price of
+one extra term.
+
+Table~\ref{tab:pairingphcoupling} makes the content of
+Figure~\ref{fig:4-levels} quantitative.  It lists every determinant that the
+Hamiltonian connects directly to the reference, classified by excitation rank
+and seniority, together with the matrix element.  At $f=0$ there are four such
+determinants and they are all of type~(b).  At $f\ne0$ two further families
+appear, exactly as the figure suggests, and the seniority-zero matrix element
+picks up the promised $g\to g+f$.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{llrl}
+\toprule
+\textbf{Channel} & \textbf{Seniority} & \textbf{Number} &
+$\bra{\Phi}\hat{H}\bket{c}$\\
+\midrule
+\multicolumn{4}{l}{\emph{$g=1$, $f=0$: the pairing model}}\\
+$2p$--$2h$ & $0$ & $4$ & $-g/2$\\
+\midrule
+\multicolumn{4}{l}{\emph{$g=1$, $f=0.05$}}\\
+$1p$--$1h$ & $2$ & $8$ & $\pm f/2$\\
+$2p$--$2h$ & $0$ & $4$ & $-(g+f)/2$\\
+$2p$--$2h$ & $2$ & $8$ & $\pm f/2$\\
+\bottomrule
+\end{tabular}
+\caption{The determinants connected to the reference by one action of the
+Hamiltonian, for $L=4$ and $N=4$ in the $S_z=0$ sector.  With $f=0$ only the
+seniority-zero two-particle-two-hole states are reached, which is why the
+particle-hole channel of the pairing model is empty.  Computed by
+\texttt{models.py}.}
+\label{tab:pairingphcoupling}
+\end{table}
+
+The effect on the ground state is shown in Table~\ref{tab:pairingph}.  The
+first row is the pairing model, and reproduces the $g=1$ entry of
+Table~\ref{tab:pairing} exactly -- a check worth making, since the two rows
+are computed in spaces of dimension six and thirty-six respectively.  As $f$
+grows the correlation energy grows much faster than the reference energy
+falls, which is the signature of a second, competing mean field; the whole of
+Chapter~\ref{chap:mfapplications} is about deciding which of the two to build
+the fluctuations on.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rrlll}
+\toprule
+$g$ & $f$ & $E_{\mathrm{ref}}$ & $E_0$ (exact) & $E_{\mathrm{corr}}$\\
+\midrule
+$1.00$ & $0.00$ & $1.0000$ & $\phantom{-}0.63554847$ & $-0.36445153$\\
+$1.00$ & $0.05$ & $0.9000$ & $\phantom{-}0.45058234$ & $-0.44941766$\\
+$1.00$ & $0.20$ & $0.6000$ & $-0.18348455$ & $-0.78348455$\\
+$1.00$ & $0.50$ & $0.0000$ & $-1.69173670$ & $-1.69173670$\\
+\bottomrule
+\end{tabular}
+\caption{The pairing model with a particle-hole term, $L=4$, $N=4$, $\xi=1$,
+diagonalised in the $36$-dimensional $S_z=0$ sector.  The first row is the
+pairing model and agrees with Table~\ref{tab:pairing} to all digits shown.}
+\label{tab:pairingph}
+\end{table}
+
+\begin{notebox}
+\textbf{Why this model matters.} A model with one interaction tests one
+approximation.  With two competing interactions and two strengths, the same
+system can be driven from a regime where a pairing mean field is right to one
+where a particle-hole mean field is, and one can watch each approximation fail
+where it should.  That is precisely what Chapter~\ref{chap:mfapplications}
+does with the Tamm-Dancoff approximation, the random-phase approximation, BCS
+and the quasiparticle RPA, all measured against the exact diagonalisation of
+this section.
 \end{notebox}
 
 %----------------------------------------------------------------------
