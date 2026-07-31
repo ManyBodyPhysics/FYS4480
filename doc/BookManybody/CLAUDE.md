@@ -35,6 +35,10 @@ chapter9.tex       Many-body perturbation theory: Brillouin-Wigner and
 chapter10.tex      Coupled cluster theory: the exponential ansatz, full CCD
                    and CCSD derivations, the pairing model, and unitary
                    coupled cluster with Trotterisation (the VQE ansatz)
+chapter11.tex      Applications: the two-dimensional quantum dot. Coulomb
+                   integrals in closed form, then HF, MP2, CCD, CCSD and
+                   UCCSD against exact diagonalisation. Source material:
+                   qdhfmbptccsd_uccsd.ipynb
 add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
 calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  combinatorial.tex
 week40.do.txt  pmm.tex  dft.do.txt  mbpt.ipynb  cctheory.tex  week48.ipynb
