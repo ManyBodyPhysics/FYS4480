@@ -334,19 +334,11 @@ def two_electron_fci(h, v):
     p = np.array([a for a, _ in pairs])
     q = np.array([b for _, b in pairs])
 
-    H = v[np.ix_(p, q, p, q)][np.arange(dim)[:, None], np.arange(dim)[None, :]]
-    H = np.array([[v[p[i], q[i], p[j], q[j]] for j in range(dim)]
-                  for i in range(dim)])
-    for i in range(dim):
-        for j in range(dim):
-            if q[i] == q[j]:
-                H[i, j] += h[p[i], p[j]]
-            if p[i] == p[j]:
-                H[i, j] += h[q[i], q[j]]
-            if p[i] == q[j]:
-                H[i, j] -= h[q[i], p[j]]
-            if q[i] == p[j]:
-                H[i, j] -= h[p[i], q[j]]
+    H = v[p[:, None], q[:, None], p[None, :], q[None, :]].copy()
+    H += np.where(q[:, None] == q[None, :], h[p[:, None], p[None, :]], 0.0)
+    H += np.where(p[:, None] == p[None, :], h[q[:, None], q[None, :]], 0.0)
+    H -= np.where(p[:, None] == q[None, :], h[q[:, None], p[None, :]], 0.0)
+    H -= np.where(q[:, None] == p[None, :], h[p[:, None], q[None, :]], 0.0)
     return float(np.linalg.eigvalsh(H)[0]), dim
 
 
