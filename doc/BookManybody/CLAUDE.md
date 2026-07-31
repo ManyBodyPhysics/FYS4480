@@ -39,6 +39,13 @@ chapter11.tex      Applications: the two-dimensional quantum dot. Coulomb
                    integrals in closed form, then HF, MP2, CCD, CCSD and
                    UCCSD against exact diagonalisation. Source material:
                    qdhfmbptccsd_uccsd.ipynb
+chapter12.tex      Elements from statistics: PDFs and moments, the central
+                   limit theorem, correlation time and blocking, random
+                   numbers, importance sampling, random walks and the
+                   diffusion equation, Markov chains, detailed balance and
+                   Metropolis, Fokker-Planck and Langevin, and a first VMC on
+                   the chapter-11 dot. Source material: stat1.tex, stat2.tex
+                   (whose C++ listings are replaced by Python)
 add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
 calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  combinatorial.tex
 week40.do.txt  pmm.tex  dft.do.txt  mbpt.ipynb  cctheory.tex  week48.ipynb
@@ -161,8 +168,9 @@ and `models.ipynb` plus `Hubbard.ipynb` to
 `chapter4.tex`, `fullci.ipynb` to `chapter5.tex`, `hartreefock.ipynb` to
 `chapter6.tex`, `tdarpa.ipynb` to `chapter7.tex`, `dft.ipynb` to
 `chapter8.tex`, `mbptheory.ipynb` to `chapter9.tex` and
-`coupledcluster.ipynb` to `chapter10.tex` and `quantumdots.ipynb` to
-`chapter11.tex`; the older set is `notation.ipynb`,
+`coupledcluster.ipynb` to `chapter10.tex`, `quantumdots.ipynb` to
+`chapter11.tex` and `statistics.ipynb` to `chapter12.tex`; the older set is
+`notation.ipynb`,
 `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
 `vmcdmc.ipynb`, … New book material that includes runnable code should have a
 notebook counterpart, and new notebooks must be registered in `_toc.yml`.
@@ -201,6 +209,7 @@ written for chapters 1 and 2 are:
 | `mbpt.py` | 9 | Rayleigh-Schroedinger to any order by recursion, Brillouin-Wigner self-consistently, four models, size extensivity, convergence |
 | `coupledcluster.py` | 10 | General spin-orbital CCSD with intermediates, CCD, a validating FCI in the same basis, the order-by-order expansion, and `UnitaryCC` (UCCD/UCCSD, exact and Trotterised) |
 | `quantumdot.py` | 11 | 2D quantum dot: closed-form Coulomb integrals, the antisymmetrised two-body matrix, a fast two-electron FCI, and the whole chapter-10 hierarchy applied to it. Takes a few minutes to run |
+| `montecarlo.py` | 12 | RNG tests (RANDU planes), brute-force and importance-sampled integration, CLT, autocorrelation time and blocking, random walks and entropy, Markov chains and detailed balance, Metropolis, and a first VMC on the chapter-11 dot. Runs in about 35 s |
 
 All of these run on `numpy` alone except `hartreefock.py`, which also needs
 `scipy.linalg` for `expm`/`logm`; `rpa.py`, which needs `scipy.linalg`,

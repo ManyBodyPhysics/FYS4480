@@ -180,6 +180,35 @@
      - Still to add if wanted: perturbative triples, open shells (N=4),
        twelve electrons, and the Monte Carlo comparison promised in the text
 
+###  Elements from statistics  (chapter12.tex, done)
+     - Condensed from stat1.tex and stat2.tex, C++ listings replaced by Python
+       in montecarlo.py; the quantum dot of chapter 11 is the running example
+     - PDFs, moments, the transformation rule; central limit theorem derived
+       via the delta-function/Fourier route; the sqrt(N) law
+     - Correlation time tau = 1 + 2 sum kappa_d and blocking.  Worked example:
+       Metropolis on a unit Gaussian with step 0.5 gives tau = 54.5, so the
+       naive error 0.0031 should be 0.0231 and 100000 samples are worth 1836
+     - Random numbers: RANDU passes the uniformity and lag-1 tests and fails
+       the three-dimensional one (all triples on 15 planes)
+     - Importance sampling; the 6D integral 3 pi^3 = 93.018830 with a 51x
+       error reduction; the local energy E_L = H Psi / Psi and the
+       zero-variance principle
+     - Random walks -> diffusion equation with D = l^2/2eps; the binomial
+       solution; entropy on a finite ring reaching ln 101
+     - Markov chains, master equation, detailed balance, Metropolis; step-size
+       study showing tau minimised near 50% acceptance
+     - Fokker-Planck and Langevin, fluctuation-dissipation, Einstein relation,
+       set up for the quantum force 2 grad Psi / Psi in the next chapters
+     - First VMC: at alpha = 1 without the Jastrow the trial function IS the
+       minimal-basis HF determinant, so E must be 3.253314 (table 11.1) -- it
+       comes out 1.4 sigma away.  E(alpha) is known in closed form, optimum
+       alpha = 0.7631 at E = 3.168384.  With the Jastrow (a = 1 from the cusp
+       condition) alpha = 0.98, beta = 0.40 gives 3.000298(365) with variance
+       0.00195, below CCSD's 3.013626 because there is no basis-set error
+     - Still to write: VMC proper (importance-sampled Metropolis-Hastings with
+       the quantum force, gradient-descent optimisation, blocking in anger),
+       then DMC; both on the same dots
+
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
 ###  SRG and IMSRG

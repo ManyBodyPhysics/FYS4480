@@ -2,3 +2,1059 @@
 \label{chap:statelements}
 %=============================================================================
 
+Every method so far has expanded the wave function in a basis.  Hartree-Fock
+picked the best single determinant in that basis, perturbation theory and
+coupled cluster added determinants systematically, and full configuration
+interaction used all of them.  The error was always a truncation -- of the
+cluster operator, of the perturbation series, of the single-particle space --
+and Chapter~\ref{chap:applications} showed that for a realistic system the
+last of these can be the largest.
+
+The stochastic methods of the coming chapters do something different.  They
+never write down a basis at all.  A variational Monte Carlo calculation takes
+a trial wave function, evaluates it at points drawn at random from
+$|\Psi_T|^2$, and averages; a diffusion Monte Carlo calculation lets an
+ensemble of walkers evolve under an equation that is the Schr\"odinger
+equation in imaginary time.  Neither has a basis-set error.  What they have
+instead is a \emph{statistical} error, and controlling it needs a set of tools
+that has not appeared in this book yet.
+
+That is what this chapter is for.  We need probability distributions and their
+moments, the central limit theorem and the $1/\sqrt{N}$ law that follows from
+it, the correlation time that tells us how many of our samples were really
+independent, random walks and their relation to the diffusion equation,
+Markov chains and detailed balance, and finally the Metropolis algorithm --
+which is how one samples a distribution that can only be evaluated up to an
+unknown constant, the situation every many-body problem presents.
+
+The examples are all Python and all in \texttt{montecarlo.py}, and wherever it
+is possible the running example is the quantum dot of
+Chapter~\ref{chap:applications}.  The chapter ends with a first variational
+Monte Carlo calculation on that system.  The check that ties the two chapters
+together is worth stating in advance: with the variational parameter set to
+one, the trial function of Section~\ref{sec:firstvmc} \emph{is} the
+minimal-basis Hartree-Fock determinant, so the Monte Carlo energy must come
+out at $3.25331414$, the first row of Table~\ref{tab:11-hfconvergence}.  It
+does.
+
+%----------------------------------------------------------------------
+\section{Stochastic variables and probability distributions}
+\label{sec:pdfs}
+
+\index{stochastic variable}\index{probability distribution function}
+A \emph{stochastic variable} is characterised by two things: a \emph{domain}
+$\mathbb{D}=\{x\}$ of the values it can take, and a \emph{probability
+distribution function} (PDF) $p(x)$ on that domain.  We write stochastic
+variables as capitals, $X,Y,\dots$, and their values as lower case.
+
+For a discrete domain the PDF is a probability outright,
+$p(x)=\mathrm{Prob}(X=x)$; the tossing of two dice has the domain
+$\{2,3,\dots,12\}$ and the PDF $\{1/36,2/36,\dots,1/36\}$.  For a continuous
+domain $p(x)$ is a \emph{density}: the probability of finding $X$ in an
+infinitesimal interval about $x$ is $p(x)\,dx$, and
+\begin{equation}
+  \mathrm{Prob}(a\le X\le b) = \int_a^b p(x)\,dx .
+  \label{eq:12-probinterval}
+\end{equation}
+The \emph{cumulative distribution function} (CDF) is
+\begin{equation}
+  P(x) = \mathrm{Prob}(X\le x) = \int_{-\infty}^{x}p(x')\,dx',
+  \qquad p(x) = \frac{d}{dx}P(x),
+  \label{eq:12-cdf}
+\end{equation}
+and it will turn out to be the single most useful object in the chapter: it is
+what converts one distribution into another.
+
+Every PDF must be positive and normalised,
+\begin{equation}
+  p(x)\ge0,
+  \qquad
+  \sum_{x_i\in\mathbb{D}}p(x_i) = 1
+  \quad\text{or}\quad
+  \int_{\mathbb{D}}p(x)\,dx = 1 .
+  \label{eq:12-normalisation}
+\end{equation}
+Three continuous distributions will be used throughout: the uniform
+distribution on $[a,b]$, $p(x)=1/(b-a)$; the exponential,
+$p(x)=\lambda e^{-\lambda x}$ on $[0,\infty)$, which is the PDF of
+radioactive decay; and the Gaussian or normal distribution
+\begin{equation}
+  p(x) = \frac{1}{\sigma\sqrt{2\pi}}
+    \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right),
+  \label{eq:12-gaussian}
+\end{equation}
+which the central limit theorem will single out.
+
+\paragraph{Expectation values and moments.}
+For any function $h$ on the domain,
+\begin{equation}
+  \mean{h} = \int h(x)p(x)\,dx .
+  \label{eq:12-expectation}
+\end{equation}
+Taking $h(x)=x^n$ gives the \emph{moments} $\mean{x^n}$.  The zeroth moment is
+the normalisation, the first is the \emph{mean} $\mu=\mean{x}$, and the second
+\emph{central} moment is the \emph{variance},
+\begin{equation}
+  \sigma^2 = \mean{(x-\mean{x})^2} = \mean{x^2}-\mean{x}^2 ,
+  \label{eq:12-variance}
+\end{equation}
+whose square root $\sigma$ is the standard deviation, the ``spread'' of $p$
+about its mean.  Two PDFs are equal if and only if all their moments are.
+
+\paragraph{Transforming a distribution.}
+Let $Y=h(X)$ with $h$ strictly monotonic, so that $h^{-1}$ exists.  Then
+$P_Y(y)=P_X(h^{-1}(y))$ for increasing $h$, and differentiating,
+\begin{equation}
+  \boxed{\;
+  p_Y(y) = p_X\!\left(h^{-1}(y)\right)
+    \left|\frac{d}{dy}h^{-1}(y)\right| \;}
+  \label{eq:12-transform}
+\end{equation}
+This is the formula that turns a uniform random number generator into a
+generator for anything we like, and Section~\ref{sec:mcintegration} uses it
+repeatedly.
+
+\paragraph{Several variables, and independence.}
+A PDF of one variable is \emph{univariate}, of several \emph{multivariate}.
+The variables $\{X_i\}$ are \emph{independent} -- equivalently
+\emph{uncorrelated} -- when the joint PDF factorises,
+\begin{equation}
+  P(x_1,\dots,x_n) = \prod_{i=1}^{n}p_i(x_i).
+  \label{eq:12-independence}
+\end{equation}
+Qualitatively: the events tell each other nothing.  Independence is what makes
+the next two sections work, and its failure is what
+Section~\ref{sec:correlations} is about.
+
+%----------------------------------------------------------------------
+\section{The central limit theorem and the square-root law}
+\label{sec:clt}
+
+\index{central limit theorem}
+Suppose we draw $m$ values from a PDF $p(x)$ with mean $\mu$ and variance
+$\sigma^2$ and form their average $z=(x_1+\dots+x_m)/m$.  What is the PDF of
+$z$?  Writing the constraint as a $\delta$-function and using its integral
+representation,
+\begin{equation}
+  \tilde{p}(z) = \frac{1}{2\pi}\int_{-\infty}^{\infty}\!dq\,
+    e^{\imath q(z-\mu)}
+    \left[\int_{-\infty}^{\infty}\!dx\,p(x)\,
+      e^{\imath q(\mu-x)/m}\right]^m .
+  \label{eq:12-cltintegral}
+\end{equation}
+Expanding the inner integral, the term linear in $(\mu-x)$ vanishes because
+$\mu$ is the mean, and what is left is
+\begin{equation}
+  \int_{-\infty}^{\infty}\!dx\,p(x)\,e^{\imath q(\mu-x)/m}
+   = 1 - \frac{q^2\sigma^2}{2m^2} + \cdots ,
+  \label{eq:12-cltexpansion}
+\end{equation}
+so that in the limit $m\to\infty$
+\begin{equation}
+  \boxed{\;
+  \tilde{p}(z) = \frac{1}{\sqrt{2\pi}\,(\sigma/\sqrt{m})}
+    \exp\left(-\frac{(z-\mu)^2}{2(\sigma/\sqrt{m})^2}\right) \;}
+  \label{eq:12-clt}
+\end{equation}
+The average of $m$ samples from \emph{any} distribution with a finite
+variance is normally distributed, with the same mean and with variance
+$\sigma^2/m$.  Nothing about $p$ survives except its first two moments.
+
+Two consequences run through everything that follows.  First, the error on a
+Monte Carlo average is
+\begin{equation}
+  \sigma_m = \frac{\sigma}{\sqrt{m}}
+  \qquad\text{or, for a measured variance,}\qquad
+  \sigma_m \approx \frac{\sigma}{\sqrt{m-1}} ,
+  \label{eq:12-sqrtlaw}
+\end{equation}
+independent of the dimensionality of the problem.  A deterministic quadrature
+on a grid needs $N^d$ points to reach a given accuracy in $d$ dimensions;
+Monte Carlo needs $N$, whatever $d$ is.  That is the entire reason for using
+it on a many-body system.  Second, the convergence is slow: a factor of ten in
+accuracy costs a factor of a hundred in samples.  Everything called
+``variance reduction'' is an attempt to shrink $\sigma$ rather than to
+increase $m$.
+
+Table~\ref{tab:12-clt} checks the theorem numerically on the least Gaussian
+distribution imaginable, the uniform one.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rlll}
+\toprule
+$m$ & mean of averages & variance & $\sigma^2/m$\\
+\midrule
+$1$  & $0.503888$ & $0.084564$ & $0.083333$\\
+$2$  & $0.498682$ & $0.041927$ & $0.041667$\\
+$5$  & $0.499093$ & $0.016636$ & $0.016667$\\
+$10$ & $0.500667$ & $0.008348$ & $0.008333$\\
+$50$ & $0.500089$ & $0.001689$ & $0.001667$\\
+\bottomrule
+\end{tabular}
+\caption{The central limit theorem for the uniform distribution on $[0,1)$,
+which has $\mu=1/2$ and $\sigma^2=1/12$.  Each row is $20\,000$ averages of
+$m$ samples.  Computed by \texttt{montecarlo.py}.}
+\label{tab:12-clt}
+\end{table}
+
+%----------------------------------------------------------------------
+\section{Correlated data and the true error}
+\label{sec:correlations}
+
+\index{autocorrelation time}\index{blocking}
+Equation~(\ref{eq:12-sqrtlaw}) assumed independent samples.  A Markov chain
+does not produce them: consecutive configurations of a Metropolis walk are
+similar by construction, and using $\sigma/\sqrt{n}$ then \emph{understates}
+the error.  This is the one mistake that makes a Monte Carlo result look
+better than it is, and it is worth setting up properly.
+
+Writing the sample variance of $mn$ measurements out in full,
+\begin{equation}
+  \sigma_m^2 = \frac{\sigma^2}{n}
+   + \frac{2}{mn^2}\sum_{\alpha=1}^{m}\sum_{k<l}^{n}
+     \left(x_{\alpha,k}-\mean{X_m}\right)
+     \left(x_{\alpha,l}-\mean{X_m}\right),
+  \label{eq:12-variancesplit}
+\end{equation}
+the first term is what the central limit theorem gives and the second is the
+covariance, which vanishes only if the measurements are independent.
+Collecting the covariance into partial sums over the separation $d$,
+\begin{equation}
+  f_d = \frac{1}{nm}\sum_{\alpha=1}^{m}\sum_{k=1}^{n-d}
+    \left(x_{\alpha,k}-\mean{X_m}\right)
+    \left(x_{\alpha,k+d}-\mean{X_m}\right),
+  \qquad
+  \kappa_d = \frac{f_d}{\sigma^2},
+  \label{eq:12-autocorrelation}
+\end{equation}
+defines the \emph{autocorrelation function} $\kappa_d$, which starts at
+$\kappa_0=1$ and decays.  The variance becomes
+\begin{equation}
+  \boxed{\;
+  \sigma_m^2 = \frac{\tau}{n}\,\sigma^2 ,
+  \qquad
+  \tau = 1 + 2\sum_{d=1}^{n-1}\kappa_d \;}
+  \label{eq:12-tau}
+\end{equation}
+with $\tau$ the \emph{autocorrelation time}.  For independent data $\tau=1$.
+Otherwise the effect of correlation is exactly a reduction of the number of
+measurements,
+\begin{equation}
+  n_{\mathrm{eff}} = \frac{n}{\tau},
+  \label{eq:12-neff}
+\end{equation}
+and the honest error bar is $\sqrt{\tau}$ times the naive one.
+
+How much this matters is easy to underestimate.  Sampling a unit Gaussian by
+Metropolis with a step of $0.5$ -- a perfectly reasonable-looking choice, with
+an acceptance rate of $90\%$ -- gives $\tau=54.5$ over $100\,000$ samples.
+The naive error is $0.0031$ and the true one $0.0231$, a factor of seven, and
+the $100\,000$ measurements were worth $1836$ independent ones.
+
+\paragraph{Blocking.}
+Computing $\tau$ requires the whole time series and a decision about where to
+truncate the sum, which is awkward.  The \emph{blocking} method of Flyvbjerg
+and Petersen avoids both.  Average neighbouring pairs of measurements to
+produce a shorter series, compute the naive error of that, and repeat.  The
+naive error grows as the blocks get longer and correlations are averaged
+away, and then plateaus; the plateau is the true error.  For the chain above
+the naive error climbs from $0.0031$ through $0.0085$ and $0.0181$ to a
+plateau near $0.022$, which is the corrected error found from $\tau$.  No
+autocorrelation function, and no truncation decision.
+
+\begin{notebox}
+\textbf{The practical rule.} Always report an error obtained either from the
+autocorrelation time or from blocking.  A naive $\sigma/\sqrt{N}$ from a
+Markov chain is not a small underestimate; in the example above it is wrong
+by a factor of seven, and in a poorly tuned calculation it can be wrong by
+orders of magnitude.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Random numbers}
+\label{sec:randomnumbers}
+
+\index{random number generator}
+Everything rests on a supply of numbers uniformly distributed on $[0,1)$.  Real
+generators are deterministic algorithms -- hence \emph{pseudo}-random -- and
+the classic construction is the linear congruential generator
+\begin{equation}
+  x_{n+1} = \left(a\,x_n + c\right)\bmod M ,
+  \label{eq:12-lcg}
+\end{equation}
+which is fast, has period at most $M$, and can be very bad.  The instructive
+failure is RANDU, with $a=65539$, $c=0$ and $M=2^{31}$, once shipped with
+IBM's scientific library.  It is uniform, and its consecutive values are
+uncorrelated at lag one.  But it satisfies
+\begin{equation}
+  x_{n+2} = 6x_{n+1} - 9x_n \pmod{1}
+  \label{eq:12-randu}
+\end{equation}
+\emph{exactly}, so every triple of consecutive numbers lies on one of fifteen
+planes in the unit cube.  A one-dimensional integral sampled with RANDU is
+fine; a three-dimensional one is systematically wrong.
+Table~\ref{tab:12-randu} shows the two tests that pass and the one that
+fails.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lrrr}
+\toprule
+generator & $\chi^2$, ten bins & lag-one correlation & triples on planes\\
+\midrule
+RANDU & $8.46$  & $\phantom{-}0.0051$ & $100.0\%$\\
+PCG64 & $11.39$ & $-0.0108$ & $\phantom{00}0.0\%$\\
+\bottomrule
+\end{tabular}
+\caption{Two generators on $20\,000$ numbers.  Both are uniform and both are
+uncorrelated at lag one; only the three-dimensional test separates them.
+Computed by \texttt{montecarlo.py}.}
+\label{tab:12-randu}
+\end{table}
+
+The lesson is that a generator must be tested in the dimension in which it
+will be used.  We use \texttt{numpy}'s PCG64 throughout, always seeded
+explicitly, so that every number in this chapter can be reproduced exactly.
+
+%----------------------------------------------------------------------
+\section{Monte Carlo integration and importance sampling}
+\label{sec:mcintegration}
+
+\index{Monte Carlo integration}\index{importance sampling}
+The crudest scheme takes
+\begin{equation}
+  I = \int_0^1 f(x)\,dx = \mean{f}
+   \approx \frac{1}{N}\sum_{i=1}^{N}f(x_i),
+  \qquad x_i \sim \mathcal{U}(0,1),
+  \label{eq:12-bruteforce}
+\end{equation}
+with the error $\sigma/\sqrt{N}$ from Eq.~(\ref{eq:12-sqrtlaw}).  Applied to
+$\int_0^1 4/(1+x^2)\,dx=\pi$ the product $\text{error}\times\sqrt{N}$ stays at
+$0.64$ from $N=10^3$ to $N=10^6$, which is the square-root law in the most
+direct form available.
+
+\paragraph{Changing variables.}
+Random numbers arrive uniform on $[0,1)$; integrals rarely do.  Conserving
+probability, $p(y)\,dy = p(x)\,dx = dx$, and integrating,
+\begin{equation}
+  \boxed{\; x = P(y) = \int_{-\infty}^{y}p(y')\,dy' \;}
+  \label{eq:12-inversecdf}
+\end{equation}
+so that $y=P^{-1}(x)$ generates $p$ from a uniform $x$.  Two examples.  The
+uniform distribution on $[a,b]$ gives $y=a+(b-a)x$.  The exponential
+$p(y)=\lambda e^{-\lambda y}$ has $P(y)=1-e^{-\lambda y}$ and therefore
+\begin{equation}
+  y = -\frac{1}{\lambda}\ln(1-x),
+  \label{eq:12-exponentialsample}
+\end{equation}
+which \texttt{montecarlo.py} confirms has mean and variance $1$ at
+$\lambda=1$.  The Gaussian CDF cannot be inverted in closed form, and the
+standard trick is to do two dimensions at once: with $u_1,u_2$ uniform,
+\begin{equation}
+  y = \sqrt{-2\ln(1-u_1)}\,\cos(2\pi u_2)
+  \label{eq:12-boxmuller}
+\end{equation}
+is normally distributed with zero mean and unit variance.  This is the
+Box-Muller transformation, and it is Eq.~(\ref{eq:12-transform}) applied to
+the polar form of the two-dimensional Gaussian.
+
+\paragraph{Acceptance-rejection.}
+When even that fails there is von Neumann's method: bound $p$ by $M$ on
+$[a,b]$, draw $x$ uniformly on $[a,b]$ and $s$ uniformly on $[0,M]$, and
+accept $x$ if $s<p(x)$.  It needs nothing but the ability to evaluate $p$, and
+it wastes a fraction $1-\bar{p}/M$ of the samples.  Applied to
+$\int_0^3 e^x\,dx$ it gives $19.0375\pm0.0626$ against the exact $19.0855$.
+
+\paragraph{Importance sampling.}
+The real gain comes from choosing what to sample.  If $p$ is a normalised PDF
+resembling the integrand,
+\begin{equation}
+  I = \int_a^b F(y)\,dy = \int_a^b p(y)\,\frac{F(y)}{p(y)}\,dy
+   \approx \frac{1}{N}\sum_{i=1}^{N}\frac{F(y_i)}{p(y_i)},
+  \qquad y_i\sim p ,
+  \label{eq:12-importance}
+\end{equation}
+and the variance is that of $F/p$ rather than of $F$.  If $p$ follows $F$
+closely the ratio is nearly constant and the variance nearly vanishes.  The
+conditions on $p$ are that it be normalisable and positive, analytically
+integrable, and that its integral be invertible so that
+Eq.~(\ref{eq:12-inversecdf}) can be used.
+
+The six-dimensional integral
+\begin{equation}
+  I = \int d^3x\,d^3y\;e^{-x^2-y^2}\left(\bm{x}-\bm{y}\right)^2
+    = 3\pi^3 = 93.018830\ldots
+  \label{eq:12-sixdim}
+\end{equation}
+makes the point.  Sampling uniformly in a box wastes almost every point on the
+exponential tails.  Writing $e^{-x^2}=\sqrt{\pi}$ times a normal density of
+variance $\tfrac12$ and sampling that instead leaves only the polynomial
+$(\bm{x}-\bm{y})^2$ to average.  Table~\ref{tab:12-sixdim} compares the two.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{rll}
+\toprule
+$N$ & brute force & importance sampling\\
+\midrule
+$10^4$ & $81.33\pm31.36$ & $91.44\pm0.74$\\
+$10^5$ & $86.76\pm10.42$ & $93.08\pm0.24$\\
+$10^6$ & $91.21\pm\phantom{0}3.88$ & $92.99\pm0.08$\\
+\bottomrule
+\end{tabular}
+\caption{The six-dimensional integral~(\ref{eq:12-sixdim}), exact value
+$3\pi^3=93.018830$.  At $N=10^6$ importance sampling is $51$ times more
+accurate, which by the square-root law is a factor of $2600$ in computer time.
+Computed by \texttt{montecarlo.py}.}
+\label{tab:12-sixdim}
+\end{table}
+
+\paragraph{Why quantum mechanics forces this on us.}
+The expectation value of a Hamiltonian in a trial state can be rewritten as
+\begin{equation}
+  \mean{H}
+   = \int dx\,\Psi^{*}(x)\hat{H}\Psi(x)
+   = \int dx\,\left|\Psi(x)\right|^2\,
+     \frac{\hat{H}\Psi(x)}{\Psi(x)}
+   = \int dx\,p(x)\,E_L(x),
+  \label{eq:12-localenergy}
+\end{equation}
+with $p=|\Psi|^2$ the quantum-mechanical probability density and
+\begin{equation}
+  \boxed{\;E_L(x) = \frac{\hat{H}\Psi(x)}{\Psi(x)}\;}
+  \label{eq:12-localenergydef}
+\end{equation}
+the \emph{local energy}.  This is importance sampling with the best possible
+choice of $p$, and it has a remarkable property.  If $\Psi$ is an exact
+eigenfunction then $E_L$ is the constant $E$ everywhere, the average is $E$
+with \emph{zero variance}, and a single sample suffices.  For an approximate
+$\Psi$ the local energy is smooth near the exact solution and the variance is
+small.  The whole of variational Monte Carlo is contained in
+Eq.~(\ref{eq:12-localenergy}), and the variance of $E_L$ is a direct measure
+of how good the trial function is -- often a more sensitive one than the
+energy itself.
+
+%----------------------------------------------------------------------
+\section{Random walks and the diffusion equation}
+\label{sec:randomwalks}
+
+\index{random walk}\index{diffusion equation}
+Sampling $|\Psi|^2$ for a many-body system cannot be done by inverting a
+cumulative distribution: we do not know the normalisation, and in $3N$
+dimensions we could not invert it if we did.  What is done instead is to build
+a random walk whose stationary distribution is the one we want.  This section
+sets up the machinery; the next turns it into an algorithm.
+
+A walker on a line takes steps $\pm l$ with equal probability.  After $n$
+steps
+\begin{equation}
+  \mean{x} = 0,
+  \qquad
+  \mean{x^2} = n\,l^2 ,
+  \label{eq:12-walkmoments}
+\end{equation}
+so the walker spreads as $\sqrt{t}$ rather than $t$: this is diffusion, not
+transport.  Simulating $4000$ walkers reproduces
+$\mean{x^2}/n = 1.00$ to two decimals at every $n$ from $25$ to $400$.
+
+That this really is diffusion can be shown exactly.  Fick's law states that
+the particle flux is proportional to the gradient of the density,
+$j=-D\,\partial w/\partial x$, and combining it with the continuity equation
+gives the diffusion equation
+\begin{equation}
+  \frac{\partial w(x,t)}{\partial t}
+   = D\,\frac{\partial^2 w(x,t)}{\partial x^2}.
+  \label{eq:12-diffusion}
+\end{equation}
+Now discretise the walk instead.  With $x=il$, $t=n\epsilon$ and the
+transition probability
+\begin{equation}
+  W_{ij} = \begin{cases}\tfrac12 & |i-j|=1\\ 0 & \text{otherwise,}\end{cases}
+  \label{eq:12-walktransition}
+\end{equation}
+the distribution after one step obeys $w_i(t+\epsilon)=\sum_j W_{ij}w_j(t)$,
+that is
+\begin{equation}
+  w(x,t+\epsilon) = \tfrac12 w(x+l,t) + \tfrac12 w(x-l,t).
+  \label{eq:12-walkrecursion}
+\end{equation}
+Subtracting $w(x,t)$ from both sides and multiplying by $l^2/\epsilon$,
+\begin{equation}
+  \frac{w(x,t+\epsilon)-w(x,t)}{\epsilon}
+   = \frac{l^2}{2\epsilon}\,
+     \frac{w(x+l,t)-2w(x,t)+w(x-l,t)}{l^2},
+  \label{eq:12-walktodiffusion}
+\end{equation}
+which is precisely the discretised diffusion
+equation~(\ref{eq:12-diffusion}) with
+\begin{equation}
+  D = \frac{l^2}{2\epsilon}.
+  \label{eq:12-diffusioncoefficient}
+\end{equation}
+A random walk \emph{is} the diffusion equation, and iterating the transition
+matrix \emph{is} solving it.  Starting all walkers at the origin, the exact
+solution of the discrete problem is the binomial distribution
+\begin{equation}
+  w_i(n\epsilon) = \frac{1}{2^n}\binom{n}{\tfrac12(n+i)},
+  \qquad |i|\le n ,
+  \label{eq:12-binomial}
+\end{equation}
+which by the central limit theorem tends to a Gaussian of variance $2Dt$.
+This connection is the reason diffusion Monte Carlo works at all: the
+Schr\"odinger equation in imaginary time is a diffusion equation, and it can
+therefore be solved by letting walkers diffuse.
+
+\paragraph{Equilibrium and entropy.}
+Left on an infinite line the walkers spread for ever.  On a finite ring they
+cannot, and what happens instead is worth watching.  Define the entropy of the
+walker distribution,
+\begin{equation}
+  S = -\sum_i w_i\ln w_i ,
+  \label{eq:12-entropy}
+\end{equation}
+which is zero when all walkers sit on one site and $\ln N_{\mathrm{sites}}$
+when they are spread evenly.  For $4000$ walkers on $101$ sites with periodic
+boundaries, $S$ rises from $0.69$ after one step through $3.05$ after a
+hundred to $4.55$ after three thousand, approaching the uniform value
+$\ln 101 = 4.6151$ and then staying there.
+
+The system has reached a steady state, and nothing in the dynamics put it
+there.  It happened because the walk can reach every site from every other,
+given enough time.  That property is called \emph{ergodicity}, and it is the
+first of the two conditions the next section will impose.
+
+%----------------------------------------------------------------------
+\section{Markov chains, detailed balance and the Metropolis algorithm}
+\label{sec:metropolis}
+
+\index{Markov chain}\index{detailed balance}\index{Metropolis algorithm}
+A \emph{Markov process} is a random walk in which the next state depends only
+on the present one.  Written as a matrix acting on the probability vector,
+\begin{equation}
+  w_i(t+1) = \sum_j W_{ij}\,w_j(t),
+  \qquad \sum_i W_{ij} = 1 ,
+  \label{eq:12-markov}
+\end{equation}
+and iterating drives $w$ towards the eigenvector of $\bm{W}$ with eigenvalue
+one -- the steady state.  For the four-state example
+\begin{equation}
+  \bm{W} = \begin{pmatrix}
+    1/4 & 1/9 & 3/8 & 1/3\\
+    2/4 & 2/9 & 0   & 1/3\\
+    0   & 1/9 & 3/8 & 0\\
+    1/4 & 5/9 & 2/8 & 1/3
+  \end{pmatrix},
+  \label{eq:12-examplematrix}
+\end{equation}
+starting from $\bm{w}=(1,0,0,0)$ the iteration converges in $22$ steps to
+\[
+  \bm{w}_{\infty} =
+  (0.244318,\;0.319602,\;0.056818,\;0.379261),
+\]
+which is exactly the eigenvector, computed independently.  The starting point
+is irrelevant: any initial distribution converges to the same steady state.
+
+\paragraph{The master equation and detailed balance.}
+In continuous time Eq.~(\ref{eq:12-markov}) becomes the master equation
+\begin{equation}
+  \frac{dw_i(t)}{dt}
+   = \sum_j\left[W(j\to i)w_j - W(i\to j)w_i\right],
+  \label{eq:12-master}
+\end{equation}
+the rate in balanced against the rate out.  At the steady state the left-hand
+side vanishes, but that alone does not guarantee convergence to the right
+distribution -- cyclic solutions can satisfy it.  The stronger condition,
+which does, is \emph{detailed balance}:
+\begin{equation}
+  \boxed{\;W(j\to i)\,w_j = W(i\to j)\,w_i
+  \qquad\Longleftrightarrow\qquad
+  \frac{W(j\to i)}{W(i\to j)} = \frac{w_i}{w_j} \;}
+  \label{eq:12-detailedbalance}
+\end{equation}
+Every pair of states exchanges probability at equal rates in both directions.
+Note what has happened: only the \emph{ratio} $w_i/w_j$ appears.  The
+normalisation of the target distribution has disappeared, and for a many-body
+system that normalisation is exactly what we cannot compute.
+
+\paragraph{The algorithm.}
+Split the transition probability into a proposal and an acceptance,
+$W(i\to j)=T(i\to j)A(i\to j)$.  If the proposal is symmetric,
+$T(i\to j)=T(j\to i)$, detailed balance requires
+\begin{equation}
+  \frac{A(j\to i)}{A(i\to j)} = \frac{w_i}{w_j}.
+  \label{eq:12-acceptanceratio}
+\end{equation}
+This fixes only the ratio.  To accept as many moves as possible we set the
+larger of the two to one, giving the Metropolis choice
+\begin{equation}
+  \boxed{\;
+  A(i\to j) = \min\left(1,\;\frac{w_j}{w_i}\right) \;}
+  \label{eq:12-metropolis}
+\end{equation}
+A move to a more probable state is always accepted; a move to a less probable
+one is accepted with probability $w_j/w_i$, tested against a uniform random
+number.  The algorithm is then:
+
+\begin{svgraybox}
+\begin{enumerate}
+\item Start from a configuration $x^{(0)}$.
+\item Propose $x'$ from a symmetric distribution $T(x'|x^{(k)})$.
+\item Accept, $x^{(k+1)}=x'$, with probability $\min(1,w(x')/w(x^{(k)}))$;
+  otherwise set $x^{(k+1)}=x^{(k)}$ and keep the old configuration.
+\item Discard an initial burn-in, then accumulate averages.
+\end{enumerate}
+\end{svgraybox}
+
+\noindent
+Rejected moves count: the old configuration is measured again.  Omitting it
+biases the average.
+
+\paragraph{Choosing the step.}
+The proposal width is the one free parameter and it matters more than it
+looks.  Table~\ref{tab:12-step} shows why.  A small step is almost always
+accepted but moves nowhere; a large one is almost always rejected and the
+walker stands still.  Both produce long correlation times and therefore large
+error bars, and the optimum is in between.  The usual rule of thumb is to tune
+for an acceptance rate near one half.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rrrl}
+\toprule
+step & acceptance & $\tau$ & $\mean{x^2}$\\
+\midrule
+$0.1$  & $97.7\%$ & $585.10$ & $0.6226\pm0.0314$\\
+$0.5$  & $88.2\%$ & $\phantom{0}39.37$ & $0.6247\pm0.0071$\\
+$2.0$  & $57.3\%$ & $\phantom{00}4.03$ & $0.6166\pm0.0031$\\
+$8.0$  & $16.1\%$ & $\phantom{00}9.65$ & $0.6183\pm0.0058$\\
+$32.0$ & $\phantom{0}4.0\%$ & $\phantom{0}43.51$ & $0.5835\pm0.0118$\\
+\bottomrule
+\end{tabular}
+\caption{Metropolis sampling of $\exp(-x^2/2-x^4/10)$, whose normalisation is
+never computed, with $200\,000$ samples at each step size.  The error bars are
+corrected for the autocorrelation time by Eq.~(\ref{eq:12-tau}).  Computed by
+\texttt{montecarlo.py}.}
+\label{tab:12-step}
+\end{table}
+
+%----------------------------------------------------------------------
+\section{Fokker-Planck and Langevin equations}
+\label{sec:fokkerplanck}
+
+\index{Fokker-Planck equation}\index{Langevin equation}
+A symmetric proposal is wasteful: it proposes moves into regions where the
+target density is negligible, and they are rejected.  The cure is to bias the
+proposal towards the high-density regions, which requires knowing how a
+diffusing particle behaves under a force.  That is the content of the
+Fokker-Planck and Langevin equations, and it is the basis of the
+importance-sampled Monte Carlo of the next chapters.
+
+Consider a transition probability $W(\bm{x},t|\bm{x}_0,t_0)$.  Composing two
+successive transitions gives the Einstein-Smoluchowski-Kolmogorov-Chapman
+relation
+\begin{equation}
+  W(\bm{x},t|\bm{x}_0,t_0)
+   = \int d\bm{x}'\,W(\bm{x},t|\bm{x}',t')\,W(\bm{x}',t'|\bm{x}_0,t_0),
+  \label{eq:12-eskc}
+\end{equation}
+which simply says that the particle must be somewhere at the intermediate
+time.  Expanding for a short time step in the moments
+\begin{equation}
+  M_n = \frac{1}{\tau}\int d\xi\,\xi^n\,W(\bm{x}+\xi,\tau|\bm{x})
+      = \frac{\mean{[\Delta x(\tau)]^n}}{\tau},
+  \label{eq:12-moments}
+\end{equation}
+and keeping only $n=1$ and $n=2$ -- higher moments vanish faster than $\tau$
+for a diffusive process -- gives the \emph{Fokker-Planck equation}
+\begin{equation}
+  \boxed{\;
+  \frac{\partial W}{\partial t}
+   = -\frac{\partial}{\partial x}\left(M_1 W\right)
+   + \frac{1}{2}\frac{\partial^2}{\partial x^2}\left(M_2 W\right) \;}
+  \label{eq:12-fokkerplanck}
+\end{equation}
+The first term is drift and the second diffusion.  With $M_2=2D$ constant and
+$M_1$ a drift velocity the solution is a Gaussian, and it is that Gaussian
+which will be used as the proposal distribution $T$.
+
+The same physics from the particle's point of view is the \emph{Langevin
+equation}.  A particle in a fluid feels a systematic drag proportional to its
+velocity and a random force from the molecular collisions,
+\begin{equation}
+  \frac{d\bm{v}}{dt} = -\xi\bm{v} + \bm{F}(t).
+  \label{eq:12-langevin}
+\end{equation}
+Requiring that the velocity distribution relax to the equipartition value
+$\mean{v^2}=3kT/m$ fixes the strength of the random force,
+\begin{equation}
+  \mean{\bm{F}(t)\cdot\bm{F}(t')}
+   = 6\,\frac{kT}{m}\,\xi\,\delta(t-t'),
+  \label{eq:12-fluctuationdissipation}
+\end{equation}
+the \emph{fluctuation-dissipation theorem}: the same collisions that damp the
+motion also drive it, and their magnitudes are not independent.  Integrating
+the Langevin equation gives the mean square displacement, which for long times
+becomes $\mean{(\bm{r}-\bm{r}_0)^2}=6kTt/m\xi$, and comparing with
+$\mean{(\bm{r}-\bm{r}_0)^2}=6Dt$ gives the Einstein relation
+\begin{equation}
+  D = \frac{kT}{m\xi}.
+  \label{eq:12-einstein}
+\end{equation}
+
+\begin{notebox}
+\textbf{Where this is going.} In a quantum Monte Carlo calculation the role of
+the drift is played by the \emph{quantum force}
+$\bm{F}=2\nabla\Psi_T/\Psi_T$, which pushes the walkers towards regions where
+the trial function is large.  Proposing moves from the Fokker-Planck Green's
+function rather than uniformly, and correcting the acceptance ratio for the
+resulting asymmetry of $T$ -- the Metropolis-Hastings algorithm -- raises the
+acceptance rate and shortens the correlation time substantially.  The same
+equation, with the drift supplied by the trial function and the diffusion by
+the kinetic energy, is what propagates the walkers in diffusion Monte Carlo.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{A first variational Monte Carlo calculation}
+\label{sec:firstvmc}
+
+\index{variational Monte Carlo}
+We can now put all of it to work on the two-electron quantum dot of
+Chapter~\ref{chap:applications}.  Take the trial function
+\begin{equation}
+  \Psi_T(\bm{r}_1,\bm{r}_2;\alpha,\beta)
+   = \exp\left(-\frac{\alpha\omega}{2}
+       \left(r_1^2+r_2^2\right)\right)\,
+     \exp\left(\frac{a\,r_{12}}{1+\beta r_{12}}\right),
+  \label{eq:12-trialfunction}
+\end{equation}
+the first factor a scaled oscillator orbital for each electron and the second
+a Jastrow factor with $a=1$ fixed by the Coulomb cusp condition for two
+electrons of opposite spin in two dimensions.  The energy is the average of
+the local energy~(\ref{eq:12-localenergydef}) over $|\Psi_T|^2$, sampled by
+Metropolis.
+
+\paragraph{The check.}
+Switch the Jastrow factor off and set $\alpha=1$.  The trial function is then
+the product of the two lowest oscillator orbitals, which is exactly the
+minimal-basis Hartree-Fock determinant of Chapter~\ref{chap:applications}, and
+the local energy collapses to
+\begin{equation}
+  E_L = 2\hbar\omega + \frac{1}{r_{12}} .
+  \label{eq:12-localenergyalphaone}
+\end{equation}
+The average must therefore be
+$2\hbar\omega+\sqrt{\pi/2}\sqrt{\hbar\omega}=3.253314$, the first row of
+Table~\ref{tab:11-hfconvergence}.  Two hundred thousand samples give
+$3.240689\pm0.009144$, which is $1.4$ standard errors away.  The two chapters
+agree.
+
+\paragraph{Varying $\alpha$.}
+Still without the Jastrow factor, the averages can be done analytically as
+well.  Under $|\Psi_T|^2\propto\exp(-\alpha\omega(r_1^2+r_2^2))$ one has
+$\mean{r_1^2+r_2^2}=2/\alpha\omega$, and scaling lengths gives
+$\mean{1/r_{12}}=\sqrt{\pi/2}\sqrt{\alpha\omega}$, so
+\begin{equation}
+  E(\alpha) = \omega\alpha + \frac{\omega}{\alpha}
+   + \sqrt{\frac{\pi}{2}}\sqrt{\alpha\omega},
+  \label{eq:12-alphaenergy}
+\end{equation}
+with a minimum at $\alpha=0.7631$ where $E=3.168384$.  Every Monte Carlo
+number can thus be checked against a formula, which is what
+Table~\ref{tab:12-vmc} does.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{rllrl}
+\toprule
+$\alpha$ & VMC & exact, Eq.~(\ref{eq:12-alphaenergy}) & deviation &
+$\mathrm{Var}(E_L)$\\
+\midrule
+$0.7000$ & $3.190122\pm0.013352$ & $3.177169$ & $1.0\,\sigma$ & $6.27$\\
+$0.7631$ & $3.151440\pm0.006886$ & $3.168384$ & $2.5\,\sigma$ & $2.86$\\
+$0.8500$ & $3.168811\pm0.006859$ & $3.181969$ & $1.9\,\sigma$ & $2.50$\\
+$1.0000$ & $3.247816\pm0.010337$ & $3.253314$ & $0.5\,\sigma$ & $4.41$\\
+\bottomrule
+\end{tabular}
+\caption{Variational Monte Carlo for the two-electron dot at $\hbar\omega=1$
+without the Jastrow factor, $200\,000$ samples per row, errors corrected for
+the autocorrelation time.  Computed by \texttt{montecarlo.py}.}
+\label{tab:12-vmc}
+\end{table}
+
+The agreement is within statistics, but only just, and the reason is
+instructive.  The variance of the local energy is a few units, and it is
+dominated by the rare configurations in which the two electrons approach and
+$1/r_{12}$ diverges.  A heavy-tailed distribution makes the estimate of the
+variance itself unstable: repeating the calculation with a different seed can
+change the numbers in the last column of Table~\ref{tab:12-vmc} by a factor of
+several, and with them the error bars.  This is a mild version of the Cauchy
+problem of Exercise~\ref{ex:12-moments}, and it is exactly what the Jastrow
+factor removes -- the cusp condition $a=1$ makes the divergence of $1/r_{12}$
+cancel against the kinetic term, so the local energy stays finite as
+$r_{12}\to0$.
+
+\paragraph{Switching the Jastrow factor on.}
+With $a=1$ enforcing the cusp condition, the local energy stays finite as
+$r_{12}\to0$, and Table~\ref{tab:12-vmcjastrow} shows what happens.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{rrll}
+\toprule
+$\alpha$ & $\beta$ & energy & $\mathrm{Var}(E_L)$\\
+\midrule
+$0.98$ & $0.30$ & $3.006917\pm0.001390$ & $0.01775$\\
+$0.98$ & $0.40$ & $3.000298\pm0.000365$ & $0.00195$\\
+$0.98$ & $0.48$ & $3.001957\pm0.000779$ & $0.00439$\\
+$0.96$ & $0.44$ & $3.000618\pm0.000562$ & $0.00220$\\
+$1.00$ & $0.44$ & $3.001696\pm0.000775$ & $0.00362$\\
+\midrule
+\multicolumn{2}{l}{exact (Taut)} & $3.000000$ & $0$\\
+\multicolumn{2}{l}{CCSD, $42$ orbitals} & $3.013626$ & ---\\
+\multicolumn{2}{l}{Hartree-Fock, $42$ orbitals} & $3.161921$ & ---\\
+\bottomrule
+\end{tabular}
+\caption{The same calculation with the Jastrow factor, $60\,000$ samples per
+row.  The variance has fallen by three orders of magnitude and the energy sits
+on the exact value.  The last three rows are Taut's analytic result and
+Tables~\ref{tab:11-twoelectron} and~\ref{tab:11-hierarchy}.  Computed by
+\texttt{montecarlo.py}.}
+\label{tab:12-vmcjastrow}
+\end{table}
+
+Two things are worth drawing out.  The variance has fallen from about $3$ to
+about $0.002$ -- three orders of magnitude -- and it is telling us something
+the energy cannot.  Both quantities are second order in the error
+$\delta=\Psi_T-\Psi_0$: writing
+$E_L-E_0=(\hat{H}-E_0)\delta/\Psi_T=\bigO(\delta)$ shows that the variance is
+$\bigO(\delta^2)$, and the variational principle makes the energy error
+$\bigO(\delta^2)$ as well.  The difference is that we know what the variance
+should be.  It is exactly zero for the exact wave function, so it is an
+\emph{absolute} measure of quality, whereas the energy can only be compared
+with an $E_0$ we do not have.  For that reason minimising the variance rather
+than the energy is a standard optimisation strategy, and often a more stable
+one, since the target value is known in advance.
+
+And the energy itself, $3.000298\pm0.000365$, is below the CCSD result of
+$3.013626$ from Chapter~\ref{chap:applications}.  That is not because the
+many-body treatment is better -- CCSD is exact for two electrons in its basis.
+It is because there is no basis here at all.  The Jastrow factor depends on
+$r_{12}$ directly and reproduces the Coulomb cusp exactly, which no finite sum
+of oscillator products can do.  The basis-set error that dominated
+Chapter~\ref{chap:applications} has simply been eliminated, and replaced by a
+statistical error that we know how to estimate and can reduce by running
+longer.
+
+That trade is the subject of the chapters that follow.
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: distributions and their moments}
+\label{ex:12-moments}
+\addcontentsline{toc}{subsection}{Exercise 1: distributions and moments}
+
+\begin{enumerate}
+  \item[a)] Compute the mean and variance of the uniform distribution on
+  $[a,b]$ and of the exponential distribution with rate $\lambda$.
+  \item[b)] Use Eq.~(\ref{eq:12-transform}) to find the PDF of $Y=X^2$ when
+  $X$ is uniform on $[0,1]$.
+  \item[c)] Show that the Cauchy distribution
+  $p(x)=1/[\pi(1+x^2)]$ has no finite variance, and say what that does to the
+  central limit theorem.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+For the uniform distribution, $\mean{x}=(a+b)/2$ and
+$\mean{x^2}=(b^3-a^3)/3(b-a)$, so
+$\sigma^2=\mean{x^2}-\mean{x}^2=(b-a)^2/12$.  On $[0,1]$ this is $1/12$, the
+value used in Table~\ref{tab:12-clt}.  For the exponential,
+$\mean{x}=1/\lambda$ and $\mean{x^2}=2/\lambda^2$, so $\sigma^2=1/\lambda^2$:
+mean and standard deviation coincide, which is why radioactive-decay
+statistics are so noisy.
+
+\paragraph{Answer to b).}
+With $y=h(x)=x^2$ and $h^{-1}(y)=\sqrt{y}$ on $[0,1]$,
+$|dh^{-1}/dy|=1/2\sqrt{y}$, and since $p_X=1$,
+\[
+  p_Y(y) = \frac{1}{2\sqrt{y}},\qquad 0\le y\le 1 .
+\]
+It is normalised, and it diverges at the origin -- squaring a uniform variable
+piles the values up near zero.  This is the mechanism by which the
+inverse-CDF method works, run backwards.
+
+\paragraph{Answer to c).}
+$\mean{x^2}=\int x^2/[\pi(1+x^2)]\,dx$ diverges, since the integrand tends to
+$1/\pi$ at large $|x|$.  The central limit theorem does not apply: averages of
+$m$ Cauchy variables are Cauchy distributed with the \emph{same} width,
+independently of $m$, so the error does not fall as $1/\sqrt{m}$ or at all.
+Heavy tails are not an academic worry -- the $1/r_{12}$ tail in
+Table~\ref{tab:12-vmc} is a mild version of the same problem, and it is what
+makes those error bars unreliable.
+
+\subsection*{Exercise 2: sampling and importance sampling}
+\label{ex:12-sampling}
+\addcontentsline{toc}{subsection}{Exercise 2: sampling}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:12-exponentialsample}) and explain why
+  $1-x$ may be replaced by $x$.
+  \item[b)] Verify the Box-Muller transformation~(\ref{eq:12-boxmuller}) by
+  transforming the two-dimensional Gaussian to polar coordinates.
+  \item[c)] For $I=\int_0^1 e^{-x}\,dx$ compare the variance of brute-force
+  sampling with importance sampling using $p(x)\propto e^{-x}$ on $[0,1]$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The CDF is $P(y)=\int_0^y\lambda e^{-\lambda y'}dy'=1-e^{-\lambda y}$.
+Setting $x=P(y)$ and inverting gives $y=-\ln(1-x)/\lambda$.  Since $x$ is
+uniform on $[0,1)$, so is $1-x$, and the two forms are statistically
+identical; the version with $1-x$ is safer only because it avoids $\ln 0$
+when the generator can return exactly zero.
+
+\paragraph{Answer to b).}
+For two independent standard normals the joint density is
+$e^{-(x^2+y^2)/2}/2\pi$.  In polar coordinates this is
+$re^{-r^2/2}dr\,d\theta/2\pi$, which factorises: $\theta$ is uniform on
+$[0,2\pi)$ and $r$ has CDF $1-e^{-r^2/2}$, invertible to
+$r=\sqrt{-2\ln(1-u_1)}$.  Taking $x=r\cos\theta$ with $\theta=2\pi u_2$ gives
+Eq.~(\ref{eq:12-boxmuller}), and $y=r\sin\theta$ gives a second, independent
+normal variable for free.
+
+\paragraph{Answer to c).}
+Brute force averages $f=e^{-x}$ over the uniform distribution, giving
+$\sigma^2=\mean{e^{-2x}}-\mean{e^{-x}}^2
+=(1-e^{-2})/2-(1-e^{-1})^2\approx0.0332$.  With
+$p(x)=e^{-x}/(1-e^{-1})$ the ratio $f/p=1-e^{-1}$ is \emph{constant}, so the
+variance is exactly zero: the estimator returns the right answer from a single
+sample.  This is the ideal case of Eq.~(\ref{eq:12-importance}), and it is the
+same mechanism that makes the local energy constant for an exact
+eigenfunction.
+
+\subsection*{Exercise 3: Markov chains and detailed balance}
+\label{ex:12-markov}
+\addcontentsline{toc}{subsection}{Exercise 3: Markov chains}
+
+\begin{enumerate}
+  \item[a)] Show that the columns of a transition matrix sum to one and that
+  the steady state is the eigenvector with eigenvalue one.
+  \item[b)] Show that detailed balance implies the steady-state condition,
+  but not conversely.
+  \item[c)] Verify that the Metropolis choice~(\ref{eq:12-metropolis})
+  satisfies detailed balance for a symmetric proposal.
+  \item[d)] What changes if the proposal is \emph{not} symmetric?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+$\sum_i W_{ij}=1$ says that the walker, starting in $j$, ends up somewhere
+with probability one.  A steady state satisfies $w=\bm{W}w$ by definition,
+which is the eigenvalue equation with eigenvalue one.  Such an eigenvalue
+always exists because $\bm{W}^{T}$ has the vector of ones as a right
+eigenvector with eigenvalue one, and $\bm{W}$ and $\bm{W}^{T}$ share
+eigenvalues.
+
+\paragraph{Answer to b).}
+Summing detailed balance $W(j\to i)w_j=W(i\to j)w_i$ over $j$ gives
+$\sum_j W(j\to i)w_j=w_i\sum_j W(i\to j)=w_i$, which is the steady-state
+condition.  The converse fails: the steady-state condition constrains only the
+\emph{net} flux into each state, so a cyclic flow
+$1\to2\to3\to1$ with equal rates satisfies it while violating detailed balance
+pairwise.  Detailed balance is the stronger and the safer requirement.
+
+\paragraph{Answer to c).}
+With $T$ symmetric, take $w_j>w_i$.  Then $A(i\to j)=1$ and
+$A(j\to i)=w_i/w_j$, so
+\[
+  W(j\to i)w_j = T\,\frac{w_i}{w_j}\,w_j = T\,w_i
+  = T\cdot1\cdot w_i = W(i\to j)w_i ,
+\]
+which is Eq.~(\ref{eq:12-detailedbalance}).  The case $w_j<w_i$ follows by
+exchanging the labels, and $w_i=w_j$ is trivial.
+
+\paragraph{Answer to d).}
+The proposal no longer cancels and the acceptance ratio must compensate for
+it,
+\[
+  A(i\to j) = \min\left(1,\,
+    \frac{w_j\,T(j\to i)}{w_i\,T(i\to j)}\right),
+\]
+which is the Metropolis-Hastings algorithm.  This is exactly what is needed
+when the proposal is drawn from the Fokker-Planck Green's function of
+Section~\ref{sec:fokkerplanck}, since a drift towards high density is by
+construction asymmetric.
+
+\subsection*{Exercise 4: errors that are too good to be true}
+\label{ex:12-errors}
+\addcontentsline{toc}{subsection}{Exercise 4: error estimates}
+
+\begin{enumerate}
+  \item[a)] Explain why $\sigma/\sqrt{N}$ understates the error of a Markov
+  chain, and in which direction the bias always goes.
+  \item[b)] Show that blocking and the autocorrelation time measure the same
+  thing.
+  \item[c)] A calculation reports $E=3.0001\pm0.0001$ from a Metropolis run
+  with an acceptance rate of $99\%$.  What would you check first?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Consecutive samples of a Markov chain are positively correlated, so the
+covariance term in Eq.~(\ref{eq:12-variancesplit}) is positive and
+$\tau=1+2\sum_d\kappa_d>1$.  The true variance is $\tau$ times the naive one,
+so the naive error is always too \emph{small}: neglecting correlations never
+makes a result look worse than it is, which is precisely why the mistake
+survives.
+
+\paragraph{Answer to b).}
+Blocking averages $b$ consecutive measurements.  Once $b\gg\tau$ the blocks
+are effectively independent, so the naive error of the blocked series is the
+true error.  Quantitatively, the variance of a block mean is
+$\tau\sigma^2/b$ for $b\gg\tau$, so the naive error of $n/b$ such blocks is
+$\sqrt{\tau\sigma^2/n}$ -- Eq.~(\ref{eq:12-tau}) again.  The plateau in the
+blocking curve is reached at $b\approx\tau$, so the curve measures the
+correlation time as a by-product.
+
+\paragraph{Answer to c).}
+The acceptance rate.  Ninety-nine per cent means the proposal step is far too
+small, the walker is crawling, and the correlation time is enormous -- in
+Table~\ref{tab:12-step}, an acceptance of $98\%$ gave $\tau=585$, so the error
+bar is understated by a factor of $\sqrt{585}\approx24$.  The quoted error is
+almost certainly wrong by more than an order of magnitude.  Check $\tau$, or
+block the data, and retune the step for an acceptance near one half.
+
+\subsection*{Exercise 5: numerical explorations}
+\addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Reproduce Table~\ref{tab:12-randu} and plot consecutive triples of
+  RANDU numbers in three dimensions.  Find the fifteen planes.
+  \item[b)] Estimate $\pi$ by the acceptance-rejection method on the unit
+  circle, and confirm that the error falls as $1/\sqrt{N}$.
+  \item[c)] Simulate a two-dimensional random walk and verify
+  $\mean{r^2}=4Dt$.  How does the entropy of the walker distribution behave on
+  a finite lattice with reflecting rather than periodic boundaries?
+  \item[d)] For the trial function~(\ref{eq:12-trialfunction}), scan $\alpha$
+  and $\beta$ on a grid and locate the minimum of the energy and, separately,
+  the minimum of the variance.  Do they coincide?
+  \item[e)] Derive the local energy for Eq.~(\ref{eq:12-trialfunction})
+  analytically and compare with the finite-difference version used in
+  \texttt{montecarlo.py}.  How large may the step $h$ be before the difference
+  is visible above the statistical error?
+  \item[f)] Repeat the calculation of Table~\ref{tab:12-vmcjastrow} at
+  $\hbar\omega=0.5$ and $\hbar\omega=0.25$ and compare with
+  Table~\ref{tab:11-omega}.  Where is the correlation strongest, and does the
+  simple Jastrow factor still suffice?
+\end{enumerate}
