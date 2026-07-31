@@ -2,3 +2,974 @@
 \label{chap:applications}
 %=============================================================================
 
+Every system in this book so far has been a model.  The pairing model has one
+interaction and one strength; the Lipkin model has two; the Hubbard model has
+an on-site $U$ and nothing else.  That was the point: with a single parameter
+one can turn correlation on and off at will and watch each approximation break
+where it should.  But a model interaction also hides the two things that make
+real many-body calculations hard.  The matrix elements were given to us in
+closed form and there were only a handful of them, and the single-particle
+space was finite by construction.
+
+This chapter removes both crutches.  The system is a \emph{quantum dot}: $N$
+electrons confined to two dimensions by a parabolic trap and interacting
+through the bare Coulomb repulsion.  Nothing is schematic.  The interaction is
+the real one, every matrix element has to be computed, the single-particle
+basis is infinite and has to be truncated, and the truncation error has to be
+controlled alongside the many-body error.  Quantum dots are also real: they
+are fabricated in semiconductor heterostructures, their level structure is
+measured, and they are among the candidate architectures for quantum
+computing.
+
+The plan is to take the same hierarchy through this system that
+Chapters~\ref{chap:hartrefock}, \ref{chap:mbpt} and~\ref{chap:cctheory} took
+through the pairing model -- Hartree-Fock, second-order perturbation theory,
+coupled cluster with singles and doubles, and the unitary variant -- and to
+measure all of them against exact diagonalisation wherever that is affordable.
+The programs are the same too: \texttt{quantumdot.py} builds the one- and
+two-body matrices, and everything after that is imported unchanged from
+\texttt{coupledcluster.py}.  That reuse is deliberate.  A method that works
+only on the model it was developed on is of no use.
+
+The Hamiltonian of this chapter returns in the stochastic part of the book,
+where variational and diffusion Monte Carlo are applied to the same dots and
+compared with the results obtained here.
+
+%----------------------------------------------------------------------
+\section{The system}
+\label{sec:qdsystem}
+
+\index{quantum dot}
+We consider $N$ electrons moving in two dimensions in a harmonic trap.  In
+natural units, $\hbar=m_e=e=1$, the Hamiltonian splits in the usual way into a
+one-body and a two-body part,
+\begin{equation}
+  \boxed{\;
+  \hat{H} = \hat{H}_0 + \hat{V},
+  \qquad
+  \hat{H}_0 = \sum_{i=1}^{N}
+    \left(-\tfrac12\nabla_i^2 + \tfrac12\omega^2 r_i^2\right),
+  \qquad
+  \hat{V} = \sum_{i<j}^{N}\frac{1}{|\bm{r}_i-\bm{r}_j|} \;}
+  \label{eq:11-hamiltonian}
+\end{equation}
+Lengths are measured in the oscillator length
+$a_0^{*}=\sqrt{\hbar/(m_e\omega)}$.  The single parameter of the problem is
+the trap frequency $\omega$, and it does more work than it looks.  The kinetic
+and confining energies scale as $\omega$ while the Coulomb energy scales as
+$\sqrt{\omega}$, so a shallow trap is a strongly correlated system and a steep
+one is nearly free.  We shall see that dependence explicitly in
+Table~\ref{tab:11-omega}.
+
+\paragraph{Single-particle states and magic numbers.}
+The eigenstates of $\hat{H}_0$ for one particle in two dimensions are labelled
+by a radial quantum number $n=0,1,2,\dots$ and an angular-momentum projection
+$m=0,\pm1,\pm2,\dots$, with energies
+\begin{equation}
+  \varepsilon_{nm} = \hbar\omega\left(2n+|m|+1\right).
+  \label{eq:11-spenergies}
+\end{equation}
+States with the same $N_s=2n+|m|$ are degenerate, so the spectrum falls into
+shells of degeneracy $2(N_s+1)$ including spin.  Filling shells completely
+gives the closed-shell electron numbers
+\begin{equation}
+  N = 2,\;6,\;12,\;20,\;30,\;42,\dots
+  \label{eq:11-magic}
+\end{equation}
+the \emph{magic numbers} of the quantum dot, listed shell by shell in
+Table~\ref{tab:11-shells}.  They play exactly the role that the closed shells
+of atomic and nuclear physics do: adding or removing an electron at a magic
+number costs more energy than elsewhere, and a closed-shell dot has a
+non-degenerate ground state which a single Slater determinant can describe
+reasonably.  All the machinery of Chapters~\ref{chap:hartrefock}
+to~\ref{chap:cctheory} assumes such a reference, so we work at $N=2$ and
+$N=6$.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{clcc}
+\toprule
+$N_s$ & states $(n,m)$ & degeneracy & cumulative $N$\\
+\midrule
+$0$ & $(0,0)$ & $2$ & $\mathbf{2}$\\
+$1$ & $(0,-1),\ (0,+1)$ & $4$ & $\mathbf{6}$\\
+$2$ & $(0,-2),\ (1,0),\ (0,+2)$ & $6$ & $\mathbf{12}$\\
+$3$ & $(0,\pm3),\ (1,\pm1)$ & $8$ & $\mathbf{20}$\\
+$4$ & $(0,\pm4),\ (1,\pm2),\ (2,0)$ & $10$ & $\mathbf{30}$\\
+$5$ & $(0,\pm5),\ (1,\pm3),\ (2,\pm1)$ & $12$ & $\mathbf{42}$\\
+\bottomrule
+\end{tabular}
+\caption{Shell structure of the two-dimensional harmonic oscillator.  Shell
+$N_s=2n+|m|$ has $N_s+1$ spatial states and twice that many spin-orbitals.
+The cumulative column is the sequence of magic
+numbers~(\ref{eq:11-magic}).  The calculations of this chapter use all six
+shells, that is $42$ spin-orbitals.}
+\label{tab:11-shells}
+\end{table}
+
+%----------------------------------------------------------------------
+\section{The single-particle basis}
+\label{sec:qdbasis}
+
+\index{quantum dot!single-particle basis}
+In Cartesian coordinates the two-dimensional oscillator separates into two
+one-dimensional ones and the eigenfunctions are products of Hermite
+polynomials.  That is correct but inconvenient: the rotational symmetry of the
+trap is then invisible, and it is precisely that symmetry which will cut the
+number of non-zero Coulomb matrix elements by two thirds.  In polar
+coordinates $x=r\cos\theta$, $y=r\sin\theta$ the angular momentum is manifest.
+
+Writing $\psi(r,\theta)=R(r)\,Y(\theta)$, the angular factor is
+\begin{equation}
+  Y(\theta) = \frac{1}{\sqrt{2\pi}}\,e^{\imath m\theta},
+  \label{eq:11-angular}
+\end{equation}
+and single-valuedness, $\psi(r,\theta+2\pi)=\psi(r,\theta)$, forces $m$ to be
+an integer.  The radial equation is solved by associated Laguerre polynomials,
+\begin{equation}
+  R_{nm}(r) = \sqrt{\frac{2\,n!}{(n+|m|)!}}\;
+    \beta^{\frac12(|m|+1)}\,
+    r^{|m|}\,e^{-\beta r^2/2}\,
+    L_n^{|m|}\!\left(\beta r^2\right),
+  \qquad \beta = \frac{m_e\omega}{\hbar},
+  \label{eq:11-radial}
+\end{equation}
+so that the complete single-particle eigenfunction is
+\begin{equation}
+  \boxed{\;
+  \psi_{nm}(r,\theta)
+   = \sqrt{\frac{n!}{\pi\,(n+|m|)!}}\;
+     \beta^{\frac12(|m|+1)}\,
+     r^{|m|}\,e^{-\beta r^2/2}\,
+     L_n^{|m|}\!\left(\beta r^2\right)e^{\imath m\theta} \;}
+  \label{eq:11-eigenfunction}
+\end{equation}
+with the eigenvalue~(\ref{eq:11-spenergies}).  The Cartesian and polar
+labellings agree, $n_x+n_y=2n+|m|$, as they must.
+
+This basis is not the only possible one, and it is not obviously the best.  It
+is the eigenbasis of the non-interacting problem, which makes $\hat{H}_0$
+diagonal and gives a natural ordering by shell, but it is built from Gaussians
+and therefore cannot reproduce the cusp that the Coulomb interaction imposes
+on the exact wave function at $r_{12}=0$.  That single fact governs how the
+results below converge, and it is worth keeping in mind when reading
+Table~\ref{tab:11-twoelectron}.
+
+%----------------------------------------------------------------------
+\section{The Coulomb matrix element}
+\label{sec:qdcoulomb}
+
+\index{Coulomb matrix element}
+Everything now hinges on
+\begin{equation}
+  \bracket{pq}{\hat{v}}{rs}
+   = \left\langle (n_pm_p)(n_qm_q)\left\vert
+       \frac{1}{|\bm{r}_1-\bm{r}_2|}
+     \right\vert (n_rm_r)(n_sm_s)\right\rangle ,
+  \label{eq:11-coulombelement}
+\end{equation}
+a four-dimensional integral over two planes.  It can be done in closed form.
+The derivation is due to Anisimova and Matulis and consists of expanding the
+Laguerre polynomials binomially, doing the angular integrals with the
+selection rule below, and recognising the radial integrals as Gamma functions;
+the result is a finite sum of products of factorials, which
+\texttt{quantumdot.py} evaluates in logarithms so that nothing overflows.
+
+Two exact statements about Eq.~(\ref{eq:11-coulombelement}) do more for us
+than the closed form itself.
+
+\paragraph{Angular momentum is conserved.}
+The Coulomb interaction depends only on $|\bm{r}_1-\bm{r}_2|$ and is therefore
+invariant under a simultaneous rotation of both particles.  Hence
+\begin{equation}
+  \boxed{\;m_p+m_q = M = m_r+m_s\;}
+  \label{eq:11-mconservation}
+\end{equation}
+and the matrix element vanishes identically otherwise.  This is the
+single most valuable fact in the implementation: of the $M_s^4$ index
+combinations for $M_s$ spatial states, the great majority are eliminated
+before any work is done.  For the six-shell basis, $21^4=194\,481$
+combinations reduce to $14\,703$ non-zero ones.
+
+\paragraph{The frequency dependence is a scale factor.}
+Lengths scale as $\omega^{-1/2}$ and the interaction as one over a length, so
+\begin{equation}
+  \bracket{pq}{\hat{v}}{rs}_{\omega}
+   = \sqrt{\hbar\omega}\;\bracket{pq}{\hat{v}}{rs}_{\omega=1}.
+  \label{eq:11-omegascaling}
+\end{equation}
+The expensive integrals need therefore be computed only once, and the whole
+$\omega$ dependence of Table~\ref{tab:11-omega} costs nothing extra.  It also
+explains the physics: since $\hat{H}_0$ scales as $\omega$ and $\hat{V}$ as
+$\sqrt{\omega}$, the ratio of interaction to kinetic energy goes as
+$\omega^{-1/2}$, and correlation is a small-$\omega$ phenomenon.
+
+\paragraph{Spin.}
+The closed form is a spatial integral; the spin has to be put in by hand.  The
+antisymmetrised matrix element that all our machinery expects is
+\begin{equation}
+  \bracket{pq}{\hat{v}}{rs}_{\mathrm{AS}}
+   = \bracket{pq}{\hat{v}}{rs}\,
+     \delta_{\sigma_p\sigma_r}\delta_{\sigma_q\sigma_s}
+   - \bracket{pq}{\hat{v}}{sr}\,
+     \delta_{\sigma_p\sigma_s}\delta_{\sigma_q\sigma_r},
+  \label{eq:11-antisym}
+\end{equation}
+the direct term requiring each particle to keep its spin and the exchange term
+requiring the two to swap.  Both together conserve $S_z$.  It is easy to get
+the second delta pair wrong -- note that the roles of $r$ and $s$ are
+interchanged in the exchange term -- and the resulting error is subtle, since
+the calculation still runs and still converges.  The checks below exist for
+exactly that reason.
+
+\paragraph{Verification.}
+Three tests catch almost every implementation error.  The lowest element is
+known analytically,
+\begin{equation}
+  \bracket{00;00}{\hat{v}}{00;00}
+   = \sqrt{\frac{\pi}{2}}\,\sqrt{\hbar\omega}
+   = 1.253314137316\ \sqrt{\hbar\omega},
+  \label{eq:11-lowestelement}
+\end{equation}
+which \texttt{quantumdot.py} reproduces to twelve digits.  The scaling
+(\ref{eq:11-omegascaling}) can be checked by computing the same element at
+several frequencies and dividing.  And the element must satisfy
+\begin{equation}
+  \bracket{pq}{\hat{v}}{rs} = \bracket{qp}{\hat{v}}{sr}
+   = \bracket{rs}{\hat{v}}{pq},
+  \label{eq:11-symmetries}
+\end{equation}
+particle exchange and hermiticity, both of which hold to machine precision.
+Equation~(\ref{eq:11-lowestelement}) is also the first-order perturbative
+estimate of the two-electron ground-state energy,
+$E\approx2\hbar\omega+\sqrt{\pi/2}\sqrt{\hbar\omega}$, which at
+$\hbar\omega=1$ gives $3.253314$ -- the minimal-basis Hartree-Fock energy of
+the next section.
+
+%----------------------------------------------------------------------
+\section{Hartree-Fock}
+\label{sec:qdhf}
+
+\index{Hartree-Fock theory!for quantum dots}
+The Hartree-Fock equations of Section~\ref{sec:hfcoefficients} are used here
+without change.  We expand the Hartree-Fock orbitals in the oscillator basis,
+\begin{equation}
+  \psi_{\alpha} = \sum_p C_{p\alpha}\,\phi_p ,
+  \label{eq:11-expansion}
+\end{equation}
+and the variational condition becomes the Roothaan eigenvalue problem
+$\bm{F}\bm{C}=\bm{C}\bm{\varepsilon}$ with
+\begin{equation}
+  F_{pq} = \bracket{p}{\hat{h}_0}{q}
+    + \sum_{rs}\rho_{rs}\,\bracket{pr}{\hat{v}}{qs}_{\mathrm{AS}},
+  \qquad
+  \rho_{rs} = \sum_{a=1}^{N}C_{ra}C_{sa} ,
+  \label{eq:11-fock}
+\end{equation}
+solved by the self-consistent iteration of Section~\ref{sec:scf}.  In the
+oscillator basis $\bracket{p}{\hat{h}_0}{q}=\varepsilon_p^{(0)}\delta_{pq}$
+with $\varepsilon^{(0)}_p$ from Eq.~(\ref{eq:11-spenergies}), so the only
+non-trivial ingredient is the two-body matrix built in the previous section.
+The total energy is
+\begin{equation}
+  E_{\mathrm{HF}}
+   = \sum_{a=1}^{N}\varepsilon^{(0)}_a
+   + \frac12\sum_{a,b=1}^{N}\bracket{ab}{\hat{v}}{ab}_{\mathrm{AS}} ,
+  \label{eq:11-hfenergy}
+\end{equation}
+the factor $\tfrac12$ removing the double counting of the interaction.
+
+\paragraph{Convergence with the basis.}
+Table~\ref{tab:11-hfconvergence} follows the energy as shells are added.  The
+sequence is monotone, as it must be: enlarging the basis gives the
+Hartree-Fock state more variational freedom and can only lower the energy.
+Two features are worth noting.  The energy is unchanged when certain shells
+are added -- from one shell to two for $N=2$, and again from three to four --
+for a reason worked out in Exercise~\ref{ex:11-hfcheck}.  And convergence is
+slow at the end: going from $30$ to $42$ orbitals still moves the six-electron
+energy by $0.028$.  That is the Gaussian basis struggling with the Coulomb
+cusp, and it is a much larger effect than anything the many-body method will
+contribute.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{9pt}
+\begin{tabular}{rrllll}
+\toprule
+shells & orbitals & $N=2$: $E_{\mathrm{HF}}$ & $\Delta E$ &
+$N=6$: $E_{\mathrm{HF}}$ & $\Delta E$\\
+\midrule
+$0$ & $2$  & $3.25331414$ & --- & --- & ---\\
+$1$ & $6$  & $3.25331414$ & $+0.000000$ & $22.21981284$ & ---\\
+$2$ & $12$ & $3.16269135$ & $-0.090623$ & $21.59319848$ & $-0.626614$\\
+$3$ & $20$ & $3.16269135$ & $+0.000000$ & $20.76691943$ & $-0.826279$\\
+$4$ & $30$ & $3.16192140$ & $-0.000770$ & $20.74840225$ & $-0.018517$\\
+$5$ & $42$ & $3.16192140$ & $+0.000000$ & $20.72025707$ & $-0.028145$\\
+\bottomrule
+\end{tabular}
+\caption{Hartree-Fock energy as a function of the number of oscillator shells,
+$\hbar\omega=1$.  $\Delta E$ is the change from the previous row.  Computed by
+\texttt{quantumdot.py}.}
+\label{tab:11-hfconvergence}
+\end{table}
+
+\paragraph{The single-particle spectrum.}
+The converged Hartree-Fock energies for six electrons in the full basis are
+\begin{equation}
+  \varepsilon_{1,2} = 4.54225444,
+  \qquad
+  \varepsilon_{3,4,5,6} = 5.30056289,
+  \label{eq:11-hfspectrum}
+\end{equation}
+against the bare oscillator values $1$ and $2$.  The mean field has pushed
+every level up by more than three units -- the Coulomb repulsion of the other
+electrons -- and the degeneracies of Table~\ref{tab:11-shells} survive
+untouched, which is a useful check that the self-consistent solution has not
+broken the rotational symmetry.  By Koopmans' theorem the ionisation energy of
+the dot is $-\varepsilon_6=-5.30056289$; for two electrons the corresponding
+number is $-\varepsilon_2=-2.12246475$.
+
+%----------------------------------------------------------------------
+\section{Many-body perturbation theory}
+\label{sec:qdmbpt}
+
+\index{many-body perturbation theory!for quantum dots}
+With a Hartree-Fock reference in hand, the natural partition is the
+M{\o}ller-Plesset one of Chapter~\ref{chap:mbpt}: the unperturbed operator is
+the sum of Fock operators and the perturbation is the \emph{fluctuation
+potential}, the difference between the true interaction and the mean field it
+generates,
+\begin{equation}
+  \hat{H}_0^{\mathrm{MP}} = \sum_{i=1}^{N}\hat{f}(i),
+  \qquad
+  \hat{V}' = \hat{V} - \sum_{i=1}^{N}\hat{u}^{\mathrm{HF}}(i).
+  \label{eq:11-mppartition}
+\end{equation}
+The first-order energy then vanishes by construction,
+$E^{(0)}+E^{(1)}=E_{\mathrm{HF}}$, so the leading correction is second order.
+Brillouin's theorem removes the singly excited determinants,
+$\bracket{\Phi_a^r}{\hat{V}'}{\Phi_0}=0$, and only doubles survive:
+\begin{equation}
+  \boxed{\;
+  E_{\mathrm{MP2}}
+   = \frac14\sum_{ab}^{\mathrm{occ}}\sum_{rs}^{\mathrm{virt}}
+     \frac{\left\vert\bracket{ab}{\hat{v}}{rs}_{\mathrm{AS}}\right\vert^2}
+          {\varepsilon_a+\varepsilon_b-\varepsilon_r-\varepsilon_s} \;}
+  \label{eq:11-mp2}
+\end{equation}
+The denominator is negative, so MP2 always lowers the energy.  The matrix
+elements are needed in the Hartree-Fock basis, obtained from the oscillator
+ones by the four-index transformation
+\begin{equation}
+  \bracket{\alpha\beta}{\hat{v}}{\gamma\delta}
+   = \sum_{pqrs}C_{p\alpha}C_{q\beta}\,
+     \bracket{pq}{\hat{v}}{rs}\,C_{r\gamma}C_{s\delta},
+  \label{eq:11-transformation}
+\end{equation}
+carried out in two half-steps so that the cost is $\bigO(M^5)$ rather than
+$\bigO(M^8)$.
+
+For the full basis at $\hbar\omega=1$ the result is
+\begin{equation}
+  E_{\mathrm{MP2}}(N=2) = -0.13488329,
+  \qquad
+  E_{\mathrm{MP2}}(N=6) = -0.41769581,
+  \label{eq:11-mp2results}
+\end{equation}
+that is $11.6\%$ and $3.9\%$ of the Hartree-Fock interaction energy
+$E_{\mathrm{HF}}-E_0$.  The smaller fraction for six electrons is not a
+statement that the six-electron dot is less correlated; it is that the mean
+field is doing more of the work, since each electron feels five others rather
+than one.
+
+%----------------------------------------------------------------------
+\section{Coupled cluster}
+\label{sec:qdcc}
+
+\index{coupled cluster!for quantum dots}
+The coupled-cluster equations of Chapter~\ref{chap:cctheory} are applied here
+verbatim: the same amplitude equations, the same
+Stanton-Gauss-Watts-Bartlett intermediates, the same solver.  Only the
+matrices change.  That is the whole point of writing the equations in a
+spin-orbital basis with an antisymmetrised interaction -- the method never
+learns what the interaction is.
+
+\paragraph{A warning about the singles.}
+It is often said that for a closed-shell system in a canonical Hartree-Fock
+basis the singles amplitudes vanish by Brillouin's theorem, so that CCSD
+reduces to CCD.  This is not true, and it is worth being explicit about why.
+Brillouin's theorem states that $f_{ai}=0$, and that is what kills the
+first-order singles contribution in perturbation theory.  But the CCSD singles
+equation is not homogeneous in $t_1$: it contains the terms
+\begin{equation}
+  \tfrac12\sum_{mef}t_{im}^{ef}\,\bracket{ma}{\hat{v}}{ef}_{\mathrm{AS}}
+  \qquad\text{and}\qquad
+  -\tfrac12\sum_{men}t_{mn}^{ae}\,\bracket{nm}{\hat{v}}{ei}_{\mathrm{AS}},
+  \label{eq:11-singlesdriver}
+\end{equation}
+which are built from the \emph{doubles} and survive at $t_1=0$.  The singles
+are therefore driven by the doubles, they are small but not zero, and they
+describe the relaxation of the orbitals in response to the correlation the
+doubles have introduced.  For the quantum dots computed here
+$\max|t_i^a| = 5.7\times10^{-3}$ at $N=2$ and $1.0\times10^{-2}$ at $N=6$, and
+CCSD lies correspondingly a little below CCD.  A calculation that reports
+$t_1=0$ identically has a bug in its singles equation, and
+Exercise~\ref{ex:11-singles} gives a cheap test that finds it.
+
+\paragraph{Results.}
+Table~\ref{tab:11-hierarchy} collects the whole hierarchy in the full
+$42$-orbital basis.  The ordering
+\begin{equation}
+  E_{\mathrm{HF}} > E_{\mathrm{HF}}+E_{\mathrm{MP2}}
+   > E_{\mathrm{HF}}+E_{\mathrm{CCD}} > E_{\mathrm{HF}}+E_{\mathrm{CCSD}}
+  \label{eq:11-ordering}
+\end{equation}
+holds for both electron numbers, and each step has a clear meaning: MP2 is the
+leading pair correlation, CCD resums the ladders and rings to all orders in
+$\hat{T}_2$, and CCSD adds the orbital relaxation just discussed.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{lll}
+\toprule
+quantity & $N=2$ & $N=6$\\
+\midrule
+non-interacting $E_0$ & $\phantom{-}2.00000000$ & $\phantom{-}10.00000000$\\
+Hartree-Fock $E_{\mathrm{HF}}$ & $\phantom{-}3.16192140$ &
+  $\phantom{-}20.72025707$\\
+\quad interaction $E_{\mathrm{HF}}-E_0$ & $\phantom{-}1.16192140$ &
+  $\phantom{-}10.72025707$\\
+\midrule
+$E_{\mathrm{MP2}}$ & $-0.13488329$ & $-0.41769581$\\
+\quad total & $\phantom{-}3.02703812$ & $\phantom{-}20.30256126$\\
+$E_{\mathrm{CCD}}$ & $-0.14799908$ & $-0.44624450$\\
+\quad total & $\phantom{-}3.01392232$ & $\phantom{-}20.27401257$\\
+$E_{\mathrm{CCSD}}$ & $-0.14829527$ & $-0.44701044$\\
+\quad total & $\phantom{-}3.01362613$ & $\phantom{-}20.27324663$\\
+\bottomrule
+\end{tabular}
+\caption{The hierarchy of methods for the two- and six-electron quantum dot at
+$\hbar\omega=1$, in the basis of six oscillator shells ($42$ spin-orbitals).
+The self-consistent field converges in $15$ and $24$ iterations, the
+coupled-cluster equations in $23$ and $28$.  Computed by
+\texttt{quantumdot.py}.}
+\label{tab:11-hierarchy}
+\end{table}
+
+%----------------------------------------------------------------------
+\section{Comparison with the exact answer}
+\label{sec:qdexact}
+
+Tables of energies produced by approximate methods are worth little without
+something to compare them with.  For this system we have two benchmarks.
+
+\paragraph{Two electrons: exact within the basis, and exact in the limit.}
+With $N=2$ the determinant space has dimension $\binom{M}{2}$, which is $861$
+for $42$ spin-orbitals and can be diagonalised directly.  Moreover singles and
+doubles \emph{exhaust} the excitations available to two particles, so CCSD
+must be exact in any basis.  Table~\ref{tab:11-twoelectron} confirms both
+statements: CCSD and full diagonalisation agree to twelve digits at every
+basis size.  This is a stronger test of the coupled-cluster solver of
+Chapter~\ref{chap:cctheory} than anything the pairing model could provide,
+because here the interaction has no special structure to hide behind.
+
+The second benchmark is analytic.  Taut showed that the relative motion of two
+electrons in a parabolic trap is exactly solvable for a discrete set of
+frequencies, and at $\hbar\omega=1$ in our units the ground state is exactly
+$E=3$.  The last column of Table~\ref{tab:11-twoelectron} approaches that
+value from above, but slowly: at $42$ orbitals the remaining error is
+$0.0136$, comparable with the entire difference between MP2 and CCSD.  The
+many-body problem has been solved exactly; the basis-set problem has not.  For
+this system the truncation of the single-particle space, not the truncation of
+the cluster operator, is the dominant error -- which is the opposite of the
+situation in the pairing model, and a lesson worth taking from a realistic
+Hamiltonian.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\small
+\begin{tabular}{rrrlllll}
+\toprule
+shells & orb. & $\dim$ & $E_{\mathrm{HF}}$ &
+$+E_{\mathrm{MP2}}$ & $+E_{\mathrm{CCD}}$ & $+E_{\mathrm{CCSD}}$ &
+$E_{\mathrm{FCI}}$\\
+\midrule
+$1$ & $6$  & $15$  & $3.25331414$ & $3.17856150$ & $3.15232801$ &
+  $3.15232801$ & $3.15232801$\\
+$2$ & $12$ & $66$  & $3.16269135$ & $3.05797643$ & $3.03904782$ &
+  $3.03860458$ & $3.03860458$\\
+$3$ & $20$ & $190$ & $3.16269135$ & $3.04440370$ & $3.02527309$ &
+  $3.02523058$ & $3.02523058$\\
+$4$ & $30$ & $435$ & $3.16192140$ & $3.03341846$ & $3.01794371$ &
+  $3.01760623$ & $3.01760623$\\
+$5$ & $42$ & $861$ & $3.16192140$ & $3.02703812$ & $3.01392232$ &
+  $3.01362613$ & $3.01362613$\\
+\midrule
+$\infty$ & --- & --- & --- & --- & --- & --- & $3.00000000$\\
+\bottomrule
+\end{tabular}
+\caption{Two electrons at $\hbar\omega=1$.  CCSD agrees with full
+diagonalisation to $3\times10^{-13}$ in every basis, as it must for two
+particles.  The last row is Taut's analytic result for the complete basis.
+Computed by \texttt{quantumdot.py}.}
+\label{tab:11-twoelectron}
+\end{table}
+
+\paragraph{Six electrons: exact in a small basis.}
+For six electrons the full space is out of reach at $42$ orbitals --
+$\binom{42}{6}=5\,245\,786$ determinants -- but in the two-shell basis it is
+only $\binom{12}{6}=924$, and there the truncation of the cluster operator
+genuinely matters.  Table~\ref{tab:11-sixelectron} is therefore the one
+comparison in this book where every method is measured against the exact
+answer on a realistic interaction in a system that is not trivially solvable.
+The last column is the fraction of the exact correlation energy recovered.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{llrr}
+\toprule
+method & energy & error & \% of $E_{\mathrm{corr}}$\\
+\midrule
+Hartree-Fock          & $21.59319848$ & $1.7\times10^{-1}$ & $\phantom{00}0.00$\\
+MP2                   & $21.43344056$ & $1.3\times10^{-2}$ & $\phantom{0}92.55$\\
+CCD                   & $21.42380972$ & $3.2\times10^{-3}$ & $\phantom{0}98.13$\\
+CCSD                  & $21.42323158$ & $2.6\times10^{-3}$ & $\phantom{0}98.47$\\
+UCCSD                 & $21.42196510$ & $1.4\times10^{-3}$ & $\phantom{0}99.20$\\
+\midrule
+exact diagonalisation & $21.42058830$ & --- & $100.00$\\
+\bottomrule
+\end{tabular}
+\caption{Six electrons at $\hbar\omega=1$ in the two-shell basis, $12$
+spin-orbitals, determinant space of dimension $924$.  The correlation energy
+is $E_{\mathrm{corr}}=-0.17261018$.  The unitary result is evaluated at the
+converged CCSD amplitudes rather than at its own variational optimum, and is
+still the best of the four.  Computed by \texttt{quantumdot.py}.}
+\label{tab:11-sixelectron}
+\end{table}
+
+\paragraph{Dependence on the confinement.}
+Table~\ref{tab:11-omega} varies the trap frequency.  The last column, the
+correlation energy as a fraction of the Hartree-Fock interaction energy, falls
+by a factor of three between $\hbar\omega=0.25$ and $\hbar\omega=4$, which is
+the $\omega^{-1/2}$ scaling of Eq.~(\ref{eq:11-omegascaling}) doing its work.
+A shallow trap is a strongly correlated system: the electrons have room to
+avoid one another, the mean field describes them badly, and the correlation
+methods have more to do.  In the opposite limit the dot becomes a set of
+nearly free particles in a very steep well and Hartree-Fock is almost exact.
+This is the same story the pairing model told through $g$ in
+Table~\ref{tab:pairing}, told now by a physical parameter that an
+experimentalist can actually tune.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{8pt}
+\small
+\begin{tabular}{rrllll}
+\toprule
+$\hbar\omega$ & $E_0$ & $E_{\mathrm{HF}}$ & $E_{\mathrm{MP2}}$ &
+$E_{\mathrm{CCSD}}$ & ratio\\
+\midrule
+\multicolumn{6}{l}{\emph{$N=2$}}\\
+$0.25$ & $0.5$  & $\phantom{0}1.04628424$ & $-0.10380945$ & $-0.11288484$ &
+  $-0.2066$\\
+$0.50$ & $1.0$  & $\phantom{0}1.79974794$ & $-0.12036392$ & $-0.13249076$ &
+  $-0.1657$\\
+$1.00$ & $2.0$  & $\phantom{0}3.16192140$ & $-0.13488329$ & $-0.14829527$ &
+  $-0.1276$\\
+$2.00$ & $4.0$  & $\phantom{0}5.67728232$ & $-0.14693248$ & $-0.15989645$ &
+  $-0.0953$\\
+$4.00$ & $8.0$  & $10.40864632$ & $-0.15651039$ & $-0.16789538$ & $-0.0697$\\
+\midrule
+\multicolumn{6}{l}{\emph{$N=6$}}\\
+$0.25$ & $2.5$  & $\phantom{0}7.39178633$ & $-0.32952382$ & $-0.35507942$ &
+  $-0.0726$\\
+$0.50$ & $5.0$  & $12.27149922$ & $-0.37861963$ & $-0.40804475$ & $-0.0561$\\
+$1.00$ & $10.0$ & $20.72025707$ & $-0.41769581$ & $-0.44701044$ & $-0.0417$\\
+$2.00$ & $20.0$ & $35.67233283$ & $-0.44700367$ & $-0.47274020$ & $-0.0302$\\
+$4.00$ & $40.0$ & $62.74116274$ & $-0.46768316$ & $-0.48840005$ & $-0.0215$\\
+\bottomrule
+\end{tabular}
+\caption{Dependence on the trap frequency, in the full $42$-orbital basis.
+The last column is $E_{\mathrm{CCSD}}/(E_{\mathrm{HF}}-E_0)$.  For $N=2$ the
+CCSD column is exact within the basis, so
+$E_{\mathrm{HF}}+E_{\mathrm{CCSD}}$ is the full configuration-interaction
+energy at every frequency.  Computed by \texttt{quantumdot.py}.}
+\label{tab:11-omega}
+\end{table}
+
+%----------------------------------------------------------------------
+\section{Unitary coupled cluster}
+\label{sec:qducc}
+
+\index{coupled cluster!unitary!for quantum dots}
+The unitary ansatz of Section~\ref{sec:ucc} carries over unchanged.  With
+\begin{equation}
+  \hat{\sigma} = \hat{T}-\hat{T}^{\dagger},
+  \qquad
+  \bket{\Psi(\bm{t})} = e^{\hat{\sigma}(\bm{t})}\bket{\Phi_0},
+  \qquad
+  E(\bm{t}) = \bracket{\Psi(\bm{t})}{\hat{H}}{\Psi(\bm{t})},
+  \label{eq:11-ucc}
+\end{equation}
+the energy is a genuine expectation value in a normalised state and is
+therefore variational: it lies above the exact energy for any amplitudes,
+which the projected CCSD energy does not.  The price is that the
+Baker-Campbell-Hausdorff expansion no longer terminates, so there are no
+closed amplitude equations and the energy has to be evaluated by
+exponentiating $\hat{\sigma}$.
+
+\paragraph{Two electrons: everything collapses.}
+Table~\ref{tab:11-ucctwo} runs the unitary calculation for two electrons.  Two
+things happen, both instructive.  UCCSD, CCSD and full diagonalisation
+coincide, which is expected: with two particles singles and doubles span the
+whole space and any ansatz that is exact there must give the exact energy.
+Less obviously, UCCD coincides with CCD.  The reason is that for two particles
+$\hat{T}_2\hat{T}_2$ annihilates the reference and so does
+$\hat{T}_2^{\dagger}$, so $e^{\hat{T}_2-\hat{T}_2^{\dagger}}\bket{\Phi_0}$ and
+$(1+\hat{T}_2)\bket{\Phi_0}$ sweep out the same two-dimensional manifold; the
+variational minimum over it is the lowest eigenvalue in the space spanned by
+the reference and the doubles, which is what the CCD equations return.  The
+unitary and the standard ansatz differ only when the truncation genuinely
+bites.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\small
+\begin{tabular}{rrrlllll}
+\toprule
+shells & orb. & ampl. & CCD & UCCD & CCSD & UCCSD & FCI\\
+\midrule
+$1$ & $6$  & $14$  & $3.15232801$ & $3.15232801$ & $3.15232801$ &
+  $3.15232801$ & $3.15232801$\\
+$2$ & $12$ & $65$  & $3.03904782$ & $3.03904782$ & $3.03860458$ &
+  $3.03860458$ & $3.03860458$\\
+$3$ & $20$ & $189$ & $3.02527309$ & $3.02527309$ & $3.02523058$ &
+  $3.02523058$ & $3.02523058$\\
+\bottomrule
+\end{tabular}
+\caption{Unitary and standard coupled cluster for two electrons at
+$\hbar\omega=1$.  The unitary energies are obtained by minimising
+Eq.~(\ref{eq:11-ucc}) over all amplitudes, the standard ones by solving the
+projected equations.  Computed by \texttt{quantumdot.py}.}
+\label{tab:11-ucctwo}
+\end{table}
+
+\paragraph{Six electrons: the unitary ansatz wins.}
+The six-electron row of Table~\ref{tab:11-sixelectron} is where the difference
+appears.  There the truncation to singles and doubles is a real
+approximation -- the exact state contains triples and quadruples -- and the
+unitary ansatz recovers $99.2\%$ of the correlation energy against CCSD's
+$98.5\%$, while remaining above the exact energy as the variational principle
+requires.  What makes this worth emphasising is that the unitary number was
+obtained \emph{without optimising}: the converged CCSD amplitudes were simply
+substituted into Eq.~(\ref{eq:11-ucc}).  Even at borrowed amplitudes the
+unitary ansatz is the better wave function, because $e^{\hat{\sigma}}$
+generates the de-excitations that $e^{\hat{T}}$ cannot.
+
+The cost of doing better is what pushes one towards a quantum computer.  A
+proper variational optimisation of the six-electron case means minimising over
+$261$ amplitudes, each energy evaluation requiring the exponential of a
+$924\times924$ matrix, and both numbers grow exponentially with the size of
+the system.  On a quantum computer the state $e^{\hat{\sigma}}\bket{\Phi_0}$
+is prepared by a circuit whose depth grows polynomially, and the energy is
+measured rather than computed.
+
+\paragraph{Trotterisation.}
+A circuit cannot apply $e^{\hat{\sigma}}$ in one step; it applies the
+generators one at a time, and the resulting splitting error is the Trotter
+error of Section~\ref{sec:trotter}.  Table~\ref{tab:11-trotter} measures it
+for the two-electron dot at the CCSD amplitudes.  The error halves when the
+number of Trotter steps doubles -- the $\bigO(1/n)$ rate of
+Eq.~(\ref{eq:6-trotter}) -- and $n$ is the circuit depth.  On hardware the
+Hamiltonian would first be mapped to Pauli strings by the Jordan-Wigner
+transformation of Section~\ref{sec:jordanwigner}, each string contributing one
+rotation to the circuit; here the matrices are simply exponentiated.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{rlll}
+\toprule
+Trotter steps $n$ & energy & error & ratio\\
+\midrule
+$1$  & $3.03863183$ & $1.04\times10^{-5}$ & ---\\
+$2$  & $3.03863789$ & $4.38\times10^{-6}$ & $2.38$\\
+$4$  & $3.03864044$ & $1.83\times10^{-6}$ & $2.40$\\
+$8$  & $3.03864146$ & $8.10\times10^{-7}$ & $2.26$\\
+$16$ & $3.03864189$ & $3.77\times10^{-7}$ & $2.15$\\
+\midrule
+$\infty$ & $3.03864227$ & --- & ---\\
+\bottomrule
+\end{tabular}
+\caption{First-order Trotterisation of the unitary ansatz, two electrons in
+$12$ orbitals at the converged CCSD amplitudes.  The error is measured against
+the untrotterised exponential and falls off as $1/n$, the ratio approaching
+$2$ from above.  Computed by \texttt{quantumdot.py}.}
+\label{tab:11-trotter}
+\end{table}
+
+\begin{notebox}
+\textbf{Why this system matters.}  The quantum dot is the smallest realistic
+many-fermion system on which the whole apparatus of this book can be run and
+checked.  It is a genuine Coulomb problem, so the matrix elements and the
+basis-set convergence are those of quantum chemistry and nuclear physics; it
+is small enough that exact diagonalisation is available for two electrons in
+any basis and for six in a small one; and it has an analytic answer at special
+frequencies.  It is also the system on which the stochastic methods of the
+later chapters will be tested, so the numbers computed here are the reference
+against which variational and diffusion Monte Carlo will be measured.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{What the realistic system taught us}
+\label{sec:qdsummary}
+
+The methods survived the transition from a one-parameter model to a real
+interaction without modification.  The same Hartree-Fock routine, the same
+MP2 sum, the same coupled-cluster solver and the same unitary ansatz that were
+developed and validated on the pairing model of Chapter~\ref{chap:systems}
+produce Tables~\ref{tab:11-hierarchy} to~\ref{tab:11-trotter} when handed a
+different pair of matrices.  That portability is not an accident; it is what
+the spin-orbital formulation of Chapter~\ref{chap:secondquant} and the
+antisymmetrised matrix element were for.
+
+Three things did change, and they are the reasons for doing a realistic
+calculation at all.
+
+\begin{itemize}
+\item \textbf{The basis is now an approximation.}  In the pairing model the
+  single-particle space was finite and the only error was the many-body
+  method.  Here the oscillator basis is truncated, and for two electrons the
+  truncation error at $42$ orbitals is $0.0136$ against a CCSD-minus-MP2
+  difference of $0.0134$.  The two errors are comparable, and reporting one
+  without the other is meaningless.
+\item \textbf{The hierarchy is quantitative, not qualitative.}
+  Table~\ref{tab:11-sixelectron} puts numbers on what each method buys:
+  MP2 recovers $92.6\%$ of the correlation energy, CCD $98.1\%$, CCSD
+  $98.5\%$ and the unitary ansatz $99.2\%$.  The steps get smaller and the
+  costs get larger, which is the shape of the whole subject.
+\item \textbf{Folklore does not survive contact with a computation.}  The
+  singles amplitudes do not vanish for a closed-shell Hartree-Fock reference,
+  CCSD is not equal to CCD, and a calculation reporting otherwise is reporting
+  a bug.  The check that catches it is cheap: for two electrons CCSD must
+  equal full diagonalisation, and it does, to twelve digits.
+\end{itemize}
+
+The Hamiltonian~(\ref{eq:11-hamiltonian}) returns later in the book.  In the
+stochastic chapters it is treated by variational and diffusion Monte Carlo,
+which sample the many-body wave function directly rather than expanding it in
+determinants, and which therefore have no basis-set error at all -- their
+error is statistical, and of a completely different nature.  Comparing the two
+families on the same system, with the numbers of this chapter as the
+reference, is the cleanest way to see what each is good for.
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the shell structure}
+\label{ex:11-shells}
+\addcontentsline{toc}{subsection}{Exercise 1: the shell structure}
+
+\begin{enumerate}
+  \item[a)] Show that the number of spatial states with $2n+|m|=N_s$ is
+  $N_s+1$, and hence that the magic numbers are $N=(N_s+1)(N_s+2)$.
+  \item[b)] Verify that the Cartesian and polar labellings give the same
+  spectrum.
+  \item[c)] Why is $N=4$ not a magic number, and what would go wrong if we
+  attempted a Hartree-Fock calculation there?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+For fixed $N_s$ the allowed radial quantum numbers are
+$n=0,1,\dots,\lfloor N_s/2\rfloor$ and $|m|=N_s-2n$.  Each $n$ with $|m|>0$
+contributes two states, $m=\pm|m|$, and the single $n=N_s/2$ with $m=0$
+(present only for even $N_s$) contributes one.  Counting gives $N_s+1$ spatial
+states, or $2(N_s+1)$ with spin.  The cumulative sum is
+$\sum_{k=0}^{N_s}2(k+1)=(N_s+1)(N_s+2)$, giving $2,6,12,20,30,42$.
+
+\paragraph{Answer to b).}
+The Cartesian energy is $\hbar\omega(n_x+n_y+1)$ and the polar one is
+$\hbar\omega(2n+|m|+1)$, so the two agree whenever $n_x+n_y=2n+|m|$.  For a
+given shell the Cartesian count is the number of pairs $(n_x,n_y)$ with
+$n_x+n_y=N_s$, which is $N_s+1$ -- the same as in a).  The two bases are
+related by a unitary transformation within each shell, and either may be used;
+the polar one is chosen because it diagonalises $\hat{L}_z$.
+
+\paragraph{Answer to c).}
+$N=4$ falls inside the $N_s=1$ shell, which holds four spin-orbitals of which
+only two would be occupied.  The reference determinant is then not unique --
+any choice of two of the four degenerate orbitals gives the same unperturbed
+energy -- and the ground state of the interacting system is degenerate or
+nearly so.  A single-determinant reference is a poor starting point, the
+self-consistent iteration may fail to converge, and the perturbation
+denominators $\varepsilon_a+\varepsilon_b-\varepsilon_r-\varepsilon_s$ can
+vanish.  This is the open-shell problem, and it needs multireference methods.
+
+\subsection*{Exercise 2: the Coulomb matrix element}
+\label{ex:11-coulomb}
+\addcontentsline{toc}{subsection}{Exercise 2: the Coulomb matrix element}
+
+\begin{enumerate}
+  \item[a)] Prove the selection rule~(\ref{eq:11-mconservation}) from the
+  angular integrals alone.
+  \item[b)] Derive the scaling~(\ref{eq:11-omegascaling}).
+  \item[c)] Estimate what fraction of the $M_s^4$ index combinations survives
+  the selection rule for a basis of $M_s$ spatial states, and compare with the
+  measured $14\,703$ out of $194\,481$ for six shells.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Write $\bm{r}_1$ and $\bm{r}_2$ in polar coordinates.  The interaction
+$1/|\bm{r}_1-\bm{r}_2|$ depends on $\theta_1$ and $\theta_2$ only through
+$\theta_1-\theta_2$, so a Fourier expansion in that difference gives terms
+$e^{\imath k(\theta_1-\theta_2)}$.  The angular part of the matrix element is
+then
+\[
+  \int_0^{2\pi}\!\!\!\int_0^{2\pi}
+    e^{-\imath m_p\theta_1}e^{-\imath m_q\theta_2}\,
+    e^{\imath k(\theta_1-\theta_2)}\,
+    e^{\imath m_r\theta_1}e^{\imath m_s\theta_2}
+    \,d\theta_1\,d\theta_2 ,
+\]
+which is non-zero only when $m_r-m_p+k=0$ and $m_s-m_q-k=0$ simultaneously.
+Adding the two conditions eliminates $k$ and leaves $m_p+m_q=m_r+m_s$.
+
+\paragraph{Answer to b).}
+The oscillator eigenfunctions~(\ref{eq:11-eigenfunction}) depend on $r$ only
+through $\beta r^2$ with $\beta=m_e\omega/\hbar$, so the natural length in the
+problem is $\beta^{-1/2}\propto\omega^{-1/2}$.  The matrix element of
+$1/r_{12}$ is an inverse length times a dimensionless number that depends only
+on the quantum numbers, and therefore scales as $\omega^{1/2}$.  Numerically,
+dividing the element by $\sqrt{\hbar\omega}$ gives $1.253314137316$ at every
+frequency, as \texttt{quantumdot.py} confirms.
+
+\paragraph{Answer to c).}
+Fix $m_p$, $m_q$ and $m_r$; then $m_s$ is determined, and the combination is
+allowed only if that value lies in the basis.  Roughly one index in four is
+fixed by the other three, so of order $M_s^3$ of the $M_s^4$ combinations
+survive, a fraction $\bigO(1/M_s)$.  For $M_s=21$ this suggests about
+$5\%$; the measured fraction is $14\,703/194\,481=7.6\%$, larger because the
+determined $m_s$ often falls inside the basis rather than outside it,
+particularly for small $|m|$.
+
+\subsection*{Exercise 3: checking a Hartree-Fock code}
+\label{ex:11-hfcheck}
+\addcontentsline{toc}{subsection}{Exercise 3: checking a Hartree-Fock code}
+
+\begin{enumerate}
+  \item[a)] Show that for $N=2$ in the minimal basis the Hartree-Fock energy
+  is $2\hbar\omega+\sqrt{\pi/2}\sqrt{\hbar\omega}$, and check it against
+  Table~\ref{tab:11-hfconvergence}.
+  \item[b)] Explain why the $N=2$ energy does not change from one shell to
+  two, nor from three to four.
+  \item[c)] What would you conclude if the converged single-particle energies
+  within a shell were not degenerate?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+With only the $(0,0)$ spatial orbital available, both electrons occupy it with
+opposite spins and no variational freedom remains: $\bm{C}$ is the identity.
+The energy is then the unperturbed $2\hbar\omega$ plus the single direct
+matrix element $\bracket{00;00}{\hat{v}}{00;00}$ -- the exchange term vanishes
+because the two electrons have opposite spins -- which is
+Eq.~(\ref{eq:11-lowestelement}).  At $\hbar\omega=1$ this is
+$2+1.25331414=3.25331414$, the first row of the table.
+
+\paragraph{Answer to b).}
+The Hartree-Fock orbitals carry good angular momentum, since $\hat{f}$
+commutes with $\hat{L}_z$, so the occupied $m=0$ orbital can mix only with
+other $m=0$ states.  Shell $N_s=1$ contains none: its states are $(0,\pm1)$.
+Adding it therefore changes nothing.  The first new $m=0$ state is $(1,0)$ in
+shell $2$, which is why the energy drops there, and the next is $(2,0)$ in
+shell $4$, which is the second drop.  Shells $3$ and $5$ contain no $m=0$
+states at all.  The same argument explains why the two-electron energy is
+converged to six digits long before the six-electron one.
+
+\paragraph{Answer to c).}
+Either the calculation has not converged, or the antisymmetrised matrix
+elements are wrong in a way that breaks rotational invariance -- the most
+common cause being the spin deltas of Eq.~(\ref{eq:11-antisym}), where the
+exchange term has $r$ and $s$ interchanged.  A broken degeneracy is a far more
+sensitive diagnostic than the total energy, which can be wrong by a little
+without looking wrong at all.
+
+\subsection*{Exercise 4: the singles amplitudes}
+\label{ex:11-singles}
+\addcontentsline{toc}{subsection}{Exercise 4: the singles amplitudes}
+
+\begin{enumerate}
+  \item[a)] State precisely what Brillouin's theorem says, and what it does
+  not say.
+  \item[b)] Show that $t_1=0$ is \emph{not} a solution of the CCSD singles
+  equation for an interacting system, using
+  Eq.~(\ref{eq:11-singlesdriver}).
+  \item[c)] Design a numerical test that would catch a CCSD implementation in
+  which the two driver terms have been omitted.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Brillouin's theorem says that the Hartree-Fock determinant does not couple to
+singly excited determinants through the Hamiltonian,
+$\bracket{\Phi_i^a}{\hat{H}}{\Phi_0}=f_{ai}=0$.  That is a statement about a
+single matrix element.  It implies that singles do not contribute at first
+order in perturbation theory, and hence that MP2 involves only doubles.  It
+says nothing about the coupled-cluster amplitudes, which solve a non-linear
+system in which the singles are coupled to the doubles.
+
+\paragraph{Answer to b).}
+Set $t_1=0$ in the singles equation.  Every term containing $t_1$ vanishes and
+so does $f_{ai}$, but the two terms of Eq.~(\ref{eq:11-singlesdriver}) are
+built from $t_2$ alone and are generally non-zero.  The residual is therefore
+not zero and $t_1=0$ is not a fixed point.  Iterating from $t_1=0$ generates
+singles of the order of the doubles times a matrix element over an energy
+denominator, which is why they come out small -- about $10^{-2}$ here.
+
+\paragraph{Answer to c).}
+Run the code on a two-electron system.  Singles and doubles exhaust the
+excitation space for two particles, so CCSD must equal full configuration
+interaction exactly.  A solver missing the driver terms will converge to
+something close but not equal: the discrepancy in
+Table~\ref{tab:11-twoelectron} would be of order $10^{-4}$ rather than
+$10^{-13}$, and no amount of tightening the convergence threshold will remove
+it.  The same test distinguishes a genuine convergence problem, which
+tightening does fix, from a wrong equation, which it does not.
+
+\subsection*{Exercise 5: numerical explorations}
+\addcontentsline{toc}{subsection}{Exercise 5: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{quantumdot.py}, reproduce
+  Table~\ref{tab:11-twoelectron} and extend it to seven shells.  Fit the
+  remaining error to $a/M+b/M^2$ and extrapolate to the complete basis.  How
+  close do you get to $3$?
+  \item[b)] Compute the twelve-electron dot at $\hbar\omega=1$ in the full
+  basis.  How does the fraction $E_{\mathrm{CCSD}}/(E_{\mathrm{HF}}-E_0)$
+  compare with the two- and six-electron values, and why?
+  \item[c)] Plot the Hartree-Fock and bare oscillator single-particle spectra
+  for $N=6$ and comment on Koopmans' theorem.
+  \item[d)] For the six-electron dot in the two-shell basis, optimise the
+  unitary amplitudes properly rather than borrowing them from CCSD.  How much
+  further does the energy fall, and how many function evaluations does it
+  take?
+  \item[e)] Repeat the Trotter study of Table~\ref{tab:11-trotter} with the
+  symmetric second-order splitting of Eq.~(\ref{eq:6-strang}) and confirm that
+  the error now falls as $1/n^2$.
+  \item[f)] Estimate the number of qubits and Pauli strings needed for the
+  six-electron dot in the two-shell basis, using
+  Section~\ref{sec:jordanwigner}.  Compare with the pairing model of
+  Table~\ref{tab:4-paulicounts}.
+\end{enumerate}
