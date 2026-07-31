@@ -583,7 +583,7 @@ def _demo():
     print("The unitary ansatz of chapter 10, optimised variationally on a real")
     print("interaction.  For two electrons it must reproduce CCSD exactly.")
     print()
-    print(f"{'shells':>7s} {'orbitals':>9s} {'params':>7s} {'CCD':>13s} "
+    print(f"{'shells':>7s} {'orb':>5s} {'params':>7s} {'CCD':>13s} "
           f"{'UCCD':>13s} {'CCSD':>13s} {'UCCSD':>13s} {'FCI':>13s}")
     for shells in (1, 2, 3):
         h, v = matrices(shells)
@@ -597,62 +597,101 @@ def _demo():
         e_ucc_d = ucc_d.optimise()["energy"]
         e_ucc_sd = ucc_sd.optimise()["energy"]
         exact = two_electron_fci(h, v)[0]
-        print(f"{shells:7d} {h.shape[0]:9d} {ucc_sd.n_amplitudes:7d} "
+        print(f"{shells:7d} {h.shape[0]:5d} {ucc_sd.n_amplitudes:7d} "
               f"{e_ccd:13.8f} {e_ucc_d:13.8f} {e_ccsd:13.8f} "
               f"{e_ucc_sd:13.8f} {exact:13.8f}")
     print()
     print("Two things are worth noticing.  UCCSD, CCSD and full")
     print("diagonalisation coincide, because with two particles singles and")
     print("doubles span the entire space.  And UCCD coincides with CCD, which")
-    print("is less obvious: with two particles T_2^2 annihilates the reference")
-    print("and T_2^dagger annihilates it too, so exp(T_2 - T_2^dagger) and")
-    print("1 + T_2 sweep out the same ray, and the variational minimum over it")
-    print("is the lowest eigenvalue in the space of the reference plus the")
-    print("doubles -- which is what CCD returns.  The difference between the")
-    print("unitary and the standard ansatz only appears when the truncation")
-    print("genuinely bites.")
+    print("is less obvious: with two particles T_2 T_2 annihilates the")
+    print("reference and so does T_2^dagger, so exp(T_2 - T_2^dagger) and")
+    print("1 + T_2 sweep out the same two-dimensional manifold, and the")
+    print("variational minimum over it is the lowest eigenvalue in the space")
+    print("of the reference plus the doubles -- which is what CCD returns.")
+    print("The unitary and the standard ansatz differ only when the")
+    print("truncation genuinely bites.")
 
     print()
     print("=" * 74)
-    print("8. Unitary coupled cluster: six electrons and Trotterisation")
+    print("8. Six electrons: the whole hierarchy against exact diagonalisation")
     print("=" * 74)
-    print("With six electrons the truncation does bite.  Optimising 261")
-    print("amplitudes over a 924-dimensional space is expensive, so we do what")
-    print("a quantum calculation would do: take the converged CCSD amplitudes")
-    print("and evaluate the unitary energy on them, exactly and Trotterised.")
+    print("Twelve orbitals is small enough that the six-electron determinant")
+    print("space can still be diagonalised, so for once every method in the")
+    print("book can be compared with the exact answer on a realistic")
+    print("interaction and a system where the truncation matters.")
     print()
-    shells = 2
-    h, v = matrices(shells)
+    h, v = matrices(2)
     h_hf, v_hf, _, _ = hartree_fock(h, v, 6)
     f_hf = h_hf + np.einsum("piqi->pq", v_hf[:, :6, :, :6])
     e_ref = reference_energy(h_hf, v_hf, 6)
-    cc = ccsd(f_hf, v_hf, 6)
+    cc_d = ccd(f_hf, v_hf, 6)
+    cc_sd = ccsd(f_hf, v_hf, 6)
     ucc = UnitaryCC(h_hf, v_hf, 6, singles=True, doubles=True)
-    x = ucc_amplitudes_from_ccsd(ucc, cc["t1"], cc["t2"], 6)
-    print(f"   basis: {h.shape[0]} orbitals, determinant space {ucc.dim}, "
+    exact = float(np.linalg.eigvalsh(ucc.H)[0])
+    x = ucc_amplitudes_from_ccsd(ucc, cc_sd["t1"], cc_sd["t2"], 6)
+    e_ucc = ucc.energy(x)
+
+    print(f"   basis: 12 orbitals, determinant space {ucc.dim}, "
           f"{ucc.n_amplitudes} amplitudes")
-    print(f"   E_HF                       = {e_ref:.8f}")
-    print(f"   E_HF + E_CCSD              = {e_ref + cc['energy']:.8f}")
-    print(f"   UCCSD at the CCSD amplitudes = {ucc.energy(x):.8f}")
+    print()
+    rows = [("Hartree-Fock", e_ref),
+            ("MP2", e_ref + mp2_energy(f_hf, v_hf, 6)),
+            ("CCD", e_ref + cc_d["energy"]),
+            ("CCSD", e_ref + cc_sd["energy"]),
+            ("UCCSD (at the CCSD amplitudes)", e_ucc),
+            ("exact diagonalisation", exact)]
+    correlation = exact - e_ref
+    print(f"{'method':<32s} {'energy':>14s} {'error':>12s} "
+          f"{'% of E_corr':>12s}")
+    for label, energy in rows:
+        recovered = 100.0 * (energy - e_ref) / correlation
+        print(f"{label:<32s} {energy:14.8f} {energy-exact:12.2e} "
+              f"{recovered:11.2f}%")
+    print()
+    print("The ordering is the expected one and every step is an improvement:")
+    print("MP2 recovers most of the correlation energy, CCD resums the ladders")
+    print("and rings to all orders, CCSD adds the orbital relaxation, and the")
+    print("unitary ansatz does better still -- even evaluated at the CCSD")
+    print("amplitudes rather than its own optimum, and while remaining above")
+    print("the exact energy as the variational principle demands.  CCSD")
+    print("carries no such guarantee.")
+
+    print()
+    print("=" * 74)
+    print("9. Trotterising the unitary ansatz")
+    print("=" * 74)
+    print("A quantum computer cannot apply exp(sigma) in one step; it applies")
+    print("the generators one at a time.  The splitting error is the Trotter")
+    print("error of section 6.9, and n is the circuit depth.  Two electrons in")
+    print("twelve orbitals, at the CCSD amplitudes:")
+    print()
+    h, v = matrices(2)
+    h_hf, v_hf, _, _ = hartree_fock(h, v, 2)
+    f_hf = h_hf + np.einsum("piqi->pq", v_hf[:, :2, :, :2])
+    cc = ccsd(f_hf, v_hf, 2)
+    ucc = UnitaryCC(h_hf, v_hf, 2, singles=True, doubles=True)
+    x = ucc_amplitudes_from_ccsd(ucc, cc["t1"], cc["t2"], 2)
+    untrotterised = ucc.energy(x)
+    print(f"   exact exponential  = {untrotterised:.8f}")
     print()
     print(f"{'Trotter steps':>14s} {'energy':>14s} {'error':>12s} "
           f"{'ratio':>8s}")
-    exact_ucc = ucc.energy(x)
     previous = None
-    for n in (1, 2, 4, 8):
+    for n in (1, 2, 4, 8, 16):
         energy = ucc.energy(x, n_trotter=n)
-        error = abs(energy - exact_ucc)
-        ratio = "--" if previous is None else f"{previous/error:8.2f}"
+        error = abs(energy - untrotterised)
+        ratio = "--" if previous is None else f"{previous/error:.2f}"
         print(f"{n:14d} {energy:14.8f} {error:12.2e} {ratio:>8s}")
         previous = error
     print()
-    print("The error falls off roughly as 1/n, the first-order Trotter rate of")
-    print("Section 6.9, and n is the circuit depth.  This is the calculation a")
-    print("variational quantum eigensolver performs: the state is prepared by")
-    print("the Trotterised circuit, the energy is measured, and the amplitudes")
-    print("are adjusted classically.  On hardware the Hamiltonian would first")
-    print("be mapped to Pauli strings by the Jordan-Wigner transformation of")
-    print("Section 3.16; here we simply exponentiate the matrices.")
+    print("The error halves when n doubles: first-order Trotter, exactly the")
+    print("O(1/n) rate of Eq. (6.30).  This is the calculation a variational")
+    print("quantum eigensolver performs -- prepare the state with the")
+    print("Trotterised circuit, measure the energy, adjust the amplitudes")
+    print("classically.  On hardware the Hamiltonian would first be mapped to")
+    print("Pauli strings by the Jordan-Wigner transformation of section 3.16;")
+    print("here the matrices are simply exponentiated.")
 
 
 if __name__ == "__main__":
