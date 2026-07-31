@@ -161,7 +161,8 @@ and `models.ipynb` plus `Hubbard.ipynb` to
 `chapter4.tex`, `fullci.ipynb` to `chapter5.tex`, `hartreefock.ipynb` to
 `chapter6.tex`, `tdarpa.ipynb` to `chapter7.tex`, `dft.ipynb` to
 `chapter8.tex`, `mbptheory.ipynb` to `chapter9.tex` and
-`coupledcluster.ipynb` to `chapter10.tex`; the older set is `notation.ipynb`,
+`coupledcluster.ipynb` to `chapter10.tex` and `quantumdots.ipynb` to
+`chapter11.tex`; the older set is `notation.ipynb`,
 `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
 `vmcdmc.ipynb`, … New book material that includes runnable code should have a
 notebook counterpart, and new notebooks must be registered in `_toc.yml`.
@@ -199,6 +200,7 @@ written for chapters 1 and 2 are:
 | `dft.py` | 8 | LDA built from the uniform gas, the exchange hole, a Kohn-Sham solver in the chapter-6 basis, self-interaction and locality errors |
 | `mbpt.py` | 9 | Rayleigh-Schroedinger to any order by recursion, Brillouin-Wigner self-consistently, four models, size extensivity, convergence |
 | `coupledcluster.py` | 10 | General spin-orbital CCSD with intermediates, CCD, a validating FCI in the same basis, the order-by-order expansion, and `UnitaryCC` (UCCD/UCCSD, exact and Trotterised) |
+| `quantumdot.py` | 11 | 2D quantum dot: closed-form Coulomb integrals, the antisymmetrised two-body matrix, a fast two-electron FCI, and the whole chapter-10 hierarchy applied to it. Takes a few minutes to run |
 
 All of these run on `numpy` alone except `hartreefock.py`, which also needs
 `scipy.linalg` for `expm`/`logm`; `rpa.py`, which needs `scipy.linalg`,

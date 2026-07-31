@@ -148,6 +148,38 @@
      - The UnitaryCC class is the VQE ansatz, reused in chapter11.tex
      - Still to add: equation-of-motion CC, the diagrammatic derivation,
        CCSD(T)
+###  Applications: quantum dots  (chapter11.tex, done)
+     - Two-dimensional parabolic trap with the bare Coulomb interaction, from
+       qdhfmbptccsd_uccsd.ipynb sections 1-3 (Hamiltonian, polar basis,
+       Coulomb matrix element) plus the HF/MP2/CC results
+     - Coulomb integrals in closed form (Anisimova-Matulis); checks:
+       <00;00|v|00;00> = sqrt(pi/2) sqrt(hw) to 12 digits, the sqrt(hw)
+       scaling, m_p+m_q = m_r+m_s, and the particle-swap/hermiticity
+       symmetries
+     - HF, MP2, CCD, CCSD reproduce the notebook's HF and MP2 numbers exactly
+       (E_HF = 3.16192140 and 20.72025707; E_MP2 = -0.13488329 and
+       -0.41769581 at 42 orbitals)
+     - IMPORTANT, two errors in the source notebook, both corrected here:
+       (i) it claims Brillouin's theorem makes T1 = 0 so that CCSD = CCD.
+       False: the CCSD singles equation is driven by the doubles through the
+       <ma||ef> and <nm||ei> terms, which survive at t1 = 0.  Here
+       max|t1| = 5.7e-3 (N=2) and 1.0e-2 (N=6).
+       (ii) its CC energies are wrong (E_CCD = -0.09725, E_CCSD = -0.05858 for
+       N=2, explained away as a "DIIS-path artefact").  The correct values are
+       -0.14799908 and -0.14829527, verified because for two electrons CCSD
+       must equal FCI, and it does to 3e-13 in every basis
+     - Benchmarks: two-electron FCI in every basis (dim 861 at 42 orbitals),
+       Taut's analytic E = 3 at hw = 1, and a full six-electron FCI in the
+       12-orbital basis (dim 924) where MP2/CCD/CCSD/UCCSD recover
+       92.55/98.13/98.47/99.20 % of the correlation energy
+     - UCCSD beats CCSD even when evaluated at the borrowed CCSD amplitudes,
+       and stays above FCI as the variational principle requires.  Note the
+       sign convention: UnitaryCC's doubles generator is a+_a a+_b a_i a_j,
+       so t2 must be imported with a minus (verified against a full
+       variational optimisation, cosine 1.0000)
+     - Still to add if wanted: perturbative triples, open shells (N=4),
+       twelve electrons, and the Monte Carlo comparison promised in the text
+
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
 ###  SRG and IMSRG
