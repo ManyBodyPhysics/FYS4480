@@ -277,6 +277,26 @@ class QuantumDot:
 
 
 # ---------------------------------------------------------------------------
+#  Caching: the whole hbar-omega dependence is a scaling
+# ---------------------------------------------------------------------------
+#  The one-body energies are proportional to hw and the Coulomb elements to
+#  sqrt(hw), so the expensive integrals need to be computed once and can then
+#  be reused for every frequency.  That is worth exploiting -- and it is worth
+#  verifying, which the demo does.
+# ---------------------------------------------------------------------------
+_MATRIX_CACHE = {}
+
+
+def matrices(shells, hw=1.0, progress=False):
+    """(h, v) for a given number of shells, at any frequency."""
+    if shells not in _MATRIX_CACHE:
+        dot = QuantumDot(2, shells, hw=1.0)
+        _MATRIX_CACHE[shells] = (dot.one_body(), dot.two_body(progress))
+    h_unit, v_unit = _MATRIX_CACHE[shells]
+    return hw * h_unit, math.sqrt(hw) * v_unit
+
+
+# ---------------------------------------------------------------------------
 #  Running the hierarchy of methods
 # ---------------------------------------------------------------------------
 def solve(particles, shells, hw=1.0, methods=("hf", "mp2", "ccd", "ccsd"),
@@ -288,7 +308,7 @@ def solve(particles, shells, hw=1.0, methods=("hf", "mp2", "ccd", "ccsd"),
     MP2 sum and the coupled-cluster solvers are those of chapter 10.
     """
     dot = QuantumDot(particles, shells, hw)
-    h, v = dot.matrices(progress)
+    h, v = matrices(shells, hw, progress)
     out = {"dot": dot, "n_orbitals": dot.n_orbitals,
            "E0": float(np.sum(dot.energies()[:particles])),
            "E_ref": reference_energy(h, v, particles)}
@@ -344,10 +364,27 @@ def two_electron_fci(h, v):
 
 def exact_two_electron(shells, hw=1.0):
     """Full configuration interaction for two electrons in a given basis."""
-    dot = QuantumDot(2, shells, hw)
-    h, v = dot.matrices()
+    h, v = matrices(shells, hw)
     energy, dimension = two_electron_fci(h, v)
-    return energy, dot.n_orbitals, dimension
+    return energy, h.shape[0], dimension
+
+
+def ucc_amplitudes_from_ccsd(ucc, t1, t2, n_occ):
+    """Pack CCSD amplitudes into the parameter vector of a `UnitaryCC`.
+
+    The unitary ansatz uses the same excitation labels as coupled cluster, so
+    the converged CCSD amplitudes are a natural starting point -- and, on a
+    quantum computer, often the only ones one can afford to compute.
+    """
+    x = np.zeros(ucc.n_amplitudes)
+    for k, label in enumerate(ucc.labels):
+        if label[0] == "s":
+            _, i, a = label
+            x[k] = t1[i, a - n_occ]
+        elif label[0] == "d":
+            _, (i, j), (a, b) = label
+            x[k] = t2[i, j, a - n_occ, b - n_occ]
+    return x
 
 
 def taut_energy():
@@ -364,211 +401,250 @@ def taut_energy():
 # ---------------------------------------------------------------------------
 def _demo():
     print("=" * 74)
-    print("1. The single-particle basis")
+    print("1. The single-particle basis and the magic numbers")
     print("=" * 74)
     dot = QuantumDot(2, shells=5)
     print(f"shells 0-{dot.shells}: {len(dot.spatial)} spatial states, "
           f"{dot.n_orbitals} spin-orbitals")
     print()
-    print(f"{'N_s':>4s} {'(n, m)':>28s} {'degeneracy':>12s} "
+    print(f"{'N_s':>4s} {'(n, m)':>30s} {'degeneracy':>12s} "
           f"{'cumulative N':>14s}")
     total = 0
     for n_s in range(dot.shells + 1):
         states = [s for k, s in enumerate(dot.spatial)
                   if dot.shell_of(k) == n_s]
         total += 2 * len(states)
-        label = ", ".join(f"({n},{m:+d})" if m else f"({n},0)"
-                          for n, m in states)
-        print(f"{n_s:4d} {label:>28s} {2*len(states):12d} {total:14d}")
+        label = ",".join(f"({n},{m:+d})" if m else f"({n},0)"
+                         for n, m in states)
+        print(f"{n_s:4d} {label:>30s} {2*len(states):12d} {total:14d}")
     print()
-    print("The cumulative column is the sequence of magic numbers,")
-    print("2, 6, 12, 20, 30, 42: the closed-shell electron numbers.")
+    print("The last column is the sequence of magic numbers 2, 6, 12, 20, 30,")
+    print("42: the electron numbers at which a shell closes and the dot is")
+    print("particularly stable.  We compute the first two, N = 2 and N = 6.")
 
     print()
     print("=" * 74)
-    print("2. The Coulomb matrix element against known values")
+    print("2. The Coulomb matrix element")
     print("=" * 74)
     element = coulomb_ho(1.0, 0, 0, 0, 0, 0, 0, 0, 0)
-    print(f"   <00;00|v|00;00>        = {element:.10f}")
-    print(f"   sqrt(pi/2)             = {math.sqrt(math.pi/2):.10f}")
+    print(f"   <00;00|v|00;00>  = {element:.12f}")
+    print(f"   sqrt(pi/2)       = {math.sqrt(math.pi/2):.12f}")
     print(f"   agree: {abs(element - math.sqrt(math.pi/2)) < 1e-12}")
     print()
-    print("   scaling in hw (the element must go as sqrt(hw)):")
+    print("   the whole hw dependence is a factor sqrt(hw):")
     for hw in (0.25, 0.5, 1.0, 2.0, 4.0):
         value = coulomb_ho(hw, 0, 0, 0, 0, 0, 0, 0, 0)
-        print(f"      hw = {hw:5.2f}:  {value:.8f}   "
-              f"ratio to sqrt(hw) = {value/math.sqrt(hw):.8f}")
+        print(f"      hw = {hw:5.2f}:  {value:12.8f}   "
+              f"value / sqrt(hw) = {value/math.sqrt(hw):.12f}")
     print()
-    print("   angular-momentum conservation, m_p + m_q = m_r + m_s:")
+    print("   angular momentum is conserved, m_p + m_q = m_r + m_s:")
     for label, args in (
-            ("<0,1;0,-1|v|0,0;0,0>  (allowed)", (0, 1, 0, -1, 0, 0, 0, 0)),
-            ("<0,1;0,0|v|0,0;0,0>   (forbidden)", (0, 1, 0, 0, 0, 0, 0, 0)),
-            ("<0,2;0,-1|v|0,1;0,0>  (allowed)", (0, 2, 0, -1, 0, 1, 0, 0))):
-        print(f"      {label:36s} = {coulomb_ho(1.0, *args):+.8f}")
+            ("<0,+1;0,-1|v|0,0;0,0>   (allowed)", (0, 1, 0, -1, 0, 0, 0, 0)),
+            ("<0,+1;0, 0|v|0,0;0,0>   (forbidden)", (0, 1, 0, 0, 0, 0, 0, 0)),
+            ("<0,+2;0,-1|v|0,+1;0,0>  (allowed)", (0, 2, 0, -1, 0, 1, 0, 0)),
+            ("<0,+2;0, 0|v|0,+1;0,0>  (forbidden)", (0, 2, 0, 0, 0, 1, 0, 0))):
+        print(f"      {label:38s} = {coulomb_ho(1.0, *args):+.8f}")
     print()
-    print("   symmetries of the spatial element:")
-    dot = QuantumDot(2, shells=2)
-    quads = [(0, 1, 2, 3), (1, 3, 0, 2), (2, 2, 1, 1)]
-    for p, q, r, s in quads:
-        direct = dot.spatial_element(p, q, r, s)
-        swapped = dot.spatial_element(q, p, s, r)
-        conjugate = dot.spatial_element(r, s, p, q)
-        print(f"      ({p}{q}|{r}{s}): {direct:+.8f}   "
-              f"particle swap {abs(direct-swapped):.1e}   "
-              f"hermiticity {abs(direct-conjugate):.1e}")
+    print("   symmetries  <pq|v|rs> = <qp|v|sr> = <rs|v|pq>:")
+    small = QuantumDot(2, shells=2)
+    for p, q, r, s in ((0, 1, 2, 3), (1, 3, 0, 2), (2, 2, 1, 1)):
+        direct = small.spatial_element(p, q, r, s)
+        print(f"      ({p}{q}|{r}{s}) = {direct:+.8f}   "
+              f"particle swap {abs(direct-small.spatial_element(q,p,s,r)):.1e}"
+              f"   hermiticity {abs(direct-small.spatial_element(r,s,p,q)):.1e}")
 
     print()
     print("=" * 74)
-    print("3. Hartree-Fock: convergence with the size of the basis")
+    print("3. Hartree-Fock and the size of the basis")
     print("=" * 74)
-    print("Adding shells can only lower the energy, since the Hartree-Fock")
-    print("state gains variational freedom.")
+    print("Adding a shell can only lower the energy: the Hartree-Fock state")
+    print("gains variational freedom and nothing is taken away.")
     print()
     print(f"{'shells':>7s} {'orbitals':>9s} {'N=2 E_HF':>14s} {'dE':>11s} "
           f"{'N=6 E_HF':>14s} {'dE':>11s}")
-    previous2 = previous6 = None
+    previous = {2: None, 6: None}
     for shells in range(0, 6):
-        row = [f"{shells:7d}", f"{2*len(spatial_basis(shells)):9d}"]
-        for particles, previous in ((2, previous2), (6, previous6)):
-            if 2 * len(spatial_basis(shells)) < particles:
+        n_orbitals = 2 * len(spatial_basis(shells))
+        row = [f"{shells:7d}", f"{n_orbitals:9d}"]
+        for particles in (2, 6):
+            if n_orbitals < particles:
                 row += [f"{'--':>14s}", f"{'--':>11s}"]
                 continue
-            result = solve(particles, shells, methods=())
-            energy = result["E_HF"]
+            energy = solve(particles, shells, methods=())["E_HF"]
             row.append(f"{energy:14.8f}")
-            row.append(f"{'--':>11s}" if previous is None
-                       else f"{energy-previous:+11.6f}")
-            if particles == 2:
-                previous2 = energy
-            else:
-                previous6 = energy
+            row.append(f"{'--':>11s}" if previous[particles] is None
+                       else f"{energy-previous[particles]:+11.6f}")
+            previous[particles] = energy
         print(" ".join(row))
 
     print()
     print("=" * 74)
-    print("4. The hierarchy of methods at hw = 1, shells 0-5")
+    print("4. The hierarchy of methods, hw = 1, shells 0-5 (42 orbitals)")
     print("=" * 74)
-    results = {}
-    for particles in (2, 6):
-        print(f"   solving N = {particles} ...", flush=True)
-        results[particles] = solve(particles, 5)
+    results = {particles: solve(particles, 5) for particles in (2, 6)}
     print()
-    print(f"{'quantity':<34s} {'N = 2':>16s} {'N = 6':>16s}")
-    print("-" * 68)
-    rows = [
-        ("non-interacting  E_0", "E0"),
-        ("Hartree-Fock  E_HF", "E_HF"),
-        ("  interaction  E_HF - E_0", None),
-        ("MP2 correlation  E_MP2", "E_MP2"),
-        ("  total  E_HF + E_MP2", None),
-        ("CCD correlation  E_CCD", "E_CCD"),
-        ("  total  E_HF + E_CCD", None),
-        ("CCSD correlation  E_CCSD", "E_CCSD"),
-        ("  total  E_HF + E_CCSD", None),
-    ]
-    for label, key in rows:
-        values = []
-        for particles in (2, 6):
-            r = results[particles]
-            if key is not None:
-                values.append(r[key])
-            elif "interaction" in label:
-                values.append(r["E_HF"] - r["E0"])
-            elif "MP2" in label:
-                values.append(r["E_HF"] + r["E_MP2"])
-            elif "CCD" in label:
-                values.append(r["E_HF"] + r["E_CCD"])
-            else:
-                values.append(r["E_HF"] + r["E_CCSD"])
-        print(f"{label:<34s} {values[0]:16.8f} {values[1]:16.8f}")
+    print(f"{'quantity':<32s} {'N = 2':>15s} {'N = 6':>15s}")
+    print("-" * 64)
+
+    def line(label, values):
+        print(f"{label:<32s} {values[0]:15.8f} {values[1]:15.8f}")
+
+    line("non-interacting  E_0", [results[n]["E0"] for n in (2, 6)])
+    line("Hartree-Fock  E_HF", [results[n]["E_HF"] for n in (2, 6)])
+    line("  interaction  E_HF - E_0",
+         [results[n]["E_HF"] - results[n]["E0"] for n in (2, 6)])
+    line("MP2 correlation", [results[n]["E_MP2"] for n in (2, 6)])
+    line("  total  E_HF + E_MP2",
+         [results[n]["E_HF"] + results[n]["E_MP2"] for n in (2, 6)])
+    line("CCD correlation", [results[n]["E_CCD"] for n in (2, 6)])
+    line("  total  E_HF + E_CCD",
+         [results[n]["E_HF"] + results[n]["E_CCD"] for n in (2, 6)])
+    line("CCSD correlation", [results[n]["E_CCSD"] for n in (2, 6)])
+    line("  total  E_HF + E_CCSD",
+         [results[n]["E_HF"] + results[n]["E_CCSD"] for n in (2, 6)])
     print()
     for particles in (2, 6):
         r = results[particles]
         print(f"   N = {particles}: SCF {r['iterations']} iterations, "
-              f"CCD {r['CCD_iterations']}, CCSD {r['CCSD_iterations']}; "
-              f"|E_CCSD - E_CCD| = {abs(r['E_CCSD']-r['E_CCD']):.2e}")
+              f"CCD {r['CCD_iterations']}, CCSD {r['CCSD_iterations']}, "
+              f"max|t_1| = {r['t1_max']:.2e}")
     print()
-    print("The last number is the check that matters.  For a closed-shell")
-    print("system in a canonical Hartree-Fock basis Brillouin's theorem makes")
-    print("the singles amplitudes vanish, so CCSD must reduce to CCD exactly.")
-    print("A difference larger than the convergence tolerance would mean one")
-    print("of the two solvers is wrong.")
+    print("Note that the singles amplitudes do NOT vanish.  Brillouin's")
+    print("theorem makes f_ai = 0, which is why there is no first-order")
+    print("singles contribution and why MP2 has only doubles -- but the CCSD")
+    print("singles equation is driven by the doubles through terms such as")
+    print("sum_mef t_im^ef <ma||ef>, which survive at t_1 = 0.  The singles")
+    print("are small, they describe orbital relaxation, and CCSD therefore")
+    print("lies slightly below CCD rather than coinciding with it.")
 
     print()
     print("=" * 74)
     print("5. Two electrons against the exact answer")
     print("=" * 74)
-    print("With N = 2 the determinant space is small enough to diagonalise,")
-    print("so every approximation can be measured against the exact energy of")
-    print("the same basis, and the basis series against Taut's analytic")
-    print("result E = 3 at hw = 1.")
+    print("With N = 2 the determinant space is small enough to diagonalise")
+    print("exactly, so every approximation can be measured against the exact")
+    print("energy in the same basis -- and the basis series against Taut's")
+    print("analytic result E = 3 at hw = 1.")
     print()
-    print(f"{'shells':>7s} {'orbitals':>9s} {'E_HF':>12s} {'E_MP2':>12s} "
-          f"{'E_CCSD':>12s} {'E_FCI':>12s}")
-    for shells in (1, 2, 3, 4):
+    print(f"{'shells':>7s} {'orbitals':>9s} {'dim':>6s} {'E_HF':>13s} "
+          f"{'E_HF+MP2':>13s} {'E_HF+CCSD':>13s} {'E_FCI':>13s} "
+          f"{'CCSD-FCI':>11s}")
+    for shells in (1, 2, 3, 4, 5):
         result = solve(2, shells)
-        exact, n_orbitals = exact_two_electron(shells)
-        print(f"{shells:7d} {n_orbitals:9d} {result['E_HF']:12.8f} "
-              f"{result['E_HF']+result['E_MP2']:12.8f} "
-              f"{result['E_HF']+result['E_CCSD']:12.8f} {exact:12.8f}")
-    print(f"{'exact':>7s} {'infinite':>9s} {'':12s} {'':12s} {'':12s} "
-          f"{taut_energy():12.8f}")
+        exact, n_orbitals, dimension = exact_two_electron(shells)
+        ccsd_total = result["E_HF"] + result["E_CCSD"]
+        print(f"{shells:7d} {n_orbitals:9d} {dimension:6d} "
+              f"{result['E_HF']:13.8f} "
+              f"{result['E_HF']+result['E_MP2']:13.8f} "
+              f"{ccsd_total:13.8f} {exact:13.8f} "
+              f"{abs(ccsd_total-exact):11.1e}")
+    print(f"{'exact':>7s} {'infinite':>9s} {'--':>6s} {'--':>13s} {'--':>13s} "
+          f"{'--':>13s} {taut_energy():13.8f}")
     print()
-    print("For two electrons CCSD is exact within the given basis -- singles")
-    print("and doubles exhaust the excitations available to two particles --")
-    print("so the CCSD and FCI columns must agree to machine precision.  They")
-    print("do, which validates the coupled-cluster solver on a real")
-    print("interaction.  The remaining gap to 3 is basis truncation, and it")
-    print("closes slowly: the Coulomb cusp is hard for an oscillator basis.")
+    print("The last column is the point.  For two electrons singles and")
+    print("doubles exhaust the available excitations, so CCSD is exact within")
+    print("the basis, and it agrees with full diagonalisation to twelve")
+    print("digits.  That validates the coupled-cluster solver of chapter 10 on")
+    print("a real interaction, not just on a model.  The remaining gap to 3 is")
+    print("basis truncation, and it closes slowly: the Coulomb cusp is hard")
+    print("for a harmonic-oscillator basis.")
 
     print()
     print("=" * 74)
-    print("6. Dependence on the confinement strength")
+    print("6. Dependence on the confinement")
     print("=" * 74)
     print("Kinetic energy scales as hw and the Coulomb energy as sqrt(hw), so")
     print("a shallow trap is strongly correlated and a steep one is nearly")
-    print("free.  The ratio E_corr/(E_HF - E_0) measures that directly.")
-    print()
+    print("free.  The last column is the correlation energy as a fraction of")
+    print("the Hartree-Fock interaction energy.")
     for particles in (2, 6):
-        print(f"   N = {particles}")
-        print(f"{'hw':>8s} {'E_0':>10s} {'E_HF':>13s} {'E_MP2':>12s} "
+        print()
+        print(f"   N = {particles}, shells 0-4")
+        print(f"{'hw':>8s} {'E_0':>9s} {'E_HF':>13s} {'E_MP2':>12s} "
               f"{'E_CCSD':>12s} {'ratio':>9s}")
-        for hw in (0.28, 0.5, 1.0, 2.0, 4.0):
+        for hw in (0.25, 0.5, 1.0, 2.0, 4.0):
             r = solve(particles, 4, hw=hw)
             ratio = r["E_CCSD"] / (r["E_HF"] - r["E0"])
-            print(f"{hw:8.2f} {r['E0']:10.4f} {r['E_HF']:13.8f} "
+            print(f"{hw:8.2f} {r['E0']:9.3f} {r['E_HF']:13.8f} "
                   f"{r['E_MP2']:12.8f} {r['E_CCSD']:12.8f} {ratio:9.4f}")
-        print()
 
-    print("=" * 74)
-    print("7. Unitary coupled cluster")
-    print("=" * 74)
-    print("The unitary ansatz of chapter 10 applied to a real interaction.")
-    print("With sigma = T - T^dagger the expansion no longer terminates, so")
-    print("the energy is evaluated by exponentiating sigma directly in the")
-    print("truncated space, and the result is variational: it lies above the")
-    print("exact energy, whereas CCSD carries no such guarantee.")
     print()
-    print(f"{'shells':>7s} {'orbitals':>9s} {'E_CCSD':>13s} {'E_UCCSD':>13s} "
-          f"{'E_FCI':>13s}")
-    for shells in (1, 2):
-        dot = QuantumDot(2, shells)
-        h, v = dot.matrices()
+    print("=" * 74)
+    print("7. Unitary coupled cluster: two electrons")
+    print("=" * 74)
+    print("The unitary ansatz of chapter 10, optimised variationally on a real")
+    print("interaction.  For two electrons it must reproduce CCSD exactly.")
+    print()
+    print(f"{'shells':>7s} {'orbitals':>9s} {'params':>7s} {'CCD':>13s} "
+          f"{'UCCD':>13s} {'CCSD':>13s} {'UCCSD':>13s} {'FCI':>13s}")
+    for shells in (1, 2, 3):
+        h, v = matrices(shells)
         h_hf, v_hf, _, _ = hartree_fock(h, v, 2)
         f_hf = h_hf + np.einsum("piqi->pq", v_hf[:, :2, :, :2])
         e_ref = reference_energy(h_hf, v_hf, 2)
-        e_ccsd = ccsd(f_hf, v_hf, 2)["energy"]
-        ucc = UnitaryCC(h_hf, v_hf, 2, singles=True, doubles=True)
-        e_ucc = ucc.optimise()[0]
-        exact = fci_energy(h, v, 2)
-        print(f"{shells:7d} {dot.n_orbitals:9d} {e_ref+e_ccsd:13.8f} "
-              f"{e_ucc:13.8f} {exact:13.8f}")
+        e_ccd = e_ref + ccd(f_hf, v_hf, 2)["energy"]
+        e_ccsd = e_ref + ccsd(f_hf, v_hf, 2)["energy"]
+        ucc_d = UnitaryCC(h_hf, v_hf, 2, singles=False, doubles=True)
+        ucc_sd = UnitaryCC(h_hf, v_hf, 2, singles=True, doubles=True)
+        e_ucc_d = ucc_d.optimise()["energy"]
+        e_ucc_sd = ucc_sd.optimise()["energy"]
+        exact = two_electron_fci(h, v)[0]
+        print(f"{shells:7d} {h.shape[0]:9d} {ucc_sd.n_amplitudes:7d} "
+              f"{e_ccd:13.8f} {e_ucc_d:13.8f} {e_ccsd:13.8f} "
+              f"{e_ucc_sd:13.8f} {exact:13.8f}")
     print()
-    print("For two electrons all three coincide, because singles and doubles")
-    print("span the whole space: the unitary and the non-unitary ansatz then")
-    print("describe the same state.  The difference between them appears only")
-    print("when the truncation actually bites, which for this system means")
-    print("six electrons or more.")
+    print("Two things are worth noticing.  UCCSD, CCSD and full")
+    print("diagonalisation coincide, because with two particles singles and")
+    print("doubles span the entire space.  And UCCD coincides with CCD, which")
+    print("is less obvious: with two particles T_2^2 annihilates the reference")
+    print("and T_2^dagger annihilates it too, so exp(T_2 - T_2^dagger) and")
+    print("1 + T_2 sweep out the same ray, and the variational minimum over it")
+    print("is the lowest eigenvalue in the space of the reference plus the")
+    print("doubles -- which is what CCD returns.  The difference between the")
+    print("unitary and the standard ansatz only appears when the truncation")
+    print("genuinely bites.")
+
+    print()
+    print("=" * 74)
+    print("8. Unitary coupled cluster: six electrons and Trotterisation")
+    print("=" * 74)
+    print("With six electrons the truncation does bite.  Optimising 261")
+    print("amplitudes over a 924-dimensional space is expensive, so we do what")
+    print("a quantum calculation would do: take the converged CCSD amplitudes")
+    print("and evaluate the unitary energy on them, exactly and Trotterised.")
+    print()
+    shells = 2
+    h, v = matrices(shells)
+    h_hf, v_hf, _, _ = hartree_fock(h, v, 6)
+    f_hf = h_hf + np.einsum("piqi->pq", v_hf[:, :6, :, :6])
+    e_ref = reference_energy(h_hf, v_hf, 6)
+    cc = ccsd(f_hf, v_hf, 6)
+    ucc = UnitaryCC(h_hf, v_hf, 6, singles=True, doubles=True)
+    x = ucc_amplitudes_from_ccsd(ucc, cc["t1"], cc["t2"], 6)
+    print(f"   basis: {h.shape[0]} orbitals, determinant space {ucc.dim}, "
+          f"{ucc.n_amplitudes} amplitudes")
+    print(f"   E_HF                       = {e_ref:.8f}")
+    print(f"   E_HF + E_CCSD              = {e_ref + cc['energy']:.8f}")
+    print(f"   UCCSD at the CCSD amplitudes = {ucc.energy(x):.8f}")
+    print()
+    print(f"{'Trotter steps':>14s} {'energy':>14s} {'error':>12s} "
+          f"{'ratio':>8s}")
+    exact_ucc = ucc.energy(x)
+    previous = None
+    for n in (1, 2, 4, 8):
+        energy = ucc.energy(x, n_trotter=n)
+        error = abs(energy - exact_ucc)
+        ratio = "--" if previous is None else f"{previous/error:8.2f}"
+        print(f"{n:14d} {energy:14.8f} {error:12.2e} {ratio:>8s}")
+        previous = error
+    print()
+    print("The error falls off roughly as 1/n, the first-order Trotter rate of")
+    print("Section 6.9, and n is the circuit depth.  This is the calculation a")
+    print("variational quantum eigensolver performs: the state is prepared by")
+    print("the Trotterised circuit, the energy is measured, and the amplitudes")
+    print("are adjusted classically.  On hardware the Hamiltonian would first")
+    print("be mapped to Pauli strings by the Jordan-Wigner transformation of")
+    print("Section 3.16; here we simply exponentiate the matrices.")
 
 
 if __name__ == "__main__":
