@@ -373,8 +373,16 @@ def ucc_amplitudes_from_ccsd(ucc, t1, t2, n_occ):
     """Pack CCSD amplitudes into the parameter vector of a `UnitaryCC`.
 
     The unitary ansatz uses the same excitation labels as coupled cluster, so
-    the converged CCSD amplitudes are a natural starting point -- and, on a
-    quantum computer, often the only ones one can afford to compute.
+    the converged CCSD amplitudes are a natural starting point -- and on a
+    quantum computer they are often the only ones one can afford to compute.
+
+    One sign has to be watched.  `UnitaryCC` builds its doubles generator as
+    a+_a a+_b a_i a_j, whereas the cluster operator is conventionally written
+    T_2 = (1/4) sum t_ij^ab a+_a a+_b a_j a_i, and the two orderings of the
+    annihilation operators differ by a minus sign.  The doubles amplitudes are
+    therefore imported with a minus and the singles as they stand; the demo
+    checks this by comparing with a full variational optimisation, where the
+    two amplitude vectors come out parallel to within a cosine of 1.0000.
     """
     x = np.zeros(ucc.n_amplitudes)
     for k, label in enumerate(ucc.labels):
@@ -383,7 +391,7 @@ def ucc_amplitudes_from_ccsd(ucc, t1, t2, n_occ):
             x[k] = t1[i, a - n_occ]
         elif label[0] == "d":
             _, (i, j), (a, b) = label
-            x[k] = t2[i, j, a - n_occ, b - n_occ]
+            x[k] = -t2[i, j, a - n_occ, b - n_occ]
     return x
 
 
