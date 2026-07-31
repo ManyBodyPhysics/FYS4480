@@ -31,6 +31,10 @@ chapter 10 are applied here unchanged.  That reuse is deliberate.  The point
 of this chapter is that the methods do not care whether the interaction is a
 one-parameter model or the real thing.
 
+The demo takes a few minutes: the Coulomb integrals are the expensive part,
+and the unitary coupled-cluster optimisations at the end are worse.  Both are
+cached or kept small where possible.
+
 Author: Morten Hjorth-Jensen
 """
 
@@ -415,16 +419,15 @@ def _demo():
     print(f"shells 0-{dot.shells}: {len(dot.spatial)} spatial states, "
           f"{dot.n_orbitals} spin-orbitals")
     print()
-    print(f"{'N_s':>4s} {'(n, m)':>30s} {'degeneracy':>12s} "
-          f"{'cumulative N':>14s}")
+    print(f"{'N_s':>4s}  {'(n, m)':<44s} {'deg.':>5s} {'cumulative N':>13s}")
     total = 0
     for n_s in range(dot.shells + 1):
         states = [s for k, s in enumerate(dot.spatial)
                   if dot.shell_of(k) == n_s]
         total += 2 * len(states)
-        label = ",".join(f"({n},{m:+d})" if m else f"({n},0)"
+        label = " ".join(f"({n},{m:+d})" if m else f"({n}, 0)"
                          for n, m in states)
-        print(f"{n_s:4d} {label:>30s} {2*len(states):12d} {total:14d}")
+        print(f"{n_s:4d}  {label:<44s} {2*len(states):5d} {total:13d}")
     print()
     print("The last column is the sequence of magic numbers 2, 6, 12, 20, 30,")
     print("42: the electron numbers at which a shell closes and the dot is")
