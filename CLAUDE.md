@@ -9,7 +9,7 @@ Hjorth-Jensen (mhjensen@uio.no). Remote: https://github.com/ManyBodyPhysics/FYS4
 | Path | Contents |
 |---|---|
 | `doc/BookManybody/` | **The textbook.** Springer `svmono` LaTeX source, exercises, book material. See `doc/BookManybody/CLAUDE.md`. |
-| `doc/LectureNotes/` | Jupyter-book: `_config.yml`, `_toc.yml`, `*.ipynb` chapters, `_build/` |
+| `doc/LectureNotes/` | Jupyter-book: `_config.yml`, `_toc.yml`, `README.md`, thirteen `*.ipynb` chapters mirroring the book, `_build/`. Build with `jupyter-book build .` — see the README |
 | `doc/Programs/` | Standalone programs: `Python/`, `Cpp/`, `PairingPH/`, `TDHF/`, `PySCF/`, `QDcoulomb/`, `PairingResolution/` |
 | `doc/Exercises/` | Course exercises by year (`2022/`–`2025/`, `Templates/`) — distinct from the book's `doc/BookManybody/Exercises/` |
 | `doc/pub/` | Published weekly material (`week36/`–`week39/`, `fci/`, `intro/`) |

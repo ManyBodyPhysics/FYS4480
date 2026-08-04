@@ -158,8 +158,15 @@ form.
 
 ## Jupyter-book target
 
-`../LectureNotes/` holds the executable version: `_config.yml`, `_toc.yml`,
-markdown front matter (`intro.md`, `teachers.md`, `textbooks.md`) and chapter
+`../LectureNotes/` holds the executable version, and it is a working
+Jupyter Book: `jupyter-book build .` in that directory produces
+`_build/html/index.html`. See `../LectureNotes/README.md` for the build
+notes; the two things to remember are that the notebooks must be executed
+with `doc/LectureNotes` as the working directory (they reach the programs
+through a relative `sys.path` entry) and that `jupyter-book` must be pinned
+to the 1.x series, since version 2 does not read `_config.yml`/`_toc.yml`.
+The directory holds `_config.yml`, `_toc.yml`, markdown front matter
+(`intro.md`, `teachers.md`, `textbooks.md`) and the chapter
 notebooks. `linearalgebra.ipynb` is the companion to `chapter1.tex` and
 `manybodybasics.ipynb` to `chapter2.tex`, `wicktheorem.ipynb` to the Wick
 sections of `chapter3.tex`, `jordanwigner.ipynb` to the last section of
