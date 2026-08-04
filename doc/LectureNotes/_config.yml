@@ -1,71 +1,89 @@
+# Jupyter Book configuration for the executable companion to
+# *Quantum Mechanics for Many-Particle Systems*.
+#
+# Build with
+#     jupyter-book build .
+# and open _build/html/index.html.  The first build executes every notebook
+# and caches the results in _build/.jupyter_cache, so later builds are fast;
+# use `jupyter-book build --all .` to force a full re-execution.
+
+#######################################################################################
 # Book settings
-title: Quantum Mechanics for Many-Particle Systems; from standard methods to quantum computing and machine learning
+title: >-
+  Quantum Mechanics for Many-Particle Systems: from standard methods to
+  quantum computing and machine learning
 author: Morten Hjorth-Jensen
+copyright: "2026"
 logo: logo.png
+only_build_toc_files: true
 
-latex:
-  latex_documents:
-    targetname: book.tex
-
-repository:
-  url                       : https://manybodyphysics.github.io/FYS4480/doc/LectureNotes/_build/html/index.html
-
-html:
-  use_repository_button: true
-
-launch_buttons:
-  binderhub_url             : https://mybinder.org
-
-html:
-  use_issues_button: true
-
+#######################################################################################
+# Execution settings
 execute:
-  execute_notebooks         : auto  # Whether to execute notebooks at build time. Must be one of ("auto", "force", "cache", "off")
-  cache                     : ""    # A path to the jupyter cache that will be used to store execution artifacs. Defaults to `_build/.jupyter_cache/`
-  exclude_patterns          : []    # A list of patterns to *skip* in execution (e.g. a notebook that takes a really long time)
-  timeout                   : 30    # The maximum time (in seconds) each notebook cell is allowed to run.
-  run_in_temp               : false # If `True`, then a temporary directory will be created and used as the command working directory (cwd),
-                                    # otherwise the notebook's parent directory will be the cwd.
-  allow_errors              : false # If `False`, when a code cell raises an error the execution is stopped, otherwise all cells are always run.
-  stderr_output             : show  # One of 'show', 'remove', 'remove-warn', 'warn', 'error', 'severe'
+  execute_notebooks: cache   # run once, then reuse the cached outputs
+  cache: ""                  # defaults to _build/.jupyter_cache
+  timeout: 900               # seconds per cell; quantumdots.ipynb needs minutes
+  allow_errors: false        # a failing cell should fail the build
+  stderr_output: show
+  run_in_temp: false         # notebooks resolve ../BookManybody/... relatively
+  exclude_patterns: []
 
-
+#######################################################################################
 # Parse and render settings
 parse:
-  myst_extended_syntax      : false  # enable MyST extended syntax support (see documents for details)
-  myst_url_schemes          : [mailto, http, https]  # URI schemes that will be recognised as external URLs in Markdown links
+  myst_enable_extensions:
+    - amsmath                # \begin{align} etc. in markdown cells
+    - dollarmath             # $...$ and $$...$$
+    - colon_fence
+    - deflist
+    - linkify
+    - substitution
+  myst_url_schemes: [mailto, http, https]
+  myst_dmath_double_inline: true
 
-
+#######################################################################################
 # HTML-specific settings
 html:
-  favicon                   : ""  # A path to a favicon image
-  use_edit_page_button      : false  # Whether to add an "edit this page" button to pages. If `true`, repository information in repository: must be filled in
-  use_repository_button     : false  # Whether to add a link to your repository button
-  use_issues_button         : false  # Whether to add an "open an issue" button
-  extra_navbar              : Powered by <a href="https://jupyterbook.org">Jupyter Book</a>  # Will be displayed underneath the left navbar.
-  extra_footer              : ""  # Will be displayed underneath the footer.
-  google_analytics_id       : ""  # A GA id that can be used to track book views.
-  home_page_in_navbar       : true  # Whether to include your home page in the left Navigation Bar
-  baseurl                   : ""  # The base URL where your book will be hosted. Used for creating image previews and social links. e.g.: https://mypage.com/mybook/
+  favicon: ""
+  home_page_in_navbar: true
+  use_edit_page_button: false
+  use_repository_button: true
+  use_issues_button: true
+  baseurl: ""
+  extra_navbar: Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+  extra_footer: ""
   comments:
-    hypothesis              : false
-    utterances              : false
+    hypothesis: false
+    utterances: false
 
 #######################################################################################
 # LaTeX-specific settings
 latex:
-  latex_engine              : pdflatex  # one of 'pdflatex', 'xelatex' (recommended for unicode), 'luatex', 'platex', 'uplatex'
+  latex_engine: pdflatex
+  latex_documents:
+    targetname: lecturenotes.tex
+
+#######################################################################################
+# Bibliography
+bibtex_bibfiles:
+  - references.bib
 
 #######################################################################################
 # Launch button settings
 launch_buttons:
-  notebook_interface        : classic  # The interface interactive links will activate ["classic", "jupyterlab"]
-  binderhub_url             : https://mybinder.org  # The URL of the BinderHub (e.g., https://mybinder.org)
-#  jupyterhub_url            : ""  # The URL of the JupyterHub (e.g., https://datahub.berkeley.edu)
-  thebe                     : false  # Add a thebe button to pages (requires the repository to run on Binder)
-#  colab_url                 : "" # The URL of Google Colab (https://colab.research.google.com)
+  notebook_interface: jupyterlab
+  binderhub_url: https://mybinder.org
+  thebe: false
 
+#######################################################################################
+# Repository
 repository:
-  url                       : https://github.com/executablebooks/jupyter-book  # The URL to your book's repository
-#  path_to_book              : ""  # A path to your book's folder, relative to the repository root.
-  branch                    : master  # Which branch of the repository should be used when creating links
+  url: https://github.com/ManyBodyPhysics/FYS4480
+  path_to_book: doc/LectureNotes
+  branch: master
+
+#######################################################################################
+# Sphinx
+sphinx:
+  config:
+    html_show_copyright: true
