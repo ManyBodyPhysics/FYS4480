@@ -1,0 +1,1400 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>3. Wick’s theorem, verified by brute force &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'wicktheorem';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4. From fermions to qubits: the Jordan-Wigner transformation" href="jordanwigner.html" />
+    <link rel="prev" title="2. From linear algebra to many-body physics" href="manybodybasics.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/wicktheorem.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Fwicktheorem.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/wicktheorem.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Wick’s theorem, verified by brute force</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#route-1-anticommutation">3.1. Route 1: anticommutation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#route-2-wick-s-theorem">3.2. Route 2: Wick’s theorem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-operators">3.3. Two operators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#three-operators">3.4. Three operators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#four-operators-the-overlap-langle-rs-pq-rangle">3.5. Four operators: the overlap <span class="math notranslate nohighlight">\(\langle rs|pq\rangle\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#six-and-eight-operators">3.6. Six and eight operators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-number-operator">3.7. The number operator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-two-body-interaction">3.8. The two-body interaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-the-theorem-is-worth-having">3.9. Why the theorem is worth having</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wick-s-generalised-theorem">3.10. Wick’s generalised theorem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-groups-of-the-one-and-two-body-matrix-elements">3.10.1. The groups of the one- and two-body matrix elements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-routes-to-the-same-matrix-element">3.10.2. Three routes to the same matrix element</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-theorem-as-an-identity-between-operators">3.10.3. The theorem as an identity between operators</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-this-leads">3.11. Where this leads</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="wick-s-theorem-verified-by-brute-force">
+<h1><span class="section-number">3. </span>Wick’s theorem, verified by brute force<a class="headerlink" href="#wick-s-theorem-verified-by-brute-force" title="Link to this heading">#</a></h1>
+<p>Executable companion to the Wick’s theorem sections of chapter 3.</p>
+<p>A vacuum expectation value of a string of fermion creation and annihilation
+operators can be computed two entirely different ways:</p>
+<ol class="arabic simple">
+<li><p><strong>By anticommutation</strong> — repeatedly apply
+<span class="math notranslate nohighlight">\(\{a_p, a_q^\dagger\}=\delta_{pq}\)</span> to push annihilation operators to the
+right until they hit the vacuum. This is the elementary route of the
+worked examples in the text, and it branches badly.</p></li>
+<li><p><strong>By Wick’s theorem</strong> — sum over all ways of pairing the operators into
+contractions, with a sign for each crossing. Only the <em>fully contracted</em>
+terms survive the vacuum expectation value.</p></li>
+</ol>
+<p>This notebook implements both and checks that they agree. That check <em>is</em> the
+content of the theorem.</p>
+<p>Operators are written as <code class="docutils literal notranslate"><span class="pre">(index,</span> <span class="pre">dagger)</span></code> pairs, so <code class="docutils literal notranslate"><span class="pre">('p',</span> <span class="pre">True)</span></code> is
+<span class="math notranslate nohighlight">\(a_p^\dagger\)</span> and <code class="docutils literal notranslate"><span class="pre">('p',</span> <span class="pre">False)</span></code> is <span class="math notranslate nohighlight">\(a_p\)</span>. Indices stay symbolic, so results
+come out as sums of products of Kronecker deltas.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DeltaSum</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A linear combination of products of Kronecker deltas.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terms</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">terms</span><span class="p">)</span> <span class="k">if</span> <span class="n">terms</span> <span class="k">else</span> <span class="p">{}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">zero</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">one</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="p">({():</span> <span class="mi">1</span><span class="p">})</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delta</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="n">q</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>                 <span class="c1"># delta_pp = 1</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="p">({((</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">q</span> <span class="k">else</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="p">),):</span> <span class="mi">1</span><span class="p">})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">term</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">term</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">term</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">coeff</span>
+            <span class="k">if</span> <span class="n">out</span><span class="p">[</span><span class="n">term</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">out</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">DeltaSum</span><span class="p">({</span><span class="n">t</span><span class="p">:</span> <span class="n">c</span><span class="o">*</span><span class="n">other</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                             <span class="k">if</span> <span class="n">c</span><span class="o">*</span><span class="n">other</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">})</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">t1</span><span class="p">,</span> <span class="n">c1</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">t2</span><span class="p">,</span> <span class="n">c2</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">term</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">t2</span><span class="p">)))</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">term</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">term</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">c1</span><span class="o">*</span><span class="n">c2</span>
+                <span class="k">if</span> <span class="n">out</span><span class="p">[</span><span class="n">term</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">out</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="fm">__rmul__</span> <span class="o">=</span> <span class="fm">__mul__</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">terms</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">terms</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;0&quot;</span>
+        <span class="n">pieces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">term</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;d(</span><span class="si">{</span><span class="n">p</span><span class="si">}{</span><span class="n">q</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">term</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;1&quot;</span>
+            <span class="n">sign</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span> <span class="k">if</span> <span class="n">coeff</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;-&quot;</span>
+            <span class="n">mag</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">coeff</span><span class="p">))</span>
+            <span class="n">pieces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sign</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mag</span><span class="si">}{</span><span class="n">body</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pieces</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;+ &quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">substitute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">term</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">product</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">term</span><span class="p">:</span>
+                <span class="n">product</span> <span class="o">*=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">product</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">coeff</span><span class="o">*</span><span class="n">product</span>
+        <span class="k">return</span> <span class="n">total</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A creation operator a_index^dagger.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An annihilation operator a_index.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="route-1-anticommutation">
+<h2><span class="section-number">3.1. </span>Route 1: anticommutation<a class="headerlink" href="#route-1-anticommutation" title="Link to this heading">#</a></h2>
+<p>The recursion is the one carried out by hand in the text. Find the leftmost
+place where an annihilation operator stands immediately to the left of a
+creation operator and replace</p>
+<div class="math notranslate nohighlight">
+\[
+a_p a_q^\dagger \;\longrightarrow\; \delta_{pq} - a_q^\dagger a_p .
+\]</div>
+<p>When no such place remains the string is normal-ordered, and its vacuum
+expectation value vanishes unless the string is empty.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_call_count</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">vev_bruteforce</span><span class="p">(</span><span class="n">ops</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&lt;0| ops |0&gt; by repeated use of the anticommutation relation.&quot;&quot;&quot;</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="n">_call_count</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>            <span class="c1"># an odd string can never pair up</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ops</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>                    <span class="c1"># starts with a creation operator</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>       <span class="c1">#   -&gt; kills the bra vacuum</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ops</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>               <span class="c1"># ends with an annihilation operator</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>       <span class="c1">#   -&gt; kills the ket vacuum</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">ops</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">ops</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>                  <span class="c1"># a_p a_q^dagger</span>
+            <span class="n">rest</span> <span class="o">=</span> <span class="n">ops</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">ops</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="n">swapped</span> <span class="o">=</span> <span class="n">ops</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">left</span><span class="p">)</span> <span class="o">+</span> <span class="n">ops</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">DeltaSum</span><span class="o">.</span><span class="n">delta</span><span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">swapped</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>           <span class="c1"># normal-ordered and non-empty</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bruteforce_cost</span><span class="p">(</span><span class="n">ops</span><span class="p">):</span>
+    <span class="n">_call_count</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_call_count</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="route-2-wick-s-theorem">
+<h2><span class="section-number">3.2. </span>Route 2: Wick’s theorem<a class="headerlink" href="#route-2-wick-s-theorem" title="Link to this heading">#</a></h2>
+<p>Only one of the four elementary contractions survives,</p>
+<div class="math notranslate nohighlight">
+\[
+\overset{\frown}{a_p a_q^\dagger} = \delta_{pq},
+\qquad
+\overset{\frown}{a_p a_q} =
+\overset{\frown}{a_q^\dagger a_p} =
+\overset{\frown}{a_p^\dagger a_q^\dagger} = 0 ,
+\]</div>
+<p>and each set of contractions carries the sign <span class="math notranslate nohighlight">\((-1)^{\nu}\)</span> with <span class="math notranslate nohighlight">\(\nu\)</span> the
+number of crossings of the contraction lines.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">contraction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&lt;0| x y |0&gt;: non-zero only for an annihilation operator to the left</span>
+<span class="sd">    of a creation operator.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">delta</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">perfect_matchings</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;All ways of pairing up a list of positions.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">indices</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="p">[]</span>
+        <span class="k">return</span>
+    <span class="n">first</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rest</span><span class="p">)):</span>
+        <span class="n">remainder</span> <span class="o">=</span> <span class="n">rest</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="n">rest</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">for</span> <span class="n">tail</span> <span class="ow">in</span> <span class="n">perfect_matchings</span><span class="p">(</span><span class="n">remainder</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="p">[(</span><span class="n">first</span><span class="p">,</span> <span class="n">rest</span><span class="p">[</span><span class="n">k</span><span class="p">])]</span> <span class="o">+</span> <span class="n">tail</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">matching_sign</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(-1) to the number of crossings of the contraction lines.&quot;&quot;&quot;</span>
+    <span class="n">crossings</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">),</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="n">s</span> <span class="ow">or</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">q</span><span class="p">:</span>
+            <span class="n">crossings</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">crossings</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&lt;0| ops |0&gt; as a signed sum over fully contracted terms.&quot;&quot;&quot;</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">perfect_matchings</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">)))):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">contraction</span><span class="p">(</span><span class="n">ops</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ops</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">value</span> <span class="o">*</span> <span class="n">matching_sign</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">total</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">double_factorial</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(m-1)!! -- the number of perfect matchings of m objects.&quot;&quot;&quot;</span>
+    <span class="n">out</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">*=</span> <span class="n">k</span>
+        <span class="n">k</span> <span class="o">-=</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="two-operators">
+<h2><span class="section-number">3.3. </span>Two operators<a class="headerlink" href="#two-operators" title="Link to this heading">#</a></h2>
+<p>The whole content of the theorem at <span class="math notranslate nohighlight">\(M=2\)</span> is
+<span class="math notranslate nohighlight">\(xy = N[xy] + \overset{\frown}{xy}\)</span>, and only one of the four combinations
+has a non-vanishing contraction.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cases</span> <span class="o">=</span> <span class="p">(((</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)),</span> <span class="s2">&quot;&lt;0| a_p a_q^+ |0&gt;&quot;</span><span class="p">),</span>
+         <span class="p">((</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)),</span> <span class="s2">&quot;&lt;0| a_p a_q   |0&gt;&quot;</span><span class="p">),</span>
+         <span class="p">((</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)),</span> <span class="s2">&quot;&lt;0| a_p^+ a_q |0&gt;&quot;</span><span class="p">),</span>
+         <span class="p">((</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)),</span> <span class="s2">&quot;&lt;0| a_p^+ a_q^+ |0&gt;&quot;</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ops</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">:</span>
+    <span class="n">brute</span><span class="p">,</span> <span class="n">wick</span> <span class="o">=</span> <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">ops</span><span class="p">),</span> <span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s2">22s</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">brute</span><span class="p">)</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2"> (Wick: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">wick</span><span class="p">)</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;agree: </span><span class="si">{</span><span class="n">brute</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wick</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;0| a_p a_q^+ |0&gt;      = d(pq)      (Wick: d(pq)      agree: True)
+&lt;0| a_p a_q   |0&gt;      = 0          (Wick: 0          agree: True)
+&lt;0| a_p^+ a_q |0&gt;      = 0          (Wick: 0          agree: True)
+&lt;0| a_p^+ a_q^+ |0&gt;    = 0          (Wick: 0          agree: True)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="three-operators">
+<h2><span class="section-number">3.4. </span>Three operators<a class="headerlink" href="#three-operators" title="Link to this heading">#</a></h2>
+<p>An odd number of operators can never be paired up completely, so at least one
+is always left uncontracted — and <span class="math notranslate nohighlight">\(\langle 0|a|0\rangle=\langle
+0|a^\dagger|0\rangle=0\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ops</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">(((</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)),</span> <span class="s2">&quot;&lt;0| a_p a_q^+ a_r^+ |0&gt;&quot;</span><span class="p">),</span>
+                   <span class="p">((</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)),</span> <span class="s2">&quot;&lt;0| a_p a_q a_r^+   |0&gt;&quot;</span><span class="p">),</span>
+                   <span class="p">((</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)),</span> <span class="s2">&quot;&lt;0| a_p^+ a_q a_r^+ |0&gt;&quot;</span><span class="p">)):</span>
+    <span class="n">brute</span><span class="p">,</span> <span class="n">wick</span> <span class="o">=</span> <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">ops</span><span class="p">),</span> <span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s2">24s</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">brute</span><span class="si">}</span><span class="s2">   (Wick: </span><span class="si">{</span><span class="n">wick</span><span class="si">}</span><span class="s2">, agree: </span><span class="si">{</span><span class="n">brute</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wick</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;0| a_p a_q^+ a_r^+ |0&gt;  = 0   (Wick: 0, agree: True)
+&lt;0| a_p a_q a_r^+   |0&gt;  = 0   (Wick: 0, agree: True)
+&lt;0| a_p^+ a_q a_r^+ |0&gt;  = 0   (Wick: 0, agree: True)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="four-operators-the-overlap-langle-rs-pq-rangle">
+<h2><span class="section-number">3.5. </span>Four operators: the overlap <span class="math notranslate nohighlight">\(\langle rs|pq\rangle\)</span><a class="headerlink" href="#four-operators-the-overlap-langle-rs-pq-rangle" title="Link to this heading">#</a></h2>
+<p>Of the three ways to pair four operators, one vanishes on inspection, one is
+nested (no crossings, plus sign) and one crosses once (minus sign). The result
+is the antisymmetrised overlap</p>
+<div class="math notranslate nohighlight">
+\[
+\langle rs|pq\rangle = \delta_{rp}\delta_{sq}-\delta_{sp}\delta_{rq}.
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ops</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">))</span>
+<span class="n">brute</span><span class="p">,</span> <span class="n">wick</span> <span class="o">=</span> <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">ops</span><span class="p">),</span> <span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&lt;0| a_s a_r a_p^+ a_q^+ |0&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  by anticommutation : </span><span class="si">{</span><span class="n">brute</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  by Wick&#39;s theorem  : </span><span class="si">{</span><span class="n">wick</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  agree              : </span><span class="si">{</span><span class="n">brute</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wick</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;the three pairings, one at a time:&quot;</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">{((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span> <span class="s2">&quot;(a_s,a_r)(a_p^+,a_q^+)  both contractions vanish&quot;</span><span class="p">,</span>
+          <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span> <span class="s2">&quot;(a_s,a_q^+)(a_r,a_p^+)  nested, no crossing&quot;</span><span class="p">,</span>
+          <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span> <span class="s2">&quot;(a_s,a_p^+)(a_r,a_q^+)  one crossing&quot;</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">perfect_matchings</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">contraction</span><span class="p">(</span><span class="n">ops</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ops</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">))</span>
+    <span class="n">signed</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">matching_sign</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">labels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span><span class="si">:</span><span class="s2">40s</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">signed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;0| a_s a_r a_p^+ a_q^+ |0&gt;
+  by anticommutation : d(pr)d(qs) - d(ps)d(qr)
+  by Wick&#39;s theorem  : d(pr)d(qs) - d(ps)d(qr)
+  agree              : True
+
+the three pairings, one at a time:
+  (a_s,a_r)(a_p^+,a_q^+)  both contractions vanish -&gt; 0
+  (a_s,a_p^+)(a_r,a_q^+)  one crossing     -&gt; - d(ps)d(qr)
+  (a_s,a_q^+)(a_r,a_p^+)  nested, no crossing -&gt; d(pr)d(qs)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="six-and-eight-operators">
+<h2><span class="section-number">3.6. </span>Six and eight operators<a class="headerlink" href="#six-and-eight-operators" title="Link to this heading">#</a></h2>
+<p>The agreement is not an accident of small numbers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alphabet</span> <span class="o">=</span> <span class="s2">&quot;abcdefghijklmnop&quot;</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+    <span class="n">half</span> <span class="o">=</span> <span class="n">m</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">alphabet</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">a</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[:</span><span class="n">half</span><span class="p">])</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[</span><span class="n">half</span><span class="p">:])</span>
+    <span class="n">brute</span><span class="p">,</span> <span class="n">wick</span> <span class="o">=</span> <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">ops</span><span class="p">),</span> <span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;M = </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">brute</span><span class="o">.</span><span class="n">terms</span><span class="p">)</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> surviving terms, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;(M-1)!! = </span><span class="si">{</span><span class="n">double_factorial</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> pairings, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;agree: </span><span class="si">{</span><span class="n">brute</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wick</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>M = 2:   1 surviving terms, (M-1)!! =   1 pairings, agree: True
+M = 4:   2 surviving terms, (M-1)!! =   3 pairings, agree: True
+M = 6:   6 surviving terms, (M-1)!! =  15 pairings, agree: True
+M = 8:  24 surviving terms, (M-1)!! = 105 pairings, agree: True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-number-operator">
+<h2><span class="section-number">3.7. </span>The number operator<a class="headerlink" href="#the-number-operator" title="Link to this heading">#</a></h2>
+<p>With <span class="math notranslate nohighlight">\(|12\rangle = a_1^\dagger a_2^\dagger|0\rangle\)</span> and
+<span class="math notranslate nohighlight">\(\hat N = \sum_i a_i^\dagger a_i\)</span>, Wick’s theorem should return the particle
+number.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">):</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">))</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">({})</span>
+    <span class="n">total</span> <span class="o">+=</span> <span class="n">value</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  i = </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: &lt;12| a_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">^+ a_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> |12&gt; = </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  sum over i = </span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">   (= N, the particle number)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  i = 1: &lt;12| a_1^+ a_1 |12&gt; = 1
+  i = 2: &lt;12| a_2^+ a_2 |12&gt; = 1
+  i = 3: &lt;12| a_3^+ a_3 |12&gt; = 0
+  i = 4: &lt;12| a_4^+ a_4 |12&gt; = 0
+
+  sum over i = 2   (= N, the particle number)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-two-body-interaction">
+<h2><span class="section-number">3.8. </span>The two-body interaction<a class="headerlink" href="#the-two-body-interaction" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\hat H_I=\tfrac12\sum_{pqrs}\langle pq|v|rs\rangle\,
+a_p^\dagger a_q^\dagger a_s a_r,
+\qquad
+|ij\rangle = a_i^\dagger a_j^\dagger|0\rangle .
+\]</div>
+<p>We evaluate the eight-operator string for every assignment of <span class="math notranslate nohighlight">\((p,q,r,s)\)</span> and
+see which survive. The answer should be the antisymmetrised matrix element
+<span class="math notranslate nohighlight">\(\langle ij|v|ij\rangle - \langle ij|v|ji\rangle\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">surviving</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">):</span>
+                <span class="n">ops</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;j&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="n">q</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;j&quot;</span><span class="p">))</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">({})</span>
+                <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">surviving</span><span class="p">[(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">),</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">surviving</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  &lt;</span><span class="si">{</span><span class="n">p</span><span class="si">}{</span><span class="n">q</span><span class="si">}</span><span class="s2">|v|</span><span class="si">{</span><span class="n">r</span><span class="si">}{</span><span class="n">s</span><span class="si">}</span><span class="s2">&gt;  coefficient </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">+d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">direct</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">surviving</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">)))</span>
+<span class="n">exchange</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">surviving</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+               <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  with the factor 1/2:  </span><span class="si">{</span><span class="n">direct</span><span class="o">//</span><span class="mi">2</span><span class="si">:</span><span class="s2">+d</span><span class="si">}</span><span class="s2"> &lt;ij|v|ij&gt;  &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exchange</span><span class="o">//</span><span class="mi">2</span><span class="si">:</span><span class="s2">+d</span><span class="si">}</span><span class="s2"> &lt;ij|v|ji&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  so &lt;ij|H_I|ij&gt; = &lt;ij|v|ij&gt; - &lt;ij|v|ji&gt; = &lt;ij|v|ij&gt;_AS&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  &lt;ij|v|ij&gt;  coefficient +1
+  &lt;ij|v|ji&gt;  coefficient -1
+  &lt;ji|v|ij&gt;  coefficient -1
+  &lt;ji|v|ji&gt;  coefficient +1
+
+  with the factor 1/2:  +1 &lt;ij|v|ij&gt;  -1 &lt;ij|v|ji&gt;
+  so &lt;ij|H_I|ij&gt; = &lt;ij|v|ij&gt; - &lt;ij|v|ji&gt; = &lt;ij|v|ij&gt;_AS
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="why-the-theorem-is-worth-having">
+<h2><span class="section-number">3.9. </span>Why the theorem is worth having<a class="headerlink" href="#why-the-theorem-is-worth-having" title="Link to this heading">#</a></h2>
+<p>Both routes grow quickly, but they grow differently. The anticommutation
+recursion branches with no structure one can anticipate. Wick’s theorem
+enumerates a known number of terms in advance, most of which vanish on
+inspection because one of their contractions is zero, and the survivors can be
+written down directly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;M&#39;</span><span class="si">:</span><span class="s2">&gt;4s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;pairings (M-1)!!&#39;</span><span class="si">:</span><span class="s2">&gt;18s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;recursive calls&#39;</span><span class="si">:</span><span class="s2">&gt;17s</span><span class="si">}</span><span class="s2"> &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;surviving terms&#39;</span><span class="si">:</span><span class="s2">&gt;17s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="n">half</span> <span class="o">=</span> <span class="n">m</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">alphabet</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">a</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[:</span><span class="n">half</span><span class="p">])</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">c</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">[</span><span class="n">half</span><span class="p">:])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">m</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">double_factorial</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="si">:</span><span class="s2">18d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">bruteforce_cost</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span><span class="si">:</span><span class="s2">17d</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span><span class="o">.</span><span class="n">terms</span><span class="p">)</span><span class="si">:</span><span class="s2">17d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   M   pairings (M-1)!!   recursive calls   surviving terms
+   2                  1                 3                 1
+   4                  3                 9                 2
+   6                 15                31                 6
+   8                105               129                24
+  10                945               651               120
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="wick-s-generalised-theorem">
+<h2><span class="section-number">3.10. </span>Wick’s generalised theorem<a class="headerlink" href="#wick-s-generalised-theorem" title="Link to this heading">#</a></h2>
+<p>In practice we never meet a bare string of operators.  We meet a product of
+<em>groups</em>, each of them already normal-ordered: the bra, the operator and the
+ket.  The generalised theorem says that for such a product</p>
+<div class="math notranslate nohighlight">
+\[
+N[A_1A_2\cdots]\,N[B_1B_2\cdots]\,N[C_1C_2\cdots]
+ = N[A_1A_2\cdots B_1B_2\cdots C_1C_2\cdots]
+ + \sum_{\rm all} N[A_1A_2\cdots C_1C_2\cdots],
+\]</div>
+<p>where the sum runs over all contractions <strong>between different groups</strong>.</p>
+<p>The contractions <em>inside</em> a group are absent for a reason, and the reason is
+worth stating separately because it is the whole proof in miniature.  A group
+in normal-ordered form has all its creation operators on the left.  Pick two
+of its operators, <span class="math notranslate nohighlight">\(A_k\)</span> and <span class="math notranslate nohighlight">\(A_l\)</span> with <span class="math notranslate nohighlight">\(k&lt;l\)</span>.  If <span class="math notranslate nohighlight">\(A_k\)</span> is a creation
+operator then <span class="math notranslate nohighlight">\(A_l\)</span> is either another creation operator or an annihilation
+operator standing to its right, and both contractions vanish.  If <span class="math notranslate nohighlight">\(A_k\)</span> is an
+annihilation operator then so is everything to its right, and that contraction
+vanishes too.  Internal contractions are not thrown away — they are zero.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">normal_order</span><span class="p">(</span><span class="n">ops</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bring a string into normal-ordered form: (sign, reordered).&quot;&quot;&quot;</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="n">creators</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">ops</span> <span class="k">if</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">annihilators</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">ops</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">swaps</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">o</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">swaps</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">creators</span> <span class="o">+</span> <span class="n">annihilators</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">is_normal_ordered</span><span class="p">(</span><span class="n">ops</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;True if no annihilation operator stands to the left of a creator.&quot;&quot;&quot;</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">dagger</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dagger</span> <span class="ow">and</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dagger</span><span class="p">:</span>
+            <span class="n">seen</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">internal_contractions</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The contractions of a group with itself -- all of them should vanish.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">contraction</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_inversions</span><span class="p">(</span><span class="n">sequence</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">contraction_sign</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">n_ops</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sign of a (possibly partial) set of contractions.</span>
+
+<span class="sd">    Bring the contracted operators together, leaving the uncontracted ones in</span>
+<span class="sd">    their original relative order, and count the interchanges.  For a fully</span>
+<span class="sd">    contracted term this is the (-1)^(crossings) of matching_sign().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">used</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pair</span><span class="p">}</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pair</span><span class="p">]</span>
+    <span class="n">order</span> <span class="o">+=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_ops</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">_inversions</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">contraction_sets</span><span class="p">(</span><span class="n">n_ops</span><span class="p">,</span> <span class="n">allowed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;All sets of disjoint contractions, from the empty set upwards.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="n">decided</span><span class="p">):</span>
+        <span class="n">free</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_ops</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">decided</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">free</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="p">[]</span>
+            <span class="k">return</span>
+        <span class="n">first</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">free</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">free</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">for</span> <span class="n">tail</span> <span class="ow">in</span> <span class="n">build</span><span class="p">(</span><span class="n">decided</span> <span class="o">|</span> <span class="p">{</span><span class="n">first</span><span class="p">}):</span>        <span class="c1"># first left uncontracted</span>
+            <span class="k">yield</span> <span class="n">tail</span>
+        <span class="k">for</span> <span class="n">partner</span> <span class="ow">in</span> <span class="n">rest</span><span class="p">:</span>                         <span class="c1"># or contracted</span>
+            <span class="k">if</span> <span class="n">allowed</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">allowed</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">partner</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">tail</span> <span class="ow">in</span> <span class="n">build</span><span class="p">(</span><span class="n">decided</span> <span class="o">|</span> <span class="p">{</span><span class="n">first</span><span class="p">,</span> <span class="n">partner</span><span class="p">}):</span>
+                <span class="k">yield</span> <span class="p">[(</span><span class="n">first</span><span class="p">,</span> <span class="n">partner</span><span class="p">)]</span> <span class="o">+</span> <span class="n">tail</span>
+    <span class="k">return</span> <span class="n">build</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Concatenate the groups, recording which group each operator came from.&quot;&quot;&quot;</span>
+    <span class="n">ops</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">operator</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+            <span class="n">ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ops</span><span class="p">),</span> <span class="n">labels</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">vev_generalised</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;&lt;0| N[A...] N[B...] ... |0&gt; from the generalised theorem.&quot;&quot;&quot;</span>
+    <span class="n">ops</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+    <span class="n">n_ops</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">zero</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">contraction_sets</span><span class="p">(</span><span class="n">n_ops</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_ops</span><span class="p">:</span>            <span class="c1"># not fully contracted</span>
+            <span class="k">continue</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">DeltaSum</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">contraction</span><span class="p">(</span><span class="n">ops</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ops</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">value</span> <span class="o">*</span> <span class="n">contraction_sign</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">n_ops</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">total</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">count_matchings</span><span class="p">(</span><span class="n">sizes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;(all perfect matchings, those with no line inside a group).&quot;&quot;&quot;</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">)]</span>
+    <span class="n">n_ops</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">every</span> <span class="o">=</span> <span class="n">inter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">perfect_matchings</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_ops</span><span class="p">))):</span>
+        <span class="n">every</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">):</span>
+            <span class="n">inter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">every</span><span class="p">,</span> <span class="n">inter</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-groups-of-the-one-and-two-body-matrix-elements">
+<h3><span class="section-number">3.10.1. </span>The groups of the one- and two-body matrix elements<a class="headerlink" href="#the-groups-of-the-one-and-two-body-matrix-elements" title="Link to this heading">#</a></h3>
+<p>For <span class="math notranslate nohighlight">\(\langle ij|\hat O^{(1)}|k\ell\rangle\)</span> the groups are the bra
+<span class="math notranslate nohighlight">\(a_ja_i\)</span>, the operator <span class="math notranslate nohighlight">\(a_p^\dagger a_q\)</span> and the ket
+<span class="math notranslate nohighlight">\(a_k^\dagger a_\ell^\dagger\)</span>; for the two-body element the operator has four
+operators instead of two.  All of them are normal-ordered as written, so all
+their internal contractions vanish, and the number of surviving pairings drops
+sharply.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">one_body</span> <span class="o">=</span> <span class="p">[[</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;j&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;l&quot;</span><span class="p">)]]</span>
+<span class="n">two_body</span> <span class="o">=</span> <span class="p">[[</span><span class="n">a</span><span class="p">(</span><span class="s2">&quot;j&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)],</span>
+            <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="s2">&quot;l&quot;</span><span class="p">)]]</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">groups</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;one-body&quot;</span><span class="p">,</span> <span class="n">one_body</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;two-body&quot;</span><span class="p">,</span> <span class="n">two_body</span><span class="p">)):</span>
+    <span class="n">ordered</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">is_normal_ordered</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">)</span>
+    <span class="n">internal</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">internal_contractions</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: groups normal-ordered: </span><span class="si">{</span><span class="n">ordered</span><span class="si">}</span><span class="s2">, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;non-vanishing internal contractions: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">internal</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;groups&#39;</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;M&#39;</span><span class="si">:</span><span class="s2">&gt;4s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;(M-1)!! pairings&#39;</span><span class="si">:</span><span class="s2">&gt;18s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;between groups&#39;</span><span class="si">:</span><span class="s2">&gt;16s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">groups</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;one-body&quot;</span><span class="p">,</span> <span class="n">one_body</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;two-body&quot;</span><span class="p">,</span> <span class="n">two_body</span><span class="p">)):</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
+    <span class="n">every</span><span class="p">,</span> <span class="n">inter</span> <span class="o">=</span> <span class="n">count_matchings</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="w"> </span><span class="n">sizes</span><span class="p">))</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">every</span><span class="si">:</span><span class="s2">18d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inter</span><span class="si">:</span><span class="s2">16d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>one-body: groups normal-ordered: True, non-vanishing internal contractions: 0
+two-body: groups normal-ordered: True, non-vanishing internal contractions: 0
+
+    groups    M   (M-1)!! pairings   between groups
+     2+2+2    6                 15                8
+     2+4+2    8                105               24
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="three-routes-to-the-same-matrix-element">
+<h3><span class="section-number">3.10.2. </span>Three routes to the same matrix element<a class="headerlink" href="#three-routes-to-the-same-matrix-element" title="Link to this heading">#</a></h3>
+<p>Brute-force anticommutation, the ordinary theorem and the generalised theorem
+must all give the same answer.  The generalised theorem gets there with a
+fraction of the terms.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">groups</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;one-body&quot;</span><span class="p">,</span> <span class="n">one_body</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;two-body&quot;</span><span class="p">,</span> <span class="n">two_body</span><span class="p">)):</span>
+    <span class="n">ops</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+    <span class="n">brute</span> <span class="o">=</span> <span class="n">vev_bruteforce</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="n">wick</span> <span class="o">=</span> <span class="n">vev_wick</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+    <span class="n">general</span> <span class="o">=</span> <span class="n">vev_generalised</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:  anticommutation == Wick: </span><span class="si">{</span><span class="n">brute</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wick</span><span class="si">}</span><span class="s2">,  &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;Wick == generalised: </span><span class="si">{</span><span class="n">wick</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">general</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">general</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>one-body:  anticommutation == Wick: True,  Wick == generalised: True
+   d(ik)d(jp)d(lq) - d(il)d(jp)d(kq) - d(ip)d(jk)d(lq) + d(ip)d(jl)d(kq)
+
+two-body:  anticommutation == Wick: True,  Wick == generalised: True
+   d(ip)d(jq)d(kr)d(ls) - d(ip)d(jq)d(ks)d(lr) - d(iq)d(jp)d(kr)d(ls) + d(iq)d(jp)d(ks)d(lr)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-theorem-as-an-identity-between-operators">
+<h3><span class="section-number">3.10.3. </span>The theorem as an identity between operators<a class="headerlink" href="#the-theorem-as-an-identity-between-operators" title="Link to this heading">#</a></h3>
+<p>Everything so far lives inside a vacuum expectation value.  The generalised
+theorem is stronger than that: it is an identity between <em>operators</em>, and the
+uncontracted and partially contracted terms are as much a part of it as the
+fully contracted ones.  To check it in that stronger form we represent the
+creation and annihilation operators as matrices on the <span class="math notranslate nohighlight">\(2^n\)</span> states of a small
+Fock space, with the Jordan-Wigner sign
+<span class="math notranslate nohighlight">\((-1)^{\text{occupied orbitals below }p}\)</span> keeping the anticommutation
+relations exact, and compare the two sides entry by entry.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FockSpace</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fermion operators as matrices on the 2^n states of a Fock space.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_orbitals</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_orbitals</span> <span class="o">=</span> <span class="n">n_orbitals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">n_orbitals</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">annihilate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">state</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">):</span>
+                <span class="n">sign</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">bin</span><span class="p">(</span><span class="n">state</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">state</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">),</span> <span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="n">sign</span>
+        <span class="k">return</span> <span class="n">matrix</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+        <span class="n">index</span><span class="p">,</span> <span class="n">dagger</span> <span class="o">=</span> <span class="n">op</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="k">if</span> <span class="n">dagger</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">):</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">:</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">matrix</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">normal_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;N[ops] as a matrix: reorder, and carry the sign along.&quot;&quot;&quot;</span>
+        <span class="n">sign</span><span class="p">,</span> <span class="n">reordered</span> <span class="o">=</span> <span class="n">normal_order</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">(</span><span class="n">reordered</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_generalised</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;max |LHS - RHS| of the generalised theorem.&quot;&quot;&quot;</span>
+        <span class="n">lhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">lhs</span> <span class="o">=</span> <span class="n">lhs</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_product</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="n">ops</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+        <span class="n">n_ops</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">contraction_sets</span><span class="p">(</span><span class="n">n_ops</span><span class="p">,</span>
+                                      <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">labels</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">*=</span> <span class="n">contraction</span><span class="p">(</span><span class="n">ops</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ops</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="o">.</span><span class="n">substitute</span><span class="p">({})</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">used</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pair</span><span class="p">}</span>
+            <span class="n">rest</span> <span class="o">=</span> <span class="p">[</span><span class="n">ops</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_ops</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used</span><span class="p">]</span>
+            <span class="n">remainder</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">rest</span>
+                         <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_product</span><span class="p">(</span><span class="n">rest</span><span class="p">))</span>
+            <span class="n">rhs</span> <span class="o">=</span> <span class="n">rhs</span> <span class="o">+</span> <span class="n">contraction_sign</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">n_ops</span><span class="p">)</span> <span class="o">*</span> <span class="n">value</span> <span class="o">*</span> <span class="n">remainder</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">lhs</span> <span class="o">-</span> <span class="n">rhs</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">space</span> <span class="o">=</span> <span class="n">FockSpace</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">cases</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;N[a_1 a_0] N[a_0^+ a_2] N[a_2^+ a_3^+]&quot;</span><span class="p">,</span>
+     <span class="p">[[</span><span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">0</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="mi">3</span><span class="p">)]]),</span>
+    <span class="p">(</span><span class="s2">&quot;N[a_1 a_0] N[a_0^+ a_1^+ a_3 a_2] N[a_2^+ a_3^+]&quot;</span><span class="p">,</span>
+     <span class="p">[[</span><span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">0</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">2</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="mi">3</span><span class="p">)]]),</span>
+    <span class="p">(</span><span class="s2">&quot;N[a_0^+ a_1] N[a_1^+ a_0]&quot;</span><span class="p">,</span>
+     <span class="p">[[</span><span class="n">c</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">0</span><span class="p">)]]),</span>
+    <span class="p">(</span><span class="s2">&quot;N[a_0^+ a_1^+ a_1 a_0] N[a_2^+ a_3] N[a_3^+ a_2]&quot;</span><span class="p">,</span>
+     <span class="p">[[</span><span class="n">c</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">0</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span> <span class="p">[</span><span class="n">c</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">2</span><span class="p">)]]),</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">groups</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max |LHS - RHS| = </span><span class="si">{</span><span class="n">space</span><span class="o">.</span><span class="n">check_generalised</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># ordinary Wick is the special case of one operator per group</span>
+<span class="n">single</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span>
+<span class="n">residual</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">check_generalised</span><span class="p">([[</span><span class="n">op</span><span class="p">]</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">single</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max |LHS - RHS| = </span><span class="si">{</span><span class="n">residual</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">   ordinary Wick, &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">single</span><span class="p">)</span><span class="si">}</span><span class="s2"> operators&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>max |LHS - RHS| = 0.0e+00   N[a_1 a_0] N[a_0^+ a_2] N[a_2^+ a_3^+]
+max |LHS - RHS| = 0.0e+00   N[a_1 a_0] N[a_0^+ a_1^+ a_3 a_2] N[a_2^+ a_3^+]
+max |LHS - RHS| = 0.0e+00   N[a_0^+ a_1] N[a_1^+ a_0]
+max |LHS - RHS| = 0.0e+00   N[a_0^+ a_1^+ a_1 a_0] N[a_2^+ a_3] N[a_3^+ a_2]
+max |LHS - RHS| = 0.0e+00   ordinary Wick, 6 operators
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="where-this-leads">
+<h2><span class="section-number">3.11. </span>Where this leads<a class="headerlink" href="#where-this-leads" title="Link to this heading">#</a></h2>
+<p>Nothing in the argument used the fact that <span class="math notranslate nohighlight">\(|0\rangle\)</span> is the true vacuum.  In
+many-body theory the reference state is a filled Fermi sea <span class="math notranslate nohighlight">\(|c\rangle\)</span>, and the
+useful statement is Wick’s theorem relative to <em>that</em> reference, obtained by
+the same argument once the creation and annihilation operators are redefined
+with respect to the new vacuum, as in the particle-hole formalism.  The only
+change is in the elementary contractions: with respect to <span class="math notranslate nohighlight">\(|c\rangle\)</span> both
+<span class="math notranslate nohighlight">\(\langle c|a_a a_b^\dagger|c\rangle=\delta_{ab}\)</span> for particle states above the
+Fermi level and <span class="math notranslate nohighlight">\(\langle c|a_i^\dagger a_j|c\rangle=\delta_{ij}\)</span> for hole
+states below it are non-zero.</p>
+<p>That particle-hole form of the generalised theorem is what generates the
+Hartree-Fock equations, the perturbation expansion and the coupled-cluster
+amplitude equations of the chapters ahead.  The counting above is the reason
+those derivations are possible at all: of the pairings of eight operators,
+only a quarter join different groups, and of those only a handful survive the
+elementary contractions.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="manybodybasics.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">2. </span>From linear algebra to many-body physics</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="jordanwigner.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">4. </span>From fermions to qubits: the Jordan-Wigner transformation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#route-1-anticommutation">3.1. Route 1: anticommutation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#route-2-wick-s-theorem">3.2. Route 2: Wick’s theorem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-operators">3.3. Two operators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#three-operators">3.4. Three operators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#four-operators-the-overlap-langle-rs-pq-rangle">3.5. Four operators: the overlap <span class="math notranslate nohighlight">\(\langle rs|pq\rangle\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#six-and-eight-operators">3.6. Six and eight operators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-number-operator">3.7. The number operator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-two-body-interaction">3.8. The two-body interaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-the-theorem-is-worth-having">3.9. Why the theorem is worth having</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wick-s-generalised-theorem">3.10. Wick’s generalised theorem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-groups-of-the-one-and-two-body-matrix-elements">3.10.1. The groups of the one- and two-body matrix elements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-routes-to-the-same-matrix-element">3.10.2. Three routes to the same matrix element</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-theorem-as-an-identity-between-operators">3.10.3. The theorem as an identity between operators</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-this-leads">3.11. Where this leads</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

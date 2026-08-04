@@ -1,0 +1,2083 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>7. Mean-field approaches &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'hartreefock';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8. Mean-field applications: TDA, RPA and QRPA" href="tdarpa.html" />
+    <link rel="prev" title="6. Full configuration interaction theory" href="fullci.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/hartreefock.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Fhartreefock.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/hartreefock.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Mean-field approaches</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-self-consistent-field-loop">7.1. 1. The self-consistent field loop</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#watching-it-converge">7.1.1. Watching it converge</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-mean-field-does-nothing">7.2. 2. When the mean field does nothing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thouless-theorem">7.3. 3. Thouless’ theorem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stability-of-the-hartree-fock-solution">7.4. 4. Stability of the Hartree-Fock solution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-baker-campbell-hausdorff-expansion">7.5. 5. The Baker-Campbell-Hausdorff expansion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-trotter-suzuki-splitting">7.6. 6. The Trotter-Suzuki splitting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-infinite-homogeneous-electron-gas">7.7. 7. The infinite homogeneous electron gas</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pathology-at-the-fermi-surface">7.7.1. The pathology at the Fermi surface</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-energy-per-electron">7.7.2. The energy per electron</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">7.8. The full program</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="mean-field-approaches">
+<h1><span class="section-number">7. </span>Mean-field approaches<a class="headerlink" href="#mean-field-approaches" title="Link to this heading">#</a></h1>
+<p>Companion notebook to Chapter 6 of <em>Quantum mechanics for many-particle
+systems</em>.  Every number quoted in the chapter is produced here.  The code is
+the same as in <code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/hartreefock.py</span></code>.</p>
+<p>Contents:</p>
+<ol class="arabic simple">
+<li><p>The self-consistent field loop, and Brillouin’s theorem</p></li>
+<li><p>When the mean field does nothing: the pairing model</p></li>
+<li><p>Thouless’ theorem, verified in the determinant basis</p></li>
+<li><p>Stability, and the Lipkin instability at <span class="math notranslate nohighlight">\(\chi = 1\)</span></p></li>
+<li><p>The Baker-Campbell-Hausdorff expansion</p></li>
+<li><p>The Trotter-Suzuki splitting</p></li>
+<li><p>The infinite homogeneous electron gas</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;BookManybody&quot;</span><span class="p">,</span> <span class="s2">&quot;BookMaterial&quot;</span><span class="p">,</span> <span class="s2">&quot;Programs&quot;</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hartreefock</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hf</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-self-consistent-field-loop">
+<h2><span class="section-number">7.1. </span>1. The self-consistent field loop<a class="headerlink" href="#the-self-consistent-field-loop" title="Link to this heading">#</a></h2>
+<p>The Hartree-Fock equations</p>
+<div class="math notranslate nohighlight">
+\[\sum_{\beta} h^{\rm HF}_{\alpha\beta} C_{i\beta}
+  = \varepsilon_i^{\rm HF} C_{i\alpha},
+\qquad
+h^{\rm HF}_{\alpha\beta} = \langle\alpha|\hat h_0|\beta\rangle
+  + \sum_{\gamma\delta}\rho_{\gamma\delta}
+    \langle\alpha\gamma|\hat v|\beta\delta\rangle_{\rm AS}\]</div>
+<p>are nonlinear only because <span class="math notranslate nohighlight">\(\rho\)</span> depends on the eigenvectors we are looking
+for.  Each iteration is therefore a single Hermitian diagonalisation – the
+algorithms of Chapter 1 – wrapped in a fixed-point loop.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hf</span><span class="o">.</span><span class="n">demo_scf</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+1. The self-consistent field loop
+==========================================================================
+Spinless fermions in a one-dimensional oscillator trap with a
+softened Coulomb repulsion, eight oscillator orbitals.  Each
+iteration builds the density matrix, builds the Fock matrix and
+diagonalises it -- chapter 1 inside chapter 2&#39;s eigenvalue problem.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  N  iterations    E(reference)   E(Hartree-Fock)         gain
+  2          17      2.69018342        2.66308878    -2.71e-02
+  3          17      6.46801021        6.39016133    -7.78e-02
+  4          17     11.77084712       11.62305385    -1.48e-01
+
+Brillouin&#39;s theorem at convergence: max |f_ai| = 8.72e-11
+The reference no longer couples to the singles, which is what
+empties the 0p0h-1p1h block of the configuration-interaction
+matrix of chapter 5.
+</pre></div>
+</div>
+</div>
+</div>
+<section id="watching-it-converge">
+<h3><span class="section-number">7.1.1. </span>Watching it converge<a class="headerlink" href="#watching-it-converge" title="Link to this heading">#</a></h3>
+<p>The energy falls monotonically and the single-particle energies settle.  The
+density matrix is the projector onto the occupied subspace, so it is the
+object that actually converges; the individual orbitals are fixed only up to
+a unitary mixing among themselves.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h0</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">trap_system</span><span class="p">(</span><span class="n">n_orbitals</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">scf</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">SelfConsistentField</span><span class="p">(</span><span class="n">h0</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n_particles</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">scf</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">rho</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">scf</span><span class="o">.</span><span class="n">C</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">trace of rho          :&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">rho</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|rho^2 - rho|         :&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rho</span> <span class="o">@</span> <span class="n">rho</span> <span class="o">-</span> <span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eigenvalues of rho    :&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">rho</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">max |f_ai| (Brillouin):&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scf</span><span class="o">.</span><span class="n">brillouin</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1  E =  11.6292802325   mean |d eps| = 6.061e+00
+     2  E =  11.6234352328   mean |d eps| = 4.016e-02
+     3  E =  11.6230795358   mean |d eps| = 7.021e-03
+     4  E =  11.6230556432   mean |d eps| = 1.519e-03
+     5  E =  11.6230539759   mean |d eps| = 3.675e-04
+     6  E =  11.6230538563   mean |d eps| = 9.108e-05
+     7  E =  11.6230538475   mean |d eps| = 2.283e-05
+     8  E =  11.6230538469   mean |d eps| = 6.102e-06
+     9  E =  11.6230538468   mean |d eps| = 1.666e-06
+    10  E =  11.6230538468   mean |d eps| = 4.575e-07
+    11  E =  11.6230538468   mean |d eps| = 1.262e-07
+    12  E =  11.6230538468   mean |d eps| = 3.500e-08
+    13  E =  11.6230538468   mean |d eps| = 9.747e-09
+    14  E =  11.6230538468   mean |d eps| = 2.725e-09
+    15  E =  11.6230538468   mean |d eps| = 7.649e-10
+    16  E =  11.6230538468   mean |d eps| = 2.154e-10
+    17  E =  11.6230538468   mean |d eps| = 6.083e-11
+
+trace of rho          : 3.9999999999999982
+|rho^2 - rho|         : 9.992007221626409e-16
+eigenvalues of rho    : [-0. -0.  0.  0.  1.  1.  1.  1.]
+
+max |f_ai| (Brillouin): 8.72e-11
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">it</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">drifts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">scf</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;iteration&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$E^{\rm HF}$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">it</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">drifts</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s2">&quot;o-&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;iteration&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;mean $|\Delta\varepsilon|$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;convergence&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/e6fd2c7d6208b417975ed3f15d8b28fa903944e5340ffa652f4ba226f76a81fb.png" src="_images/e6fd2c7d6208b417975ed3f15d8b28fa903944e5340ffa652f4ba226f76a81fb.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="when-the-mean-field-does-nothing">
+<h2><span class="section-number">7.2. </span>2. When the mean field does nothing<a class="headerlink" href="#when-the-mean-field-does-nothing" title="Link to this heading">#</a></h2>
+<p>The pairing interaction moves complete pairs and conserves the seniority, so
+it has no matrix element between the reference and a <span class="math notranslate nohighlight">\(1p\)</span>-<span class="math notranslate nohighlight">\(1h\)</span> state.  The
+Fock matrix is diagonal from the first iteration and Hartree-Fock gains
+exactly nothing – the whole correlation energy has to come from the doubles,
+as Chapter 5 found.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hf</span><span class="o">.</span><span class="n">demo_pairing</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+2. Hartree-Fock does nothing for the pairing model
+==========================================================================
+     g    E(reference)   E(Hartree-Fock)        E(exact)  iterations
+  0.25      1.75000000        1.75000000      1.73045985           2
+  0.50      1.50000000        1.50000000      1.41677428           2
+  1.00      1.00000000        1.00000000      0.63554847           2
+
+The pairing interaction moves whole pairs and cannot change the
+seniority, so &lt;Phi_0|H|Phi_i^a&gt; = 0 in any basis and the Fock
+matrix is diagonal from the first iteration.  Hartree-Fock buys
+nothing at all: the whole correlation energy of chapter 5 has to
+come from the doubles.  A mean field is only as useful as the
+one-body physics the interaction actually contains.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="thouless-theorem">
+<h2><span class="section-number">7.3. </span>3. Thouless’ theorem<a class="headerlink" href="#thouless-theorem" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[|c'\rangle = \exp\Big\{\sum_{a&gt;F}\sum_{i\le F} C_{ai}
+  \hat a^\dagger_a \hat a_i\Big\}|c\rangle\]</div>
+<p>is again a <em>single</em> Slater determinant, built from
+<span class="math notranslate nohighlight">\(\hat b^\dagger_i = \hat a^\dagger_i + \sum_a C_{ai}\hat a^\dagger_a\)</span>.  The
+reason is that the one-particle-one-hole operators commute and each squares
+to zero, so the exponential collapses to a finite product.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hf</span><span class="o">.</span><span class="n">demo_thouless</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+3. Thouless&#39; theorem
+==========================================================================
+Six orbitals, three particles, random amplitudes C_ai of size 0.3.
+
+   max |[T_i, T_j]|                 2.776e-17
+   max |T_i^2|                      0.000e+00
+   |exp(T)|c&gt; - prod_i b^+_i|0&gt;|    5.551e-17
+   &lt;c|exp(T)|c&gt;                     1.000000000000
+   det of the occupied block of D   1.000000000000
+
+The one-particle-one-hole operators commute and each squares to
+zero, so the exponential collapses to a product of N factors and
+the result is the single determinant built from
+b^+_i = a^+_i + sum_a C_ai a^+_a.  Its overlap with the reference
+is one, so the rotated determinant is never orthogonal to the one
+we started from -- exactly the freedom Hartree-Fock explores.
+
+The exponential is not the same as its linear truncation: the
+cross terms T_i T_j with i /= j survive and are 2p-2h admixtures.
+They are second order in the amplitudes, which is why keeping
+only 1p-1h is legitimate for an infinitesimal variation:
+
+   scale s     |exp(sT)|c&gt; - (1+sT)|c&gt;|    ratio
+    0.4000                    3.680e-02         
+    0.2000                    9.200e-03     4.00
+    0.1000                    2.300e-03     4.00
+    0.0500                    5.750e-04     4.00
+    0.0250                    1.438e-04     4.00
+Halving the amplitudes divides the discarded piece by four.
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note the distinction that matters for the stability analysis: <span class="math notranslate nohighlight">\(e^{\hat T}\)</span> is
+the product <span class="math notranslate nohighlight">\(\prod_i (1 + \hat T_i)\)</span>, <strong>not</strong> <span class="math notranslate nohighlight">\(1 + \hat T\)</span>.  The cross terms
+<span class="math notranslate nohighlight">\(\hat T_i \hat T_j\)</span> with <span class="math notranslate nohighlight">\(i \neq j\)</span> are <span class="math notranslate nohighlight">\(2p\)</span>-<span class="math notranslate nohighlight">\(2h\)</span> admixtures, second order in
+the amplitudes.  Keeping only <span class="math notranslate nohighlight">\(1p\)</span>-<span class="math notranslate nohighlight">\(1h\)</span> is exact for an infinitesimal
+variation, which is all the Hartree-Fock condition needs.</p>
+</section>
+<section id="stability-of-the-hartree-fock-solution">
+<h2><span class="section-number">7.4. </span>4. Stability of the Hartree-Fock solution<a class="headerlink" href="#stability-of-the-hartree-fock-solution" title="Link to this heading">#</a></h2>
+<p>Going to second order in the amplitudes gives</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\Delta E = \tfrac12 \langle \chi | \hat M | \chi\rangle,
+\qquad
+\hat M = \begin{pmatrix} \Delta + A &amp; B \\ B^* &amp; \Delta + A^*\end{pmatrix},\end{split}\]</div>
+<p>and the solution is a local minimum only if <span class="math notranslate nohighlight">\(\hat M\)</span> is positive
+semi-definite.  <span class="math notranslate nohighlight">\(\hat M\)</span> is the RPA matrix, so “stable Hartree-Fock” and
+“real RPA frequencies” are the same statement.</p>
+<p>The Lipkin model shows the transition explicitly at
+<span class="math notranslate nohighlight">\(\chi = |V|(N-1)/\varepsilon = 1\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hf</span><span class="o">.</span><span class="n">demo_stability</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+4. Stability of the Hartree-Fock solution
+==========================================================================
+The Lipkin model with N = 4 and W = 0.  The mean-field energy is
+E(alpha)/N = -(eps/2)cos(alpha) - (eps chi/4)sin^2(alpha), with
+chi = V(N-1)/eps.  The spherical solution alpha = 0 is a minimum
+only while chi &lt; 1.
+
+   chi        V    lowest eig of M   alpha_min         E_mf      E_exact   deformed
+  0.25   0.0833         0.75000000    0.000000    -2.000000    -2.020726      False
+  0.50   0.1667         0.50000000    0.000000    -2.000000    -2.081666      False
+  0.90   0.3000         0.10000000    0.000000    -2.000000    -2.253886      False
+  1.00   0.3333        -0.00000000    0.000000    -2.000000    -2.309401      False
+  1.50   0.5000        -0.50000000    0.841069    -2.166667    -2.645751       True
+  2.00   0.6667        -1.00000000    1.047198    -2.500000    -3.055050       True
+
+The lowest eigenvalue of M reaches zero exactly at chi = 1, where
+the deformed solution appears.  Beyond that the spherical
+Hartree-Fock state is a saddle point, not a minimum: it still
+satisfies the variational condition, but it is not a local
+minimum of the energy.  M is the matrix of the random-phase
+approximation, so a negative eigenvalue and an imaginary RPA
+frequency are the same statement.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># the mean-field energy surface on either side of the transition</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">chi</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">LipkinHF</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">chi</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">mean_field_energy</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">N</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;$\chi = </span><span class="si">{</span><span class="n">chi</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
+    <span class="n">a_min</span><span class="p">,</span> <span class="n">e_min</span><span class="p">,</span> <span class="n">deformed</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">mean_field_minimum</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">deformed</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">a_min</span><span class="p">,</span> <span class="o">-</span><span class="n">a_min</span><span class="p">],</span> <span class="p">[</span><span class="n">e_min</span> <span class="o">/</span> <span class="n">model</span><span class="o">.</span><span class="n">N</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;k.&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\alpha$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$E(\alpha)/N$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Lipkin mean-field energy surface&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/c8a98360d8bf2825b2c8e7ccc5ab98231f1ce4965d9310b927f907de51eccabf.png" src="_images/c8a98360d8bf2825b2c8e7ccc5ab98231f1ce4965d9310b927f907de51eccabf.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># the lowest eigenvalue of M crosses zero exactly at chi = 1</span>
+<span class="n">chis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">lowest</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">chi</span> <span class="ow">in</span> <span class="n">chis</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">LipkinHF</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">chi</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">StabilityMatrix</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">matrix</span><span class="p">(),</span> <span class="n">model</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                           <span class="n">model</span><span class="o">.</span><span class="n">reference</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">lowest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">eigenvalues</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">chis</span><span class="p">,</span> <span class="n">lowest</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\lambda_{\min}(\hat M)$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">chis</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">chis</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\varepsilon(1-\chi)$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\chi$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;lowest eigenvalue&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/323b0ccde8f599d2b17e641d1d21d9bd2007e368fe81f1752f5e500d7d09411f.png" src="_images/323b0ccde8f599d2b17e641d1d21d9bd2007e368fe81f1752f5e500d7d09411f.png" />
+</div>
+</div>
+</section>
+<section id="the-baker-campbell-hausdorff-expansion">
+<h2><span class="section-number">7.5. </span>5. The Baker-Campbell-Hausdorff expansion<a class="headerlink" href="#the-baker-campbell-hausdorff-expansion" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[Z = \log(e^X e^Y) = X + Y + \tfrac12[X,Y]
+  + \tfrac1{12}\big([X,[X,Y]]+[Y,[Y,X]]\big)
+  - \tfrac1{24}\big[Y,[X,[X,Y]]\big] + \cdots\]</div>
+<p>Every term beyond the first is a nested commutator, which is why <span class="math notranslate nohighlight">\(Z\)</span> stays in
+the same Lie algebra as <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>.  In Thouless’ theorem all the
+commutators vanish and the series stops at the first term.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hf</span><span class="o">.</span><span class="n">demo_bch</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+5. The Baker-Campbell-Hausdorff expansion
+==========================================================================
+A = [[0, 0.1], [0, 0]],  B = [[0, 0], [0.1, 0]],  [A, B] != 0.
+
+ order                                   terms kept    || e^A e^B - e^Z ||
+     1                                        X + Y              7.075e-03
+     2                                 + (1/2)[X,Y]              2.379e-04
+     3              + (1/12)([X,[X,Y]] + [Y,[Y,X]])              1.179e-05
+     4                        - (1/24)[Y,[X,[X,Y]]]              4.757e-07
+
+Each extra commutator gains roughly two orders of magnitude for
+these amplitudes.  The series is asymptotic, not convergent for
+arbitrary operators, but the operators appearing in Thouless&#39;
+theorem are special: there [A, B] = 0 for every pair, the series
+stops at the first term, and the exponential is exact.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># compare the truncated series against the exact logarithm</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+<span class="n">Z_exact</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">bch_exact_log</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;exact  Z = log(e^A e^B):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Z_exact</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">bch_series</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;order </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">:  ||Z_n - Z|| = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">Z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Z_exact</span><span class="p">)</span><span class="si">:</span><span class="s2">.3e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>exact  Z = log(e^A e^B):
+ [[ 0.004992  0.099834]
+ [ 0.099834 -0.004992]]
+order 1:  ||Z_n - Z|| = 7.063e-03
+order 2:  ||Z_n - Z|| = 2.355e-04
+order 3:  ||Z_n - Z|| = 1.177e-05
+order 4:  ||Z_n - Z|| = 4.710e-07
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-trotter-suzuki-splitting">
+<h2><span class="section-number">7.6. </span>6. The Trotter-Suzuki splitting<a class="headerlink" href="#the-trotter-suzuki-splitting" title="Link to this heading">#</a></h2>
+<p>Reading the BCH formula backwards gives the splitting error:</p>
+<div class="math notranslate nohighlight">
+\[e^{-iH_1\Delta}e^{-iH_2\Delta}
+ = \exp\!\big(-i(H_1+H_2)\Delta - \tfrac12[H_1,H_2]\Delta^2 + O(\Delta^3)\big).\]</div>
+<p>The symmetric (Strang) product removes the leading commutator, leaving a
+local error <span class="math notranslate nohighlight">\(O(\Delta^3)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hf</span><span class="o">.</span><span class="n">demo_trotter</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+6. The Trotter-Suzuki splitting
+==========================================================================
+A single qubit with H = sigma_x + sigma_z, t = 1, [X, Z] = -2i Y.
+
+    N      first order    ratio     second order    ratio
+    1        1.130e+00                 4.436e-01         
+    2        5.125e-01     2.21        1.006e-01     4.41
+    4        2.493e-01     2.06        2.443e-02     4.12
+    8        1.238e-01     2.01        6.061e-03     4.03
+   16        6.177e-02     2.00        1.513e-03     4.01
+   32        3.087e-02     2.00        3.779e-04     4.00
+   64        1.543e-02     2.00        9.448e-05     4.00
+
+Halving the step size halves the first-order error and quarters
+the second-order one: the global errors are O(t^2/N) and
+O(t^3/N^2), exactly as the leading commutators of the BCH series
+predict.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]])</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">trotter_error</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">))</span>
+<span class="n">N</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;first order&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="s2">&quot;s-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;second order&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">e1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">N</span><span class="p">,</span> <span class="s2">&quot;k--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\propto 1/N$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">e2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">N</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;k:&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\propto 1/N^2$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;number of Trotter steps $N$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\|U_{\rm trot} - U_{\rm exact}\|$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f9b327285bcfc0b65ffbd6b8337c2e773446d5b2d012ba0282ef3e918464f903.png" src="_images/f9b327285bcfc0b65ffbd6b8337c2e773446d5b2d012ba0282ef3e918464f903.png" />
+</div>
+</div>
+</section>
+<section id="the-infinite-homogeneous-electron-gas">
+<h2><span class="section-number">7.7. </span>7. The infinite homogeneous electron gas<a class="headerlink" href="#the-infinite-homogeneous-electron-gas" title="Link to this heading">#</a></h2>
+<p>With <span class="math notranslate nohighlight">\(x = k/k_F\)</span> and</p>
+<div class="math notranslate nohighlight">
+\[F(x) = \frac12 + \frac{1-x^2}{4x}\ln\left|\frac{1+x}{1-x}\right|,\]</div>
+<p>the Hartree-Fock single-particle energy is</p>
+<div class="math notranslate nohighlight">
+\[\frac{\varepsilon_k^{\rm HF}}{\varepsilon_0^F}
+  = x^2 - 0.663\,r_s\,F(x).\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hf</span><span class="o">.</span><span class="n">demo_electron_gas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+7. The infinite homogeneous electron gas
+==========================================================================
+Hartree-Fock single-particle energy, r_s/a_0 = 4:
+ x = k/k_F         F(x)     eps^HF/eps_0^F       free
+      0.00     1.000000          -2.652000     0.0000
+      0.25     0.978899          -2.533540     0.0625
+      0.50     0.911980          -2.168570     0.2500
+      0.75     0.783779          -1.516081     0.5625
+      1.00     0.500000          -0.326000     1.0000
+      1.25     0.252812           0.892042     1.5625
+      1.50     0.164700           1.813214     2.2500
+      2.00     0.088020           3.766570     4.0000
+
+band width  eps(k_F) - eps(0)  = 2.3260
+closed form 1 + 0.3315 r_s/a_0 = 2.3260
+(the free gas has a band width of exactly 1, so the exchange term
+ more than doubles it)
+
+Effective mass just below the Fermi surface:
+   1 - x =  1.0e-02    m*_HF / m = 0.256074
+   1 - x =  1.0e-03    m*_HF / m = 0.184829
+   1 - x =  1.0e-04    m*_HF / m = 0.144226
+   1 - x =  1.0e-05    m*_HF / m = 0.118208
+   1 - x =  1.0e-06    m*_HF / m = 0.100138
+The derivative of F diverges logarithmically at x = 1, so the
+effective mass goes to zero and the level density at the Fermi
+surface vanishes.  This is wrong -- metals have a finite density
+of states -- and the cure is screening, which is what the
+random-phase approximation supplies.
+
+Energy per electron in Rydberg, E_0/N = 2.21/r_s^2 - 0.916/r_s:
+   kinetic  coefficient (3/5)(9 pi/4)^(2/3)   = 2.2099
+   exchange coefficient (3/2 pi)(9 pi/4)^(1/3) = 0.9163
+   r_s     E_0/N [Ry]
+  1.00       1.294000
+  2.00       0.094500
+  3.00      -0.059778
+  4.00      -0.090875
+  4.83      -0.094916
+  6.00      -0.091278
+  8.00      -0.079969
+
+minimum at r_s = 4.8253, E_0/N = -0.094916 Ry = -1.2914 eV
+The gas is bound at the Hartree-Fock level, at a density in the
+range observed in the alkali metals -- a real success of the
+method, even though the effective mass is qualitatively wrong.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gas</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">ElectronGas</span><span class="p">(</span><span class="n">rs_over_a0</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gas</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Hartree-Fock, $r_s/a_0 = 4$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;free electrons&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$k/k_F$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\varepsilon_k / \varepsilon_0^F$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;single-particle energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;band width, Hartree-Fock : </span><span class="si">{</span><span class="n">gas</span><span class="o">.</span><span class="n">band_width</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;band width, free gas     : 1.0000&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exchange more than doubles the width of the occupied band.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d8c66c7b3531b8a0c1e614207394526fbb015ee76428421094a07c6fc361ac99.png" src="_images/d8c66c7b3531b8a0c1e614207394526fbb015ee76428421094a07c6fc361ac99.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>band width, Hartree-Fock : 2.3260
+band width, free gas     : 1.0000
+Exchange more than doubles the width of the occupied band.
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-pathology-at-the-fermi-surface">
+<h3><span class="section-number">7.7.1. </span>The pathology at the Fermi surface<a class="headerlink" href="#the-pathology-at-the-fermi-surface" title="Link to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\(F'(x)\)</span> diverges logarithmically at <span class="math notranslate nohighlight">\(x=1\)</span>, so the slope of
+<span class="math notranslate nohighlight">\(\varepsilon^{\rm HF}_k\)</span> is infinite there, the effective mass goes to zero
+and the level density</p>
+<div class="math notranslate nohighlight">
+\[n(\varepsilon) = \frac{\Omega k^2}{2\pi^2}
+  \left(\frac{\partial\varepsilon}{\partial k}\right)^{-1}\]</div>
+<p>vanishes at the Fermi surface.  Real metals have a finite density of states
+– it is what gives them a linear specific heat.  The culprit is the
+unscreened <span class="math notranslate nohighlight">\(1/q^2\)</span> of the bare Coulomb interaction, and the cure is the
+random-phase approximation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">deltas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">mstar</span> <span class="o">=</span> <span class="p">[</span><span class="n">gas</span><span class="o">.</span><span class="n">effective_mass</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">deltas</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">semilogx</span><span class="p">(</span><span class="n">deltas</span><span class="p">,</span> <span class="n">mstar</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_xaxis</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$1 - k/k_F$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$m^*_{\rm HF} / m$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the Hartree-Fock effective mass vanishes at the Fermi surface&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8705ea01c50d78831ba5f13afb4176a2e123beb43497068ac42b048fee1dbc6a.png" src="_images/8705ea01c50d78831ba5f13afb4176a2e123beb43497068ac42b048fee1dbc6a.png" />
+</div>
+</div>
+</section>
+<section id="the-energy-per-electron">
+<h3><span class="section-number">7.7.2. </span>The energy per electron<a class="headerlink" href="#the-energy-per-electron" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\frac{E_0}{N} = \frac{e^2}{2a_0}
+  \left[\frac{2.21}{r_s^2} - \frac{0.916}{r_s}\right]\]</div>
+<p>Kinetic repulsion <span class="math notranslate nohighlight">\(\propto r_s^{-2}\)</span> against exchange attraction
+<span class="math notranslate nohighlight">\(\propto r_s^{-1}\)</span>: the sum has a minimum, so the gas is bound already at the
+Hartree-Fock level, at a density in the range of the alkali metals.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">ElectronGas</span><span class="o">.</span><span class="n">energy_per_electron</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span>
+<span class="n">rs_eq</span><span class="p">,</span> <span class="n">e_eq</span> <span class="o">=</span> <span class="n">hf</span><span class="o">.</span><span class="n">ElectronGas</span><span class="o">.</span><span class="n">equilibrium</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$E_0/N$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="mf">2.21</span> <span class="o">/</span> <span class="n">rs</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;kinetic&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.916</span> <span class="o">/</span> <span class="n">rs</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exchange&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs_eq</span><span class="p">,</span> <span class="n">e_eq</span><span class="p">,</span> <span class="s2">&quot;ko&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$r_s = r_0/a_0$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;energy per electron [Ry]&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;equilibrium at r_s = </span><span class="si">{</span><span class="n">rs_eq</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E_0/N = </span><span class="si">{</span><span class="n">e_eq</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> Ry = </span><span class="si">{</span><span class="n">e_eq</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">13.6057</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> eV&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;For comparison, the correlation energy near equilibrium is about&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-0.06 Ry, so exchange alone accounts for roughly half the binding.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/b1aa478462e0c7e887ae5c4100a0dd7912b00c6c124170aaf52b90987f72eb27.png" src="_images/b1aa478462e0c7e887ae5c4100a0dd7912b00c6c124170aaf52b90987f72eb27.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>equilibrium at r_s = 4.8253
+E_0/N = -0.094916 Ry = -1.2914 eV
+For comparison, the correlation energy near equilibrium is about
+-0.06 Ry, so exchange alone accounts for roughly half the binding.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="the-full-program">
+<h2><span class="section-number">7.8. </span>The full program<a class="headerlink" href="#the-full-program" title="Link to this heading">#</a></h2>
+<p>Everything above lives in
+<code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/hartreefock.py</span></code>, which runs as a script
+and prints all seven demonstrations of the chapter.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">hf</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&quot;&quot;&quot;
+Mean-field theory: Hartree-Fock, Thouless rotations, stability, BCH and Trotter.
+
+Companion code to chapter 6 of *Quantum mechanics for Many-particle Systems*.
+
+The self-consistent field problem is set up in terms of the density matrix, so
+that each iteration is a single diagonalisation of the Fock matrix -- the
+algorithms of chapter 1 applied to the eigenvalue problem of chapter 2.  The
+Thouless rotation is then verified explicitly in the determinant basis of
+chapter 5, the stability matrix is built and diagonalised for the Lipkin
+model, and the Baker-Campbell-Hausdorff and Trotter expansions are checked
+numerically.
+
+    SelfConsistentField -- a general SCF loop, h0 and antisymmetrised v
+    PairingHF           -- Hartree-Fock for the pairing model of chapter 4
+    ThoulessRotation    -- exp(sum C_ai a^+_a a_i)|c&gt; is a single determinant
+    LipkinHF            -- the mean-field energy surface and its instability
+    StabilityMatrix     -- M = [[Delta+A, B], [B*, Delta+A*]]
+    bch_error           -- truncating the BCH series
+    trotter_error       -- first- and second-order splitting
+    ElectronGas         -- the analytic Hartree-Fock solution
+
+Author: Morten Hjorth-Jensen
+&quot;&quot;&quot;
+
+from itertools import combinations
+from math import comb, factorial, pi
+
+import numpy as np
+from scipy.linalg import expm, logm
+
+
+# ---------------------------------------------------------------------------
+#  Determinants as bit strings (the machinery of chapter 3, section 3.15)
+# ---------------------------------------------------------------------------
+def popcount(x):
+    return bin(x).count(&quot;1&quot;)
+
+
+def annihilate(state, p):
+    if not (state &gt;&gt; p) &amp; 1:
+        return 0, 0
+    sign = -1 if popcount(state &amp; ((1 &lt;&lt; p) - 1)) &amp; 1 else 1
+    return sign, state ^ (1 &lt;&lt; p)
+
+
+def create(state, p):
+    if (state &gt;&gt; p) &amp; 1:
+        return 0, 0
+    sign = -1 if popcount(state &amp; ((1 &lt;&lt; p) - 1)) &amp; 1 else 1
+    return sign, state | (1 &lt;&lt; p)
+
+
+def apply_string(state, operators):
+    &quot;&quot;&quot;Apply a list of (index, dagger) operators, rightmost first.&quot;&quot;&quot;
+    sign = 1
+    for p, dagger in reversed(operators):
+        s, state = (create(state, p) if dagger else annihilate(state, p))
+        if s == 0:
+            return 0, 0
+        sign *= s
+    return sign, state
+
+
+def determinant_basis(n_orbitals, n_particles):
+    states = []
+    for occ in combinations(range(n_orbitals), n_particles):
+        bits = 0
+        for p in occ:
+            bits |= 1 &lt;&lt; p
+        states.append(bits)
+    states.sort()
+    return states
+
+
+# ---------------------------------------------------------------------------
+#  The self-consistent field problem
+# ---------------------------------------------------------------------------
+class SelfConsistentField:
+    &quot;&quot;&quot;Solve  sum_beta f_ab C_ib = eps_i C_ia  with  f = h0 + rho . v_AS.
+
+    The one-body matrix h0 has shape (n, n) and the antisymmetrised two-body
+    matrix v has shape (n, n, n, n) with the convention
+
+        v[a, b, c, d] = &lt;a b | v | c d&gt;_AS ,
+
+    antisymmetric under a &lt;-&gt; b and under c &lt;-&gt; d.  The density matrix is
+
+        rho_{gd} = sum_{i occupied} C*_{i g} C_{i d} ,
+
+    and the Fock matrix
+
+        f_{ab} = h0_{ab} + sum_{gd} rho_{gd} &lt;a g| v |b d&gt;_AS .
+    &quot;&quot;&quot;
+
+    def __init__(self, h0, v, n_particles):
+        self.h0 = np.asarray(h0, dtype=float)
+        self.v = np.asarray(v, dtype=float)
+        self.n = self.h0.shape[0]
+        self.n_particles = n_particles
+
+    # ------------------------------------------------------------------
+    def density(self, C):
+        &quot;&quot;&quot;rho from the n_particles lowest columns of C (C[:, i] = orbital i).&quot;&quot;&quot;
+        occ = C[:, :self.n_particles]
+        return occ @ occ.T
+
+    def fock(self, rho):
+        # f_{ab} = h0_{ab} + sum_{gd} rho_{gd} v[a, g, b, d]
+        return self.h0 + np.einsum(&quot;gd,agbd-&gt;ab&quot;, rho, self.v)
+
+    def energy(self, C):
+        &quot;&quot;&quot;E = sum_i &lt;i|h0|i&gt; + (1/2) sum_ij &lt;ij|v|ij&gt;_AS, in the C basis.&quot;&quot;&quot;
+        occ = C[:, :self.n_particles]
+        one = np.einsum(&quot;ai,ab,bi-&gt;&quot;, occ, self.h0, occ)
+        two = np.einsum(&quot;ai,bj,abcd,ci,dj-&gt;&quot;, occ, occ, self.v, occ, occ)
+        return one + 0.5 * two
+
+    # ------------------------------------------------------------------
+    def run(self, max_iter=200, tol=1e-10, verbose=False):
+        C = np.eye(self.n)
+        eps_old = np.zeros(self.n)
+        history = []
+        for iteration in range(1, max_iter + 1):
+            rho = self.density(C)
+            f = self.fock(rho)
+            eps, C = np.linalg.eigh(f)
+            energy = self.energy(C)
+            drift = np.abs(eps - eps_old).sum() / self.n
+            history.append((iteration, energy, drift))
+            if verbose:
+                print(f&quot;   {iteration:3d}  E = {energy:14.10f}   &quot;
+                      f&quot;mean |d eps| = {drift:.3e}&quot;)
+            if drift &lt; tol:
+                break
+            eps_old = eps
+        self.C, self.eps, self.E = C, eps, self.energy(C)
+        self.iterations = iteration
+        self.history = history
+        return self.E, self.eps, C
+
+    # ------------------------------------------------------------------
+    def brillouin(self):
+        &quot;&quot;&quot;max |f_ai| between an occupied and an unoccupied orbital.
+
+        At self-consistency the Fock matrix is diagonal in its own
+        eigenbasis, so this vanishes: &lt;Phi_0|H|Phi_i^a&gt; = 0.
+        &quot;&quot;&quot;
+        f = self.fock(self.density(self.C))
+        f_mo = self.C.T @ f @ self.C
+        occ = slice(0, self.n_particles)
+        vir = slice(self.n_particles, self.n)
+        return np.abs(f_mo[vir, occ]).max()
+
+
+def trap_system(n_orbitals=8, strength=1.0, softening=0.5):
+    &quot;&quot;&quot;Spinless fermions in a 1D oscillator trap with a softened repulsion.
+
+    Matrix elements are computed on a grid from the oscillator eigenfunctions,
+    with v(x, y) = strength / sqrt((x - y)^2 + softening^2).
+    &quot;&quot;&quot;
+    from numpy.polynomial.hermite import hermval
+
+    grid = np.linspace(-8.0, 8.0, 401)
+    dx = grid[1] - grid[0]
+    phi = np.zeros((n_orbitals, grid.size))
+    for k in range(n_orbitals):
+        coef = np.zeros(k + 1)
+        coef[k] = 1.0
+        norm = 1.0 / np.sqrt(2.0**k * factorial(k) * np.sqrt(pi))
+        phi[k] = norm * hermval(grid, coef) * np.exp(-0.5 * grid**2)
+
+    h0 = np.diag(np.arange(n_orbitals) + 0.5)
+
+    interaction = strength / np.sqrt((grid[:, None] - grid[None, :])**2
+                                     + softening**2)
+    # &lt;ab|v|cd&gt; = int dx dy phi_a(x) phi_b(y) v(x,y) phi_c(x) phi_d(y)
+    direct = np.einsum(&quot;ax,by,xy,cx,dy-&gt;abcd&quot;,
+                       phi, phi, interaction * dx * dx, phi, phi)
+    v = direct - direct.transpose(0, 1, 3, 2)
+    return h0, v
+
+
+# ---------------------------------------------------------------------------
+#  Hartree-Fock for the pairing model
+# ---------------------------------------------------------------------------
+class PairingHF:
+    &quot;&quot;&quot;Hartree-Fock for the pairing model of chapter 4.
+
+        H = xi sum_{p sigma} (p-1) a^+_{p sigma} a_{p sigma}
+          - (g/2) sum_{pq} a^+_{p+} a^+_{p-} a_{q-} a_{q+}
+
+    Spin-orbital (p, sigma) sits in bit 2(p-1) for sigma = +1 and 2(p-1)+1
+    for sigma = -1.  The point of the exercise is that Hartree-Fock does
+    nothing here: the pairing interaction has no matrix element between the
+    reference and a one-particle-one-hole state, so the Fock matrix is
+    already diagonal in the chosen basis and the iteration stops at once.
+    &quot;&quot;&quot;
+
+    def __init__(self, levels=4, n_particles=4, g=1.0, xi=1.0):
+        self.levels = levels
+        self.n = 2 * levels
+        self.n_particles = n_particles
+        self.g = g
+        self.xi = xi
+
+    def h0(self):
+        return np.diag([self.xi * (p // 2) for p in range(self.n)])
+
+    def v_antisymmetrised(self):
+        &quot;&quot;&quot;&lt;ab|v|cd&gt;_AS for the pairing interaction.&quot;&quot;&quot;
+        n = self.n
+        v = np.zeros((n, n, n, n))
+        # -g/2 a^+_{p+} a^+_{p-} a_{q-} a_{q+}  -&gt;  &lt;p+ p-|v|q+ q-&gt; = -g/2
+        for p in range(self.levels):
+            for q in range(self.levels):
+                a, b = 2 * p, 2 * p + 1        # (p, +), (p, -)
+                c, d = 2 * q, 2 * q + 1        # (q, +), (q, -)
+                v[a, b, c, d] += -0.5 * self.g
+                v[b, a, d, c] += -0.5 * self.g
+                v[a, b, d, c] += +0.5 * self.g
+                v[b, a, c, d] += +0.5 * self.g
+        return v
+
+    def scf(self):
+        scf = SelfConsistentField(self.h0(), self.v_antisymmetrised(),
+                                  self.n_particles)
+        return scf
+
+    def fci_energy(self):
+        &quot;&quot;&quot;Exact ground-state energy in the full determinant space.&quot;&quot;&quot;
+        states = determinant_basis(self.n, self.n_particles)
+        index = {s: i for i, s in enumerate(states)}
+        dim = len(states)
+        H = np.zeros((dim, dim))
+        for col, state in enumerate(states):
+            H[col, col] += sum(self.xi * (p // 2) for p in range(self.n)
+                               if (state &gt;&gt; p) &amp; 1)
+            for q in range(self.levels):
+                for p in range(self.levels):
+                    ops = [(2 * p, True), (2 * p + 1, True),
+                           (2 * q + 1, False), (2 * q, False)]
+                    sign, new = apply_string(state, ops)
+                    if sign:
+                        H[index[new], col] += -0.5 * self.g * sign
+        return float(np.linalg.eigvalsh(H)[0]), dim
+
+
+# ---------------------------------------------------------------------------
+#  Thouless&#39; theorem
+# ---------------------------------------------------------------------------
+class ThoulessRotation:
+    &quot;&quot;&quot;Check that exp(sum_{ai} C_ai a^+_a a_i)|c&gt; is a single determinant.
+
+    Writing T = sum_i T_i with T_i = sum_a C_ai a^+_a a_i, four statements
+    are verified:
+
+      1. the T_i commute with one another, so exp(T) = prod_i exp(T_i);
+      2. T_i^2 = 0, because the second a_i finds the hole already empty,
+         so exp(T_i) = 1 + T_i and the product terminates;
+      3. the result is the determinant built from
+         b^+_i = a^+_i + sum_a C_ai a^+_a;
+      4. its overlap with |c&gt; is one, so intermediate normalisation holds
+         and the two determinants are not orthogonal.
+
+    Note that exp(T)|c&gt; is *not* equal to (1 + T)|c&gt;: the cross terms
+    T_i T_j with i != j survive and describe 2p-2h admixtures.  Dropping
+    them is legitimate only for infinitesimal amplitudes, which is the
+    limit used in the stability analysis.
+    &quot;&quot;&quot;
+
+    def __init__(self, n_orbitals=6, n_particles=3, seed=2024, scale=0.3):
+        self.n = n_orbitals
+        self.N = n_particles
+        rng = np.random.default_rng(seed)
+        self.C = scale * rng.standard_normal((n_orbitals - n_particles,
+                                              n_particles))
+        self.states = determinant_basis(n_orbitals, n_particles)
+        self.index = {s: i for i, s in enumerate(self.states)}
+        self.reference = (1 &lt;&lt; n_particles) - 1
+
+    # ------------------------------------------------------------------
+    def _operator(self, hole=None):
+        &quot;&quot;&quot;The matrix of  T = sum_{ai} C_ai a^+_a a_i,  or of a single T_i.&quot;&quot;&quot;
+        dim = len(self.states)
+        T = np.zeros((dim, dim))
+        holes = range(self.N) if hole is None else (hole,)
+        for col, state in enumerate(self.states):
+            for i in holes:
+                for k, a in enumerate(range(self.N, self.n)):
+                    sign, new = apply_string(state, [(a, True), (i, False)])
+                    if sign:
+                        T[self.index[new], col] += self.C[k, i] * sign
+        return T
+
+    def _reference_vector(self):
+        vec = np.zeros(len(self.states))
+        vec[self.index[self.reference]] = 1.0
+        return vec
+
+    def exponential_state(self):
+        T = self._operator()
+        return expm(T) @ self._reference_vector(), T
+
+    def linear_state(self, scale=1.0):
+        &quot;&quot;&quot;The same thing with the series truncated after the first power.&quot;&quot;&quot;
+        T = scale * self._operator()
+        return (np.eye(len(self.states)) + T) @ self._reference_vector()
+
+    def scaled_exponential(self, scale):
+        T = scale * self._operator()
+        return expm(T) @ self._reference_vector()
+
+    def commutator_check(self):
+        &quot;&quot;&quot;max |[T_i, T_j]| over all pairs of holes.&quot;&quot;&quot;
+        ops = [self._operator(hole=i) for i in range(self.N)]
+        worst = 0.0
+        for i in range(self.N):
+            for j in range(self.N):
+                worst = max(worst, np.abs(comm(ops[i], ops[j])).max())
+        return worst
+
+    def square_check(self):
+        &quot;&quot;&quot;max |T_i^2| over the holes.&quot;&quot;&quot;
+        return max(np.abs(self._operator(hole=i) @ self._operator(hole=i)).max()
+                   for i in range(self.N))
+
+    def product_state(self):
+        &quot;&quot;&quot;prod_i b^+_i |0&gt; built directly, expanded in the determinant basis.&quot;&quot;&quot;
+        # b^+_i = a^+_i + sum_a C_ai a^+_a  is column i of the n x N matrix D
+        D = np.zeros((self.n, self.N))
+        for i in range(self.N):
+            D[i, i] = 1.0
+            for k, a in enumerate(range(self.N, self.n)):
+                D[a, i] = self.C[k, i]
+        # the amplitude on a determinant is the minor of D on its rows
+        vec = np.zeros(len(self.states))
+        for col, state in enumerate(self.states):
+            rows = [p for p in range(self.n) if (state &gt;&gt; p) &amp; 1]
+            vec[col] = np.linalg.det(D[rows, :])
+        return vec, D
+
+    def report(self):
+        psi_exp, T = self.exponential_state()
+        psi_prod, D = self.product_state()
+        return {
+            &quot;max |[T_i, T_j]|&quot;: self.commutator_check(),
+            &quot;max |T_i^2|&quot;: self.square_check(),
+            &quot;|exp(T)|c&gt; - prod_i b^+_i|0&gt;|&quot;: np.abs(psi_exp - psi_prod).max(),
+            &quot;&lt;c|exp(T)|c&gt;&quot;: psi_exp[self.index[self.reference]],
+            &quot;det of the occupied block of D&quot;: np.linalg.det(D[:self.N, :]),
+        }
+
+    def truncation_scaling(self, scales=(0.4, 0.2, 0.1, 0.05, 0.025)):
+        &quot;&quot;&quot;||exp(sT)|c&gt; - (1 + sT)|c&gt;|| as the amplitudes are scaled down.&quot;&quot;&quot;
+        rows = []
+        for s in scales:
+            err = np.abs(self.scaled_exponential(s)
+                         - self.linear_state(s)).max()
+            rows.append((s, err))
+        return rows
+
+
+# ---------------------------------------------------------------------------
+#  The Lipkin model: mean-field surface and stability
+# ---------------------------------------------------------------------------
+class LipkinHF:
+    &quot;&quot;&quot;The Lipkin model in the single-particle basis, with W = 0.
+
+        H = eps J_z + (V/2)(J_+^2 + J_-^2)
+
+    with Omega = N degenerate pairs of levels.  Spin-orbital (p, sigma) sits
+    in bit p for sigma = -1 (below) and N + p for sigma = +1 (above), so the
+    reference determinant fills the lower level completely.
+
+    The mean-field energy of a determinant rotated by an angle alpha in every
+    p is the classic result
+
+        E(alpha)/N = -(eps/2) cos(alpha) - (eps chi / 4) sin^2(alpha),
+
+    with chi = V (N - 1) / eps.  It has a minimum at alpha = 0 while
+    chi &lt; 1 and a deformed minimum at cos(alpha) = 1/chi beyond that.
+    &quot;&quot;&quot;
+
+    def __init__(self, N=4, eps=1.0, V=0.2):
+        self.N = N
+        self.eps = eps
+        self.V = V
+        self.chi = abs(V) * (N - 1) / eps
+        self.n = 2 * N
+        self.states = determinant_basis(self.n, N)
+        self.index = {s: i for i, s in enumerate(self.states)}
+        self.reference = (1 &lt;&lt; N) - 1           # all N particles below
+
+    # ------------------------------------------------------------------
+    def matrix(self):
+        &quot;&quot;&quot;The full Hamiltonian in the determinant basis.&quot;&quot;&quot;
+        N, dim = self.N, len(self.states)
+        H = np.zeros((dim, dim))
+        for col, state in enumerate(self.states):
+            # eps J_z: +eps/2 for each particle above, -eps/2 for each below
+            up = sum(1 for p in range(N) if (state &gt;&gt; (N + p)) &amp; 1)
+            down = sum(1 for p in range(N) if (state &gt;&gt; p) &amp; 1)
+            H[col, col] += 0.5 * self.eps * (up - down)
+            # (V/2)(J_+^2 + J_-^2)
+            for p in range(N):
+                for q in range(N):
+                    for raise_ in (True, False):
+                        if raise_:
+                            ops = [(N + p, True), (p, False),
+                                   (N + q, True), (q, False)]
+                        else:
+                            ops = [(p, True), (N + p, False),
+                                   (q, True), (N + q, False)]
+                        sign, new = apply_string(state, ops)
+                        if sign:
+                            H[self.index[new], col] += 0.5 * self.V * sign
+        return H
+
+    # ------------------------------------------------------------------
+    def mean_field_energy(self, alpha):
+        &quot;&quot;&quot;E(alpha) for the determinant rotated by alpha in every level.&quot;&quot;&quot;
+        return self.N * (-0.5 * self.eps * np.cos(alpha)
+                         - 0.25 * self.eps * self.chi * np.sin(alpha)**2)
+
+    def mean_field_minimum(self):
+        &quot;&quot;&quot;(alpha, E) at the mean-field minimum, and whether it is deformed.&quot;&quot;&quot;
+        if self.chi &lt;= 1.0:
+            return 0.0, self.mean_field_energy(0.0), False
+        alpha = np.arccos(1.0 / self.chi)
+        return alpha, self.mean_field_energy(alpha), True
+
+    def exact_energy(self):
+        return float(np.linalg.eigvalsh(self.matrix())[0])
+
+    def reference_energy(self):
+        H = self.matrix()
+        i = self.index[self.reference]
+        return float(H[i, i])
+
+
+class StabilityMatrix:
+    &quot;&quot;&quot;The Hartree-Fock stability matrix built from a determinant basis.
+
+        M = [[Delta + A,  B    ],
+             [B*       ,  Delta + A*]]
+
+    with (Delta + A)_{ai,bj} = &lt;Phi_i^a|H|Phi_j^b&gt; - E_ref delta,
+    the Tamm-Dancoff matrix, and B_{ai,bj} = &lt;Phi_0|H|Phi_{ij}^{ab}&gt;.
+    The Hartree-Fock solution is a local minimum only if M is positive
+    semi-definite.  Note that M is exactly the matrix of the random-phase
+    approximation, so stability and the reality of the RPA frequencies are
+    the same statement.
+    &quot;&quot;&quot;
+
+    def __init__(self, H, states, index, reference, n_particles, n_orbitals):
+        self.H = H
+        self.states = states
+        self.index = index
+        self.reference = reference
+        self.N = n_particles
+        self.n = n_orbitals
+        self.pairs = [(a, i) for a in range(n_particles, n_orbitals)
+                      for i in range(n_particles)]
+
+    def _single(self, a, i):
+        sign, new = apply_string(self.reference, [(a, True), (i, False)])
+        return sign, self.index[new]
+
+    def _double(self, a, b, i, j):
+        sign, new = apply_string(self.reference,
+                                 [(a, True), (b, True), (j, False), (i, False)])
+        if sign == 0:
+            return 0, None
+        return sign, self.index[new]
+
+    def blocks(self):
+        npairs = len(self.pairs)
+        r = self.index[self.reference]
+        E_ref = self.H[r, r]
+        DA = np.zeros((npairs, npairs))
+        B = np.zeros((npairs, npairs))
+        for m, (a, i) in enumerate(self.pairs):
+            sa, ia = self._single(a, i)
+            for k, (b, j) in enumerate(self.pairs):
+                sb, ib = self._single(b, j)
+                DA[m, k] = sa * sb * self.H[ia, ib]
+                if m == k:
+                    DA[m, k] -= E_ref
+                sd, idx = self._double(a, b, i, j)
+                if sd:
+                    B[m, k] = sd * self.H[r, idx]
+        return DA, B
+
+    def matrix(self):
+        DA, B = self.blocks()
+        return np.block([[DA, B], [B.conj(), DA.conj()]])
+
+    def eigenvalues(self):
+        return np.linalg.eigvalsh(self.matrix())
+
+
+# ---------------------------------------------------------------------------
+#  Baker-Campbell-Hausdorff and Trotter
+# ---------------------------------------------------------------------------
+def comm(X, Y):
+    return X @ Y - Y @ X
+
+
+def bch_series(X, Y, order):
+    &quot;&quot;&quot;Z = log(e^X e^Y) truncated at the given order in X and Y.&quot;&quot;&quot;
+    Z = X + Y
+    if order &gt;= 2:
+        Z = Z + 0.5 * comm(X, Y)
+    if order &gt;= 3:
+        Z = Z + (comm(X, comm(X, Y)) + comm(Y, comm(Y, X))) / 12.0
+    if order &gt;= 4:
+        Z = Z - comm(Y, comm(X, comm(X, Y))) / 24.0
+    return Z
+
+
+def bch_error(X, Y, orders=(1, 2, 3, 4)):
+    &quot;&quot;&quot;||e^X e^Y - exp(Z_n)|| for successive truncations of the BCH series.&quot;&quot;&quot;
+    exact = expm(X) @ expm(Y)
+    return [(n, np.linalg.norm(exact - expm(bch_series(X, Y, n))))
+            for n in orders]
+
+
+def bch_exact_log(X, Y):
+    &quot;&quot;&quot;The exact Z = log(e^X e^Y), for comparison with the series.&quot;&quot;&quot;
+    return logm(expm(X) @ expm(Y))
+
+
+def trotter_error(H1, H2, t=1.0, steps=(1, 2, 4, 8, 16, 32, 64)):
+    &quot;&quot;&quot;First- and second-order splitting error of exp(-i(H1+H2)t).&quot;&quot;&quot;
+    exact = expm(-1j * (H1 + H2) * t)
+    rows = []
+    for N in steps:
+        dt = t / N
+        first = np.linalg.matrix_power(
+            expm(-1j * H1 * dt) @ expm(-1j * H2 * dt), N)
+        second = np.linalg.matrix_power(
+            expm(-1j * H1 * dt / 2) @ expm(-1j * H2 * dt)
+            @ expm(-1j * H1 * dt / 2), N)
+        rows.append((N,
+                     np.linalg.norm(first - exact),
+                     np.linalg.norm(second - exact)))
+    return rows
+
+
+# ---------------------------------------------------------------------------
+#  The infinite homogeneous electron gas
+# ---------------------------------------------------------------------------
+class ElectronGas:
+    &quot;&quot;&quot;The analytic Hartree-Fock solution of the three-dimensional gas.
+
+    With x = k / k_F and
+
+        F(x) = 1/2 + (1 - x^2)/(4x) ln|(1 + x)/(1 - x)| ,
+
+    the single-particle energy in units of the free energy at the Fermi
+    surface is
+
+        eps_k^HF / eps_0^F = x^2 - c F(x),     c = 4/(pi k_F a_0)
+                                                 = 0.663 r_s / a_0 .
+    &quot;&quot;&quot;
+
+    def __init__(self, rs_over_a0=4.0):
+        self.rs = rs_over_a0
+        self.c = 0.663 * rs_over_a0
+
+    @staticmethod
+    def F(x):
+        x = np.asarray(x, dtype=float)
+        out = np.empty_like(x)
+        regular = np.abs(x - 1.0) &gt; 1e-12
+        out[regular] = 0.5 + (1.0 - x[regular]**2) / (4.0 * x[regular]) \
+            * np.log(np.abs((1.0 + x[regular]) / (1.0 - x[regular])))
+        out[~regular] = 0.5
+        near_zero = np.abs(x) &lt; 1e-12
+        out[near_zero] = 1.0
+        return out
+
+    def energy(self, x):
+        return np.asarray(x, dtype=float)**2 - self.c * self.F(x)
+
+    def band_width(self):
+        &quot;&quot;&quot;eps at the Fermi surface minus eps at k = 0, in units of eps_0^F.&quot;&quot;&quot;
+        return float(self.energy(np.array([1.0]))[0]
+                     - self.energy(np.array([1e-14]))[0])
+
+    def band_width_formula(self):
+        &quot;&quot;&quot;The closed form: 1 + 0.3315 r_s/a_0.&quot;&quot;&quot;
+        return 1.0 + 0.5 * 0.663 * self.rs
+
+    def effective_mass(self, delta=1e-4):
+        &quot;&quot;&quot;m*_HF / m = 2 / (2 - c F&#39;(1)), evaluated just below k_F.&quot;&quot;&quot;
+        x = 1.0 - delta
+        dF = (self.F(np.array([x + delta / 2]))[0]
+              - self.F(np.array([x - delta / 2]))[0]) / delta
+        return 2.0 / (2.0 - self.c * dF)
+
+    @staticmethod
+    def energy_per_electron(rs):
+        &quot;&quot;&quot;E_0/N in Rydberg: 2.21/rs^2 - 0.916/rs.&quot;&quot;&quot;
+        rs = np.asarray(rs, dtype=float)
+        return 2.21 / rs**2 - 0.916 / rs
+
+    @classmethod
+    def equilibrium(cls):
+        &quot;&quot;&quot;The minimum of E_0/N and the r_s at which it occurs.&quot;&quot;&quot;
+        rs = 2.0 * 2.21 / 0.916
+        return rs, float(cls.energy_per_electron(rs))
+
+    @staticmethod
+    def kinetic_coefficient():
+        &quot;&quot;&quot;(3/5)(9 pi / 4)^{2/3}, the 2.21 of the energy formula.&quot;&quot;&quot;
+        return 0.6 * (9.0 * pi / 4.0)**(2.0 / 3.0)
+
+    @staticmethod
+    def exchange_coefficient():
+        &quot;&quot;&quot;(3/2 pi)(9 pi / 4)^{1/3}, the 0.916 of the energy formula.&quot;&quot;&quot;
+        return (3.0 / (2.0 * pi)) * (9.0 * pi / 4.0)**(1.0 / 3.0)
+
+
+# ---------------------------------------------------------------------------
+#  Demonstrations
+# ---------------------------------------------------------------------------
+def demo_scf():
+    print(&quot;=&quot; * 74)
+    print(&quot;1. The self-consistent field loop&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Spinless fermions in a one-dimensional oscillator trap with a&quot;)
+    print(&quot;softened Coulomb repulsion, eight oscillator orbitals.  Each&quot;)
+    print(&quot;iteration builds the density matrix, builds the Fock matrix and&quot;)
+    print(&quot;diagonalises it -- chapter 1 inside chapter 2&#39;s eigenvalue problem.&quot;)
+    print()
+    h0, v = trap_system(n_orbitals=8)
+    print(f&quot;{&#39;N&#39;:&gt;3s} {&#39;iterations&#39;:&gt;11s} {&#39;E(reference)&#39;:&gt;15s} &quot;
+          f&quot;{&#39;E(Hartree-Fock)&#39;:&gt;17s} {&#39;gain&#39;:&gt;12s}&quot;)
+    for N in (2, 3, 4):
+        scf = SelfConsistentField(h0, v, N)
+        e_ref = scf.energy(np.eye(scf.n))
+        e_hf, eps, C = scf.run()
+        print(f&quot;{N:3d} {scf.iterations:11d} {e_ref:15.8f} {e_hf:17.8f} &quot;
+              f&quot;{e_hf - e_ref:12.2e}&quot;)
+    print()
+    scf = SelfConsistentField(h0, v, 4)
+    scf.run()
+    print(f&quot;Brillouin&#39;s theorem at convergence: max |f_ai| = &quot;
+          f&quot;{scf.brillouin():.2e}&quot;)
+    print(&quot;The reference no longer couples to the singles, which is what&quot;)
+    print(&quot;empties the 0p0h-1p1h block of the configuration-interaction&quot;)
+    print(&quot;matrix of chapter 5.&quot;)
+
+
+def demo_pairing():
+    print(&quot;=&quot; * 74)
+    print(&quot;2. Hartree-Fock does nothing for the pairing model&quot;)
+    print(&quot;=&quot; * 74)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;E(reference)&#39;:&gt;15s} {&#39;E(Hartree-Fock)&#39;:&gt;17s} &quot;
+          f&quot;{&#39;E(exact)&#39;:&gt;15s} {&#39;iterations&#39;:&gt;11s}&quot;)
+    for g in (0.25, 0.5, 1.0):
+        model = PairingHF(levels=4, n_particles=4, g=g)
+        scf = model.scf()
+        e_ref = scf.energy(np.eye(scf.n))
+        e_hf, eps, C = scf.run()
+        e_fci, dim = model.fci_energy()
+        print(f&quot;{g:6.2f} {e_ref:15.8f} {e_hf:17.8f} {e_fci:15.8f} &quot;
+              f&quot;{scf.iterations:11d}&quot;)
+    print()
+    print(&quot;The pairing interaction moves whole pairs and cannot change the&quot;)
+    print(&quot;seniority, so &lt;Phi_0|H|Phi_i^a&gt; = 0 in any basis and the Fock&quot;)
+    print(&quot;matrix is diagonal from the first iteration.  Hartree-Fock buys&quot;)
+    print(&quot;nothing at all: the whole correlation energy of chapter 5 has to&quot;)
+    print(&quot;come from the doubles.  A mean field is only as useful as the&quot;)
+    print(&quot;one-body physics the interaction actually contains.&quot;)
+
+
+def demo_thouless():
+    print(&quot;=&quot; * 74)
+    print(&quot;3. Thouless&#39; theorem&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Six orbitals, three particles, random amplitudes C_ai of size 0.3.&quot;)
+    print()
+    rotation = ThoulessRotation(n_orbitals=6, n_particles=3)
+    for key, value in rotation.report().items():
+        print(f&quot;   {key:32s} {value:.3e}&quot; if abs(value) &lt; 1e-3
+              else f&quot;   {key:32s} {value:.12f}&quot;)
+    print()
+    print(&quot;The one-particle-one-hole operators commute and each squares to&quot;)
+    print(&quot;zero, so the exponential collapses to a product of N factors and&quot;)
+    print(&quot;the result is the single determinant built from&quot;)
+    print(&quot;b^+_i = a^+_i + sum_a C_ai a^+_a.  Its overlap with the reference&quot;)
+    print(&quot;is one, so the rotated determinant is never orthogonal to the one&quot;)
+    print(&quot;we started from -- exactly the freedom Hartree-Fock explores.&quot;)
+    print()
+    print(&quot;The exponential is not the same as its linear truncation: the&quot;)
+    print(&quot;cross terms T_i T_j with i /= j survive and are 2p-2h admixtures.&quot;)
+    print(&quot;They are second order in the amplitudes, which is why keeping&quot;)
+    print(&quot;only 1p-1h is legitimate for an infinitesimal variation:&quot;)
+    print()
+    print(f&quot;{&#39;scale s&#39;:&gt;10s} {&#39;|exp(sT)|c&gt; - (1+sT)|c&gt;|&#39;:&gt;28s} {&#39;ratio&#39;:&gt;8s}&quot;)
+    previous = None
+    for s, err in rotation.truncation_scaling():
+        if previous is None:
+            print(f&quot;{s:10.4f} {err:28.3e} {&#39;&#39;:&gt;8s}&quot;)
+        else:
+            print(f&quot;{s:10.4f} {err:28.3e} {previous/err:8.2f}&quot;)
+        previous = err
+    print(&quot;Halving the amplitudes divides the discarded piece by four.&quot;)
+
+
+def demo_stability():
+    print(&quot;=&quot; * 74)
+    print(&quot;4. Stability of the Hartree-Fock solution&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The Lipkin model with N = 4 and W = 0.  The mean-field energy is&quot;)
+    print(&quot;E(alpha)/N = -(eps/2)cos(alpha) - (eps chi/4)sin^2(alpha), with&quot;)
+    print(&quot;chi = V(N-1)/eps.  The spherical solution alpha = 0 is a minimum&quot;)
+    print(&quot;only while chi &lt; 1.&quot;)
+    print()
+    print(f&quot;{&#39;chi&#39;:&gt;6s} {&#39;V&#39;:&gt;8s} {&#39;lowest eig of M&#39;:&gt;18s} &quot;
+          f&quot;{&#39;alpha_min&#39;:&gt;11s} {&#39;E_mf&#39;:&gt;12s} {&#39;E_exact&#39;:&gt;12s} {&#39;deformed&#39;:&gt;10s}&quot;)
+    for chi in (0.25, 0.5, 0.9, 1.0, 1.5, 2.0):
+        V = chi / 3.0                       # chi = V (N-1) / eps, N = 4
+        model = LipkinHF(N=4, eps=1.0, V=V)
+        H = model.matrix()
+        stability = StabilityMatrix(H, model.states, model.index,
+                                    model.reference, model.N, model.n)
+        lowest = stability.eigenvalues()[0]
+        alpha, e_mf, deformed = model.mean_field_minimum()
+        print(f&quot;{chi:6.2f} {V:8.4f} {lowest:18.8f} {alpha:11.6f} &quot;
+              f&quot;{e_mf:12.6f} {model.exact_energy():12.6f} &quot;
+              f&quot;{str(deformed):&gt;10s}&quot;)
+    print()
+    print(&quot;The lowest eigenvalue of M reaches zero exactly at chi = 1, where&quot;)
+    print(&quot;the deformed solution appears.  Beyond that the spherical&quot;)
+    print(&quot;Hartree-Fock state is a saddle point, not a minimum: it still&quot;)
+    print(&quot;satisfies the variational condition, but it is not a local&quot;)
+    print(&quot;minimum of the energy.  M is the matrix of the random-phase&quot;)
+    print(&quot;approximation, so a negative eigenvalue and an imaginary RPA&quot;)
+    print(&quot;frequency are the same statement.&quot;)
+
+
+def demo_bch():
+    print(&quot;=&quot; * 74)
+    print(&quot;5. The Baker-Campbell-Hausdorff expansion&quot;)
+    print(&quot;=&quot; * 74)
+    A = np.array([[0.0, 0.1], [0.0, 0.0]])
+    B = np.array([[0.0, 0.0], [0.1, 0.0]])
+    print(&quot;A = [[0, 0.1], [0, 0]],  B = [[0, 0], [0.1, 0]],  [A, B] != 0.&quot;)
+    print()
+    print(f&quot;{&#39;order&#39;:&gt;6s} {&#39;terms kept&#39;:&gt;44s} {&#39;|| e^A e^B - e^Z ||&#39;:&gt;22s}&quot;)
+    labels = {1: &quot;X + Y&quot;,
+              2: &quot;+ (1/2)[X,Y]&quot;,
+              3: &quot;+ (1/12)([X,[X,Y]] + [Y,[Y,X]])&quot;,
+              4: &quot;- (1/24)[Y,[X,[X,Y]]]&quot;}
+    for n, err in bch_error(A, B):
+        print(f&quot;{n:6d} {labels[n]:&gt;44s} {err:22.3e}&quot;)
+    print()
+    print(&quot;Each extra commutator gains roughly two orders of magnitude for&quot;)
+    print(&quot;these amplitudes.  The series is asymptotic, not convergent for&quot;)
+    print(&quot;arbitrary operators, but the operators appearing in Thouless&#39;&quot;)
+    print(&quot;theorem are special: there [A, B] = 0 for every pair, the series&quot;)
+    print(&quot;stops at the first term, and the exponential is exact.&quot;)
+
+
+def demo_trotter():
+    print(&quot;=&quot; * 74)
+    print(&quot;6. The Trotter-Suzuki splitting&quot;)
+    print(&quot;=&quot; * 74)
+    X = np.array([[0.0, 1.0], [1.0, 0.0]])
+    Z = np.array([[1.0, 0.0], [0.0, -1.0]])
+    print(&quot;A single qubit with H = sigma_x + sigma_z, t = 1, [X, Z] = -2i Y.&quot;)
+    print()
+    print(f&quot;{&#39;N&#39;:&gt;5s} {&#39;first order&#39;:&gt;16s} {&#39;ratio&#39;:&gt;8s} &quot;
+          f&quot;{&#39;second order&#39;:&gt;16s} {&#39;ratio&#39;:&gt;8s}&quot;)
+    rows = trotter_error(X, Z, t=1.0)
+    previous = None
+    for N, e1, e2 in rows:
+        if previous is None:
+            print(f&quot;{N:5d} {e1:16.3e} {&#39;&#39;:&gt;8s} {e2:16.3e} {&#39;&#39;:&gt;8s}&quot;)
+        else:
+            print(f&quot;{N:5d} {e1:16.3e} {previous[0]/e1:8.2f} &quot;
+                  f&quot;{e2:16.3e} {previous[1]/e2:8.2f}&quot;)
+        previous = (e1, e2)
+    print()
+    print(&quot;Halving the step size halves the first-order error and quarters&quot;)
+    print(&quot;the second-order one: the global errors are O(t^2/N) and&quot;)
+    print(&quot;O(t^3/N^2), exactly as the leading commutators of the BCH series&quot;)
+    print(&quot;predict.&quot;)
+
+
+def demo_electron_gas():
+    print(&quot;=&quot; * 74)
+    print(&quot;7. The infinite homogeneous electron gas&quot;)
+    print(&quot;=&quot; * 74)
+    gas = ElectronGas(rs_over_a0=4.0)
+    print(&quot;Hartree-Fock single-particle energy, r_s/a_0 = 4:&quot;)
+    print(f&quot;{&#39;x = k/k_F&#39;:&gt;10s} {&#39;F(x)&#39;:&gt;12s} {&#39;eps^HF/eps_0^F&#39;:&gt;18s} &quot;
+          f&quot;{&#39;free&#39;:&gt;10s}&quot;)
+    for x in (0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0):
+        xa = np.array([max(x, 1e-14)])
+        print(f&quot;{x:10.2f} {gas.F(xa)[0]:12.6f} {gas.energy(xa)[0]:18.6f} &quot;
+              f&quot;{x*x:10.4f}&quot;)
+    print()
+    print(f&quot;band width  eps(k_F) - eps(0)  = {gas.band_width():.4f}&quot;)
+    print(f&quot;closed form 1 + 0.3315 r_s/a_0 = {gas.band_width_formula():.4f}&quot;)
+    print(&quot;(the free gas has a band width of exactly 1, so the exchange term&quot;)
+    print(&quot; more than doubles it)&quot;)
+    print()
+    print(&quot;Effective mass just below the Fermi surface:&quot;)
+    for delta in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6):
+        gas_m = ElectronGas(rs_over_a0=4.0)
+        print(f&quot;   1 - x = {delta:8.1e}    m*_HF / m = &quot;
+              f&quot;{gas_m.effective_mass(delta):.6f}&quot;)
+    print(&quot;The derivative of F diverges logarithmically at x = 1, so the&quot;)
+    print(&quot;effective mass goes to zero and the level density at the Fermi&quot;)
+    print(&quot;surface vanishes.  This is wrong -- metals have a finite density&quot;)
+    print(&quot;of states -- and the cure is screening, which is what the&quot;)
+    print(&quot;random-phase approximation supplies.&quot;)
+    print()
+    print(&quot;Energy per electron in Rydberg, E_0/N = 2.21/r_s^2 - 0.916/r_s:&quot;)
+    print(f&quot;   kinetic  coefficient (3/5)(9 pi/4)^(2/3)   = &quot;
+          f&quot;{ElectronGas.kinetic_coefficient():.4f}&quot;)
+    print(f&quot;   exchange coefficient (3/2 pi)(9 pi/4)^(1/3) = &quot;
+          f&quot;{ElectronGas.exchange_coefficient():.4f}&quot;)
+    print(f&quot;{&#39;r_s&#39;:&gt;6s} {&#39;E_0/N [Ry]&#39;:&gt;14s}&quot;)
+    for rs in (1.0, 2.0, 3.0, 4.0, 4.8253, 6.0, 8.0):
+        print(f&quot;{rs:6.2f} {ElectronGas.energy_per_electron(rs):14.6f}&quot;)
+    rs_eq, e_eq = ElectronGas.equilibrium()
+    print()
+    print(f&quot;minimum at r_s = {rs_eq:.4f}, E_0/N = {e_eq:.6f} Ry &quot;
+          f&quot;= {e_eq*13.6057:.4f} eV&quot;)
+    print(&quot;The gas is bound at the Hartree-Fock level, at a density in the&quot;)
+    print(&quot;range observed in the alkali metals -- a real success of the&quot;)
+    print(&quot;method, even though the effective mass is qualitatively wrong.&quot;)
+
+
+def _demo():
+    for f in (demo_scf, demo_pairing, demo_thouless, demo_stability,
+              demo_bch, demo_trotter, demo_electron_gas):
+        f()
+        print()
+
+
+if __name__ == &quot;__main__&quot;:
+    _demo()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="fullci.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">6. </span>Full configuration interaction theory</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="tdarpa.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">8. </span>Mean-field applications: TDA, RPA and QRPA</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-self-consistent-field-loop">7.1. 1. The self-consistent field loop</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#watching-it-converge">7.1.1. Watching it converge</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-mean-field-does-nothing">7.2. 2. When the mean field does nothing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thouless-theorem">7.3. 3. Thouless’ theorem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stability-of-the-hartree-fock-solution">7.4. 4. Stability of the Hartree-Fock solution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-baker-campbell-hausdorff-expansion">7.5. 5. The Baker-Campbell-Hausdorff expansion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-trotter-suzuki-splitting">7.6. 6. The Trotter-Suzuki splitting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-infinite-homogeneous-electron-gas">7.7. 7. The infinite homogeneous electron gas</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pathology-at-the-fermi-surface">7.7.1. The pathology at the Fermi surface</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-energy-per-electron">7.7.2. The energy per electron</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">7.8. The full program</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

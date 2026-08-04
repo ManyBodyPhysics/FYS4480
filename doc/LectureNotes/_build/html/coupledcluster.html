@@ -1,0 +1,2500 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>11. Coupled cluster theory &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'coupledcluster';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="12. Quantum dots: a realistic Hamiltonian" href="quantumdots.html" />
+    <link rel="prev" title="10. Many-body perturbation theory" href="mbptheory.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/coupledcluster.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Fcoupledcluster.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/coupledcluster.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Coupled cluster theory</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-the-solver">11.1. 1. Validating the solver</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pairing-model">11.2. 2. The pairing model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-coupled-cluster-contains-order-by-order">11.3. 3. What coupled cluster contains, order by order</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-singles-matter">11.4. 4. When singles matter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#size-extensivity">11.5. 5. Size extensivity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#everything-against-everything">11.6. 6. Everything against everything</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unitary-coupled-cluster">11.7. 7. Unitary coupled cluster</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trotterisation">11.8. 8. Trotterisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#uccsd-where-the-singles-matter">11.9. 9. UCCSD, where the singles matter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#this-is-a-vqe">11.9.1. This is a VQE</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">11.10. The full program</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="coupled-cluster-theory">
+<h1><span class="section-number">11. </span>Coupled cluster theory<a class="headerlink" href="#coupled-cluster-theory" title="Link to this heading">#</a></h1>
+<p>Companion notebook to Chapter 10 of <em>Quantum mechanics for many-particle
+systems</em>.  Every number quoted in the chapter is produced here; the code is
+the same as in <code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/coupledcluster.py</span></code>.</p>
+<p>The ansatz is a single change from configuration interaction:</p>
+<div class="math notranslate nohighlight">
+\[|\Psi\rangle = e^{\hat T}|\Phi_0\rangle,
+\qquad \hat T = \hat T_1 + \hat T_2 + \cdots\]</div>
+<p>Requiring <span class="math notranslate nohighlight">\(\overline H = e^{-\hat T}\hat H e^{\hat T}\)</span> to have the reference
+as an eigenstate gives</p>
+<div class="math notranslate nohighlight">
+\[\Delta E = \langle\Phi_0|\overline H_N|\Phi_0\rangle,\qquad
+  0 = \langle\Phi_i^a|\overline H_N|\Phi_0\rangle,\qquad
+  0 = \langle\Phi_{ij}^{ab}|\overline H_N|\Phi_0\rangle.\]</div>
+<p>Contents:</p>
+<ol class="arabic simple">
+<li><p>Validating the solver</p></li>
+<li><p>The pairing model</p></li>
+<li><p>What coupled cluster contains, order by order</p></li>
+<li><p>When singles matter</p></li>
+<li><p>Size extensivity</p></li>
+<li><p>Everything against everything</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;BookManybody&quot;</span><span class="p">,</span> <span class="s2">&quot;BookMaterial&quot;</span><span class="p">,</span> <span class="s2">&quot;Programs&quot;</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">coupledcluster</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cc</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="validating-the-solver">
+<h2><span class="section-number">11.1. </span>1. Validating the solver<a class="headerlink" href="#validating-the-solver" title="Link to this heading">#</a></h2>
+<p>Four checks: the models must reproduce the exact energies of Chapters 4 and
+7; the singles must vanish for the pairing model; the first iteration must be
+MP2; and the Hartree-Fock rotation must leave the exact energy alone while
+making <span class="math notranslate nohighlight">\(f_{ia}\)</span> vanish.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_validation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+1. Validating the solver
+==========================================================================
+Everything below rests on the equations being right, so we check
+them first, in four ways.
+
+(i) The models must reproduce the exact energies of the earlier
+chapters.  The pairing model against Table 4.2:
+      g      E_ref       FCI here      chapter 4
+  -1.00    3.00000     2.77987014     2.77987014
+  -0.50    2.50000     2.43688426     2.43688426
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.00    2.00000     2.00000000     2.00000000
+   0.50    1.50000     1.41677428     1.41677428
+   1.00    1.00000     0.63554847     0.63554847
+
+(ii) For the pairing model the interaction cannot connect the
+reference to a 1p-1h state, so the singles must vanish and CCSD
+must equal CCD exactly:
+      g            E_CCD           E_CCSD    max |t1|
+   0.50    -0.0833623353    -0.0833623353    0.00e+00
+   1.00    -0.3695572464    -0.3695572464    0.00e+00
+   2.00    -1.6095943999    -1.6095943999    0.00e+00
+
+(iii) The initial amplitudes are the MP2 ones, so the energy
+before any iteration must be the second-order perturbation
+energy.  For the pairing model this has a closed form,
+   E_MP2 = -(g^2/4) [ 1/(2+g) + 2/(4+g) + 1/(6+g) ],
+in which the g in each denominator is the Hartree-Fock shift of
+the occupied levels -- the Moller-Plesset partition, not the bare
+one-body partition used in chapter 9.
+      g     MP2 computed      closed form
+   0.50    -0.0623931624    -0.0623931624
+   1.00    -0.2190476190    -0.2190476190
+   2.00    -0.7083333333    -0.7083333333
+
+(iv) The Hartree-Fock rotation must leave the exact energy alone
+and must make the occupied-virtual block of the Fock matrix
+vanish.  For the pairing plus particle-hole model of chapter 7:
+    g      f      E_ref        E_HF   max |f_ia|   FCI shift
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0.50   0.25    1.00000     0.92862      4.4e-14     4.4e-16
+ 1.00   0.50    0.00000    -0.26976      7.7e-14     2.2e-16
+
+The Hartree-Fock energies agree with those of chapter 7, and the
+exact energy is invariant under the rotation, as it must be.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-pairing-model">
+<h2><span class="section-number">11.2. </span>2. The pairing model<a class="headerlink" href="#the-pairing-model" title="Link to this heading">#</a></h2>
+<p>Four doubly degenerate levels, four particles.  The reference energy is the
+Hartree-Fock energy <span class="math notranslate nohighlight">\(2-g\)</span> of Chapter 6, so everything below is correlation
+energy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_pairing</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+2. The pairing model
+==========================================================================
+Four doubly degenerate levels, four particles, xi = 1.  The
+Hartree-Fock energy is the reference energy 2 - g, as chapter 6
+found, so everything below is correlation energy.
+
+     g     E_ref          MP2          CCD          FCI   CCD error   iter
+  0.25   1.75000   1.73320261   1.73045621   1.73045985   -3.63e-06     13
+  0.50   1.50000   1.43760684   1.41663766   1.41677428   -1.37e-04     18
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.00   1.00000   0.78095238   0.63044275   0.63554847   -5.11e-03     26
+  1.50   0.50000   0.05974026  -0.38416526  -0.34819051   -3.60e-02     30
+  2.00   0.00000  -0.70833333  -1.60959440  -1.48965216   -1.20e-01     31
+
+At weak coupling CCD is very nearly exact -- four parts in a
+million at g = 0.25.  It over-correlates, and the error grows
+with the coupling, reaching 0.12 at g = 2.  What CCD misses here
+is the connected quadruple excitations: the exponential supplies
+the 4p-4h amplitude as (1/2) T_2^2, which is the disconnected
+part only, and for four particles in four levels the connected
+part is not negligible once the interaction is strong.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+<span class="n">ref</span><span class="p">,</span> <span class="n">mp2</span><span class="p">,</span> <span class="n">ccd_e</span><span class="p">,</span> <span class="n">exact</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">:</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">pairing_model</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">fk</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">fock_matrix</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">e0</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">ref</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span><span class="p">)</span>
+    <span class="n">mp2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span> <span class="o">+</span> <span class="n">cc</span><span class="o">.</span><span class="n">mp2_energy</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+    <span class="n">ccd_e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span> <span class="o">+</span> <span class="n">cc</span><span class="o">.</span><span class="n">ccd</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+    <span class="n">exact</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">fci_energy</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="s2">&quot;k-o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact (FCI)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="s2">&quot;C7--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Hartree-Fock&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">mp2</span><span class="p">,</span> <span class="s2">&quot;C0-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;MP2&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">ccd_e</span><span class="p">,</span> <span class="s2">&quot;C3-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;ground-state energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mp2</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exact</span><span class="p">)),</span> <span class="s2">&quot;C0-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;MP2&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ccd_e</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exact</span><span class="p">)),</span> <span class="s2">&quot;C3-&quot;</span><span class="p">,</span>
+               <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;|error|&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;CCD is exact to four parts in a million at weak coupling&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/958dfe9db98827dfcc0ce4846af063814a1e79594edcf5c7d8ed30c542b0a926.png" src="_images/958dfe9db98827dfcc0ce4846af063814a1e79594edcf5c7d8ed30c542b0a926.png" />
+</div>
+</div>
+</section>
+<section id="what-coupled-cluster-contains-order-by-order">
+<h2><span class="section-number">11.3. </span>3. What coupled cluster contains, order by order<a class="headerlink" href="#what-coupled-cluster-contains-order-by-order" title="Link to this heading">#</a></h2>
+<p>The CCD equation is exactly quadratic in the amplitudes, so it splits as
+<span class="math notranslate nohighlight">\(R(t) = C + L[t] + Q[t,t]\)</span> and can be expanded in powers of the interaction.
+The result is Møller-Plesset perturbation theory — verified here against the
+independent implementation of Chapter 9.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_orders</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+3. What coupled cluster contains, order by order
+==========================================================================
+The CCD equation is exactly quadratic in the amplitudes, so it
+can be split as R(t) = C + L[t] + Q[t,t] and expanded in powers
+of the interaction.  The result is perturbation theory: the first
+amplitude is the MP2 one, the second generates the third-order
+energy, and so on -- but the iteration never stops, so CCD
+contains contributions at every order.
+
+Against Moller-Plesset perturbation theory computed independently
+in the determinant basis of chapter 9:
+     g   order         from CCD        from MBPT
+  0.50       2    -0.0623931624    -0.0623931624
+             3    -0.0165183724    -0.0165183724
+             4    -0.0038210766    -0.0038210766
+  1.00       2    -0.2190476190    -0.2190476190
+             3    -0.1004988662    -0.1004988662
+             4    -0.0403096858    -0.0403096858
+
+They agree to every digit through fourth order.  That CCD should
+reproduce MP2 and MP3 is general; that it also gets MP4 right is
+special to this model, where the interaction produces neither
+singles nor triples and the quadruples enter only through the
+disconnected T_2^2 that the exponential already supplies.
+
+Summing the expansion:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   g = 0.5:  E_ref = 1.50000
+        order          term     partial sum
+            2    -6.239e-02    1.4376068376
+            3    -1.652e-02    1.4210884652
+            4    -3.821e-03    1.4172673886
+            5    -6.576e-04    1.4166097534
+            6    -2.979e-05    1.4165799647
+            7     3.493e-05    1.4166148993
+      sum of 16 orders = 1.4166376646
+      CCD              = 1.4166376647
+      FCI              = 1.4167742844
+
+   g = 1.0:  E_ref = 1.00000
+        order          term     partial sum
+            2    -2.190e-01    0.7809523810
+            3    -1.005e-01    0.6804535147
+            4    -4.031e-02    0.6401438290
+            5    -1.227e-02    0.6278741923
+            6    -1.305e-03    0.6265690156
+            7     1.620e-03    0.6281892811
+      sum of 16 orders = 0.6304406038
+      CCD              = 0.6304427536
+      FCI              = 0.6355484736
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   g = 1.5:  E_ref = 0.50000
+        order          term     partial sum
+            2    -4.403e-01    0.0597402597
+            3    -2.682e-01   -0.2084938438
+            4    -1.429e-01   -0.3514086780
+            5    -5.860e-02   -0.4100070447
+            6    -9.796e-03   -0.4198025511
+            7     1.165e-02   -0.4081570359
+      sum of 16 orders = -0.3844122083
+      CCD              = -0.3841652556
+      FCI              = -0.3481905058
+
+The expansion converges back onto the CCD energy, as it must.
+But note what has happened: at g = 1.5 the bare perturbation
+series of chapter 9 was already close to divergence, while these
+terms -- the same expansion, resummed by the nonlinear equation --
+still converge.  Coupled cluster is not a better perturbation
+theory; it is the same perturbation theory summed to all orders
+within a restricted class of excitations.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.5</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">style</span> <span class="ow">in</span> <span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="s2">&quot;-^&quot;</span><span class="p">)):</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">pairing_model</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">fk</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">fock_matrix</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">ccd_order_by_order</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">style</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;$g = </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;order in the interaction&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$|\Delta E^{(n)}|$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the perturbative content of CCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/4b821bd5750366e6061c8f89c2280ec1b74471e495fa1bb4c54629f5309d7656.png" src="_images/4b821bd5750366e6061c8f89c2280ec1b74471e495fa1bb4c54629f5309d7656.png" />
+</div>
+</div>
+<p>The expansion converges back onto the CCD energy.  Solving the nonlinear
+equation reaches the same answer in twenty-odd iterations without ever
+referring to the order structure — that is what “infinite resummation” means
+in practice.</p>
+</section>
+<section id="when-singles-matter">
+<h2><span class="section-number">11.4. </span>4. When singles matter<a class="headerlink" href="#when-singles-matter" title="Link to this heading">#</a></h2>
+<p>The particle-hole term of Chapter 7 breaks pairs, so the reference couples to
+<span class="math notranslate nohighlight">\(1p\)</span>-<span class="math notranslate nohighlight">\(1h\)</span> states and the singles amplitudes are no longer zero.  We run CCSD
+twice: on the bare oscillator reference and on the Hartree-Fock reference,
+where Brillouin’s theorem makes the singles start one order later.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_ccsd</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+4. When singles matter: the pairing plus particle-hole model
+==========================================================================
+The particle-hole term of chapter 7 breaks pairs, so the
+reference couples to 1p-1h states and the singles amplitudes do
+not vanish.  This is where CCSD earns its name.  We run it twice:
+on the bare oscillator reference, and on the Hartree-Fock
+reference where Brillouin&#39;s theorem holds.
+
+    g      f          CCD         CCSD      CCSD/HF          FCI      |t1|   |t1| HF
+ 0.50  0.025    1.3476038    1.3469075    1.3469088    1.3471327   1.1e-02   5.4e-04
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0.70  0.050    0.9707634    0.9681476    0.9681644    0.9697588   1.9e-02   1.5e-03
+ 1.00  0.050    0.4447429    0.4423659    0.4424119    0.4505823   1.7e-02   1.8e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0.50  0.250    0.6033126    0.5467210    0.5472745    0.5511916   8.4e-02   7.3e-03
+ 1.00  0.500   -1.6764657   -1.7957374   -1.7805416   -1.6917367   1.0e-01   1.3e-02
+
+Three things to read off.  The singles matter: at g = 0.5,
+f = 0.25 they move the energy from 0.6033 to 0.5467 against an
+exact 0.5512, turning a 9% error into a 0.8% one.  The singles
+amplitudes are an order of magnitude smaller in the Hartree-Fock
+basis, because Brillouin&#39;s theorem makes them start at second
+order rather than first.  And the two CCSD columns are close but
+not identical -- coupled cluster is not invariant under a change
+of reference determinant, only exact in the untruncated limit.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">d_e</span><span class="p">,</span> <span class="n">s_e</span><span class="p">,</span> <span class="n">ex_e</span><span class="p">,</span> <span class="n">t1max</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">:</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">pairing_ph_model</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">fk</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">fock_matrix</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">e0</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">d_e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span> <span class="o">+</span> <span class="n">cc</span><span class="o">.</span><span class="n">ccd</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">mixing</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">ccsd</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">mixing</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">s_e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]);</span> <span class="n">t1max</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;t1&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+    <span class="n">ex_e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">fci_energy</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">ex_e</span><span class="p">,</span> <span class="s2">&quot;k-o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">d_e</span><span class="p">,</span> <span class="s2">&quot;C0-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">s_e</span><span class="p">,</span> <span class="s2">&quot;C3-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CCSD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$f$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;ground-state energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;$g = </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">t1max</span><span class="p">,</span> <span class="s2">&quot;C2-o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$f$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\max|t_1|$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the singles grow with the pair-breaking term&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/37bd83371f88271b8d8008bc3688dbf82b253c21ad6cf6665b86047a123ba55e.png" src="_images/37bd83371f88271b8d8008bc3688dbf82b253c21ad6cf6665b86047a123ba55e.png" />
+</div>
+</div>
+</section>
+<section id="size-extensivity">
+<h2><span class="section-number">11.5. </span>5. Size extensivity<a class="headerlink" href="#size-extensivity" title="Link to this heading">#</a></h2>
+<p>For non-interacting subsystems the cluster operators commute, so
+<span class="math notranslate nohighlight">\(e^{\hat T_A + \hat T_B} = e^{\hat T_A}e^{\hat T_B}\)</span>, the wave function
+factorises and the energy is additive — at any truncation level.  This is the
+property truncated configuration interaction cannot have.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_extensivity</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+5. Size extensivity
+==========================================================================
+Chapter 5 found that truncated configuration interaction is not
+size consistent, and chapter 9 that Rayleigh-Schrodinger
+perturbation theory is.  Coupled cluster is size extensive by
+construction: for non-interacting subsystems the cluster
+operators commute and exp(T_A + T_B) = exp(T_A) exp(T_B), so the
+wave function factorises and the energy is additive.
+
+Identical, non-interacting copies of a three-level pairing
+system, one pair in each:
+     g       E(one copy)    E(2) - 2E(1)    E(3) - 3E(1)
+  0.25   -0.012167069342        0.00e+00        0.00e+00
+  0.50   -0.050059379847       -2.11e-13       -3.17e-13
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.00   -0.205303400091        5.55e-17       -2.97e-13
+
+Exact to machine precision at every coupling.  Compare with the
+doubles configuration-interaction errors of chapter 5, which grew
+from 6e-05 to 1e-02 over the same range of couplings.  This is
+the single property that decides between the two methods for
+extended systems, and coupled cluster gets it for free from the
+exponential.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="everything-against-everything">
+<h2><span class="section-number">11.6. </span>6. Everything against everything<a class="headerlink" href="#everything-against-everything" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_comparison</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+6. Everything against everything
+==========================================================================
+The pairing model, treated by every method in the book.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     g        HF      MBPT2      MBPT3        CID        RPA         CCD         FCI
+  0.25   1.75000    1.73177    1.73047    1.73051    1.71635   1.7304562   1.7304598
+  0.50   1.50000    1.42708    1.41667    1.41760    1.37450   1.4166377   1.4167743
+  1.00   1.00000    0.70833    0.62500    0.64891    0.55459   0.6304428   0.6355485
+  1.50   0.50000   -0.15625   -0.43750   -0.29113   -0.40625  -0.3841653  -0.3481905
+  2.00   0.00000   -1.16667   -1.83333   -1.35209   -1.47622  -1.6095944  -1.4896522
+
+The errors:
+     g       MBPT2       MBPT3         CID         RPA         CCD
+  0.25    1.31e-03    8.90e-06    4.72e-05   -1.41e-02   -3.63e-06
+  0.50    1.03e-02   -1.08e-04    8.22e-04   -4.23e-02   -1.37e-04
+  1.00    7.28e-02   -1.05e-02    1.34e-02   -8.10e-02   -5.11e-03
+  1.50    1.92e-01   -8.93e-02    5.71e-02   -5.81e-02   -3.60e-02
+  2.00    3.23e-01   -3.44e-01    1.38e-01    1.34e-02   -1.20e-01
+
+At weak and moderate coupling coupled cluster is the best of the
+five by two to three orders of magnitude, and unlike the
+perturbation series it does not fall apart as the interaction
+grows.  At g = 2 the random-phase approximation happens to be
+closer, which is a reminder that a method summing a different
+class of contributions can win in a regime it was designed for.
+But CCD is the only one of the five that is simultaneously size
+extensive, systematically improvable and accurate across the
+whole range -- which is why it, and not the others, is the
+workhorse of modern many-body theory.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="unitary-coupled-cluster">
+<h2><span class="section-number">11.7. </span>7. Unitary coupled cluster<a class="headerlink" href="#unitary-coupled-cluster" title="Link to this heading">#</a></h2>
+<p>Replacing <span class="math notranslate nohighlight">\(e^{\hat T}\)</span> by <span class="math notranslate nohighlight">\(e^{\hat T - \hat T^\dagger}\)</span> makes the exponential
+<em>unitary</em>, so the state stays normalised and the energy</p>
+<div class="math notranslate nohighlight">
+\[E(\mathbf t) = \langle\Phi_0|e^{-\hat\sigma}\hat H e^{\hat\sigma}|\Phi_0\rangle,
+\qquad \hat\sigma = \hat T - \hat T^\dagger\]</div>
+<p>is a genuine expectation value — <strong>variational</strong>, bounded below by <span class="math notranslate nohighlight">\(E_0\)</span>.</p>
+<p>The price is that <span class="math notranslate nohighlight">\([\hat T, \hat T^\dagger]\neq 0\)</span>, so the
+Baker-Campbell-Hausdorff series no longer terminates and the exponential must
+be built explicitly.  On a classical computer that is expensive; on a quantum
+computer the exponential is <em>applied</em> rather than expanded, and the bound is
+exactly what an optimiser wants.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_unitary</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+7. Unitary coupled cluster
+==========================================================================
+Replacing exp(T) by exp(T - T^dagger) makes the transformation
+unitary, so the energy becomes a true expectation value in a
+normalised state and is therefore variational.  The price is that
+the Baker-Campbell-Hausdorff series no longer terminates, and the
+exponential must be built explicitly.
+
+For the pairing model the generators may be taken as pair
+excitations alone; adding the general doubles and singles changes
+nothing, because the interaction cannot use them:
+        generators   amplitudes          E(UCC)
+        pairs only            4    0.6369869810
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>           doubles           36    0.6369869810
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> singles + doubles           52    0.6369869810
+
+The comparison that matters is with the standard theory.  UCCD is
+variational and therefore always above the exact energy; CCD is
+not, and crosses it:
+
+     g     E_ref           CCD          UCCD           FCI     CCD err    UCCD err
+  0.25   1.75000    1.73045621    1.73046012    1.73045985   -3.63e-06    2.76e-07
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.50   1.50000    1.41663766    1.41679562    1.41677428   -1.37e-04    2.13e-05
+  1.00   1.00000    0.63044275    0.63698698    0.63554847   -5.11e-03    1.44e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.50   0.50000   -0.38416526   -0.33675149   -0.34819051   -3.60e-02    1.14e-02
+  2.00   0.00000   -1.60959440   -1.45347633   -1.48965216   -1.20e-01    3.62e-02
+
+Every UCCD error is positive, as the variational principle
+demands, and every CCD error is negative.  For this model the
+unitary theory is also the more accurate of the two at every
+coupling, by a factor between three and thirteen -- and it comes
+with a bound that CCD cannot offer.  The two are the same
+truncation of the same cluster operator, differing only in whether
+the exponential is unitary; that difference is worth an order of
+magnitude here.  One should not generalise too freely from a
+four-particle model, but the variational property is a theorem,
+not an accident.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="n">e_ccd</span><span class="p">,</span> <span class="n">e_uccd</span><span class="p">,</span> <span class="n">e_exact</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">:</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">pairing_model</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">fk</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">fock_matrix</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">e0</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">e_ccd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span> <span class="o">+</span> <span class="n">cc</span><span class="o">.</span><span class="n">ccd</span><span class="p">(</span><span class="n">fk</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">)[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">UnitaryCC</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">pair_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">e_uccd</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">optimise</span><span class="p">(</span><span class="n">restarts</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+    <span class="n">e_exact</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">exact</span><span class="p">())</span>
+<span class="n">e_ccd</span><span class="p">,</span> <span class="n">e_uccd</span><span class="p">,</span> <span class="n">e_exact</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="n">e_ccd</span><span class="p">,</span> <span class="n">e_uccd</span><span class="p">,</span> <span class="n">e_exact</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">e_exact</span><span class="p">,</span> <span class="s2">&quot;k-o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact (FCI)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">e_ccd</span><span class="p">,</span> <span class="s2">&quot;C0-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">e_uccd</span><span class="p">,</span> <span class="s2">&quot;C3-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;UCCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;ground-state energy&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">e_ccd</span> <span class="o">-</span> <span class="n">e_exact</span><span class="p">,</span> <span class="s2">&quot;C0-o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">e_uccd</span> <span class="o">-</span> <span class="n">e_exact</span><span class="p">,</span> <span class="s2">&quot;C3-s&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;UCCD&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;signed error&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;UCCD stays above, CCD below&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/0ebc69274008a8021fb647ccc02ec871a4ed7d47927ac55f43585a87fbf6448b.png" src="_images/0ebc69274008a8021fb647ccc02ec871a4ed7d47927ac55f43585a87fbf6448b.png" />
+</div>
+</div>
+<p>The signed-error panel is the point: every UCCD error is positive, as the
+variational principle demands, and every CCD error is negative.  The two are
+the <em>same truncation of the same cluster operator</em> — only the unitarity of the
+exponential differs.</p>
+</section>
+<section id="trotterisation">
+<h2><span class="section-number">11.8. </span>8. Trotterisation<a class="headerlink" href="#trotterisation" title="Link to this heading">#</a></h2>
+<p>A quantum circuit cannot apply <span class="math notranslate nohighlight">\(e^{\hat\sigma}\)</span> in one step.  It applies each
+generator separately,</p>
+<div class="math notranslate nohighlight">
+\[e^{\hat\sigma(\mathbf t)} \approx
+  \Big[\prod_k e^{t_k(\hat A_k - \hat A_k^\dagger)/n}\Big]^n,\]</div>
+<p>which is the Trotter splitting of Chapter 6 with the cluster generators in
+place of the pieces of a Hamiltonian.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_trotter</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+8. Trotterisation, and a warning about it
+==========================================================================
+A quantum computer cannot apply exp(sigma) directly.  It applies
+the individual factors in sequence,
+   [ prod_k exp( t_k (A_k - A_k^+) / n ) ]^n ,
+which is the Trotter splitting of chapter 6 with the generators
+in place of the pieces of a Hamiltonian.  The obvious question is
+how large n must be.
+
+Re-optimising the amplitudes for each Trotter number:
+         n          E(UCCD)    error vs FCI
+ exact exp     0.6369869810        1.44e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>         1     0.6369869810        1.44e-03
+         2     0.6369869810        1.44e-03
+         4     0.6369869810        1.44e-03
+         8     0.6369869810        1.44e-03
+
+Every Trotter number gives the same answer to ten digits, even
+n = 1.  This is not an error in the splitting: it is the
+optimiser absorbing it.  The Trotterised ansatz is a different
+parametrisation of a similar family of states, and the variational
+search simply finds whichever amplitudes are best for the
+parametrisation it is given.
+
+To see the splitting error one has to hold the amplitudes fixed.
+Taking those optimised for the exact exponential and evaluating
+the Trotterised state at the same amplitudes:
+
+    n   || psi_n - psi ||   ratio    energy error   ratio
+    1           3.564e-03     nan       6.783e-05     nan
+    2           1.139e-03    3.13       6.383e-06   10.63
+    4           4.556e-04    2.50       9.367e-07    6.81
+    8           2.112e-04    2.16       1.930e-07    4.85
+   16           1.034e-04    2.04       4.569e-08    4.23
+   32           5.143e-05    2.01       1.126e-08    4.06
+
+The state converges as 1/n, which is the first-order Trotter
+error of chapter 6.  The energy converges as 1/n^2 -- one power
+faster -- because the exact-exponential amplitudes are a
+stationary point of the energy, so the first-order response
+vanishes and only the quadratic term survives.  The program
+confirms that the linear term is smaller than the quadratic one
+by three orders of magnitude already at n = 1.
+
+Both observations point the same way.  A variational algorithm is
+far more forgiving of Trotter error than a simulation algorithm,
+because it can re-optimise around it.  That is one of the
+practical arguments for the variational quantum eigensolver over
+straightforward time evolution on near-term hardware.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">pairing_model</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">UnitaryCC</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">pair_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ref</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">optimise</span><span class="p">(</span><span class="n">restarts</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">t_star</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="s2">&quot;amplitudes&quot;</span><span class="p">]</span>
+<span class="n">psi</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">t_star</span><span class="p">);</span> <span class="n">psi</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+
+<span class="n">ns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+<span class="n">state_err</span><span class="p">,</span> <span class="n">energy_err</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ns</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">t_star</span><span class="p">,</span> <span class="n">n_trotter</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">));</span> <span class="n">p</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">psi</span> <span class="o">@</span> <span class="n">p</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="o">-</span><span class="n">p</span>
+    <span class="n">state_err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">psi</span><span class="p">))</span>
+    <span class="n">energy_err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">energy</span><span class="p">(</span><span class="n">t_star</span><span class="p">,</span> <span class="n">n_trotter</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">state_err</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\|\Psi_n - \Psi\|$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">energy_err</span><span class="p">,</span> <span class="s2">&quot;s-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;energy error&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">state_err</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">ns</span><span class="p">,</span> <span class="s2">&quot;k--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\propto 1/n$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">energy_err</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">ns</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;k:&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\propto 1/n^2$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Trotter steps $n$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;amplitudes frozen at their exact-exponential values&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/7c1ae34b5e1023e42eec4bcfb4c4e2dbf0c0b05ededfbc37e9b1c18823909de0.png" src="_images/7c1ae34b5e1023e42eec4bcfb4c4e2dbf0c0b05ededfbc37e9b1c18823909de0.png" />
+</div>
+</div>
+<p>Two lessons.  <strong>Re-optimising</strong> the amplitudes at each Trotter number gives the
+same energy to ten digits, even at <span class="math notranslate nohighlight">\(n=1\)</span> — the optimiser absorbs the splitting
+error into the amplitudes.  <strong>Freezing</strong> them exposes the error, and it falls
+as <span class="math notranslate nohighlight">\(1/n\)</span> in the state but <span class="math notranslate nohighlight">\(1/n^2\)</span> in the energy, because the amplitudes sit at
+a variational stationary point so the first-order response vanishes.</p>
+<p>Both say the same thing: a variational algorithm is far more forgiving of
+Trotter error than a simulation algorithm.  That is a practical argument for
+VQE over straight time evolution on near-term hardware, where circuit depth is
+the binding constraint.</p>
+</section>
+<section id="uccsd-where-the-singles-matter">
+<h2><span class="section-number">11.9. </span>9. UCCSD, where the singles matter<a class="headerlink" href="#uccsd-where-the-singles-matter" title="Link to this heading">#</a></h2>
+<p>The pairing plus particle-hole model of Chapter 7 again.  Here the singles
+generators do real work, and the contrast between the variational and the
+standard theory is sharpest.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc</span><span class="o">.</span><span class="n">demo_uccsd</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+9. UCCSD, where the singles matter
+==========================================================================
+The pairing plus particle-hole model of chapter 7 again.  Now the
+singles generators do real work, and the contrast between the
+variational and the standard theory is sharpest.
+
+    g      f         UCCD        UCCSD         CCSD          FCI   UCCSD err    CCSD err
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0.50  0.025    1.3478676    1.3471722    1.3469075    1.3471327    3.96e-05   -2.25e-04
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 1.00  0.050    0.4553916    0.4530194    0.4423659    0.4505823    2.44e-03   -8.22e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 0.50  0.250    0.6093216    0.5526429    0.5467210    0.5511916    1.45e-03   -4.47e-03
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 1.00  0.500   -1.5302687   -1.6608653   -1.7957374   -1.6917367    3.09e-02   -1.04e-01
+
+The singles are worth having: at g = 0.5, f = 0.25 they take the
+energy from 0.6093 to 0.5526 against an exact 0.5512.  And every
+UCCSD error is positive while every CCSD error is negative -- at
+g = 1, f = 0.5 the standard theory is wrong by -0.104 and the
+unitary one by +0.031, three times better and on the right side.
+
+This is the trade that unitary coupled cluster makes.  It gives up
+the terminating commutator expansion, and with it the cheap
+classical algorithm, and gets back the variational bound.  On a
+classical computer that is usually a bad bargain.  On a quantum
+computer, where the exponential is applied rather than expanded,
+the terminating expansion was never the point, and the bound is
+worth having.
+</pre></div>
+</div>
+</div>
+</div>
+<section id="this-is-a-vqe">
+<h3><span class="section-number">11.9.1. </span>This is a VQE<a class="headerlink" href="#this-is-a-vqe" title="Link to this heading">#</a></h3>
+<p>What we have just run <em>is</em> a variational quantum eigensolver, on a classical
+simulator: a parametrised trial state <span class="math notranslate nohighlight">\(e^{\hat\sigma(\mathbf t)}|\Phi_0\rangle\)</span>
+Trotterised into a gate sequence, an energy evaluated on it, and a classical
+optimiser adjusting <span class="math notranslate nohighlight">\(\mathbf t\)</span>.  On hardware the energy evaluation is replaced
+by repeated measurement in bases fixed by the Pauli decomposition of the
+Hamiltonian.  Nothing else changes — and the <code class="docutils literal notranslate"><span class="pre">UnitaryCC</span></code> class used here is the
+one Chapter 11 will build on.</p>
+</section>
+</section>
+<section id="the-full-program">
+<h2><span class="section-number">11.10. </span>The full program<a class="headerlink" href="#the-full-program" title="Link to this heading">#</a></h2>
+<p>Everything above lives in
+<code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/coupledcluster.py</span></code>, which runs as a
+script and prints all six demonstrations of the chapter.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&quot;&quot;&quot;
+Coupled-cluster theory with singles and doubles.
+
+Companion code to chapter 10 of *Quantum mechanics for Many-particle Systems*.
+
+The core is a general spin-orbital CCSD solver.  It takes a Fock matrix, an
+antisymmetrised two-body tensor and a number of occupied orbitals, and returns
+the amplitudes and the correlation energy.  Setting the singles to zero and
+freezing them gives CCD.  Everything is checked against a full
+configuration-interaction calculation built from the *same* one- and two-body
+matrices, so that no discrepancy can be blamed on a different Hamiltonian.
+
+    ccsd                -- the general solver, with intermediates
+    ccd                 -- the same with T_1 switched off
+    fci_energy          -- a small FCI in the same spin-orbital basis
+    pairing_model       -- the model of chapters 4, 5, 7 and 9
+    pairing_ph_model    -- the pairing plus particle-hole model of chapter 7
+    ccd_order_by_order  -- the perturbative content of CCD
+    UnitaryCC           -- unitary coupled cluster, exact and Trotterised
+
+The unitary theory replaces exp(T) by exp(T - T^dagger), which is unitary, so
+the energy becomes a genuine variational expectation value.  The price is that
+the Baker-Campbell-Hausdorff series no longer terminates, so the exponential
+must be built explicitly.  We do that in the determinant basis, which is exact
+for the small systems of this book and is also precisely the structure of the
+variational quantum eigensolver: a parametrised state, an energy evaluated on
+it, and a classical optimiser on top.
+
+Conventions.  Spin-orbitals are numbered so that the ``n_occ`` lowest are
+occupied in the reference.  The two-body tensor is antisymmetrised,
+
+    v[p, q, r, s] = &lt;pq||rs&gt; = &lt;pq|v|rs&gt; - &lt;pq|v|sr&gt; ,
+
+antisymmetric under p &lt;-&gt; q and under r &lt;-&gt; s, and the Fock matrix is
+
+    f[p, q] = h[p, q] + sum_{i occupied} &lt;pi||qi&gt; .
+
+Author: Morten Hjorth-Jensen
+&quot;&quot;&quot;
+
+from itertools import combinations
+
+import numpy as np
+
+
+# ---------------------------------------------------------------------------
+#  A small full configuration interaction, for validation
+# ---------------------------------------------------------------------------
+def popcount(x):
+    return bin(x).count(&quot;1&quot;)
+
+
+def _annihilate(state, p):
+    if not (state &gt;&gt; p) &amp; 1:
+        return None, 0
+    sign = -1 if popcount(state &amp; ((1 &lt;&lt; p) - 1)) &amp; 1 else 1
+    return state ^ (1 &lt;&lt; p), sign
+
+
+def _create(state, p):
+    if (state &gt;&gt; p) &amp; 1:
+        return None, 0
+    sign = -1 if popcount(state &amp; ((1 &lt;&lt; p) - 1)) &amp; 1 else 1
+    return state | (1 &lt;&lt; p), sign
+
+
+def fci_energy(h, v, n_particles):
+    &quot;&quot;&quot;Exact ground-state energy of  H = sum h_pq a+_p a_q + 1/4 sum &lt;pq||rs&gt; ...
+
+    Built by brute force in the determinant basis, for validation only.
+    &quot;&quot;&quot;
+    n = h.shape[0]
+    states = []
+    for occ in combinations(range(n), n_particles):
+        bits = 0
+        for o in occ:
+            bits |= 1 &lt;&lt; o
+        states.append(bits)
+    states.sort()
+    index = {s: i for i, s in enumerate(states)}
+    dim = len(states)
+    H = np.zeros((dim, dim))
+
+    for col, state in enumerate(states):
+        # one-body
+        for p in range(n):
+            for q in range(n):
+                if abs(h[p, q]) &lt; 1e-14:
+                    continue
+                s, sign = _annihilate(state, q)
+                if s is None:
+                    continue
+                s, t = _create(s, p)
+                if s is None:
+                    continue
+                H[index[s], col] += h[p, q] * sign * t
+        # two-body: (1/4) sum_{pqrs} &lt;pq||rs&gt; a+_p a+_q a_s a_r
+        for p in range(n):
+            for q in range(n):
+                for r in range(n):
+                    for s_ in range(n):
+                        val = v[p, q, r, s_]
+                        if abs(val) &lt; 1e-14:
+                            continue
+                        # a+_p a+_q a_s a_r : rightmost first is a_r
+                        st, sign = _annihilate(state, r)
+                        if st is None:
+                            continue
+                        st, t1 = _annihilate(st, s_)
+                        if st is None:
+                            continue
+                        st, t2 = _create(st, q)
+                        if st is None:
+                            continue
+                        st, t3 = _create(st, p)
+                        if st is None:
+                            continue
+                        H[index[st], col] += 0.25 * val * sign * t1 * t2 * t3
+    return float(np.linalg.eigvalsh(H)[0]), dim
+
+
+def reference_energy(h, v, n_occ):
+    &quot;&quot;&quot;&lt;Phi_0|H|Phi_0&gt; for the determinant filling the n_occ lowest orbitals.&quot;&quot;&quot;
+    o = slice(0, n_occ)
+    return (np.trace(h[o, o])
+            + 0.5 * np.einsum(&quot;ijij-&gt;&quot;, v[o, o, o, o]))
+
+
+def fock_matrix(h, v, n_occ):
+    &quot;&quot;&quot;f_pq = h_pq + sum_i &lt;pi||qi&gt;.&quot;&quot;&quot;
+    o = slice(0, n_occ)
+    return h + np.einsum(&quot;piqi-&gt;pq&quot;, v[:, o, :, o])
+
+
+def hartree_fock(h, v, n_occ, max_iter=500, tol=1e-12):
+    &quot;&quot;&quot;Solve the Hartree-Fock equations and rotate h and v into that basis.
+
+    Returns the transformed one- and two-body matrices, so that a subsequent
+    coupled-cluster calculation is built on the Hartree-Fock reference and
+    the off-diagonal block f_ia vanishes by Brillouin&#39;s theorem.
+    &quot;&quot;&quot;
+    n = h.shape[0]
+    C = np.eye(n)
+    previous = None
+    for iteration in range(1, max_iter + 1):
+        rho = C[:, :n_occ] @ C[:, :n_occ].T
+        F = h + np.einsum(&quot;prqs,sr-&gt;pq&quot;, v, rho)
+        eps, C = np.linalg.eigh(F)
+        if previous is not None and abs(eps.sum() - previous) &lt; tol:
+            break
+        previous = eps.sum()
+    h_new = C.T @ h @ C
+    v_new = np.einsum(&quot;pi,qj,pqrs,rk,sl-&gt;ijkl&quot;, C, C, v, C, C, optimize=True)
+    return h_new, v_new, C, iteration
+
+
+# ---------------------------------------------------------------------------
+#  The CCSD solver
+# ---------------------------------------------------------------------------
+def ccsd(f, v, n_occ, doubles_only=False, max_iter=400, tol=1e-12,
+         mixing=0.0, verbose=False):
+    &quot;&quot;&quot;Solve the CCSD equations in a spin-orbital basis.
+
+    Returns a dictionary with the amplitudes, the correlation energy and the
+    iteration count.  With ``doubles_only=True`` the singles are held at zero
+    and the result is CCD.
+
+    The equations are the standard ones, organised with the two- and
+    four-index intermediates of Stanton, Gauss, Watts and Bartlett:
+
+        F_ae, F_mi, F_me,  W_mnij, W_abef, W_mbej,
+
+    which reduce the cost and, more importantly here, make the structure of
+    the equations legible.
+    &quot;&quot;&quot;
+    n = f.shape[0]
+    o, u = slice(0, n_occ), slice(n_occ, n)
+    n_vir = n - n_occ
+
+    eps_o = np.diag(f)[o].copy()
+    eps_v = np.diag(f)[u].copy()
+    d_ia = eps_o[:, None] - eps_v[None, :]                       # (i, a)
+    d_ijab = (eps_o[:, None, None, None] + eps_o[None, :, None, None]
+              - eps_v[None, None, :, None] - eps_v[None, None, None, :])
+
+    # the off-diagonal part of the Fock matrix, used in the equations
+    f_od = f - np.diag(np.diag(f))
+
+    t1 = np.zeros((n_occ, n_vir))
+    t2 = v[o, o, u, u] / d_ijab                                  # MP2 start
+
+    def tau(t1, t2):
+        return (t2 + np.einsum(&quot;ia,jb-&gt;ijab&quot;, t1, t1)
+                - np.einsum(&quot;ib,ja-&gt;ijab&quot;, t1, t1))
+
+    def tau_tilde(t1, t2):
+        return (t2 + 0.5 * (np.einsum(&quot;ia,jb-&gt;ijab&quot;, t1, t1)
+                            - np.einsum(&quot;ib,ja-&gt;ijab&quot;, t1, t1)))
+
+    def energy(t1, t2):
+        e = np.einsum(&quot;ia,ia-&gt;&quot;, f[o, u], t1)
+        e += 0.25 * np.einsum(&quot;ijab,ijab-&gt;&quot;, v[o, o, u, u], t2)
+        e += 0.5 * np.einsum(&quot;ijab,ia,jb-&gt;&quot;, v[o, o, u, u], t1, t1)
+        return float(e)
+
+    previous = 0.0
+    for iteration in range(1, max_iter + 1):
+        tt = tau_tilde(t1, t2)
+        ta = tau(t1, t2)
+
+        # ---- two-index intermediates -------------------------------------
+        F_ae = (f_od[u, u]
+                - 0.5 * np.einsum(&quot;me,ma-&gt;ae&quot;, f[o, u], t1)
+                + np.einsum(&quot;mf,mafe-&gt;ae&quot;, t1, v[o, u, u, u])
+                - 0.5 * np.einsum(&quot;mnaf,mnef-&gt;ae&quot;, tt, v[o, o, u, u]))
+        F_mi = (f_od[o, o]
+                + 0.5 * np.einsum(&quot;ie,me-&gt;mi&quot;, t1, f[o, u])
+                + np.einsum(&quot;ne,mnie-&gt;mi&quot;, t1, v[o, o, o, u])
+                + 0.5 * np.einsum(&quot;inef,mnef-&gt;mi&quot;, tt, v[o, o, u, u]))
+        F_me = f[o, u] + np.einsum(&quot;nf,mnef-&gt;me&quot;, t1, v[o, o, u, u])
+
+        # ---- four-index intermediates ------------------------------------
+        W_mnij = (v[o, o, o, o]
+                  + np.einsum(&quot;je,mnie-&gt;mnij&quot;, t1, v[o, o, o, u])
+                  - np.einsum(&quot;ie,mnje-&gt;mnij&quot;, t1, v[o, o, o, u])
+                  + 0.25 * np.einsum(&quot;ijef,mnef-&gt;mnij&quot;, ta, v[o, o, u, u]))
+        W_abef = (v[u, u, u, u]
+                  - np.einsum(&quot;mb,amef-&gt;abef&quot;, t1, v[u, o, u, u])
+                  + np.einsum(&quot;ma,bmef-&gt;abef&quot;, t1, v[u, o, u, u])
+                  + 0.25 * np.einsum(&quot;mnab,mnef-&gt;abef&quot;, ta, v[o, o, u, u]))
+        W_mbej = (v[o, u, u, o]
+                  + np.einsum(&quot;jf,mbef-&gt;mbej&quot;, t1, v[o, u, u, u])
+                  - np.einsum(&quot;nb,mnej-&gt;mbej&quot;, t1, v[o, o, u, o])
+                  - np.einsum(&quot;jnfb,mnef-&gt;mbej&quot;,
+                              0.5 * t2 + np.einsum(&quot;jf,nb-&gt;jnfb&quot;, t1, t1),
+                              v[o, o, u, u]))
+
+        # ---- singles ------------------------------------------------------
+        if doubles_only:
+            t1_new = np.zeros_like(t1)
+        else:
+            r1 = (f[o, u]
+                  + np.einsum(&quot;ie,ae-&gt;ia&quot;, t1, F_ae)
+                  - np.einsum(&quot;ma,mi-&gt;ia&quot;, t1, F_mi)
+                  + np.einsum(&quot;imae,me-&gt;ia&quot;, t2, F_me)
+                  - np.einsum(&quot;nf,naif-&gt;ia&quot;, t1, v[o, u, o, u])
+                  - 0.5 * np.einsum(&quot;imef,maef-&gt;ia&quot;, t2, v[o, u, u, u])
+                  - 0.5 * np.einsum(&quot;mnae,nmei-&gt;ia&quot;, t2, v[o, o, u, o]))
+            t1_new = r1 / d_ia
+
+        # ---- doubles ------------------------------------------------------
+        tmp_ae = F_ae - 0.5 * np.einsum(&quot;mb,me-&gt;be&quot;, t1, F_me)
+        tmp_mi = F_mi + 0.5 * np.einsum(&quot;je,me-&gt;mj&quot;, t1, F_me)
+
+        r2 = v[o, o, u, u].copy()
+
+        term = np.einsum(&quot;ijae,be-&gt;ijab&quot;, t2, tmp_ae)
+        r2 = r2 + term - term.transpose(0, 1, 3, 2)
+
+        term = np.einsum(&quot;imab,mj-&gt;ijab&quot;, t2, tmp_mi)
+        r2 = r2 - term + term.transpose(1, 0, 2, 3)
+
+        r2 = r2 + 0.5 * np.einsum(&quot;mnab,mnij-&gt;ijab&quot;, ta, W_mnij)
+        r2 = r2 + 0.5 * np.einsum(&quot;ijef,abef-&gt;ijab&quot;, ta, W_abef)
+
+        term = (np.einsum(&quot;imae,mbej-&gt;ijab&quot;, t2, W_mbej)
+                - np.einsum(&quot;ie,ma,mbej-&gt;ijab&quot;, t1, t1, v[o, u, u, o]))
+        r2 = (r2 + term - term.transpose(1, 0, 2, 3)
+              - term.transpose(0, 1, 3, 2) + term.transpose(1, 0, 3, 2))
+
+        if not doubles_only:
+            term = np.einsum(&quot;ie,abej-&gt;ijab&quot;, t1, v[u, u, u, o])
+            r2 = r2 + term - term.transpose(1, 0, 2, 3)
+            term = np.einsum(&quot;ma,mbij-&gt;ijab&quot;, t1, v[o, u, o, o])
+            r2 = r2 - term + term.transpose(0, 1, 3, 2)
+
+        t2_new = r2 / d_ijab
+
+        if mixing &gt; 0.0:
+            t1_new = (1.0 - mixing) * t1_new + mixing * t1
+            t2_new = (1.0 - mixing) * t2_new + mixing * t2
+
+        e = energy(t1_new, t2_new)
+        change = abs(e - previous)
+        t1, t2, previous = t1_new, t2_new, e
+        if verbose:
+            print(f&quot;   {iteration:4d}  E_corr = {e:16.12f}   &quot;
+                  f&quot;change = {change:.2e}&quot;)
+        if change &lt; tol:
+            break
+
+    return dict(t1=t1, t2=t2, energy=previous, iterations=iteration,
+                converged=change &lt; tol)
+
+
+def ccd(f, v, n_occ, **kwargs):
+    &quot;&quot;&quot;Coupled cluster with doubles only.&quot;&quot;&quot;
+    return ccsd(f, v, n_occ, doubles_only=True, **kwargs)
+
+
+# ---------------------------------------------------------------------------
+#  The models
+# ---------------------------------------------------------------------------
+def _add_term(v, coefficient, p, q, r, s):
+    &quot;&quot;&quot;Accumulate  coefficient * a+_p a+_q a_s a_r  into an antisymmetrised v.
+
+    With v antisymmetric in (p, q) and in (r, s), the operator
+
+        (1/4) sum_{pqrs} v[p,q,r,s] a+_p a+_q a_s a_r
+
+    has  v[p,q,r,s]  as the coefficient of  a+_p a+_q a_s a_r : the four
+    index orderings that give the same operator each contribute a quarter.
+    &quot;&quot;&quot;
+    v[p, q, r, s] += coefficient
+    v[q, p, r, s] -= coefficient
+    v[p, q, s, r] -= coefficient
+    v[q, p, s, r] += coefficient
+
+
+def pairing_model(levels=4, particles=4, g=1.0, xi=1.0):
+    &quot;&quot;&quot;The pairing model of chapters 4, 5, 7 and 9, in a spin-orbital basis.
+
+    Spin-orbital 2(p-1) is (p, +) and 2(p-1)+1 is (p, -).  The interaction
+
+        V = -(g/2) sum_{pq} a+_{p+} a+_{p-} a_{q-} a_{q+}
+
+    therefore has  &lt;p+ p-||q+ q-&gt; = -g/2.
+    &quot;&quot;&quot;
+    n = 2 * levels
+    h = np.diag([xi * (o // 2) for o in range(n)]).astype(float)
+    v = np.zeros((n, n, n, n))
+    for p in range(levels):
+        for q in range(levels):
+            # a+_{p+} a+_{p-} a_{q-} a_{q+}: creation (p+, p-), r = q+, s = q-
+            _add_term(v, -0.5 * g, 2 * p, 2 * p + 1, 2 * q, 2 * q + 1)
+    return h, v, particles
+
+
+def pairing_ph_model(levels=4, particles=4, g=1.0, f=0.0, xi=1.0):
+    &quot;&quot;&quot;The pairing plus particle-hole model of chapter 7.
+
+        V = -(g/2) sum_{pq}  a+_{p+} a+_{p-} a_{q-} a_{q+}
+            -(f/2) sum_{pqr} ( a+_{p+} a+_{p-} a_{q-} a_{r+} + h.c. )
+
+    The particle-hole term breaks pairs, so the singles amplitudes do not
+    vanish and CCSD differs from CCD.
+    &quot;&quot;&quot;
+    n = 2 * levels
+    h = np.diag([xi * (o // 2) for o in range(n)]).astype(float)
+    v = np.zeros((n, n, n, n))
+    for p in range(levels):
+        for q in range(levels):
+            _add_term(v, -0.5 * g, 2 * p, 2 * p + 1, 2 * q, 2 * q + 1)
+    if f != 0.0:
+        for p in range(levels):
+            for q in range(levels):
+                for r in range(levels):
+                    # a+_{p+} a+_{p-} a_{q-} a_{r+}: r index = r+, s = q-
+                    _add_term(v, -0.5 * f,
+                              2 * p, 2 * p + 1, 2 * r, 2 * q + 1)
+                    # the Hermitian conjugate a+_{r+} a+_{q-} a_{p-} a_{p+}
+                    _add_term(v, -0.5 * f,
+                              2 * r, 2 * q + 1, 2 * p, 2 * p + 1)
+    return h, v, particles
+
+
+def independent_copies(subsystems=2, levels_per=3, g=0.5, xi=1.0):
+    &quot;&quot;&quot;Non-interacting copies of a pairing system, for the extensivity test.
+
+    The levels are ordered so that the lowest level of *every* subsystem
+    comes first: global level index  L = level * subsystems + subsystem,
+    with energy xi * level.  The reference determinant then puts one pair in
+    the lowest level of each subsystem, as it must.
+    &quot;&quot;&quot;
+    levels = subsystems * levels_per
+    n = 2 * levels
+    energies = [xi * ((o // 2) // subsystems) for o in range(n)]
+    h = np.diag(energies).astype(float)
+    v = np.zeros((n, n, n, n))
+    for p in range(levels):
+        for q in range(levels):
+            if p % subsystems != q % subsystems:
+                continue                       # different subsystems
+            _add_term(v, -0.5 * g, 2 * p, 2 * p + 1, 2 * q, 2 * q + 1)
+    return h, v, 2 * subsystems
+
+
+# ---------------------------------------------------------------------------
+#  The perturbative content of CCD
+# ---------------------------------------------------------------------------
+def ccd_residual(t2, f, v, n_occ):
+    &quot;&quot;&quot;The right-hand side of the CCD amplitude equation.
+
+    The CCD equation is  D_ij^ab t_ij^ab = R(t2),  and the solver iterates
+    t2 &lt;- R(t2)/D.  Note that R is exactly *quadratic* in t2: the
+    intermediates contain terms linear in t2 which are then contracted with
+    t2 once more, and nothing of higher degree appears.  That fact is used
+    below to extract the perturbative content of the theory.
+    &quot;&quot;&quot;
+    n = f.shape[0]
+    o, u = slice(0, n_occ), slice(n_occ, n)
+    f_od = f - np.diag(np.diag(f))
+    w = v[o, o, u, u]
+
+    F_ae = f_od[u, u] - 0.5 * np.einsum(&quot;mnaf,mnef-&gt;ae&quot;, t2, w)
+    F_mi = f_od[o, o] + 0.5 * np.einsum(&quot;inef,mnef-&gt;mi&quot;, t2, w)
+    W_mnij = v[o, o, o, o] + 0.25 * np.einsum(&quot;ijef,mnef-&gt;mnij&quot;, t2, w)
+    W_abef = v[u, u, u, u] + 0.25 * np.einsum(&quot;mnab,mnef-&gt;abef&quot;, t2, w)
+    W_mbej = v[o, u, u, o] - 0.5 * np.einsum(&quot;jnfb,mnef-&gt;mbej&quot;, t2, w)
+
+    r2 = w.copy()
+    term = np.einsum(&quot;ijae,be-&gt;ijab&quot;, t2, F_ae)
+    r2 = r2 + term - term.transpose(0, 1, 3, 2)
+    term = np.einsum(&quot;imab,mj-&gt;ijab&quot;, t2, F_mi)
+    r2 = r2 - term + term.transpose(1, 0, 2, 3)
+    r2 = r2 + 0.5 * np.einsum(&quot;mnab,mnij-&gt;ijab&quot;, t2, W_mnij)
+    r2 = r2 + 0.5 * np.einsum(&quot;ijef,abef-&gt;ijab&quot;, t2, W_abef)
+    term = np.einsum(&quot;imae,mbej-&gt;ijab&quot;, t2, W_mbej)
+    r2 = (r2 + term - term.transpose(1, 0, 2, 3)
+          - term.transpose(0, 1, 3, 2) + term.transpose(1, 0, 3, 2))
+    return r2
+
+
+def ccd_order_by_order(f, v, n_occ, order=10):
+    &quot;&quot;&quot;Expand the CCD amplitude equation order by order in the interaction.
+
+    Because R(t2) is quadratic we may split it exactly,
+
+        R(t) = C + L[t] + Q[t, t] ,
+
+    with  C = R(0),  L[t] = (R(t) - R(-t))/2,  Q[t,t] = (R(t)+R(-t))/2 - C,
+    and the bilinear form recovered by polarisation,
+    Q[a,b] = (Q[a+b,a+b] - Q[a,a] - Q[b,b])/2.  Writing
+    t2 = sum_k t^(k) with t^(k) of order k in the interaction gives
+
+        D t^(1) = C ,
+        D t^(k) = L[t^(k-1)] + sum_{i+j=k-1} Q[t^(i), t^(j)] ,
+
+    and the energy contribution of t^(k) is of order k+1.  The first two
+    therefore reproduce MP2 and MP3 exactly, and the sum of them all is the
+    CCD energy -- provided the series converges.
+    &quot;&quot;&quot;
+    n = f.shape[0]
+    o, u = slice(0, n_occ), slice(n_occ, n)
+    eps_o, eps_v = np.diag(f)[o], np.diag(f)[u]
+    d = (eps_o[:, None, None, None] + eps_o[None, :, None, None]
+         - eps_v[None, None, :, None] - eps_v[None, None, None, :])
+
+    zero = np.zeros_like(v[o, o, u, u])
+    C = ccd_residual(zero, f, v, n_occ)
+
+    def linear(t):
+        return 0.5 * (ccd_residual(t, f, v, n_occ)
+                      - ccd_residual(-t, f, v, n_occ))
+
+    def quad(t):
+        return 0.5 * (ccd_residual(t, f, v, n_occ)
+                      + ccd_residual(-t, f, v, n_occ)) - C
+
+    def bilinear(a, b):
+        return 0.5 * (quad(a + b) - quad(a) - quad(b))
+
+    amplitudes = [C / d]                                   # t^(1) = MP2
+    for k in range(2, order + 1):
+        rhs = linear(amplitudes[-1])
+        for i in range(1, k):
+            j = k - 1 - i
+            if 1 &lt;= j &lt;= len(amplitudes) and i &lt;= len(amplitudes):
+                rhs = rhs + bilinear(amplitudes[i - 1], amplitudes[j - 1])
+        amplitudes.append(rhs / d)
+
+    energies = [0.25 * float(np.einsum(&quot;ijab,ijab-&gt;&quot;, v[o, o, u, u], t))
+                for t in amplitudes]
+    return energies, amplitudes
+
+
+def mp2_energy(f, v, n_occ):
+    n = f.shape[0]
+    o, u = slice(0, n_occ), slice(n_occ, n)
+    eps_o, eps_v = np.diag(f)[o], np.diag(f)[u]
+    d = (eps_o[:, None, None, None] + eps_o[None, :, None, None]
+         - eps_v[None, None, :, None] - eps_v[None, None, None, :])
+    return 0.25 * float(np.einsum(&quot;ijab,ijab-&gt;&quot;, v[o, o, u, u],
+                                  v[o, o, u, u] / d))
+
+
+# ---------------------------------------------------------------------------
+#  Unitary coupled cluster
+# ---------------------------------------------------------------------------
+def determinant_basis(n_orbitals, n_particles):
+    states = []
+    for occ in combinations(range(n_orbitals), n_particles):
+        bits = 0
+        for o in occ:
+            bits |= 1 &lt;&lt; o
+        states.append(bits)
+    states.sort()
+    return states, {s: i for i, s in enumerate(states)}
+
+
+def hamiltonian_matrix(h, v, n_particles):
+    &quot;&quot;&quot;The many-body Hamiltonian in the determinant basis.&quot;&quot;&quot;
+    n = h.shape[0]
+    states, index = determinant_basis(n, n_particles)
+    dim = len(states)
+    H = np.zeros((dim, dim))
+    for col, state in enumerate(states):
+        for p in range(n):
+            for q in range(n):
+                if abs(h[p, q]) &lt; 1e-14:
+                    continue
+                st, sign = _annihilate(state, q)
+                if st is None:
+                    continue
+                st, t = _create(st, p)
+                if st is None:
+                    continue
+                H[index[st], col] += h[p, q] * sign * t
+        for p in range(n):
+            for q in range(n):
+                for r in range(n):
+                    for s_ in range(n):
+                        val = v[p, q, r, s_]
+                        if abs(val) &lt; 1e-14:
+                            continue
+                        st, sign = _annihilate(state, r)
+                        if st is None:
+                            continue
+                        st, t1 = _annihilate(st, s_)
+                        if st is None:
+                            continue
+                        st, t2 = _create(st, q)
+                        if st is None:
+                            continue
+                        st, t3 = _create(st, p)
+                        if st is None:
+                            continue
+                        H[index[st], col] += 0.25 * val * sign * t1 * t2 * t3
+    return H, states, index
+
+
+class UnitaryCC:
+    &quot;&quot;&quot;Unitary coupled cluster in the determinant basis.
+
+    The ansatz is
+
+        |Psi(t)&gt; = exp( sigma(t) ) |Phi_0&gt; ,
+        sigma(t) = sum_k t_k ( A_k - A_k^dagger ) ,
+
+    with the A_k the usual singles and doubles excitation operators.  Since
+    sigma is anti-Hermitian, exp(sigma) is unitary and
+
+        E(t) = &lt;Phi_0| exp(-sigma) H exp(sigma) |Phi_0&gt;
+
+    is a genuine expectation value in a normalised state: the energy is
+    variational and bounded below by the exact ground-state energy.
+
+    Two ways of building the state are offered.  ``n_trotter=None`` forms the
+    matrix exponential of the whole sigma, which is exact.  An integer
+    ``n_trotter`` splits the exponential over the individual generators,
+
+        [ prod_k exp( t_k (A_k - A_k^+) / n ) ]^n ,
+
+    which is what a quantum circuit implements: each factor is a gate
+    sequence, and the splitting error is the Trotter error of chapter 6.
+    &quot;&quot;&quot;
+
+    def __init__(self, h, v, n_occ, singles=True, doubles=True,
+                 pair_only=False):
+        self.h, self.v, self.n_occ = h, v, n_occ
+        self.n = h.shape[0]
+        self.H, self.states, self.index = hamiltonian_matrix(h, v, n_occ)
+        self.dim = len(self.states)
+        reference = (1 &lt;&lt; n_occ) - 1
+        self.reference = self.index[reference]
+        self.psi0 = np.zeros(self.dim)
+        self.psi0[self.reference] = 1.0
+        self.e_ref = float(self.H[self.reference, self.reference])
+        self.labels, self.generators = self._build(singles, doubles,
+                                                   pair_only)
+        self.n_amplitudes = len(self.generators)
+
+    # ------------------------------------------------------------------
+    def _operator(self, creators, annihilators):
+        &quot;&quot;&quot;The matrix of a+_{c1} a+_{c2} ... a_{d2} a_{d1} in the basis.&quot;&quot;&quot;
+        A = np.zeros((self.dim, self.dim))
+        for col, state in enumerate(self.states):
+            st, sign = state, 1
+            ok = True
+            for o in reversed(annihilators):
+                st, s = _annihilate(st, o)
+                if st is None:
+                    ok = False
+                    break
+                sign *= s
+            if not ok:
+                continue
+            for o in reversed(creators):
+                st, s = _create(st, o)
+                if st is None:
+                    ok = False
+                    break
+                sign *= s
+            if ok:
+                A[self.index[st], col] += sign
+        return A
+
+    def _build(self, singles, doubles, pair_only):
+        occ = range(self.n_occ)
+        vir = range(self.n_occ, self.n)
+        labels, generators = [], []
+
+        if pair_only:
+            # pair excitations a+_{a+} a+_{a-} a_{i-} a_{i+}, one per (i, a)
+            for i in range(0, self.n_occ, 2):
+                for a in range(self.n_occ, self.n, 2):
+                    A = self._operator([a, a + 1], [i, i + 1])
+                    if np.abs(A).max() &gt; 1e-12:
+                        labels.append((&quot;pair&quot;, i // 2, a // 2))
+                        generators.append(A - A.T)
+            return labels, generators
+
+        if singles:
+            for i in occ:
+                for a in vir:
+                    A = self._operator([a], [i])
+                    if np.abs(A).max() &gt; 1e-12:
+                        labels.append((&quot;s&quot;, i, a))
+                        generators.append(A - A.T)
+        if doubles:
+            for i, j in combinations(occ, 2):
+                for a, b in combinations(vir, 2):
+                    A = self._operator([a, b], [i, j])
+                    if np.abs(A).max() &gt; 1e-12:
+                        labels.append((&quot;d&quot;, (i, j), (a, b)))
+                        generators.append(A - A.T)
+        return labels, generators
+
+    # ------------------------------------------------------------------
+    def state(self, amplitudes, n_trotter=None):
+        &quot;&quot;&quot;|Psi(t)&gt;, exactly or Trotterised.&quot;&quot;&quot;
+        from scipy.linalg import expm
+        amplitudes = np.asarray(amplitudes, dtype=float)
+        if n_trotter is None:
+            sigma = sum(t * A for t, A in zip(amplitudes, self.generators))
+            return expm(sigma) @ self.psi0
+        dt = 1.0 / n_trotter
+        factors = [expm(t * A * dt)
+                   for t, A in zip(amplitudes, self.generators)]
+        psi = self.psi0.copy()
+        for _ in range(n_trotter):
+            for U in factors:
+                psi = U @ psi
+        return psi
+
+    def energy(self, amplitudes, n_trotter=None):
+        psi = self.state(amplitudes, n_trotter)
+        psi = psi / np.linalg.norm(psi)
+        return float(psi @ (self.H @ psi))
+
+    def correlation_energy(self, amplitudes, n_trotter=None):
+        return self.energy(amplitudes, n_trotter) - self.e_ref
+
+    # ------------------------------------------------------------------
+    def optimise(self, n_trotter=None, start=None, seed=2024, restarts=1,
+                 tol=1e-12):
+        &quot;&quot;&quot;Minimise the energy over the amplitudes -- the VQE loop.&quot;&quot;&quot;
+        from scipy.optimize import minimize
+        rng = np.random.default_rng(seed)
+        best = None
+        for attempt in range(restarts):
+            if start is not None and attempt == 0:
+                x0 = np.asarray(start, dtype=float)
+            elif attempt == 0:
+                x0 = np.zeros(self.n_amplitudes)
+            else:
+                x0 = rng.uniform(-0.1, 0.1, self.n_amplitudes)
+            res = minimize(self.energy, x0, args=(n_trotter,),
+                           method=&quot;L-BFGS-B&quot;,
+                           options={&quot;maxiter&quot;: 2000, &quot;ftol&quot;: tol,
+                                    &quot;gtol&quot;: 1e-10})
+            if best is None or res.fun &lt; best.fun:
+                best = res
+        return dict(energy=float(best.fun),
+                    correlation=float(best.fun) - self.e_ref,
+                    amplitudes=best.x, iterations=int(best.nit),
+                    evaluations=int(best.nfev))
+
+    def exact(self):
+        return float(np.linalg.eigvalsh(self.H)[0])
+
+
+# ---------------------------------------------------------------------------
+#  Demonstrations
+# ---------------------------------------------------------------------------
+def demo_validation():
+    print(&quot;=&quot; * 74)
+    print(&quot;1. Validating the solver&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Everything below rests on the equations being right, so we check&quot;)
+    print(&quot;them first, in four ways.&quot;)
+    print()
+    print(&quot;(i) The models must reproduce the exact energies of the earlier&quot;)
+    print(&quot;chapters.  The pairing model against Table 4.2:&quot;)
+    reference = {-1.0: 2.77987014, -0.5: 2.43688426, 0.0: 2.00000000,
+                 0.5: 1.41677428, 1.0: 0.63554847}
+    print(f&quot;{&#39;g&#39;:&gt;7s} {&#39;E_ref&#39;:&gt;10s} {&#39;FCI here&#39;:&gt;14s} {&#39;chapter 4&#39;:&gt;14s}&quot;)
+    for g in (-1.0, -0.5, 0.0, 0.5, 1.0):
+        h, v, N = pairing_model(g=g)
+        e_fci, dim = fci_energy(h, v, N)
+        print(f&quot;{g:7.2f} {reference_energy(h, v, N):10.5f} {e_fci:14.8f} &quot;
+              f&quot;{reference[g]:14.8f}&quot;)
+    print()
+    print(&quot;(ii) For the pairing model the interaction cannot connect the&quot;)
+    print(&quot;reference to a 1p-1h state, so the singles must vanish and CCSD&quot;)
+    print(&quot;must equal CCD exactly:&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;7s} {&#39;E_CCD&#39;:&gt;16s} {&#39;E_CCSD&#39;:&gt;16s} {&#39;max |t1|&#39;:&gt;11s}&quot;)
+    for g in (0.5, 1.0, 2.0):
+        h, v, N = pairing_model(g=g)
+        fk = fock_matrix(h, v, N)
+        d, s = ccd(fk, v, N), ccsd(fk, v, N)
+        print(f&quot;{g:7.2f} {d[&#39;energy&#39;]:16.10f} {s[&#39;energy&#39;]:16.10f} &quot;
+              f&quot;{np.abs(s[&#39;t1&#39;]).max():11.2e}&quot;)
+    print()
+    print(&quot;(iii) The initial amplitudes are the MP2 ones, so the energy&quot;)
+    print(&quot;before any iteration must be the second-order perturbation&quot;)
+    print(&quot;energy.  For the pairing model this has a closed form,&quot;)
+    print(&quot;   E_MP2 = -(g^2/4) [ 1/(2+g) + 2/(4+g) + 1/(6+g) ],&quot;)
+    print(&quot;in which the g in each denominator is the Hartree-Fock shift of&quot;)
+    print(&quot;the occupied levels -- the Moller-Plesset partition, not the bare&quot;)
+    print(&quot;one-body partition used in chapter 9.&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;7s} {&#39;MP2 computed&#39;:&gt;16s} {&#39;closed form&#39;:&gt;16s}&quot;)
+    for g in (0.5, 1.0, 2.0):
+        h, v, N = pairing_model(g=g)
+        fk = fock_matrix(h, v, N)
+        closed = -0.25 * g**2 * (1.0 / (2.0 + g) + 2.0 / (4.0 + g)
+                                 + 1.0 / (6.0 + g))
+        print(f&quot;{g:7.2f} {mp2_energy(fk, v, N):16.10f} {closed:16.10f}&quot;)
+    print()
+    print(&quot;(iv) The Hartree-Fock rotation must leave the exact energy alone&quot;)
+    print(&quot;and must make the occupied-virtual block of the Fock matrix&quot;)
+    print(&quot;vanish.  For the pairing plus particle-hole model of chapter 7:&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;5s} {&#39;f&#39;:&gt;6s} {&#39;E_ref&#39;:&gt;10s} {&#39;E_HF&#39;:&gt;11s} &quot;
+          f&quot;{&#39;max |f_ia|&#39;:&gt;12s} {&#39;FCI shift&#39;:&gt;11s}&quot;)
+    for g, ph in ((0.5, 0.25), (1.0, 0.5)):
+        h, v, N = pairing_ph_model(g=g, f=ph)
+        e0, _ = fci_energy(h, v, N)
+        h2, v2, C, it = hartree_fock(h, v, N)
+        e1, _ = fci_energy(h2, v2, N)
+        fk2 = fock_matrix(h2, v2, N)
+        print(f&quot;{g:5.2f} {ph:6.2f} {reference_energy(h, v, N):10.5f} &quot;
+              f&quot;{reference_energy(h2, v2, N):11.5f} &quot;
+              f&quot;{np.abs(fk2[:N, N:]).max():12.1e} {abs(e1 - e0):11.1e}&quot;)
+    print()
+    print(&quot;The Hartree-Fock energies agree with those of chapter 7, and the&quot;)
+    print(&quot;exact energy is invariant under the rotation, as it must be.&quot;)
+
+
+def demo_pairing():
+    print(&quot;=&quot; * 74)
+    print(&quot;2. The pairing model&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Four doubly degenerate levels, four particles, xi = 1.  The&quot;)
+    print(&quot;Hartree-Fock energy is the reference energy 2 - g, as chapter 6&quot;)
+    print(&quot;found, so everything below is correlation energy.&quot;)
+    print()
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;E_ref&#39;:&gt;9s} {&#39;MP2&#39;:&gt;12s} {&#39;CCD&#39;:&gt;12s} {&#39;FCI&#39;:&gt;12s} &quot;
+          f&quot;{&#39;CCD error&#39;:&gt;11s} {&#39;iter&#39;:&gt;6s}&quot;)
+    for g in (0.25, 0.5, 1.0, 1.5, 2.0):
+        h, v, N = pairing_model(g=g)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        result = ccd(fk, v, N)
+        e_fci, _ = fci_energy(h, v, N)
+        print(f&quot;{g:6.2f} {e_ref:9.5f} {e_ref + mp2_energy(fk, v, N):12.8f} &quot;
+              f&quot;{e_ref + result[&#39;energy&#39;]:12.8f} {e_fci:12.8f} &quot;
+              f&quot;{e_ref + result[&#39;energy&#39;] - e_fci:11.2e} &quot;
+              f&quot;{result[&#39;iterations&#39;]:6d}&quot;)
+    print()
+    print(&quot;At weak coupling CCD is very nearly exact -- four parts in a&quot;)
+    print(&quot;million at g = 0.25.  It over-correlates, and the error grows&quot;)
+    print(&quot;with the coupling, reaching 0.12 at g = 2.  What CCD misses here&quot;)
+    print(&quot;is the connected quadruple excitations: the exponential supplies&quot;)
+    print(&quot;the 4p-4h amplitude as (1/2) T_2^2, which is the disconnected&quot;)
+    print(&quot;part only, and for four particles in four levels the connected&quot;)
+    print(&quot;part is not negligible once the interaction is strong.&quot;)
+
+
+def demo_orders():
+    print(&quot;=&quot; * 74)
+    print(&quot;3. What coupled cluster contains, order by order&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The CCD equation is exactly quadratic in the amplitudes, so it&quot;)
+    print(&quot;can be split as R(t) = C + L[t] + Q[t,t] and expanded in powers&quot;)
+    print(&quot;of the interaction.  The result is perturbation theory: the first&quot;)
+    print(&quot;amplitude is the MP2 one, the second generates the third-order&quot;)
+    print(&quot;energy, and so on -- but the iteration never stops, so CCD&quot;)
+    print(&quot;contains contributions at every order.&quot;)
+    print()
+    print(&quot;Against Moller-Plesset perturbation theory computed independently&quot;)
+    print(&quot;in the determinant basis of chapter 9:&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;order&#39;:&gt;7s} {&#39;from CCD&#39;:&gt;16s} {&#39;from MBPT&#39;:&gt;16s}&quot;)
+    try:
+        import fci as fcimod
+        import mbpt as mbptmod
+        for g in (0.5, 1.0):
+            h, v, N = pairing_model(g=g)
+            fk = fock_matrix(h, v, N)
+            energies, _ = ccd_order_by_order(fk, v, N, order=4)
+            model = fcimod.PairingFCI(levels=4, n_particles=4, g=g)
+            eps = np.diag(fk)
+            w = np.array([sum(eps[o] for o in range(8) if (s &gt;&gt; o) &amp; 1)
+                          for s in model.basis.states])
+            part = mbptmod.Partition(model.matrix(), w,
+                                     model.basis.index[model.reference])
+            rs = mbptmod.rayleigh_schrodinger(part, order=4)
+            for k in (2, 3, 4):
+                label = f&quot;{g:6.2f}&quot; if k == 2 else &quot; &quot; * 6
+                print(f&quot;{label} {k:7d} {energies[k - 2]:16.10f} &quot;
+                      f&quot;{rs[k - 1]:16.10f}&quot;)
+    except Exception as exc:
+        print(f&quot;   (chapter 9&#39;s program not importable: {exc})&quot;)
+    print()
+    print(&quot;They agree to every digit through fourth order.  That CCD should&quot;)
+    print(&quot;reproduce MP2 and MP3 is general; that it also gets MP4 right is&quot;)
+    print(&quot;special to this model, where the interaction produces neither&quot;)
+    print(&quot;singles nor triples and the quadruples enter only through the&quot;)
+    print(&quot;disconnected T_2^2 that the exponential already supplies.&quot;)
+    print()
+    print(&quot;Summing the expansion:&quot;)
+    for g in (0.5, 1.0, 1.5):
+        h, v, N = pairing_model(g=g)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        energies, _ = ccd_order_by_order(fk, v, N, order=16)
+        full = ccd(fk, v, N)[&quot;energy&quot;]
+        e_fci, _ = fci_energy(h, v, N)
+        print(f&quot;   g = {g}:  E_ref = {e_ref:.5f}&quot;)
+        print(f&quot;      {&#39;order&#39;:&gt;7s} {&#39;term&#39;:&gt;13s} {&#39;partial sum&#39;:&gt;15s}&quot;)
+        partial = 0.0
+        for k, e in enumerate(energies[:6], start=2):
+            partial += e
+            print(f&quot;      {k:7d} {e:13.3e} {e_ref + partial:15.10f}&quot;)
+        print(f&quot;      sum of 16 orders = {e_ref + sum(energies):.10f}&quot;)
+        print(f&quot;      CCD              = {e_ref + full:.10f}&quot;)
+        print(f&quot;      FCI              = {e_fci:.10f}&quot;)
+        print()
+    print(&quot;The expansion converges back onto the CCD energy, as it must.&quot;)
+    print(&quot;But note what has happened: at g = 1.5 the bare perturbation&quot;)
+    print(&quot;series of chapter 9 was already close to divergence, while these&quot;)
+    print(&quot;terms -- the same expansion, resummed by the nonlinear equation --&quot;)
+    print(&quot;still converge.  Coupled cluster is not a better perturbation&quot;)
+    print(&quot;theory; it is the same perturbation theory summed to all orders&quot;)
+    print(&quot;within a restricted class of excitations.&quot;)
+
+
+def demo_ccsd():
+    print(&quot;=&quot; * 74)
+    print(&quot;4. When singles matter: the pairing plus particle-hole model&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The particle-hole term of chapter 7 breaks pairs, so the&quot;)
+    print(&quot;reference couples to 1p-1h states and the singles amplitudes do&quot;)
+    print(&quot;not vanish.  This is where CCSD earns its name.  We run it twice:&quot;)
+    print(&quot;on the bare oscillator reference, and on the Hartree-Fock&quot;)
+    print(&quot;reference where Brillouin&#39;s theorem holds.&quot;)
+    print()
+    print(f&quot;{&#39;g&#39;:&gt;5s} {&#39;f&#39;:&gt;6s} {&#39;CCD&#39;:&gt;12s} {&#39;CCSD&#39;:&gt;12s} {&#39;CCSD/HF&#39;:&gt;12s} &quot;
+          f&quot;{&#39;FCI&#39;:&gt;12s} {&#39;|t1|&#39;:&gt;9s} {&#39;|t1| HF&#39;:&gt;9s}&quot;)
+    for g, ph in ((0.5, 0.025), (0.7, 0.05), (1.0, 0.05), (0.5, 0.25),
+                  (1.0, 0.5)):
+        h, v, N = pairing_ph_model(g=g, f=ph)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        d = ccd(fk, v, N, mixing=0.3)
+        s = ccsd(fk, v, N, mixing=0.3)
+        h2, v2, C, _ = hartree_fock(h, v, N)
+        fk2 = fock_matrix(h2, v2, N)
+        e_hf = reference_energy(h2, v2, N)
+        s2 = ccsd(fk2, v2, N, mixing=0.3)
+        e_fci, _ = fci_energy(h, v, N)
+        print(f&quot;{g:5.2f} {ph:6.3f} {e_ref + d[&#39;energy&#39;]:12.7f} &quot;
+              f&quot;{e_ref + s[&#39;energy&#39;]:12.7f} {e_hf + s2[&#39;energy&#39;]:12.7f} &quot;
+              f&quot;{e_fci:12.7f} {np.abs(s[&#39;t1&#39;]).max():9.1e} &quot;
+              f&quot;{np.abs(s2[&#39;t1&#39;]).max():9.1e}&quot;)
+    print()
+    print(&quot;Three things to read off.  The singles matter: at g = 0.5,&quot;)
+    print(&quot;f = 0.25 they move the energy from 0.6033 to 0.5467 against an&quot;)
+    print(&quot;exact 0.5512, turning a 9% error into a 0.8% one.  The singles&quot;)
+    print(&quot;amplitudes are an order of magnitude smaller in the Hartree-Fock&quot;)
+    print(&quot;basis, because Brillouin&#39;s theorem makes them start at second&quot;)
+    print(&quot;order rather than first.  And the two CCSD columns are close but&quot;)
+    print(&quot;not identical -- coupled cluster is not invariant under a change&quot;)
+    print(&quot;of reference determinant, only exact in the untruncated limit.&quot;)
+
+
+def demo_extensivity():
+    print(&quot;=&quot; * 74)
+    print(&quot;5. Size extensivity&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Chapter 5 found that truncated configuration interaction is not&quot;)
+    print(&quot;size consistent, and chapter 9 that Rayleigh-Schrodinger&quot;)
+    print(&quot;perturbation theory is.  Coupled cluster is size extensive by&quot;)
+    print(&quot;construction: for non-interacting subsystems the cluster&quot;)
+    print(&quot;operators commute and exp(T_A + T_B) = exp(T_A) exp(T_B), so the&quot;)
+    print(&quot;wave function factorises and the energy is additive.&quot;)
+    print()
+    print(&quot;Identical, non-interacting copies of a three-level pairing&quot;)
+    print(&quot;system, one pair in each:&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;E(one copy)&#39;:&gt;17s} {&#39;E(2) - 2E(1)&#39;:&gt;15s} &quot;
+          f&quot;{&#39;E(3) - 3E(1)&#39;:&gt;15s}&quot;)
+    for g in (0.25, 0.5, 1.0):
+        e = []
+        for m in (1, 2, 3):
+            h, v, N = independent_copies(subsystems=m, g=g)
+            e.append(ccd(fock_matrix(h, v, N), v, N)[&quot;energy&quot;])
+        print(f&quot;{g:6.2f} {e[0]:17.12f} {e[1] - 2 * e[0]:15.2e} &quot;
+              f&quot;{e[2] - 3 * e[0]:15.2e}&quot;)
+    print()
+    print(&quot;Exact to machine precision at every coupling.  Compare with the&quot;)
+    print(&quot;doubles configuration-interaction errors of chapter 5, which grew&quot;)
+    print(&quot;from 6e-05 to 1e-02 over the same range of couplings.  This is&quot;)
+    print(&quot;the single property that decides between the two methods for&quot;)
+    print(&quot;extended systems, and coupled cluster gets it for free from the&quot;)
+    print(&quot;exponential.&quot;)
+
+
+def demo_comparison():
+    print(&quot;=&quot; * 74)
+    print(&quot;6. Everything against everything&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The pairing model, treated by every method in the book.&quot;)
+    print()
+    try:
+        import fci as fcimod
+        import rpa as rpamod
+        import mbpt as mbptmod
+    except Exception as exc:
+        print(f&quot;   (the other chapters&#39; programs are not importable: {exc})&quot;)
+        return
+    fock_rpa = rpamod.FockSpace(4)
+    rows = []
+    for g in (0.25, 0.5, 1.0, 1.5, 2.0):
+        h, v, N = pairing_model(g=g)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        cc_e = e_ref + ccd(fk, v, N)[&quot;energy&quot;]
+        part, model = mbptmod.pairing_partition(g=g)
+        rs = mbptmod.rayleigh_schrodinger(part, order=3)
+        r = rpamod.tda_rpa(fock_rpa, 4, g, 0.0)
+        e_fci, _ = fci_energy(h, v, N)
+        rows.append((g, e_ref, part.reference_energy + rs[1],
+                     part.reference_energy + rs[1] + rs[2],
+                     model.energies(2)[0], r[&quot;hf&quot;] + r[&quot;ecorr&quot;],
+                     cc_e, e_fci))
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;HF&#39;:&gt;9s} {&#39;MBPT2&#39;:&gt;10s} {&#39;MBPT3&#39;:&gt;10s} &quot;
+          f&quot;{&#39;CID&#39;:&gt;10s} {&#39;RPA&#39;:&gt;10s} {&#39;CCD&#39;:&gt;11s} {&#39;FCI&#39;:&gt;11s}&quot;)
+    for g, hf, m2, m3, cid, rpa_e, cc_e, ex in rows:
+        print(f&quot;{g:6.2f} {hf:9.5f} {m2:10.5f} {m3:10.5f} {cid:10.5f} &quot;
+              f&quot;{rpa_e:10.5f} {cc_e:11.7f} {ex:11.7f}&quot;)
+    print()
+    print(&quot;The errors:&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;MBPT2&#39;:&gt;11s} {&#39;MBPT3&#39;:&gt;11s} {&#39;CID&#39;:&gt;11s} &quot;
+          f&quot;{&#39;RPA&#39;:&gt;11s} {&#39;CCD&#39;:&gt;11s}&quot;)
+    for g, hf, m2, m3, cid, rpa_e, cc_e, ex in rows:
+        print(f&quot;{g:6.2f} {m2 - ex:11.2e} {m3 - ex:11.2e} {cid - ex:11.2e} &quot;
+              f&quot;{rpa_e - ex:11.2e} {cc_e - ex:11.2e}&quot;)
+    print()
+    print(&quot;At weak and moderate coupling coupled cluster is the best of the&quot;)
+    print(&quot;five by two to three orders of magnitude, and unlike the&quot;)
+    print(&quot;perturbation series it does not fall apart as the interaction&quot;)
+    print(&quot;grows.  At g = 2 the random-phase approximation happens to be&quot;)
+    print(&quot;closer, which is a reminder that a method summing a different&quot;)
+    print(&quot;class of contributions can win in a regime it was designed for.&quot;)
+    print(&quot;But CCD is the only one of the five that is simultaneously size&quot;)
+    print(&quot;extensive, systematically improvable and accurate across the&quot;)
+    print(&quot;whole range -- which is why it, and not the others, is the&quot;)
+    print(&quot;workhorse of modern many-body theory.&quot;)
+
+
+def demo_unitary():
+    print(&quot;=&quot; * 74)
+    print(&quot;7. Unitary coupled cluster&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Replacing exp(T) by exp(T - T^dagger) makes the transformation&quot;)
+    print(&quot;unitary, so the energy becomes a true expectation value in a&quot;)
+    print(&quot;normalised state and is therefore variational.  The price is that&quot;)
+    print(&quot;the Baker-Campbell-Hausdorff series no longer terminates, and the&quot;)
+    print(&quot;exponential must be built explicitly.&quot;)
+    print()
+    print(&quot;For the pairing model the generators may be taken as pair&quot;)
+    print(&quot;excitations alone; adding the general doubles and singles changes&quot;)
+    print(&quot;nothing, because the interaction cannot use them:&quot;)
+    h, v, N = pairing_model(g=1.0)
+    print(f&quot;{&#39;generators&#39;:&gt;18s} {&#39;amplitudes&#39;:&gt;12s} {&#39;E(UCC)&#39;:&gt;15s}&quot;)
+    for kwargs, label in ((dict(pair_only=True), &quot;pairs only&quot;),
+                          (dict(singles=False), &quot;doubles&quot;),
+                          (dict(), &quot;singles + doubles&quot;)):
+        u = UnitaryCC(h, v, N, **kwargs)
+        r = u.optimise(restarts=2)
+        print(f&quot;{label:&gt;18s} {u.n_amplitudes:12d} {r[&#39;energy&#39;]:15.10f}&quot;)
+    print()
+    print(&quot;The comparison that matters is with the standard theory.  UCCD is&quot;)
+    print(&quot;variational and therefore always above the exact energy; CCD is&quot;)
+    print(&quot;not, and crosses it:&quot;)
+    print()
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;E_ref&#39;:&gt;9s} {&#39;CCD&#39;:&gt;13s} {&#39;UCCD&#39;:&gt;13s} {&#39;FCI&#39;:&gt;13s} &quot;
+          f&quot;{&#39;CCD err&#39;:&gt;11s} {&#39;UCCD err&#39;:&gt;11s}&quot;)
+    for g in (0.25, 0.5, 1.0, 1.5, 2.0):
+        h, v, N = pairing_model(g=g)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        e_ccd = e_ref + ccd(fk, v, N)[&quot;energy&quot;]
+        u = UnitaryCC(h, v, N, pair_only=True)
+        r = u.optimise(restarts=2)
+        e_fci = u.exact()
+        print(f&quot;{g:6.2f} {e_ref:9.5f} {e_ccd:13.8f} {r[&#39;energy&#39;]:13.8f} &quot;
+              f&quot;{e_fci:13.8f} {e_ccd - e_fci:11.2e} &quot;
+              f&quot;{r[&#39;energy&#39;] - e_fci:11.2e}&quot;)
+    print()
+    print(&quot;Every UCCD error is positive, as the variational principle&quot;)
+    print(&quot;demands, and every CCD error is negative.  For this model the&quot;)
+    print(&quot;unitary theory is also the more accurate of the two at every&quot;)
+    print(&quot;coupling, by a factor between three and thirteen -- and it comes&quot;)
+    print(&quot;with a bound that CCD cannot offer.  The two are the same&quot;)
+    print(&quot;truncation of the same cluster operator, differing only in whether&quot;)
+    print(&quot;the exponential is unitary; that difference is worth an order of&quot;)
+    print(&quot;magnitude here.  One should not generalise too freely from a&quot;)
+    print(&quot;four-particle model, but the variational property is a theorem,&quot;)
+    print(&quot;not an accident.&quot;)
+
+
+def demo_trotter():
+    print(&quot;=&quot; * 74)
+    print(&quot;8. Trotterisation, and a warning about it&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;A quantum computer cannot apply exp(sigma) directly.  It applies&quot;)
+    print(&quot;the individual factors in sequence,&quot;)
+    print(&quot;   [ prod_k exp( t_k (A_k - A_k^+) / n ) ]^n ,&quot;)
+    print(&quot;which is the Trotter splitting of chapter 6 with the generators&quot;)
+    print(&quot;in place of the pieces of a Hamiltonian.  The obvious question is&quot;)
+    print(&quot;how large n must be.&quot;)
+    print()
+    h, v, N = pairing_model(g=1.0)
+    u = UnitaryCC(h, v, N, pair_only=True)
+    e_exact = u.exact()
+    print(&quot;Re-optimising the amplitudes for each Trotter number:&quot;)
+    print(f&quot;{&#39;n&#39;:&gt;10s} {&#39;E(UCCD)&#39;:&gt;16s} {&#39;error vs FCI&#39;:&gt;15s}&quot;)
+    reference = u.optimise(restarts=2)
+    print(f&quot;{&#39;exact exp&#39;:&gt;10s} {reference[&#39;energy&#39;]:16.10f} &quot;
+          f&quot;{reference[&#39;energy&#39;] - e_exact:15.2e}&quot;)
+    for n in (1, 2, 4, 8):
+        r = u.optimise(n_trotter=n, restarts=2)
+        print(f&quot;{n:10d} {r[&#39;energy&#39;]:16.10f} {r[&#39;energy&#39;] - e_exact:15.2e}&quot;)
+    print()
+    print(&quot;Every Trotter number gives the same answer to ten digits, even&quot;)
+    print(&quot;n = 1.  This is not an error in the splitting: it is the&quot;)
+    print(&quot;optimiser absorbing it.  The Trotterised ansatz is a different&quot;)
+    print(&quot;parametrisation of a similar family of states, and the variational&quot;)
+    print(&quot;search simply finds whichever amplitudes are best for the&quot;)
+    print(&quot;parametrisation it is given.&quot;)
+    print()
+    print(&quot;To see the splitting error one has to hold the amplitudes fixed.&quot;)
+    print(&quot;Taking those optimised for the exact exponential and evaluating&quot;)
+    print(&quot;the Trotterised state at the same amplitudes:&quot;)
+    print()
+    t_star = reference[&quot;amplitudes&quot;]
+    psi = u.state(t_star)
+    psi = psi / np.linalg.norm(psi)
+    print(f&quot;{&#39;n&#39;:&gt;5s} {&#39;|| psi_n - psi ||&#39;:&gt;19s} {&#39;ratio&#39;:&gt;7s} &quot;
+          f&quot;{&#39;energy error&#39;:&gt;15s} {&#39;ratio&#39;:&gt;7s}&quot;)
+    previous_state = previous_energy = None
+    for n in (1, 2, 4, 8, 16, 32):
+        p = u.state(t_star, n_trotter=n)
+        p = p / np.linalg.norm(p)
+        if float(psi @ p) &lt; 0:
+            p = -p
+        gap = float(np.linalg.norm(p - psi))
+        err = u.energy(t_star, n_trotter=n) - reference[&quot;energy&quot;]
+        rs = previous_state / gap if previous_state else np.nan
+        re = previous_energy / err if previous_energy else np.nan
+        print(f&quot;{n:5d} {gap:19.3e} {rs:7.2f} {err:15.3e} {re:7.2f}&quot;)
+        previous_state, previous_energy = gap, err
+    print()
+    print(&quot;The state converges as 1/n, which is the first-order Trotter&quot;)
+    print(&quot;error of chapter 6.  The energy converges as 1/n^2 -- one power&quot;)
+    print(&quot;faster -- because the exact-exponential amplitudes are a&quot;)
+    print(&quot;stationary point of the energy, so the first-order response&quot;)
+    print(&quot;vanishes and only the quadratic term survives.  The program&quot;)
+    print(&quot;confirms that the linear term is smaller than the quadratic one&quot;)
+    print(&quot;by three orders of magnitude already at n = 1.&quot;)
+    print()
+    print(&quot;Both observations point the same way.  A variational algorithm is&quot;)
+    print(&quot;far more forgiving of Trotter error than a simulation algorithm,&quot;)
+    print(&quot;because it can re-optimise around it.  That is one of the&quot;)
+    print(&quot;practical arguments for the variational quantum eigensolver over&quot;)
+    print(&quot;straightforward time evolution on near-term hardware.&quot;)
+
+
+def demo_uccsd():
+    print(&quot;=&quot; * 74)
+    print(&quot;9. UCCSD, where the singles matter&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The pairing plus particle-hole model of chapter 7 again.  Now the&quot;)
+    print(&quot;singles generators do real work, and the contrast between the&quot;)
+    print(&quot;variational and the standard theory is sharpest.&quot;)
+    print()
+    print(f&quot;{&#39;g&#39;:&gt;5s} {&#39;f&#39;:&gt;6s} {&#39;UCCD&#39;:&gt;12s} {&#39;UCCSD&#39;:&gt;12s} {&#39;CCSD&#39;:&gt;12s} &quot;
+          f&quot;{&#39;FCI&#39;:&gt;12s} {&#39;UCCSD err&#39;:&gt;11s} {&#39;CCSD err&#39;:&gt;11s}&quot;)
+    for g, ph in ((0.5, 0.025), (1.0, 0.05), (0.5, 0.25), (1.0, 0.5)):
+        h, v, N = pairing_ph_model(g=g, f=ph)
+        fk = fock_matrix(h, v, N)
+        e_ref = reference_energy(h, v, N)
+        e_ccsd = e_ref + ccsd(fk, v, N, mixing=0.3)[&quot;energy&quot;]
+        ud = UnitaryCC(h, v, N, singles=False)
+        us = UnitaryCC(h, v, N)
+        rd = ud.optimise(restarts=3)
+        rs = us.optimise(restarts=3)
+        e_fci = us.exact()
+        print(f&quot;{g:5.2f} {ph:6.3f} {rd[&#39;energy&#39;]:12.7f} {rs[&#39;energy&#39;]:12.7f} &quot;
+              f&quot;{e_ccsd:12.7f} {e_fci:12.7f} {rs[&#39;energy&#39;] - e_fci:11.2e} &quot;
+              f&quot;{e_ccsd - e_fci:11.2e}&quot;)
+    print()
+    print(&quot;The singles are worth having: at g = 0.5, f = 0.25 they take the&quot;)
+    print(&quot;energy from 0.6093 to 0.5526 against an exact 0.5512.  And every&quot;)
+    print(&quot;UCCSD error is positive while every CCSD error is negative -- at&quot;)
+    print(&quot;g = 1, f = 0.5 the standard theory is wrong by -0.104 and the&quot;)
+    print(&quot;unitary one by +0.031, three times better and on the right side.&quot;)
+    print()
+    print(&quot;This is the trade that unitary coupled cluster makes.  It gives up&quot;)
+    print(&quot;the terminating commutator expansion, and with it the cheap&quot;)
+    print(&quot;classical algorithm, and gets back the variational bound.  On a&quot;)
+    print(&quot;classical computer that is usually a bad bargain.  On a quantum&quot;)
+    print(&quot;computer, where the exponential is applied rather than expanded,&quot;)
+    print(&quot;the terminating expansion was never the point, and the bound is&quot;)
+    print(&quot;worth having.&quot;)
+
+
+def _demo():
+    for f in (demo_validation, demo_pairing, demo_orders, demo_ccsd,
+              demo_extensivity, demo_comparison, demo_unitary, demo_trotter,
+              demo_uccsd):
+        f()
+        print()
+
+
+if __name__ == &quot;__main__&quot;:
+    _demo()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mbptheory.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">10. </span>Many-body perturbation theory</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="quantumdots.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">12. </span>Quantum dots: a realistic Hamiltonian</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-the-solver">11.1. 1. Validating the solver</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pairing-model">11.2. 2. The pairing model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-coupled-cluster-contains-order-by-order">11.3. 3. What coupled cluster contains, order by order</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-singles-matter">11.4. 4. When singles matter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#size-extensivity">11.5. 5. Size extensivity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#everything-against-everything">11.6. 6. Everything against everything</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unitary-coupled-cluster">11.7. 7. Unitary coupled cluster</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trotterisation">11.8. 8. Trotterisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#uccsd-where-the-singles-matter">11.9. 9. UCCSD, where the singles matter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#this-is-a-vqe">11.9.1. This is a VQE</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">11.10. The full program</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1193 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>4. From fermions to qubits: the Jordan-Wigner transformation &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'jordanwigner';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5. Physical systems and models" href="models.html" />
+    <link rel="prev" title="3. Wick’s theorem, verified by brute force" href="wicktheorem.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/jordanwigner.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Fjordanwigner.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/jordanwigner.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>From fermions to qubits: the Jordan-Wigner transformation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-it-a-legal-transformation">4.1. 1. Is it a legal transformation?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#number-operators-hopping-and-pairs">4.2. 2. Number operators, hopping, and pairs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-general-two-body-term">4.3. 3. A general two-body term</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pairing-model-two-ways">4.4. 4. The pairing model, two ways</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-particle-hole-term-costs">4.5. 5. What the particle-hole term costs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nothing-is-lost-in-translation">4.6. 6. Nothing is lost in translation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-this-leads">4.7. Where this leads</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="from-fermions-to-qubits-the-jordan-wigner-transformation">
+<h1><span class="section-number">4. </span>From fermions to qubits: the Jordan-Wigner transformation<a class="headerlink" href="#from-fermions-to-qubits-the-jordan-wigner-transformation" title="Link to this heading">#</a></h1>
+<p>Executable companion to the last section of chapter 3 and to the
+qubit-encoding section of chapter 4.</p>
+<p>A quantum computer acts on qubits, not on fermionic Fock states.  The
+occupation-number basis is already binary, so the <em>states</em> map across
+trivially,</p>
+<div class="math notranslate nohighlight">
+\[
+|n_0 n_1\cdots n_{M-1}\rangle_{\rm Fock}
+\;\longleftrightarrow\;
+|n_0 n_1\cdots n_{M-1}\rangle_{\rm qubit},
+\]</div>
+<p>and all the work is in the <em>operators</em>: the fermionic minus signs have to be
+reproduced by something.  The Jordan-Wigner transformation supplies them with
+a string of Pauli <span class="math notranslate nohighlight">\(Z\)</span>’s,</p>
+<div class="math notranslate nohighlight">
+\[
+a_p^\dagger = \left(\prod_{j&lt;p} Z_j\right)\frac{X_p - iY_p}{2},
+\qquad
+a_p = \left(\prod_{j&lt;p} Z_j\right)\frac{X_p + iY_p}{2}.
+\]</div>
+<p>Everything below is done with explicit matrices, so nothing has to be taken
+on trust.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">product</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">I2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">PAULI</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;I&quot;</span><span class="p">:</span> <span class="n">I2</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="n">Y</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="n">Z</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kron</span><span class="p">(</span><span class="n">matrices</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mi">0</span><span class="n">j</span><span class="p">]])</span>
+    <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pauli_string</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">kron</span><span class="p">([</span><span class="n">PAULI</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">label</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">single</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">site</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">kron</span><span class="p">([</span><span class="n">op</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">site</span> <span class="k">else</span> <span class="n">I2</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_qubits</span><span class="p">)])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">decompose</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;H = sum_P c_P P with c_P = Tr(P H)/2^M -- exact, by orthogonality.&quot;&quot;&quot;</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n_qubits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">dim</span><span class="p">)))</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="s2">&quot;IXYZ&quot;</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="n">n_qubits</span><span class="p">):</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">pauli_string</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">@</span> <span class="n">matrix</span><span class="p">)</span> <span class="o">/</span> <span class="n">dim</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="k">else</span> <span class="nb">complex</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;   &quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">kv</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">kv</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">c</span><span class="si">:</span><span class="s2">+.6f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">weight</span><span class="p">(</span><span class="n">label</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">label</span> <span class="k">if</span> <span class="n">c</span> <span class="o">!=</span> <span class="s2">&quot;I&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">JordanWigner</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fermion operators on n modes, as 2^n x 2^n qubit matrices.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_modes</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n_modes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">n_modes</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">kron</span><span class="p">([</span><span class="n">Z</span> <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">p</span> <span class="k">else</span> <span class="n">I2</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">@</span> <span class="n">single</span><span class="p">((</span><span class="n">X</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">annihilate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">term</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefficient</span><span class="p">,</span> <span class="n">creators</span><span class="p">,</span> <span class="n">annihilators</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">coefficient</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">creators</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">annihilators</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">anticommutator_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">worst</span><span class="p">,</span> <span class="n">eye</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">a_p</span><span class="p">,</span> <span class="n">a_q</span><span class="p">,</span> <span class="n">c_p</span><span class="p">,</span> <span class="n">c_q</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">q</span><span class="p">),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">eye</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="n">q</span> <span class="k">else</span> <span class="mf">0.0</span><span class="o">*</span><span class="n">eye</span>
+                <span class="n">worst</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">worst</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a_p</span><span class="nd">@c_q</span> <span class="o">+</span> <span class="n">c_q</span><span class="nd">@a_p</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+                <span class="n">worst</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">worst</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">a_p</span><span class="nd">@a_q</span> <span class="o">+</span> <span class="n">a_q</span><span class="nd">@a_p</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+                <span class="n">worst</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">worst</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">c_p</span><span class="nd">@c_q</span> <span class="o">+</span> <span class="n">c_q</span><span class="nd">@c_p</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">worst</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="is-it-a-legal-transformation">
+<h2><span class="section-number">4.1. </span>1. Is it a legal transformation?<a class="headerlink" href="#is-it-a-legal-transformation" title="Link to this heading">#</a></h2>
+<p>The whole point of the parity string is to make the qubit operators
+<em>anticommute</em>.  Without it they would merely commute on different sites,
+which is the wrong statistics.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> modes: max violation of the anticommutators = &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">JordanWigner</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">anticommutator_errors</span><span class="p">()</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">naive</span> <span class="o">=</span> <span class="p">[</span><span class="n">single</span><span class="p">((</span><span class="n">X</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">without the parity string, |{sigma_0, sigma_1}| =&quot;</span><span class="p">,</span>
+      <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">naive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="nd">@naive</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">naive</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="nd">@naive</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="s2">&quot; (should be 0)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 modes: max violation of the anticommutators = 0.0e+00
+3 modes: max violation of the anticommutators = 0.0e+00
+4 modes: max violation of the anticommutators = 0.0e+00
+5 modes: max violation of the anticommutators = 0.0e+00
+
+without the parity string, |{sigma_0, sigma_1}| = 2.0  (should be 0)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="number-operators-hopping-and-pairs">
+<h2><span class="section-number">4.2. </span>2. Number operators, hopping, and pairs<a class="headerlink" href="#number-operators-hopping-and-pairs" title="Link to this heading">#</a></h2>
+<p>Three identities do all the work:</p>
+<div class="math notranslate nohighlight">
+\[
+\hat n_p = \frac{I-Z_p}{2},
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+a_p^\dagger a_q + a_q^\dagger a_p \;\to\;
+\tfrac12\left(X_pZ\cdots ZX_q + Y_pZ\cdots ZY_q\right),
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+a_p^\dagger a_q^\dagger + a_q a_p \;\to\;
+\tfrac12\left(X_pZ\cdots ZX_q - Y_pZ\cdots ZY_q\right).
+\]</div>
+<p>The last two differ only in one sign — that single sign is the difference
+between transporting a particle and creating a pair.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">jw</span> <span class="o">=</span> <span class="n">JordanWigner</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;n_p:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  &quot;</span><span class="p">,</span> <span class="n">decompose</span><span class="p">(</span><span class="n">jw</span><span class="o">.</span><span class="n">number</span><span class="p">(</span><span class="n">p</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">hopping  a^+_p a_q + a^+_q a_p:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  (p, q) = (</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+    <span class="n">show</span><span class="p">(</span><span class="n">decompose</span><span class="p">(</span><span class="n">jw</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="nd">@jw</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                   <span class="o">+</span> <span class="n">jw</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="nd">@jw</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="s2">&quot;     &quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">pair  a^+_p a^+_q + a_q a_p:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  (p, q) = (</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+    <span class="n">show</span><span class="p">(</span><span class="n">decompose</span><span class="p">(</span><span class="n">jw</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="nd">@jw</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                   <span class="o">+</span> <span class="n">jw</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="nd">@jw</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="s2">&quot;     &quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>n_p:
+   {&#39;IIII&#39;: 0.5, &#39;ZIII&#39;: -0.5}
+   {&#39;IIII&#39;: 0.5, &#39;IZII&#39;: -0.5}
+   {&#39;IIII&#39;: 0.5, &#39;IIZI&#39;: -0.5}
+   {&#39;IIII&#39;: 0.5, &#39;IIIZ&#39;: -0.5}
+
+hopping  a^+_p a_q + a^+_q a_p:
+  (p, q) = (0, 1):
+     +0.500000  XXII
+     +0.500000  YYII
+  (p, q) = (0, 2):
+     +0.500000  XZXI
+     +0.500000  YZYI
+  (p, q) = (0, 3):
+     +0.500000  XZZX
+     +0.500000  YZZY
+
+pair  a^+_p a^+_q + a_q a_p:
+  (p, q) = (0, 1):
+     +0.500000  XXII
+     -0.500000  YYII
+  (p, q) = (0, 3):
+     +0.500000  XZZX
+     -0.500000  YZZY
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-general-two-body-term">
+<h2><span class="section-number">4.3. </span>3. A general two-body term<a class="headerlink" href="#a-general-two-body-term" title="Link to this heading">#</a></h2>
+<p>With four distinct indices the Hermitian two-body term becomes eight Pauli
+strings of weight four, each with coefficient <span class="math notranslate nohighlight">\(1/8\)</span>.  Read the four orbitals
+as <span class="math notranslate nohighlight">\((p_+, p_-, q_+, q_-)\)</span> and this operator is the pair-transfer term
+<span class="math notranslate nohighlight">\(P_p^\dagger P_q + {\rm h.c.}\)</span> of the pairing model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">matrix</span> <span class="o">=</span> <span class="n">jw</span><span class="o">.</span><span class="n">term</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>          <span class="c1"># a^+_0 a^+_1 a_3 a_2</span>
+<span class="n">hermitian</span> <span class="o">=</span> <span class="n">matrix</span> <span class="o">+</span> <span class="n">matrix</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
+<span class="n">show</span><span class="p">(</span><span class="n">decompose</span><span class="p">(</span><span class="n">hermitian</span><span class="p">))</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">decompose</span><span class="p">(</span><span class="n">hermitian</span><span class="p">):</span>
+    <span class="n">counts</span><span class="p">[</span><span class="n">weight</span><span class="p">(</span><span class="n">label</span><span class="p">)]</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weight</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;strings by weight:&quot;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   +0.125000  XXXX
+   -0.125000  XXYY
+   +0.125000  XYXY
+   +0.125000  XYYX
+   +0.125000  YXXY
+   +0.125000  YXYX
+   -0.125000  YYXX
+   +0.125000  YYYY
+strings by weight: {4: 8}
+</pre></div>
+</div>
+</div>
+</div>
+<p>For a generic one- plus two-body Hamiltonian on <span class="math notranslate nohighlight">\(M\)</span> modes the number of
+distinct Pauli strings grows as <span class="math notranslate nohighlight">\(O(M^4)\)</span>, and the longest of them span the
+whole register because of the parity chains.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">one_body</span><span class="p">(</span><span class="n">jw</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">jw</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">jw</span><span class="o">.</span><span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">jw</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">jw</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="n">h</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">]</span> <span class="o">*</span> <span class="n">jw</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">@</span> <span class="n">jw</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">two_body</span><span class="p">(</span><span class="n">jw</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">jw</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">jw</span><span class="o">.</span><span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">jw</span><span class="o">.</span><span class="n">n</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="mf">0.25</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">jw</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">@</span> <span class="n">jw</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+                                         <span class="o">@</span> <span class="n">jw</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">@</span> <span class="n">jw</span><span class="o">.</span><span class="n">annihilate</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;M&#39;</span><span class="si">:</span><span class="s2">&gt;4s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;4^M&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;strings&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;max weight&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="n">jw_m</span> <span class="o">=</span> <span class="n">JordanWigner</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="p">));</span> <span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="o">+</span> <span class="n">h</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">M</span><span class="p">,)</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">-</span> <span class="n">v</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">-</span> <span class="n">v</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">decompose</span><span class="p">(</span><span class="n">one_body</span><span class="p">(</span><span class="n">jw_m</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="n">two_body</span><span class="p">(</span><span class="n">jw_m</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">M</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="mi">4</span><span class="o">**</span><span class="n">M</span><span class="si">:</span><span class="s2">8d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="si">:</span><span class="s2">9d</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">weight</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="si">:</span><span class="s2">12d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   M      4^M   strings   max weight
+   2       16         6            2
+   3       64        19            3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   4      256        55            4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   5     1024       136            5
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   6     4096       292            6
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-pairing-model-two-ways">
+<h2><span class="section-number">4.4. </span>4. The pairing model, two ways<a class="headerlink" href="#the-pairing-model-two-ways" title="Link to this heading">#</a></h2>
+<p>Order the spin-orbitals so the two partners of a level are adjacent,
+<span class="math notranslate nohighlight">\((1_+, 1_-, 2_+, 2_-, \dots)\)</span>.  With <span class="math notranslate nohighlight">\(L\)</span> levels that is <span class="math notranslate nohighlight">\(2L\)</span> qubits.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">pairing_full_space</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="n">jw</span> <span class="o">=</span> <span class="n">JordanWigner</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">jw</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">jw</span><span class="o">.</span><span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">spin</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">H</span> <span class="o">+=</span> <span class="n">xi</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">jw</span><span class="o">.</span><span class="n">number</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">spin</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">H</span> <span class="o">+=</span> <span class="n">jw</span><span class="o">.</span><span class="n">term</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">H</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pairing_ph_full_space</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="n">jw</span> <span class="o">=</span> <span class="n">JordanWigner</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">pairing_full_space</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">xi</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">block</span> <span class="o">=</span> <span class="n">jw</span><span class="o">.</span><span class="n">term</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span>
+                                <span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+                <span class="n">H</span> <span class="o">+=</span> <span class="n">block</span> <span class="o">+</span> <span class="n">block</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">H</span>
+
+
+<span class="n">H_full</span> <span class="o">=</span> <span class="n">pairing_full_space</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">decompose</span><span class="p">(</span><span class="n">H_full</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L = 2 -&gt; 4 qubits, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="si">}</span><span class="s2"> Pauli strings:&quot;</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>L = 2 -&gt; 4 qubits, 15 Pauli strings:
+   +0.750000  IIII
+   -0.375000  IIIZ
+   -0.375000  IIZI
+   -0.125000  IIZZ
+   +0.125000  IZII
+   +0.125000  ZIII
+   -0.125000  ZZII
+   -0.062500  XXXX
+   +0.062500  XXYY
+   -0.062500  XYXY
+   -0.062500  XYYX
+   -0.062500  YXXY
+   -0.062500  YXYX
+   +0.062500  YYXX
+   -0.062500  YYYY
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the seniority-zero space a level is either empty or holds a complete pair,
+so its state is one bit and not two.  With the local quasispin operators
+<span class="math notranslate nohighlight">\(S_p^+ = P_p^\dagger\)</span>, <span class="math notranslate nohighlight">\(S_p^z = (N_p-1)/2\)</span> identified as
+<span class="math notranslate nohighlight">\(S_p^+ = (X_p - iY_p)/2\)</span> and <span class="math notranslate nohighlight">\(N_p = I - Z_p\)</span>, the Hamiltonian collapses to</p>
+<div class="math notranslate nohighlight">
+\[
+\hat H = \sum_{p=1}^{L}\left[\xi(p-1)-\frac{g}{4}\right](I - Z_p)
+  - \frac{g}{4}\sum_{p&lt;q}\left(X_pX_q + Y_pY_q\right)
+\]</div>
+<p>on <span class="math notranslate nohighlight">\(L\)</span> qubits: an <span class="math notranslate nohighlight">\(XY\)</span> model with infinite-range couplings in an
+inhomogeneous field.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">pairing_pair_qubits</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">levels</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">plus</span> <span class="o">=</span> <span class="p">[</span><span class="n">single</span><span class="p">((</span><span class="n">X</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">)]</span>
+    <span class="n">minus</span> <span class="o">=</span> <span class="p">[</span><span class="n">single</span><span class="p">((</span><span class="n">X</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">)]</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span> <span class="o">-</span> <span class="n">single</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">levels</span><span class="p">)</span>
+              <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">+=</span> <span class="n">xi</span><span class="o">*</span><span class="n">p</span><span class="o">*</span><span class="n">number</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+            <span class="n">H</span> <span class="o">+=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">g</span> <span class="o">*</span> <span class="n">plus</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">@</span> <span class="n">minus</span><span class="p">[</span><span class="n">q</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">H</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">closed_form</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">xi</span><span class="o">*</span><span class="n">p</span> <span class="o">-</span> <span class="mf">0.25</span><span class="o">*</span><span class="n">g</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="o">*</span><span class="n">levels</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">add</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">p</span> <span class="k">else</span> <span class="s2">&quot;I&quot;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">)),</span> <span class="o">-</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="s2">&quot;XY&quot;</span><span class="p">:</span>
+                <span class="n">add</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">letter</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;I&quot;</span>
+                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">)),</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="n">g</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-12</span><span class="p">}</span>
+
+
+<span class="n">H_pair</span> <span class="o">=</span> <span class="n">pairing_pair_qubits</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">decompose</span><span class="p">(</span><span class="n">H_pair</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L = 2 -&gt; 2 qubits, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="si">}</span><span class="s2"> Pauli strings:&quot;</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+    <span class="n">predicted</span><span class="p">,</span> <span class="n">computed</span> <span class="o">=</span> <span class="n">closed_form</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">decompose</span><span class="p">(</span><span class="n">pairing_pair_qubits</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">computed</span><span class="p">)</span>
+          <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">predicted</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">computed</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-10</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">predicted</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   L = </span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">: closed form reproduces the decomposition: </span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>L = 2 -&gt; 2 qubits, 5 Pauli strings:
+   -0.750000  IZ
+   +0.500000  II
+   -0.250000  XX
+   -0.250000  YY
+   +0.250000  ZI
+   L = 2: closed form reproduces the decomposition: True
+   L = 3: closed form reproduces the decomposition: True
+   L = 4: closed form reproduces the decomposition: True
+</pre></div>
+</div>
+</div>
+</div>
+<p>The compact encoding is a <strong>restriction, not an approximation</strong>: its spectrum
+is exactly the seniority-zero part of the full one, at fixed particle number.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">seniority_zero_indices</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">levels</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(((</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="p">((</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">)):</span>
+            <span class="n">keep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">keep</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">particle_number</span><span class="p">(</span><span class="n">n_modes</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">bin</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">n_modes</span><span class="p">)])</span>
+
+
+<span class="k">for</span> <span class="n">levels</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="n">H_full</span> <span class="o">=</span> <span class="n">pairing_full_space</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">H_pair</span> <span class="o">=</span> <span class="n">pairing_pair_qubits</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">keep</span><span class="p">,</span> <span class="n">occ</span> <span class="o">=</span> <span class="n">seniority_zero_indices</span><span class="p">(</span><span class="n">levels</span><span class="p">),</span> <span class="n">particle_number</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keep</span> <span class="k">if</span> <span class="n">occ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="o">*</span><span class="n">pairs</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">H_full</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">rows</span><span class="p">)])</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+        <span class="n">pr</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">levels</span><span class="p">)</span> <span class="k">if</span> <span class="nb">bin</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">pairs</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">H_pair</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span> <span class="n">pr</span><span class="p">)])</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L = </span><span class="si">{</span><span class="n">levels</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">pairs</span><span class="si">}</span><span class="s2"> pair(s): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> states, &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;agree: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s2">,  E_0 = </span><span class="si">{</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>L = 2, 1 pair(s):   2 states, agree: True,  E_0 = -0.61803399
+L = 2, 2 pair(s):   1 states, agree: True,  E_0 = 1.00000000
+L = 3, 1 pair(s):   3 states, agree: True,  E_0 = -0.70530340
+L = 3, 2 pair(s):   3 states, agree: True,  E_0 = 0.79469660
+L = 3, 3 pair(s):   1 states, agree: True,  E_0 = 4.50000000
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="what-the-particle-hole-term-costs">
+<h2><span class="section-number">4.5. </span>5. What the particle-hole term costs<a class="headerlink" href="#what-the-particle-hole-term-costs" title="Link to this heading">#</a></h2>
+<p>The particle-hole term breaks pairs, so the seniority-zero space is no longer
+invariant and the one-qubit-per-level encoding is not available at all.  The
+leakage out of that space is exactly <span class="math notranslate nohighlight">\(f/2\)</span>, the <span class="math notranslate nohighlight">\(1p\)</span>–<span class="math notranslate nohighlight">\(1h\)</span> matrix element of
+chapter 4.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">levels</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">):</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">pairing_ph_full_space</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">decompose</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+        <span class="n">counts</span><span class="p">[</span><span class="n">weight</span><span class="p">(</span><span class="n">label</span><span class="p">)]</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weight</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">keep</span><span class="p">,</span> <span class="n">occ</span> <span class="o">=</span> <span class="n">seniority_zero_indices</span><span class="p">(</span><span class="n">levels</span><span class="p">),</span> <span class="n">particle_number</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">levels</span><span class="p">)</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keep</span> <span class="k">if</span> <span class="n">occ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">others</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">levels</span><span class="p">))</span>
+              <span class="k">if</span> <span class="n">occ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;f = </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> Pauli strings, weights &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;        largest element out of the seniority-zero space: &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">others</span><span class="p">,</span><span class="w"> </span><span class="n">rows</span><span class="p">)])</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;model&#39;</span><span class="si">:</span><span class="s2">&gt;22s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;qubits&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;strings&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;max weight&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">levels</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;pairing, pair qubits&quot;</span><span class="p">,</span>
+                          <span class="n">pairing_pair_qubits</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)),</span>
+                         <span class="p">(</span><span class="s2">&quot;pairing, full space&quot;</span><span class="p">,</span>
+                          <span class="n">pairing_full_space</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)),</span>
+                         <span class="p">(</span><span class="s2">&quot;pairing + p-h, full&quot;</span><span class="p">,</span>
+                          <span class="n">pairing_ph_full_space</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">decompose</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="n">n_qubits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;22s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">n_qubits</span><span class="si">:</span><span class="s2">8d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="si">:</span><span class="s2">9d</span><span class="si">}</span><span class="s2"> &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">weight</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="si">:</span><span class="s2">12d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f = 0.0:  15 Pauli strings, weights {0: 1, 1: 4, 2: 2, 4: 8}
+        largest element out of the seniority-zero space: 0.0000
+f = 0.1:  27 Pauli strings, weights {0: 1, 1: 4, 2: 6, 3: 4, 4: 12}
+        largest element out of the seniority-zero space: 0.0500
+
+                 model   qubits   strings   max weight
+  pairing, pair qubits        2         5            2
+   pairing, full space        4        15            4
+   pairing + p-h, full        4        27            4
+  pairing, pair qubits        3        10            2
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   pairing, full space        6        34            4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   pairing + p-h, full        6       118            6
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="nothing-is-lost-in-translation">
+<h2><span class="section-number">4.6. </span>6. Nothing is lost in translation<a class="headerlink" href="#nothing-is-lost-in-translation" title="Link to this heading">#</a></h2>
+<p>The qubit Hamiltonian is the same operator written differently, so it has to
+give the energies of chapter 4 exactly.  <span class="math notranslate nohighlight">\(L=4\)</span>, <span class="math notranslate nohighlight">\(N=4\)</span>, <span class="math notranslate nohighlight">\(g=1\)</span>, in the
+<span class="math notranslate nohighlight">\(S_z = 0\)</span> sector:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">two_sz</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">levels</span><span class="p">)):</span>
+        <span class="n">up</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">))</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">up</span> <span class="o">-</span> <span class="n">dn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="n">occ</span><span class="p">,</span> <span class="n">spin</span> <span class="o">=</span> <span class="n">particle_number</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="n">two_sz</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="k">if</span> <span class="n">occ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">reference</span> <span class="o">=</span> <span class="p">{</span><span class="mf">0.0</span><span class="p">:</span> <span class="mf">0.63554847</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">:</span> <span class="mf">0.45058234</span><span class="p">,</span>
+             <span class="mf">0.20</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.18348455</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.69173670</span><span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;f&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;dim&#39;</span><span class="si">:</span><span class="s2">&gt;5s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0 (Jordan-Wigner)&#39;</span><span class="si">:</span><span class="s2">&gt;21s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;chapter 4&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="n">reference</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">pairing_ph_full_space</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">rows</span><span class="p">)])</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">f</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">21.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">expected</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     f   dim   E_0 (Jordan-Wigner)      chapter 4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.00    36            0.63554847     0.63554847
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.05    36            0.45058234     0.45058234
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.20    36           -0.18348455    -0.18348455
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.50    36           -1.69173670    -1.69173670
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="where-this-leads">
+<h2><span class="section-number">4.7. </span>Where this leads<a class="headerlink" href="#where-this-leads" title="Link to this heading">#</a></h2>
+<p>Equation <span class="math notranslate nohighlight">\(\hat H = \sum_\alpha h_\alpha P_\alpha\)</span> is the input to essentially
+every quantum algorithm for many-body systems.</p>
+<ul class="simple">
+<li><p>In the <strong>variational quantum eigensolver</strong> the energy is obtained by
+measuring each Pauli string separately and adding the results with their
+weights, so the number of strings is the number of measurements.</p></li>
+<li><p>In a <strong>Trotterised time evolution</strong> each string contributes one factor
+<span class="math notranslate nohighlight">\(\exp(-i h_\alpha P_\alpha \Delta t)\)</span> to the circuit, so the number of
+strings is the circuit depth and the weight of each is its entangling cost.</p></li>
+</ul>
+<p>Both counts are what the tables above are really about, and both are the
+reason it pays to exploit a symmetry — the seniority here — <em>before</em> choosing
+an encoding rather than after.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="wicktheorem.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">3. </span>Wick’s theorem, verified by brute force</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="models.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">5. </span>Physical systems and models</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-it-a-legal-transformation">4.1. 1. Is it a legal transformation?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#number-operators-hopping-and-pairs">4.2. 2. Number operators, hopping, and pairs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-general-two-body-term">4.3. 3. A general two-body term</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pairing-model-two-ways">4.4. 4. The pairing model, two ways</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-particle-hole-term-costs">4.5. 5. What the particle-hole term costs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nothing-is-lost-in-translation">4.6. 6. Nothing is lost in translation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-this-leads">4.7. Where this leads</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

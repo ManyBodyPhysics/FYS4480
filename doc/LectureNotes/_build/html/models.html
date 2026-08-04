@@ -1,0 +1,1594 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>5. Physical systems and models &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'models';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6. Full configuration interaction theory" href="fullci.html" />
+    <link rel="prev" title="4. From fermions to qubits: the Jordan-Wigner transformation" href="jordanwigner.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/models.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Fmodels.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/models.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Physical systems and models</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lipkin-model">5.1. 1. The Lipkin model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-single-configuration-picture-breaking-down">5.1.1. The single-configuration picture breaking down</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pairing-model">5.2. 2. The pairing model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#breaking-the-pairs-a-particle-hole-term">5.3. 3. Breaking the pairs: a particle-hole term</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#which-determinants-does-the-hamiltonian-reach">5.3.1. Which determinants does the Hamiltonian reach?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fermi-hubbard-model">5.4. 4. The Fermi-Hubbard model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strong-coupling-the-heisenberg-limit">5.4.1. Strong coupling: the Heisenberg limit</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quantum-heisenberg-model">5.5. 5. The quantum Heisenberg model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-the-mapping-from-the-hubbard-model">5.5.1. Checking the mapping from the Hubbard model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-size-scaling-against-the-bethe-ansatz">5.5.2. Finite-size scaling against the Bethe ansatz</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#back-to-fermions-the-jordan-wigner-transformation">5.5.3. Back to fermions: the Jordan-Wigner transformation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-calogero-model">5.6. 6. The Calogero model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-numerical-check-for-two-particles">5.6.1. A numerical check for two particles</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-these-models-have-in-common">5.7. What these models have in common</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="physical-systems-and-models">
+<h1><span class="section-number">5. </span>Physical systems and models<a class="headerlink" href="#physical-systems-and-models" title="Link to this heading">#</a></h1>
+<p>Executable companion to chapter 4. Schematic models, each simple enough to
+solve exactly and each containing a genuine many-body mechanism:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Interaction</p></th>
+<th class="head"><p>Symmetry used</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Lipkin</p></td>
+<td><p>pair transfer + spin exchange</p></td>
+<td><p><span class="math notranslate nohighlight">\(SU(2)\)</span> quasispin</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pairing</p></td>
+<td><p>pair transfer</p></td>
+<td><p><span class="math notranslate nohighlight">\(S\)</span>, <span class="math notranslate nohighlight">\(S_z\)</span>, seniority</p></td>
+</tr>
+<tr class="row-even"><td><p>Pairing + particle-hole</p></td>
+<td><p>pair transfer + pair breaking</p></td>
+<td><p><span class="math notranslate nohighlight">\(S_z\)</span> only</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fermi-Hubbard</p></td>
+<td><p>on-site <span class="math notranslate nohighlight">\(U\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(N_\uparrow\)</span>, <span class="math notranslate nohighlight">\(N_\downarrow\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Heisenberg</p></td>
+<td><p>nearest-neighbour exchange</p></td>
+<td><p><span class="math notranslate nohighlight">\(S^z_{\rm tot}\)</span>, <span class="math notranslate nohighlight">\(SU(2)\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Calogero</p></td>
+<td><p>inverse square</p></td>
+<td><p>integrability</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each is the general second-quantised Hamiltonian with a drastically restricted
+set of two-body matrix elements — the Heisenberg model after a Jordan-Wigner
+transformation. In every case a symmetry reduces the dimension of the problem
+to something we can diagonalise, which is why these are the benchmarks against
+which approximate methods are measured.</p>
+<p>Two of the rows exist to be compared with their neighbours. The third row is
+the second with one extra term, and the price of that term is the loss of the
+seniority; the fifth row is the strong-coupling limit of the fourth, and we
+check that claim from both sides.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-lipkin-model">
+<h2><span class="section-number">5.1. </span>1. The Lipkin model<a class="headerlink" href="#the-lipkin-model" title="Link to this heading">#</a></h2>
+<p>Two levels of degeneracy <span class="math notranslate nohighlight">\(\Omega\)</span>, quantum numbers <span class="math notranslate nohighlight">\(\sigma=\pm1\)</span> and
+<span class="math notranslate nohighlight">\(p=1,\dots,\Omega\)</span>. Because the interaction is completely degenerate in <span class="math notranslate nohighlight">\(p\)</span>,
+the model has an <span class="math notranslate nohighlight">\(SU(2)\)</span> quasispin symmetry and the Hamiltonian collapses to</p>
+<div class="math notranslate nohighlight">
+\[
+H = \varepsilon J_z + \tfrac12 V (J_+^2 + J_-^2)
+  + \tfrac12 W (-N + J_+J_- + J_-J_+),
+\]</div>
+<p>which is block diagonal in <span class="math notranslate nohighlight">\(J\)</span>. For four particles the largest block is
+<span class="math notranslate nohighlight">\(J=2\)</span>: a 70-dimensional problem becomes a <span class="math notranslate nohighlight">\(5\times5\)</span> matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LipkinModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Lipkin model in one J block of the quasispin basis.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">V</span><span class="o">=-</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">W</span><span class="o">=-</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">V</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">J</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">W</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">J</span> <span class="k">if</span> <span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">J</span><span class="p">,</span> <span class="n">J</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jz</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_jplus</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&lt;J,m+1| J_+ |J,m&gt; = sqrt(J(J+1) - m(m+1)).&quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">J</span><span class="o">*</span><span class="p">(</span><span class="n">J</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">m</span><span class="o">*</span><span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">J</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jz</span><span class="p">):</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="o">*</span><span class="n">m</span>                                   <span class="c1"># eps J_z</span>
+            <span class="c1"># J_+J_- + J_-J_+ = 2(J(J+1) - J_z^2), so this term is diagonal</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">J</span><span class="o">*</span><span class="p">(</span><span class="n">J</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">m</span><span class="o">*</span><span class="n">m</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">dim</span><span class="p">:</span>                       <span class="c1"># (V/2)(J_+^2 + J_-^2)</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">V</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_jplus</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_jplus</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">H</span><span class="p">[</span><span class="n">a</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span>
+                <span class="n">H</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">e</span>
+        <span class="k">return</span> <span class="n">H</span>
+
+
+<span class="k">for</span> <span class="n">eps</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">W</span> <span class="ow">in</span> <span class="p">((</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">LipkinModel</span><span class="p">(</span><span class="n">J</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">V</span><span class="p">,</span> <span class="n">W</span><span class="o">=</span><span class="n">W</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">vals</span><span class="p">,</span> <span class="n">vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">matrix</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eps = </span><span class="si">{</span><span class="n">eps</span><span class="si">}</span><span class="s2">, V = </span><span class="si">{</span><span class="n">V</span><span class="si">:</span><span class="s2">+.4f</span><span class="si">}</span><span class="s2">, W = </span><span class="si">{</span><span class="n">W</span><span class="si">:</span><span class="s2">+.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  eigenvalues:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">vecs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">|2,</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">mm</span><span class="p">)</span><span class="si">:</span><span class="s2">+d</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">mm</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">jz</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">1e-3</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  E_0 = </span><span class="si">{</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">   &quot;</span> <span class="o">+</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>eps = 2.0, V = -0.3333, W = -0.2500
+  eigenvalues: [-4.21288 -2.98607 -0.91914  1.48607  4.13201]
+  E_0 = -4.21288   0.96735|2,-2&gt; + 0.25221|2,+0&gt; + 0.02507|2,+2&gt;
+
+eps = 2.0, V = -1.3333, W = -1.0000
+  eigenvalues: [-7.75122 -7.47214 -1.55581  1.47214  5.30704]
+  E_0 = -7.75122   0.64268|2,-2&gt; + 0.73816|2,+0&gt; + 0.20515|2,+2&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-single-configuration-picture-breaking-down">
+<h3><span class="section-number">5.1.1. </span>The single-configuration picture breaking down<a class="headerlink" href="#the-single-configuration-picture-breaking-down" title="Link to this heading">#</a></h3>
+<p>At weak coupling the unperturbed configuration <span class="math notranslate nohighlight">\(|2,-2\rangle\)</span> carries nearly
+all the probability and one Slater determinant suffices. As <span class="math notranslate nohighlight">\(V\)</span> grows, weight
+shifts to <span class="math notranslate nohighlight">\(|2,0\rangle\)</span> and no single determinant will do — the same story the
+occupation numbers of chapter 1 told, in a model small enough to see all of.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Vs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mi">61</span><span class="p">)</span>
+<span class="n">E0</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">Vs</span><span class="p">:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">LipkinModel</span><span class="p">(</span><span class="n">J</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">V</span><span class="p">,</span> <span class="n">W</span><span class="o">=-</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">vals</span><span class="p">,</span> <span class="n">vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">matrix</span><span class="p">())</span>
+    <span class="n">E0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">weight</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vecs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>          <span class="c1"># |&lt;2,-2|psi_0&gt;|^2</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">Vs</span><span class="p">,</span> <span class="n">E0</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$-V$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$E_0$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Lipkin ground-state energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">-</span><span class="n">Vs</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$-V$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$|\langle 2,-2|\psi_0\rangle|^2$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Weight of the unperturbed configuration&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/43c20ca1abe6c27892df205b42ffdbba5c0e01bdb578ede7ffb36ef5a6885a1c.png" src="_images/43c20ca1abe6c27892df205b42ffdbba5c0e01bdb578ede7ffb36ef5a6885a1c.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="the-pairing-model">
+<h2><span class="section-number">5.2. </span>2. The pairing model<a class="headerlink" href="#the-pairing-model" title="Link to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(L\)</span> doubly degenerate, equally spaced levels; the interaction destroys a pair
+in level <span class="math notranslate nohighlight">\(q\)</span> and creates one in level <span class="math notranslate nohighlight">\(p\)</span>, and does nothing else:</p>
+<div class="math notranslate nohighlight">
+\[
+H = \xi\sum_{p\sigma}(p-1)a^\dagger_{p\sigma}a_{p\sigma}
+  - \tfrac12 g \sum_{pq} P^+_p P^-_q ,
+\qquad P^+_p = a^\dagger_{p+}a^\dagger_{p-}.
+\]</div>
+<p>Since the interaction never breaks a pair, the seniority-zero space — one
+basis state per choice of which levels carry a pair — is closed. Its dimension
+is <span class="math notranslate nohighlight">\(\binom{L}{n}\)</span> rather than <span class="math notranslate nohighlight">\(\binom{2L}{2n}\)</span>: 6 instead of 28 for <span class="math notranslate nohighlight">\(L=4\)</span>,
+<span class="math notranslate nohighlight">\(n=2\)</span>; 924 instead of 2 704 156 for <span class="math notranslate nohighlight">\(L=12\)</span>, <span class="math notranslate nohighlight">\(n=6\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PairingModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The pairing model in the seniority-zero space.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">pairs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">levels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xi</span> <span class="o">=</span> <span class="n">levels</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">xi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basis</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">levels</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">pairs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basis</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">config</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">occ</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">xi</span><span class="o">*</span><span class="nb">sum</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">config</span><span class="p">)</span>   <span class="c1"># unperturbed</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pairs</span>                  <span class="c1"># p = q terms</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>                                  <span class="c1"># move one pair</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">levels</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">occ</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">H</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">occ</span> <span class="o">-</span> <span class="p">{</span><span class="n">q</span><span class="p">}</span> <span class="o">|</span> <span class="p">{</span><span class="n">p</span><span class="p">}))],</span> <span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">0.5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span>
+        <span class="k">return</span> <span class="n">H</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ground_state_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">()[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;g&#39;</span><span class="si">:</span><span class="s2">&gt;7s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_ref&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0 (exact)&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_corr&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">PairingModel</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">pairs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">g</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">12.6f</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span><span class="o">-</span><span class="n">m</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      g        E_ref    E_0 (exact)         E_corr
+  -1.00     3.000000     2.77987014    -0.22012986
+  -0.50     2.500000     2.43688426    -0.06311574
+   0.00     2.000000     2.00000000     0.00000000
+   0.50     1.500000     1.41677428    -0.08322572
+   1.00     1.000000     0.63554847    -0.36445153
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">81</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">L</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="p">[</span><span class="n">PairingModel</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span>
+            <span class="o">-</span> <span class="n">PairingModel</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">()</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">corr</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;L = </span><span class="si">{</span><span class="n">L</span><span class="si">}</span><span class="s2">, n = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;correlation energy&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Pairing model: correlation energy against coupling&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d7defc77ba9c5c514f431f0c689939cf6a3dc38127925fe48a3ec4273c95abfc.png" src="_images/d7defc77ba9c5c514f431f0c689939cf6a3dc38127925fe48a3ec4273c95abfc.png" />
+</div>
+</div>
+</section>
+<section id="breaking-the-pairs-a-particle-hole-term">
+<h2><span class="section-number">5.3. </span>3. Breaking the pairs: a particle-hole term<a class="headerlink" href="#breaking-the-pairs-a-particle-hole-term" title="Link to this heading">#</a></h2>
+<p>The pairing interaction moves whole pairs and nothing else, so the seniority
+— the number of particles not part of a complete pair — is conserved and the
+whole calculation lives in the six-dimensional space above.  That also means
+the <em>particle-hole</em> channel is empty: there is no matrix element between the
+reference determinant and any <span class="math notranslate nohighlight">\(1p\)</span>–<span class="math notranslate nohighlight">\(1h\)</span> state, and the Tamm-Dancoff and
+random-phase approximations have nothing to work with.</p>
+<p>One extra term fixes that:</p>
+<div class="math notranslate nohighlight">
+\[
+\hat V_{\rm ph} = -\frac{f}{2}\sum_{pqr}
+   \left(a^\dagger_{p+}a^\dagger_{p-}a_{q-}a_{r+} + {\rm h.c.}\right).
+\]</div>
+<p>It creates a pair while removing two particles that need not be partners, so
+it breaks pairs.  The seniority-zero basis is no longer closed and we have to
+work with all determinants at fixed <span class="math notranslate nohighlight">\(S_z\)</span>: for <span class="math notranslate nohighlight">\(L=4\)</span>, <span class="math notranslate nohighlight">\(N=4\)</span> that is 36 states
+instead of 6.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">UP</span><span class="p">,</span> <span class="n">DN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">orbital</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">spin</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">spin</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">level_of</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">o</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_annihilate</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">o</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">bin</span><span class="p">(</span><span class="n">state</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">o</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">state</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">o</span><span class="p">),</span> <span class="n">sign</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_create</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">o</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="nb">bin</span><span class="p">(</span><span class="n">state</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">o</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">state</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">o</span><span class="p">),</span> <span class="n">sign</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_2body</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;a^+_i a^+_j a_k a_l |state&gt;, returning (new state, sign).&quot;&quot;&quot;</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">sgn</span> <span class="o">=</span> <span class="n">_annihilate</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_annihilate</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">sgn</span> <span class="o">*=</span> <span class="n">t</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_create</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">sgn</span> <span class="o">*=</span> <span class="n">t</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">_create</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">sgn</span> <span class="o">*</span> <span class="n">t</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PairingPHModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pairing plus a pair-breaking particle-hole term, in the S_z sector.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">xi</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sz2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xi</span> <span class="o">=</span> <span class="n">levels</span><span class="p">,</span> <span class="n">particles</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">xi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sz2</span> <span class="o">=</span> <span class="n">sz2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">occ</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">n_up</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">occ</span> <span class="k">if</span> <span class="n">o</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">UP</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sz2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_up</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_up</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sz2</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">occ</span><span class="p">:</span>
+                <span class="n">bits</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">o</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">):</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xi</span> <span class="o">*</span> <span class="p">(</span><span class="n">level_of</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                               <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">o</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>                    <span class="c1"># pairing</span>
+                <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">UP</span><span class="p">),</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">DN</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">s</span><span class="p">,</span> <span class="n">sgn</span> <span class="o">=</span> <span class="n">apply_2body</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span>
+                                         <span class="n">orbital</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">DN</span><span class="p">),</span> <span class="n">orbital</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">UP</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                        <span class="n">H</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">*</span> <span class="n">sgn</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>                    <span class="c1"># particle-hole</span>
+                <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">UP</span><span class="p">),</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">DN</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">s</span><span class="p">,</span> <span class="n">sgn</span> <span class="o">=</span> <span class="n">apply_2body</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span>
+                                             <span class="n">orbital</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">DN</span><span class="p">),</span> <span class="n">orbital</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">UP</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                            <span class="n">H</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">*</span> <span class="n">sgn</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>                    <span class="c1"># and h.c.</span>
+                <span class="n">k</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">DN</span><span class="p">),</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">UP</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">s</span><span class="p">,</span> <span class="n">sgn</span> <span class="o">=</span> <span class="n">apply_2body</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">orbital</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">UP</span><span class="p">),</span>
+                                             <span class="n">orbital</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">DN</span><span class="p">),</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+                            <span class="n">H</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">*</span> <span class="n">sgn</span>
+        <span class="k">return</span> <span class="n">H</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ground_state_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">bits</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">UP</span><span class="p">)</span>
+            <span class="n">bits</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">DN</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bits</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">()[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">seniority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">UP</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+                   <span class="o">^</span> <span class="p">((</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">orbital</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">DN</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">excitation_rank</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="n">state</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">())</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">couplings_to_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">()[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">()]]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">()</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">column</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-14</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">setdefault</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_rank</span><span class="p">(</span><span class="n">state</span><span class="p">),</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">seniority</span><span class="p">(</span><span class="n">state</span><span class="p">)),</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">out</span><span class="p">)}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>At <span class="math notranslate nohighlight">\(f=0\)</span> the 36-dimensional calculation must reproduce the six-dimensional
+one.  That is the first thing to check.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;g&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;seniority-zero&#39;</span><span class="si">:</span><span class="s2">&gt;16s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;full S_z=0 space&#39;</span><span class="si">:</span><span class="s2">&gt;18s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;diff&#39;</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">PairingModel</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">pairs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">PairingPHModel</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">g</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">a</span><span class="si">:</span><span class="s2">16.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">b</span><span class="si">:</span><span class="s2">18.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="si">:</span><span class="s2">10.1e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     g   seniority-zero   full S_z=0 space       diff
+ -1.00       2.77987014         2.77987014    0.0e+00
+ -0.50       2.43688426         2.43688426    0.0e+00
+  0.00       2.00000000         2.00000000    0.0e+00
+  0.50       1.41677428         1.41677428    0.0e+00
+  1.00       0.63554847         0.63554847    0.0e+00
+</pre></div>
+</div>
+</div>
+</div>
+<section id="which-determinants-does-the-hamiltonian-reach">
+<h3><span class="section-number">5.3.1. </span>Which determinants does the Hamiltonian reach?<a class="headerlink" href="#which-determinants-does-the-hamiltonian-reach" title="Link to this heading">#</a></h3>
+<p>This is the content of the level-scheme figure in the chapter.  We classify
+every determinant connected to the reference by excitation rank (<span class="math notranslate nohighlight">\(1p\)</span>–<span class="math notranslate nohighlight">\(1h\)</span>,
+<span class="math notranslate nohighlight">\(2p\)</span>–<span class="math notranslate nohighlight">\(2h\)</span>, …) and by seniority, and print the matrix element.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">PairingPHModel</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;g = 1, f = </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">   (E_ref = </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">seniority</span><span class="p">),</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">couplings_to_reference</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">unique</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">})</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">p-</span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">h, seniority </span><span class="si">{</span><span class="n">seniority</span><span class="si">}</span><span class="s2">: &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2"> determinants, matrix elements </span><span class="si">{</span><span class="n">unique</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;With f = 0 only the four seniority-zero 2p-2h determinants are&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;connected, each by -g/2: those are whole pairs moved across the Fermi&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;level.  With f non-zero, eight 1p-1h and eight pair-breaking 2p-2h&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;determinants join in at +/- f/2, and the seniority-zero element picks&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;up g -&gt; g + 2f.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>g = 1, f = 0.0   (E_ref = 1.0000)
+   2p-2h, seniority 0:  4 determinants, matrix elements [-0.5]
+
+g = 1, f = 0.05   (E_ref = 0.9000)
+   1p-1h, seniority 2:  8 determinants, matrix elements [-0.025, 0.025]
+   2p-2h, seniority 0:  4 determinants, matrix elements [-0.55]
+   2p-2h, seniority 2:  8 determinants, matrix elements [-0.025, 0.025]
+
+With f = 0 only the four seniority-zero 2p-2h determinants are
+connected, each by -g/2: those are whole pairs moved across the Fermi
+level.  With f non-zero, eight 1p-1h and eight pair-breaking 2p-2h
+determinants join in at +/- f/2, and the seniority-zero element picks
+up g -&gt; g + 2f.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="n">PairingPHModel</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+<span class="n">references</span> <span class="o">=</span> <span class="p">[</span><span class="n">PairingPHModel</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">reference_energy</span><span class="p">()</span>
+              <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">references</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$E_{\rm ref}$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$E_0$ (exact)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;particle-hole strength $f$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Pairing plus particle-hole, $L=4$, $N=4$, $g=1$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/2a25a843b7702147ce3791b7b802ae2f591a8d1e5d1b22ba1826535207023fc6.png" src="_images/2a25a843b7702147ce3791b7b802ae2f591a8d1e5d1b22ba1826535207023fc6.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="the-fermi-hubbard-model">
+<h2><span class="section-number">5.4. </span>4. The Fermi-Hubbard model<a class="headerlink" href="#the-fermi-hubbard-model" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+H = -t\sum_{\langle ij\rangle\sigma}
+   (c^\dagger_{i\sigma}c_{j\sigma} + \mathrm{h.c.})
+ + U\sum_i n_{i\uparrow}n_{i\downarrow}
+\]</div>
+<p>The Hamiltonian conserves <span class="math notranslate nohighlight">\(N_\uparrow\)</span> and <span class="math notranslate nohighlight">\(N_\downarrow\)</span> separately, and the
+hopping acts on the two species independently — so the kinetic part is
+<span class="math notranslate nohighlight">\(K_\uparrow \otimes I + I \otimes K_\downarrow\)</span>, the tensor product of
+chapter 1 used in earnest, and the interaction is diagonal.</p>
+<p>The fermionic sign is the Jordan-Wigner string: <span class="math notranslate nohighlight">\(c^\dagger_i c_j\)</span> picks up the
+parity of the occupied sites strictly between <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">HubbardChain</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The 1D Hubbard model in a fixed (N_up, N_down) sector.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sites</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_up</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_down</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">sites</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">U</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">sites</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sites</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">(</span><span class="n">n_up</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">(</span><span class="n">n_down</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dn</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">occ</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">),</span> <span class="n">k</span><span class="p">):</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">occ</span><span class="p">:</span>
+                <span class="n">bits</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">s</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_hopping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">)}</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="ow">in</span> <span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)):</span>          <span class="c1"># c^+_c c_d</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="n">d</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="n">c</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>        <span class="c1"># Jordan-Wigner sign</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">hi</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">^</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">lo</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">sign</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="nb">bin</span><span class="p">(</span><span class="n">s</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+                    <span class="n">K</span><span class="p">[</span><span class="n">idx</span><span class="p">[(</span><span class="n">s</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">d</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">c</span><span class="p">)],</span> <span class="n">idx</span><span class="p">[</span><span class="n">s</span><span class="p">]]</span> <span class="o">+=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">*</span><span class="n">sign</span>
+        <span class="k">return</span> <span class="n">K</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_double</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">bin</span><span class="p">(</span><span class="n">u</span> <span class="o">&amp;</span> <span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dn</span><span class="p">]</span>
+                         <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Ku</span><span class="p">,</span> <span class="n">Kd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hopping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hopping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dn</span><span class="p">)</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">Ku</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dn</span><span class="p">)))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">)),</span> <span class="n">Kd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">H</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_double</span><span class="p">())</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ground</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vals</span><span class="p">,</span> <span class="n">vecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">())</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="n">vecs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">psi</span> <span class="o">@</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_double</span><span class="p">()</span><span class="o">*</span><span class="n">psi</span><span class="p">))</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;U/t&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;dim&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0/t&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;double occ.&#39;</span><span class="si">:</span><span class="s2">&gt;13s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">U</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">HubbardChain</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_up</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_down</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">U</span><span class="p">)</span>
+    <span class="n">e0</span><span class="p">,</span> <span class="n">docc</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ground</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">U</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">dim</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">docc</span><span class="si">:</span><span class="s2">13.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">At U = 0 the exact free-fermion result is -4t: the single-particle&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;energies are -2t cos k with k = 0, +/- pi/2, pi.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   U/t    dim          E_0/t   double occ.
+   0.0     36    -4.00000000      1.000000
+   2.0     36    -2.82842712      0.453082
+   4.0     36    -2.10274848      0.287325
+   8.0     36    -1.32023496      0.129992
+  16.0     36    -0.72286432      0.042033
+
+At U = 0 the exact free-fermion result is -4t: the single-particle
+energies are -2t cos k with k = 0, +/- pi/2, pi.
+</pre></div>
+</div>
+</div>
+</div>
+<section id="strong-coupling-the-heisenberg-limit">
+<h3><span class="section-number">5.4.1. </span>Strong coupling: the Heisenberg limit<a class="headerlink" href="#strong-coupling-the-heisenberg-limit" title="Link to this heading">#</a></h3>
+<p>For <span class="math notranslate nohighlight">\(U \gg t\)</span> the doubly occupied states are eliminated perturbatively and
+what remains is</p>
+<div class="math notranslate nohighlight">
+\[
+H_{\rm eff} = J\sum_{\langle ij\rangle}
+  \left(\mathbf{S}_i\cdot\mathbf{S}_j - \tfrac14 n_i n_j\right),
+\qquad J = \frac{4t^2}{U}.
+\]</div>
+<p>For the four-site ring the Heisenberg part gives <span class="math notranslate nohighlight">\(-2J\)</span> and the constant term
+on four bonds gives <span class="math notranslate nohighlight">\(-J\)</span>, so <span class="math notranslate nohighlight">\(E_0/J \to -3\)</span>. This is a real prediction, and
+the numbers confirm it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;U/t&#39;</span><span class="si">:</span><span class="s2">&gt;7s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0/t&#39;</span><span class="si">:</span><span class="s2">&gt;16s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;J = 4t^2/U&#39;</span><span class="si">:</span><span class="s2">&gt;13s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0/J&#39;</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">Us</span> <span class="o">=</span> <span class="p">[</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">,</span> <span class="mf">128.0</span><span class="p">]</span>
+<span class="n">ratios</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">U</span> <span class="ow">in</span> <span class="n">Us</span><span class="p">:</span>
+    <span class="n">e0</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">HubbardChain</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_up</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_down</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">U</span><span class="p">)</span><span class="o">.</span><span class="n">ground</span><span class="p">()</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="mf">4.0</span><span class="o">/</span><span class="n">U</span>
+    <span class="n">ratios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span><span class="o">/</span><span class="n">J</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">U</span><span class="si">:</span><span class="s2">7.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="si">:</span><span class="s2">16.10f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">J</span><span class="si">:</span><span class="s2">13.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="o">/</span><span class="n">J</span><span class="si">:</span><span class="s2">10.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.5</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogx</span><span class="p">(</span><span class="n">Us</span><span class="p">,</span> <span class="n">ratios</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$-3$ (Heisenberg limit)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$U/t$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$E_0 / J$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;The Hubbard ring becomes the Heisenberg antiferromagnet&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    U/t            E_0/t    J = 4t^2/U      E_0/J
+    8.0    -1.3202349583    0.50000000   -2.64047
+   16.0    -0.7228643224    0.25000000   -2.89146
+   32.0    -0.3714104223    0.12500000   -2.97128
+   64.0    -0.1870445461    0.06250000   -2.99271
+  128.0    -0.0936928521    0.03125000   -2.99817
+</pre></div>
+</div>
+<img alt="_images/92d1e9c20a9688a4b3366fcd242c9098dff07acae4522bc2b1d90e88cc8d2b96.png" src="_images/92d1e9c20a9688a4b3366fcd242c9098dff07acae4522bc2b1d90e88cc8d2b96.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="the-quantum-heisenberg-model">
+<h2><span class="section-number">5.5. </span>5. The quantum Heisenberg model<a class="headerlink" href="#the-quantum-heisenberg-model" title="Link to this heading">#</a></h2>
+<p>The strong-coupling limit above is a model in its own right,</p>
+<div class="math notranslate nohighlight">
+\[
+\hat H = J\sum_{\langle ij\rangle}\bm S_i\cdot\bm S_j
+       = J\sum_{\langle ij\rangle}\left[\hat S^z_i\hat S^z_j
+         + \tfrac12\left(\hat S^+_i\hat S^-_j+\hat S^-_i\hat S^+_j\right)\right].
+\]</div>
+<p>Spin operators on different sites commute, so — unlike every fermionic model
+in this notebook — there is no Jordan-Wigner string and no sign to track.  The
+total magnetisation is conserved, and the ground state of the antiferromagnet
+lives in the <span class="math notranslate nohighlight">\(S^z_{\rm tot}=0\)</span> sector.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">HeisenbergChain</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Spin-1/2 Heisenberg model on a ring, in a fixed magnetisation sector.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sites</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">magnetisation</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">sites</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">magnetisation</span> <span class="o">=</span> <span class="n">magnetisation</span>
+        <span class="n">bonds</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">sites</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sites</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pbc</span><span class="p">:</span>
+            <span class="n">bonds</span> <span class="o">=</span> <span class="n">bonds</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">seen</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">:</span>                    <span class="c1"># a two-site ring has one bond</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="ow">or</span> <span class="nb">frozenset</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">sites</span><span class="p">)</span>
+                       <span class="k">if</span> <span class="n">magnetisation</span> <span class="ow">is</span> <span class="kc">None</span>
+                       <span class="ow">or</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">bin</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">sites</span> <span class="o">==</span> <span class="n">magnetisation</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">bin</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+                <span class="n">si</span><span class="p">,</span> <span class="n">sj</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">j</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span>
+                <span class="n">H</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.25</span> <span class="k">if</span> <span class="n">si</span> <span class="o">==</span> <span class="n">sj</span> <span class="k">else</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">si</span> <span class="o">!=</span> <span class="n">sj</span><span class="p">:</span>
+                    <span class="n">flipped</span> <span class="o">=</span> <span class="n">state</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">j</span><span class="p">)</span>
+                    <span class="n">H</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">flipped</span><span class="p">],</span> <span class="n">col</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">J</span>
+
+        <span class="k">return</span> <span class="n">H</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ground_state_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ground_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">())[</span><span class="mi">1</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&lt;S_i . S_j&gt; in the ground state.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.75</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_state</span><span class="p">()</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">state</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">si</span><span class="p">,</span> <span class="n">sj</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">j</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">psi</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.25</span> <span class="k">if</span> <span class="n">si</span> <span class="o">==</span> <span class="n">sj</span> <span class="k">else</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">si</span> <span class="o">!=</span> <span class="n">sj</span><span class="p">:</span>
+                <span class="n">flipped</span> <span class="o">=</span> <span class="n">state</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">j</span><span class="p">)</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">psi</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">flipped</span><span class="p">]]</span> <span class="o">*</span> <span class="n">psi</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+
+
+<span class="n">BETHE</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>          <span class="c1"># J (1/4 - ln 2), the infinite chain</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bethe-ansatz energy per site: </span><span class="si">{</span><span class="n">BETHE</span><span class="si">:</span><span class="s2">.10f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Bethe-ansatz energy per site: -0.4431471806
+</pre></div>
+</div>
+</div>
+</div>
+<section id="checking-the-mapping-from-the-hubbard-model">
+<h3><span class="section-number">5.5.1. </span>Checking the mapping from the Hubbard model<a class="headerlink" href="#checking-the-mapping-from-the-hubbard-model" title="Link to this heading">#</a></h3>
+<p>The chapter predicted <span class="math notranslate nohighlight">\(E_0 \to -3J\)</span> for the four-site Hubbard ring: <span class="math notranslate nohighlight">\(-2J\)</span> from
+the exchange and <span class="math notranslate nohighlight">\(-J\)</span> from the constant <span class="math notranslate nohighlight">\(-\tfrac14 n_i n_j\)</span> term on four
+bonds.  We can now check the two halves separately — the Heisenberg ring alone
+should give exactly <span class="math notranslate nohighlight">\(-2J\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ring</span> <span class="o">=</span> <span class="n">HeisenbergChain</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Heisenberg four-site ring:  E_0 = </span><span class="si">{</span><span class="n">ring</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span><span class="si">:</span><span class="s2">+.8f</span><span class="si">}</span><span class="s2"> J&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  &lt;S_i.S_(i+1)&gt; = </span><span class="si">{</span><span class="n">ring</span><span class="o">.</span><span class="n">correlation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="si">:</span><span class="s2">+.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  &lt;S_i.S_(i+2)&gt; = </span><span class="si">{</span><span class="n">ring</span><span class="o">.</span><span class="n">correlation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">:</span><span class="s2">+.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;U/t&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0(Hubbard)/J&#39;</span><span class="si">:</span><span class="s2">&gt;16s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;+1&#39;</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">U</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">,</span> <span class="mf">32.0</span><span class="p">,</span> <span class="mf">64.0</span><span class="p">,</span> <span class="mf">128.0</span><span class="p">):</span>
+    <span class="n">e0</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">HubbardChain</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_up</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_down</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="n">U</span><span class="p">)</span><span class="o">.</span><span class="n">ground</span><span class="p">()</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">/</span> <span class="n">U</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">U</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="o">/</span><span class="n">J</span><span class="si">:</span><span class="s2">16.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="o">/</span><span class="n">J</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&gt; -2, the Heisenberg energy of the same ring.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Heisenberg four-site ring:  E_0 = -2.00000000 J
+  &lt;S_i.S_(i+1)&gt; = -0.50000000
+  &lt;S_i.S_(i+2)&gt; = +0.25000000
+
+   U/t   E_0(Hubbard)/J         +1
+   8.0        -2.640470  -1.640470
+  16.0        -2.891457  -1.891457
+  32.0        -2.971283  -1.971283
+  64.0        -2.992713  -1.992713
+ 128.0        -2.998171  -1.998171
+-&gt; -2, the Heisenberg energy of the same ring.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="finite-size-scaling-against-the-bethe-ansatz">
+<h3><span class="section-number">5.5.2. </span>Finite-size scaling against the Bethe ansatz<a class="headerlink" href="#finite-size-scaling-against-the-bethe-ansatz" title="Link to this heading">#</a></h3>
+<p>The infinite antiferromagnetic chain has <span class="math notranslate nohighlight">\(E_0/(NJ) = \tfrac14 - \ln 2\)</span>.  Finite
+rings approach it from below, and slowly: the deviation falls off as <span class="math notranslate nohighlight">\(1/N^2\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sizes</span><span class="p">,</span> <span class="n">per_site</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;N&#39;</span><span class="si">:</span><span class="s2">&gt;4s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;dim&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0/J&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0/(NJ)&#39;</span><span class="si">:</span><span class="s2">&gt;13s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;deviation&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">):</span>
+    <span class="n">chain</span> <span class="o">=</span> <span class="n">HeisenbergChain</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">e0</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">ground_state_energy</span><span class="p">()</span>
+    <span class="n">sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">per_site</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e0</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">chain</span><span class="o">.</span><span class="n">dim</span><span class="si">:</span><span class="s2">8d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="o">/</span><span class="n">n</span><span class="si">:</span><span class="s2">13.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e0</span><span class="o">/</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">BETHE</span><span class="si">:</span><span class="s2">+12.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;inf&#39;</span><span class="si">:</span><span class="s2">&gt;4s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;--&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;--&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">BETHE</span><span class="si">:</span><span class="s2">13.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">+12.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">inverse</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">inverse</span><span class="p">,</span> <span class="n">per_site</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$E_0/(NJ)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">BETHE</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$1/4-\ln 2$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$1/N^2$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$E_0/(NJ)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Heisenberg ring: finite-size scaling&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   N      dim          E_0/J      E_0/(NJ)    deviation
+   4        6    -2.00000000   -0.50000000    -0.056853
+   6       20    -2.80277564   -0.46712927    -0.023982
+   8       70    -3.65109341   -0.45638668    -0.013239
+  10      252    -4.51544635   -0.45154464    -0.008397
+  12      924    -5.38739092   -0.44894924    -0.005802
+ inf       --             --   -0.44314718    +0.000000
+</pre></div>
+</div>
+<img alt="_images/86e34ef2c792c25e5a3f334ea2de9ff3c32cd62e77210353472b17527a717cd8.png" src="_images/86e34ef2c792c25e5a3f334ea2de9ff3c32cd62e77210353472b17527a717cd8.png" />
+</div>
+</div>
+</section>
+<section id="back-to-fermions-the-jordan-wigner-transformation">
+<h3><span class="section-number">5.5.3. </span>Back to fermions: the Jordan-Wigner transformation<a class="headerlink" href="#back-to-fermions-the-jordan-wigner-transformation" title="Link to this heading">#</a></h3>
+<p>With <span class="math notranslate nohighlight">\(\hat S^+_j = c^\dagger_j\prod_{k&lt;j}(1-2\hat n_k)\)</span> and
+<span class="math notranslate nohighlight">\(\hat S^z_j = \hat n_j - \tfrac12\)</span>, the strings cancel between the two sites of
+a nearest-neighbour bond and the chain becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\hat H = \frac{J}{2}\sum_j\left(c^\dagger_jc_{j+1}+{\rm h.c.}\right)
+  + J\sum_j\left(\hat n_j-\tfrac12\right)\left(\hat n_{j+1}-\tfrac12\right),
+\]</div>
+<p>a hopping term plus a nearest-neighbour density-density interaction.  Building
+that fermionic Hamiltonian directly, with the signs put in by hand, must give
+the <em>same spectrum</em> — not merely the same ground-state energy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">jordan_wigner_chain</span><span class="p">(</span><span class="n">sites</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The open Heisenberg chain as spinless fermions, signs included.&quot;&quot;&quot;</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">sites</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sites</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">n_j</span><span class="p">,</span> <span class="n">n_k</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">j</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="n">state</span><span class="p">]</span> <span class="o">+=</span> <span class="n">J</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_j</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_k</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">((</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">)):</span>        <span class="c1"># c^+_a c_b</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">b</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">mid</span> <span class="o">=</span> <span class="n">state</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="p">)</span>
+                <span class="n">sign</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">bin</span><span class="p">(</span><span class="n">mid</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+                <span class="n">sign</span> <span class="o">*=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">bin</span><span class="p">(</span><span class="n">mid</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+                <span class="n">H</span><span class="p">[</span><span class="n">mid</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">),</span> <span class="n">state</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">J</span> <span class="o">*</span> <span class="n">sign</span>
+    <span class="k">return</span> <span class="n">H</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;N&#39;</span><span class="si">:</span><span class="s2">&gt;4s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0 (spins)&#39;</span><span class="si">:</span><span class="s2">&gt;16s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0 (fermions)&#39;</span><span class="si">:</span><span class="s2">&gt;16s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;spectra agree&#39;</span><span class="si">:</span><span class="s2">&gt;15s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="n">spins</span> <span class="o">=</span> <span class="n">HeisenbergChain</span><span class="p">(</span><span class="n">sites</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">magnetisation</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">spins</span><span class="p">))</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">jordan_wigner_chain</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">16.10f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">16.10f</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)))</span><span class="si">:</span><span class="s2">&gt;15s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   N      E_0 (spins)   E_0 (fermions)   spectra agree
+   4    -1.6160254038    -1.6160254038            True
+   6    -2.4935771339    -2.4935771339            True
+   8    -3.3749325987    -3.3749325987            True
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  10    -4.2580352073    -4.2580352073            True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="the-calogero-model">
+<h2><span class="section-number">5.6. </span>6. The Calogero model<a class="headerlink" href="#the-calogero-model" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+H = -\tfrac12\sum_i \partial_i^2 + \tfrac12\omega^2\sum_i x_i^2
+  + \sum_{i&lt;j}\frac{\lambda(\lambda-1)}{(x_i-x_j)^2}
+\]</div>
+<p>Unlike the first three, this one is solvable for <em>any</em> <span class="math notranslate nohighlight">\(N\)</span>. The ground state
+is a pure Jastrow function,</p>
+<div class="math notranslate nohighlight">
+\[
+\Psi_0 = \prod_{i&lt;j}|x_i-x_j|^\lambda
+   \exp\!\left(-\tfrac{\omega}{2}\sum_i x_i^2\right),
+\qquad
+E_0 = \omega\left[\frac{N}{2} + \frac{\lambda N(N-1)}{2}\right].
+\]</div>
+<p>At <span class="math notranslate nohighlight">\(\lambda = 1\)</span> the coupling vanishes and the Jastrow factor becomes the
+Vandermonde determinant — the Slater determinant of free fermions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calogero_energy</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">omega</span><span class="o">*</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">N</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">lam</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;At lambda = 1 the energy must equal the sum of the N lowest&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;oscillator levels, since the ground state is the free-fermion&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Slater determinant:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;N&#39;</span><span class="si">:</span><span class="s2">&gt;4s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;E_0(lambda=1)&#39;</span><span class="si">:</span><span class="s2">&gt;16s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;sum (n+1/2)&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">N</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">calogero_energy</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="si">:</span><span class="s2">16.4f</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="si">:</span><span class="s2">14.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>At lambda = 1 the energy must equal the sum of the N lowest
+oscillator levels, since the ground state is the free-fermion
+Slater determinant:
+
+   N    E_0(lambda=1)    sum (n+1/2)
+   2           2.0000         2.0000
+   3           4.5000         4.5000
+   5          12.5000        12.5000
+  10          50.0000        50.0000
+</pre></div>
+</div>
+</div>
+</div>
+<section id="a-numerical-check-for-two-particles">
+<h3><span class="section-number">5.6.1. </span>A numerical check for two particles<a class="headerlink" href="#a-numerical-check-for-two-particles" title="Link to this heading">#</a></h3>
+<p>With <span class="math notranslate nohighlight">\(x = x_1 - x_2\)</span> the relative motion separates,</p>
+<div class="math notranslate nohighlight">
+\[
+h_{\rm rel} = -\frac{d^2}{dx^2} + \frac{\omega^2}{4}x^2
+  + \frac{\lambda(\lambda-1)}{x^2},
+\]</div>
+<p>whose exact ground-state energy is <span class="math notranslate nohighlight">\(\omega(\lambda + \tfrac12)\)</span>. We solve it on
+a grid with the machinery of chapter 1. The inverse-square barrier keeps the
+wave function away from the origin, so the boundary condition is automatic.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">relative_energy</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">n_grid</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="mf">12.0</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">n_grid</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">retstep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>                                     <span class="c1"># interior points</span>
+    <span class="n">diag</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.25</span><span class="o">*</span><span class="n">omega</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">lam</span><span class="o">*</span><span class="p">(</span><span class="n">lam</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">off</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">diag</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">off</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">off</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">H</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;lambda&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;numerical&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;exact&#39;</span><span class="si">:</span><span class="s2">&gt;14s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;error&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">lam</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">):</span>
+    <span class="n">num</span><span class="p">,</span> <span class="n">exact</span> <span class="o">=</span> <span class="n">relative_energy</span><span class="p">(</span><span class="n">lam</span><span class="p">),</span> <span class="n">lam</span> <span class="o">+</span> <span class="mf">0.5</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lam</span><span class="si">:</span><span class="s2">8.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">num</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">exact</span><span class="si">:</span><span class="s2">14.8f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">num</span><span class="o">-</span><span class="n">exact</span><span class="p">)</span><span class="si">:</span><span class="s2">12.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  lambda      numerical          exact        error
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1.0     1.49999930     1.50000000     7.03e-07
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     1.5     1.99999762     2.00000000     2.38e-06
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     2.0     2.49999911     2.50000000     8.90e-07
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     3.0     3.49999930     3.50000000     7.03e-07
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="what-these-models-have-in-common">
+<h2><span class="section-number">5.7. </span>What these models have in common<a class="headerlink" href="#what-these-models-have-in-common" title="Link to this heading">#</a></h2>
+<p>In every case the route is the same: write the Hamiltonian in second
+quantisation, find the operators that commute with it, use them to block
+diagonalise, and solve the blocks. The first step is chapter 3, the second is
+a commutator calculation that Wick’s theorem makes routine, the third is the
+statement that a symmetry gives a basis in which the matrix is block diagonal,
+and the fourth is the eigenvalue problem of chapter 1.</p>
+<p>The pairing model with and without its particle-hole term shows what happens
+when a symmetry is taken away: the same physical system, one extra term, and
+the dimension of the ground-state calculation goes from six to thirty-six.
+That is the general pattern in miniature.</p>
+<p>What separates these models from a realistic system is only the last step of
+the reduction. In a real nucleus or molecule the symmetries reduce the
+dimension by orders of magnitude but not to five; the matrix is sparse but
+enormous; and one must fall back on the approximate methods that occupy the
+rest of the book. The value of the models here is that they let us watch those
+approximations succeed and fail against an answer we already know.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="jordanwigner.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">4. </span>From fermions to qubits: the Jordan-Wigner transformation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="fullci.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">6. </span>Full configuration interaction theory</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lipkin-model">5.1. 1. The Lipkin model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-single-configuration-picture-breaking-down">5.1.1. The single-configuration picture breaking down</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pairing-model">5.2. 2. The pairing model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#breaking-the-pairs-a-particle-hole-term">5.3. 3. Breaking the pairs: a particle-hole term</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#which-determinants-does-the-hamiltonian-reach">5.3.1. Which determinants does the Hamiltonian reach?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fermi-hubbard-model">5.4. 4. The Fermi-Hubbard model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#strong-coupling-the-heisenberg-limit">5.4.1. Strong coupling: the Heisenberg limit</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quantum-heisenberg-model">5.5. 5. The quantum Heisenberg model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-the-mapping-from-the-hubbard-model">5.5.1. Checking the mapping from the Hubbard model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-size-scaling-against-the-bethe-ansatz">5.5.2. Finite-size scaling against the Bethe ansatz</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#back-to-fermions-the-jordan-wigner-transformation">5.5.3. Back to fermions: the Jordan-Wigner transformation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-calogero-model">5.6. 6. The Calogero model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-numerical-check-for-two-particles">5.6.1. A numerical check for two particles</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-these-models-have-in-common">5.7. What these models have in common</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

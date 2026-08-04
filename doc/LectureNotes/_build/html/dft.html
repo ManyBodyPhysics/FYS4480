@@ -1,0 +1,1750 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>9. Density functional theory &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dft';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="10. Many-body perturbation theory" href="mbptheory.html" />
+    <link rel="prev" title="8. Mean-field applications: TDA, RPA and QRPA" href="tdarpa.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/dft.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Fdft.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/dft.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Density functional theory</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-local-density-approximation-comes-from">9.1. 1. Where the local density approximation comes from</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-exchange-hole">9.2. 2. The exchange hole</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-a-functional-for-the-model-interaction">9.3. 3. Building a functional for the model interaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-kohn-sham-equations">9.4. 4. Solving the Kohn-Sham equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-self-interaction-error">9.5. 5. The self-interaction error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-good-is-the-local-approximation">9.6. 6. How good is the local approximation?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thomas-fermi-and-why-orbitals-came-back">9.7. 7. Thomas-Fermi, and why orbitals came back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">9.8. The full program</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="density-functional-theory">
+<h1><span class="section-number">9. </span>Density functional theory<a class="headerlink" href="#density-functional-theory" title="Link to this heading">#</a></h1>
+<p>Companion notebook to Chapter 8 of <em>Quantum mechanics for many-particle
+systems</em>.  Every number quoted in the chapter is produced here; the code is
+the same as in <code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/dft.py</span></code>.</p>
+<p>The theme is that the local density approximation is not a black box but
+something one <em>builds</em>, from a system that can be solved exactly.  We build it
+twice: once for the three-dimensional electron gas of Chapter 6, where the
+answer is analytic, and once numerically for the one-dimensional trap of
+Chapters 2 and 6, so that Kohn-Sham, Hartree-Fock and the exact answer can be
+compared for one and the same Hamiltonian.</p>
+<p>Contents:</p>
+<ol class="arabic simple">
+<li><p>Where the LDA comes from</p></li>
+<li><p>The exchange hole and its sum rule</p></li>
+<li><p>Building a functional for the model interaction</p></li>
+<li><p>Solving the Kohn-Sham equations</p></li>
+<li><p>The self-interaction error</p></li>
+<li><p>How good is the local approximation?</p></li>
+<li><p>Thomas-Fermi, and why orbitals came back</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;BookManybody&quot;</span><span class="p">,</span> <span class="s2">&quot;BookMaterial&quot;</span><span class="p">,</span> <span class="s2">&quot;Programs&quot;</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dft</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="where-the-local-density-approximation-comes-from">
+<h2><span class="section-number">9.1. </span>1. Where the local density approximation comes from<a class="headerlink" href="#where-the-local-density-approximation-comes-from" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[E_{\rm xc}^{\rm LDA}[n] = \int d^3r\, n(\mathbf r)\,
+  \epsilon_{\rm xc}\!\left(n(\mathbf r)\right),\]</div>
+<p>with <span class="math notranslate nohighlight">\(\epsilon_{\rm xc}\)</span> taken from the uniform gas.  For exchange the answer
+is analytic,</p>
+<div class="math notranslate nohighlight">
+\[\epsilon_x(n) = -\frac34\left(\frac{3}{\pi}\right)^{1/3}n^{1/3},\]</div>
+<p>and evaluated on the uniform gas it must reproduce the <span class="math notranslate nohighlight">\(-0.916/r_s\)</span> of
+Chapter 6.  That it does is a tautology — the LDA is <em>defined</em> to be exact
+there — but it is a useful check that the conventions line up.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span><span class="o">.</span><span class="n">demo_lda_from_the_gas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+1. Where the local density approximation comes from
+==========================================================================
+The exchange energy per particle of the three-dimensional gas,
+   eps_x(n) = -(3/4)(3/pi)^(1/3) n^(1/3),
+is the whole content of the local density approximation for
+exchange.  Evaluated on the uniform gas it must reproduce the
+0.916/r_s of chapter 6, and it does:
+
+     r_s     eps_x [Ha]     eps_x [Ry]     -0.916/r_s
+  1.0000      -0.458165      -0.916331      -0.916000
+  2.0000      -0.229083      -0.458165      -0.458000
+  4.0000      -0.114541      -0.229083      -0.229000
+  4.8253      -0.094951      -0.189901      -0.189833
+  6.0000      -0.076361      -0.152722      -0.152667
+
+the coefficient itself: 0.916331
+against the 0.9163 exchange coefficient of chapter 6.  This is not a
+coincidence but a tautology: the LDA is *defined* so that it is
+exact for the uniform gas.  What is not obvious, and what makes it
+useful, is that it remains good when the density varies.
+
+The Thomas-Fermi kinetic energy density comes from the same
+calculation, and equals the kinetic term of chapter 6 divided by
+the volume:
+     r_s     t_TF [Ha/a0^3]     3/5 eps_F [Ha]
+  1.0000         0.26378752         0.26378752
+  2.0000         0.00824336         0.00824336
+  4.0000         0.00025760         0.00025760
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">ExchangeLDA3D</span><span class="o">.</span><span class="n">density_from_rs</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dft</span><span class="o">.</span><span class="n">ExchangeLDA3D</span><span class="o">.</span><span class="n">eps_x</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;LDA: $\epsilon_x(n(r_s))$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.916</span> <span class="o">/</span> <span class="n">rs</span><span class="p">,</span> <span class="s2">&quot;k--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;chapter 6: $-0.916/r_s$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$r_s$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\epsilon_x$  [Ry]&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the exchange functional against the electron-gas result&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8385371efccee3f4b2b32340b48730a39d1d8ef9f32a64acef7c615388e2995d.png" src="_images/8385371efccee3f4b2b32340b48730a39d1d8ef9f32a64acef7c615388e2995d.png" />
+</div>
+</div>
+</section>
+<section id="the-exchange-hole">
+<h2><span class="section-number">9.2. </span>2. The exchange hole<a class="headerlink" href="#the-exchange-hole" title="Link to this heading">#</a></h2>
+<p>Each electron moves inside a hole in the density of its neighbours.  For the
+uniform gas the pair correlation function is exact at the Hartree-Fock level,</p>
+<div class="math notranslate nohighlight">
+\[g(y) = 1 - \frac92\left[\frac{\sin y - y\cos y}{y^3}\right]^2,
+\qquad y = k_F s,\]</div>
+<p>with <span class="math notranslate nohighlight">\(g(0)=\tfrac12\)</span>: same-spin electrons never coincide, opposite-spin ones
+are uncorrelated at this level.  The hole contains exactly one missing
+electron, and that sum rule is a large part of why local functionals work at
+all — the energy depends mostly on the <em>charge</em> of the hole, which is fixed
+exactly, and only weakly on its shape.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span><span class="o">.</span><span class="n">demo_exchange_hole</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+2. The exchange hole
+==========================================================================
+Exchange is not a mysterious correction: it is the statement that
+each electron carries around it a region depleted of electrons of
+the same spin.  For the uniform gas the pair correlation function
+is known exactly at the Hartree-Fock level,
+   g(s) = 1 - (9/2)[(sin y - y cos y)/y^3]^2,   y = k_F s.
+
+   k_F s         g(s)   interpretation
+    0.00     0.500000   g(0) = 1/2: same spins never coincide
+    0.50     0.524471   
+    1.00     0.591838   
+    2.00     0.786732   
+    4.00     0.996208   
+    8.00     0.999920   
+   16.00     0.999939   the hole has healed
+
+The hole integrates to exactly one missing electron,
+   n int d^3s [g(s) - 1] = (4 / 3 pi) int_0^inf dy y^2 [g(y) - 1]
+                         = -1,
+which is the sum rule that any decent approximate functional must
+respect.  Checking it numerically:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   (4 / 3 pi) int dy y^2 [g(y) - 1] = -0.997615
+
+The exact value of the integral is -pi/6 times 9/2, and the
+prefactor turns it into exactly -1.  Local functionals are built
+to satisfy this sum rule even when they get the shape of the hole
+wrong, which is a large part of why they work at all.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">exchange_hole</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$k_F s$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$g(s)$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;pair correlation function&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$k_F s$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$y^2\,[g(y)-1]$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the sum-rule integrand&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/0832bde40ad87a2ca675a54e81db62d4fc746e1c3c295f6998d3d191b8132ab9.png" src="_images/0832bde40ad87a2ca675a54e81db62d4fc746e1c3c295f6998d3d191b8132ab9.png" />
+</div>
+</div>
+</section>
+<section id="building-a-functional-for-the-model-interaction">
+<h2><span class="section-number">9.3. </span>3. Building a functional for the model interaction<a class="headerlink" href="#building-a-functional-for-the-model-interaction" title="Link to this heading">#</a></h2>
+<p>The trap of Chapters 2 and 6 uses a softened Coulomb interaction in one
+dimension, for which no tabulated functional exists.  So we do what is done in
+practice: solve the uniform gas once, tabulate, interpolate.  For a spinless
+1D gas <span class="math notranslate nohighlight">\(k_F = \pi n\)</span> and <span class="math notranslate nohighlight">\(\rho^{(1)}(s) = \sin(k_F s)/\pi s\)</span>, so</p>
+<div class="math notranslate nohighlight">
+\[\epsilon_x(n) = -\frac1n\int_0^\infty ds\, v(s)
+  \left[\frac{\sin(k_F s)}{\pi s}\right]^2 .\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span><span class="o">.</span><span class="n">demo_lda_1d</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+3. Building a local functional for the model interaction
+==========================================================================
+The trap of chapters 2 and 6 has a softened Coulomb interaction in
+one dimension, for which no closed-form exchange functional
+exists.  So we do what is done in practice: solve the uniform gas
+once, tabulate, and interpolate.  For a spinless one-dimensional
+gas k_F = pi n, the density matrix is sin(k_F s)/(pi s), and
+   eps_x(n) = -(1/n) int_0^inf ds v(s) [sin(k_F s)/(pi s)]^2.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>       n       eps_x(n)         v_x(n)
+   0.050    -0.17352608    -0.29740316
+   0.100    -0.27855522    -0.45906496
+   0.200    -0.42332628    -0.65789106
+   0.400    -0.59557914    -0.84878595
+   0.800    -0.75884371    -0.96587633
+   1.500    -0.86548980    -0.99703512
+   2.500    -0.91895548    -0.99989688
+
+Two checks.  The interpolated energy density must reproduce the
+integrated values it was built from, and the potential must be
+the derivative of the energy density:
+   max |interpolated - integrated| = 1.47e-09
+   max |v_x - d(n eps_x)/dn|       = 1.96e-10
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lda</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">ExchangeLDA1D</span><span class="p">()</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">lda</span><span class="o">.</span><span class="n">eps_x</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\epsilon_x(n)$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">lda</span><span class="o">.</span><span class="n">v_x</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$v_x(n) = d(n\epsilon_x)/dn$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lda</span><span class="o">.</span><span class="n">grid</span><span class="p">[::</span><span class="mi">12</span><span class="p">],</span> <span class="n">lda</span><span class="o">.</span><span class="n">table</span><span class="p">[::</span><span class="mi">12</span><span class="p">],</span> <span class="s2">&quot;k.&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;tabulated points&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$n$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the exchange functional we just built&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/281337b1f5676dcf384bd0141deb4c887b291d87694277f4518fe77478cc85ea.png" src="_images/281337b1f5676dcf384bd0141deb4c887b291d87694277f4518fe77478cc85ea.png" />
+</div>
+</div>
+</section>
+<section id="solving-the-kohn-sham-equations">
+<h2><span class="section-number">9.4. </span>4. Solving the Kohn-Sham equations<a class="headerlink" href="#solving-the-kohn-sham-equations" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\left(-\frac{\hbar^2}{2m}\nabla^2 + v_{\rm KS}(\mathbf r)\right)
+  \psi_i = \varepsilon_i\psi_i,
+\qquad
+v_{\rm KS} = v_{\rm ext} + v_{\rm H}[n] + v_{\rm xc}[n],\]</div>
+<p>iterated to self-consistency exactly as in Chapter 6.  Same trap, same basis
+of eight oscillator orbitals, same interaction — so Kohn-Sham, Hartree-Fock
+and (for two particles) the exact answer are directly comparable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span><span class="o">.</span><span class="n">demo_kohn_sham</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+4. Solving the Kohn-Sham equations
+==========================================================================
+The same trap, the same basis of eight oscillator orbitals and the
+same interaction as the Hartree-Fock calculation of chapter 6, so
+that the two can be compared directly.  For two particles the
+exact answer is available as well.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  N    E(Kohn-Sham)   E(Hartree-Fock)     E(exact)   KS iter   HF iter
+  1      0.54752674        0.50000000   0.50000000        56         2
+  2      2.72022768        2.66308878   2.65923049        58        20
+  3      6.45108052        6.39016133           --        58        20
+  4     11.68602229       11.62305385           --        58        21
+
+Kohn-Sham lies close to Hartree-Fock but not on top of it, and the
+difference is not correlation -- we have put no correlation
+functional in.  It is the error of treating exchange locally, plus
+the self-interaction discussed below.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lda</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">ExchangeLDA1D</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">))</span>
+
+<span class="n">ks</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">KohnSham1D</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">lda</span><span class="o">=</span><span class="n">lda</span><span class="p">);</span> <span class="n">ks</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">hf</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">hartree_fock</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">grid</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">oscillator_basis</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">n_free</span> <span class="o">=</span> <span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">n_hf</span> <span class="o">=</span> <span class="p">((</span><span class="n">phi</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">hf</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">][:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">ks</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Kohn-Sham&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">n_hf</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Hartree-Fock&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">n_free</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;non-interacting&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$x$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$n(x)$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;densities, $N = 4$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">it</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">drifts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">ks</span><span class="o">.</span><span class="n">history</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">drifts</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;iteration&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;max $|\Delta n|$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;self-consistency&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/4b8f1e6ed81ed376ed6a254b022afcceb9ba0614e6f8d23acf9c91dcd62e427f.png" src="_images/4b8f1e6ed81ed376ed6a254b022afcceb9ba0614e6f8d23acf9c91dcd62e427f.png" />
+</div>
+</div>
+</section>
+<section id="the-self-interaction-error">
+<h2><span class="section-number">9.5. </span>5. The self-interaction error<a class="headerlink" href="#the-self-interaction-error" title="Link to this heading">#</a></h2>
+<p>For one particle there is nothing to interact with, so the exact energy is the
+oscillator ground state, <span class="math notranslate nohighlight">\(0.5\)</span>.  Hartree-Fock gets this identically right —
+the direct and exchange terms cancel term by term.  A local functional cannot,
+because it sees only the density, and the density of one electron is
+indistinguishable from the density of half of two.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span><span class="o">.</span><span class="n">demo_self_interaction</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+5. The self-interaction error
+==========================================================================
+For one particle there is nothing to interact with, so the exact
+energy is the oscillator ground state, 0.5.  Hartree-Fock gets
+this right identically: the direct and exchange terms cancel term
+by term.  A local exchange functional cannot, because it knows
+only the density, and the density of one electron looks exactly
+like the density of half of two.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   exact                     0.50000000
+   Hartree-Fock              0.50000000
+   Kohn-Sham (LDA x)         0.54752674
+
+   the Kohn-Sham pieces:
+      Hartree energy         0.60855522
+      exchange energy       -0.56166291
+      sum                    0.04689232   (should vanish)
+      particle number        1.00000000
+
+The residue is the self-interaction error.  It is the reason plain
+LDA overbinds anions, underestimates barriers and gives band gaps
+that are too small, and it is what self-interaction corrections and
+hybrid functionals -- which put back a fraction of exact exchange --
+are designed to remove.
+</pre></div>
+</div>
+</div>
+</div>
+<p>The residue is what makes plain LDA overbind anions, underestimate reaction
+barriers and give band gaps that are too small: an electron is spuriously
+repelled by itself and spreads out to reduce that repulsion.  Removing it is
+the business of self-interaction corrections and of hybrid functionals, which
+mix back a fraction of exact exchange.</p>
+</section>
+<section id="how-good-is-the-local-approximation">
+<h2><span class="section-number">9.6. </span>6. How good is the local approximation?<a class="headerlink" href="#how-good-is-the-local-approximation" title="Link to this heading">#</a></h2>
+<p>We can isolate the error of <em>locality</em> alone by evaluating, on one and the
+same density, both the exact exchange energy of the determinant and the local
+estimate.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span><span class="o">.</span><span class="n">demo_local_approximation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+6. How good is the local approximation?
+==========================================================================
+We can isolate the error of locality by comparing, on the *same*
+density, the exact exchange energy of a determinant with the local
+estimate.  Take the Kohn-Sham orbitals, compute both, and look at
+the ratio.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  N     E_x (exact)       E_x (LDA)     ratio
+  1     -0.60855522     -0.56166291    0.9229
+  2     -1.33077771     -1.27749456    0.9600
+  3     -2.11087395     -2.05548416    0.9738
+  4     -2.92523775     -2.86866697    0.9807
+
+The local approximation recovers most of the exchange energy, and
+it recovers more of it as the particle number grows: the ratio
+climbs from 0.92 to 0.98 between one and four particles.  That is
+exactly what the construction promises -- the density becomes
+smoother on the scale of the local Fermi wavelength, so the
+uniform-gas estimate becomes more appropriate.  For one particle
+it is worst, because there the exchange energy is nothing but the
+cancellation of a spurious self-interaction.  In three dimensions
+the corresponding ratio is close to 0.9 for atoms, which is why
+gradient corrections were introduced.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Ns</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">ratios</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="n">Ns</span><span class="p">:</span>
+    <span class="n">ks</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">KohnSham1D</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">lda</span><span class="o">=</span><span class="n">lda</span><span class="p">);</span> <span class="n">ks</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">vbar</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">trap_two_body</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">occ</span> <span class="o">=</span> <span class="n">ks</span><span class="o">.</span><span class="n">C</span><span class="p">[:,</span> <span class="p">:</span><span class="n">N</span><span class="p">]</span>
+    <span class="n">both</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ai,bj,abcd,ci,dj-&gt;&quot;</span><span class="p">,</span> <span class="n">occ</span><span class="p">,</span> <span class="n">occ</span><span class="p">,</span> <span class="n">vbar</span><span class="p">,</span> <span class="n">occ</span><span class="p">,</span> <span class="n">occ</span><span class="p">)</span>
+    <span class="n">exact_x</span> <span class="o">=</span> <span class="n">both</span> <span class="o">-</span> <span class="n">ks</span><span class="o">.</span><span class="n">hartree_energy</span><span class="p">(</span><span class="n">ks</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">ratios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ks</span><span class="o">.</span><span class="n">exchange_energy</span><span class="p">(</span><span class="n">ks</span><span class="o">.</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">exact_x</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.5</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">ratios</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">Ns</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$N$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$E_x^{\rm local} / E_x^{\rm exact}$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the local approximation improves as the density smooths out&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/7e75b78a34ee02be0dfa0b659c62e99379e1fa1fa7f24778fb743f4a2b574472.png" src="_images/7e75b78a34ee02be0dfa0b659c62e99379e1fa1fa7f24778fb743f4a2b574472.png" />
+</div>
+</div>
+</section>
+<section id="thomas-fermi-and-why-orbitals-came-back">
+<h2><span class="section-number">9.7. </span>7. Thomas-Fermi, and why orbitals came back<a class="headerlink" href="#thomas-fermi-and-why-orbitals-came-back" title="Link to this heading">#</a></h2>
+<p>Thomas-Fermi applies the local approximation to the kinetic energy as well,
+which removes orbitals entirely and leaves an algebraic equation for <span class="math notranslate nohighlight">\(n(x)\)</span>.
+It is enormously cheaper — and it fails, not mainly in magnitude but in
+structure: the density it produces has no shells at all, and Teller proved
+that within the model no molecule is bound.  The Kohn-Sham construction exists
+precisely to avoid this, by keeping orbitals for the one term that a local
+approximation handles badly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span><span class="o">.</span><span class="n">demo_thomas_fermi</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+7. Thomas-Fermi, and why orbitals came back
+==========================================================================
+The Thomas-Fermi model applies the local approximation to the
+kinetic energy as well.  For the one-dimensional trap the kinetic
+density is t[n] = (pi^2/6) n^3, and minimising
+   E[n] = int dx {t[n] + x^2 n / 2} + E_H[n] + E_x[n]
+gives an algebraic equation for n(x) with no orbitals at all.
+
+The trouble is visible already for non-interacting particles,
+where the exact kinetic energy is known:
+  N    T (exact)   T (Thomas-Fermi)     ratio
+  1     0.250000           0.302300    1.2092
+  2     1.000000           1.074844    1.0748
+  3     2.250000           2.340025    1.0400
+  4     4.000000           4.101805    1.0255
+  6     9.000000           9.120038    1.0133
+  8    16.000000          16.134286    1.0084
+
+Thomas-Fermi overshoots, badly for one particle and by less than
+one per cent by eight, approaching the exact value from above as
+the density smooths out.  But the error in magnitude is not the
+real problem.  What the model misses is structure: the density it
+produces is smooth and featureless, with no shells whatever, it
+has no discrete spectrum to speak of, and it famously cannot bind
+molecules -- Teller proved this.  The Kohn-Sham construction exists
+precisely to avoid this.  By reintroducing orbitals for the
+kinetic energy alone -- the one term we cannot approximate
+locally -- it keeps shell structure exactly while leaving only the
+small remainder to a local functional.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">dft</span><span class="o">.</span><span class="n">oscillator_basis</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">dx</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Ns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="n">Ns</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">exact</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span> <span class="o">@</span> <span class="n">grid</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+    <span class="n">ratio</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">dft</span><span class="o">.</span><span class="n">ThomasFermi</span><span class="o">.</span><span class="n">kinetic_density</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">/</span> <span class="n">exact</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Ns</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="s2">&quot;o-&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$N$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$T_{\rm TF} / T_{\rm exact}$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Thomas-Fermi kinetic energy&quot;</span><span class="p">)</span>
+
+<span class="n">n8</span> <span class="o">=</span> <span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">n8</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact (orbitals)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$x$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$n(x)$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the shell structure Thomas-Fermi cannot produce&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8e69e608c896734f3cc110c0e624026e3e90576923c3efa3c3eb64bac550b47d.png" src="_images/8e69e608c896734f3cc110c0e624026e3e90576923c3efa3c3eb64bac550b47d.png" />
+</div>
+</div>
+</section>
+<section id="the-full-program">
+<h2><span class="section-number">9.8. </span>The full program<a class="headerlink" href="#the-full-program" title="Link to this heading">#</a></h2>
+<p>Everything above lives in <code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/dft.py</span></code>, which
+runs as a script and prints all seven demonstrations of the chapter.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">dft</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&quot;&quot;&quot;
+Density functional theory: densities, functionals and the Kohn-Sham equations.
+
+Companion code to chapter 8 of *Quantum mechanics for Many-particle Systems*.
+
+Three things are done here.
+
+First, the local density approximation is *derived* rather than quoted.  For
+the three-dimensional electron gas the exchange energy per particle is
+obtained from the one-body density matrix of the filled Fermi sea and checked
+against the analytic 0.916/r_s of chapter 6.  The same construction is then
+carried out numerically for a one-dimensional gas interacting through the
+softened Coulomb potential used in chapters 2 and 6, which produces a
+tabulated exchange functional for exactly that system.
+
+Second, the Kohn-Sham equations are solved self-consistently in the same
+oscillator basis as the Hartree-Fock calculation of chapter 6, so that
+Hartree-Fock, Kohn-Sham and (for two particles) the exact answer can be
+compared for one and the same Hamiltonian.
+
+Third, the two characteristic errors of the local approximation are exhibited:
+the exchange hole is too shallow and too short-ranged, and the self-interaction
+that Hartree-Fock cancels exactly survives in the Kohn-Sham energy.
+
+    ExchangeLDA3D   -- eps_x[n] for the three-dimensional electron gas
+    ExchangeLDA1D   -- the same, built numerically for the model interaction
+    ThomasFermi     -- the kinetic-energy functional and its failure
+    KohnSham1D      -- a self-consistent Kohn-Sham solver
+    exchange_hole   -- the pair correlation function of the uniform gas
+
+Author: Morten Hjorth-Jensen
+&quot;&quot;&quot;
+
+from math import factorial, pi
+
+import numpy as np
+from numpy.polynomial.hermite import hermval
+from scipy.linalg import eigh
+
+
+# ---------------------------------------------------------------------------
+#  The three-dimensional electron gas
+# ---------------------------------------------------------------------------
+class ExchangeLDA3D:
+    &quot;&quot;&quot;Exchange energy per particle of the homogeneous electron gas.
+
+    The one-body density matrix of the filled Fermi sea is
+
+        rho(s) = 3 n [sin(k_F s) - k_F s cos(k_F s)] / (k_F s)^3 ,
+
+    and the exchange energy is
+
+        E_x / V = -(1/4) int d^3s  v(s) |rho(s)|^2 ,
+
+    with v(s) = 1/s in Hartree atomic units.  The integral can be done in
+    closed form and gives the familiar
+
+        eps_x(n) = -(3/4) (3/pi)^(1/3) n^(1/3) .
+    &quot;&quot;&quot;
+
+    @staticmethod
+    def eps_x(n):
+        &quot;&quot;&quot;Exchange energy per particle, in Hartree.&quot;&quot;&quot;
+        n = np.asarray(n, dtype=float)
+        return -0.75 * (3.0 / pi) ** (1.0 / 3.0) * n ** (1.0 / 3.0)
+
+    @staticmethod
+    def v_x(n):
+        &quot;&quot;&quot;Exchange potential  d(n eps_x)/dn = (4/3) eps_x.&quot;&quot;&quot;
+        return (4.0 / 3.0) * ExchangeLDA3D.eps_x(n)
+
+    @staticmethod
+    def density_from_rs(rs):
+        &quot;&quot;&quot;n from the dimensionless radius r_s (in units of the Bohr radius).&quot;&quot;&quot;
+        return 3.0 / (4.0 * pi * np.asarray(rs, dtype=float) ** 3)
+
+    @staticmethod
+    def coefficient_rydberg():
+        &quot;&quot;&quot;The 0.916 of chapter 6, obtained from the LDA expression.&quot;&quot;&quot;
+        return 0.75 * (3.0 / pi) ** (1.0 / 3.0) \
+            * (3.0 / (4.0 * pi)) ** (1.0 / 3.0) * 2.0
+
+    @staticmethod
+    def kinetic_density(n):
+        &quot;&quot;&quot;Thomas-Fermi kinetic energy density, in Hartree per unit volume.&quot;&quot;&quot;
+        n = np.asarray(n, dtype=float)
+        return 0.3 * (3.0 * pi ** 2) ** (2.0 / 3.0) * n ** (5.0 / 3.0)
+
+
+def exchange_hole(y):
+    &quot;&quot;&quot;The exchange part of the pair correlation function of the 3D gas.
+
+    With y = k_F s,
+
+        g(s) - 1 = -(9/2) [ (sin y - y cos y) / y^3 ]^2 ,
+
+    for a spin-unpolarised gas, so that g(0) = 1/2: two electrons of the same
+    spin never coincide, two of opposite spin are uncorrelated at this level.
+    &quot;&quot;&quot;
+    y = np.asarray(y, dtype=float)
+    out = np.empty_like(y)
+    small = np.abs(y) &lt; 1e-8
+    out[small] = 1.0 / 3.0
+    ys = y[~small]
+    out[~small] = (np.sin(ys) - ys * np.cos(ys)) / ys ** 3
+    return 1.0 - 4.5 * out ** 2
+
+
+# ---------------------------------------------------------------------------
+#  A one-dimensional gas with the interaction of chapters 2 and 6
+# ---------------------------------------------------------------------------
+class ExchangeLDA1D:
+    &quot;&quot;&quot;Exchange functional of a 1D gas of spinless fermions.
+
+    The interaction is the softened Coulomb potential of chapters 2 and 6,
+
+        v(s) = strength / sqrt(s^2 + softening^2) ,
+
+    for which no closed form exists.  We therefore do what is done in
+    practice: solve the uniform gas once, tabulate eps_x(n), and interpolate.
+
+    At density n the Fermi momentum of a spinless one-dimensional gas is
+    k_F = pi n and the one-body density matrix is
+
+        rho(s) = sin(k_F s) / (pi s) ,
+
+    so that
+
+        eps_x(n) = -(1/n) int_0^inf ds  v(s) [sin(k_F s) / (pi s)]^2 ,
+
+    the factor two from the two half-lines cancelling the one half of the
+    exchange integral.
+    &quot;&quot;&quot;
+
+    def __init__(self, strength=1.0, softening=0.5,
+                 n_max=3.0, n_points=241, cutoff=400.0, n_quad=200001):
+        self.strength = strength
+        self.softening = softening
+        self.grid = np.linspace(1e-4, n_max, n_points)
+        self.table = np.array([self._integrate(n) for n in self.grid])
+        # a smooth interpolant, plus its derivative for the potential
+        self._spline = None
+
+    # ------------------------------------------------------------------
+    def interaction(self, s):
+        return self.strength / np.sqrt(s ** 2 + self.softening ** 2)
+
+    def _integrate(self, n, cutoff=400.0, n_quad=200001):
+        &quot;&quot;&quot;eps_x(n) by Simpson integration on a fine grid.&quot;&quot;&quot;
+        k_f = pi * n
+        s = np.linspace(0.0, cutoff, n_quad)
+        ds = s[1] - s[0]
+        rho = np.empty_like(s)
+        rho[0] = k_f / pi
+        rho[1:] = np.sin(k_f * s[1:]) / (pi * s[1:])
+        f = self.interaction(s) * rho ** 2
+        # composite Simpson
+        integral = ds / 3.0 * (f[0] + f[-1]
+                               + 4.0 * f[1:-1:2].sum()
+                               + 2.0 * f[2:-2:2].sum())
+        return -integral / n
+
+    # ------------------------------------------------------------------
+    def _build_spline(self):
+        from scipy.interpolate import CubicSpline
+        self._spline = CubicSpline(self.grid, self.grid * self.table)
+        return self._spline
+
+    def energy_density(self, n):
+        &quot;&quot;&quot;n * eps_x(n), the exchange energy per unit length.&quot;&quot;&quot;
+        if self._spline is None:
+            self._build_spline()
+        n = np.clip(np.asarray(n, dtype=float), 0.0, self.grid[-1])
+        return np.where(n &lt; self.grid[0], 0.0, self._spline(n))
+
+    def eps_x(self, n):
+        n = np.asarray(n, dtype=float)
+        out = np.zeros_like(n)
+        mask = n &gt; self.grid[0]
+        out[mask] = self.energy_density(n[mask]) / n[mask]
+        return out
+
+    def v_x(self, n):
+        &quot;&quot;&quot;d(n eps_x)/dn, the exchange potential.&quot;&quot;&quot;
+        if self._spline is None:
+            self._build_spline()
+        n = np.clip(np.asarray(n, dtype=float), 0.0, self.grid[-1])
+        return np.where(n &lt; self.grid[0], 0.0, self._spline(n, 1))
+
+
+# ---------------------------------------------------------------------------
+#  Thomas-Fermi
+# ---------------------------------------------------------------------------
+class ThomasFermi:
+    &quot;&quot;&quot;The Thomas-Fermi model for the one-dimensional trap.
+
+    The kinetic functional of a spinless one-dimensional gas follows from the
+    same Fermi-sea average that gives Thomas-Fermi in three dimensions,
+
+        t[n] = (pi^2 / 6) n^3 ,
+
+    since  T/L = int_{-k_F}^{k_F} dk/(2 pi) k^2/2 = k_F^3/(6 pi)
+    and  k_F = pi n.  Minimising
+
+        E[n] = int dx { t[n] + v_ext n } + E_H[n] + E_x[n]
+
+    subject to a fixed particle number gives an algebraic equation for n(x),
+    with no orbitals anywhere -- which is exactly why it has no shell
+    structure.
+    &quot;&quot;&quot;
+
+    @staticmethod
+    def kinetic_density(n):
+        return (pi ** 2 / 6.0) * np.asarray(n, dtype=float) ** 3
+
+    @staticmethod
+    def kinetic_potential(n):
+        return 0.5 * pi ** 2 * np.asarray(n, dtype=float) ** 2
+
+
+# ---------------------------------------------------------------------------
+#  The trap: the same system as chapters 2 and 6
+# ---------------------------------------------------------------------------
+def oscillator_basis(n_orbitals=8, grid=None):
+    &quot;&quot;&quot;Harmonic-oscillator eigenfunctions on a grid, and the grid itself.&quot;&quot;&quot;
+    if grid is None:
+        grid = np.linspace(-8.0, 8.0, 401)
+    phi = np.zeros((n_orbitals, grid.size))
+    for k in range(n_orbitals):
+        coef = np.zeros(k + 1)
+        coef[k] = 1.0
+        norm = 1.0 / np.sqrt(2.0 ** k * factorial(k) * np.sqrt(pi))
+        phi[k] = norm * hermval(grid, coef) * np.exp(-0.5 * grid ** 2)
+    return grid, phi
+
+
+class KohnSham1D:
+    &quot;&quot;&quot;Self-consistent Kohn-Sham for N spinless fermions in a 1D trap.
+
+    The external potential is the harmonic trap, so the one-body part is
+    diagonal in the oscillator basis with eigenvalues k + 1/2.  The
+    interaction is the softened Coulomb potential of chapters 2 and 6.  At
+    each iteration we build
+
+        n(x)   = sum_i |psi_i(x)|^2 ,
+        v_H(x) = int dy v(x, y) n(y) ,
+        v_x(x) = v_x^unif( n(x) )        (the local approximation)
+
+    project v_H + v_x onto the oscillator basis, diagonalise, and repeat.
+    &quot;&quot;&quot;
+
+    def __init__(self, n_particles, n_orbitals=8, strength=1.0,
+                 softening=0.5, lda=None, grid=None):
+        self.N = n_particles
+        self.n_orbitals = n_orbitals
+        self.strength = strength
+        self.softening = softening
+        self.grid, self.phi = oscillator_basis(n_orbitals, grid)
+        self.dx = self.grid[1] - self.grid[0]
+        self.h0 = np.diag(np.arange(n_orbitals) + 0.5)
+        self.interaction = strength / np.sqrt(
+            (self.grid[:, None] - self.grid[None, :]) ** 2 + softening ** 2)
+        self.lda = lda if lda is not None else ExchangeLDA1D(strength, softening)
+
+    # ------------------------------------------------------------------
+    def density(self, C):
+        occupied = self.phi.T @ C[:, :self.N]        # (grid, N)
+        return (occupied ** 2).sum(axis=1)
+
+    def hartree_potential(self, n):
+        return self.interaction @ n * self.dx
+
+    def project(self, potential):
+        &quot;&quot;&quot;&lt;a| potential |b&gt; on the grid.&quot;&quot;&quot;
+        return (self.phi * potential) @ self.phi.T * self.dx
+
+    # ------------------------------------------------------------------
+    def hartree_energy(self, n):
+        return 0.5 * float(n @ (self.interaction @ n)) * self.dx ** 2
+
+    def exchange_energy(self, n):
+        return float(np.sum(self.lda.energy_density(n)) * self.dx)
+
+    def total_energy(self, eps, n):
+        &quot;&quot;&quot;E = sum_i eps_i - E_H + E_x - int v_x n.&quot;&quot;&quot;
+        band = float(eps[:self.N].sum())
+        v_x = self.lda.v_x(n)
+        return (band - self.hartree_energy(n) + self.exchange_energy(n)
+                - float(n @ v_x) * self.dx)
+
+    # ------------------------------------------------------------------
+    def run(self, max_iter=400, tol=1e-10, mixing=0.3, verbose=False):
+        C = np.eye(self.n_orbitals)
+        n = self.density(C)
+        history = []
+        energy = np.nan
+        for iteration in range(1, max_iter + 1):
+            v_h = self.hartree_potential(n)
+            v_x = self.lda.v_x(n)
+            F = self.h0 + self.project(v_h + v_x)
+            eps, C = eigh(F)
+            n_new = self.density(C)
+            drift = float(np.abs(n_new - n).max())
+            n = (1.0 - mixing) * n + mixing * n_new
+            energy = self.total_energy(eps, n)
+            history.append((iteration, energy, drift))
+            if verbose:
+                print(f&quot;   {iteration:4d}  E = {energy:14.10f}   &quot;
+                      f&quot;max |dn| = {drift:.3e}&quot;)
+            if drift &lt; tol:
+                break
+        self.C, self.eps, self.n, self.E = C, eps, n, energy
+        self.iterations = iteration
+        self.history = history
+        return self.E
+
+    # ------------------------------------------------------------------
+    def components(self):
+        &quot;&quot;&quot;The pieces of the total energy, for inspection.&quot;&quot;&quot;
+        occupied = self.phi.T @ self.C[:, :self.N]
+        kinetic = float(np.einsum(&quot;ai,ab,bi-&gt;&quot;, self.C[:, :self.N],
+                                  self.h0, self.C[:, :self.N]))
+        return dict(band=float(self.eps[:self.N].sum()),
+                    one_body=kinetic,
+                    hartree=self.hartree_energy(self.n),
+                    exchange=self.exchange_energy(self.n),
+                    total=self.E,
+                    particles=float(self.n.sum() * self.dx))
+
+
+# ---------------------------------------------------------------------------
+#  Hartree-Fock in the same basis, for comparison
+# ---------------------------------------------------------------------------
+def trap_two_body(n_orbitals=8, strength=1.0, softening=0.5, grid=None):
+    &quot;&quot;&quot;Antisymmetrised matrix elements of the softened Coulomb interaction.&quot;&quot;&quot;
+    grid, phi = oscillator_basis(n_orbitals, grid)
+    dx = grid[1] - grid[0]
+    interaction = strength / np.sqrt(
+        (grid[:, None] - grid[None, :]) ** 2 + softening ** 2)
+    direct = np.einsum(&quot;ax,by,xy,cx,dy-&gt;abcd&quot;,
+                       phi, phi, interaction * dx * dx, phi, phi,
+                       optimize=True)
+    return direct - direct.transpose(0, 1, 3, 2)
+
+
+def hartree_fock(n_particles, n_orbitals=8, strength=1.0, softening=0.5,
+                 max_iter=400, tol=1e-12):
+    &quot;&quot;&quot;The Hartree-Fock calculation of chapter 6, repeated here.&quot;&quot;&quot;
+    h0 = np.diag(np.arange(n_orbitals) + 0.5)
+    vbar = trap_two_body(n_orbitals, strength, softening)
+    C = np.eye(n_orbitals)
+    previous = None
+    for iteration in range(1, max_iter + 1):
+        rho = C[:, :n_particles] @ C[:, :n_particles].T
+        F = h0 + np.einsum(&quot;acbd,dc-&gt;ab&quot;, vbar, rho)
+        eps, C = eigh(F)
+        if previous is not None and abs(eps.sum() - previous) &lt; tol:
+            break
+        previous = eps.sum()
+    occ = C[:, :n_particles]
+    one = np.einsum(&quot;ab,ab-&gt;&quot;, h0, occ @ occ.T)
+    two = 0.5 * np.einsum(&quot;ai,bj,abcd,ci,dj-&gt;&quot;, occ, occ, vbar, occ, occ)
+    return dict(energy=one + two, eps=eps, C=C, iterations=iteration,
+                vbar=vbar)
+
+
+def exact_two_particle(n_orbitals=8, strength=1.0, softening=0.5):
+    &quot;&quot;&quot;Full configuration interaction for two spinless fermions.&quot;&quot;&quot;
+    from itertools import combinations
+    vbar = trap_two_body(n_orbitals, strength, softening)
+    sp = np.arange(n_orbitals) + 0.5
+    pairs = list(combinations(range(n_orbitals), 2))
+    dim = len(pairs)
+    H = np.zeros((dim, dim))
+    for a, (i, j) in enumerate(pairs):
+        H[a, a] += sp[i] + sp[j]
+        for b, (k, l) in enumerate(pairs):
+            H[a, b] += vbar[i, j, k, l]
+    return float(np.linalg.eigvalsh(H)[0]), dim
+
+
+# ---------------------------------------------------------------------------
+#  Demonstrations
+# ---------------------------------------------------------------------------
+def demo_lda_from_the_gas():
+    print(&quot;=&quot; * 74)
+    print(&quot;1. Where the local density approximation comes from&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The exchange energy per particle of the three-dimensional gas,&quot;)
+    print(&quot;   eps_x(n) = -(3/4)(3/pi)^(1/3) n^(1/3),&quot;)
+    print(&quot;is the whole content of the local density approximation for&quot;)
+    print(&quot;exchange.  Evaluated on the uniform gas it must reproduce the&quot;)
+    print(&quot;0.916/r_s of chapter 6, and it does:&quot;)
+    print()
+    print(f&quot;{&#39;r_s&#39;:&gt;8s} {&#39;eps_x [Ha]&#39;:&gt;14s} {&#39;eps_x [Ry]&#39;:&gt;14s} &quot;
+          f&quot;{&#39;-0.916/r_s&#39;:&gt;14s}&quot;)
+    for rs in (1.0, 2.0, 4.0, 4.8253, 6.0):
+        n = ExchangeLDA3D.density_from_rs(rs)
+        e = float(ExchangeLDA3D.eps_x(n))
+        print(f&quot;{rs:8.4f} {e:14.6f} {2 * e:14.6f} {-0.916 / rs:14.6f}&quot;)
+    print()
+    print(f&quot;the coefficient itself: {ExchangeLDA3D.coefficient_rydberg():.6f}&quot;)
+    print(&quot;against the 0.9163 exchange coefficient of chapter 6.  This is not a&quot;)
+    print(&quot;coincidence but a tautology: the LDA is *defined* so that it is&quot;)
+    print(&quot;exact for the uniform gas.  What is not obvious, and what makes it&quot;)
+    print(&quot;useful, is that it remains good when the density varies.&quot;)
+    print()
+    print(&quot;The Thomas-Fermi kinetic energy density comes from the same&quot;)
+    print(&quot;calculation, and equals the kinetic term of chapter 6 divided by&quot;)
+    print(&quot;the volume:&quot;)
+    print(f&quot;{&#39;r_s&#39;:&gt;8s} {&#39;t_TF [Ha/a0^3]&#39;:&gt;18s} {&#39;3/5 eps_F [Ha]&#39;:&gt;18s}&quot;)
+    for rs in (1.0, 2.0, 4.0):
+        n = ExchangeLDA3D.density_from_rs(rs)
+        t = float(ExchangeLDA3D.kinetic_density(n))
+        k_f = (3.0 * pi ** 2 * n) ** (1.0 / 3.0)
+        print(f&quot;{rs:8.4f} {t:18.8f} {0.6 * 0.5 * k_f ** 2 * n:18.8f}&quot;)
+
+
+def demo_exchange_hole():
+    print(&quot;=&quot; * 74)
+    print(&quot;2. The exchange hole&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Exchange is not a mysterious correction: it is the statement that&quot;)
+    print(&quot;each electron carries around it a region depleted of electrons of&quot;)
+    print(&quot;the same spin.  For the uniform gas the pair correlation function&quot;)
+    print(&quot;is known exactly at the Hartree-Fock level,&quot;)
+    print(&quot;   g(s) = 1 - (9/2)[(sin y - y cos y)/y^3]^2,   y = k_F s.&quot;)
+    print()
+    print(f&quot;{&#39;k_F s&#39;:&gt;8s} {&#39;g(s)&#39;:&gt;12s}   interpretation&quot;)
+    for y in (0.0, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0):
+        g = float(exchange_hole(np.array([y]))[0])
+        note = &quot;&quot;
+        if y == 0.0:
+            note = &quot;g(0) = 1/2: same spins never coincide&quot;
+        elif y &gt; 10:
+            note = &quot;the hole has healed&quot;
+        print(f&quot;{y:8.2f} {g:12.6f}   {note}&quot;)
+    print()
+    print(&quot;The hole integrates to exactly one missing electron,&quot;)
+    print(&quot;   n int d^3s [g(s) - 1] = (4 / 3 pi) int_0^inf dy y^2 [g(y) - 1]&quot;)
+    print(&quot;                         = -1,&quot;)
+    print(&quot;which is the sum rule that any decent approximate functional must&quot;)
+    print(&quot;respect.  Checking it numerically:&quot;)
+    y = np.linspace(1e-8, 400.0, 4000001)
+    integrand = y ** 2 * (exchange_hole(y) - 1.0)
+    total = np.trapezoid(integrand, y) * 4.0 / (3.0 * pi)
+    print(f&quot;   (4 / 3 pi) int dy y^2 [g(y) - 1] = {total:.6f}&quot;)
+    print()
+    print(&quot;The exact value of the integral is -pi/6 times 9/2, and the&quot;)
+    print(&quot;prefactor turns it into exactly -1.  Local functionals are built&quot;)
+    print(&quot;to satisfy this sum rule even when they get the shape of the hole&quot;)
+    print(&quot;wrong, which is a large part of why they work at all.&quot;)
+
+
+def demo_lda_1d():
+    print(&quot;=&quot; * 74)
+    print(&quot;3. Building a local functional for the model interaction&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The trap of chapters 2 and 6 has a softened Coulomb interaction in&quot;)
+    print(&quot;one dimension, for which no closed-form exchange functional&quot;)
+    print(&quot;exists.  So we do what is done in practice: solve the uniform gas&quot;)
+    print(&quot;once, tabulate, and interpolate.  For a spinless one-dimensional&quot;)
+    print(&quot;gas k_F = pi n, the density matrix is sin(k_F s)/(pi s), and&quot;)
+    print(&quot;   eps_x(n) = -(1/n) int_0^inf ds v(s) [sin(k_F s)/(pi s)]^2.&quot;)
+    print()
+    lda = ExchangeLDA1D()
+    print(f&quot;{&#39;n&#39;:&gt;8s} {&#39;eps_x(n)&#39;:&gt;14s} {&#39;v_x(n)&#39;:&gt;14s}&quot;)
+    for n in (0.05, 0.1, 0.2, 0.4, 0.8, 1.5, 2.5):
+        arr = np.array([n])
+        print(f&quot;{n:8.3f} {lda.eps_x(arr)[0]:14.8f} &quot;
+              f&quot;{lda.v_x(arr)[0]:14.8f}&quot;)
+    print()
+    print(&quot;Two checks.  The interpolated energy density must reproduce the&quot;)
+    print(&quot;integrated values it was built from, and the potential must be&quot;)
+    print(&quot;the derivative of the energy density:&quot;)
+    test = np.array([0.15, 0.35, 0.9, 1.8])
+    direct = np.array([lda._integrate(float(x)) for x in test])
+    print(f&quot;   max |interpolated - integrated| = &quot;
+          f&quot;{np.abs(lda.eps_x(test) - direct).max():.2e}&quot;)
+    h = 1e-5
+    numeric = (lda.energy_density(test + h)
+               - lda.energy_density(test - h)) / (2 * h)
+    print(f&quot;   max |v_x - d(n eps_x)/dn|       = &quot;
+          f&quot;{np.abs(lda.v_x(test) - numeric).max():.2e}&quot;)
+
+
+def demo_kohn_sham():
+    print(&quot;=&quot; * 74)
+    print(&quot;4. Solving the Kohn-Sham equations&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The same trap, the same basis of eight oscillator orbitals and the&quot;)
+    print(&quot;same interaction as the Hartree-Fock calculation of chapter 6, so&quot;)
+    print(&quot;that the two can be compared directly.  For two particles the&quot;)
+    print(&quot;exact answer is available as well.&quot;)
+    print()
+    lda = ExchangeLDA1D()
+    print(f&quot;{&#39;N&#39;:&gt;3s} {&#39;E(Kohn-Sham)&#39;:&gt;15s} {&#39;E(Hartree-Fock)&#39;:&gt;17s} &quot;
+          f&quot;{&#39;E(exact)&#39;:&gt;12s} {&#39;KS iter&#39;:&gt;9s} {&#39;HF iter&#39;:&gt;9s}&quot;)
+    for N in (1, 2, 3, 4):
+        ks = KohnSham1D(N, lda=lda)
+        ks.run()
+        hf = hartree_fock(N)
+        if N == 2:
+            exact, _ = exact_two_particle()
+            exact_str = f&quot;{exact:12.8f}&quot;
+        elif N == 1:
+            exact_str = f&quot;{0.5:12.8f}&quot;
+        else:
+            exact_str = f&quot;{&#39;--&#39;:&gt;12s}&quot;
+        print(f&quot;{N:3d} {ks.E:15.8f} {hf[&#39;energy&#39;]:17.8f} {exact_str} &quot;
+              f&quot;{ks.iterations:9d} {hf[&#39;iterations&#39;]:9d}&quot;)
+    print()
+    print(&quot;Kohn-Sham lies close to Hartree-Fock but not on top of it, and the&quot;)
+    print(&quot;difference is not correlation -- we have put no correlation&quot;)
+    print(&quot;functional in.  It is the error of treating exchange locally, plus&quot;)
+    print(&quot;the self-interaction discussed below.&quot;)
+
+
+def demo_self_interaction():
+    print(&quot;=&quot; * 74)
+    print(&quot;5. The self-interaction error&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;For one particle there is nothing to interact with, so the exact&quot;)
+    print(&quot;energy is the oscillator ground state, 0.5.  Hartree-Fock gets&quot;)
+    print(&quot;this right identically: the direct and exchange terms cancel term&quot;)
+    print(&quot;by term.  A local exchange functional cannot, because it knows&quot;)
+    print(&quot;only the density, and the density of one electron looks exactly&quot;)
+    print(&quot;like the density of half of two.&quot;)
+    print()
+    lda = ExchangeLDA1D()
+    ks = KohnSham1D(1, lda=lda)
+    ks.run()
+    parts = ks.components()
+    hf = hartree_fock(1)
+    print(f&quot;   exact                     0.50000000&quot;)
+    print(f&quot;   Hartree-Fock         {hf[&#39;energy&#39;]:15.8f}&quot;)
+    print(f&quot;   Kohn-Sham (LDA x)    {ks.E:15.8f}&quot;)
+    print()
+    print(&quot;   the Kohn-Sham pieces:&quot;)
+    print(f&quot;      Hartree energy    {parts[&#39;hartree&#39;]:15.8f}&quot;)
+    print(f&quot;      exchange energy   {parts[&#39;exchange&#39;]:15.8f}&quot;)
+    print(f&quot;      sum               {parts[&#39;hartree&#39;] + parts[&#39;exchange&#39;]:15.8f}&quot;
+          &quot;   (should vanish)&quot;)
+    print(f&quot;      particle number   {parts[&#39;particles&#39;]:15.8f}&quot;)
+    print()
+    print(&quot;The residue is the self-interaction error.  It is the reason plain&quot;)
+    print(&quot;LDA overbinds anions, underestimates barriers and gives band gaps&quot;)
+    print(&quot;that are too small, and it is what self-interaction corrections and&quot;)
+    print(&quot;hybrid functionals -- which put back a fraction of exact exchange --&quot;)
+    print(&quot;are designed to remove.&quot;)
+
+
+def demo_local_approximation():
+    print(&quot;=&quot; * 74)
+    print(&quot;6. How good is the local approximation?&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;We can isolate the error of locality by comparing, on the *same*&quot;)
+    print(&quot;density, the exact exchange energy of a determinant with the local&quot;)
+    print(&quot;estimate.  Take the Kohn-Sham orbitals, compute both, and look at&quot;)
+    print(&quot;the ratio.&quot;)
+    print()
+    lda = ExchangeLDA1D()
+    print(f&quot;{&#39;N&#39;:&gt;3s} {&#39;E_x (exact)&#39;:&gt;15s} {&#39;E_x (LDA)&#39;:&gt;15s} {&#39;ratio&#39;:&gt;9s}&quot;)
+    for N in (1, 2, 3, 4):
+        ks = KohnSham1D(N, lda=lda)
+        ks.run()
+        vbar = trap_two_body(ks.n_orbitals)
+        occ = ks.C[:, :N]
+        direct_plus_exchange = 0.5 * np.einsum(
+            &quot;ai,bj,abcd,ci,dj-&gt;&quot;, occ, occ, vbar, occ, occ)
+        hartree = ks.hartree_energy(ks.n)
+        exact_x = direct_plus_exchange - hartree
+        local_x = ks.exchange_energy(ks.n)
+        print(f&quot;{N:3d} {exact_x:15.8f} {local_x:15.8f} &quot;
+              f&quot;{local_x / exact_x:9.4f}&quot;)
+    print()
+    print(&quot;The local approximation recovers most of the exchange energy, and&quot;)
+    print(&quot;it recovers more of it as the particle number grows: the ratio&quot;)
+    print(&quot;climbs from 0.92 to 0.98 between one and four particles.  That is&quot;)
+    print(&quot;exactly what the construction promises -- the density becomes&quot;)
+    print(&quot;smoother on the scale of the local Fermi wavelength, so the&quot;)
+    print(&quot;uniform-gas estimate becomes more appropriate.  For one particle&quot;)
+    print(&quot;it is worst, because there the exchange energy is nothing but the&quot;)
+    print(&quot;cancellation of a spurious self-interaction.  In three dimensions&quot;)
+    print(&quot;the corresponding ratio is close to 0.9 for atoms, which is why&quot;)
+    print(&quot;gradient corrections were introduced.&quot;)
+
+
+def demo_thomas_fermi():
+    print(&quot;=&quot; * 74)
+    print(&quot;7. Thomas-Fermi, and why orbitals came back&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;The Thomas-Fermi model applies the local approximation to the&quot;)
+    print(&quot;kinetic energy as well.  For the one-dimensional trap the kinetic&quot;)
+    print(&quot;density is t[n] = (pi^2/6) n^3, and minimising&quot;)
+    print(&quot;   E[n] = int dx {t[n] + x^2 n / 2} + E_H[n] + E_x[n]&quot;)
+    print(&quot;gives an algebraic equation for n(x) with no orbitals at all.&quot;)
+    print()
+    print(&quot;The trouble is visible already for non-interacting particles,&quot;)
+    print(&quot;where the exact kinetic energy is known:&quot;)
+    print(f&quot;{&#39;N&#39;:&gt;3s} {&#39;T (exact)&#39;:&gt;12s} {&#39;T (Thomas-Fermi)&#39;:&gt;18s} &quot;
+          f&quot;{&#39;ratio&#39;:&gt;9s}&quot;)
+    grid, phi = oscillator_basis(8)
+    dx = grid[1] - grid[0]
+    for N in (1, 2, 3, 4, 6, 8):
+        n = (phi[:N] ** 2).sum(axis=0)
+        exact = sum(k + 0.5 for k in range(N)) \
+            - 0.5 * float(n @ grid ** 2) * dx
+        tf = float(ThomasFermi.kinetic_density(n).sum()) * dx
+        print(f&quot;{N:3d} {exact:12.6f} {tf:18.6f} {tf / exact:9.4f}&quot;)
+    print()
+    print(&quot;Thomas-Fermi overshoots, badly for one particle and by less than&quot;)
+    print(&quot;one per cent by eight, approaching the exact value from above as&quot;)
+    print(&quot;the density smooths out.  But the error in magnitude is not the&quot;)
+    print(&quot;real problem.  What the model misses is structure: the density it&quot;)
+    print(&quot;produces is smooth and featureless, with no shells whatever, it&quot;)
+    print(&quot;has no discrete spectrum to speak of, and it famously cannot bind&quot;)
+    print(&quot;molecules -- Teller proved this.  The Kohn-Sham construction exists&quot;)
+    print(&quot;precisely to avoid this.  By reintroducing orbitals for the&quot;)
+    print(&quot;kinetic energy alone -- the one term we cannot approximate&quot;)
+    print(&quot;locally -- it keeps shell structure exactly while leaving only the&quot;)
+    print(&quot;small remainder to a local functional.&quot;)
+
+
+def _demo():
+    for f in (demo_lda_from_the_gas, demo_exchange_hole, demo_lda_1d,
+              demo_kohn_sham, demo_self_interaction,
+              demo_local_approximation, demo_thomas_fermi):
+        f()
+        print()
+
+
+if __name__ == &quot;__main__&quot;:
+    _demo()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="tdarpa.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">8. </span>Mean-field applications: TDA, RPA and QRPA</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mbptheory.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">10. </span>Many-body perturbation theory</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-local-density-approximation-comes-from">9.1. 1. Where the local density approximation comes from</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-exchange-hole">9.2. 2. The exchange hole</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-a-functional-for-the-model-interaction">9.3. 3. Building a functional for the model interaction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-the-kohn-sham-equations">9.4. 4. Solving the Kohn-Sham equations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-self-interaction-error">9.5. 5. The self-interaction error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-good-is-the-local-approximation">9.6. 6. How good is the local approximation?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thomas-fermi-and-why-orbitals-came-back">9.7. 7. Thomas-Fermi, and why orbitals came back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">9.8. The full program</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,2282 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>8. Mean-field applications: TDA, RPA and QRPA &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tdarpa';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="9. Density functional theory" href="dft.html" />
+    <link rel="prev" title="7. Mean-field approaches" href="hartreefock.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/tdarpa.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Ftdarpa.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/tdarpa.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Mean-field applications: TDA, RPA and QRPA</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-model-and-its-exact-spectrum">8.1. 1. The model and its exact spectrum</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hartree-fock-reference">8.2. 2. The Hartree-Fock reference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-the-a-and-b-matrices">8.3. 3. Validating the <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> matrices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tamm-dancoff-and-rpa">8.4. 4. Tamm-Dancoff and RPA</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-closed-form">8.4.1. A closed form</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rpa-and-the-stability-of-the-mean-field">8.5. 5. RPA and the stability of the mean field</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bcs">8.6. 6. BCS</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quasiparticle-rpa">8.7. 7. Quasiparticle RPA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#everything-against-everything">8.8. 8. Everything against everything</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">8.9. The full program</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="mean-field-applications-tda-rpa-and-qrpa">
+<h1><span class="section-number">8. </span>Mean-field applications: TDA, RPA and QRPA<a class="headerlink" href="#mean-field-applications-tda-rpa-and-qrpa" title="Link to this heading">#</a></h1>
+<p>Companion notebook to Chapter 7 of <em>Quantum mechanics for many-particle
+systems</em>.  Every number quoted in the chapter is produced here; the code is
+the same as in <code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/rpa.py</span></code>.</p>
+<p>The model has <span class="math notranslate nohighlight">\(L\)</span> doubly degenerate, equally spaced levels <span class="math notranslate nohighlight">\(p=1,\dots,L\)</span> with
+spin <span class="math notranslate nohighlight">\(\sigma=\pm\)</span>, holding <span class="math notranslate nohighlight">\(N\)</span> fermions:</p>
+<div class="math notranslate nohighlight">
+\[\hat H_0 = \xi\sum_{p\sigma}(p-1)\,a^\dagger_{p\sigma}a_{p\sigma},\]</div>
+<div class="math notranslate nohighlight">
+\[\hat V_{\rm pair} = -\frac{g}{2}\sum_{pq}
+   a^\dagger_{p+}a^\dagger_{p-}a_{q-}a_{q+},\qquad
+  \hat V_{\rm ph} = -\frac{f}{2}\sum_{pqr}
+   \left(a^\dagger_{p+}a^\dagger_{p-}a_{q-}a_{r+} + {\rm h.c.}\right).\]</div>
+<p>At <span class="math notranslate nohighlight">\(f=0\)</span> this is exactly the pairing model of Chapter 4.  The particle-hole
+term breaks pairs, which is what the pairing term cannot do.</p>
+<p>Contents:</p>
+<ol class="arabic simple">
+<li><p>The model and its exact spectrum</p></li>
+<li><p>The Hartree-Fock reference</p></li>
+<li><p>Validating the <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> matrices</p></li>
+<li><p>Tamm-Dancoff and RPA</p></li>
+<li><p>RPA and the stability of the mean field</p></li>
+<li><p>BCS</p></li>
+<li><p>Quasiparticle RPA, the spurious mode and the mode content</p></li>
+<li><p>Everything against everything</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;BookManybody&quot;</span><span class="p">,</span> <span class="s2">&quot;BookMaterial&quot;</span><span class="p">,</span> <span class="s2">&quot;Programs&quot;</span><span class="p">))</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rpa</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-model-and-its-exact-spectrum">
+<h2><span class="section-number">8.1. </span>1. The model and its exact spectrum<a class="headerlink" href="#the-model-and-its-exact-spectrum" title="Link to this heading">#</a></h2>
+<p>Exact diagonalisation is Chapter 5 applied without modification: determinants
+are bit strings, the Hamiltonian is built by applying each term to every
+basis state, and the lowest eigenvalues follow from Chapter 1’s algorithms.
+Restricting to the balanced <span class="math notranslate nohighlight">\(S_z=0\)</span> sector cuts the dimension from
+<span class="math notranslate nohighlight">\(\binom{8}{4}=70\)</span> to 36.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+1. The model, and its exact spectrum
+==========================================================================
+L = 4 levels, N = 4 particles
+full space          C(8,4) = 70
+balanced S_z = 0 sector     = 36
+
+At f = 0 the model is the pairing model of chapter 4.  The exact
+energies must reproduce Table 4.2:
+      g        E_ref    E_0 (exact)      chapter 4
+  -1.00     3.000000     2.77987014     2.77987014
+  -0.50     2.500000     2.43688426     2.43688426
+   0.00     2.000000     2.00000000     2.00000000
+   0.50     1.500000     1.41677428     1.41677428
+   1.00     1.000000     0.63554847     0.63554847
+
+Switching on the particle-hole term, g = 0.5 and f = 0.05 g:
+   E_0 = 1.347133
+   E_1 = 2.710867
+   E_2 = 2.711098
+   E_3 = 3.413340
+   E_4 = 3.704452
+   E_5 = 3.704504
+
+The particle-hole term breaks pairs, so the seniority of chapter 5
+is no longer conserved and the whole S_z = 0 space is active.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">41</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">panel</span> <span class="ow">in</span> <span class="p">((</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rpa</span><span class="o">.</span><span class="n">PairingPH</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                   <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">spectrum</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">panel</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">m</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.4</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">panel</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="n">panel</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$E_k$&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">panel</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;exact eigenvalues, $f = </span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">\,g$&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">panel</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/a03311f33bf6cc04bbec89d70ba997af2ca0ecb6d59320b65212d5050409a6bb.png" src="_images/a03311f33bf6cc04bbec89d70ba997af2ca0ecb6d59320b65212d5050409a6bb.png" />
+</div>
+</div>
+<p>The weak-<span class="math notranslate nohighlight">\(f\)</span> panel shows the near-degenerate pairs of the pairing model,
+split only slightly.  At <span class="math notranslate nohighlight">\(f = 0.5\,g\)</span> the pair-breaking term reorganises the
+low-lying structure and levels cross.</p>
+</section>
+<section id="the-hartree-fock-reference">
+<h2><span class="section-number">8.2. </span>2. The Hartree-Fock reference<a class="headerlink" href="#the-hartree-fock-reference" title="Link to this heading">#</a></h2>
+<p>Both approximations are built on a stationary mean field.  With pure pairing
+the filled Fermi sea is already the solution, as Chapter 6 found; the
+particle-hole term makes the iteration non-trivial.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_hartree_fock</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+2. The Hartree-Fock reference
+==========================================================================
+     g       f        E_HF  iterations   single-particle energies
+  0.70   0.000     1.30000           2   -0.350  -0.350   0.650   0.650 ...
+  0.70   0.050     1.19709          20   -0.404  -0.404   0.600   0.600 ...
+  1.00   0.500    -0.26976          40   -1.505  -1.505   0.119   0.119 ...
+
+With pure pairing the filled Fermi sea is already the Hartree-Fock
+solution -- the interaction cannot connect it to a 1p-1h state, as
+chapter 6 found.  The occupied levels are shifted down by g/2 and
+the empty ones are untouched.  The particle-hole term does connect
+them, so the mean field must rotate the orbitals to restore
+Brillouin&#39;s theorem, and the iteration becomes non-trivial.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="validating-the-a-and-b-matrices">
+<h2><span class="section-number">8.3. </span>3. Validating the <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> matrices<a class="headerlink" href="#validating-the-a-and-b-matrices" title="Link to this heading">#</a></h2>
+<p>Everything is computed as literal double commutators</p>
+<div class="math notranslate nohighlight">
+\[A_{KL} = \langle 0|[\hat O_K^\dagger,[\hat H,\hat O_L]]|0\rangle,\qquad
+  B_{KL} = -\langle 0|[\hat O_K^\dagger,[\hat H,\hat O_L^\dagger]]|0\rangle,\]</div>
+<p>so it is worth checking against the textbook expressions.  The important
+identity is the first one below: the Tamm-Dancoff matrix <strong>is</strong> the
+Hamiltonian restricted to the <span class="math notranslate nohighlight">\(1p\)</span>-<span class="math notranslate nohighlight">\(1h\)</span> block, measured from the reference.
+TDA is CIS.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_validation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+3. Validating the A and B matrices
+==========================================================================
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Everything is computed from double commutators, so it is worth
+checking against the textbook expressions and against a direct
+matrix construction.
+
+  E_HF from &lt;HF|H|HF&gt;                    = 1.19708590
+  E_HF from the self-consistent field    = 1.19708590
+  max |&lt;HF|H|1p-1h&gt;|  (Brillouin)        = 3.99e-13
+  max |A - (H_1p1h - E_HF)|              = 3.11e-15
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  max |A - [(e_m-e_i)dd + vbar_mjin]|    = 5.28e-14
+  max |B - vbar_mnij|                    = 3.33e-16
+
+The first identity is the important one: the Tamm-Dancoff matrix
+is literally the Hamiltonian restricted to the 1p-1h block,
+measured from the reference.  TDA is the configuration-interaction
+truncation of chapter 5 applied to excited states, no more.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="tamm-dancoff-and-rpa">
+<h2><span class="section-number">8.4. </span>4. Tamm-Dancoff and RPA<a class="headerlink" href="#tamm-dancoff-and-rpa" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat Q^\dagger_\nu = \sum_{mi}\left(X^\nu_{mi}a^\dagger_m a_i
+  - Y^\nu_{mi}a^\dagger_i a_m\right),\qquad
+\begin{pmatrix}A &amp; B\\ -B^* &amp; -A^*\end{pmatrix}
+\begin{pmatrix}X^\nu\\ Y^\nu\end{pmatrix}
+= \omega_\nu\begin{pmatrix}X^\nu\\ Y^\nu\end{pmatrix}.\end{split}\]</div>
+<p>Setting <span class="math notranslate nohighlight">\(B=0\)</span> recovers TDA.  The RPA correlation energy is</p>
+<div class="math notranslate nohighlight">
+\[E^{\rm RPA}_{\rm corr} = \tfrac12\left(\sum_\nu\omega_\nu - {\rm Tr}\,A\right).\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_tda_rpa</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+4. Tamm-Dancoff and RPA in the particle-hole channel
+==========================================================================
+     g       f       E_HF    E_HF+E_c    E_exact    TDA w1    RPA w1   exact w1
+  0.50   0.025    1.44927     1.29898    1.34713    1.2748    1.2448     1.3637
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.70   0.050    1.19709     0.89759    0.96976    1.3992    1.3412     1.5972
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.00   0.050    0.89709     0.36862    0.45058    1.5492    1.4488     1.9425
+  1.00   0.500   -0.26976    -1.73461   -1.69174    1.8111    1.6445     2.8596
+
+RPA lowers the energy below Hartree-Fock and overshoots the exact
+ground state: the quasiboson approximation, which replaces the
+exact commutator of two particle-hole operators by its expectation
+value in the reference, double counts the correlations.  The RPA
+root always lies below the TDA one, for the same reason.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dimension of the particle-hole space: 16 = (2L - N) x N = 4 x 4
+Tr A = 38.423313, sum of RPA roots = 37.824314, E_corr = -0.299500
+
+For pure pairing the whole particle-hole problem collapses to a
+two-by-two structure and both answers are closed forms,
+   TDA:  w = xi + g/2,          RPA:  w = sqrt(xi^2 + g xi),
+the second being sqrt(A^2 - B^2) with A = xi + g/2 and B = g/2.
+     g          TDA     xi + g/2          RPA    sqrt(1+g)
+  0.50   1.25000000   1.25000000   1.22474487   1.22474487
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.00   1.50000000   1.50000000   1.41421356   1.41421356
+  2.00   2.00000000   2.00000000   1.73205081   1.73205081
+  3.00   2.50000000   2.50000000   2.00000000   2.00000000
+  5.00   3.50000000   3.50000000   2.44948974   2.44948974
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fock</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">FockSpace</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">frac</span><span class="p">,</span> <span class="n">style</span> <span class="ow">in</span> <span class="p">((</span><span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">)):</span>
+    <span class="n">e0</span><span class="p">,</span> <span class="n">e_rpa</span><span class="p">,</span> <span class="n">w_ex</span><span class="p">,</span> <span class="n">w_tda</span><span class="p">,</span> <span class="n">w_rpa</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">frac</span> <span class="o">*</span> <span class="n">g</span>
+        <span class="n">ex</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">PairingPH</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">spectrum</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">tda_rpa</span><span class="p">(</span><span class="n">fock</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">e0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ex</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="n">e_rpa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;hf&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;ecorr&quot;</span><span class="p">])</span>
+        <span class="n">w_ex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ex</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ex</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="n">w_tda</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;tda&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">w_rpa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;rpa&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">lab</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$f = </span><span class="si">{</span><span class="n">frac</span><span class="si">}</span><span class="s2">g$&quot;</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">e0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span> <span class="o">+</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;exact, </span><span class="si">{</span><span class="n">lab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">e_rpa</span><span class="p">,</span> <span class="s2">&quot;C0&quot;</span> <span class="o">+</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;HF+RPA, </span><span class="si">{</span><span class="n">lab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">w_ex</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span> <span class="o">+</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;exact, </span><span class="si">{</span><span class="n">lab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">w_rpa</span><span class="p">,</span> <span class="s2">&quot;C0&quot;</span> <span class="o">+</span> <span class="n">style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;RPA, </span><span class="si">{</span><span class="n">lab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">w_tda</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span> <span class="o">+</span> <span class="n">style</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;TDA, </span><span class="si">{</span><span class="n">lab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;ground-state energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;ground state&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_1$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;lowest excitation&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/b3a0e9161ceb1cbc4a125251891becbae6863c4d3c069e70cfe2f035f06b6b58.png" src="_images/b3a0e9161ceb1cbc4a125251891becbae6863c4d3c069e70cfe2f035f06b6b58.png" />
+</div>
+</div>
+<p>RPA lowers the energy below Hartree-Fock and overshoots the exact ground
+state – the quasiboson approximation over-counts the correlations.  Both TDA
+and RPA put the lowest excitation well below the exact one, and the gap widens
+with the pairing strength: the particle-hole phonon knows nothing about
+pairing correlations.</p>
+<section id="a-closed-form">
+<h3><span class="section-number">8.4.1. </span>A closed form<a class="headerlink" href="#a-closed-form" title="Link to this heading">#</a></h3>
+<p>For pure pairing the whole particle-hole problem collapses and</p>
+<div class="math notranslate nohighlight">
+\[\omega^{\rm TDA} = \xi + \frac{g}{2},\qquad
+  \omega^{\rm RPA} = \sqrt{\xi^2 + g\xi}
+   = \sqrt{\left(\xi+\tfrac{g}{2}\right)^2 - \left(\tfrac{g}{2}\right)^2},\]</div>
+<p>the classic <span class="math notranslate nohighlight">\(\sqrt{A^2-B^2}\)</span> of a two-level RPA problem.  Note that the root
+is real for every <span class="math notranslate nohighlight">\(g &gt; -\xi\)</span>: the particle-hole channel of the pairing model
+never goes unstable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">solved</span> <span class="o">=</span> <span class="p">[</span><span class="n">rpa</span><span class="o">.</span><span class="n">tda_rpa</span><span class="p">(</span><span class="n">fock</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">]</span>
+<span class="n">tda</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;tda&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solved</span><span class="p">]</span>
+<span class="n">rr</span>  <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;rpa&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solved</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">tda</span><span class="p">,</span> <span class="s2">&quot;C3o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;TDA (computed)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">gs</span><span class="p">,</span> <span class="s2">&quot;C3-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\xi + g/2$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">rr</span><span class="p">,</span> <span class="s2">&quot;C0s&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;RPA (computed)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">gs</span><span class="p">),</span> <span class="s2">&quot;C0-&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\sqrt{\xi^2+g\xi}$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\omega_1$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/1f56bc39cff86a6d97ddc11fb52b59f73ab907e86f16992c3b461942001b4a3b.png" src="_images/1f56bc39cff86a6d97ddc11fb52b59f73ab907e86f16992c3b461942001b4a3b.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="rpa-and-the-stability-of-the-mean-field">
+<h2><span class="section-number">8.5. </span>5. RPA and the stability of the mean field<a class="headerlink" href="#rpa-and-the-stability-of-the-mean-field" title="Link to this heading">#</a></h2>
+<p>Chapter 6’s stability matrix and the RPA matrix are built from the <em>same</em>
+blocks, differently arranged:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat M_{\rm stab} = \begin{pmatrix}A &amp; B\\ B^* &amp; A^*\end{pmatrix}
+  \ ({\rm Hermitian}),\qquad
+  \hat M_{\rm RPA} = \begin{pmatrix}A &amp; B\\ -B^* &amp; -A^*\end{pmatrix}
+  = \eta\,\hat M_{\rm stab}.\end{split}\]</div>
+<p>The RPA frequencies are real exactly when <span class="math notranslate nohighlight">\(\hat M_{\rm stab}\ge 0\)</span>, that is,
+exactly when the mean field is a local minimum.  The Lipkin model shows the
+collective root going soft at <span class="math notranslate nohighlight">\(\chi=1\)</span> and turning imaginary beyond.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_stability</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+5. RPA and the stability of the mean field
+==========================================================================
+Chapter 6 built the stability matrix
+   M_stab = [[Delta+A, B], [B*, Delta+A*]]   (Hermitian)
+and showed that the Hartree-Fock solution is a minimum only if it
+is positive semi-definite.  RPA diagonalises the *same* blocks in
+the non-Hermitian arrangement
+   M_RPA  = [[A, B], [-B*, -A*]]
+whose eigenvalues are +/- w.  The two statements are equivalent:
+the RPA frequencies are real precisely when M_stab &gt;= 0.
+
+The Lipkin model of chapters 4 and 6 shows this directly.
+   chi   min eig M_stab   #imaginary   lowest real root
+  0.25       0.75000000            0           0.968246
+  0.50       0.50000000            0           0.866025
+  0.90       0.10000000            0           0.435890
+  1.00       0.00000000            0           0.000000
+  1.50      -0.50000000            2           0.866025
+  2.00      -1.00000000            2           0.745356
+
+The collective root goes soft exactly at chi = 1, where the
+stability matrix acquires a zero eigenvalue, and turns imaginary
+beyond it.  A vanishing RPA frequency is the signature of a
+mean-field phase transition; an imaginary one says the reference
+is a saddle point and the calculation must be redone about a
+different mean field.
+
+For the pairing plus particle-hole model the particle-hole
+stability matrix stays positive at every coupling we consider:
+     g       f   min eig M_stab   #imaginary
+  1.00    0.00       1.00000000            0
+  3.00    0.00       1.00000000            0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.00    0.50       1.04428801            0
+  4.00    2.00       1.11547342            0
+The particle-hole channel is simply not where this model becomes
+collective.  Its instability is in the pairing channel, which is
+what BCS and QRPA are for.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">chis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">lowest</span><span class="p">,</span> <span class="n">omega</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">chi</span> <span class="ow">in</span> <span class="n">chis</span><span class="p">:</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">_lipkin_blocks</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="n">chi</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span>
+    <span class="n">stab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([[</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">],</span> <span class="p">[</span><span class="n">B</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">A</span><span class="o">.</span><span class="n">conj</span><span class="p">()]])</span>
+    <span class="n">lowest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">stab</span> <span class="o">+</span> <span class="n">stab</span><span class="o">.</span><span class="n">T</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">roots</span><span class="p">,</span> <span class="n">n_imag</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">solve_rpa</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">omega</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)</span> <span class="ow">and</span> <span class="n">n_imag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">chis</span><span class="p">,</span> <span class="n">lowest</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\lambda_{\min}(\hat M_{\rm stab})$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">chis</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;lowest RPA root $\omega_1$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">chis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">chis</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="s2">&quot;k--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\varepsilon\sqrt{1-\chi^2}$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\chi$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Lipkin: stability and the soft mode&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/4d2eb627e6062737da149ef6b94c6748affc83b2725691d38f33ac573ba7d250.png" src="_images/4d2eb627e6062737da149ef6b94c6748affc83b2725691d38f33ac573ba7d250.png" />
+</div>
+</div>
+</section>
+<section id="bcs">
+<h2><span class="section-number">8.6. </span>6. BCS<a class="headerlink" href="#bcs" title="Link to this heading">#</a></h2>
+<p>The pairing mean field is not of Hartree-Fock type: the object that acquires
+an expectation value is <span class="math notranslate nohighlight">\(\langle P^\dagger_p\rangle\)</span>, which does not conserve
+particle number.</p>
+<div class="math notranslate nohighlight">
+\[|{\rm BCS}\rangle = \prod_p\left(u_p + v_p\,
+  a^\dagger_{p+}a^\dagger_{p-}\right)|0\rangle,\qquad u_p^2+v_p^2=1.\]</div>
+<p>Because the trial state is a product over levels the energy is available in
+closed form, and it turns out to depend on <span class="math notranslate nohighlight">\(g\)</span> and <span class="math notranslate nohighlight">\(f\)</span> only through
+<span class="math notranslate nohighlight">\(g + 2f\)</span>: seen from the BCS vacuum the particle-hole term <em>is</em> extra pairing.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_bcs</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+6. BCS: the pairing mean field
+==========================================================================
+The closed-form energy against the Fock-space expectation value:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   g= 1.6 f= 0.0:  closed form   0.20451907   Fock space   0.20451907   difference 8.9e-16
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   g= 1.2 f= 0.1:  closed form   0.51568415   Fock space   0.51568415   difference 0.0e+00
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   g= 0.8 f= 0.3:  closed form   0.51568415   Fock space   0.51568415   difference 4.4e-16
+
+Note that the last two rows are identical.  Seen from the BCS
+vacuum only the q = r part of the particle-hole term survives, and
+it acts as extra pairing: the whole BCS problem depends on g and f
+through the single combination g + 2f.
+     g      f   g + 2f         E_BCS         gap
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.40   0.00     1.40    0.51568415    0.789218
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.20   0.10     1.40    0.51568415    0.789218
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.80   0.30     1.40    0.51568415    0.789218
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.00   0.70     1.40    0.51568415    0.789218
+
+     g        gap     lambda       &lt;N&gt;   v^2
+  0.40    0.00000     1.2500   4.00000   1.000  1.000  0.000  0.000
+  0.60    0.00000     1.2500   4.00000   1.000  1.000  0.000  0.000
+  0.80    0.00000     1.2500   4.00000   1.000  1.000  0.000  0.000
+  1.00    0.00000     1.2500   4.00000   1.000  1.000  0.000  0.000
+  1.07    0.00000     1.2207   4.00000   1.000  1.000  0.000  0.000
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.20    0.46716     1.2000   4.00000   0.984  0.925  0.075  0.016
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.60    1.05608     1.1000   4.00000   0.934  0.783  0.217  0.066
+  2.00    1.54088     1.0000   4.00000   0.887  0.709  0.291  0.113
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>critical coupling  g_c = 1.07037  (f = 0)
+The condition for a non-trivial solution is
+   1 = 2S [ 1/(3 xi + S) + 1/(xi + S) ],    S = g/2 + f,
+which gives S_c = 0.53519 and hence g_c = 1.07037 at f = 0.
+
+Below g_c the only solution is the normal Fermi sea and BCS
+reduces to Hartree-Fock.  Above it a gap opens and the mean field
+stops conserving particle number.  In a finite system this sharp
+transition is an artefact of the mean field: the exact ground-state
+energy of chapter 4 is perfectly smooth through g_c.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+<span class="n">gap</span><span class="p">,</span> <span class="n">ebcs</span><span class="p">,</span> <span class="n">ehf</span><span class="p">,</span> <span class="n">eex</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">:</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">BCS</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span> <span class="n">b</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+    <span class="n">gap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">gap</span><span class="p">);</span> <span class="n">ebcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">E</span><span class="p">)</span>
+    <span class="n">ehf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rpa</span><span class="o">.</span><span class="n">tda_rpa</span><span class="p">(</span><span class="n">fock</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)[</span><span class="s2">&quot;hf&quot;</span><span class="p">])</span>
+    <span class="n">eex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rpa</span><span class="o">.</span><span class="n">PairingPH</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">spectrum</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">gap</span><span class="p">,</span> <span class="s2">&quot;C2o-&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.07037</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\Delta$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;pairing gap; $g_c = 1.07037$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">eex</span><span class="p">,</span> <span class="s2">&quot;k-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">ehf</span><span class="p">,</span> <span class="s2">&quot;C3--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Hartree-Fock&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">ebcs</span><span class="p">,</span> <span class="s2">&quot;C2-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BCS&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.07037</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;ground-state energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;the transition is a mean-field artefact&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/4424f5f3ae16299accf3184e43853dba7c4fc946d24fa271a9d8357fe3af097f.png" src="_images/4424f5f3ae16299accf3184e43853dba7c4fc946d24fa271a9d8357fe3af097f.png" />
+</div>
+</div>
+<p>The BCS transition at <span class="math notranslate nohighlight">\(g_c = 1.07\)</span> is <em>sharp</em> even though the system is
+finite – but the exact curve runs straight through it with no feature at all.
+Mean-field phase transitions in finite systems are approximations to smooth
+crossovers.</p>
+</section>
+<section id="quasiparticle-rpa">
+<h2><span class="section-number">8.7. </span>7. Quasiparticle RPA<a class="headerlink" href="#quasiparticle-rpa" title="Link to this heading">#</a></h2>
+<p>QRPA builds phonons out of pairs of Bogoliubov quasiparticles,</p>
+<div class="math notranslate nohighlight">
+\[\hat Q^\dagger_\nu = \sum_{a&lt;b}\left(X^\nu_{ab}
+  \alpha^\dagger_a\alpha^\dagger_b - Y^\nu_{ab}\alpha_b\alpha_a\right),\]</div>
+<p>with the same matrix structure.  Two features need care: the <strong>spurious
+Goldstone mode</strong> from the broken <span class="math notranslate nohighlight">\(U(1)\)</span> symmetry, and the <strong>mode content</strong>,
+since quasiparticles mix particle number.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_qrpa</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+7. Quasiparticle RPA
+==========================================================================
+max || alpha_a |BCS&gt; ||  = 3.68e-17   (the BCS state is the
+                                        quasiparticle vacuum)
+
+The number of two-quasiparticle operators is 2L(2L-1)/2 = 28.
+Because BCS breaks particle-number conservation, the QRPA has an
+exact zero mode -- the Goldstone mode generated by N.  Numerically
+it appears as a tiny root; the table shows its size and its
+overlap with the amplitudes built from the number operator.
+
+     g       gap   |w_spurious|   overlap with N   #imaginary
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.20   0.46716       2.05e-04         1.000000            0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.40   0.78922       2.08e-05         1.000000            0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.60   1.05608       1.97e-04         1.000000            0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.80   1.30338       8.45e-05         1.000000            0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.00   1.54088       2.01e-04         1.000000            0
+
+The overlap is one to six decimals: the near-zero root really is
+the number mode, and once it is removed the QRPA matrix has no
+imaginary eigenvalues at all.  A small imaginary spurious root is
+a numerical artefact of the singular metric, not an instability.
+
+The remaining phonons split by the average particle number they
+carry.  Modes with &lt;Delta N&gt; = 0 are excitations of the N-particle
+system; the others are pairing vibrations reaching towards N +/- 2.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  g = 1.4:  exact excitation energies [2.3565 2.3565 2.676  3.3181]
+       omega    &lt;Delta N&gt;   character
+      1.3093      -0.0000   Delta N = 0
+      1.9084      -0.0000   Delta N = 0
+      1.9084      -0.0000   Delta N = 0
+      1.9084      -0.0000   Delta N = 0
+      1.9084      -0.0000   Delta N = 0
+      2.9094      -0.2339   pairing vibration
+      2.9094      -0.2339   pairing vibration
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  g = 2.0:  exact excitation energies [3.3274 3.3274 3.4897 4.2536]
+       omega    &lt;Delta N&gt;   character
+      2.6015      -0.0000   Delta N = 0
+      2.9212      -0.0000   Delta N = 0
+      2.9212      -0.0000   Delta N = 0
+      2.9212      -0.0000   Delta N = 0
+      2.9212      -0.0000   Delta N = 0
+      3.7879       0.3566   pairing vibration
+      3.7879       0.3566   pairing vibration
+</pre></div>
+</div>
+</div>
+</div>
+<p>The near-zero root has unit overlap with the amplitudes built from <span class="math notranslate nohighlight">\(\hat N\)</span>,
+identifying it beyond doubt.  A small <em>imaginary</em> spurious root is a numerical
+artefact of the singular RPA metric, not an instability — this is easy to
+mistake, and the overlap test is the way to tell the two apart.  Once the mode
+is removed the QRPA matrix has no imaginary eigenvalues anywhere in the
+superfluid regime.</p>
+</section>
+<section id="everything-against-everything">
+<h2><span class="section-number">8.8. </span>8. Everything against everything<a class="headerlink" href="#everything-against-everything" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rpa</span><span class="o">.</span><span class="n">demo_comparison</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>==========================================================================
+8. Exact against RPA and QRPA
+==========================================================================
+Pure pairing, f = 0.  E_ref is the unperturbed determinant, which
+for this interaction is also the Hartree-Fock energy.
+     g     E_exact       E_HF      HF+RPA      E_BCS    BCS+QRPA
+  0.40    1.548001    1.60000     1.51748    1.60000     1.46366
+  0.60    1.277449    1.40000     1.22390    1.40000     1.08964
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.80    0.973552    1.20000     0.90179    1.20000     0.62540
+  1.00    0.635548    1.00000     0.55459    1.00000    -0.01157
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.20    0.264504    0.80000     0.18506    0.78522    -0.40860
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.40   -0.137035    0.60000    -0.20453    0.51568    -0.67091
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.60   -0.565660    0.40000    -0.61230    0.20452    -1.04351
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.00   -1.489652    0.00000    -1.47622   -0.50353    -1.94223
+
+Read the table across.  Hartree-Fock does nothing for pure pairing,
+so the entire correlation energy must come from the fluctuations.
+Particle-hole RPA supplies almost all of it and tracks the exact
+curve closely, crossing it between g = 1.6 and g = 2: it is a
+little under-bound at weak coupling and a little over-bound at
+strong coupling.  BCS improves on Hartree-Fock once the gap opens,
+but only modestly, because a mean field that merely smears the
+occupations cannot reproduce a genuinely correlated ground state.
+QRPA on top of BCS then overshoots badly, and the reason is
+visible in section 7 -- the two-quasiparticle space contains
+pairing vibrations reaching towards N +/- 2, and the standard
+correlation-energy formula counts them all.  Particle-number
+projection is needed before BCS + QRPA becomes quantitative for a
+system this small.  In a heavy nucleus, where the number of
+levels is large and the relative number fluctuation small, the
+same machinery is far better behaved.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+<span class="n">eex</span><span class="p">,</span> <span class="n">ehf</span><span class="p">,</span> <span class="n">erpa</span><span class="p">,</span> <span class="n">ebcs</span><span class="p">,</span> <span class="n">eqrpa</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gs</span><span class="p">:</span>
+    <span class="n">eex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rpa</span><span class="o">.</span><span class="n">PairingPH</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">particles</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">spectrum</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">tda_rpa</span><span class="p">(</span><span class="n">fock</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">ehf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;hf&quot;</span><span class="p">]);</span> <span class="n">erpa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;hf&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;ecorr&quot;</span><span class="p">])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">rpa</span><span class="o">.</span><span class="n">qrpa</span><span class="p">(</span><span class="n">fock</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">ebcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+    <span class="n">eqrpa</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">q</span><span class="p">[</span><span class="s2">&quot;ecorr&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">q</span><span class="p">[</span><span class="s2">&quot;stable&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.5</span><span class="p">,</span> <span class="mf">4.8</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">eex</span><span class="p">,</span> <span class="s2">&quot;k-o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">ehf</span><span class="p">,</span> <span class="s2">&quot;C3--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Hartree-Fock&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">erpa</span><span class="p">,</span> <span class="s2">&quot;C0-s&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;HF + ph-RPA&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">ebcs</span><span class="p">,</span> <span class="s2">&quot;C2--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BCS&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">eqrpa</span><span class="p">,</span> <span class="s2">&quot;C2-^&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BCS + QRPA&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$g$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;ground-state energy&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;pure pairing, $N = L = 4$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/60915c77e02b38a3ab9f1542376d38d2f1dee566c7fcea48d662ad176714e803.png" src="_images/60915c77e02b38a3ab9f1542376d38d2f1dee566c7fcea48d662ad176714e803.png" />
+</div>
+</div>
+<p>Particle-hole RPA tracks the exact curve closely and crosses it near
+<span class="math notranslate nohighlight">\(g\approx1.8\)</span>.  BCS improves on Hartree-Fock only above <span class="math notranslate nohighlight">\(g_c\)</span>, and only
+modestly.  QRPA on top of BCS overshoots badly, because the two-quasiparticle
+space contains pairing vibrations reaching towards <span class="math notranslate nohighlight">\(N\pm2\)</span> and the standard
+correlation-energy formula counts every root.  Particle-number projection is
+needed before BCS + QRPA becomes quantitative for a system this small; in a
+heavy nucleus, where the relative number fluctuation is small, the same
+machinery is far better behaved.</p>
+</section>
+<section id="the-full-program">
+<h2><span class="section-number">8.9. </span>The full program<a class="headerlink" href="#the-full-program" title="Link to this heading">#</a></h2>
+<p>Everything above lives in <code class="docutils literal notranslate"><span class="pre">BookManybody/BookMaterial/Programs/rpa.py</span></code>, which
+runs as a script and prints all eight demonstrations of the chapter.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">rpa</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&quot;&quot;&quot;
+Tamm-Dancoff, RPA, BCS and QRPA for the pairing plus particle-hole model.
+
+Companion code to chapter 7 of *Quantum mechanics for Many-particle Systems*.
+
+The model has L doubly degenerate, equally spaced levels p = 1, ..., L, each
+carrying a spin label sigma = +/-, holding N spin-1/2 fermions:
+
+    H0     = xi sum_{p sigma} (p-1) a^+_{p sigma} a_{p sigma}
+    V_pair = -(g/2) sum_{pq}  a^+_{p+} a^+_{p-} a_{q-} a_{q+}
+    V_ph   = -(f/2) sum_{pqr} ( a^+_{p+} a^+_{p-} a_{q-} a_{r+} + h.c. )
+
+At f = 0 this is exactly the pairing model of chapter 4, so every number can
+be checked against Table 4.2.  The particle-hole term breaks pairs and is
+what makes the particle-hole channel non-trivial.
+
+Two references are used and compared:
+
+    HartreeFock  -- the particle-hole mean field; TDA and RPA are built on it
+    BCS          -- the pairing mean field; QRPA is built on it
+
+The RPA and QRPA matrices are evaluated as literal ground-state expectation
+values of double commutators,
+
+    A_KL = &lt;0| [O_K^+, [H, O_L]] |0&gt; ,   B_KL = -&lt;0| [O_K^+, [H, O_L^+]] |0&gt; ,
+
+using sparse operators in the full 2^(2L)-dimensional Fock space.  Nothing is
+transcribed by hand, so the same routine serves the particle-hole and the
+quasiparticle case without modification.
+
+Author: Morten Hjorth-Jensen
+&quot;&quot;&quot;
+
+from itertools import combinations
+from math import comb
+
+import numpy as np
+from scipy.linalg import eig, eigh
+from scipy.optimize import minimize_scalar
+from scipy.sparse import csr_matrix, identity
+
+UP, DN = 0, 1
+
+
+def orbital(level, spin):
+    &quot;&quot;&quot;(level = 1..L, spin) -&gt; spin-orbital index 0..2L-1.&quot;&quot;&quot;
+    return 2 * (level - 1) + spin
+
+
+def level_of(o):
+    return o // 2 + 1
+
+
+# ---------------------------------------------------------------------------
+#  Exact diagonalisation in the N-particle sector
+# ---------------------------------------------------------------------------
+def popcount(x):
+    return bin(x).count(&quot;1&quot;)
+
+
+def _annihilate(state, o):
+    if not (state &gt;&gt; o) &amp; 1:
+        return None, 0
+    sign = -1 if popcount(state &amp; ((1 &lt;&lt; o) - 1)) &amp; 1 else 1
+    return state &amp; ~(1 &lt;&lt; o), sign
+
+
+def _create(state, o):
+    if (state &gt;&gt; o) &amp; 1:
+        return None, 0
+    sign = -1 if popcount(state &amp; ((1 &lt;&lt; o) - 1)) &amp; 1 else 1
+    return state | (1 &lt;&lt; o), sign
+
+
+def apply_2body(state, i, j, k, l):
+    &quot;&quot;&quot;a^+_i a^+_j a_k a_l |state&gt;, returning (new state, sign).&quot;&quot;&quot;
+    s, sgn = _annihilate(state, l)
+    if s is None:
+        return None, 0
+    s, t = _annihilate(s, k)
+    if s is None:
+        return None, 0
+    sgn *= t
+    s, t = _create(s, j)
+    if s is None:
+        return None, 0
+    sgn *= t
+    s, t = _create(s, i)
+    if s is None:
+        return None, 0
+    return s, sgn * t
+
+
+class PairingPH:
+    &quot;&quot;&quot;The pairing plus particle-hole model, diagonalised exactly.
+
+    The basis is every determinant with N particles in 2L spin-orbitals,
+    optionally restricted to a fixed 2 S_z = N_up - N_down.  Both terms of
+    the interaction conserve N_up and N_down separately, so S_z is a good
+    quantum number and the ground state lives in the balanced sector.
+    &quot;&quot;&quot;
+
+    def __init__(self, levels=4, particles=4, g=1.0, f=0.0, xi=1.0, sz2=0):
+        self.L = levels
+        self.N = particles
+        self.g = g
+        self.f = f
+        self.xi = xi
+        self.sz2 = sz2
+        self.states = self._basis()
+        self.index = {s: i for i, s in enumerate(self.states)}
+        self.dim = len(self.states)
+
+    def _basis(self):
+        norb = 2 * self.L
+        out = []
+        for occ in combinations(range(norb), self.N):
+            if self.sz2 is not None:
+                nup = sum(1 for o in occ if o % 2 == UP)
+                if nup - (self.N - nup) != self.sz2:
+                    continue
+            bits = 0
+            for o in occ:
+                bits |= 1 &lt;&lt; o
+            out.append(bits)
+        out.sort()
+        return out
+
+    def matrix(self):
+        L, dim = self.L, self.dim
+        H = np.zeros((dim, dim))
+        for col, state in enumerate(self.states):
+            H[col, col] += sum(self.xi * (level_of(o) - 1)
+                               for o in range(2 * L) if (state &gt;&gt; o) &amp; 1)
+            # pairing:  -(g/2) sum_pq  a+_{p+} a+_{p-} a_{q-} a_{q+}
+            for p in range(1, L + 1):
+                i, j = orbital(p, UP), orbital(p, DN)
+                for q in range(1, L + 1):
+                    k, l = orbital(q, DN), orbital(q, UP)
+                    s, sgn = apply_2body(state, i, j, k, l)
+                    if s is not None and s in self.index:
+                        H[self.index[s], col] += -0.5 * self.g * sgn
+            # particle-hole: -(f/2) sum_pqr a+_{p+} a+_{p-} a_{q-} a_{r+}
+            for p in range(1, L + 1):
+                i, j = orbital(p, UP), orbital(p, DN)
+                for q in range(1, L + 1):
+                    k = orbital(q, DN)
+                    for r in range(1, L + 1):
+                        l = orbital(r, UP)
+                        s, sgn = apply_2body(state, i, j, k, l)
+                        if s is not None and s in self.index:
+                            H[self.index[s], col] += -0.5 * self.f * sgn
+            # and its Hermitian conjugate
+            for p in range(1, L + 1):
+                k, l = orbital(p, DN), orbital(p, UP)
+                for q in range(1, L + 1):
+                    j = orbital(q, DN)
+                    for r in range(1, L + 1):
+                        i = orbital(r, UP)
+                        s, sgn = apply_2body(state, i, j, k, l)
+                        if s is not None and s in self.index:
+                            H[self.index[s], col] += -0.5 * self.f * sgn
+        return H
+
+    def spectrum(self, k=6):
+        return np.sort(np.linalg.eigvalsh(self.matrix()))[:k]
+
+    def reference(self):
+        &quot;&quot;&quot;The determinant filling the N/2 lowest levels completely.&quot;&quot;&quot;
+        bits = 0
+        for p in range(1, self.N // 2 + 1):
+            bits |= 1 &lt;&lt; orbital(p, UP)
+            bits |= 1 &lt;&lt; orbital(p, DN)
+        return bits
+
+    def reference_energy(self):
+        H = self.matrix()
+        i = self.index[self.reference()]
+        return float(H[i, i])
+
+
+# ---------------------------------------------------------------------------
+#  The full Fock space, for double commutators
+# ---------------------------------------------------------------------------
+class FockSpace:
+    &quot;&quot;&quot;Creation and annihilation operators as sparse 2^(2L) x 2^(2L) matrices.
+
+    The Jordan-Wigner string (-1)^(number of occupied orbitals below o)
+    enforces antisymmetry, exactly as in the bit representation of chapter 3.
+    Everything else -- the Hamiltonian, the number operator, the references,
+    the quasiparticles -- is built out of these.
+    &quot;&quot;&quot;
+
+    def __init__(self, levels):
+        self.L = levels
+        self.norb = 2 * levels
+        self.dim = 1 &lt;&lt; self.norb
+        self.cdag = [self._creation(o) for o in range(self.norb)]
+        self.c = [op.T.tocsr() for op in self.cdag]
+        self.vacuum = np.zeros(self.dim)
+        self.vacuum[0] = 1.0
+
+    def _creation(self, o):
+        rows, cols, data = [], [], []
+        for s in range(self.dim):
+            if (s &gt;&gt; o) &amp; 1:
+                continue
+            sign = -1 if popcount(s &amp; ((1 &lt;&lt; o) - 1)) &amp; 1 else 1
+            rows.append(s | (1 &lt;&lt; o))
+            cols.append(s)
+            data.append(sign)
+        return csr_matrix((data, (rows, cols)), shape=(self.dim, self.dim))
+
+    # ------------------------------------------------------------------
+    def number(self):
+        N = csr_matrix((self.dim, self.dim))
+        for o in range(self.norb):
+            N = N + self.cdag[o] @ self.c[o]
+        return N
+
+    def h0(self, xi=1.0):
+        H = csr_matrix((self.dim, self.dim))
+        for p in range(1, self.L + 1):
+            for s in (UP, DN):
+                o = orbital(p, s)
+                H = H + xi * (p - 1) * (self.cdag[o] @ self.c[o])
+        return H
+
+    def hamiltonian(self, g, f, xi=1.0):
+        H = self.h0(xi)
+        pair_dag = [self.cdag[orbital(p, UP)] @ self.cdag[orbital(p, DN)]
+                    for p in range(1, self.L + 1)]
+        pair = [op.conj().T.tocsr() for op in pair_dag]
+        for p in range(self.L):
+            for q in range(self.L):
+                H = H - 0.5 * g * (pair_dag[p] @ pair[q])
+        if f != 0.0:
+            for p in range(self.L):
+                for q in range(1, self.L + 1):
+                    for r in range(1, self.L + 1):
+                        op = (pair_dag[p] @ self.c[orbital(q, DN)]
+                              @ self.c[orbital(r, UP)])
+                        H = H - 0.5 * f * (op + op.conj().T)
+        return H.tocsr()
+
+    def two_body_matrix_elements(self, g, f, xi=1.0):
+        &quot;&quot;&quot;vbar[a,b,c,d] = &lt;ab|V|cd&gt;_AS, read off the two-particle sector.&quot;&quot;&quot;
+        V = self.hamiltonian(g, f, xi) - self.h0(xi)
+        kets = {(a, b): self.cdag[a] @ (self.cdag[b] @ self.vacuum)
+                for a in range(self.norb) for b in range(self.norb)}
+        n = self.norb
+        vbar = np.zeros((n, n, n, n))
+        for a in range(n):
+            for b in range(n):
+                bra = kets[(a, b)]
+                for c in range(n):
+                    for d in range(n):
+                        vbar[a, b, c, d] = bra @ (V @ kets[(c, d)])
+        return vbar
+
+    def rotate(self, C):
+        &quot;&quot;&quot;Creation operators in the basis whose columns are given by C.&quot;&quot;&quot;
+        out = []
+        for a in range(self.norb):
+            op = csr_matrix((self.dim, self.dim))
+            for o in range(self.norb):
+                if abs(C[o, a]) &gt; 1e-14:
+                    op = op + C[o, a] * self.cdag[o]
+            out.append(op.tocsr())
+        return out
+
+    def determinant(self, creators, n_particles):
+        v = self.vacuum.copy()
+        for i in range(n_particles):
+            v = creators[i] @ v
+        return v / np.linalg.norm(v)
+
+
+# ---------------------------------------------------------------------------
+#  Hartree-Fock for this model
+# ---------------------------------------------------------------------------
+def single_particle_energies(L, xi=1.0):
+    return np.array([xi * (level_of(o) - 1) for o in range(2 * L)])
+
+
+def hartree_fock(fock, N, g, f, xi=1.0, max_iter=400, tol=1e-12):
+    &quot;&quot;&quot;Self-consistent field in the single-particle basis of h0.&quot;&quot;&quot;
+    n = fock.norb
+    t = np.diag(single_particle_energies(fock.L, xi))
+    vbar = fock.two_body_matrix_elements(g, f, xi)
+    C = np.eye(n)
+    previous = None
+    for iteration in range(1, max_iter + 1):
+        rho = C[:, :N] @ C[:, :N].T
+        F = t + np.einsum(&quot;acbd,dc-&gt;ab&quot;, vbar, rho)
+        eps, C = eigh(F)
+        if previous is not None and abs(eps.sum() - previous) &lt; tol:
+            break
+        previous = eps.sum()
+    rho = C[:, :N] @ C[:, :N].T
+    one = np.einsum(&quot;ab,ab-&gt;&quot;, t, rho)
+    two = 0.5 * np.einsum(&quot;ai,bj,abcd,ci,dj-&gt;&quot;,
+                          C[:, :N], C[:, :N], vbar, C[:, :N], C[:, :N])
+    return dict(eps=eps, C=C, energy=one + two, vbar=vbar,
+                iterations=iteration)
+
+
+# ---------------------------------------------------------------------------
+#  The A and B matrices, as double commutators
+# ---------------------------------------------------------------------------
+def commutator(X, Y):
+    return X @ Y - Y @ X
+
+
+def build_AB(H, reference, operators):
+    &quot;&quot;&quot;A_KL = &lt;0|[O_K^+,[H,O_L]]|0&gt;,  B_KL = -&lt;0|[O_K^+,[H,O_L^+]]|0&gt;.&quot;&quot;&quot;
+    n = len(operators)
+    A = np.zeros((n, n))
+    B = np.zeros((n, n))
+    HO = [commutator(H, O) for O in operators]
+    HOd = [commutator(H, O.conj().T) for O in operators]
+    Od = [O.conj().T for O in operators]
+    for k in range(n):
+        left = reference @ Od[k]
+        right = Od[k] @ reference
+        for l in range(n):
+            A[k, l] = left @ (HO[l] @ reference) - reference @ (HO[l] @ right)
+            B[k, l] = -(left @ (HOd[l] @ reference)
+                        - reference @ (HOd[l] @ right))
+    return A, B
+
+
+def solve_rpa(A, B, tol=1e-8, imag_tol=1e-7):
+    &quot;&quot;&quot;Positive eigenvalues of [[A, B], [-B*, -A*]], and the imaginary count.&quot;&quot;&quot;
+    M = np.block([[A, B], [-B.conj(), -A.conj()]])
+    w = eig(M, right=False)
+    n_imag = int(np.sum(np.abs(w.imag) &gt; imag_tol))
+    real = w[np.abs(w.imag) &lt;= imag_tol].real
+    return np.sort(real[real &gt; tol]), n_imag
+
+
+def correlation_energy(omegas, A):
+    &quot;&quot;&quot;E_corr^RPA = (1/2)(sum_nu omega_nu - Tr A).&quot;&quot;&quot;
+    return 0.5 * (omegas.sum() - np.trace(A))
+
+
+def tda_rpa(fock, N, g, f, xi=1.0):
+    &quot;&quot;&quot;Tamm-Dancoff and RPA in the particle-hole channel, on the HF state.&quot;&quot;&quot;
+    hf = hartree_fock(fock, N, g, f, xi)
+    H = fock.hamiltonian(g, f, xi)
+    creators = fock.rotate(hf[&quot;C&quot;])
+    annihilators = [op.conj().T.tocsr() for op in creators]
+    reference = fock.determinant(creators, N)
+    ph = [(m, i) for m in range(N, fock.norb) for i in range(N)]
+    operators = [creators[m] @ annihilators[i] for m, i in ph]
+    A, B = build_AB(H, reference, operators)
+    tda = np.sort(np.linalg.eigvalsh(A))
+    rpa, n_imag = solve_rpa(A, B)
+    return dict(hf=hf[&quot;energy&quot;], eps=hf[&quot;eps&quot;], A=A, B=B,
+                tda=tda, rpa=rpa, n_imag=n_imag,
+                ecorr=correlation_energy(rpa, A) if n_imag == 0 else np.nan,
+                pairs=ph)
+
+
+# ---------------------------------------------------------------------------
+#  BCS
+# ---------------------------------------------------------------------------
+class BCS:
+    &quot;&quot;&quot;The BCS mean field, solved variationally on the angles theta_p.
+
+    |BCS&gt; = prod_p (u_p + v_p a^+_{p+} a^+_{p-}) |0&gt;,  u_p = cos t_p,
+    v_p = sin t_p.  Because the trial state is a product over levels, the
+    expectation value of H is available in closed form,
+
+        &lt;H&gt; = 2 sum_p eps_p v_p^2
+              - (g/2 + f) [ sum_p v_p^2 + sum_{p /= q} u_p v_p u_q v_q ] ,
+
+    which is verified against the Fock-space value in the demonstrations.
+    Note what the formula says: seen from the BCS vacuum the particle-hole
+    term acts as extra pairing, with g -&gt; g + 2f.
+    &quot;&quot;&quot;
+
+    def __init__(self, levels, particles, g, f=0.0, xi=1.0):
+        self.L = levels
+        self.N = particles
+        self.g = g
+        self.f = f
+        self.xi = xi
+        self.eps = np.array([xi * (p - 1) for p in range(1, levels + 1)])
+        self.strength = 0.5 * g + f
+
+    # ------------------------------------------------------------------
+    def energy(self, theta):
+        u, v = np.cos(theta), np.sin(theta)
+        v2 = v**2
+        uv = u * v
+        pair_sum = v2.sum() + (uv.sum()**2 - (uv**2).sum())
+        return 2.0 * (self.eps * v2).sum() - self.strength * pair_sum
+
+    def particles_expectation(self, theta):
+        return 2.0 * (np.sin(theta)**2).sum()
+
+    # ------------------------------------------------------------------
+    def _minimise(self, lam, starts=6, seed=7):
+        &quot;&quot;&quot;Minimise &lt;H - lambda N&gt; over the angles, from several starts.
+
+        The energy surface has several local minima -- the normal solution and
+        the paired ones -- so a single start is not safe near the transition.
+        &quot;&quot;&quot;
+        from scipy.optimize import minimize
+        rng = np.random.default_rng(seed)
+
+        def objective(theta):
+            return self.energy(theta) - lam * self.particles_expectation(theta)
+
+        guesses = [np.array([1.5 if p &lt; self.N // 2 else 0.05
+                             for p in range(self.L)]),
+                   np.full(self.L, np.pi / 4),
+                   np.array([1.2 if p &lt; self.N // 2 else 0.4
+                             for p in range(self.L)])]
+        while len(guesses) &lt; starts:
+            guesses.append(rng.uniform(0.0, np.pi / 2, self.L))
+        best, best_value = None, np.inf
+        for guess in guesses:
+            res = minimize(objective, guess, method=&quot;L-BFGS-B&quot;,
+                           bounds=[(0.0, np.pi / 2)] * self.L,
+                           options={&quot;ftol&quot;: 1e-14, &quot;gtol&quot;: 1e-12})
+            if res.fun &lt; best_value:
+                best, best_value = res.x, res.fun
+        return best
+
+    def solve(self, tol=1e-12, max_bisections=80):
+        &quot;&quot;&quot;Bisect the chemical potential so that &lt;N&gt; = N.
+
+        The bisection uses a cheap single start; the final lambda is then
+        polished with the full multi-start minimisation, which is what
+        matters for picking out the global minimum near the transition.
+        &quot;&quot;&quot;
+        lo, hi = -10.0, 20.0
+        mid = 0.5 * (lo + hi)
+        for _ in range(max_bisections):
+            mid = 0.5 * (lo + hi)
+            theta = self._minimise(mid, starts=3)
+            n = self.particles_expectation(theta)
+            if abs(n - self.N) &lt; 1e-11 or hi - lo &lt; tol:
+                break
+            if n &gt; self.N:
+                hi = mid
+            else:
+                lo = mid
+        theta = self._minimise(mid, starts=6)
+        u, v = np.cos(theta), np.sin(theta)
+        self.theta, self.u, self.v, self.lam = theta, u, v, mid
+        self.gap = self.strength * (u * v).sum()
+        self.E = self.energy(theta)
+        self.n_expect = self.particles_expectation(theta)
+        return dict(u=u, v=v, theta=theta, lam=mid, gap=self.gap,
+                    energy=self.E, particles=self.n_expect)
+
+    # ------------------------------------------------------------------
+    def vector(self, fock):
+        &quot;&quot;&quot;|BCS&gt; as a Fock-space vector.&quot;&quot;&quot;
+        v = fock.vacuum.copy()
+        for p in range(1, self.L + 1):
+            pair = (fock.cdag[orbital(p, UP)] @ fock.cdag[orbital(p, DN)])
+            v = self.u[p - 1] * v + self.v[p - 1] * (pair @ v)
+        return v / np.linalg.norm(v)
+
+    def quasiparticles(self, fock):
+        &quot;&quot;&quot;alpha^+_{p+} = u a^+_{p+} - v a_{p-},  alpha^+_{p-} = u a^+_{p-} + v a_{p+}.&quot;&quot;&quot;
+        out = []
+        for p in range(1, self.L + 1):
+            up, vp = self.u[p - 1], self.v[p - 1]
+            out.append((up * fock.cdag[orbital(p, UP)]
+                        - vp * fock.c[orbital(p, DN)]).tocsr())
+            out.append((up * fock.cdag[orbital(p, DN)]
+                        + vp * fock.c[orbital(p, UP)]).tocsr())
+        return out
+
+
+def spurious_amplitudes(fock, reference, operators):
+    &quot;&quot;&quot;The QRPA amplitudes of the number operator.
+
+    Because [H, N] = 0 while |BCS&gt; is not an eigenstate of N, the number
+    operator generates an exact zero mode of the QRPA equations -- the
+    Goldstone mode of the broken U(1) symmetry.  Its amplitudes are
+
+        X_K = &lt;0|[O_K, N]|0&gt;,     Y_K = &lt;0|[O_K^+, N]|0&gt;,
+
+    and the pair (X, Y) satisfies M (X, Y)^T = 0.
+    &quot;&quot;&quot;
+    Nop = fock.number()
+    X = np.array([float(reference @ (commutator(O, Nop) @ reference))
+                  for O in operators])
+    Y = np.array([float(reference @ (commutator(O.conj().T, Nop) @ reference))
+                  for O in operators])
+    v = np.concatenate([X, Y])
+    norm = np.linalg.norm(v)
+    return v / norm if norm &gt; 1e-14 else v
+
+
+def solve_qrpa_matrix(A, B, spurious=None, zero_tol=1e-2, imag_tol=1e-6):
+    &quot;&quot;&quot;Diagonalise the QRPA matrix and separate off the spurious mode.
+
+    Returns the physical positive roots, the number of genuinely imaginary
+    modes, the modulus of the mode identified as spurious, and its overlap
+    with the number-operator amplitudes.
+    &quot;&quot;&quot;
+    M = np.block([[A, B], [-B.conj(), -A.conj()]])
+    w, vecs = eig(M)
+    order = np.argsort(np.abs(w))
+    w, vecs = w[order], vecs[:, order]
+
+    # the two roots closest to zero are the Goldstone pair
+    near_zero = np.abs(w) &lt; zero_tol
+    overlap = np.nan
+    if spurious is not None and near_zero.any():
+        candidates = np.where(near_zero)[0]
+        overlaps = [abs(np.vdot(spurious, vecs[:, k]))
+                    / np.linalg.norm(vecs[:, k]) for k in candidates]
+        overlap = float(max(overlaps))
+
+    physical = w[~near_zero]
+    n_imag = int(np.sum(np.abs(physical.imag) &gt; imag_tol))
+    real = physical[np.abs(physical.imag) &lt;= imag_tol].real
+    return (np.sort(real[real &gt; 0.0]), n_imag,
+            float(np.abs(w[near_zero]).max()) if near_zero.any() else np.nan,
+            overlap)
+
+
+def classify_modes(fock, reference, operators, A, B, zero_tol=1e-2):
+    &quot;&quot;&quot;Sort the QRPA phonons by the particle number they carry.
+
+    The phonon Q^+_nu = sum_K (X_K O_K - Y_K O_K^+) is built explicitly as a
+    matrix, applied to the reference and the expectation value of N taken.
+    Because the BCS vacuum does not conserve particle number, the phonons
+    split into excitations of the N-particle system (Delta N = 0) and
+    pairing vibrations connecting to N +/- 2.
+    &quot;&quot;&quot;
+    M = np.block([[A, B], [-B.conj(), -A.conj()]])
+    w, vecs = eig(M)
+    n = len(operators)
+    Nop = fock.number()
+    n_ref = float(reference @ (Nop @ reference))
+
+    keep = [k for k in range(len(w))
+            if abs(w[k]) &gt;= zero_tol and abs(w[k].imag) &lt;= 1e-6
+            and w[k].real &gt; 0.0]
+    keep.sort(key=lambda k: w[k].real)
+
+    def phonon_state(k):
+        X, Y = vecs[:n, k].real, vecs[n:, k].real
+        state = np.zeros(fock.dim)
+        for K, O in enumerate(operators):
+            if abs(X[K]) &gt; 1e-12:
+                state = state + X[K] * (O @ reference)
+            if abs(Y[K]) &gt; 1e-12:
+                state = state - Y[K] * (O.conj().T @ reference)
+        return state
+
+    rows = []
+    used = np.zeros(len(keep), dtype=bool)
+    for a, ka in enumerate(keep):
+        if used[a]:
+            continue
+        # collect the degenerate multiplet
+        group = [b for b in range(len(keep))
+                 if not used[b] and abs(w[keep[b]].real - w[ka].real) &lt; 1e-8]
+        for b in group:
+            used[b] = True
+        states = []
+        for b in group:
+            s = phonon_state(keep[b])
+            nrm = np.linalg.norm(s)
+            if nrm &gt; 1e-10:
+                states.append(s / nrm)
+        if not states:
+            continue
+        # orthonormalise the multiplet, then diagonalise N inside it
+        S = np.array(states).T
+        Q, _ = np.linalg.qr(S)
+        Q = Q[:, :len(states)]
+        Nsub = Q.T @ (Nop @ Q)
+        dn = np.linalg.eigvalsh(0.5 * (Nsub + Nsub.T)) - n_ref
+        for value in dn:
+            rows.append((float(w[ka].real), float(value)))
+    rows.sort()
+    return rows
+
+
+def qrpa(fock, N, g, f=0.0, xi=1.0, zero_tol=1e-2):
+    &quot;&quot;&quot;QRPA on the BCS vacuum, using the cranked Hamiltonian H - lambda N.&quot;&quot;&quot;
+    bcs = BCS(fock.L, N, g, f, xi)
+    bcs.solve()
+    H = fock.hamiltonian(g, f, xi)
+    Hp = (H - bcs.lam * fock.number()).tocsr()
+    reference = bcs.vector(fock)
+    alpha_dag = bcs.quasiparticles(fock)
+    n = len(alpha_dag)
+    operators = [alpha_dag[a] @ alpha_dag[b]
+                 for a in range(n) for b in range(a + 1, n)]
+    A, B = build_AB(Hp, reference, operators)
+    spur = spurious_amplitudes(fock, reference, operators)
+    omegas, n_imag, zero_mode, overlap = solve_qrpa_matrix(
+        A, B, spurious=spur, zero_tol=zero_tol)
+    ecorr = correlation_energy(omegas, A) if n_imag == 0 else np.nan
+    return dict(bcs=bcs, energy=bcs.E, gap=bcs.gap, lam=bcs.lam,
+                omega=omegas, ecorr=ecorr, n_imag=n_imag,
+                zero_mode=zero_mode, spurious_overlap=overlap,
+                stable=(n_imag == 0), A=A, B=B, n_operators=len(operators))
+
+
+# ---------------------------------------------------------------------------
+#  Demonstrations
+# ---------------------------------------------------------------------------
+def demo_model():
+    print(&quot;=&quot; * 74)
+    print(&quot;1. The model, and its exact spectrum&quot;)
+    print(&quot;=&quot; * 74)
+    model = PairingPH(levels=4, particles=4, g=1.0, f=0.0)
+    print(&quot;L = 4 levels, N = 4 particles&quot;)
+    print(f&quot;full space          C(8,4) = {comb(8, 4)}&quot;)
+    print(f&quot;balanced S_z = 0 sector     = {model.dim}&quot;)
+    print()
+    print(&quot;At f = 0 the model is the pairing model of chapter 4.  The exact&quot;)
+    print(&quot;energies must reproduce Table 4.2:&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;7s} {&#39;E_ref&#39;:&gt;12s} {&#39;E_0 (exact)&#39;:&gt;14s} {&#39;chapter 4&#39;:&gt;14s}&quot;)
+    reference = {-1.0: 2.77987014, -0.5: 2.43688426, 0.0: 2.0,
+                 0.5: 1.41677428, 1.0: 0.63554847}
+    for g in (-1.0, -0.5, 0.0, 0.5, 1.0):
+        m = PairingPH(levels=4, particles=4, g=g, f=0.0)
+        print(f&quot;{g:7.2f} {m.reference_energy():12.6f} &quot;
+              f&quot;{m.spectrum(1)[0]:14.8f} {reference[g]:14.8f}&quot;)
+    print()
+    print(&quot;Switching on the particle-hole term, g = 0.5 and f = 0.05 g:&quot;)
+    m = PairingPH(levels=4, particles=4, g=0.5, f=0.05 * 0.5)
+    for k, e in enumerate(m.spectrum(6)):
+        print(f&quot;   E_{k} = {e:.6f}&quot;)
+    print()
+    print(&quot;The particle-hole term breaks pairs, so the seniority of chapter 5&quot;)
+    print(&quot;is no longer conserved and the whole S_z = 0 space is active.&quot;)
+
+
+def demo_hartree_fock():
+    print(&quot;=&quot; * 74)
+    print(&quot;2. The Hartree-Fock reference&quot;)
+    print(&quot;=&quot; * 74)
+    fock = FockSpace(4)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;f&#39;:&gt;7s} {&#39;E_HF&#39;:&gt;11s} {&#39;iterations&#39;:&gt;11s}&quot;
+          f&quot;   single-particle energies&quot;)
+    for g, f in ((0.7, 0.0), (0.7, 0.05), (1.0, 0.5)):
+        hf = hartree_fock(fock, 4, g, f)
+        eps = &quot;  &quot;.join(f&quot;{e:6.3f}&quot; for e in hf[&quot;eps&quot;][:4])
+        print(f&quot;{g:6.2f} {f:7.3f} {hf[&#39;energy&#39;]:11.5f} &quot;
+              f&quot;{hf[&#39;iterations&#39;]:11d}   {eps} ...&quot;)
+    print()
+    print(&quot;With pure pairing the filled Fermi sea is already the Hartree-Fock&quot;)
+    print(&quot;solution -- the interaction cannot connect it to a 1p-1h state, as&quot;)
+    print(&quot;chapter 6 found.  The occupied levels are shifted down by g/2 and&quot;)
+    print(&quot;the empty ones are untouched.  The particle-hole term does connect&quot;)
+    print(&quot;them, so the mean field must rotate the orbitals to restore&quot;)
+    print(&quot;Brillouin&#39;s theorem, and the iteration becomes non-trivial.&quot;)
+
+
+def demo_validation():
+    print(&quot;=&quot; * 74)
+    print(&quot;3. Validating the A and B matrices&quot;)
+    print(&quot;=&quot; * 74)
+    fock = FockSpace(4)
+    g, f = 0.7, 0.05
+    r = tda_rpa(fock, 4, g, f)
+    A, B = r[&quot;A&quot;], r[&quot;B&quot;]
+    hf = hartree_fock(fock, 4, g, f)
+    creators = fock.rotate(hf[&quot;C&quot;])
+    annihilators = [o.conj().T.tocsr() for o in creators]
+    reference = fock.determinant(creators, 4)
+    H = fock.hamiltonian(g, f)
+    E_hf = float(reference @ (H @ reference))
+
+    ph = r[&quot;pairs&quot;]
+    states = []
+    for m, i in ph:
+        v = creators[m] @ (annihilators[i] @ reference)
+        states.append(v / np.linalg.norm(v))
+    S = np.array(states)
+    H_1p1h = S @ (H @ S.T) - E_hf * np.eye(len(ph))
+
+    print(&quot;Everything is computed from double commutators, so it is worth&quot;)
+    print(&quot;checking against the textbook expressions and against a direct&quot;)
+    print(&quot;matrix construction.&quot;)
+    print()
+    print(f&quot;  E_HF from &lt;HF|H|HF&gt;                    = {E_hf:.8f}&quot;)
+    print(f&quot;  E_HF from the self-consistent field    = {hf[&#39;energy&#39;]:.8f}&quot;)
+    brillouin = max(abs(float(reference @ (H @ s))) for s in states)
+    print(f&quot;  max |&lt;HF|H|1p-1h&gt;|  (Brillouin)        = {brillouin:.2e}&quot;)
+    print(f&quot;  max |A - (H_1p1h - E_HF)|              = &quot;
+          f&quot;{np.abs(A - H_1p1h).max():.2e}&quot;)
+
+    C = hf[&quot;C&quot;]
+    vhf = np.einsum(&quot;ap,bq,abcd,cr,ds-&gt;pqrs&quot;, C, C, hf[&quot;vbar&quot;], C, C)
+    A_formula = np.array([[(hf[&quot;eps&quot;][m] - hf[&quot;eps&quot;][i]) * (m == n) * (i == j)
+                           + vhf[m, j, i, n] for (n, j) in ph]
+                          for (m, i) in ph])
+    B_formula = np.array([[vhf[m, n, i, j] for (n, j) in ph]
+                          for (m, i) in ph])
+    print(f&quot;  max |A - [(e_m-e_i)dd + vbar_mjin]|    = &quot;
+          f&quot;{np.abs(A - A_formula).max():.2e}&quot;)
+    print(f&quot;  max |B - vbar_mnij|                    = &quot;
+          f&quot;{np.abs(B - B_formula).max():.2e}&quot;)
+    print()
+    print(&quot;The first identity is the important one: the Tamm-Dancoff matrix&quot;)
+    print(&quot;is literally the Hamiltonian restricted to the 1p-1h block,&quot;)
+    print(&quot;measured from the reference.  TDA is the configuration-interaction&quot;)
+    print(&quot;truncation of chapter 5 applied to excited states, no more.&quot;)
+
+
+def demo_tda_rpa():
+    print(&quot;=&quot; * 74)
+    print(&quot;4. Tamm-Dancoff and RPA in the particle-hole channel&quot;)
+    print(&quot;=&quot; * 74)
+    fock = FockSpace(4)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;f&#39;:&gt;7s} {&#39;E_HF&#39;:&gt;10s} {&#39;E_HF+E_c&#39;:&gt;11s} &quot;
+          f&quot;{&#39;E_exact&#39;:&gt;10s} {&#39;TDA w1&#39;:&gt;9s} {&#39;RPA w1&#39;:&gt;9s} {&#39;exact w1&#39;:&gt;10s}&quot;)
+    for g, f in ((0.5, 0.025), (0.7, 0.05), (1.0, 0.05), (1.0, 0.5)):
+        r = tda_rpa(fock, 4, g, f)
+        exact = PairingPH(levels=4, particles=4, g=g, f=f).spectrum(2)
+        print(f&quot;{g:6.2f} {f:7.3f} {r[&#39;hf&#39;]:10.5f} &quot;
+              f&quot;{r[&#39;hf&#39;] + r[&#39;ecorr&#39;]:11.5f} {exact[0]:10.5f} &quot;
+              f&quot;{r[&#39;tda&#39;][0]:9.4f} {r[&#39;rpa&#39;][0]:9.4f} &quot;
+              f&quot;{exact[1] - exact[0]:10.4f}&quot;)
+    print()
+    print(&quot;RPA lowers the energy below Hartree-Fock and overshoots the exact&quot;)
+    print(&quot;ground state: the quasiboson approximation, which replaces the&quot;)
+    print(&quot;exact commutator of two particle-hole operators by its expectation&quot;)
+    print(&quot;value in the reference, double counts the correlations.  The RPA&quot;)
+    print(&quot;root always lies below the TDA one, for the same reason.&quot;)
+    print()
+    r = tda_rpa(fock, 4, 0.7, 0.05)
+    print(f&quot;dimension of the particle-hole space: {len(r[&#39;pairs&#39;])}&quot;
+          f&quot; = (2L - N) x N = 4 x 4&quot;)
+    print(f&quot;Tr A = {np.trace(r[&#39;A&#39;]):.6f}, &quot;
+          f&quot;sum of RPA roots = {r[&#39;rpa&#39;].sum():.6f}, &quot;
+          f&quot;E_corr = {r[&#39;ecorr&#39;]:.6f}&quot;)
+    print()
+    print(&quot;For pure pairing the whole particle-hole problem collapses to a&quot;)
+    print(&quot;two-by-two structure and both answers are closed forms,&quot;)
+    print(&quot;   TDA:  w = xi + g/2,          RPA:  w = sqrt(xi^2 + g xi),&quot;)
+    print(&quot;the second being sqrt(A^2 - B^2) with A = xi + g/2 and B = g/2.&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;TDA&#39;:&gt;12s} {&#39;xi + g/2&#39;:&gt;12s} {&#39;RPA&#39;:&gt;12s} &quot;
+          f&quot;{&#39;sqrt(1+g)&#39;:&gt;12s}&quot;)
+    for g in (0.5, 1.0, 2.0, 3.0, 5.0):
+        r = tda_rpa(fock, 4, g, 0.0)
+        print(f&quot;{g:6.2f} {r[&#39;tda&#39;][0]:12.8f} {1.0 + 0.5 * g:12.8f} &quot;
+              f&quot;{r[&#39;rpa&#39;][0]:12.8f} {np.sqrt(1.0 + g):12.8f}&quot;)
+
+
+def demo_stability():
+    print(&quot;=&quot; * 74)
+    print(&quot;5. RPA and the stability of the mean field&quot;)
+    print(&quot;=&quot; * 74)
+    print(&quot;Chapter 6 built the stability matrix&quot;)
+    print(&quot;   M_stab = [[Delta+A, B], [B*, Delta+A*]]   (Hermitian)&quot;)
+    print(&quot;and showed that the Hartree-Fock solution is a minimum only if it&quot;)
+    print(&quot;is positive semi-definite.  RPA diagonalises the *same* blocks in&quot;)
+    print(&quot;the non-Hermitian arrangement&quot;)
+    print(&quot;   M_RPA  = [[A, B], [-B*, -A*]]&quot;)
+    print(&quot;whose eigenvalues are +/- w.  The two statements are equivalent:&quot;)
+    print(&quot;the RPA frequencies are real precisely when M_stab &gt;= 0.&quot;)
+    print()
+    print(&quot;The Lipkin model of chapters 4 and 6 shows this directly.&quot;)
+    print(f&quot;{&#39;chi&#39;:&gt;6s} {&#39;min eig M_stab&#39;:&gt;16s} {&#39;#imaginary&#39;:&gt;12s} &quot;
+          f&quot;{&#39;lowest real root&#39;:&gt;18s}&quot;)
+    for chi in (0.25, 0.5, 0.9, 1.0, 1.5, 2.0):
+        V = chi / 3.0
+        model = _lipkin_blocks(N=4, eps=1.0, V=V)
+        DA, B = model
+        stab = np.block([[DA, B], [B.conj(), DA.conj()]])
+        lowest = np.linalg.eigvalsh(0.5 * (stab + stab.T))[0]
+        roots, n_imag = solve_rpa(DA, B)
+        first = roots[0] if len(roots) else np.nan
+        print(f&quot;{chi:6.2f} {lowest:16.8f} {n_imag:12d} {first:18.6f}&quot;)
+    print()
+    print(&quot;The collective root goes soft exactly at chi = 1, where the&quot;)
+    print(&quot;stability matrix acquires a zero eigenvalue, and turns imaginary&quot;)
+    print(&quot;beyond it.  A vanishing RPA frequency is the signature of a&quot;)
+    print(&quot;mean-field phase transition; an imaginary one says the reference&quot;)
+    print(&quot;is a saddle point and the calculation must be redone about a&quot;)
+    print(&quot;different mean field.&quot;)
+    print()
+    print(&quot;For the pairing plus particle-hole model the particle-hole&quot;)
+    print(&quot;stability matrix stays positive at every coupling we consider:&quot;)
+    fock = FockSpace(4)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;f&#39;:&gt;7s} {&#39;min eig M_stab&#39;:&gt;16s} {&#39;#imaginary&#39;:&gt;12s}&quot;)
+    for g, f in ((1.0, 0.0), (3.0, 0.0), (1.0, 0.5), (4.0, 2.0)):
+        r = tda_rpa(fock, 4, g, f)
+        stab = np.block([[r[&quot;A&quot;], r[&quot;B&quot;]], [r[&quot;B&quot;].conj(), r[&quot;A&quot;].conj()]])
+        lowest = np.linalg.eigvalsh(0.5 * (stab + stab.T))[0]
+        print(f&quot;{g:6.2f} {f:7.2f} {lowest:16.8f} {r[&#39;n_imag&#39;]:12d}&quot;)
+    print(&quot;The particle-hole channel is simply not where this model becomes&quot;)
+    print(&quot;collective.  Its instability is in the pairing channel, which is&quot;)
+    print(&quot;what BCS and QRPA are for.&quot;)
+
+
+def _lipkin_blocks(N=4, eps=1.0, V=0.2):
+    &quot;&quot;&quot;The Lipkin stability blocks (Delta+A, B), rebuilt here for chapter 7.
+
+    With W = 0 the interaction changes J_z by two units, so it has no
+    matrix element inside the 1p-1h space: Delta + A = eps * I, while
+    B = V (J - I) with J the matrix of ones.
+    &quot;&quot;&quot;
+    A = eps * np.eye(N)
+    B = V * (np.ones((N, N)) - np.eye(N))
+    return A, B
+
+
+def demo_bcs():
+    print(&quot;=&quot; * 74)
+    print(&quot;6. BCS: the pairing mean field&quot;)
+    print(&quot;=&quot; * 74)
+    fock = FockSpace(4)
+    print(&quot;The closed-form energy against the Fock-space expectation value:&quot;)
+    for g, f in ((1.6, 0.0), (1.2, 0.1), (0.8, 0.3)):
+        bcs = BCS(4, 4, g, f)
+        bcs.solve()
+        vec = bcs.vector(fock)
+        H = fock.hamiltonian(g, f)
+        numeric = float(vec @ (H @ vec))
+        print(f&quot;   g={g:4.1f} f={f:4.1f}:  closed form {bcs.E:12.8f}   &quot;
+              f&quot;Fock space {numeric:12.8f}   difference &quot;
+              f&quot;{abs(bcs.E - numeric):.1e}&quot;)
+    print()
+    print(&quot;Note that the last two rows are identical.  Seen from the BCS&quot;)
+    print(&quot;vacuum only the q = r part of the particle-hole term survives, and&quot;)
+    print(&quot;it acts as extra pairing: the whole BCS problem depends on g and f&quot;)
+    print(&quot;through the single combination g + 2f.&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;f&#39;:&gt;6s} {&#39;g + 2f&#39;:&gt;8s} {&#39;E_BCS&#39;:&gt;13s} {&#39;gap&#39;:&gt;11s}&quot;)
+    for g, f in ((1.4, 0.0), (1.2, 0.1), (0.8, 0.3), (0.0, 0.7)):
+        bcs = BCS(4, 4, g, f)
+        bcs.solve()
+        print(f&quot;{g:6.2f} {f:6.2f} {g + 2 * f:8.2f} {bcs.E:13.8f} &quot;
+              f&quot;{bcs.gap:11.6f}&quot;)
+    print()
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;gap&#39;:&gt;10s} {&#39;lambda&#39;:&gt;10s} {&#39;&lt;N&gt;&#39;:&gt;9s}   v^2&quot;)
+    for g in (0.4, 0.6, 0.8, 1.0, 1.07, 1.2, 1.6, 2.0):
+        bcs = BCS(4, 4, g, 0.0)
+        bcs.solve()
+        v2 = &quot;  &quot;.join(f&quot;{x:5.3f}&quot; for x in bcs.v**2)
+        print(f&quot;{g:6.2f} {bcs.gap:10.5f} {bcs.lam:10.4f} &quot;
+              f&quot;{bcs.n_expect:9.5f}   {v2}&quot;)
+    lo, hi = 0.5, 2.0
+    for _ in range(50):
+        mid = 0.5 * (lo + hi)
+        b = BCS(4, 4, mid, 0.0)
+        b.solve()
+        if b.gap &gt; 1e-6:
+            hi = mid
+        else:
+            lo = mid
+    print()
+    print(f&quot;critical coupling  g_c = {0.5 * (lo + hi):.5f}  (f = 0)&quot;)
+    print(&quot;The condition for a non-trivial solution is&quot;)
+    print(&quot;   1 = 2S [ 1/(3 xi + S) + 1/(xi + S) ],    S = g/2 + f,&quot;)
+    print(&quot;which gives S_c = 0.53519 and hence g_c = 1.07037 at f = 0.&quot;)
+    print()
+    print(&quot;Below g_c the only solution is the normal Fermi sea and BCS&quot;)
+    print(&quot;reduces to Hartree-Fock.  Above it a gap opens and the mean field&quot;)
+    print(&quot;stops conserving particle number.  In a finite system this sharp&quot;)
+    print(&quot;transition is an artefact of the mean field: the exact ground-state&quot;)
+    print(&quot;energy of chapter 4 is perfectly smooth through g_c.&quot;)
+
+
+def demo_qrpa():
+    print(&quot;=&quot; * 74)
+    print(&quot;7. Quasiparticle RPA&quot;)
+    print(&quot;=&quot; * 74)
+    fock = FockSpace(4)
+    bcs = BCS(4, 4, 1.6, 0.0)
+    bcs.solve()
+    vec = bcs.vector(fock)
+    alpha_dag = bcs.quasiparticles(fock)
+    worst = max(np.linalg.norm(op.conj().T @ vec) for op in alpha_dag)
+    print(f&quot;max || alpha_a |BCS&gt; ||  = {worst:.2e}   (the BCS state is the&quot;)
+    print(&quot;                                        quasiparticle vacuum)&quot;)
+    print()
+    print(&quot;The number of two-quasiparticle operators is 2L(2L-1)/2 = 28.&quot;)
+    print(&quot;Because BCS breaks particle-number conservation, the QRPA has an&quot;)
+    print(&quot;exact zero mode -- the Goldstone mode generated by N.  Numerically&quot;)
+    print(&quot;it appears as a tiny root; the table shows its size and its&quot;)
+    print(&quot;overlap with the amplitudes built from the number operator.&quot;)
+    print()
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;gap&#39;:&gt;9s} {&#39;|w_spurious|&#39;:&gt;14s} {&#39;overlap with N&#39;:&gt;16s} &quot;
+          f&quot;{&#39;#imaginary&#39;:&gt;12s}&quot;)
+    for g in (1.2, 1.4, 1.6, 1.8, 2.0):
+        q = qrpa(fock, 4, g, 0.0)
+        print(f&quot;{g:6.2f} {q[&#39;gap&#39;]:9.5f} {q[&#39;zero_mode&#39;]:14.2e} &quot;
+              f&quot;{q[&#39;spurious_overlap&#39;]:16.6f} {q[&#39;n_imag&#39;]:12d}&quot;)
+    print()
+    print(&quot;The overlap is one to six decimals: the near-zero root really is&quot;)
+    print(&quot;the number mode, and once it is removed the QRPA matrix has no&quot;)
+    print(&quot;imaginary eigenvalues at all.  A small imaginary spurious root is&quot;)
+    print(&quot;a numerical artefact of the singular metric, not an instability.&quot;)
+    print()
+    print(&quot;The remaining phonons split by the average particle number they&quot;)
+    print(&quot;carry.  Modes with &lt;Delta N&gt; = 0 are excitations of the N-particle&quot;)
+    print(&quot;system; the others are pairing vibrations reaching towards N +/- 2.&quot;)
+    for g in (1.4, 2.0):
+        rows = _qrpa_modes(fock, 4, g)
+        exact = PairingPH(levels=4, particles=4, g=g, f=0.0).spectrum(5)
+        print()
+        print(f&quot;  g = {g}:  exact excitation energies &quot;
+              f&quot;{np.round(exact[1:] - exact[0], 4)}&quot;)
+        print(f&quot;  {&#39;omega&#39;:&gt;10s} {&#39;&lt;Delta N&gt;&#39;:&gt;12s}   character&quot;)
+        shown = 0
+        for w, dn in rows:
+            if shown &gt;= 7:
+                break
+            kind = &quot;Delta N = 0&quot; if abs(dn) &lt; 1e-6 else &quot;pairing vibration&quot;
+            print(f&quot;  {w:10.4f} {dn:12.4f}   {kind}&quot;)
+            shown += 1
+
+
+def _qrpa_modes(fock, N, g, f=0.0, xi=1.0):
+    bcs = BCS(fock.L, N, g, f, xi)
+    bcs.solve()
+    H = fock.hamiltonian(g, f, xi)
+    Hp = (H - bcs.lam * fock.number()).tocsr()
+    reference = bcs.vector(fock)
+    alpha_dag = bcs.quasiparticles(fock)
+    n = len(alpha_dag)
+    operators = [alpha_dag[a] @ alpha_dag[b]
+                 for a in range(n) for b in range(a + 1, n)]
+    A, B = build_AB(Hp, reference, operators)
+    return classify_modes(fock, reference, operators, A, B)
+
+
+def demo_comparison():
+    print(&quot;=&quot; * 74)
+    print(&quot;8. Exact against RPA and QRPA&quot;)
+    print(&quot;=&quot; * 74)
+    fock = FockSpace(4)
+    print(&quot;Pure pairing, f = 0.  E_ref is the unperturbed determinant, which&quot;)
+    print(&quot;for this interaction is also the Hartree-Fock energy.&quot;)
+    print(f&quot;{&#39;g&#39;:&gt;6s} {&#39;E_exact&#39;:&gt;11s} {&#39;E_HF&#39;:&gt;10s} {&#39;HF+RPA&#39;:&gt;11s} &quot;
+          f&quot;{&#39;E_BCS&#39;:&gt;10s} {&#39;BCS+QRPA&#39;:&gt;11s}&quot;)
+    for g in (0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 2.0):
+        exact = PairingPH(levels=4, particles=4, g=g, f=0.0).spectrum(1)[0]
+        r = tda_rpa(fock, 4, g, 0.0)
+        q = qrpa(fock, 4, g, 0.0)
+        total = q[&quot;energy&quot;] + q[&quot;ecorr&quot;] if q[&quot;stable&quot;] else np.nan
+        print(f&quot;{g:6.2f} {exact:11.6f} {r[&#39;hf&#39;]:10.5f} &quot;
+              f&quot;{r[&#39;hf&#39;] + r[&#39;ecorr&#39;]:11.5f} {q[&#39;energy&#39;]:10.5f} &quot;
+              f&quot;{total:11.5f}&quot;)
+    print()
+    print(&quot;Read the table across.  Hartree-Fock does nothing for pure pairing,&quot;)
+    print(&quot;so the entire correlation energy must come from the fluctuations.&quot;)
+    print(&quot;Particle-hole RPA supplies almost all of it and tracks the exact&quot;)
+    print(&quot;curve closely, crossing it between g = 1.6 and g = 2: it is a&quot;)
+    print(&quot;little under-bound at weak coupling and a little over-bound at&quot;)
+    print(&quot;strong coupling.  BCS improves on Hartree-Fock once the gap opens,&quot;)
+    print(&quot;but only modestly, because a mean field that merely smears the&quot;)
+    print(&quot;occupations cannot reproduce a genuinely correlated ground state.&quot;)
+    print(&quot;QRPA on top of BCS then overshoots badly, and the reason is&quot;)
+    print(&quot;visible in section 7 -- the two-quasiparticle space contains&quot;)
+    print(&quot;pairing vibrations reaching towards N +/- 2, and the standard&quot;)
+    print(&quot;correlation-energy formula counts them all.  Particle-number&quot;)
+    print(&quot;projection is needed before BCS + QRPA becomes quantitative for a&quot;)
+    print(&quot;system this small.  In a heavy nucleus, where the number of&quot;)
+    print(&quot;levels is large and the relative number fluctuation small, the&quot;)
+    print(&quot;same machinery is far better behaved.&quot;)
+
+
+def _demo():
+    for f in (demo_model, demo_hartree_fock, demo_validation, demo_tda_rpa,
+              demo_stability, demo_bcs, demo_qrpa, demo_comparison):
+        f()
+        print()
+
+
+if __name__ == &quot;__main__&quot;:
+    _demo()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="hartreefock.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">7. </span>Mean-field approaches</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="dft.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">9. </span>Density functional theory</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-model-and-its-exact-spectrum">8.1. 1. The model and its exact spectrum</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hartree-fock-reference">8.2. 2. The Hartree-Fock reference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-the-a-and-b-matrices">8.3. 3. Validating the <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> matrices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tamm-dancoff-and-rpa">8.4. 4. Tamm-Dancoff and RPA</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-closed-form">8.4.1. A closed form</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rpa-and-the-stability-of-the-mean-field">8.5. 5. RPA and the stability of the mean field</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bcs">8.6. 6. BCS</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quasiparticle-rpa">8.7. 7. Quasiparticle RPA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#everything-against-everything">8.8. 8. Everything against everything</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-full-program">8.9. The full program</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
