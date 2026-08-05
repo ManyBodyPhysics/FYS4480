@@ -57,6 +57,13 @@ chapter14.tex      Optimization and resampling: the energy gradient as a
                    and blocking, bootstrap and jackknife. Source material:
                    week5-week9.ipynb (week9 arrived with unresolved git
                    merge conflicts; resolved in place, HEAD side kept)
+chapter15.tex      Diffusion Monte Carlo: imaginary-time projection, the
+                   short-time Green's function and branching, importance
+                   sampling with a guiding function, the mixed and growth
+                   estimators, the effective time step, population control,
+                   the sign problem and the fixed-node approximation, and
+                   time-step extrapolation. Written from scratch -- no source
+                   material existed in the repository
 add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
 calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  combinatorial.tex
 week40.do.txt  pmm.tex  dft.do.txt  mbpt.ipynb  cctheory.tex  week48.ipynb
@@ -188,8 +195,8 @@ and `models.ipynb` plus `Hubbard.ipynb` to
 `chapter8.tex`, `mbptheory.ipynb` to `chapter9.tex` and
 `coupledcluster.ipynb` to `chapter10.tex`, `quantumdots.ipynb` to
 `chapter11.tex`, `statistics.ipynb` to `chapter12.tex` and
-`variationalmc.ipynb` to `chapter13.tex` and `optimisation.ipynb` to
-`chapter14.tex`; the older set is
+`variationalmc.ipynb` to `chapter13.tex`, `optimisation.ipynb` to
+`chapter14.tex` and `diffusionmc.ipynb` to `chapter15.tex`; the older set is
 `notation.ipynb`,
 `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
 `vmcdmc.ipynb`, … New book material that includes runnable code should have a
@@ -231,6 +238,7 @@ written for chapters 1 and 2 are:
 | `quantumdot.py` | 11 | 2D quantum dot: closed-form Coulomb integrals, the antisymmetrised two-body matrix, a fast two-electron FCI, and the whole chapter-10 hierarchy applied to it. Takes a few minutes to run |
 | `vmcoptimise.py` | 14 | Parameter gradient (verified), gradient descent / momentum / stochastic reconfiguration, a vectorised many-walker production run, and blocking (Jonsson), bootstrap and jackknife. Runs in about two minutes |
 | `vmc.py` | 13 | Two-electron dot: analytic local energy and quantum force (both checked against finite differences), brute-force Metropolis and importance-sampled Metropolis-Hastings, parameter scans. Runs in about a minute |
+| `dmc.py` | 15 | Importance-sampled diffusion Monte Carlo for the two-electron dot, importing the trial function, local energy and quantum force from `vmc.py` and blocking from `vmcoptimise.py`: drift-diffusion with accept/reject, trapezoidal branching, the Umrigar effective time step, population control, mixed and growth estimators, time-step extrapolation, and a bare branching walk on the 1D oscillator for contrast. Runs in about ninety seconds |
 | `montecarlo.py` | 12 | RNG tests (RANDU planes), brute-force and importance-sampled integration, CLT, autocorrelation time and blocking, random walks and entropy, Markov chains and detailed balance, Metropolis, and a first VMC on the chapter-11 dot. Runs in about 35 s |
 
 All of these run on `numpy` alone except `hartreefock.py`, which also needs

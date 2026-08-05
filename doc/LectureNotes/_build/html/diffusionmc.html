@@ -1,0 +1,1009 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>16. Diffusion Monte Carlo &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'diffusionmc';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="15. Optimization and resampling" href="optimisation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variationalmc.html">14. Variational Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimisation.html">15. Optimization and resampling</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">16. Diffusion Monte Carlo</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/diffusionmc.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Fdiffusionmc.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/diffusionmc.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Diffusion Monte Carlo</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-algorithm-in-its-original-form">16.1. 1. The algorithm in its original form</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quantum-dot">16.2. 2. The quantum dot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-time-step-is-the-systematic-error">16.3. 3. The time step is the systematic error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-deliberately-bad-guiding-function">16.4. 4. A deliberately bad guiding function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-it-a-population-control-bias">16.5. 5. Is it a population-control bias?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-this-leaves-the-quantum-dot">16.6. 6. Where this leaves the quantum dot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-not-here">16.7. What is not here</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="diffusion-monte-carlo">
+<h1><span class="section-number">16. </span>Diffusion Monte Carlo<a class="headerlink" href="#diffusion-monte-carlo" title="Link to this heading">#</a></h1>
+<p>Executable companion to chapter 15.</p>
+<p>Chapter 14 ended with <span class="math notranslate nohighlight">\(E_{\rm VMC} = 3.000549 \pm 0.000049\)</span> for two electrons in a
+two-dimensional quantum dot, against Taut’s exact <span class="math notranslate nohighlight">\(3\)</span>.  The residual
+<span class="math notranslate nohighlight">\(5.5\times10^{-4}\)</span> is eleven standard errors wide and entirely systematic: it is
+what a two-parameter trial function cannot represent, and neither longer sampling
+nor better optimisation removes it.</p>
+<p>Diffusion Monte Carlo removes it by <em>projecting</em> rather than guessing.  Replacing
+<span class="math notranslate nohighlight">\(t\)</span> by <span class="math notranslate nohighlight">\(-i\tau\)</span> turns the Schrodinger equation into</p>
+<div class="math notranslate nohighlight">
+\[
+-\frac{\partial\Phi}{\partial\tau} = (\hat H - E_T)\,\Phi ,
+\]</div>
+<p>whose formal solution filters every excited component away like
+<span class="math notranslate nohighlight">\(e^{-(E_n-E_0)\tau}\)</span>.  In coordinate space this is a diffusion equation with a
+source term, and a branching random walk simulates it directly.</p>
+<p>The catch is that the source is the potential, and <span class="math notranslate nohighlight">\(1/r_{12}\)</span> is unbounded.
+Importance sampling fixes it: propagate <span class="math notranslate nohighlight">\(f = \Psi_T\Phi\)</span> instead, which gives</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial f}{\partial\tau} = D\nabla^2 f - D\nabla\!\cdot\!(f\bm F)
+  - (E_L - E_T) f ,
+\]</div>
+<p>with the same quantum force <span class="math notranslate nohighlight">\(\bm F = 2\nabla\Psi_T/\Psi_T\)</span> and the same local
+energy <span class="math notranslate nohighlight">\(E_L\)</span> as in chapter 13 – and the ground-state energy is the <em>mixed
+estimator</em> <span class="math notranslate nohighlight">\(\langle E_L\rangle_f\)</span>, the same average of the same function, over a
+different distribution.</p>
+<p>Everything here uses <code class="docutils literal notranslate"><span class="pre">dmc.py</span></code>, which imports the trial function, local energy and
+quantum force unchanged from <code class="docutils literal notranslate"><span class="pre">vmc.py</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;../BookManybody/BookMaterial/Programs&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">dmc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">vmc</span><span class="w"> </span><span class="kn">import</span> <span class="n">TAUT_ENERGY</span><span class="p">,</span> <span class="n">vmc_importance</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">4.2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;exact (Taut)      &quot;</span><span class="p">,</span> <span class="n">TAUT_ENERGY</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;VMC (chapter 14)  &quot;</span><span class="p">,</span> <span class="n">dmc</span><span class="o">.</span><span class="n">E_VMC</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;guiding function  alpha =&quot;</span><span class="p">,</span> <span class="n">dmc</span><span class="o">.</span><span class="n">ALPHA_OPT</span><span class="p">,</span> <span class="s2">&quot; beta =&quot;</span><span class="p">,</span> <span class="n">dmc</span><span class="o">.</span><span class="n">BETA_OPT</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>exact (Taut)       3.0
+VMC (chapter 14)   3.000549
+guiding function  alpha = 1.0  beta = 0.4
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-algorithm-in-its-original-form">
+<h2><span class="section-number">16.1. </span>1. The algorithm in its original form<a class="headerlink" href="#the-algorithm-in-its-original-form" title="Link to this heading">#</a></h2>
+<p>No trial function, no drift, no accept/reject: walkers diffuse freely and are
+branched with weight <span class="math notranslate nohighlight">\(\exp[-\Delta\tau(V - E_T)]\)</span>.  For the one-dimensional
+harmonic oscillator, <span class="math notranslate nohighlight">\(V = x^2/2\)</span>, this works and the population growth alone
+gives the energy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">naive</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">naive_dmc_harmonic</span><span class="p">(</span><span class="n">n_steps</span><span class="o">=</span><span class="mi">3000</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E = </span><span class="si">{</span><span class="n">naive</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">naive</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">   (exact </span><span class="si">{</span><span class="n">naive</span><span class="p">[</span><span class="s1">&#39;exact&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E = 0.497322 +/- 0.002792   (exact 0.5)
+</pre></div>
+</div>
+</div>
+</div>
+<p>That works because <span class="math notranslate nohighlight">\(x^2/2\)</span> is smooth and bounded below.  Put <span class="math notranslate nohighlight">\(1/r_{12}\)</span> in the
+exponent instead and the weights diverge as two walkers approach: one lucky
+configuration acquires an enormous weight, spawns an enormous number of copies,
+and the whole population descends from it.  The variance is unbounded and no
+amount of computer time helps.</p>
+<p>Importance sampling replaces <span class="math notranslate nohighlight">\(V\)</span> by <span class="math notranslate nohighlight">\(E_L\)</span>, which the cusp condition keeps finite.
+That is the whole argument, and it is why the algorithm of this cell is never the
+algorithm that is used.</p>
+</section>
+<section id="the-quantum-dot">
+<h2><span class="section-number">16.2. </span>2. The quantum dot<a class="headerlink" href="#the-quantum-dot" title="Link to this heading">#</a></h2>
+<p>One run at <span class="math notranslate nohighlight">\(\Delta\tau = 0.05\)</span> with 500 walkers, started from a short variational
+Monte Carlo run at the same parameters.  Two independent estimators come out: the
+mixed estimator <span class="math notranslate nohighlight">\(\langle E_L\rangle_f\)</span>, and the growth estimator, which is the
+average of the trial energy <span class="math notranslate nohighlight">\(E_T\)</span> needed to hold the population steady.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">dmc</span><span class="p">(</span><span class="n">n_walkers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">time_step</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                 <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;acceptance        </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;acceptance&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mean population   </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;mean_population&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;var(E_L)          </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;variance&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;correlation time  </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mixed estimator   E = </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;growth estimator  E = </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;growth&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;growth_error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;exact                 </span><span class="si">{</span><span class="n">TAUT_ENERGY</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>acceptance        99.5%
+mean population   500
+var(E_L)          0.00223
+correlation time  7.18
+
+mixed estimator   E = 3.000216 +/- 0.000115
+growth estimator  E = 2.999778 +/- 0.000619
+exact                 3.000000
+</pre></div>
+</div>
+</div>
+</div>
+<p>The two agree, as they must.  The mixed estimator has by far the smaller error –
+it measures the eigenvalue directly, while the growth estimator infers it from a
+population that is itself noisy – and it is the one that gets quoted.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">11.0</span><span class="p">,</span> <span class="mf">3.6</span><span class="p">))</span>
+<span class="n">left</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;series&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+<span class="n">left</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">TAUT_ENERGY</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">)</span>
+<span class="n">left</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">)</span>
+<span class="n">left</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\langle E_L\rangle$ over the population&quot;</span><span class="p">)</span>
+<span class="n">left</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">right</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+<span class="n">right</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">right</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">)</span>
+<span class="n">right</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;number of walkers&quot;</span><span class="p">)</span>
+<span class="n">right</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/a28b9ccbab7fcba7e24d2392107872376c8a18a2cd3dc0c04d61c09d45157531.png" src="_images/a28b9ccbab7fcba7e24d2392107872376c8a18a2cd3dc0c04d61c09d45157531.png" />
+</div>
+</div>
+<p>The population wanders around its target but is held there by the feedback in</p>
+<div class="math notranslate nohighlight">
+\[
+E_T = \bar E - \frac{\kappa}{\Delta\tau}
+      \ln\frac{N_{\rm walkers}}{N_{\rm target}} ,
+\]</div>
+<p>with a deliberately weak <span class="math notranslate nohighlight">\(\kappa = 0.05\)</span>: <span class="math notranslate nohighlight">\(E_T\)</span> sits in the branching exponent, so
+a violent controller injects its own fluctuations into the simulation.</p>
+</section>
+<section id="the-time-step-is-the-systematic-error">
+<h2><span class="section-number">16.3. </span>3. The time step is the systematic error<a class="headerlink" href="#the-time-step-is-the-systematic-error" title="Link to this heading">#</a></h2>
+<p>The short-time Green’s function is exact only as <span class="math notranslate nohighlight">\(\Delta\tau\to0\)</span>, so a
+calculation that quotes one time step has not finished.  Run at several and
+extrapolate.</p>
+<p><code class="docutils literal notranslate"><span class="pre">effective_time_step</span></code> replaces <span class="math notranslate nohighlight">\(\Delta\tau\)</span> in the branching factor by</p>
+<div class="math notranslate nohighlight">
+\[
+\Delta\tau_{\rm eff} = \Delta\tau
+  \frac{\sum_{\rm accepted}(\Delta\bm R)^2}{\sum_{\rm attempted}(\Delta\bm R)^2},
+\]</div>
+<p>which corrects the branching for the moves the accept/reject step threw away.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">time_steps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">]</span>
+<span class="n">scans</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">use_eff</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;plain dt&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;dt_eff&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)):</span>
+    <span class="n">energies</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;dt&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;energy&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;error&#39;</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;accept&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;dteff/dt&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;tau&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">time_steps</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">dmc</span><span class="p">(</span><span class="n">n_walkers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">time_step</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span>
+                      <span class="n">effective_time_step</span><span class="o">=</span><span class="n">use_eff</span><span class="p">,</span>
+                      <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span>
+        <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dt</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;acceptance&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">8.1%</span><span class="si">}</span><span class="s2"> &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;effective_time_step&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">dt</span><span class="si">:</span><span class="s2">9.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">extrapolate</span><span class="p">(</span><span class="n">time_steps</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span>
+    <span class="n">scans</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">errors</span><span class="p">),</span> <span class="n">fit</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  extrapolated </span><span class="si">{</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;intercept&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;intercept_error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;   slope </span><span class="si">{</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;coefficients&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">+.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>plain dt
+      dt       energy      error   accept  dteff/dt    tau
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.500     2.999835   0.000050    87.2%     1.000    1.2
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.300     2.999889   0.000057    93.6%     1.000    1.7
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.200     2.999959   0.000068    96.4%     1.000    2.3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.100     3.000098   0.000089    98.6%     1.000    4.2
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.050     3.000034   0.000137    99.5%     1.000   10.1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.020     3.000142   0.000162    99.9%     1.000   16.3
+  extrapolated 3.000090 +/- 0.000064   slope -0.00055
+
+dt_eff
+      dt       energy      error   accept  dteff/dt    tau
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.500     2.999927   0.000050    87.2%     0.805    1.2
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.300     3.000040   0.000058    93.6%     0.899    1.7
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.200     2.999946   0.000065    96.4%     0.942    2.3
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.100     3.000155   0.000096    98.7%     0.978    5.2
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.050     3.000216   0.000115    99.5%     0.991    7.2
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.020     2.999736   0.000167    99.9%     0.998   18.3
+  extrapolated 3.000090 +/- 0.000094   slope -0.00031
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">fit</span><span class="p">)</span> <span class="ow">in</span> <span class="n">scans</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">time_steps</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">errors</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                        <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s2">&quot;coefficients&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">fit</span><span class="p">[</span><span class="s2">&quot;coefficients&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">grid</span><span class="p">,</span>
+             <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">TAUT_ENERGY</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\Delta\tau$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/da39f69f5c9b5acdbfe2c5f621b931497d31236ea9271606ac2ff184006dde97.png" src="_images/da39f69f5c9b5acdbfe2c5f621b931497d31236ea9271606ac2ff184006dde97.png" />
+</div>
+</div>
+<p>Three things to read off.</p>
+<p>The acceptance rate stays above 87% even at <span class="math notranslate nohighlight">\(\Delta\tau = 0.5\)</span> – that is what the
+drift buys, and it is unchanged from chapter 13.  The <span class="math notranslate nohighlight">\(\Delta\tau_{\rm eff}\)</span>
+correction is substantial at the largest time step and negligible below 0.05,
+exactly as it should be.</p>
+<p>The correlation time in <em>steps</em> grows as the time step shrinks.  What decorrelates
+a walker is imaginary time: 4000 steps at <span class="math notranslate nohighlight">\(\Delta\tau = 0.02\)</span> cover eighty units
+of <span class="math notranslate nohighlight">\(\tau\)</span> where the same number at <span class="math notranslate nohighlight">\(\Delta\tau = 0.5\)</span> cover two thousand.  A small
+time step is not free.</p>
+<p>And the bias itself is minute, a few parts in <span class="math notranslate nohighlight">\(10^4\)</span> across a factor of
+twenty-five in <span class="math notranslate nohighlight">\(\Delta\tau\)</span>.  That is a statement about the guiding function, not
+about the method: the time-step error comes from the commutators the Trotter
+factorisation drops, and those vanish when <span class="math notranslate nohighlight">\(\Psi_T\)</span> is an eigenfunction.  At
+<span class="math notranslate nohighlight">\(\alpha = 1\)</span> the local energy of this dot is very nearly constant, so there is
+almost nothing for the factorisation to get wrong.</p>
+</section>
+<section id="a-deliberately-bad-guiding-function">
+<h2><span class="section-number">16.4. </span>4. A deliberately bad guiding function<a class="headerlink" href="#a-deliberately-bad-guiding-function" title="Link to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(\alpha = 0.80\)</span>, <span class="math notranslate nohighlight">\(\beta = 0.10\)</span> is a long way from the variational minimum.  In
+chapter 13 that would simply be a worse answer.  Here it is not.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">poor_vmc</span> <span class="o">=</span> <span class="n">vmc_importance</span><span class="p">(</span><span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">60000</span><span class="p">,</span> <span class="n">time_step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                          <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VMC with the same trial function: </span><span class="si">{</span><span class="n">poor_vmc</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;+/- </span><span class="si">{</span><span class="n">poor_vmc</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">   (variance </span><span class="si">{</span><span class="n">poor_vmc</span><span class="p">[</span><span class="s1">&#39;variance&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="n">poor_steps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">]</span>
+<span class="n">energies</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;dt&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;energy&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;error&#39;</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;tau&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">poor_steps</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">dmc</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">n_walkers</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+                  <span class="n">time_step</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span>
+    <span class="n">energies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;energy&quot;</span><span class="p">])</span>
+    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dt</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">10.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;tau&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">poor_fit</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">extrapolate</span><span class="p">(</span><span class="n">poor_steps</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  extrapolated </span><span class="si">{</span><span class="n">poor_fit</span><span class="p">[</span><span class="s1">&#39;intercept&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;+/- </span><span class="si">{</span><span class="n">poor_fit</span><span class="p">[</span><span class="s1">&#39;intercept_error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">   &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;slope </span><span class="si">{</span><span class="n">poor_fit</span><span class="p">[</span><span class="s1">&#39;coefficients&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">+.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>VMC with the same trial function: 3.363877 +/- 0.005019   (variance 0.6227)
+
+      dt       energy      error    tau
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.100     3.025847   0.000966    8.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.050     3.014878   0.001555   20.5
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.020     3.002270   0.002293   52.8
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   0.010     3.005206   0.002222   50.6
+  extrapolated 3.001071 +/- 0.002338   slope +0.24931
+</pre></div>
+</div>
+</div>
+</div>
+<p>Variationally this trial function is a disaster – 3.36 against an exact 3, worse
+than Hartree-Fock in a 42-orbital basis.  Projected, it gives the right answer.</p>
+<p>The price shows up everywhere else: an error bar some twenty-five times larger
+despite four times the walkers, correlation times three times longer, and a
+time-step slope a few hundred times steeper, so that <span class="math notranslate nohighlight">\(\Delta\tau = 0.5\)</span> is no
+longer usable at all.  A poor guiding function costs computer time and demands a
+smaller time step.  It does not cost accuracy.</p>
+</section>
+<section id="is-it-a-population-control-bias">
+<h2><span class="section-number">16.5. </span>5. Is it a population-control bias?<a class="headerlink" href="#is-it-a-population-control-bias" title="Link to this heading">#</a></h2>
+<p>A systematic error that does not move with <span class="math notranslate nohighlight">\(\Delta\tau\)</span> often turns out to move
+with the number of walkers instead, because the feedback that stabilises the
+population correlates the walkers with each other.  Worth checking rather than
+assuming.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;walkers&#39;</span><span class="si">:</span><span class="s2">&gt;8s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;good guide&#39;</span><span class="si">:</span><span class="s2">&gt;24s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;poor guide&#39;</span><span class="si">:</span><span class="s2">&gt;24s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">):</span>
+    <span class="n">good</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">dmc</span><span class="p">(</span><span class="n">n_walkers</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">time_step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                   <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span>
+    <span class="n">bad</span> <span class="o">=</span> <span class="n">dmc</span><span class="o">.</span><span class="n">dmc</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">n_walkers</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+                  <span class="n">time_step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">8d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">good</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">16.6f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">good</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bad</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">14.6f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">bad</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> walkers               good guide               poor guide
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     250         2.999874 +/- 0.000131       3.024045 +/- 0.003611
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     500         3.000158 +/- 0.000099       3.021299 +/- 0.002181
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    1000         2.999966 +/- 0.000062       3.022742 +/- 0.001509
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    2000         2.999934 +/- 0.000044       3.025847 +/- 0.000966
+</pre></div>
+</div>
+</div>
+</div>
+<p>Neither central value drifts over a factor of eight in the population, while the
+error bars fall by the expected <span class="math notranslate nohighlight">\(\sqrt 8 \approx 2.8\)</span>.  The population-control
+bias is below the statistical resolution here, so the residual in the poor-guide
+column is time-step error – which section 3 removes by extrapolating.</p>
+</section>
+<section id="where-this-leaves-the-quantum-dot">
+<h2><span class="section-number">16.6. </span>6. Where this leaves the quantum dot<a class="headerlink" href="#where-this-leaves-the-quantum-dot" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>method</p></th>
+<th class="head"><p>energy</p></th>
+<th class="head"><p>error</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Hartree-Fock, 42 orbitals</p></td>
+<td><p>3.161921</p></td>
+<td><p><span class="math notranslate nohighlight">\(1.6\times10^{-1}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>MP2, 42 orbitals</p></td>
+<td><p>3.027038</p></td>
+<td><p><span class="math notranslate nohighlight">\(2.7\times10^{-2}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>CCSD, 42 orbitals</p></td>
+<td><p>3.013626</p></td>
+<td><p><span class="math notranslate nohighlight">\(1.4\times10^{-2}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>VMC, optimised (chapter 14)</p></td>
+<td><p>3.000549(49)</p></td>
+<td><p><span class="math notranslate nohighlight">\(5.5\times10^{-4}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>DMC, extrapolated</p></td>
+<td><p>3.000090(64)</p></td>
+<td><p><span class="math notranslate nohighlight">\(9.0\times10^{-5}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>exact (Taut)</p></td>
+<td><p>3.000000</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The basis-set methods are limited by the basis: no finite sum of oscillator
+products reproduces the cusp at <span class="math notranslate nohighlight">\(r_{12} = 0\)</span>.  Variational Monte Carlo removes the
+basis but is limited by the ansatz.  Diffusion Monte Carlo removes the ansatz too,
+and what is left is statistics.</p>
+</section>
+<section id="what-is-not-here">
+<h2><span class="section-number">16.7. </span>What is not here<a class="headerlink" href="#what-is-not-here" title="Link to this heading">#</a></h2>
+<p>The two-electron singlet has a symmetric spatial wave function, so <span class="math notranslate nohighlight">\(\Psi_T\)</span> is
+strictly positive and there are no nodes.  For fermions in general there are, the
+projector converges on the nodeless <em>bosonic</em> state instead, and the fermionic
+signal decays like <span class="math notranslate nohighlight">\(e^{-(E_0^{\rm F}-E_0^{\rm B})\tau}\)</span> – the sign problem.  The
+fixed-node approximation constrains <span class="math notranslate nohighlight">\(\Phi\)</span> to vanish where <span class="math notranslate nohighlight">\(\Psi_T\)</span> does, which
+restores a positive <span class="math notranslate nohighlight">\(f\)</span> and gives a variational upper bound, exact only if the
+nodes are.  It is the one error in this chapter that cannot be removed by
+spending more computer time, and improving it means improving the <em>nodes</em> of the
+trial function rather than its amplitude.</p>
+<p>Which is where flexible parametrisations – neural-network wave functions,
+optimised with the gradient and the stochastic reconfiguration of chapter 14 –
+come in.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="optimisation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">15. </span>Optimization and resampling</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-algorithm-in-its-original-form">16.1. 1. The algorithm in its original form</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quantum-dot">16.2. 2. The quantum dot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-time-step-is-the-systematic-error">16.3. 3. The time step is the systematic error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-deliberately-bad-guiding-function">16.4. 4. A deliberately bad guiding function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#is-it-a-population-control-bias">16.5. 5. Is it a population-control bias?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-this-leaves-the-quantum-dot">16.6. 6. Where this leaves the quantum dot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-not-here">16.7. What is not here</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

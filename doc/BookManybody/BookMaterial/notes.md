@@ -260,8 +260,41 @@
        is 4.6x too small.  The three resampling estimates agree only to within
        ~50 % of each other (blocking is conservative) -- said so in the text
      - Final: E = 3.000549(49) from 2M samples, eleven sigma above the exact 3
-     - Still to write: DMC, then neural-network trial functions where the
-       gradient and SR machinery of this chapter is what carries over
+     - Still to write: neural-network trial functions, where the gradient and
+       SR machinery of this chapter is what carries over
+
+###  Diffusion Monte Carlo  (chapter15.tex, done)
+     - No source material existed in the repository; written from scratch
+     - Imaginary time: -dPhi/dtau = (H - E_T)Phi filters excited states like
+       exp[-(E_n-E_0)tau].  In coordinate space it is a diffusion equation
+       with a source, and a branching random walk simulates it directly.
+       Demonstrated on the 1D oscillator with no trial function at all:
+       E = 0.497322(2792) against the exact 0.5
+     - That bare algorithm is useless for electrons: exp[-dt(V-E_T)] diverges
+       as r12 -> 0.  Importance sampling on f = Psi_T Phi replaces V by E_L,
+       which the cusp condition keeps finite, and puts the chapter-13 quantum
+       force in as the drift
+     - Mixed estimator <E_L>_f is exact for the energy and only for the
+       energy; the extrapolated estimator 2<A>_mixed - <A>_VMC is what to use
+       for anything else
+     - Algorithm: drift-diffusion with Metropolis-Hastings accept/reject
+       (worth an order of magnitude in the time-step bias), trapezoidal
+       branching weight, the Umrigar-Nightingale-Runge effective time step,
+       and weak (kappa = 0.05) population-control feedback on E_T
+     - Time-step extrapolation over dt in [0.02, 0.5] at alpha=1, beta=0.4:
+       E = 3.000090(64), i.e. 1.4 sigma above the exact 3.  The bias is only
+       a few parts in 1e4 because at alpha=1 the local energy is nearly
+       constant -- that is a statement about the guiding function, not the
+       method, and the poor-guide run makes the point the other way
+     - Poor guide (alpha=0.8, beta=0.1): VMC gives 3.363877(5019), DMC gives
+       3.001071(2338).  Same wrong ansatz, right answer.  The price is a 25x
+       error bar for 4x the walkers and a time-step slope 500x steeper
+     - Checked that the poor-guide residual is time-step and not
+       population-control bias: neither central value moves over 250 -> 2000
+       walkers while the errors fall as 1/sqrt(N)
+     - Fixed node is discussed properly but not demonstrated: the two-electron
+       singlet is nodeless, so the projection here is exact in principle.
+       That is deliberate -- it isolates the errors that can be measured
 
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
