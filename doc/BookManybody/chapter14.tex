@@ -1,0 +1,628 @@
+\chapter{Optimization and resampling}
+\label{chap:optimres}
+%=============================================================================
+
+Chapter~\ref{chap:vmc} left two loose ends.  The variational parameters were
+located by scanning a grid, which worked because there were only two of them;
+and the error bar was obtained from the autocorrelation time, which is
+serviceable but not what a production calculation uses.  Both are addressed
+here, and the two are more closely related than they look: the first is about
+spending computer time cheaply while hunting for a minimum, the second about
+spending it lavishly once the minimum is found and then reporting honestly
+what was achieved.
+
+The structure of a real calculation has three stages.
+
+\begin{svgraybox}
+\begin{enumerate}
+\item \textbf{Optimise.}  Compute the gradient of the energy with respect to
+  the variational parameters -- which turns out to be another Monte Carlo
+  average, costing nothing extra -- and follow it downhill.  Short, noisy runs
+  suffice: we are locating a minimum, not measuring an energy.
+\item \textbf{Produce.}  With the parameters fixed, run once with as many
+  samples as the budget allows.  Millions, and on a cluster, billions.
+\item \textbf{Resample.}  The samples are correlated, so
+  $\sigma/\sqrt{N}$ is wrong.  Blocking, the bootstrap or the jackknife give
+  the honest error.
+\end{enumerate}
+\end{svgraybox}
+
+\noindent
+The programs are in \texttt{vmcoptimise.py}, which imports the trial function,
+local energy and quantum force of Chapter~\ref{chap:vmc} unchanged.
+
+%----------------------------------------------------------------------
+\section{Why a grid does not scale}
+\label{sec:optgrid}
+
+Table~\ref{tab:13-surface} was a $5\times5$ grid: twenty-five Monte Carlo runs
+to locate two parameters, and the answer only as good as the mesh.  With $p$
+parameters and $m$ points along each, the cost is $m^p$ runs.  For $p=2$ and
+$m=5$ that is twenty-five; for $p=10$ it is ten million; and for the
+neural-network trial functions of the later chapters, where $p$ runs to
+thousands, it is not a number worth writing down.
+
+Worse, a grid throws away information.  Each run already knows which way is
+downhill -- the samples that produced the energy can produce its derivative
+too -- and a scan discards that and starts again at the next node.  What we
+need is the gradient.
+
+%----------------------------------------------------------------------
+\section{The gradient of the energy}
+\label{sec:optgradient}
+
+\index{energy gradient}\index{variational Monte Carlo!optimisation}
+Let $\theta$ be a variational parameter and write
+\begin{equation}
+  \bar{E}_{\theta} = \frac{d\mean{E_L[\theta]}}{d\theta},
+  \qquad
+  \bar{\psi}_{\theta} = \frac{d\psi[\theta]}{d\theta} .
+  \label{eq:14-definitions}
+\end{equation}
+Differentiating
+$E=\bracket{\psi}{\hat{H}}{\psi}/\braket{\psi}{\psi}$ and using the
+hermiticity of $\hat{H}$ gives, after a short calculation set as
+Exercise~\ref{ex:14-gradient},
+\begin{equation}
+  \boxed{\;
+  \bar{E}_{\theta}
+   = 2\left(
+     \meanb{\frac{\bar{\psi}_{\theta}}{\psi}\,E_L}
+     - \meanb{\frac{\bar{\psi}_{\theta}}{\psi}}\meanb{E_L}
+     \right) \;}
+  \label{eq:14-gradient}
+\end{equation}
+This is the central formula of the chapter, and three things about it are
+worth noticing.
+
+First, it is a \emph{covariance}: the gradient is twice the covariance of the
+local energy with the logarithmic derivative of the trial function,
+\begin{equation}
+  O_{\theta}(\bm{R}) = \frac{\bar{\psi}_{\theta}(\bm{R})}{\psi(\bm{R})}
+   = \frac{\partial\ln\psi(\bm{R})}{\partial\theta} .
+  \label{eq:14-Otheta}
+\end{equation}
+If the local energy and the logarithmic derivative are uncorrelated the
+gradient vanishes, which is another way of saying that at the minimum the
+trial function has stopped being able to tell good configurations from bad
+ones.
+
+Second, it needs only \emph{first} derivatives of $\ln\psi$ with respect to
+the parameters -- no second derivatives, no derivatives of the local energy,
+and no extra sampling.  The same walk that measures the energy accumulates
+$\mean{O_\theta}$ and $\mean{O_\theta E_L}$ in the same loop.
+
+Third, and least obviously, it is much better behaved than a finite
+difference.  Estimating $\partial E/\partial\theta$ by running at
+$\theta\pm h$ and subtracting requires two runs per parameter, and the
+subtraction cancels most of the signal while the statistical errors add.
+Equation~(\ref{eq:14-gradient}) has no cancellation of that kind.
+
+\paragraph{For our trial function.}
+With $\Psi_T$ of Eq.~(\ref{eq:13-trial}) the two logarithmic derivatives are
+elementary,
+\begin{equation}
+  O_{\alpha} = -\frac{\omega}{2}\left(r_1^2+r_2^2\right),
+  \qquad
+  O_{\beta} = -\frac{r_{12}^2}{\left(1+\beta r_{12}\right)^2} ,
+  \label{eq:14-Odot}
+\end{equation}
+and \texttt{vmcoptimise.py} checks both against finite differences, agreeing
+to $2\times10^{-9}$.  It then checks the assembled gradient
+Eq.~(\ref{eq:14-gradient}) against a finite difference of the energy itself;
+Table~\ref{tab:14-gradient} shows the comparison.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{rrrrrr}
+\toprule
+& & \multicolumn{2}{c}{$\partial E/\partial\alpha$} &
+    \multicolumn{2}{c}{$\partial E/\partial\beta$}\\
+\cmidrule(lr){3-4}\cmidrule(l){5-6}
+$\alpha$ & $\beta$ & Eq.~(\ref{eq:14-gradient}) & finite difference
+ & Eq.~(\ref{eq:14-gradient}) & finite difference\\
+\midrule
+$0.90$ & $0.30$ & $-0.41171$ & $-0.42413$ & $-0.29347$ & $-0.29289$\\
+$1.00$ & $0.40$ & $\phantom{-}0.02905$ & $\phantom{-}0.03823$ &
+  $\phantom{-}0.01227$ & $\phantom{-}0.01853$\\
+$1.05$ & $0.50$ & $\phantom{-}0.22099$ & $\phantom{-}0.21838$ &
+  $\phantom{-}0.10431$ & $\phantom{-}0.10902$\\
+\bottomrule
+\end{tabular}
+\caption{The analytic gradient against a central difference of the energy with
+$h=0.01$, $40\,000$ cycles per run.  They agree within the Monte Carlo noise,
+and the analytic route costs one run instead of four.  Computed by
+\texttt{vmcoptimise.py}.}
+\label{tab:14-gradient}
+\end{table}
+
+%----------------------------------------------------------------------
+\section{Descending the surface}
+\label{sec:optdescent}
+
+\index{gradient descent}\index{steepest descent}
+With a gradient in hand the simplest scheme is \emph{steepest descent},
+\begin{equation}
+  \bm{\theta}_{k+1} = \bm{\theta}_k
+   - \eta\,\nabla_{\bm{\theta}}E(\bm{\theta}_k) ,
+  \label{eq:14-steepestdescent}
+\end{equation}
+with $\eta$ the learning rate.  For a convex function and a small enough
+$\eta$ this converges; the difficulty is that ``small enough'' depends on the
+curvature, and the curvature is exactly what the gradient does not know.  If
+the surface is a narrow valley -- the Hessian badly conditioned -- steepest
+descent zig-zags across it and creeps along it, and the number of iterations
+grows with the condition number.
+
+Table~\ref{tab:14-descent} runs it on the quantum dot, starting deliberately
+far from the minimum.  Two features are worth pointing out.  The energy falls
+from $3.1128$ to within $2\times10^{-3}$ of the exact answer in about ten
+steps; and each step uses only $6000$ Monte Carlo cycles, which would be far
+too few to \emph{report} an energy but is ample to decide which way is down.
+That asymmetry -- cheap runs while optimising, one expensive run at the end --
+is the reason the two halves of this chapter belong together.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{13pt}
+\begin{tabular}{rllll}
+\toprule
+iteration & $\alpha$ & $\beta$ & energy & $|\nabla E|$\\
+\midrule
+$1$  & $0.85000$ & $0.20000$ & $3.112849$ & $1.321241$\\
+$2$  & $0.89515$ & $0.24822$ & $3.046038$ & $0.722958$\\
+$3$  & $0.92182$ & $0.27262$ & $3.029580$ & $0.507078$\\
+$4$  & $0.94113$ & $0.28906$ & $3.013600$ & $0.366792$\\
+$6$  & $0.96631$ & $0.31072$ & $3.007260$ & $0.227005$\\
+$10$ & $0.99126$ & $0.33328$ & $3.002706$ & $0.099140$\\
+$15$ & $1.00300$ & $0.34749$ & $3.000419$ & $0.045287$\\
+$20$ & $1.00623$ & $0.35534$ & $3.000180$ & $0.028328$\\
+$25$ & $1.00660$ & $0.36082$ & $3.001775$ & $0.017045$\\
+\bottomrule
+\end{tabular}
+\caption{Steepest descent from $(\alpha,\beta)=(0.85,0.20)$ with
+$\eta=0.05$ and $6000$ cycles per step.  The gradient is noisy, which is why
+the last few energies wander at the level of $10^{-3}$; the parameters are
+nonetheless located well enough.  Computed by \texttt{vmcoptimise.py}.}
+\label{tab:14-descent}
+\end{table}
+
+\paragraph{Doing better than plain descent.}
+Three standard improvements, in increasing order of sophistication.
+
+\emph{Momentum} accumulates a velocity,
+\begin{equation}
+  \bm{v}_{k+1} = \gamma\bm{v}_k + \eta\nabla E,
+  \qquad
+  \bm{\theta}_{k+1} = \bm{\theta}_k - \bm{v}_{k+1} ,
+  \label{eq:14-momentum}
+\end{equation}
+which damps the zig-zag across a valley and accelerates along it.  With a
+\emph{stochastic} gradient it does something else as well, and arguably more
+useful: it averages successive gradients, so the noise in each individual
+estimate matters less.
+
+\emph{Quasi-Newton} methods build an approximation to the inverse Hessian from
+successive gradients and take
+$\bm{\theta}_{k+1}=\bm{\theta}_k-\bm{H}_k^{-1}\nabla E$.  Newton's method
+itself requires the Hessian, which for a Monte Carlo energy is expensive and
+noisy; Broyden's method and the BFGS update instead impose the \emph{secant
+condition}
+\begin{equation}
+  \bm{H}_{k+1}\left(\bm{\theta}_{k+1}-\bm{\theta}_k\right)
+   = \nabla E_{k+1} - \nabla E_k
+  \label{eq:14-secant}
+\end{equation}
+and make the smallest change to $\bm{H}$ consistent with it.  These are the
+work-horses of deterministic optimisation, and \texttt{scipy.optimize}
+provides them; the caveat is that they assume the gradient is exact, and a
+stochastic gradient can confuse the curvature estimate badly.
+
+\emph{Stochastic reconfiguration} is the method built for this problem.  The
+trouble with Eq.~(\ref{eq:14-steepestdescent}) is that it treats the
+parameters as if they lived in a flat Euclidean space, when what we care about
+is the distance between the \emph{wave functions} they produce.  Doubling a
+parameter that barely affects $\Psi_T$ should cost a large step; changing one
+that reshapes it entirely should cost a small one.  The natural metric is the
+covariance of the logarithmic derivatives,
+\begin{equation}
+  S_{kl} = \mean{O_k O_l} - \mean{O_k}\mean{O_l},
+  \label{eq:14-metric}
+\end{equation}
+the \emph{quantum geometric tensor}, which up to a factor of four is the
+quantum Fisher information.  Preconditioning with it,
+\begin{equation}
+  \boxed{\;
+  \bm{\theta}_{k+1} = \bm{\theta}_k
+   - \eta\left(\bm{S}+\varepsilon\bm{I}\right)^{-1}\nabla_{\bm{\theta}}E \;}
+  \label{eq:14-sr}
+\end{equation}
+makes the step independent of how the parameters happen to be parametrised.
+The small shift $\varepsilon$ keeps $\bm{S}$ invertible, which matters because
+it is often nearly singular -- two parameters that do almost the same thing to
+$\Psi_T$ produce almost identical columns.  Equation~(\ref{eq:14-sr}) is also
+imaginary-time evolution projected onto the variational manifold, which is the
+route by which it is usually derived, and it is the standard optimiser for
+neural-network wave functions.
+
+Table~\ref{tab:14-optimisers} compares the three from the same starting point
+with the same budget.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lrlll}
+\toprule
+method & steps & $\alpha$ & $\beta$ & final energy\\
+\midrule
+gradient descent           & $25$ & $1.00639$ & $0.36165$ & $3.001775$\\
+with momentum              & $25$ & $0.99876$ & $0.37802$ & $3.001499$\\
+stochastic reconfiguration & $25$ & $0.98977$ & $0.39651$ & $3.001494$\\
+\bottomrule
+\end{tabular}
+\caption{The same start, $(0.85,0.20)$, and the same $6000$ cycles per step.
+All three reach the minimum; the differences are in how directly they get
+there, and the ordering would be far more pronounced with more parameters or
+a worse-conditioned surface.  Computed by \texttt{vmcoptimise.py}.}
+\label{tab:14-optimisers}
+\end{table}
+
+\begin{notebox}
+\textbf{Why optimisation gets a chapter.} For two parameters any of these
+methods works and the choice hardly matters.  The reason to set them up
+carefully is what comes later: a neural-network trial function has thousands
+of parameters, no grid is conceivable, the surface is not convex, and the
+gradient is stochastic.  Equation~(\ref{eq:14-gradient}) and
+Eq.~(\ref{eq:14-sr}) are exactly the tools that carry over, and the
+machine-learning literature knows the first of them as the REINFORCE or
+score-function estimator.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The production run}
+\label{sec:optproduction}
+
+Once the parameters are fixed the calculation changes character.  There is
+nothing left to decide, only statistics to accumulate, and that parallelises
+perfectly: walkers are independent, so an ensemble of them can be advanced
+with array operations rather than a Python loop.  With a thousand walkers
+taking two thousand steps each, \texttt{vmcoptimise.py} collects two million
+local-energy evaluations in about a second, at an acceptance rate of $87\%$.
+
+What it returns is the walker-averaged local energy at each step.  That series
+is still autocorrelated \emph{in time} -- averaging over independent walkers
+divides the variance and the autocovariance by the same factor and leaves the
+normalised autocorrelation function, and therefore $\tau$, unchanged.  The
+error analysis of Chapter~\ref{chap:statelements} is still needed.
+
+%----------------------------------------------------------------------
+\section{Resampling}
+\label{sec:optresampling}
+
+\index{resampling}\index{blocking}\index{bootstrap}\index{jackknife}
+Chapter~\ref{chap:statelements} established that a Markov chain gives
+correlated samples, that $\sigma_m^2=\tau\sigma^2/n$ rather than $\sigma^2/n$,
+and that the naive error is therefore always too small.  It also introduced
+blocking.  Here we set out the three standard estimators properly, because a
+production calculation must report one of them.
+
+\paragraph{Blocking.}
+Replace the data by the averages of neighbouring pairs,
+\begin{equation}
+  x_i^{(k+1)} = \tfrac12\left(x_{2i-1}^{(k)} + x_{2i}^{(k)}\right),
+  \label{eq:14-blocking}
+\end{equation}
+which halves the number of samples and leaves the mean unchanged.  Each
+transformation reduces the correlation between neighbours, so the naive error
+computed from the blocked data grows -- until the blocks are longer than the
+correlation time, after which it stops growing.  The plateau is the true
+error.  Reading the plateau by eye is unsatisfactory, and Jonsson turned it
+into a test: the remaining autocovariance after $k$ transformations,
+accumulated over the coarser levels, is compared with a $\chi^2$ quantile, and
+the first $k$ that passes is used.  That is what \texttt{vmcoptimise.py}
+implements, and it makes blocking a method with no free parameters at all.
+
+\paragraph{The bootstrap.}
+Draw $B$ new data sets of the same size from the original, \emph{with
+replacement}, compute the estimator on each, and take the standard deviation
+of the $B$ results.  The essential point for us is that the resampling must be
+done in \emph{blocks} rather than one sample at a time: drawing individual
+samples destroys the correlations and reproduces the naive error exactly.  The
+block length has to be at least a few correlation times, which reintroduces a
+parameter that blocking does not need.
+
+\paragraph{The jackknife.}
+Divide the data into $n$ blocks, and let $\hat\theta_{(i)}$ be the estimator
+computed with block $i$ removed.  Then
+\begin{equation}
+  \sigma^2_{\mathrm{jack}}
+   = \frac{n-1}{n}\sum_{i=1}^{n}
+     \left(\hat\theta_{(i)} - \bar{\theta}\right)^2 .
+  \label{eq:14-jackknife}
+\end{equation}
+For the mean this is exact and reduces to the blocked standard error, so it
+earns nothing here.  It earns its keep, as does the bootstrap, for
+\emph{non-linear} estimators -- a ratio of averages, a variance, a fitted
+parameter, an extrapolation -- where there is no formula for the error and
+resampling is the only practical route.  The blocking method handles the mean
+and nothing else.
+
+\paragraph{What they give.}
+Table~\ref{tab:14-resampling} applies all four estimators to two production
+runs of the same system: one with the well-tuned time step of
+Chapter~\ref{chap:vmc}, and one deliberately badly tuned.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lll}
+\toprule
+estimator & $\Delta t = 0.5$ & $\Delta t = 0.02$\\
+\midrule
+correlation time $\tau$ & $1.27$ & $13.95$\\
+\midrule
+naive $\sigma/\sqrt{N}$ & $0.00003276$ & $0.00003377$\\
+$\sqrt{\tau}\times$ naive & $0.00003690$ & $0.00012614$\\
+blocking & $0.00004858$ & $0.00015405$\\
+bootstrap & $0.00003486$ & $0.00010611$\\
+jackknife & $0.00003478$ & $0.00010427$\\
+\midrule
+resampled / naive & $1.48$ & $4.56$\\
+\bottomrule
+\end{tabular}
+\caption{Error estimates for two production runs of two million and 1.6
+million samples.  With a well-tuned time step the naive estimate is only
+modestly wrong; with a badly tuned one it is wrong by a factor of four, and
+silently.  Computed by \texttt{vmcoptimise.py}.}
+\label{tab:14-resampling}
+\end{table}
+
+Two honest observations.  When the sampling is well tuned, $\tau$ is close to
+one and the naive error is not far off -- but there is no way to know that
+without measuring.  And the three resampling estimates do not agree exactly:
+blocking with Jonsson's stopping rule is deliberately conservative and comes
+out largest.  They agree on the order of magnitude, which is what matters, and
+all three are right in the case where the naive estimate is badly wrong.
+
+%----------------------------------------------------------------------
+\section{The result}
+\label{sec:optresult}
+
+Putting the three stages together -- optimise with cheap runs, produce with an
+expensive one, resample the error -- gives
+\begin{equation}
+  E_{\mathrm{VMC}} = 3.000549 \pm 0.000049 ,
+  \label{eq:14-final}
+\end{equation}
+from two million samples at $\alpha=1.00$, $\beta=0.40$.  Set against the
+exact $3$ and the results of Chapter~\ref{chap:applications}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{lll}
+\toprule
+method & energy & error\\
+\midrule
+Hartree-Fock, $42$ orbitals & $3.161921$ & $1.6\times10^{-1}$\\
+MP2, $42$ orbitals & $3.027038$ & $2.7\times10^{-2}$\\
+CCSD, $42$ orbitals & $3.013626$ & $1.4\times10^{-2}$\\
+VMC, this chapter & $3.000549(49)$ & $5.5\times10^{-4}$\\
+\midrule
+exact (Taut) & $3.000000$ & ---\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+The remaining $5.5\times10^{-4}$ is eleven standard errors wide, and it is not
+statistical: it is what a two-parameter trial function cannot represent.  The
+point of this chapter is precisely that the error bar is now small enough, and
+trustworthy enough, for that statement to be meaningful.  With the naive error
+of $3.3\times10^{-5}$ one would have quoted a result seventeen standard errors
+from the exact answer and concluded, wrongly, that something was broken.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:optsummary}
+
+The gradient of a variational energy with respect to its parameters,
+Eq.~(\ref{eq:14-gradient}), is a covariance and costs nothing beyond the
+energy itself.  With it, the grid scan of Chapter~\ref{chap:vmc} is replaced
+by descent -- plain, with momentum, quasi-Newton, or preconditioned by the
+metric of the variational manifold -- and the number of parameters stops being
+the limiting consideration.  Once they are fixed, the production run is pure
+statistics and parallelises trivially, and the error on it must come from
+blocking, the bootstrap or the jackknife rather than from $\sigma/\sqrt{N}$.
+
+What remains is the trial function.  Every result in this chapter is bounded
+above by what two parameters can express, and no amount of sampling or
+optimisation will change that.  Two directions lead out.  Diffusion Monte
+Carlo removes the dependence on $\Psi_T$ by projecting onto the ground state
+in imaginary time, using the drift and Green's function of
+Section~\ref{sec:vmcimportance}.  And if the difficulty is that we cannot
+guess a good enough functional form, the alternative is not to guess: to
+parametrise $\Psi_T$ by a neural network and let Eq.~(\ref{eq:14-gradient})
+and Eq.~(\ref{eq:14-sr}) do the rest.  Both are taken up in the chapters that
+follow.
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the energy gradient}
+\label{ex:14-gradient}
+\addcontentsline{toc}{subsection}{Exercise 1: the energy gradient}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:14-gradient}).
+  \item[b)] Find the corresponding expression for the derivative of the
+  variance.
+  \item[c)] Show that the gradient vanishes when $\Psi_T$ is an exact
+  eigenstate, for every parameter, and say why that is obvious in advance.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+Write $E=\bracket{\psi}{\hat{H}}{\psi}/\braket{\psi}{\psi}$ and differentiate,
+\[
+  \bar{E}_{\theta}
+   = \frac{\bracket{\bar\psi_\theta}{\hat{H}}{\psi}
+      + \bracket{\psi}{\hat{H}}{\bar\psi_\theta}}{\braket{\psi}{\psi}}
+   - \frac{\bracket{\psi}{\hat{H}}{\psi}}{\braket{\psi}{\psi}}\,
+     \frac{\braket{\bar\psi_\theta}{\psi}
+      + \braket{\psi}{\bar\psi_\theta}}{\braket{\psi}{\psi}} .
+\]
+For a real trial function the two terms in each numerator are equal, so both
+brackets give a factor of two.  Dividing numerator and denominator by
+$\braket{\psi}{\psi}$ turns each ratio into an average over $|\psi|^2$:
+$\bracket{\bar\psi_\theta}{\hat{H}}{\psi}/\braket{\psi}{\psi}
+= \mean{(\bar\psi_\theta/\psi)E_L}$ by inserting $\psi/\psi$ exactly as in
+Eq.~(\ref{eq:13-localenergyaverage}), and
+$\braket{\bar\psi_\theta}{\psi}/\braket{\psi}{\psi}
+= \mean{\bar\psi_\theta/\psi}$.  Collecting gives
+Eq.~(\ref{eq:14-gradient}).
+
+\paragraph{Answer to b).}
+With $\sigma^2=\mean{E_L^2}-\mean{E_L}^2$ the same manipulation applied to
+$\mean{E_L^2}$ gives
+\[
+  \frac{d\sigma^2}{d\theta}
+   = 2\left(\mean{O_\theta E_L^2} - \mean{O_\theta}\mean{E_L^2}\right)
+     + 2\mean{\partial_\theta E_L\,E_L}
+     - 2\bar{E}_\theta\mean{E_L} ,
+\]
+where the middle term appears because $E_L$ itself depends on $\theta$,
+unlike in a).  This is why variance minimisation, although attractive in
+principle, is more work: it needs $\partial_\theta E_L$, which requires
+differentiating the Hamiltonian acting on $\Psi_T$.
+
+\paragraph{Answer to c).}
+If $\Psi_T$ is an eigenstate then $E_L$ is a constant, so
+$\mean{O_\theta E_L} = E_L\mean{O_\theta} = \mean{O_\theta}\mean{E_L}$ and
+Eq.~(\ref{eq:14-gradient}) vanishes identically.  It has to: at an exact
+eigenstate the energy is stationary against \emph{any} variation, parameters
+included.  Note the practical corollary -- as the trial function improves, the
+gradient and the variance vanish together, so a small gradient with a large
+variance means the optimiser has found a flat direction rather than the
+answer.
+
+\subsection*{Exercise 2: descent methods}
+\label{ex:14-descent}
+\addcontentsline{toc}{subsection}{Exercise 2: descent methods}
+
+\begin{enumerate}
+  \item[a)] For $f(x)=\tfrac12 x^{T}Ax - b^{T}x$ with $A$ symmetric positive
+  definite, show that steepest descent with the optimal step converges with a
+  rate governed by the condition number of $A$.
+  \item[b)] Show that the secant condition~(\ref{eq:14-secant}) is exactly
+  satisfied by the true Hessian for a quadratic $f$.
+  \item[c)] Why can a quasi-Newton method behave badly when the gradient is
+  stochastic?
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The gradient is $\nabla f = Ax-b$ and the minimum is at $x_{*}=A^{-1}b$.
+Writing $e_k=x_k-x_{*}$, one line of algebra gives
+$e_{k+1}=(I-\eta A)e_k$, so in the eigenbasis of $A$ each component decays as
+$(1-\eta\lambda_i)^k$.  The best uniform $\eta$ balances the extreme
+eigenvalues, $\eta=2/(\lambda_{\min}+\lambda_{\max})$, and gives a rate
+$(\kappa-1)/(\kappa+1)$ with $\kappa=\lambda_{\max}/\lambda_{\min}$.  A
+condition number of $100$ therefore needs of order a hundred times more
+iterations than a well-conditioned one -- which is the zig-zag, quantified.
+
+\paragraph{Answer to b).}
+For $f$ quadratic with Hessian $A$, $\nabla f(x)=Ax-b$, so
+$\nabla f(x_{k+1})-\nabla f(x_k) = A(x_{k+1}-x_k)$, which is
+Eq.~(\ref{eq:14-secant}) with $\bm{H}_{k+1}=A$.  Broyden and BFGS impose this
+one condition and fix the remaining freedom by asking for the smallest change
+to $\bm{H}$ in a suitable norm -- BFGS additionally preserving symmetry and
+positive definiteness, which is what makes it suitable for minimisation rather
+than root finding.
+
+\paragraph{Answer to c).}
+The curvature is inferred from \emph{differences} of gradients, and
+differencing two noisy quantities amplifies the noise.  If the statistical
+error in $\nabla E$ is comparable to the change in $\nabla E$ between
+iterations -- which happens as soon as the steps get small, that is, near the
+minimum -- the inferred Hessian is dominated by noise and can easily fail to
+be positive definite, sending the optimiser uphill.  The usual remedies are
+to increase the number of samples as the optimisation proceeds, to fall back
+on a first-order method near the minimum, or to use stochastic
+reconfiguration, whose metric~(\ref{eq:14-metric}) is an average rather than a
+difference and is therefore far better conditioned statistically.
+
+\subsection*{Exercise 3: resampling}
+\label{ex:14-resampling}
+\addcontentsline{toc}{subsection}{Exercise 3: resampling}
+
+\begin{enumerate}
+  \item[a)] Show that a blocking transformation~(\ref{eq:14-blocking}) leaves
+  the sample mean unchanged, and that for uncorrelated data it leaves the
+  estimated error unchanged too.
+  \item[b)] Show that the jackknife error for the mean is identical to the
+  blocked standard error.
+  \item[c)] Explain why a bootstrap that resamples individual points rather
+  than blocks reproduces the naive error, and what that implies about using it
+  on Monte Carlo data.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+The mean of the blocked data is
+$\frac{2}{n}\sum_i\frac12(x_{2i-1}+x_{2i})=\frac1n\sum_j x_j$, unchanged.  For
+independent data with variance $\sigma^2$, each block mean has variance
+$\sigma^2/2$ and there are $n/2$ of them, so the estimated variance of the
+mean is $(\sigma^2/2)/(n/2)=\sigma^2/n$: also unchanged.  The blocking curve
+is therefore flat for independent data, and any rise in it is a direct measure
+of correlation -- which is what makes the plateau meaningful.
+
+\paragraph{Answer to b).}
+With $n$ blocks of means $b_i$ and $\bar b$ their average,
+$\hat\theta_{(i)} = (n\bar b - b_i)/(n-1)$, so
+$\hat\theta_{(i)}-\bar\theta = -(b_i-\bar b)/(n-1)$.  Substituting into
+Eq.~(\ref{eq:14-jackknife}),
+\[
+  \sigma^2_{\mathrm{jack}}
+   = \frac{n-1}{n}\sum_i\frac{(b_i-\bar b)^2}{(n-1)^2}
+   = \frac{1}{n(n-1)}\sum_i (b_i-\bar b)^2 ,
+\]
+which is the ordinary standard error of the $n$ block means.  The jackknife
+adds nothing for a linear estimator, and Table~\ref{tab:14-resampling} shows
+the two agreeing to three digits.
+
+\paragraph{Answer to c).}
+Resampling individual points with replacement produces data sets whose
+elements are independent by construction, whatever the original series looked
+like.  The bootstrap distribution of the mean then has variance
+$\sigma^2/n$ -- the naive answer -- because the correlations have been
+destroyed by the resampling itself.  The implication is that a bootstrap
+applied naively to Monte Carlo data is not merely inaccurate, it is
+systematically and confidently wrong, and looks respectable while being so.
+Block bootstrapping, with a block long compared with $\tau$, is the fix.
+
+\subsection*{Exercise 4: numerical explorations}
+\addcontentsline{toc}{subsection}{Exercise 4: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{vmcoptimise.py}, reproduce
+  Table~\ref{tab:14-descent} and plot the path of the optimiser on top of the
+  energy surface of Table~\ref{tab:13-surface}.
+  \item[b)] Study the learning rate.  How large may $\eta$ be before the
+  descent diverges, and how does that limit relate to the curvature of the
+  surface?
+  \item[c)] Replace the fixed learning rate by a schedule
+  $\eta_k = \eta_0/(1+k/k_0)$ and compare the number of iterations and the
+  scatter of the final parameters.
+  \item[d)] Feed the analytic gradient to \texttt{scipy.optimize.minimize}
+  with \texttt{method="BFGS"} and compare with the hand-written descent.  What
+  happens when you reduce the number of cycles per gradient evaluation?
+  \item[e)] Verify Exercise~3(c) numerically: bootstrap the production series
+  with a block length of one and confirm that you recover the naive error.
+  \item[f)] Run the production stage at several time steps and confirm that
+  the blocked error, unlike the naive one, is independent of $\Delta t$ -- as
+  it must be, since the physical answer cannot depend on the sampling.
+\end{enumerate}

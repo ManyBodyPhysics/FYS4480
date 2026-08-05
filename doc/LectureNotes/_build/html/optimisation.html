@@ -1,0 +1,934 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>15. Optimization and resampling &#8212; Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'optimisation';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="14. Variational Monte Carlo" href="variationalmc.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Quantum Mechanics for Many-Particle Systems: from standard methods to quantum computing and machine learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Quantum mechanics for many-particle systems
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Instructor information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Foundations</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="linearalgebra.html">1. Linear algebra and eigenvalue problems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manybodybasics.html">2. From linear algebra to many-body physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wicktheorem.html">3. Wick’s theorem, verified by brute force</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jordanwigner.html">4. From fermions to qubits: the Jordan-Wigner transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">5. Physical systems and models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fullci.html">6. Full configuration interaction theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mean-field and beyond</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hartreefock.html">7. Mean-field approaches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdarpa.html">8. Mean-field applications: TDA, RPA and QRPA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dft.html">9. Density functional theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Post Hartree-Fock methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="mbptheory.html">10. Many-body perturbation theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coupledcluster.html">11. Coupled cluster theory</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Applications and stochastic methods</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quantumdots.html">12. Quantum dots: a realistic Hamiltonian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">13. Elements from statistics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variationalmc.html">14. Variational Monte Carlo</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">15. Optimization and resampling</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/ManyBodyPhysics/FYS4480/master?urlpath=lab/tree/doc/LectureNotes/optimisation.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/ManyBodyPhysics/FYS4480/issues/new?title=Issue%20on%20page%20%2Foptimisation.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/optimisation.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Optimization and resampling</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-of-the-energy">15.1. 1. The gradient of the energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent">15.2. 2. Gradient descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#three-optimisers">15.3. 3. Three optimisers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-production-run">15.4. 4. The production run</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling">15.5. 5. Resampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-result">15.6. 6. The result</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-left">15.7. What is left</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="optimization-and-resampling">
+<h1><span class="section-number">15. </span>Optimization and resampling<a class="headerlink" href="#optimization-and-resampling" title="Link to this heading">#</a></h1>
+<p>Executable companion to chapter 14.</p>
+<p>Chapter 13 left two loose ends: the variational parameters were found by
+scanning a grid, and the error bar came from the autocorrelation time.  Both
+are fixed here, in the three stages a real calculation has:</p>
+<ol class="arabic simple">
+<li><p><strong>Optimise</strong> — the gradient of the energy is another Monte Carlo average,
+so it costs nothing extra.  Short, noisy runs are enough while we are
+locating a minimum.</p></li>
+<li><p><strong>Produce</strong> — with the parameters fixed, run once with millions of samples.</p></li>
+<li><p><strong>Resample</strong> — the samples are correlated, so <span class="math notranslate nohighlight">\(\sigma/\sqrt N\)</span> is wrong.
+Blocking, bootstrap or jackknife give the honest error.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;../BookManybody/BookMaterial/Programs&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">vmcoptimise</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">vmc</span><span class="w"> </span><span class="kn">import</span> <span class="n">TAUT_ENERGY</span><span class="p">,</span> <span class="n">correlation_time</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-gradient-of-the-energy">
+<h2><span class="section-number">15.1. </span>1. The gradient of the energy<a class="headerlink" href="#the-gradient-of-the-energy" title="Link to this heading">#</a></h2>
+<div class="math notranslate nohighlight">
+\[
+\bar E_\theta = 2\left(\left\langle \frac{\bar\psi_\theta}{\psi} E_L\right\rangle
+- \left\langle \frac{\bar\psi_\theta}{\psi}\right\rangle\langle E_L\rangle\right)
+\]</div>
+<p>It is a <strong>covariance</strong>: twice the covariance of the local energy with
+<span class="math notranslate nohighlight">\(O_\theta = \partial\ln\psi/\partial\theta\)</span>.  It needs only first derivatives
+of <span class="math notranslate nohighlight">\(\ln\psi\)</span>, no derivatives of <span class="math notranslate nohighlight">\(E_L\)</span>, and no extra sampling.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">worst</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">40</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">((</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.10</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">)):</span>
+        <span class="n">worst</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">worst</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">vo</span><span class="o">.</span><span class="n">log_psi_gradient</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                                        <span class="o">-</span> <span class="n">vo</span><span class="o">.</span><span class="n">log_psi_gradient_fd</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;d lnPsi/d(alpha,beta), analytic vs finite differences: </span><span class="si">{</span><span class="n">worst</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>d lnPsi/d(alpha,beta), analytic vs finite differences: 1.7e-09
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;alpha&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;beta&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;dE/da&#39;</span><span class="si">:</span><span class="s2">&gt;19s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;dE/db&#39;</span><span class="si">:</span><span class="s2">&gt;19s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">((</span><span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">)):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">15000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">99</span><span class="p">))[</span><span class="s2">&quot;gradient&quot;</span><span class="p">]</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(((</span><span class="n">h</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">h</span><span class="p">))):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">da</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="n">db</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">15000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">99</span><span class="p">))[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">da</span><span class="p">,</span> <span class="n">b</span><span class="o">-</span><span class="n">db</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">15000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">99</span><span class="p">))[</span><span class="s2">&quot;energy&quot;</span><span class="p">]</span>
+        <span class="n">num</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">b</span><span class="si">:</span><span class="s2">6.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">7.5f</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> vs </span><span class="si">{</span><span class="n">num</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">7.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">They agree within the noise — and the analytic route costs one run&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;instead of four, with no cancellation of nearly equal numbers.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> alpha   beta               dE/da               dE/db
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0.90   0.30  -0.41045 vs -0.36418  -0.29194 vs -0.24605
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.00   0.40   0.02894 vs 0.02987   0.01222 vs 0.02174
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.05   0.50   0.21955 vs 0.21355   0.10397 vs 0.10863
+
+They agree within the noise — and the analytic route costs one run
+instead of four, with no cancellation of nearly equal numbers.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="gradient-descent">
+<h2><span class="section-number">15.2. </span>2. Gradient descent<a class="headerlink" href="#gradient-descent" title="Link to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\(\theta \leftarrow \theta - \eta\,\nabla_\theta E\)</span>, starting deliberately far
+from the minimum.  Note the budget: 6000 cycles per step, far too few to
+<em>report</em> an energy but ample to decide which way is down.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">gradient_descent</span><span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                                     <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">4000</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;iter&#39;</span><span class="si">:</span><span class="s2">&gt;5s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;alpha&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;beta&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;energy&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;|grad|&#39;</span><span class="si">:</span><span class="s2">&gt;11s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">it</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">history</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">it</span> <span class="o">&lt;=</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">it</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">it</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2">12.6f</span><span class="si">}</span><span class="s2"> &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">:</span><span class="s2">11.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">converged to alpha = </span><span class="si">{</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, beta = </span><span class="si">{</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">history</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">path</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;o-&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;end&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\beta$&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\alpha$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;the descent path&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> iter     alpha      beta       energy      |grad|
+    1   0.85000   0.20000     3.109414    1.330032
+    2   0.89561   0.24840     3.045335    0.705914
+    3   0.92159   0.27229     3.029706    0.507672
+    4   0.94097   0.28869     3.015757    0.367980
+    5   0.95482   0.30079     3.010026    0.308842
+   10   0.99137   0.33306     3.002619    0.098912
+   15   1.00313   0.34716     3.001162    0.042637
+   20   1.00632   0.35500     3.000192    0.029422
+
+converged to alpha = 1.0067, beta = 0.3564
+</pre></div>
+</div>
+<img alt="_images/14fe248b5277420b183e93bb794dc379ea60370d1d3ad22f4889e9539e35ece5.png" src="_images/14fe248b5277420b183e93bb794dc379ea60370d1d3ad22f4889e9539e35ece5.png" />
+</div>
+</div>
+</section>
+<section id="three-optimisers">
+<h2><span class="section-number">15.3. </span>3. Three optimisers<a class="headerlink" href="#three-optimisers" title="Link to this heading">#</a></h2>
+<p><strong>Momentum</strong> averages successive gradients — worth as much as the
+acceleration when the gradient is noisy.  <strong>Stochastic reconfiguration</strong>
+preconditions with the metric of the variational manifold,</p>
+<div class="math notranslate nohighlight">
+\[
+S_{kl} = \langle O_k O_l\rangle - \langle O_k\rangle\langle O_l\rangle,
+\qquad
+\theta \leftarrow \theta - \eta (S+\varepsilon I)^{-1}\nabla_\theta E,
+\]</div>
+<p>the quantum geometric tensor, so the step does not depend on how the
+parameters happen to be scaled.  This is the standard optimiser for
+neural-network wave functions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;method&#39;</span><span class="si">:</span><span class="s2">&gt;28s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;steps&#39;</span><span class="si">:</span><span class="s2">&gt;6s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;alpha&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;beta&#39;</span><span class="si">:</span><span class="s2">&gt;9s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;final E&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">routine</span><span class="p">,</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s2">&quot;gradient descent&quot;</span><span class="p">,</span> <span class="n">vo</span><span class="o">.</span><span class="n">gradient_descent</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;with momentum&quot;</span><span class="p">,</span> <span class="n">vo</span><span class="o">.</span><span class="n">momentum_descent</span><span class="p">,</span>
+         <span class="nb">dict</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;stochastic reconfiguration&quot;</span><span class="p">,</span> <span class="n">vo</span><span class="o">.</span><span class="n">stochastic_reconfiguration</span><span class="p">,</span>
+         <span class="nb">dict</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))):</span>
+    <span class="n">th</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">routine</span><span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">n_cycles</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;28s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">th</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">9.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">h</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">12.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">For two parameters the choice hardly matters.  The reason to set&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;them up carefully is what comes later: thousands of parameters, no&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;grid conceivable, a non-convex surface and a stochastic gradient.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                      method  steps     alpha      beta      final E
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>            gradient descent     15   1.00411   0.34905     3.001162
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>               with momentum     15   1.00817   0.37283     3.000559
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  stochastic reconfiguration     15   0.98820   0.39787     3.000394
+
+For two parameters the choice hardly matters.  The reason to set
+them up carefully is what comes later: thousands of parameters, no
+grid conceivable, a non-convex surface and a stochastic gradient.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-production-run">
+<h2><span class="section-number">15.4. </span>4. The production run<a class="headerlink" href="#the-production-run" title="Link to this heading">#</a></h2>
+<p>Nothing left to decide, only statistics to accumulate — and that parallelises
+perfectly, since the walkers are independent.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">production_run</span><span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">,</span> <span class="n">n_walkers</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
+                        <span class="n">time_step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span>
+<span class="n">series</span> <span class="o">=</span> <span class="n">run</span><span class="p">[</span><span class="s2">&quot;series&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">run</span><span class="p">[</span><span class="s1">&#39;n_walkers&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> walkers x </span><span class="si">{</span><span class="n">run</span><span class="p">[</span><span class="s1">&#39;n_steps&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> steps &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;= </span><span class="si">{</span><span class="n">run</span><span class="p">[</span><span class="s1">&#39;total_samples&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> local-energy evaluations&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;acceptance </span><span class="si">{</span><span class="n">run</span><span class="p">[</span><span class="s1">&#39;acceptance&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">, mean </span><span class="si">{</span><span class="n">series</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;correlation time of the walker-averaged series &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">correlation_time</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Averaging over independent walkers divides the variance and the&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;autocovariance by the same factor, so tau is unchanged — the error&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;analysis of chapter 12 is still needed.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1000 walkers x 2000 steps = 2,000,000 local-energy evaluations
+acceptance 87.1%, mean 3.00054858
+correlation time of the walker-averaged series 1.27
+
+Averaging over independent walkers divides the variance and the
+autocovariance by the same factor, so tau is unchanged — the error
+analysis of chapter 12 is still needed.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="resampling">
+<h2><span class="section-number">15.5. </span>5. Resampling<a class="headerlink" href="#resampling" title="Link to this heading">#</a></h2>
+<p><strong>Blocking</strong>: average neighbouring pairs repeatedly; the naive error grows
+then plateaus, and Jonsson’s <span class="math notranslate nohighlight">\(\chi^2\)</span> test finds the plateau automatically.
+<strong>Bootstrap</strong>: resample <em>in blocks</em> — resampling single points destroys the
+correlations and reproduces the naive error.  <strong>Jackknife</strong>: leave one block
+out at a time; exact for the mean, and its value is for non-linear estimators.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">report</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="n">naive</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">correlation_time</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">eb</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">blocking</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">ebo</span><span class="p">,</span> <span class="n">bb</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">bootstrap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n_resamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">ej</span><span class="p">,</span> <span class="n">bj</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">jackknife</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   correlation time tau        </span><span class="si">{</span><span class="n">tau</span><span class="si">:</span><span class="s2">8.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   naive sigma/sqrt(N)         </span><span class="si">{</span><span class="n">naive</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   sqrt(tau) x naive           </span><span class="si">{</span><span class="n">naive</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   blocking                    </span><span class="si">{</span><span class="n">eb</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">  (</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> transformations)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   bootstrap, blocks of </span><span class="si">{</span><span class="n">bb</span><span class="si">:</span><span class="s2">&lt;4d</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">ebo</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   jackknife, blocks of </span><span class="si">{</span><span class="n">bj</span><span class="si">:</span><span class="s2">&lt;4d</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">ej</span><span class="si">:</span><span class="s2">.8f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   resampled / naive           </span><span class="si">{</span><span class="n">eb</span><span class="o">/</span><span class="n">naive</span><span class="si">:</span><span class="s2">8.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">eb</span>
+
+<span class="n">error</span> <span class="o">=</span> <span class="n">report</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="s2">&quot;well tuned, time step 0.5:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">bad</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">production_run</span><span class="p">(</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">,</span> <span class="n">n_walkers</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>
+                        <span class="n">time_step</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span>
+<span class="n">report</span><span class="p">(</span><span class="n">bad</span><span class="p">[</span><span class="s2">&quot;series&quot;</span><span class="p">],</span> <span class="s2">&quot;badly tuned, time step 0.02:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;With good sampling the naive estimate is only modestly wrong — but&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;there is no way to know that without measuring.  With bad sampling it&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;is wrong by a factor of four, silently.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>well tuned, time step 0.5:
+   correlation time tau            1.27
+   naive sigma/sqrt(N)         0.00003276
+   sqrt(tau) x naive           0.00003690
+   blocking                    0.00004858  (1 transformations)
+   bootstrap, blocks of 2      0.00003486
+   jackknife, blocks of 2      0.00003478
+   resampled / naive               1.48
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>badly tuned, time step 0.02:
+   correlation time tau           16.04
+   naive sigma/sqrt(N)         0.00004752
+   sqrt(tau) x naive           0.00019030
+   blocking                    0.00021720  (5 transformations)
+   bootstrap, blocks of 32     0.00019338
+   jackknife, blocks of 32     0.00018116
+   resampled / naive               4.57
+
+With good sampling the naive estimate is only modestly wrong — but
+there is no way to know that without measuring.  With bad sampling it
+is wrong by a factor of four, silently.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">curve</span> <span class="o">=</span> <span class="n">vo</span><span class="o">.</span><span class="n">blocking_curve</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogx</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">series</span><span class="p">)</span><span class="o">//</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">curve</span><span class="p">],</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">curve</span><span class="p">],</span> <span class="s2">&quot;o-&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;blocking estimate&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;block size&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;naive error of the blocked data&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;the blocking curve&quot;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/126b39a748021d0928af66c3118eaaa7c258fca8937fcf13ba35fb316847f42d.png" src="_images/126b39a748021d0928af66c3118eaaa7c258fca8937fcf13ba35fb316847f42d.png" />
+</div>
+</div>
+</section>
+<section id="the-result">
+<h2><span class="section-number">15.6. </span>6. The result<a class="headerlink" href="#the-result" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E = </span><span class="si">{</span><span class="n">mean</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;method&#39;</span><span class="si">:</span><span class="s2">&lt;28s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;energy&#39;</span><span class="si">:</span><span class="s2">&gt;12s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;error&#39;</span><span class="si">:</span><span class="s2">&gt;10s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">&quot;Hartree-Fock, 42 orbitals&quot;</span><span class="p">,</span> <span class="mf">3.161921</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">&quot;MP2, 42 orbitals&quot;</span><span class="p">,</span> <span class="mf">3.027038</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">&quot;CCSD, 42 orbitals&quot;</span><span class="p">,</span> <span class="mf">3.013626</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">&quot;VMC, this chapter&quot;</span><span class="p">,</span> <span class="n">mean</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s2">&quot;exact (Taut)&quot;</span><span class="p">,</span> <span class="n">TAUT_ENERGY</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s2">&lt;28s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="o">-</span><span class="n">TAUT_ENERGY</span><span class="p">)</span><span class="si">:</span><span class="s2">10.1e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">gap</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">-</span> <span class="n">TAUT_ENERGY</span>
+<span class="n">naive</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">series</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The remaining </span><span class="si">{</span><span class="n">gap</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">gap</span><span class="o">/</span><span class="n">error</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> standard errors wide, and it&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;is not statistical — it is what two parameters cannot represent.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;With the naive error one would have quoted </span><span class="si">{</span><span class="n">gap</span><span class="o">/</span><span class="n">naive</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> standard errors&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;and concluded, wrongly, that something was broken.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E = 3.000549 +/- 0.000049
+
+method                             energy      error
+Hartree-Fock, 42 orbitals        3.161921    1.6e-01
+MP2, 42 orbitals                 3.027038    2.7e-02
+CCSD, 42 orbitals                3.013626    1.4e-02
+VMC, this chapter                3.000549    5.5e-04
+exact (Taut)                     3.000000    0.0e+00
+
+The remaining 0.000549 is 11 standard errors wide, and it
+is not statistical — it is what two parameters cannot represent.
+With the naive error one would have quoted 17 standard errors
+and concluded, wrongly, that something was broken.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="what-is-left">
+<h2><span class="section-number">15.7. </span>What is left<a class="headerlink" href="#what-is-left" title="Link to this heading">#</a></h2>
+<p>Every result here is bounded above by what two parameters can express, and no
+amount of sampling or optimisation changes that.  Two ways out:</p>
+<ul class="simple">
+<li><p><strong>Diffusion Monte Carlo</strong> removes the dependence on <span class="math notranslate nohighlight">\(\Psi_T\)</span> by projecting
+onto the ground state in imaginary time, using the drift and Green’s
+function of chapter 13.</p></li>
+<li><p>If the trouble is that we cannot <em>guess</em> a good enough functional form, the
+alternative is not to guess: parametrise <span class="math notranslate nohighlight">\(\Psi_T\)</span> by a neural network and
+let the gradient and the stochastic-reconfiguration step do the rest.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="variationalmc.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">14. </span>Variational Monte Carlo</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gradient-of-the-energy">15.1. 1. The gradient of the energy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent">15.2. 2. Gradient descent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#three-optimisers">15.3. 3. Three optimisers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-production-run">15.4. 4. The production run</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling">15.5. 5. Resampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-result">15.6. 6. The result</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-left">15.7. What is left</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

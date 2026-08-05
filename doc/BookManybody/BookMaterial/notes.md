@@ -236,6 +236,33 @@
      - Still to write: blocking in anger, gradient-descent optimisation of the
        parameters, six electrons with a Slater determinant, then DMC
 
+###  Optimization and resampling  (chapter14.tex, done)
+     - From week5-week9.ipynb.  NOTE: week9.ipynb arrived with 92 unresolved
+       git merge conflict markers (<<<<<<< HEAD / >>>>>>> gh-pages), all of
+       them in cosmetic "id" fields, so the file was not valid JSON.  Resolved
+       in place keeping the HEAD side; backup at /tmp/week9.conflicted.ipynb
+     - Energy gradient dE/dtheta = 2(<O_theta E_L> - <O_theta><E_L>) with
+       O_theta = d ln psi/dtheta.  It is a covariance, needs only first
+       derivatives of ln psi, and costs nothing beyond the energy.  For our
+       trial function O_alpha = -omega(r1^2+r2^2)/2 and
+       O_beta = -r12^2/(1+beta r12)^2; both verified to 2e-9 and the assembled
+       gradient verified against a finite difference of the energy
+     - Steepest descent, momentum, quasi-Newton (Broyden/BFGS and the secant
+       condition), and stochastic reconfiguration with the quantum geometric
+       tensor S_kl = <O_k O_l> - <O_k><O_l>.  All three reach the minimum from
+       (0.85, 0.20) in 25 steps at 6000 cycles each
+     - Vectorised many-walker production run: 2 million samples in ~1 s.
+       Averaging over independent walkers leaves tau unchanged, which is the
+       point students usually get wrong
+     - Blocking with Jonsson's chi-square stopping rule (PRE 98, 043304),
+       block bootstrap and jackknife.  Well-tuned dt=0.5: tau=1.27 and the
+       naive error is only 1.5x too small; badly tuned dt=0.02: tau=14 and it
+       is 4.6x too small.  The three resampling estimates agree only to within
+       ~50 % of each other (blocking is conservative) -- said so in the text
+     - Final: E = 3.000549(49) from 2M samples, eleven sigma above the exact 3
+     - Still to write: DMC, then neural-network trial functions where the
+       gradient and SR machinery of this chapter is what carries over
+
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
 ###  SRG and IMSRG
