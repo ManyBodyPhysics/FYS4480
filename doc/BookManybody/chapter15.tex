@@ -2,3 +2,900 @@
 \label{chap:dmc}
 %=============================================================================
 
+Chapter~\ref{chap:optimres} ended with a number and a complaint.  The number
+was
+\begin{equation*}
+  E_{\mathrm{VMC}} = 3.000549 \pm 0.000049 ,
+\end{equation*}
+and the complaint was that the residual $5.5\times10^{-4}$ above Taut's exact
+$3$ is eleven standard errors wide and entirely systematic: it is what a
+two-parameter trial function cannot represent.  Optimising harder does not
+touch it, and neither does sampling longer.  The only way past it, within the
+variational framework, is a better guess -- and guessing is precisely what one
+would like to stop doing.
+
+This chapter stops doing it.  Diffusion Monte Carlo does not evaluate an
+integral over a trial function; it \emph{projects} onto the ground state, by
+propagating an arbitrary starting state in imaginary time and letting the
+excited components die away.  The trial function does not disappear -- it
+returns, importantly, as a \emph{guiding} function -- but it stops determining
+the answer and starts determining only the efficiency.  For the two-electron
+dot that is the difference between an energy accurate to $5\times10^{-4}$ and
+one accurate to $10^{-4}$ and statistically consistent with the exact result.
+
+The route runs through material already assembled.  The connection between
+random walks and the diffusion equation is Section~\ref{sec:randomwalks}; the
+Fokker-Planck equation, the Langevin equation and the drift are
+Section~\ref{sec:fokkerplanck}; the quantum force, the Green's function and
+the Metropolis-Hastings correction are Section~\ref{sec:vmcimportance}; the
+optimised parameters are Eq.~(\ref{eq:14-final}); and the blocking analysis
+that turns a correlated series into an honest error bar is
+Section~\ref{sec:optresampling}.  Diffusion Monte Carlo is what those pieces
+were being assembled for.
+
+The programs are in \texttt{dmc.py}, which imports the trial function, the
+local energy and the quantum force unchanged from \texttt{vmc.py} and the
+resampling from \texttt{vmcoptimise.py}.
+
+%----------------------------------------------------------------------
+\section{Projection in imaginary time}
+\label{sec:dmcprojection}
+
+\index{diffusion Monte Carlo}\index{imaginary time}\index{projection}
+Replace $t$ by $-i\tau$ in the time-dependent Schr\"odinger equation.  The
+oscillating phases $e^{-iE_nt}$ become decaying exponentials $e^{-E_n\tau}$,
+and the equation becomes
+\begin{equation}
+  \boxed{\;
+  -\frac{\partial \Phi(\bm{R},\tau)}{\partial \tau}
+   = \left(\hat{H} - E_T\right)\Phi(\bm{R},\tau) \;}
+  \label{eq:15-imaginarytime}
+\end{equation}
+where $\bm{R}=(\bm{r}_1,\dots,\bm{r}_N)$ collects all the coordinates and
+$E_T$ is a constant energy offset whose purpose will become clear in a moment.
+The formal solution is
+\begin{equation}
+  \Phi(\bm{R},\tau)
+   = e^{-\left(\hat{H}-E_T\right)\tau}\,\Phi(\bm{R},0).
+  \label{eq:15-formalsolution}
+\end{equation}
+
+Now expand the starting state in the exact eigenstates of $\hat{H}$, which we
+do not know but which exist,
+\begin{equation}
+  \Phi(\bm{R},0) = \sum_{n} c_n \Psi_n(\bm{R}),
+  \qquad \hat{H}\Psi_n = E_n\Psi_n ,
+  \label{eq:15-expansion}
+\end{equation}
+and propagate term by term:
+\begin{equation}
+  \Phi(\bm{R},\tau)
+   = \sum_n c_n\,e^{-(E_n-E_T)\tau}\,\Psi_n(\bm{R})
+   = e^{-(E_0-E_T)\tau}
+     \left[c_0\Psi_0 + \sum_{n>0}c_n e^{-(E_n-E_0)\tau}\Psi_n\right].
+  \label{eq:15-filtering}
+\end{equation}
+Every excited component is suppressed relative to the ground state by
+$e^{-(E_n-E_0)\tau}$, and since $E_n>E_0$ each of those factors goes to zero.
+As $\tau\to\infty$,
+\begin{equation}
+  \Phi(\bm{R},\tau) \longrightarrow c_0\,e^{-(E_0-E_T)\tau}\,\Psi_0(\bm{R}) ,
+  \label{eq:15-limit}
+\end{equation}
+whatever we started from, provided only that $c_0\ne0$ -- the starting state
+must not be orthogonal to the ground state.
+
+That is the entire principle.  It also explains $E_T$.  The surviving
+prefactor $e^{-(E_0-E_T)\tau}$ makes the norm of $\Phi$ grow without bound if
+$E_T>E_0$ and collapse to zero if $E_T<E_0$.  Tuning $E_T$ so that the norm
+stays constant makes $E_T=E_0$: the offset that stabilises the propagation
+\emph{is} the ground-state energy.  This is the \emph{growth estimator}, and
+it is the first of two ways in which the energy will be measured.
+
+\begin{notebox}
+\textbf{Why the excited states are the easy part.}  The convergence rate is
+set by the gap $E_1-E_0$, and the amount of imaginary time needed is of order
+$1/(E_1-E_0)$.  For the two-electron dot the gap is of order $\hbar\omega=1$,
+so a few units of $\tau$ suffice.  What is \emph{not} controlled by the gap is
+the starting point: if $c_0$ is very small, the ground-state signal stays
+buried under the excited components for a long time.  Making $c_0$ close to
+one from the outset is one of the jobs of the guiding function introduced in
+Section~\ref{sec:dmcimportance}.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{A diffusion equation with a source}
+\label{sec:dmcdiffusion}
+
+\index{diffusion equation!and imaginary time}
+Write $\hat{H}=\hat{T}+\hat{V}$ and put Eq.~(\ref{eq:15-imaginarytime}) in
+coordinate representation.  In the atomic units of
+Chapter~\ref{chap:applications}, where $\hbar=m=1$ and the kinetic operator is
+$-\tfrac12\nabla^2$,
+\begin{equation}
+  \frac{\partial \Phi}{\partial \tau}
+   = \underbrace{D\nabla^2\Phi}_{\textstyle\text{diffusion}}
+   \;-\;\underbrace{\left(V(\bm{R})-E_T\right)\Phi}_{
+     \textstyle\text{rate term}},
+  \qquad D=\frac{1}{2}.
+  \label{eq:15-diffusionsource}
+\end{equation}
+Two things are recognisable.  The first term is exactly the diffusion equation
+of Section~\ref{sec:randomwalks}, Eq.~(\ref{eq:12-diffusion}), whose solution
+we already know how to simulate: a random walk with Gaussian steps of variance
+$2D\Delta\tau$.  The second is a first-order rate equation whose solution is
+an exponential in $\tau$ with a position-dependent rate.
+
+The diffusion coefficient $D=\tfrac12$ is not an adjustable property of a
+physical fluid; it is the coefficient of the Laplacian in the kinetic energy.
+That the imaginary-time Schr\"odinger equation looks like a diffusion equation
+is not an analogy -- the two are the same equation with different letters.
+
+\paragraph{The short-time Green's function.}
+The two terms do not commute, so their effects cannot simply be applied one
+after the other -- except over a short time, where the error is controlled.
+This is the Trotter factorisation of Section~\ref{sec:qducc}: for small
+$\Delta\tau$,
+\begin{equation}
+  e^{-(\hat{T}+\hat{V}-E_T)\Delta\tau}
+   = e^{-\hat{T}\Delta\tau/2}\,e^{-(\hat{V}-E_T)\Delta\tau}\,
+     e^{-\hat{T}\Delta\tau/2} + \mathcal{O}(\Delta\tau^3),
+  \label{eq:15-trotter}
+\end{equation}
+which in coordinate space gives the \emph{short-time Green's function}
+\begin{equation}
+  G(\bm{R}'\!\leftarrow\!\bm{R},\Delta\tau)
+   \simeq
+   \underbrace{\frac{\exp\!\left[-\dfrac{(\bm{R}'-\bm{R})^2}
+       {4D\Delta\tau}\right]}{(4\pi D\Delta\tau)^{3N/2}}}_{
+       \textstyle G_{\mathrm{diff}}}
+   \;\times\;
+   \underbrace{\exp\!\left[-\Delta\tau
+     \left(\tfrac12\left[V(\bm{R})+V(\bm{R}')\right]-E_T\right)\right]}_{
+       \textstyle G_{\mathrm{branch}}} .
+  \label{eq:15-shorttime}
+\end{equation}
+The symmetrised potential in the exponent is the trapezoidal rule for
+$\int V\,d\tau$ along the step, and it is one order more accurate than
+evaluating $V$ at either endpoint alone.
+
+\paragraph{Walkers that are born and die.}
+Equation~(\ref{eq:15-shorttime}) has an immediate stochastic reading.
+Represent $\Phi$ by an ensemble of walkers, points $\bm{R}$ in the
+configuration space, whose density is $\Phi$.  One time step then consists of
+
+\begin{svgraybox}
+\begin{enumerate}
+\item \textbf{Diffusion.}  Displace each walker by a Gaussian random vector of
+  variance $2D\Delta\tau$ in each coordinate.  This is $G_{\mathrm{diff}}$,
+  and it is the random walk of Section~\ref{sec:randomwalks}.
+\item \textbf{Branching.}  Replace each walker by $m$ copies of itself, where
+  $m$ is an integer with mean $G_{\mathrm{branch}}$.  A walker in a region of
+  low potential multiplies; one in a region of high potential dies.
+\end{enumerate}
+\end{svgraybox}
+
+\noindent
+After many steps the density of walkers is $\Phi$, and the trial energy $E_T$
+needed to hold the population steady is $E_0$.  There is no wave function
+anywhere in the algorithm and no basis set: the ground state is represented by
+where the walkers are.
+
+\paragraph{It works, and then it does not.}
+For a smooth, bounded potential this bare algorithm is perfectly usable.
+\texttt{dmc.py} applies it to the one-dimensional harmonic oscillator,
+$V=x^2/2$, with no trial function at all, and the population growth gives
+\begin{equation*}
+  E = 0.497322 \pm 0.002792 ,
+\end{equation*}
+against the exact $1/2$.  Nothing entered but free diffusion and branching.
+
+Now put the quantum dot in.  The potential contains $1/r_{12}$, which is
+unbounded, and the branching weight $\exp[-\Delta\tau(V-E_T)]$ therefore
+diverges as two walkers approach each other.  A single configuration in which
+the electrons happen to be close acquires an enormous weight, spawns an
+enormous number of copies, and the entire population descends from it.  The
+variance of the estimator is unbounded and no amount of computer time helps.
+The same objection applies with more force to the Coulomb attraction in an
+atom, where the potential is unbounded \emph{below} and the weights diverge
+faster still.
+
+This is not a technicality to be patched.  It is the reason why the algorithm
+of this section, which is the algorithm as originally proposed, is never the
+algorithm that is used.
+
+%----------------------------------------------------------------------
+\section{Importance sampling}
+\label{sec:dmcimportance}
+
+\index{importance sampling!in diffusion Monte Carlo}
+\index{guiding function}
+The cure is the one that has worked twice already.  In
+Section~\ref{sec:mcintegration} importance sampling replaced a uniform
+integration density by one shaped like the integrand; in
+Section~\ref{sec:vmcimportance} it replaced a uniform proposal by one drifting
+along the quantum force.  Here it replaces the propagated function itself.
+
+Propagate not $\Phi$ but the product
+\begin{equation}
+  \boxed{\;f(\bm{R},\tau) = \Psi_T(\bm{R})\,\Phi(\bm{R},\tau)\;}
+  \label{eq:15-mixeddistribution}
+\end{equation}
+where $\Psi_T$ is a fixed, known trial function -- from now on called the
+\emph{guiding function}, because guiding is what it does.  Multiplying
+Eq.~(\ref{eq:15-imaginarytime}) by $\Psi_T$ and rearranging, using
+\begin{equation*}
+  \Psi_T\nabla^2\Phi
+   = \nabla^2 f - 2\nabla\!\cdot\!\left(\Phi\nabla\Psi_T\right)
+   + \Phi\nabla^2\Psi_T ,
+\end{equation*}
+gives after a short calculation
+\begin{equation}
+  \boxed{\;
+  \frac{\partial f}{\partial \tau}
+   = D\nabla^2 f
+   - D\nabla\!\cdot\!\left(f\,\bm{F}(\bm{R})\right)
+   - \left(E_L(\bm{R}) - E_T\right) f \;}
+  \label{eq:15-importanceequation}
+\end{equation}
+with two quantities that are already familiar:
+\begin{equation}
+  \bm{F}(\bm{R}) = \frac{2\nabla\Psi_T(\bm{R})}{\Psi_T(\bm{R})},
+  \qquad
+  E_L(\bm{R}) = \frac{\hat{H}\Psi_T(\bm{R})}{\Psi_T(\bm{R})} .
+  \label{eq:15-driftandlocal}
+\end{equation}
+The first is the quantum force of Eq.~(\ref{eq:13-quantumforce}); the second
+is the local energy of Eq.~(\ref{eq:13-localenergy}).  Both are already coded,
+already differentiated by hand, and already checked against finite differences
+in Chapter~\ref{chap:vmc}.
+
+Compare Eq.~(\ref{eq:15-importanceequation}) with
+Eq.~(\ref{eq:15-diffusionsource}).  Three things have changed, and all three
+are improvements.
+
+\begin{svgraybox}
+\begin{itemize}
+\item A \textbf{drift term} has appeared, and it is exactly the Fokker-Planck
+  drift of Eq.~(\ref{eq:13-fokkerplanck}).  Walkers are pushed towards regions
+  where $\Psi_T$ is large, which is where the ground state has weight, instead
+  of wandering.
+\item The \textbf{source term contains $E_L$ instead of $V$}.  This is the
+  decisive change.  For a trial function satisfying the cusp condition of
+  Section~\ref{sec:vmctrial}, $E_L$ is finite everywhere -- that is what the
+  cusp condition is \emph{for} -- and the branching weights are bounded.  In
+  the limit where $\Psi_T$ is the exact ground state, $E_L$ is the constant
+  $E_0$ and the branching switches off entirely.
+\item The distribution being sampled is $f=\Psi_T\Phi$ rather than $\Phi$, and
+  it is $f$, not $\Phi$, that the energy estimator wants.
+\end{itemize}
+\end{svgraybox}
+
+\paragraph{The mixed estimator.}
+\index{mixed estimator}
+The last point deserves its own derivation, because it is what makes the
+method cheap.  Once the projection has converged, $\Phi\to\Psi_0$ and
+$f\to\Psi_T\Psi_0$.  Consider
+\begin{equation}
+  \frac{\displaystyle\int d\bm{R}\;\Psi_T(\bm{R})\,\hat{H}\Psi_0(\bm{R})}
+       {\displaystyle\int d\bm{R}\;\Psi_T(\bm{R})\,\Psi_0(\bm{R})}
+   = \frac{E_0\displaystyle\int d\bm{R}\;\Psi_T\Psi_0}
+          {\displaystyle\int d\bm{R}\;\Psi_T\Psi_0}
+   = E_0 ,
+  \label{eq:15-mixednumerator}
+\end{equation}
+using only $\hat{H}\Psi_0=E_0\Psi_0$.  Now move $\hat{H}$ onto the other
+factor, which is allowed because $\hat{H}$ is Hermitian, and insert
+$\Psi_T/\Psi_T$:
+\begin{equation}
+  \boxed{\;
+  E_0
+   = \frac{\displaystyle\int d\bm{R}\;\Psi_0\,\hat{H}\Psi_T}
+          {\displaystyle\int d\bm{R}\;\Psi_T\Psi_0}
+   = \frac{\displaystyle\int d\bm{R}\;f(\bm{R})\,E_L(\bm{R})}
+          {\displaystyle\int d\bm{R}\;f(\bm{R})}
+   = \meanb{E_L}_f \;}
+  \label{eq:15-mixedestimator}
+\end{equation}
+This is the \emph{mixed estimator}.  It is the same average, of the same
+function $E_L$, that variational Monte Carlo computed in
+Eq.~(\ref{eq:13-localenergyaverage}); the only difference is the distribution
+it is averaged over, $f=\Psi_T\Psi_0$ here against $|\Psi_T|^2$ there.  The
+code that evaluates the local energy needs no modification whatsoever.
+
+Two remarks are worth making.  First,
+Eq.~(\ref{eq:15-mixedestimator}) is \emph{exact}: no assumption about the
+quality of $\Psi_T$ was used, only that it is not orthogonal to $\Psi_0$.
+Second, if $\Psi_T$ happened to be the exact ground state then $E_L$ would be
+the constant $E_0$ and the estimator would have zero variance.  That does not
+happen, but the closer $\Psi_T$ is, the smaller the variance -- the
+zero-variance principle of Section~\ref{sec:vmclocalenergy} carries over
+intact.
+
+\begin{notebox}
+\textbf{The mixed estimator is exact only for the energy.}  For an operator
+$\hat{A}$ that does not commute with $\hat{H}$ the step taken in
+Eq.~(\ref{eq:15-mixednumerator}) fails, and what the simulation returns is
+$\bracket{\Psi_T}{\hat{A}}{\Psi_0}/\braket{\Psi_T}{\Psi_0}$ rather than
+$\bracket{\Psi_0}{\hat{A}}{\Psi_0}$.  Writing $\Psi_T=\Psi_0+\delta$ and
+expanding shows that the error is first order in $\delta$, and that the
+combination
+\begin{equation}
+  \mean{\hat{A}}_{\mathrm{extrap}}
+   = 2\mean{\hat{A}}_{\mathrm{mixed}} - \mean{\hat{A}}_{\mathrm{VMC}}
+  \label{eq:15-extrapolated}
+\end{equation}
+removes that order, leaving an error $\mathcal{O}(\delta^2)$.  This
+\emph{extrapolated estimator} is standard practice for densities, pair
+correlation functions and anything else that is not the energy, and it is the
+one place where a diffusion Monte Carlo result still depends visibly on the
+quality of the guiding function.  The unbiased alternative, forward walking,
+is considerably more expensive.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The algorithm}
+\label{sec:dmcalgorithm}
+
+\index{diffusion Monte Carlo!algorithm}
+The Green's function belonging to Eq.~(\ref{eq:15-importanceequation}) is,
+over a short step, the drifting Gaussian of Eq.~(\ref{eq:13-greensfunction})
+multiplied by a branching factor built from $E_L$:
+\begin{equation}
+  G(\bm{R}'\!\leftarrow\!\bm{R},\Delta\tau)
+   \simeq
+     \frac{\exp\!\left[-\dfrac{\left(\bm{R}'-\bm{R}
+       -D\Delta\tau\bm{F}(\bm{R})\right)^2}{4D\Delta\tau}\right]}
+          {(4\pi D\Delta\tau)^{3N/2}}
+   \times
+     \exp\!\left[-\Delta\tau\left(
+       \frac{E_L(\bm{R})+E_L(\bm{R}')}{2}-E_T\right)\right].
+  \label{eq:15-fullgreens}
+\end{equation}
+One step of the simulation applies the two factors in turn.
+
+\paragraph{Step 1: drift, diffuse, accept or reject.}
+The first factor is precisely the proposal of Eq.~(\ref{eq:13-proposal}),
+\begin{equation*}
+  \bm{R}' = \bm{R} + D\Delta\tau\,\bm{F}(\bm{R})
+    + \bm{\xi}\sqrt{\Delta\tau},
+\end{equation*}
+applied one particle at a time exactly as in
+Section~\ref{sec:vmcimportance}.  Crucially it is followed by the
+Metropolis-Hastings accept/reject test of Eq.~(\ref{eq:13-mhratio}), with the
+Green's function ratio of Eq.~(\ref{eq:13-greensratio}).
+
+That accept/reject step was not part of the original algorithm and it is worth
+being clear about what it does.  Without it the walkers sample the drifting
+Gaussian, which is correct only to first order in $\Delta\tau$.  With it they
+sample $|\Psi_T|^2$ exactly, whatever the time step, because the
+Metropolis-Hastings test enforces detailed balance with respect to
+$|\Psi_T|^2$.  The remaining time-step error then lives only in the branching
+factor.  Numerically this is worth about an order of magnitude in the
+time-step bias, which is why every modern implementation includes it.
+
+\paragraph{Step 2: branch.}
+The second factor is turned into an integer number of copies by the standard
+device
+\begin{equation}
+  m = \left\lfloor w + u \right\rfloor,
+  \qquad
+  w = \exp\!\left[-\Delta\tau_{\mathrm{eff}}
+    \left(\frac{E_L(\bm{R})+E_L(\bm{R}')}{2}-E_T\right)\right],
+  \qquad u\sim U(0,1),
+  \label{eq:15-branching}
+\end{equation}
+which gives $\mean{m}=w$ exactly while keeping $m$ an integer.  A walker with
+$m=0$ is deleted; one with $m=2$ is duplicated, and the two copies then
+diffuse independently and decorrelate.
+
+\paragraph{The effective time step.}
+\index{effective time step}
+The $\Delta\tau_{\mathrm{eff}}$ in Eq.~(\ref{eq:15-branching}) is not a
+misprint.  A move that the accept/reject test rejects means the walker did
+not, in fact, diffuse for a full $\Delta\tau$, and reweighting it as though it
+had is inconsistent.  Umrigar, Nightingale and Runge proposed measuring how
+far the walkers actually moved,
+\begin{equation}
+  \Delta\tau_{\mathrm{eff}}
+   = \Delta\tau\,
+     \frac{\sum_{\mathrm{accepted}}(\Delta \bm{R})^2}
+          {\sum_{\mathrm{attempted}}(\Delta \bm{R})^2},
+  \label{eq:15-efftimestep}
+\end{equation}
+and using that in the branching factor.  The ratio tends to one as
+$\Delta\tau\to0$, so nothing is changed in the limit; at usable time steps it
+removes a good part of the bias.  \texttt{dmc.py} implements both, and
+Section~\ref{sec:dmctimestep} compares them.
+
+\paragraph{Step 3: control the population.}
+\index{population control}
+Left alone, the number of walkers performs a random walk of its own and will
+eventually hit zero or exhaust memory.  It is stabilised by feeding the
+population back into the trial energy,
+\begin{equation}
+  E_T \;=\; \bar{E} \;-\; \frac{\kappa}{\Delta\tau}
+    \ln\frac{N_{\mathrm{walkers}}}{N_{\mathrm{target}}},
+  \label{eq:15-populationcontrol}
+\end{equation}
+where $\bar{E}$ is a running average of the mixed estimator.  When the
+population grows, $E_T$ drops and the branching weights fall below one; when
+it shrinks, the reverse.  The feedback strength $\kappa$ must be small --
+\texttt{dmc.py} uses $0.05$ -- because $E_T$ appears in the branching factor,
+and a violent controller injects its own fluctuations into the simulation.
+
+The price of the feedback is a \emph{population-control bias}: the walkers are
+no longer independent, since the fate of one affects $E_T$ and hence the fate
+of all the others.  The bias is $\mathcal{O}(1/N_{\mathrm{walkers}})$, and it
+is checked by varying $N_{\mathrm{walkers}}$, which
+Section~\ref{sec:dmcresults} does.
+
+\paragraph{Step 4: measure.}
+The mixed estimator is the average of $E_L$ over the current population,
+recorded once per step.  That series is strongly autocorrelated -- more so
+than in Chapter~\ref{chap:optimres}, because branching correlates a walker
+with its parent as well as with its own past -- so the error bar comes from
+blocking, exactly as in Section~\ref{sec:optresampling}.  The growth estimator
+of Section~\ref{sec:dmcprojection} is the average of $E_T$ over the same
+series, and it is a useful independent check.
+
+\paragraph{Starting the walkers.}
+The ensemble is initialised by a short variational Monte Carlo run at the same
+$\alpha$ and $\beta$.  This is not merely convenient.  A good guiding function
+makes $|\Psi_T|^2$ close to $f=\Psi_T\Psi_0$ already, so the projection has
+little left to do and the equilibration phase is short -- which is exactly the
+statement that $c_0$ in Eq.~(\ref{eq:15-expansion}) is close to one.
+
+\begin{notebox}
+\textbf{What the guiding function is now for.}  In Chapter~\ref{chap:vmc}
+$\Psi_T$ \emph{was} the answer, and its deficiencies appeared directly in the
+energy.  Here it does four separate jobs, none of which is to determine the
+result: it supplies the drift that steers the walkers; it replaces $V$ by
+$E_L$ in the branching, which is what makes the weights finite; it defines the
+mixed estimator; and it fixes the nodes, in the fermionic case of
+Section~\ref{sec:dmcfixednode}.  Only the last of these biases the energy.
+For a nodeless ground state the guiding function affects the error bar and the
+time-step sensitivity, and nothing else.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Fermions: the sign problem and the fixed-node approximation}
+\label{sec:dmcfixednode}
+
+\index{sign problem}\index{fixed-node approximation}
+Everything so far assumed that $\Phi$ can be read as a density of walkers,
+which requires it to be positive.  For a bosonic ground state that is
+automatic: the lowest solution of Eq.~(\ref{eq:15-imaginarytime}) is nodeless.
+For fermions it is false, and the failure is fundamental rather than
+technical.
+
+An antisymmetric wave function changes sign, so it has nodes -- a surface of
+one dimension less than the configuration space, on which it vanishes.
+Meanwhile the imaginary-time propagator projects onto the \emph{lowest} state
+of the Hamiltonian irrespective of symmetry, and that state is the nodeless
+bosonic one, which lies below the fermionic ground state.  Propagating long
+enough therefore destroys exactly the state we want:
+\begin{equation}
+  \frac{\text{fermionic signal}}{\text{bosonic noise}}
+   \;\sim\; e^{-\left(E_0^{\mathrm{F}}-E_0^{\mathrm{B}}\right)\tau},
+  \label{eq:15-signproblem}
+\end{equation}
+which decays exponentially in $\tau$ and, at fixed statistical accuracy,
+exponentially in the number of particles.  This is the \emph{fermion sign
+problem}.  It is the same obstruction, in different dress, that made the exact
+diagonalisation of Chapter~\ref{chap:fci} scale factorially, and no general
+solution is known.
+
+The practical response is the \emph{fixed-node approximation}.  Impose on the
+projected state the nodes of the guiding function: require
+\begin{equation}
+  \Phi(\bm{R}) = 0 \quad\text{wherever}\quad \Psi_T(\bm{R}) = 0 ,
+  \label{eq:15-fixednode}
+\end{equation}
+so that $f=\Psi_T\Phi\ge0$ everywhere and the walker interpretation survives.
+In the algorithm this costs one line: a move that would carry a walker across
+a node, changing the sign of $\Psi_T$, is rejected.  The nodal surface then
+partitions configuration space into disjoint pockets, and the simulation
+solves the Schr\"odinger equation exactly inside each pocket, with the
+boundary condition $\Phi=0$ on the walls.
+
+What this buys is a theorem rather than an approximation of unknown quality.
+The fixed-node energy is a \emph{variational upper bound} to the exact
+fermionic ground-state energy,
+\begin{equation}
+  E_{\mathrm{FN}} \;\ge\; E_0^{\mathrm{F}},
+  \label{eq:15-fixednodebound}
+\end{equation}
+with equality if and only if the nodes of $\Psi_T$ are the exact ones.  The
+argument is the variational principle of Eq.~(\ref{eq:13-variational}) applied
+within the class of functions vanishing on the imposed surface.  The hierarchy
+is therefore clear: the fixed-node energy is bounded below by the truth and
+above by the variational energy of the same trial function, and improving the
+\emph{nodes} -- not the amplitude -- is the only way to tighten it.
+
+\begin{svgraybox}
+For the system of this chapter none of this applies.  Two electrons in a
+singlet have an antisymmetric spin function, so the spatial part is symmetric,
+and the trial function
+\begin{equation*}
+  \Psi_T(\bm{r}_1,\bm{r}_2)
+   = e^{-\alpha\omega(r_1^2+r_2^2)/2}\,
+     e^{r_{12}/(1+\beta r_{12})}
+\end{equation*}
+of Eq.~(\ref{eq:13-trial}) is strictly positive: nodeless.  The projection is
+exact in principle, and the only errors left are the time step, the finite
+population and the statistics -- all three of which can be measured and
+reduced.  This is what makes the two-electron dot the right place to see what
+diffusion Monte Carlo actually does, uncontaminated by the one approximation
+that cannot be checked.
+\end{svgraybox}
+
+%----------------------------------------------------------------------
+\section{The time step}
+\label{sec:dmctimestep}
+
+\index{time step error}
+The short-time Green's function, Eq.~(\ref{eq:15-fullgreens}), is exact only
+as $\Delta\tau\to0$.  Every diffusion Monte Carlo energy therefore carries a
+systematic error in $\Delta\tau$, and a calculation that quotes one time step
+has not finished.  The procedure is to run at several and extrapolate.
+
+Table~\ref{tab:15-timestep} does this for the quantum dot at the optimised
+parameters of Chapter~\ref{chap:optimres}, $\alpha=1.00$ and $\beta=0.40$,
+with $500$ walkers and $4000$ steps at each time step.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{lllll}
+\toprule
+$\Delta\tau$ & energy & acceptance
+  & $\Delta\tau_{\mathrm{eff}}/\Delta\tau$ & $\tau_{\mathrm{corr}}$\\
+\midrule
+\multicolumn{5}{l}{\emph{plain} $\Delta\tau$ \emph{in the branching factor}}\\
+$0.50$ & $2.999835(50)$ & $87.2\%$ & $1.000$ & $1.2$\\
+$0.30$ & $2.999889(57)$ & $93.6\%$ & $1.000$ & $1.7$\\
+$0.20$ & $2.999959(68)$ & $96.4\%$ & $1.000$ & $2.3$\\
+$0.10$ & $3.000098(89)$ & $98.6\%$ & $1.000$ & $4.2$\\
+$0.05$ & $3.000034(137)$ & $99.5\%$ & $1.000$ & $10.1$\\
+$0.02$ & $3.000142(162)$ & $99.9\%$ & $1.000$ & $16.3$\\
+\multicolumn{5}{l}{\quad extrapolated $3.000090(64)$, slope $-0.00055$}\\
+\midrule
+\multicolumn{5}{l}{\emph{with} $\Delta\tau_{\mathrm{eff}}$,
+  Eq.~(\ref{eq:15-efftimestep})}\\
+$0.50$ & $2.999927(50)$ & $87.2\%$ & $0.805$ & $1.2$\\
+$0.30$ & $3.000040(58)$ & $93.6\%$ & $0.899$ & $1.7$\\
+$0.20$ & $2.999946(65)$ & $96.4\%$ & $0.942$ & $2.3$\\
+$0.10$ & $3.000155(96)$ & $98.7\%$ & $0.978$ & $5.2$\\
+$0.05$ & $3.000216(115)$ & $99.5\%$ & $0.991$ & $7.2$\\
+$0.02$ & $2.999736(167)$ & $99.9\%$ & $0.998$ & $18.3$\\
+\multicolumn{5}{l}{\quad extrapolated $3.000090(94)$, slope $-0.00031$}\\
+\bottomrule
+\end{tabular}
+\caption{Diffusion Monte Carlo for the two-electron dot at $\alpha=1.00$,
+$\beta=0.40$, with $500$ walkers, $4000$ steps and $1000$ steps of
+equilibration.  Errors on the last digits, from blocking.  The extrapolation
+is a weighted linear fit in $\Delta\tau$.  Computed by \texttt{dmc.py}.}
+\label{tab:15-timestep}
+\end{table}
+
+Three observations, in increasing order of interest.
+
+The acceptance rate stays above $87\%$ even at $\Delta\tau=0.5$, which is what
+the drift term buys and is unchanged from Chapter~\ref{chap:vmc}.  With
+$\Delta\tau_{\mathrm{eff}}$ switched on, the correction it applies is
+substantial at the largest time step -- the walkers move only $80\%$ of the
+distance they attempt -- and negligible below $\Delta\tau=0.05$, exactly as it
+should be.
+
+The correlation time in \emph{steps} grows as the time step shrinks: $1.2$ at
+$\Delta\tau=0.5$ against $16$ at $\Delta\tau=0.02$.  This is not a defect but
+arithmetic.  What decorrelates a walker is imaginary time, and $4000$ steps at
+$\Delta\tau=0.02$ cover eighty units of $\tau$ where the same number of steps
+at $\Delta\tau=0.5$ cover two thousand.  Halving the time step therefore
+doubles the number of steps needed for the same statistics, which is why the
+error bars in the table grow downwards even though the number of samples is
+constant.  A small time step is not free.
+
+And the bias itself is minute -- a few parts in $10^{4}$ across a factor of
+twenty-five in $\Delta\tau$.  That is a statement about the guiding function,
+not about the method.  The time-step error originates in the commutators
+dropped by the Trotter factorisation, Eq.~(\ref{eq:15-trotter}), and those
+vanish when $\Psi_T$ is an eigenfunction.  At $\alpha=1$ the Gaussian part of
+the trial function is exact, the Jastrow factor satisfies the cusp condition,
+and the local energy is very nearly constant, so there is almost nothing left
+for the factorisation to get wrong.  The next section shows what happens when
+that is not so.
+
+%----------------------------------------------------------------------
+\section{Results}
+\label{sec:dmcresults}
+
+\paragraph{The chapter's number.}
+A single run at $\Delta\tau=0.05$ with $500$ walkers gives, in about two
+seconds,
+\begin{align*}
+  \text{mixed estimator} \quad&E = 3.000216 \pm 0.000115,\\
+  \text{growth estimator}\quad&E = 2.999778 \pm 0.000619,
+\end{align*}
+with a variance of the local energy over the population of $0.0022$.  The two
+agree, as they must -- one measures the eigenvalue directly, the other the
+rate at which the population would grow if $E_T$ were frozen -- and the mixed
+estimator has five times the smaller error, which is why it is the one
+quoted.  Extrapolating to zero time step from Table~\ref{tab:15-timestep}
+gives the result of the chapter,
+\begin{equation}
+  \boxed{\;E_{\mathrm{DMC}} = 3.000090 \pm 0.000064\;}
+  \label{eq:15-final}
+\end{equation}
+which sits $1.4$ standard errors above the exact $3$.
+
+\paragraph{A deliberately bad guiding function.}
+The claim that the guiding function no longer determines the answer ought to
+be tested rather than asserted.  Table~\ref{tab:15-poorguide} repeats the
+calculation at $\alpha=0.80$ and $\beta=0.10$, a long way from the variational
+minimum.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{lll}
+\toprule
+$\Delta\tau$ & energy & $\tau_{\mathrm{corr}}$\\
+\midrule
+$0.100$ & $3.025847(966)$ & $8.0$\\
+$0.050$ & $3.014878(1555)$ & $20.5$\\
+$0.020$ & $3.002270(2293)$ & $52.8$\\
+$0.010$ & $3.005206(2222)$ & $50.6$\\
+\midrule
+extrapolated & $3.001072(2339)$ & slope $+0.249$\\
+\midrule
+same $\Psi_T$, VMC & $3.363877(5019)$ & ---\\
+exact & $3.000000$ & ---\\
+\bottomrule
+\end{tabular}
+\caption{The same calculation from a poor guiding function, $\alpha=0.80$ and
+$\beta=0.10$, with $2000$ walkers and $3000$ steps.  The variational energy of
+this trial function is $0.36$ too high; the projected energy is right.
+Computed by \texttt{dmc.py}.}
+\label{tab:15-poorguide}
+\end{table}
+
+Variationally this trial function is a disaster: $3.3639$ against an exact
+$3$, an error of $0.36$, worse than Hartree-Fock in a $42$-orbital basis.
+Projected, it gives $3.0011\pm0.0023$ -- the right answer.  That is the point
+of the chapter in one line.
+
+The price is visible in the same table.  The error bar is twenty-five times
+larger than in Table~\ref{tab:15-timestep} despite four times the walkers,
+because the local energy now fluctuates instead of sitting near $3$; the
+correlation times are three times longer; and the slope of the time-step
+dependence is $+0.249$ against $-0.00055$, a factor of some five hundred, so
+that $\Delta\tau=0.5$ is no longer usable and the extrapolation must be
+performed from $\Delta\tau\le0.1$.  A poor guiding function costs computer
+time and demands a smaller time step.  It does not cost accuracy.
+
+\paragraph{Is it a population-control bias?}
+The residual in the poor-guide column at a fixed time step is worth one more
+check, because a systematic error that does not move with $\Delta\tau$ often
+turns out to move with $N_{\mathrm{walkers}}$ instead.
+Table~\ref{tab:15-population} settles it.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{16pt}
+\begin{tabular}{lll}
+\toprule
+walkers & $\alpha=1.00$, $\beta=0.40$ & $\alpha=0.80$, $\beta=0.10$\\
+\midrule
+$250$ & $2.999874(131)$ & $3.024045(3611)$\\
+$500$ & $3.000158(99)$ & $3.021299(2181)$\\
+$1000$ & $2.999966(62)$ & $3.022742(1509)$\\
+$2000$ & $2.999934(44)$ & $3.025847(966)$\\
+\bottomrule
+\end{tabular}
+\caption{Dependence on the number of walkers at $\Delta\tau=0.1$ over $3000$
+steps.  Neither column drifts: the error bars fall as
+$1/\sqrt{N_{\mathrm{walkers}}}$ and the central values do not move.  Computed
+by \texttt{dmc.py}.}
+\label{tab:15-population}
+\end{table}
+
+Neither central value moves as the population is increased by a factor of
+eight, while the error bars fall by the expected $\sqrt{8}\approx2.8$.  The
+population-control bias is therefore below the statistical resolution here,
+and the residual of Table~\ref{tab:15-poorguide} at $\Delta\tau=0.1$ is
+time-step error -- which the same table then removes by extrapolating.
+
+\paragraph{The dot, by every method in this book.}
+Collecting the results for two electrons in a two-dimensional parabolic trap
+at $\hbar\omega=1$:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{llll}
+\toprule
+method & energy & error & where\\
+\midrule
+Hartree-Fock, $42$ orbitals & $3.161921$ & $1.6\times10^{-1}$
+  & Chapter~\ref{chap:applications}\\
+MP2, $42$ orbitals & $3.027038$ & $2.7\times10^{-2}$
+  & Chapter~\ref{chap:applications}\\
+CCSD, $42$ orbitals & $3.013626$ & $1.4\times10^{-2}$
+  & Chapter~\ref{chap:applications}\\
+VMC, optimised & $3.000549(49)$ & $5.5\times10^{-4}$
+  & Eq.~(\ref{eq:14-final})\\
+DMC, extrapolated & $3.000090(64)$ & $9.0\times10^{-5}$
+  & Eq.~(\ref{eq:15-final})\\
+\midrule
+exact (Taut) & $3.000000$ & --- & Section~\ref{sec:qdexact}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+The two basis-set methods are limited by the basis: a finite sum of oscillator
+products cannot reproduce the cusp at $r_{12}=0$, and the convergence in the
+number of orbitals is correspondingly slow.  Variational Monte Carlo removes
+the basis but is limited by the ansatz.  Diffusion Monte Carlo removes the
+ansatz too, and what is left -- $9\times10^{-5}$, consistent with the exact
+answer at $1.4$ standard errors -- is statistics, which is to say computer
+time.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:dmcsummary}
+
+Imaginary-time propagation filters out excited states exponentially,
+Eq.~(\ref{eq:15-filtering}), and the resulting equation for the ground state
+is a diffusion equation with a source, Eq.~(\ref{eq:15-diffusionsource}),
+which a branching random walk simulates directly.  In that bare form the
+branching weights diverge for any singular potential and the method is
+unusable for electrons.  Importance sampling with a guiding function cures it,
+Eq.~(\ref{eq:15-importanceequation}): the drift becomes the quantum force of
+Chapter~\ref{chap:vmc}, the source becomes the local energy, which the cusp
+condition keeps finite, and the ground-state energy is the mixed estimator
+$\meanb{E_L}_f$ -- the same average of the same function as in variational
+Monte Carlo, taken over a different distribution.
+
+The remaining errors are of four kinds, and it matters that they differ in
+character.  The statistical error falls as $1/\sqrt{N}$ and is measured by
+blocking.  The time-step error is systematic, is removed by extrapolation, and
+is small when the guiding function is good.  The population-control bias falls
+as $1/N_{\mathrm{walkers}}$ and is checked by varying it.  Only the fourth,
+the fixed-node error, cannot be removed by spending more computer time, and it
+is absent here because the two-electron singlet is nodeless.  For real
+fermionic systems it is the dominant error, and reducing it means improving
+the \emph{nodes} of the trial function.
+
+Which points at what is missing.  Everything from Chapter~\ref{chap:vmc}
+onwards has rested on writing down a functional form for $\Psi_T$ and hoping
+it is close enough -- close enough for a useful variational bound in
+Chapter~\ref{chap:vmc}, close enough for a small time-step bias here, and in
+the fermionic case close enough in its \emph{nodes}, which is a far more
+delicate requirement than being close in amplitude.  The Pad\'e-Jastrow form
+has two parameters and was chosen by hand from physical arguments about cusps.
+The alternative is not to choose: to let $\Psi_T$ be a flexible parametrised
+function -- a neural network -- and to fix its thousands of parameters with
+the gradient of Eq.~(\ref{eq:14-gradient}) and the stochastic reconfiguration
+of Eq.~(\ref{eq:14-sr}), both of which were written for an arbitrary number of
+parameters precisely so that they would still apply.  That is the subject of
+the chapters that follow.
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the importance-sampled equation}
+\label{ex:15-derivation}
+\addcontentsline{toc}{subsection}{Exercise 1: the importance-sampled equation}
+
+\begin{enumerate}
+\item[a)] Starting from Eq.~(\ref{eq:15-imaginarytime}) with
+  $\hat{H}=-D\nabla^2+V$, multiply by $\Psi_T(\bm{R})$ and use the identity
+  \begin{equation*}
+    \Psi_T\nabla^2\Phi
+     = \nabla^2 f - 2\nabla\!\cdot\!\left(\Phi\nabla\Psi_T\right)
+     + \Phi\nabla^2\Psi_T
+  \end{equation*}
+  to derive Eq.~(\ref{eq:15-importanceequation}).  Identify the step at which
+  the potential $V$ turns into the local energy $E_L$.
+
+\item[b)] Verify that if $\Psi_T$ is the exact ground state then the source
+  term in Eq.~(\ref{eq:15-importanceequation}) vanishes identically when
+  $E_T=E_0$.  What does the algorithm reduce to in that case, and what is the
+  variance of the energy estimator?
+
+\item[c)] Show that the stationary solution of
+  Eq.~(\ref{eq:15-importanceequation}) with the source term removed is
+  $f\propto|\Psi_T|^2$, and explain why this is the right check that the
+  drift-diffusion part of the algorithm is the variational Monte Carlo of
+  Chapter~\ref{chap:vmc}.
+
+\item[d)] Derive the extrapolated estimator, Eq.~(\ref{eq:15-extrapolated}),
+  by writing $\Psi_T=\Psi_0+\delta$, expanding both
+  $\mean{\hat{A}}_{\mathrm{mixed}}$ and $\mean{\hat{A}}_{\mathrm{VMC}}$ to
+  first order in $\delta$, and eliminating that order.
+\end{enumerate}
+
+\subsection*{Exercise 2: branching and the population}
+\label{ex:15-branching}
+\addcontentsline{toc}{subsection}{Exercise 2: branching and the population}
+
+\begin{enumerate}
+\item[a)] Show that $m=\lfloor w+u\rfloor$ with $u$ uniform on $[0,1)$ has
+  mean exactly $w$, and compute its variance.  Why is this preferable to
+  rounding $w$ to the nearest integer?
+
+\item[b)] \texttt{dmc.py} clips $m$ at $3$.  Explain what this protects
+  against, and argue why for a good guiding function the clip is essentially
+  never reached.  Modify the program to count how often it is, at
+  $\alpha=1.00$, $\beta=0.40$ and at $\alpha=0.80$, $\beta=0.10$.
+
+\item[c)] Switch off the population control by setting the feedback $\kappa$
+  in Eq.~(\ref{eq:15-populationcontrol}) to zero, and run the program.  Plot
+  the number of walkers against the step number.  What kind of stochastic
+  process does it perform, and what happens to it eventually?
+
+\item[d)] Raise $\kappa$ to $1$ instead.  The population is now held very
+  tightly.  Show that the energy is nevertheless \emph{worse}, and explain why
+  in terms of the fluctuations that $E_T$ injects into
+  Eq.~(\ref{eq:15-branching}).
+\end{enumerate}
+
+\subsection*{Exercise 3: the time step}
+\label{ex:15-timestep}
+\addcontentsline{toc}{subsection}{Exercise 3: the time step}
+
+\begin{enumerate}
+\item[a)] Remove the Metropolis-Hastings accept/reject test from the
+  drift-diffusion step of \texttt{dmc.py}, so that every proposed move is
+  taken.  Repeat Table~\ref{tab:15-timestep}.  By how much does the time-step
+  bias grow, and why is the extrapolated value nevertheless still correct?
+
+\item[b)] Reproduce Table~\ref{tab:15-timestep} and fit the energies both to
+  $E(\Delta\tau)=E(0)+c_1\Delta\tau$ and to
+  $E(0)+c_1\Delta\tau+c_2\Delta\tau^2$.  Compare the two intercepts and their
+  $\chi^2$.  Which fit is justified by the data, and what does that say about
+  the order of the Trotter error in Eq.~(\ref{eq:15-trotter})?
+
+\item[c)] The correlation time in Table~\ref{tab:15-timestep} grows as
+  $\Delta\tau$ shrinks.  Show that the product
+  $\tau_{\mathrm{corr}}\Delta\tau$ is roughly constant, and draw the
+  consequence for how the number of steps should be chosen when the time step
+  is reduced.
+
+\item[d)] Estimate the total computer time needed to reach a statistical error
+  of $10^{-5}$ on the extrapolated energy, with the good guiding function and
+  with the poor one.  Which is the better investment, and by what factor?
+\end{enumerate}
+
+\subsection*{Exercise 4: nodes}
+\label{ex:15-nodes}
+\addcontentsline{toc}{subsection}{Exercise 4: nodes}
+
+\begin{enumerate}
+\item[a)] Explain why the trial function of Eq.~(\ref{eq:13-trial}) is
+  nodeless, and why this follows from the two electrons being in a spin
+  singlet rather than being an accident of the functional form.
+
+\item[b)] Write down a trial function for the lowest \emph{triplet} state of
+  the same dot, in which the spatial part must be antisymmetric.  Where are
+  its nodes?  Show that they are fixed by symmetry alone and are therefore
+  exact, so that a fixed-node calculation of this state is exact as well.
+
+\item[c)] Implement the triplet in \texttt{dmc.py}: multiply the trial
+  function by the antisymmetric factor found in b), reject any move that
+  changes its sign, and run.  Compare with the variational energy of the same
+  trial function.
+
+\item[d)] For the six-electron dot of Chapter~\ref{chap:applications} the
+  nodes come from a Slater determinant of oscillator orbitals and are
+  \emph{not} exact.  Explain why the fixed-node energy is nevertheless an
+  upper bound, and why it cannot be improved by increasing the number of
+  walkers, reducing the time step, or running for longer.
+\end{enumerate}
