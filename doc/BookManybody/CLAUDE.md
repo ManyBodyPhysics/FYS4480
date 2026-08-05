@@ -46,6 +46,11 @@ chapter12.tex      Elements from statistics: PDFs and moments, the central
                    Metropolis, Fokker-Planck and Langevin, and a first VMC on
                    the chapter-11 dot. Source material: stat1.tex, stat2.tex
                    (whose C++ listings are replaced by Python)
+chapter13.tex      Variational Monte Carlo in full: the variational principle,
+                   the cusp condition and the Pade-Jastrow trial function, the
+                   local energy, brute-force Metropolis, then the quantum
+                   force, the Fokker-Planck Green's function and
+                   Metropolis-Hastings. Source material: week1-week4.ipynb
 add.tex  linalg.tex  eig.tex  vmcfermion2015.do.txt  version2024.do.txt
 calogero.tex  SecondMidterm2025.tex  Hubbard.ipynb  combinatorial.tex
 week40.do.txt  pmm.tex  dft.do.txt  mbpt.ipynb  cctheory.tex  week48.ipynb
@@ -176,7 +181,8 @@ and `models.ipynb` plus `Hubbard.ipynb` to
 `chapter6.tex`, `tdarpa.ipynb` to `chapter7.tex`, `dft.ipynb` to
 `chapter8.tex`, `mbptheory.ipynb` to `chapter9.tex` and
 `coupledcluster.ipynb` to `chapter10.tex`, `quantumdots.ipynb` to
-`chapter11.tex` and `statistics.ipynb` to `chapter12.tex`; the older set is
+`chapter11.tex`, `statistics.ipynb` to `chapter12.tex` and
+`variationalmc.ipynb` to `chapter13.tex`; the older set is
 `notation.ipynb`,
 `secondquant.ipynb`, `fci.ipynb`, `hfock.ipynb`, `mbpt.ipynb`, `cc.ipynb`,
 `vmcdmc.ipynb`, … New book material that includes runnable code should have a
@@ -216,6 +222,7 @@ written for chapters 1 and 2 are:
 | `mbpt.py` | 9 | Rayleigh-Schroedinger to any order by recursion, Brillouin-Wigner self-consistently, four models, size extensivity, convergence |
 | `coupledcluster.py` | 10 | General spin-orbital CCSD with intermediates, CCD, a validating FCI in the same basis, the order-by-order expansion, and `UnitaryCC` (UCCD/UCCSD, exact and Trotterised) |
 | `quantumdot.py` | 11 | 2D quantum dot: closed-form Coulomb integrals, the antisymmetrised two-body matrix, a fast two-electron FCI, and the whole chapter-10 hierarchy applied to it. Takes a few minutes to run |
+| `vmc.py` | 13 | Two-electron dot: analytic local energy and quantum force (both checked against finite differences), brute-force Metropolis and importance-sampled Metropolis-Hastings, parameter scans. Runs in about a minute |
 | `montecarlo.py` | 12 | RNG tests (RANDU planes), brute-force and importance-sampled integration, CLT, autocorrelation time and blocking, random walks and entropy, Markov chains and detailed balance, Metropolis, and a first VMC on the chapter-11 dot. Runs in about 35 s |
 
 All of these run on `numpy` alone except `hartreefock.py`, which also needs

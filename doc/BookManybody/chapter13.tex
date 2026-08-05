@@ -1,3 +1,797 @@
 \chapter{Variational Monte Carlo}
 \label{chap:vmc}
 %=============================================================================
+
+Chapter~\ref{chap:statelements} assembled the tools -- probability
+distributions, the central limit theorem, the correlation time, Markov chains
+and the Metropolis algorithm -- and ended with a first variational Monte Carlo
+calculation, run brute force.  This chapter is the method itself, worked
+through properly and taken to the point where it is usable: the variational
+principle it rests on, how a trial wave function is constructed and why it has
+the form it does, the local energy and how to differentiate it, the sampling
+algorithm, and finally importance sampling, which is what turns a working
+program into an efficient one.
+
+The example throughout is the system of Chapter~\ref{chap:applications}, two
+electrons in a two-dimensional parabolic trap.  It is the right test case for
+three reasons.  It is small enough that everything can be differentiated by
+hand; it has an analytic answer, $E=3$ at $\hbar\omega=1$, so we always know
+what we are aiming at; and it has already been solved by Hartree-Fock,
+perturbation theory and coupled cluster in Chapter~\ref{chap:applications}, so
+the Monte Carlo result can be placed on the same scale as those.
+
+The programs are in \texttt{vmc.py}.  Everything the sampling needs -- the
+trial function, the local energy and the quantum force -- is available in
+closed form, and each closed form is checked against finite differences before
+it is used, for a reason that will become clear in
+Section~\ref{sec:vmcimportance}.
+
+%----------------------------------------------------------------------
+\section{The variational principle}
+\label{sec:vmcprinciple}
+
+\index{variational Monte Carlo}\index{variational principle}
+Everything rests on one inequality.  For any normalisable trial state
+$\Psi_T$,
+\begin{equation}
+  \boxed{\;
+  E[\Psi_T]
+   = \frac{\bracket{\Psi_T}{\hat{H}}{\Psi_T}}{\braket{\Psi_T}{\Psi_T}}
+   \;\ge\; E_0 \;}
+  \label{eq:13-variational}
+\end{equation}
+with equality only if $\Psi_T$ is the ground state.  The proof is the one from
+Section~\ref{sec:variational}: expand $\Psi_T$ in the exact eigenstates and
+observe that every excited state can only raise the average.
+
+The strategy is then obvious.  Choose a family of trial functions
+$\Psi_T(\bm{R};\bm{\theta})$ depending on a few parameters $\bm{\theta}$,
+evaluate $E[\Psi_T]$, and minimise over $\bm{\theta}$.  What makes this hard
+is the evaluation.  For $N$ particles in $d$ dimensions the integral
+\begin{equation}
+  E[\Psi_T]
+   = \frac{\int d\bm{R}\,\Psi_T^{*}(\bm{R})\hat{H}\Psi_T(\bm{R})}
+          {\int d\bm{R}\,|\Psi_T(\bm{R})|^2}
+  \label{eq:13-energyintegral}
+\end{equation}
+is over $Nd$ dimensions.  For our two electrons in two dimensions that is
+four, which a grid could still manage; for the six-electron dot it is twelve,
+and for anything realistic it is hopeless.  Monte Carlo integration converges
+as $1/\sqrt{M}$ regardless of dimension, which is the whole reason for the
+method.
+
+\paragraph{What the method can and cannot do.}
+It is worth being clear about the trade before starting.
+
+\begin{svgraybox}
+\begin{itemize}
+\item Any expectation value can be computed, for any Hamiltonian, in any
+  number of dimensions, provided we can write down and evaluate a trial wave
+  function.  There is no basis set and therefore no basis-set error.
+\item The energy is a rigorous upper bound, and the bound improves
+  monotonically as the trial function improves.
+\item But the answer is only as good as the trial function.  Unlike coupled
+  cluster or configuration interaction there is no systematic hierarchy to
+  climb; improving $\Psi_T$ is a matter of physical insight.
+\item And the error is statistical, so an extra digit costs a hundred times
+  the computer time.
+\end{itemize}
+\end{svgraybox}
+
+%----------------------------------------------------------------------
+\section{The local energy}
+\label{sec:vmclocalenergy}
+
+\index{local energy}
+The step that makes Eq.~(\ref{eq:13-energyintegral}) computable was taken in
+Section~\ref{sec:mcintegration}.  Insert $\Psi_T/\Psi_T$ and read the result
+as an average over a probability density,
+\begin{equation}
+  E[\Psi_T]
+   = \int d\bm{R}\;
+     \underbrace{\frac{|\Psi_T(\bm{R})|^2}
+       {\int d\bm{R}'|\Psi_T(\bm{R}')|^2}}_{\textstyle P(\bm{R})}\;
+     \underbrace{\frac{\hat{H}\Psi_T(\bm{R})}{\Psi_T(\bm{R})}}_{
+       \textstyle E_L(\bm{R})},
+  \label{eq:13-localenergyaverage}
+\end{equation}
+where $P$ is the quantum-mechanical probability density and
+\begin{equation}
+  \boxed{\;E_L(\bm{R}) = \frac{1}{\Psi_T(\bm{R})}\hat{H}\Psi_T(\bm{R})\;}
+  \label{eq:13-localenergy}
+\end{equation}
+is the \emph{local energy}.  The energy is then simply
+\begin{equation}
+  E[\Psi_T] \approx \frac{1}{M}\sum_{i=1}^{M}E_L(\bm{R}_i),
+  \qquad \bm{R}_i \sim P ,
+  \label{eq:13-energyestimator}
+\end{equation}
+an average of a function over samples drawn from $P$.  Two observations make
+this more than a rewriting.
+
+\paragraph{The zero-variance principle.}
+If $\Psi_T$ is an exact eigenstate, $\hat{H}\Psi_T=E\Psi_T$, then
+$E_L(\bm{R})=E$ everywhere.  The average is $E$ exactly, from a single
+sample, and the variance is zero.  For an approximate $\Psi_T$ the variance
+\begin{equation}
+  \sigma^2 = \mean{E_L^2} - \mean{E_L}^2
+  \label{eq:13-variance}
+\end{equation}
+is a direct and absolute measure of how far the trial function is from an
+eigenstate -- absolute because we know the target value, zero.  This is why
+$\sigma^2$ is quoted alongside the energy in everything that follows, and why
+minimising the variance is a legitimate alternative to minimising the energy.
+
+\paragraph{The normalisation never appears.}
+$P$ contains the normalisation integral we cannot compute.  But the Metropolis
+algorithm of Section~\ref{sec:metropolis} needs only ratios
+$P(\bm{R}')/P(\bm{R}) = |\Psi_T(\bm{R}')|^2/|\Psi_T(\bm{R})|^2$, in which the
+normalisation cancels.  That is the second reason the whole scheme works, and
+it is why a Markov chain is used instead of direct sampling.
+
+%----------------------------------------------------------------------
+\section{Constructing a trial wave function}
+\label{sec:vmctrial}
+
+\index{trial wave function}\index{cusp condition}
+A trial wave function is usually built as a product of two pieces,
+\begin{equation}
+  \Psi_T(\bm{R}) = \Phi(\bm{R})\,J(\bm{R}),
+  \label{eq:13-productansatz}
+\end{equation}
+a mean-field part $\Phi$ -- a Slater determinant of single-particle orbitals,
+which enforces antisymmetry -- and a symmetric \emph{correlation} or
+\emph{Jastrow} factor $J$ depending on the interparticle distances.  The
+determinant carries the shell structure; the Jastrow factor carries what a
+determinant cannot represent, namely that two electrons avoid each other.
+
+The form of $J$ is not guesswork.  It is fixed at short distance by a
+condition on the local energy.  As two electrons approach, the Coulomb term
+$1/r_{12}$ in $\hat{H}$ diverges, and if the local energy is to remain finite
+the kinetic term must produce a compensating divergence.  Isolating the
+relative motion and keeping only the terms that survive as $r_{12}\to0$, the
+requirement $E_L$ finite gives
+\begin{equation}
+  \left(\frac{2}{r_{12}}\frac{d}{dr_{12}}
+   + \frac{2}{r_{12}}\right){\cal R}(r_{12}) = 0
+  \quad\Longrightarrow\quad
+  \frac{1}{{\cal R}}\frac{d{\cal R}}{dr_{12}}
+   = \frac{1}{2(l+1)}\bigg|_{r_{12}\to0},
+  \label{eq:13-cuspderivation}
+\end{equation}
+the \emph{cusp condition}.  For $l=0$ and two electrons of opposite spin this
+integrates to
+\begin{equation}
+  {\cal R}(r_{12}) \propto \exp\left(\frac{r_{12}}{2}\right)
+  \qquad\text{(antiparallel spins)},
+  \label{eq:13-cusp3d}
+\end{equation}
+in three dimensions, and to $\exp(r_{12}/4)$ for parallel spins, where the
+Pauli principle already keeps the electrons apart and less correlation is
+needed.  In two dimensions the corresponding coefficients are $1$ and
+$1/3$.  For more than two electrons the condition holds pair by pair.
+
+The exponential in Eq.~(\ref{eq:13-cusp3d}) is right at short distance and
+badly wrong at long distance, where it grows without bound.  The standard
+repair is the \emph{Pad\'e-Jastrow} form, which interpolates between the cusp
+behaviour and a constant,
+\begin{equation}
+  J = \exp\left(\sum_{i<j}\frac{a_{ij}r_{ij}}{1+\beta r_{ij}}\right),
+  \label{eq:13-padejastrow}
+\end{equation}
+with $a_{ij}$ fixed by the cusp condition and $\beta$ variational.  As
+$r_{ij}\to0$ the exponent is $a_{ij}r_{ij}$ and the cusp is reproduced; as
+$r_{ij}\to\infty$ it saturates at $a_{ij}/\beta$.
+
+\begin{notebox}
+\textbf{Why this matters later.} The construction above is physics put in by
+hand: we knew to expect a cusp, we knew the exponential was wrong at long
+range, and we chose a functional form with the right limits.  It works well
+for two electrons and less well as systems grow, because the correlations we
+have to guess become more complicated.  That difficulty is precisely the
+motivation for the machine-learning wave functions of the later chapters,
+where the functional form is not guessed but learned.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The two-electron quantum dot}
+\label{sec:vmcdot}
+
+\index{quantum dot!variational Monte Carlo}
+The system is the one of Chapter~\ref{chap:applications}: two electrons
+confined to a plane by a parabolic trap, interacting through the bare Coulomb
+repulsion.  In natural units,
+\begin{equation}
+  \hat{H} = \sum_{i=1}^{2}
+    \left(-\tfrac12\nabla_i^2 + \tfrac12\omega^2 r_i^2\right)
+    + \frac{1}{r_{12}} .
+  \label{eq:13-hamiltonian}
+\end{equation}
+
+\paragraph{Separating the motion.}
+Introducing the centre of mass $\bm{R}=(\bm{r}_1+\bm{r}_2)/2$ and the relative
+coordinate $\bm{r}=\bm{r}_1-\bm{r}_2$, the Hamiltonian separates.  The
+centre-of-mass part is a plain harmonic oscillator and contributes a known
+constant; the relative part is
+\begin{equation}
+  \hat{H}_r = -\nabla_r^2 + \tfrac14\omega^2 r^2 + \frac{1}{r},
+  \label{eq:13-relative}
+\end{equation}
+a one-body problem in the relative coordinate.  Taut showed that this has
+closed-form solutions for a discrete set of frequencies, and at
+$\hbar\omega=1$ the total ground-state energy is exactly $3$.  That number is
+the target for the rest of the chapter.
+
+\paragraph{The trial function.}
+Combining the mean-field piece -- for two electrons in a spin singlet, simply
+the product of two lowest oscillator orbitals -- with the Pad\'e-Jastrow
+factor gives
+\begin{equation}
+  \boxed{\;
+  \Psi_T(\bm{r}_1,\bm{r}_2;\alpha,\beta)
+   = \exp\left(-\frac{\alpha\omega}{2}\left(r_1^2+r_2^2\right)\right)
+     \exp\left(\frac{r_{12}}{1+\beta r_{12}}\right) \;}
+  \label{eq:13-trial}
+\end{equation}
+Two variational parameters.  The first, $\alpha$, scales the width of the
+orbital: $\alpha=1$ is the bare oscillator ground state, and letting it vary
+allows the orbital to relax in response to the repulsion.  The second,
+$\beta$, sets the range over which the correlation factor acts.  The numerator
+of the Jastrow exponent is \emph{not} a parameter -- it is fixed at $1$ by the
+cusp condition.
+
+\paragraph{The local energy.}
+Differentiating Eq.~(\ref{eq:13-trial}) twice and dividing by $\Psi_T$ gives,
+with $d = 1/(1+\beta r_{12})$,
+\begin{equation}
+  \boxed{
+  \begin{aligned}
+    E_L =\;& \frac{1}{2}\omega^2\left(1-\alpha^2\right)
+        \left(r_1^2+r_2^2\right) + 2\alpha\omega + \frac{1}{r_{12}}\\
+      &+ d^2\left(\alpha\omega r_{12} - d^2 + 2\beta d
+        - \frac{1}{r_{12}}\right).
+  \end{aligned}}
+  \label{eq:13-localenergydot}
+\end{equation}
+The first line is the result for the pure Gaussian, already met as
+Eq.~(\ref{eq:12-alphaenergy})'s integrand in
+Chapter~\ref{chap:statelements}; the second is everything the Jastrow factor
+contributes.  Note the last term.  It carries $-d^2/r_{12}$, which at short
+distance cancels the $+1/r_{12}$ on the first line, since $d\to1$ as
+$r_{12}\to0$.  That cancellation \emph{is} the cusp condition, and
+Table~\ref{tab:13-cusp} shows it happening.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{16pt}
+\begin{tabular}{rll}
+\toprule
+$r_{12}$ & $E_L$ with Jastrow & $E_L$ without\\
+\midrule
+$1.0000$ & $3.031237$ & $\phantom{0000}3.00$\\
+$0.1000$ & $2.703286$ & $\phantom{000}12.00$\\
+$0.0100$ & $2.611464$ & $\phantom{00}102.00$\\
+$0.0010$ & $2.601159$ & $\phantom{0}1002.00$\\
+$0.0001$ & $2.600116$ & $10002.00$\\
+\bottomrule
+\end{tabular}
+\caption{The local energy for two electrons brought together along a line,
+$\alpha=1$, $\beta=0.4$, $\hbar\omega=1$.  With the correlation factor the
+local energy converges; without it the Coulomb singularity is unopposed and
+$E_L$ diverges as $1/r_{12}$.  Computed by \texttt{vmc.py}.}
+\label{tab:13-cusp}
+\end{table}
+
+This is worth pausing on, because it explains the numbers in
+Chapter~\ref{chap:statelements}.  A trial function without the cusp has a
+local energy with an unbounded tail; rare close encounters then dominate the
+variance, the variance estimate itself becomes unstable, and error bars stop
+meaning much.  With the cusp built in, the variance for this system falls by
+three orders of magnitude.
+
+%----------------------------------------------------------------------
+\section{Brute-force Metropolis sampling}
+\label{sec:vmcbrute}
+
+\index{Metropolis algorithm!in variational Monte Carlo}
+The algorithm is the Metropolis of Section~\ref{sec:metropolis} applied to
+$P=|\Psi_T|^2$.
+
+\begin{svgraybox}
+\begin{enumerate}
+\item Place the particles at random and evaluate $\Psi_T$.
+\item Propose a move of \emph{one} particle,
+  $\bm{r}_i' = \bm{r}_i + \Delta\cdot(\bm{u}-\tfrac12)$, with $\bm{u}$
+  uniform and $\Delta$ the step length.
+\item Accept with probability
+  $\min\left(1,\;|\Psi_T(\bm{R}')|^2/|\Psi_T(\bm{R})|^2\right)$; if the move
+  is rejected, keep the old configuration.
+\item After every particle has been offered a move, accumulate $E_L(\bm{R})$
+  and $E_L^2(\bm{R})$.
+\item Discard an initial burn-in, then average.
+\end{enumerate}
+\end{svgraybox}
+
+\noindent
+Two details are easy to get wrong.  Moving one particle at a time rather than
+all of them keeps the acceptance rate up for a given step length.  And a
+rejected move must still be counted -- the old configuration is measured
+again.  Dropping rejected steps biases the average, and is one of the most
+common bugs in a first implementation.
+
+The step length $\Delta$ is the one free parameter, and
+Table~\ref{tab:13-brute} shows the usual trade-off: too small and the walker
+crawls, too large and everything is rejected, with the correlation time large
+at both ends.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrlll}
+\toprule
+$\Delta$ & acceptance & energy & error & $\tau$\\
+\midrule
+$0.5$ & $90.1\%$ & $2.999609$ & $0.001249$ & $24.28$\\
+$1.0$ & $80.2\%$ & $2.999422$ & $0.000643$ & $\phantom{0}6.17$\\
+$2.0$ & $62.2\%$ & $3.000750$ & $0.000418$ & $\phantom{0}2.80$\\
+$4.0$ & $35.3\%$ & $2.999901$ & $0.000376$ & $\phantom{0}2.24$\\
+$8.0$ & $11.8\%$ & $3.000125$ & $0.000701$ & $\phantom{0}7.77$\\
+\bottomrule
+\end{tabular}
+\caption{Brute-force Metropolis for the two-electron dot at $\alpha=0.98$,
+$\beta=0.40$, $\hbar\omega=1$, $30\,000$ cycles.  Errors are corrected for the
+autocorrelation time by Eq.~(\ref{eq:12-tau}).  Computed by \texttt{vmc.py}.}
+\label{tab:13-brute}
+\end{table}
+
+%----------------------------------------------------------------------
+\section{Importance sampling}
+\label{sec:vmcimportance}
+
+\index{importance sampling!in variational Monte Carlo}
+The uniform proposal of the previous section is wasteful.  It offers moves in
+every direction with equal probability, including many into regions where
+$|\Psi_T|^2$ is negligible, and those are rejected.  A better proposal would
+know something about the wave function and bias the move towards where it is
+large.  The machinery for that is the Fokker-Planck and Langevin equations of
+Section~\ref{sec:fokkerplanck}.
+
+\paragraph{Drift from the Fokker-Planck equation.}
+A diffusion process with a drift obeys
+\begin{equation}
+  \frac{\partial P}{\partial t}
+   = \sum_i D\frac{\partial}{\partial \bm{x}_i}
+     \left(\frac{\partial}{\partial \bm{x}_i} - \bm{F}_i\right)P(\bm{x},t),
+  \label{eq:13-fokkerplanck}
+\end{equation}
+with $D$ the diffusion coefficient and $\bm{F}$ the drift.  We want the
+stationary solution to be our target $P=|\Psi_T|^2$.  Setting the left-hand
+side to zero and requiring every term of the sum to vanish gives
+\begin{equation}
+  \frac{\partial^2 P}{\partial \bm{x}_i^2}
+   = P\frac{\partial \bm{F}_i}{\partial \bm{x}_i}
+   + \bm{F}_i\frac{\partial P}{\partial \bm{x}_i} .
+  \label{eq:13-stationary}
+\end{equation}
+Trying a drift of the form $\bm{F}=g(\bm{x})\,\partial P/\partial\bm{x}$ and
+demanding that the first- and second-derivative terms cancel forces
+$g=1/P$, so that $\bm{F}=\nabla P/P$.  With $P=|\Psi_T|^2$ this is
+\begin{equation}
+  \boxed{\;\bm{F} = \frac{2}{\Psi_T}\nabla\Psi_T = 2\nabla\ln\Psi_T\;}
+  \label{eq:13-quantumforce}
+\end{equation}
+the \emph{quantum force}.  It points towards regions where the trial function
+is large, and it is what replaces the aimless uniform proposal.
+
+\paragraph{Proposing a move.}
+The Langevin equation corresponding to Eq.~(\ref{eq:13-fokkerplanck}) is
+\begin{equation}
+  \frac{\partial \bm{x}(t)}{\partial t} = D\bm{F}(\bm{x}(t)) + \bm{\eta},
+  \label{eq:13-langevin}
+\end{equation}
+with $\bm{\eta}$ a Gaussian white noise.  Integrating it over a short time
+step $\Delta t$ by Euler's method gives the proposal
+\begin{equation}
+  \boxed{\;
+  \bm{y} = \bm{x} + D\bm{F}(\bm{x})\Delta t
+    + \bm{\xi}\sqrt{\Delta t} \;}
+  \label{eq:13-proposal}
+\end{equation}
+with $\bm{\xi}$ a standard normal variate.  In atomic units $D=\tfrac12$,
+which comes directly from the $\tfrac12$ in the kinetic energy operator; the
+time step $\Delta t$ is a parameter to be tuned, exactly as $\Delta$ was.
+
+\paragraph{Correcting for the asymmetry.}
+The proposal is now \emph{not} symmetric: drifting towards high density makes
+$\bm{x}\to\bm{y}$ and $\bm{y}\to\bm{x}$ different.  Metropolis is no longer
+valid and must be replaced by Metropolis-Hastings, which was Exercise~3(d) of
+Chapter~\ref{chap:statelements}.  The transition density is the Green's
+function of Eq.~(\ref{eq:13-fokkerplanck}),
+\begin{equation}
+  G(\bm{y},\bm{x},\Delta t)
+   = \frac{1}{(4\pi D\Delta t)^{3N/2}}
+     \exp\left(-\frac{\left(\bm{y}-\bm{x}
+       -D\Delta t\bm{F}(\bm{x})\right)^2}{4D\Delta t}\right),
+  \label{eq:13-greensfunction}
+\end{equation}
+and the acceptance ratio becomes
+\begin{equation}
+  \boxed{\;
+  q(\bm{y},\bm{x})
+   = \frac{G(\bm{x},\bm{y},\Delta t)\,\left|\Psi_T(\bm{y})\right|^2}
+          {G(\bm{y},\bm{x},\Delta t)\,\left|\Psi_T(\bm{x})\right|^2} \;}
+  \label{eq:13-mhratio}
+\end{equation}
+The prefactors of $G$ cancel in the ratio, and expanding the exponents leaves
+a form that needs no exponentials at all,
+\begin{equation}
+  \ln\frac{G(\bm{x},\bm{y})}{G(\bm{y},\bm{x})}
+   = \frac{1}{2}\left(\bm{F}(\bm{x})+\bm{F}(\bm{y})\right)\cdot
+     \left[\frac{D\Delta t}{2}
+       \left(\bm{F}(\bm{x})-\bm{F}(\bm{y})\right)
+       - \bm{y} + \bm{x}\right],
+  \label{eq:13-greensratio}
+\end{equation}
+which is what the program evaluates.
+
+\paragraph{The quantum force for our trial function.}
+Differentiating Eq.~(\ref{eq:13-trial}),
+\begin{equation}
+  \bm{F}_1 = -2\alpha\omega\bm{r}_1
+    + \frac{2\left(\bm{r}_1-\bm{r}_2\right)d^2}{r_{12}},
+  \qquad
+  \bm{F}_2 = -2\alpha\omega\bm{r}_2
+    - \frac{2\left(\bm{r}_1-\bm{r}_2\right)d^2}{r_{12}},
+  \label{eq:13-quantumforcedot}
+\end{equation}
+again with $d=1/(1+\beta r_{12})$.  It is a \emph{sum} of two terms: the first
+pulls the electron towards the centre of the trap, the second pushes the pair
+apart.
+
+\begin{notebox}
+\textbf{A wrong quantum force is not a wrong answer.} This deserves emphasis,
+because it is a trap.  If Eq.~(\ref{eq:13-quantumforcedot}) is coded
+incorrectly -- and the two terms are easy to combine wrongly -- the
+calculation still converges to the right energy, provided the \emph{same}
+expression is used both to propose the move and to evaluate the Green's
+function.  Detailed balance holds for any drift; a bad drift merely proposes
+bad moves.  Replacing the sum in Eq.~(\ref{eq:13-quantumforcedot}) by a
+product, \texttt{vmc.py} still gets $3.000256\pm0.000399$, but the acceptance
+rate falls from $87\%$ to $57\%$ and the correlation time doubles from $1.21$
+to $2.48$.  The error is invisible in the answer and shows up only in the
+efficiency, which is exactly why the quantum force is checked against finite
+differences before use.  A wrong \emph{local energy}, by contrast, gives a
+wrong number.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Results}
+\label{sec:vmcresults}
+
+Table~\ref{tab:13-importance} scans the time step.  The comparison with
+Table~\ref{tab:13-brute} is the point of the whole chapter.  At
+$\Delta t=0.5$ the acceptance rate is $88\%$ while the walker is taking steps
+that a uniform proposal of comparable size would have rejected almost always,
+and the correlation time is $1.24$ against a best of $2.24$ for brute force.
+There is no bias to worry about at large $\Delta t$: the Metropolis-Hastings
+ratio corrects the discretisation of the Langevin equation exactly, so a
+coarse time step costs accuracy only through the acceptance rate.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{rrlll}
+\toprule
+$\Delta t$ & acceptance & energy & error & $\tau$\\
+\midrule
+$0.010$ & $100.0\%$ & $3.001377$ & $0.001969$ & $52.53$\\
+$0.050$ & $\phantom{0}99.5\%$ & $3.001285$ & $0.000768$ & $\phantom{0}8.79$\\
+$0.100$ & $\phantom{0}98.7\%$ & $3.000852$ & $0.000551$ & $\phantom{0}4.54$\\
+$0.300$ & $\phantom{0}93.8\%$ & $3.000394$ & $0.000320$ & $\phantom{0}1.57$\\
+$0.500$ & $\phantom{0}87.6\%$ & $3.000526$ & $0.000280$ & $\phantom{0}1.24$\\
+$1.000$ & $\phantom{0}69.6\%$ & $3.000962$ & $0.000267$ & $\phantom{0}1.17$\\
+\bottomrule
+\end{tabular}
+\caption{Importance-sampled variational Monte Carlo, same system and same
+number of cycles as Table~\ref{tab:13-brute}.  Computed by \texttt{vmc.py}.}
+\label{tab:13-importance}
+\end{table}
+
+Run at their respective best settings on equal numbers of cycles, the two
+samplers give
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\begin{tabular}{lrlrr}
+\toprule
+sampler & acceptance & energy $\pm$ error & $\tau$ & $n_{\mathrm{eff}}$\\
+\midrule
+brute force, $\Delta=4$ & $35.4\%$ & $3.000865\pm0.000265$ & $2.33$ & $25\,788$\\
+importance, $\Delta t=0.5$ & $87.5\%$ & $3.000463\pm0.000199$ & $1.22$ & $49\,017$\\
+\bottomrule
+\end{tabular}
+\end{center}
+a factor $1.34$ in the error, which by the square-root law is a factor of
+about $1.8$ in computer time.  That is a real but unspectacular gain, and it
+is worth being honest about the scale: for a system this small, with a very
+good trial function, brute force is already close to optimal.  The advantage
+of importance sampling grows with the number of particles and with the
+sharpness of the wave function, and it becomes indispensable in diffusion
+Monte Carlo, where the drift is not an efficiency device but part of the
+algorithm.
+
+\paragraph{The variational surface.}
+Table~\ref{tab:13-surface} scans both parameters.  The energy is remarkably
+flat near the minimum -- the whole central block agrees to within a few parts
+in $10^4$ -- while the variance varies by a factor of ten across the same
+region.  This is the practical argument for variance minimisation: the
+variance has a sharper minimum and a known target value, so it locates the
+optimum more precisely than the energy does.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{8pt}
+\small
+\begin{tabular}{rrrrrr}
+\toprule
+& \multicolumn{5}{c}{$\beta$}\\
+\cmidrule(l){2-6}
+$\alpha$ & $0.30$ & $0.36$ & $0.40$ & $0.44$ & $0.50$\\
+\midrule
+\multicolumn{6}{l}{\emph{energy}}\\
+$0.94$ & $3.01804$ & $3.00780$ & $3.00460$ & $3.00316$ & $3.00357$\\
+$0.96$ & $3.01232$ & $3.00415$ & $3.00197$ & $3.00127$ & $3.00266$\\
+$0.98$ & $3.00786$ & $3.00142$ & $3.00043$ & $3.00081$ & $3.00295$\\
+$1.00$ & $3.00492$ & $3.00033$ & $3.00012$ & $3.00145$ & $3.00445$\\
+$1.02$ & $3.00294$ & $3.00025$ & $3.00096$ & $3.00297$ & $3.00671$\\
+\midrule
+\multicolumn{6}{l}{\emph{variance}}\\
+$0.94$ & $0.03241$ & $0.01420$ & $0.00777$ & $0.00478$ & $0.00545$\\
+$0.96$ & $0.02397$ & $0.00855$ & $0.00378$ & $0.00227$ & $0.00490$\\
+$0.98$ & $0.01780$ & $0.00521$ & $0.00197$ & $0.00192$ & $0.00640$\\
+$1.00$ & $0.01360$ & $0.00387$ & $0.00222$ & $0.00356$ & $0.00985$\\
+$1.02$ & $0.01154$ & $0.00448$ & $0.00434$ & $0.00704$ & $0.01508$\\
+\bottomrule
+\end{tabular}
+\caption{The variational surface, importance sampling with $\Delta t=0.5$ and
+$15\,000$ cycles per point.  The energy is flat near its minimum; the variance
+is not.  Computed by \texttt{vmc.py}.}
+\label{tab:13-surface}
+\end{table}
+
+\paragraph{The final number.}
+Two hundred thousand cycles at $\alpha=1.00$, $\beta=0.38$ give
+\begin{equation}
+  E_{\mathrm{VMC}} = 3.000603 \pm 0.000120,
+  \qquad \sigma^2 = 0.00258,
+  \qquad \tau = 1.12 ,
+  \label{eq:13-final}
+\end{equation}
+against the exact $3$.  The gap of $6\times10^{-4}$ is five standard errors
+wide, and that is the point rather than a problem.  A variational energy is an
+upper bound, so what is being resolved here is not a statistical discrepancy
+but the deficiency of a two-parameter ansatz -- and it is resolved only
+because the statistical error has been pushed below it.  Removing the residual
+requires a better trial function, or diffusion Monte Carlo, which projects it
+out.
+
+Set against Chapter~\ref{chap:applications}, where the best coupled-cluster
+calculation in a $42$-orbital basis gave $3.013626$, the variational Monte
+Carlo error is smaller by a factor of about twenty-three.  The reason is not
+that the many-body treatment is better -- for two electrons CCSD is exact
+within its basis -- but that there is no basis here at all.  The Jastrow
+factor depends on $r_{12}$ directly and satisfies the cusp condition exactly,
+and no finite sum of oscillator products can do either.
+
+%----------------------------------------------------------------------
+\section{Summary and what comes next}
+\label{sec:vmcsummary}
+
+A variational Monte Carlo program has four parts, and each has been dealt with
+in turn: a trial wave function whose form is dictated by the physics
+(Section~\ref{sec:vmctrial}); a local energy, differentiated in closed form
+and verified (Section~\ref{sec:vmclocalenergy}); a sampler, which is the
+Metropolis algorithm applied to $|\Psi_T|^2$
+(Section~\ref{sec:vmcbrute}); and an error estimate that accounts for the
+correlations a Markov chain introduces
+(Section~\ref{sec:correlations}).  Importance sampling
+(Section~\ref{sec:vmcimportance}) improves the third of these by proposing
+moves along the quantum force and correcting the asymmetry with
+Metropolis-Hastings.
+
+Three things are still missing, and they are the subject of what follows.  The
+error analysis here used the autocorrelation time; for production runs the
+blocking method of Section~\ref{sec:correlations} is what one actually uses.
+The parameters were located by scanning a grid, which does not scale beyond
+two or three of them; gradient-based optimisation using the derivative of the
+energy with respect to the parameters is the standard replacement.  And the
+result remains an upper bound set by the quality of $\Psi_T$.  Diffusion Monte
+Carlo removes that last limitation by letting the trial function evolve in
+imaginary time towards the true ground state, using the same Fokker-Planck
+machinery of Section~\ref{sec:vmcimportance} -- which is why it was worth
+setting up carefully here.
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the local energy}
+\label{ex:13-localenergy}
+\addcontentsline{toc}{subsection}{Exercise 1: the local energy}
+
+\begin{enumerate}
+  \item[a)] Derive the first line of Eq.~(\ref{eq:13-localenergydot}), the
+  local energy of the pure Gaussian trial function.
+  \item[b)] Show that $E_L$ is constant when $\alpha=1$ and the interaction is
+  switched off, and say what its value is.
+  \item[c)] Show that the $1/r_{12}$ terms in
+  Eq.~(\ref{eq:13-localenergydot}) cancel as $r_{12}\to0$.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+With $\Psi=\exp(-\alpha\omega R^2/2)$ and $R^2=r_1^2+r_2^2$, use
+$\nabla^2\Psi/\Psi = \nabla^2\ln\Psi + (\nabla\ln\Psi)^2$.  In two dimensions
+$\nabla_i^2(-\alpha\omega r_i^2/2)=-2\alpha\omega$ for each particle, so the
+first term contributes $-4\alpha\omega$, and
+$(\nabla\ln\Psi)^2=\alpha^2\omega^2R^2$.  Hence
+\[
+  -\tfrac12\frac{\nabla^2\Psi}{\Psi}
+   = 2\alpha\omega - \tfrac12\alpha^2\omega^2R^2 ,
+\]
+and adding the potential $\tfrac12\omega^2R^2 + 1/r_{12}$ gives
+$2\alpha\omega + \tfrac12\omega^2(1-\alpha^2)R^2 + 1/r_{12}$.
+
+\paragraph{Answer to b).}
+Setting $\alpha=1$ kills the $R^2$ term and dropping $1/r_{12}$ leaves
+$E_L=2\hbar\omega$, independent of position.  This is the zero-variance
+principle in its simplest form: without the interaction the trial function is
+the exact ground state of $\hat{H}_0$, its energy is $2\hbar\omega$, and a
+single sample would suffice.  All the variance in the interacting problem
+comes from the Coulomb term and from the imperfection of the Jastrow factor.
+
+\paragraph{Answer to c).}
+As $r_{12}\to0$, $d=1/(1+\beta r_{12})\to1$, so the term $-d^2/r_{12}$ tends
+to $-1/r_{12}$ and cancels the $+1/r_{12}$ on the first line.  What survives
+is finite: expanding to first order, $d^2\approx1-2\beta r_{12}$, and
+\[
+  \frac{1}{r_{12}}\left(1-d^2\right) \longrightarrow 2\beta ,
+\]
+so the singular parts cancel and leave a constant.  This is
+Table~\ref{tab:13-cusp} in algebra, and it is why the numerator of the Jastrow
+exponent had to be exactly $1$ and not a free parameter.
+
+\subsection*{Exercise 2: the quantum force and the Green's function}
+\label{ex:13-quantumforce}
+\addcontentsline{toc}{subsection}{Exercise 2: the quantum force}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:13-quantumforcedot}) from
+  Eq.~(\ref{eq:13-trial}).
+  \item[b)] Derive the simplified Green's function ratio
+  Eq.~(\ref{eq:13-greensratio}) from Eq.~(\ref{eq:13-greensfunction}).
+  \item[c)] Show that Metropolis-Hastings with the ratio
+  Eq.~(\ref{eq:13-mhratio}) satisfies detailed balance for \emph{any} drift
+  $\bm{F}$, and explain what goes wrong if $\bm{F}$ is wrong.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+$\ln\Psi_T = -\tfrac12\alpha\omega(r_1^2+r_2^2) + r_{12}/(1+\beta r_{12})$.
+The first term gives $\nabla_1 = -\alpha\omega\bm{r}_1$.  For the second, note
+$\nabla_1 r_{12} = (\bm{r}_1-\bm{r}_2)/r_{12}$ and
+\[
+  \frac{d}{dr_{12}}\frac{r_{12}}{1+\beta r_{12}}
+   = \frac{1}{(1+\beta r_{12})^2} = d^2 ,
+\]
+so $\nabla_1[\,\cdot\,] = (\bm{r}_1-\bm{r}_2)d^2/r_{12}$.  Multiplying the sum
+by two gives Eq.~(\ref{eq:13-quantumforcedot}); $\bm{F}_2$ follows from
+$\nabla_2 r_{12} = -(\bm{r}_1-\bm{r}_2)/r_{12}$.
+
+\paragraph{Answer to b).}
+Write $\bm{u}=\bm{y}-\bm{x}$, $\bm{a}=D\Delta t\bm{F}(\bm{y})$ and
+$\bm{b}=D\Delta t\bm{F}(\bm{x})$.  Then
+\[
+  \ln\frac{G(\bm{x},\bm{y})}{G(\bm{y},\bm{x})}
+   = -\frac{(\bm{u}+\bm{a})^2 - (\bm{u}-\bm{b})^2}{4D\Delta t}
+   = -\frac{2\bm{u}\cdot(\bm{a}+\bm{b}) + a^2 - b^2}{4D\Delta t}.
+\]
+Substituting back and factorising $a^2-b^2=(\bm{a}+\bm{b})\cdot
+(\bm{a}-\bm{b})$ gives Eq.~(\ref{eq:13-greensratio}).  The prefactors of $G$
+are identical in numerator and denominator and cancel, which is why the
+normalisation of the Green's function never has to be computed.
+
+\paragraph{Answer to c).}
+Detailed balance requires
+$T(\bm{x}\to\bm{y})A(\bm{x}\to\bm{y})P(\bm{x})
+= T(\bm{y}\to\bm{x})A(\bm{y}\to\bm{x})P(\bm{y})$.  With $T=G$ and
+$A=\min(1,q)$ from Eq.~(\ref{eq:13-mhratio}) this holds identically,
+whatever $\bm{F}$ is, because $q$ is by construction the ratio that makes it
+hold.  A wrong $\bm{F}$ therefore leaves the stationary distribution
+untouched and the energy correct.  What it damages is the acceptance rate:
+the drift proposes moves the wave function does not like, more of them are
+rejected, and the correlation time rises.  The consistency requirement is that
+the same $\bm{F}$ be used in the proposal and in $G$; using different ones
+would break detailed balance and give a wrong answer.
+
+\subsection*{Exercise 3: the cusp condition}
+\label{ex:13-cusp}
+\addcontentsline{toc}{subsection}{Exercise 3: the cusp condition}
+
+\begin{enumerate}
+  \item[a)] Derive Eq.~(\ref{eq:13-cuspderivation}) by keeping only the terms
+  in the relative-motion local energy that survive as $r_{12}\to0$.
+  \item[b)] Why is the coefficient different for parallel and antiparallel
+  spins?
+  \item[c)] Show that the Pad\'e-Jastrow form~(\ref{eq:13-padejastrow})
+  reproduces the cusp at short range and saturates at long range, and say what
+  goes wrong if the bare exponential is used instead.
+\end{enumerate}
+
+\paragraph{Answer to a).}
+In the relative coordinate the kinetic operator contains
+$d^2/dr^2 + (2/r)\,d/dr$ in two dimensions, and the potential contains
+$1/r$.  For $E_L$ to stay finite as $r\to0$ the $1/r$ terms must cancel:
+\[
+  \frac{2}{r}\frac{{\cal R}'}{\cal R} + \frac{2}{r} = 0
+  \quad\Longrightarrow\quad
+  \frac{{\cal R}'}{\cal R}\bigg|_{r\to0} = \text{constant},
+\]
+which is Eq.~(\ref{eq:13-cuspderivation}).  Everything else -- the harmonic
+term, the energy, the centre-of-mass part -- is regular at the origin and
+cannot participate.
+
+\paragraph{Answer to b).}
+For parallel spins the spatial wave function is antisymmetric and already
+vanishes linearly as $r_{12}\to0$, so the Coulomb singularity is partly
+screened by the Pauli principle and less is asked of the correlation factor.
+The angular momentum in the relative motion is $l=1$ rather than $l=0$, and
+the factor $1/2(l+1)$ in Eq.~(\ref{eq:13-cuspderivation}) halves the
+coefficient.
+
+\paragraph{Answer to c).}
+Expanding $ar/(1+\beta r) = ar(1-\beta r + \cdots)$ shows that the exponent is
+$ar$ to first order, so the logarithmic derivative at the origin is $a$ and
+the cusp condition is satisfied for any $\beta$.  As $r\to\infty$ the exponent
+tends to $a/\beta$, a constant, so the factor saturates and the wave function
+retains the decay of the mean-field part.  With the bare $\exp(ar)$ the
+correlation factor grows without bound and overwhelms the Gaussian at large
+separation: the trial function is not normalisable in the relevant sense and
+the electrons are driven apart.  This is exactly what
+Chapter~\ref{chap:statelements} warned about -- setting $\beta=0$ does not
+switch the Jastrow factor off, it leaves $\exp(r_{12})$.
+
+\subsection*{Exercise 4: numerical explorations}
+\addcontentsline{toc}{subsection}{Exercise 4: numerical explorations}
+
+\begin{enumerate}
+  \item[a)] Using \texttt{vmc.py}, reproduce Tables~\ref{tab:13-brute}
+  and~\ref{tab:13-importance}.  Plot the correlation time against the
+  acceptance rate for both samplers on the same axes.  Is there a universal
+  optimal acceptance rate?
+  \item[b)] Replace the analytic local energy by the finite-difference one and
+  compare the cost and the statistical error.  How small may the step $h$ be
+  made before round-off dominates?
+  \item[c)] Implement blocking, as in Section~\ref{sec:correlations}, and
+  compare the error estimate with the one from the correlation time for a run
+  at $\Delta t=0.01$, where $\tau$ is large.
+  \item[d)] Repeat the calculation at $\hbar\omega=0.5$ and $\hbar\omega=0.1$.
+  Where is the correlation strongest, and how do the optimal $\alpha$ and
+  $\beta$ move?  Compare with Table~\ref{tab:11-omega}.
+  \item[e)] Compute the derivative of the energy with respect to a variational
+  parameter $\theta$ using
+  \[
+    \frac{\partial E}{\partial\theta}
+     = 2\left(\mean{E_L\,\partial_\theta\ln\Psi_T}
+       - \mean{E_L}\mean{\partial_\theta\ln\Psi_T}\right),
+  \]
+  and use it to optimise $\alpha$ and $\beta$ by gradient descent.  How many
+  iterations does it take, and how does the cost compare with the grid scan of
+  Table~\ref{tab:13-surface}?
+  \item[f)] Extend the code to six electrons using a Slater determinant of the
+  lowest three oscillator orbitals times the Pad\'e-Jastrow factor, and
+  compare with the coupled-cluster result of
+  Table~\ref{tab:11-hierarchy}.
+\end{enumerate}

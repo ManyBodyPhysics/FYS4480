@@ -209,6 +209,33 @@
        the quantum force, gradient-descent optimisation, blocking in anger),
        then DMC; both on the same dots
 
+###  Variational Monte Carlo  (chapter13.tex, done)
+     - Condensed from week1-week4.ipynb, C++ references dropped; the example
+       throughout is the two-electron 2D dot of chapter 11
+     - Variational principle, local energy, zero-variance principle
+     - Cusp condition derived from the relative-motion local energy; the
+       Pade-Jastrow form and why the bare exponential fails at long range
+     - Trial function exp(-alpha omega (r1^2+r2^2)/2) exp(r12/(1+beta r12)),
+       analytic local energy (matches the week2/week4 expression) and analytic
+       quantum force, both verified against finite differences in vmc.py
+     - IMPORTANT: the QuantumForce in week4.ipynb is wrong -- it multiplies
+       the two terms of F = 2 grad Psi / Psi instead of adding them.  Correct:
+       F_1 = -2 alpha omega r_1 + 2 (r_1 - r_2) d^2 / r12.  Because the same
+       expression is used in the proposal and in the Green's function,
+       detailed balance still holds and the energy is right; only the
+       acceptance rate (87% -> 57%) and tau (1.21 -> 2.48) suffer.  This is
+       now a notebox in the chapter and an exercise
+     - Brute force: best step 4.0, acceptance 35%, tau 2.24.  Importance
+       sampling: best dt 0.5-1.0, acceptance 70-88%, tau 1.2.  Net gain about
+       a factor 1.8 in computer time -- honest and unspectacular for a system
+       this small with a very good trial function
+     - Final: E = 3.000603(120) at alpha = 1, beta = 0.38, five sigma above
+       the exact 3 -- that gap is the deficiency of the two-parameter ansatz,
+       not a statistical error, and it is 23x smaller than the CCSD error of
+       chapter 11
+     - Still to write: blocking in anger, gradient-descent optimisation of the
+       parameters, six electrons with a Slater determinant, then DMC
+
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
 ###  SRG and IMSRG
