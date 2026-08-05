@@ -196,6 +196,7 @@ def dmc(alpha=ALPHA_OPT, beta=BETA_OPT, n_walkers=500, n_steps=4000,
     running = trial_energy
     series = np.empty(n_steps)
     growth = np.empty(n_steps)
+    spread = np.empty(n_steps)
     population = np.empty(n_steps + burn_in, dtype=int)
     acceptance = 0.0
     dt_eff_sum = 0.0
@@ -246,12 +247,13 @@ def dmc(alpha=ALPHA_OPT, beta=BETA_OPT, n_walkers=500, n_steps=4000,
         if step >= burn_in:
             series[step - burn_in] = mixed
             growth[step - burn_in] = trial_energy
+            spread[step - burn_in] = float(energy_old.var(ddof=1))
 
     energy, error, _ = blocking(series)
     return dict(energy=energy, error=error,
                 growth=float(growth.mean()),
                 growth_error=blocking(growth)[1],
-                variance=float(series.var(ddof=1)),
+                variance=float(spread.mean()),
                 tau=correlation_time(series),
                 acceptance=acceptance / (n_steps + burn_in),
                 time_step=time_step,
@@ -459,9 +461,10 @@ def _demo():
     print("   Compare with the variational energy of the same trial function,")
     print("   which is 3.363877(5019).  Diffusion Monte Carlo turns a bad")
     print("   ansatz into the right answer; it charges for it in error bar --")
-    print("   here some thirty times the error of the good guiding function,")
-    print("   for more walkers and a smaller time step -- and in a time-step")
-    print("   dependence two orders of magnitude stronger.")
+    print("   here some twenty-five times the error of the good guiding")
+    print("   function, for four times the walkers -- and in a time-step")
+    print("   dependence about five hundred times stronger, so that the")
+    print("   largest usable dt is smaller by the same measure.")
 
     print()
     print("=" * 74)
