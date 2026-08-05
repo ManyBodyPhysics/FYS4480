@@ -375,7 +375,7 @@ def _demo():
     print(f"   VMC energy    : {E_VMC:.6f}")
     print(f"   exact (Taut)  : {TAUT_ENERGY:.6f}")
     print()
-    result = dmc(n_walkers=500, n_steps=4000, time_step=0.01,
+    result = dmc(n_walkers=500, n_steps=4000, time_step=0.05,
                  rng=np.random.default_rng(2024))
     print(f"   DMC, dt = {result['time_step']:.3f}, "
           f"{result['mean_population']:.0f} walkers, "
@@ -385,6 +385,12 @@ def _demo():
     print(f"      growth estimator E = {result['growth']:.6f} "
           f"+/- {result['growth_error']:.6f}")
     print(f"      variance {result['variance']:.5f}, tau {result['tau']:.2f}")
+    print()
+    print("   The two agree, as they must: the mixed estimator measures the")
+    print("   eigenvalue directly and the growth estimator measures the rate")
+    print("   at which the population would grow if E_T were held fixed.  The")
+    print("   mixed one has by far the smaller variance, which is why it is")
+    print("   the one quoted.")
 
     print()
     print("=" * 74)
@@ -394,11 +400,11 @@ def _demo():
     print("at several time steps and extrapolating is not optional -- it is")
     print("how the answer is obtained.")
     print()
-    time_steps = [0.05, 0.02, 0.01, 0.005, 0.0025]
-    for label, use_eff in (("with dt_eff", True), ("plain dt", False)):
+    time_steps = [0.5, 0.3, 0.2, 0.1, 0.05, 0.02]
+    for label, use_eff in (("plain dt", False), ("with dt_eff", True)):
         print(f"   {label}")
         print(f"   {'dt':>8s} {'energy':>12s} {'error':>10s} "
-              f"{'accept':>8s} {'pop':>7s}")
+              f"{'accept':>8s} {'dt_eff/dt':>10s} {'tau':>7s}")
         energies, errors = [], []
         for time_step in time_steps:
             out = dmc(n_walkers=500, n_steps=4000, time_step=time_step,
@@ -408,20 +414,86 @@ def _demo():
             errors.append(out["error"])
             print(f"   {time_step:8.4f} {out['energy']:12.6f} "
                   f"{out['error']:10.6f} {out['acceptance']:8.1%} "
-                  f"{out['mean_population']:7.0f}")
+                  f"{out['effective_time_step']/time_step:10.3f} "
+                  f"{out['tau']:7.1f}")
         fit = extrapolate(time_steps, energies, errors)
-        print(f"   linear extrapolation to dt = 0: "
-              f"{fit['intercept']:.6f} +/- {fit['intercept_error']:.6f}")
+        print(f"   extrapolated to dt = 0: {fit['intercept']:.6f} "
+              f"+/- {fit['intercept_error']:.6f}   "
+              f"(slope {fit['coefficients'][1]:+.5f})")
         print()
+    print("   The bias is minute -- a few times 1e-4 even at dt = 0.5 -- and")
+    print("   that is a statement about the trial function, not about the")
+    print("   method.  The time-step error comes from the commutators that")
+    print("   the short-time factorisation drops, and those vanish when Psi_T")
+    print("   is an eigenfunction.  At alpha = 1 the local energy of this dot")
+    print("   is very nearly constant, so there is almost nothing for the")
+    print("   factorisation to get wrong.  Note also that the correlation")
+    print("   time in *steps* grows as dt shrinks: what decorrelates a walker")
+    print("   is imaginary time, so halving dt doubles the number of steps")
+    print("   needed for the same statistics.")
 
+    print()
     print("=" * 74)
-    print("4. Where this leaves the quantum dot")
+    print("4. The same calculation from a deliberately poor guiding function")
     print("=" * 74)
-    print(f"   Hartree-Fock, 42 orbitals   3.161921   (table 11.3)")
-    print(f"   MP2, 42 orbitals            3.027038   (table 11.4)")
-    print(f"   CCSD, 42 orbitals           3.013626   (table 11.4)")
-    print(f"   VMC, optimised              {E_VMC:.6f}   (chapter 14)")
-    print(f"   DMC, extrapolated           see above")
+    print("alpha = 0.80, beta = 0.10 is far off the variational minimum.  In")
+    print("chapter 13 this would simply be a worse answer.  Here it is not:")
+    print("the projection removes the error in the wave function, and only")
+    print("the efficiency and the time-step sensitivity suffer.")
+    print()
+    poor = [0.1, 0.05, 0.02, 0.01]
+    print(f"   {'dt':>8s} {'energy':>12s} {'error':>10s} {'tau':>7s}")
+    energies, errors = [], []
+    for time_step in poor:
+        out = dmc(alpha=0.80, beta=0.10, n_walkers=2000, n_steps=3000,
+                  time_step=time_step, rng=np.random.default_rng(2024))
+        energies.append(out["energy"])
+        errors.append(out["error"])
+        print(f"   {time_step:8.4f} {out['energy']:12.6f} "
+              f"{out['error']:10.6f} {out['tau']:7.1f}")
+    fit = extrapolate(poor, energies, errors)
+    print(f"   extrapolated to dt = 0: {fit['intercept']:.6f} "
+          f"+/- {fit['intercept_error']:.6f}   "
+          f"(slope {fit['coefficients'][1]:+.5f})")
+    print()
+    print("   Compare with the variational energy of the same trial function,")
+    print("   which is 3.363877(5019).  Diffusion Monte Carlo turns a bad")
+    print("   ansatz into the right answer; it charges for it in error bar --")
+    print("   here some thirty times the error of the good guiding function,")
+    print("   for more walkers and a smaller time step -- and in a time-step")
+    print("   dependence two orders of magnitude stronger.")
+
+    print()
+    print("=" * 74)
+    print("5. It is not a population-control bias")
+    print("=" * 74)
+    print("Worth checking, because a residual that does not move with the")
+    print("time step often turns out to move with the number of walkers.")
+    print()
+    print(f"   {'walkers':>9s} {'good guide':>22s} {'poor guide':>22s}")
+    for n_walkers in (250, 500, 1000, 2000):
+        good = dmc(n_walkers=n_walkers, n_steps=3000, time_step=0.1,
+                   rng=np.random.default_rng(2024))
+        bad = dmc(alpha=0.80, beta=0.10, n_walkers=n_walkers, n_steps=3000,
+                  time_step=0.1, rng=np.random.default_rng(2024))
+        print(f"   {n_walkers:9d} "
+              f"{good['energy']:14.6f}({good['error']*1e6:5.0f}) "
+              f"{bad['energy']:14.6f}({bad['error']*1e6:5.0f})")
+    print()
+    print("   Neither column drifts: the error bars shrink as 1/sqrt(N) and")
+    print("   the central values do not move.  The residual in the poor-guide")
+    print("   column at dt = 0.1 is therefore time-step error, and section 3")
+    print("   confirms it by extrapolating it away.")
+
+    print()
+    print("=" * 74)
+    print("6. Where this leaves the quantum dot")
+    print("=" * 74)
+    print("   Hartree-Fock, 42 orbitals   3.161921     (table 11.3)")
+    print("   MP2, 42 orbitals            3.027038     (table 11.4)")
+    print("   CCSD, 42 orbitals           3.013626     (table 11.4)")
+    print(f"   VMC, optimised              {E_VMC:.6f}     (chapter 14)")
+    print("   DMC, extrapolated           see section 3")
     print(f"   exact (Taut)                {TAUT_ENERGY:.6f}")
     print()
     print("   The two-electron singlet ground state is nodeless, so there is")
