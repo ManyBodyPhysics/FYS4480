@@ -296,6 +296,45 @@
        singlet is nodeless, so the projection here is exact in principle.
        That is deliberate -- it isolates the errors that can be measured
 
+###  Applications to many-body systems: six electrons  (chapter16.tex, done)
+     - All five methods on N=6 at hbar omega = 1.  HF/MP2/CCSD come from
+       chapter 11 (42 orbitals); VMC and DMC are new, with a Slater-Jastrow
+       trial function built on sections 2.11-2.14
+     - Cusp coefficients are spin dependent, a = 1/(2l + d - 1): 1 for
+       antiparallel and 1/3 for parallel pairs in 2D, because the determinant
+       already vanishes linearly between parallel electrons.  Setting the
+       parallel one to zero makes E_L diverge as 1/r_ij -- shown in a table
+     - alpha optimises to 1 within the noise, i.e. the non-interacting
+       oscillator orbitals are already optimal.  Harju et al. (PRB 65, 075309)
+       found the same and noted it fails for N=3, where the spin populations
+       differ.  beta = 0.46 at omega = 1, scaling as sqrt(omega)
+     - The nodal surface for N=6 is "three same-spin electrons collinear", and
+       it is exactly alpha-independent because the Gaussians factor out of the
+       determinant.  The quantum force diverges there; untreated, the
+       walker-averaged energy swings over three units.  TWO independent cures:
+       the Umrigar drift cutoff, or the spin-exchange move (a near-nodal walker
+       has small |Psi_T| so almost any exchange is accepted).  The exchange
+       alone is enough and gives the smaller error bar of the two
+     - SPIN SAMPLING IS EXACT IN VMC AND WRONG IN DMC.  The exchange preserves
+       |Psi_T|^2, not f = Psi_T Phi.  Applied every DMC step it returns
+       20.19483(321) -- the variational energy -- instead of 20.14980(340).
+       Default is spin_moves="equilibration": exchange during the variational
+       start-up, then freeze.  This was found by measuring, not by assuming
+     - VMC 20.19961(91); DMC weighted over four time steps 20.16125(151)
+       against the published 20.1597(2) (Lohne et al., PRB 84, 115302) -- one
+       standard error.  Their Lambda-CCSD(T) in 20 shells gives 20.1582
+     - The 42-orbital CCSD of chapter 11 (20.27325) is 0.11 above the same
+       method in 20 shells (20.1737).  Nearly the whole CC-vs-QMC gap is basis,
+       not method, and the chapter says so
+     - DMC equilibration must be measured in imaginary time, not steps: at
+       dt=0.01 a fixed step count covers a tenth of the tau it does at dt=0.1.
+       Getting this wrong looks exactly like a time-step error
+     - Omega scan 0.25 to 4: ordering HF > MP2 > CCSD > VMC > DMC everywhere.
+       At omega=0.5 our DMC sits below the published value, which is impossible
+       for a variational upper bound; traced to population-control bias
+       (250 walkers 11.77981(144), 600 -> 11.78488(116), 800 -> 11.78543(149)).
+       Left visible in the text with the diagnosis
+
 ###  Green's function theory and parquet theory
      - Notes ready but may not teach
 ###  SRG and IMSRG
