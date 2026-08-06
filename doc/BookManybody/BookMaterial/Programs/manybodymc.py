@@ -149,7 +149,7 @@ class SlaterJastrow:
         for row, i in enumerate(index):
             for j in range(n):
                 D[row, j] = float(self.basis.value(j, self.positions[i])[0])
-        return D, np.linalg.inv(D)
+        return D, safe_inverse(D)
 
     def _locate(self, i):
         """(block index array, inverse, row of particle i in that block)."""
@@ -404,7 +404,7 @@ class Ensemble:
         lap = np.zeros((M, N))
         for index in self.blocks(spins):
             D, sub = self._matrices(positions, index)
-            Dinv = np.linalg.inv(D)
+            Dinv = safe_inverse(D)
             g = np.empty((M, self.n_orb, self.n_orb, 2))
             l = np.empty((M, self.n_orb, self.n_orb))
             for j in range(self.n_orb):
@@ -455,7 +455,7 @@ class Ensemble:
         d_alpha = np.zeros(M)
         for index in self.blocks(spins):
             D, sub = self._matrices(positions, index)
-            Dinv = np.linalg.inv(D)
+            Dinv = safe_inverse(D)
             dD = np.empty_like(D)
             for j in range(self.n_orb):
                 dD[:, :, j] = self.basis.d_value_d_omega(j, sub)
@@ -472,6 +472,37 @@ class Ensemble:
 # ---------------------------------------------------------------------------
 #  Moves
 # ---------------------------------------------------------------------------
+def limit_drift(force, time_step, a=1.0):
+    """Umrigar's cutoff on the drift velocity.
+
+    The quantum force F = 2 grad ln Psi_T diverges on a nodal surface of the
+    determinant, where Psi_T vanishes.  A walker that strays close to a node is
+    then thrown across the configuration space by a drift step of size
+    D F dt, and the local energy it reports on the way is enormous.  For two
+    electrons in Chapters 13 to 15 this never arose, because that trial
+    function has no nodes.  Here it must be dealt with.
+
+    The standard remedy replaces F by
+
+        F -> F ( -1 + sqrt(1 + 2 a F^2 dt) ) / ( a F^2 dt ) ,
+
+    which is the identity for small F and behaves as 1/(F dt) for large F, so
+    the drift step saturates instead of diverging.  The important point is that
+    the *same* modified drift is used both to propose the move and to evaluate
+    the Green's function, so detailed balance is untouched and the sampled
+    distribution is still exactly |Psi_T|^2.  This is the lesson of
+    Section 13.6, where a deliberately wrong quantum force was shown to cost
+    efficiency and not correctness -- used here on purpose.
+    """
+    v2 = np.sum(force * force, axis=-1, keepdims=True)
+    scaled = a * v2 * time_step
+    factor = np.where(scaled > 1e-12,
+                      (-1.0 + np.sqrt(1.0 + 2.0 * scaled))
+                      / np.where(scaled > 1e-12, scaled, 1.0),
+                      1.0)
+    return force * factor
+
+
 def _greens_ratio(old, new, f_old, f_new, time_step, diffusion=0.5):
     """ln[G(x,y)/G(y,x)] for the drifting Gaussian, Eq. (13.20)."""
     return np.sum(0.5 * (f_old + f_new)
@@ -479,22 +510,26 @@ def _greens_ratio(old, new, f_old, f_new, time_step, diffusion=0.5):
                      - new + old), axis=-1)
 
 
-def _spatial_sweep(ens, positions, spins, log_old, force_old, time_step, rng):
+def _spatial_sweep(ens, positions, spins, log_old, force_old, time_step, rng,
+                   drift_cutoff=True):
     """Move every particle once, with drift and Metropolis-Hastings."""
     M, N = positions.shape[0], ens.N
     root_dt, diffusion = math.sqrt(time_step), 0.5
     accepted = 0
     attempted = accepted_distance = 0.0
 
+    cut = (lambda f: limit_drift(f, time_step)) if drift_cutoff else (lambda f: f)
+    drift_old = cut(force_old)
     for i in range(N):
         trial = positions.copy()
-        step = (diffusion * force_old[:, i] * time_step
+        step = (diffusion * drift_old[:, i] * time_step
                 + rng.normal(0.0, 1.0, (M, 2)) * root_dt)
         trial[:, i] = positions[:, i] + step
         log_new = ens.log_psi(trial, spins)
         force_new = ens.quantum_force(trial, spins)
+        drift_new = cut(force_new)
         green = _greens_ratio(positions[:, i], trial[:, i],
-                              force_old[:, i], force_new[:, i], time_step)
+                              drift_old[:, i], drift_new[:, i], time_step)
         take = (green + 2.0 * (log_new - log_old)
                 > np.log(rng.random(M) + 1e-300))
 
@@ -506,6 +541,7 @@ def _spatial_sweep(ens, positions, spins, log_old, force_old, time_step, rng):
         positions[take] = trial[take]
         log_old = np.where(take, log_new, log_old)
         force_old[take] = force_new[take]
+        drift_old[take] = drift_new[take]
 
     return (positions, log_old, force_old, accepted / (M * N),
             attempted, accepted_distance)
@@ -542,7 +578,7 @@ def _spin_exchange(ens, positions, spins, log_old, rng):
 # ---------------------------------------------------------------------------
 def vmc(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, n_walkers=400,
         n_steps=2000, time_step=0.05, burn_in=300, rng=None,
-        sample_spins=True, want_gradient=False):
+        sample_spins=True, want_gradient=False, drift_cutoff=True):
     """Importance-sampled VMC, optionally sampling the spin assignment too."""
     rng = np.random.default_rng(2024) if rng is None else rng
     ens = Ensemble(n_walkers, n_particles, alpha, beta, omega, rng)
@@ -559,7 +595,7 @@ def vmc(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, n_walkers=400,
     for step in range(n_steps + burn_in):
         (positions, log_old, force_old, rate,
          _, _) = _spatial_sweep(ens, positions, spins, log_old, force_old,
-                                time_step, rng)
+                                time_step, rng, drift_cutoff)
         acceptance += rate
         if sample_spins:
             spins, log_old, srate = _spin_exchange(ens, positions, spins,
@@ -624,7 +660,8 @@ def optimise(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, learning_rate=0.02,
 # ---------------------------------------------------------------------------
 def dmc(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, n_walkers=400,
         n_steps=3000, time_step=0.01, burn_in=600, rng=None,
-        feedback=0.05, sample_spins=True, effective_time_step=True):
+        feedback=0.05, sample_spins=True, effective_time_step=True,
+        drift_cutoff=True):
     """Importance-sampled DMC, following chapter 15 with a Slater-Jastrow
     guiding function and, optionally, spin-exchange moves."""
     rng = np.random.default_rng(2024) if rng is None else rng
@@ -654,7 +691,8 @@ def dmc(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, n_walkers=400,
     for step in range(n_steps + burn_in):
         (positions, log_old, force_old, rate, attempted,
          accepted_distance) = _spatial_sweep(ens, positions, spins, log_old,
-                                             force_old, time_step, rng)
+                                             force_old, time_step, rng,
+                                             drift_cutoff)
         acceptance += rate
         if sample_spins:
             spins, log_old, srate = _spin_exchange(ens, positions, spins,
