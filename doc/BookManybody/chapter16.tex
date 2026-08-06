@@ -1,3 +1,816 @@
 \chapter{Applications to many-body systems}
 \label{chap:appmb}
 %=============================================================================
+
+Every method in this book has now been developed, and every one of them has
+been tested on a system chosen to make it easy.  Hartree-Fock, perturbation
+theory and coupled cluster were applied in Chapter~\ref{chap:applications} to a
+quantum dot in a finite oscillator basis, where the two-body matrix elements
+are analytic.  Variational and diffusion Monte Carlo were applied in
+Chapters~\ref{chap:vmc} to \ref{chap:dmc} to \emph{two} electrons in the same
+trap, where the trial function is nodeless and a determinant is not needed at
+all.
+
+This chapter puts all five on the same problem: six electrons in a
+two-dimensional parabolic trap.  Six is the smallest number for which none of
+the simplifications survive.  The determinant is no longer a formality, the
+trial function has nodes, the basis-set methods are no longer converged, and
+there is no exact answer to check against -- only the internal consistency of
+five methods that fail in different ways, and published benchmarks.
+
+Two things have to be built.  The first is the Slater-Jastrow trial function
+and the linear algebra that makes it evaluable, which is the material of
+Sections~\ref{sec:slaterupdate} to \ref{sec:slaterstability}: the determinant
+ratio from the inverse Slater matrix, the gradient and Laplacian ratios that
+supply the quantum force and the kinetic energy, and the factorisation
+$\Det{D}=\Det{D}_\uparrow\Det{D}_\downarrow$.  That material was written in
+Chapter~\ref{chap:mbphys} without a physical application; this is the
+application.
+
+The second is the spin.  Everything in Chapters~\ref{chap:vmc} to
+\ref{chap:dmc} sampled positions.  Here the assignment of electrons to the two
+spin blocks is itself a degree of freedom, and we sample it -- which turns the
+Moskowitz-Kalos argument of Section~\ref{sec:spinfactorisation} from an
+assertion into a measurement, and which behaves quite differently in the two
+Monte Carlo methods.  That difference is the most interesting thing in the
+chapter, and it is a trap.
+
+The programs are in \texttt{manybodymc.py}, which imports the oscillator
+orbitals and their derivatives from \texttt{slater\_update.py}, the blocking
+analysis from \texttt{vmcoptimise.py}, and reproduces \texttt{vmc.py} exactly
+when $N=2$.
+
+%----------------------------------------------------------------------
+\section{The system, and what is already known about it}
+\label{sec:appsystem}
+
+\index{quantum dot!six electrons}
+The Hamiltonian is the one of Section~\ref{sec:qdsystem}, in the atomic units
+used there,
+\begin{equation}
+  \hat{H} = \sum_{i=1}^{N}\left(-\frac{1}{2}\nabla_i^2
+    + \frac{1}{2}\omega^2 r_i^2\right)
+    + \sum_{i<j}\frac{1}{r_{ij}} ,
+  \label{eq:16-hamiltonian}
+\end{equation}
+with $N=6$ and $\hbar\omega=1$ unless stated otherwise.  Six electrons fill the
+two lowest oscillator shells -- one orbital in the first, two in the second,
+each doubly occupied -- so the ground state is a closed shell with $S=0$ and
+three electrons of each spin.  This is what made $N=6$ one of the magic numbers
+of Section~\ref{sec:qdbasis}.
+
+Chapter~\ref{chap:applications} has already solved it three ways, in a basis of
+six oscillator shells:
+\begin{equation}
+  E_{\mathrm{HF}} = 20.72026, \quad
+  E_{\mathrm{MP2}} = 20.30256, \quad
+  E_{\mathrm{CCSD}} = 20.27325 .
+  \label{eq:16-basisresults}
+\end{equation}
+None of these is converged.  The trouble is the cusp: the exact wave function
+has a kink at $r_{ij}=0$, no finite sum of products of oscillator orbitals can
+reproduce a kink, and the coefficients therefore decay slowly with the number
+of shells.  Lohne \emph{et al.}~\cite{lohne2011} carried the same CCSD
+calculation to twenty shells and obtained $20.1737$; the $42$-orbital number
+above is a tenth of an atomic unit above it.  Whatever else this chapter shows,
+it is not a fair contest between coupled cluster and Monte Carlo -- it is a
+demonstration that a basis-set calculation must be converged before it is
+compared with anything.
+
+The benchmark is the fixed-node diffusion Monte Carlo result of the same
+reference,
+\begin{equation}
+  E_{\mathrm{DMC}} = 20.1597(2),
+  \label{eq:16-benchmark}
+\end{equation}
+against which their best coupled-cluster number, $\Lambda$-CCSD(T) in twenty
+shells, gives $20.1582$.  Those two agreeing to $1.5\times10^{-3}$ from
+opposite directions is the strongest statement available about this system, and
+it is what our own calculation has to reproduce.
+
+%----------------------------------------------------------------------
+\section{The Slater-Jastrow trial function}
+\label{sec:appansatz}
+
+\index{Slater-Jastrow wave function}
+The trial function is
+\begin{equation}
+  \boxed{\;
+  \Psi_T(\bm{R},\bm{\sigma})
+   = \Det{D}_{\uparrow}\,\Det{D}_{\downarrow}\;
+     \exp\left(\sum_{i<j}\frac{a_{ij}\,r_{ij}}{1+\beta r_{ij}}\right) \;}
+  \label{eq:16-slaterjastrow}
+\end{equation}
+with $\Det{D}_{\uparrow}$ and $\Det{D}_{\downarrow}$ the $3\times3$
+determinants of Eq.~(\ref{eq:2-detfactorises}) over the spin-up and spin-down
+electrons, built from the oscillator orbitals
+$\phi_{n_xn_y}(\bm{r};\alpha\omega)$ at the \emph{scaled} frequency
+$\alpha\omega$.  There are exactly two variational parameters, $\alpha$ and
+$\beta$, as in Chapter~\ref{chap:vmc}.
+
+For $N=2$ both determinants are $1\times1$ and equal to the oscillator ground
+state, and Eq.~(\ref{eq:16-slaterjastrow}) collapses onto the Pad\'e-Jastrow
+function of Eq.~(\ref{eq:13-trial}).  That is worth checking numerically rather
+than by inspection, and \texttt{manybodymc.py} does: for the same
+configuration and the same parameters, its local energy agrees with that of
+\texttt{vmc.py} to twelve digits.
+
+\paragraph{The cusp coefficients are spin dependent.}
+\index{cusp condition!spin dependence}
+The $a_{ij}$ are not variational.  They are fixed by requiring $E_L$ to stay
+finite as two electrons meet, and the requirement is \emph{not} the same for
+the two spin cases.  Repeating the argument of Section~\ref{sec:vmctrial} in
+$d$ dimensions for a pair whose relative wave function behaves as $r^{\ell}$ at
+contact gives
+\begin{equation}
+  a = \frac{1}{2\ell + d - 1} .
+  \label{eq:16-cusp}
+\end{equation}
+For an antiparallel pair the spatial function is finite at contact, $\ell=0$,
+and $a=1$ in two dimensions.  For a parallel pair the two electrons sit in the
+same determinant, which vanishes linearly when they coincide, so $\ell=1$ and
+\begin{equation}
+  a_{\uparrow\uparrow} = a_{\downarrow\downarrow} = \frac{1}{3},
+  \qquad
+  a_{\uparrow\downarrow} = 1 .
+  \label{eq:16-cuspvalues}
+\end{equation}
+The determinant has already done a third of the work, and the Jastrow factor
+must not do it again.
+
+Table~\ref{tab:16-cusp} shows what happens if this is forgotten.  Two electrons
+are brought together in a six-electron configuration, once as an antiparallel
+pair and once as a parallel one, and the third column repeats the parallel case
+with $a_{\uparrow\uparrow}=0$ -- the mistake of assuming that the determinant
+handles the parallel case by itself.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{llll}
+\toprule
+$r_{ij}$ & antiparallel, $a=1$ & parallel, $a=\tfrac13$
+  & parallel, $a=0$\\
+\midrule
+$1.000$ & $17.0116$ & $16.7744$ & $17.03$\\
+$0.300$ & $14.1059$ & $15.1091$ & $17.82$\\
+$0.100$ & $12.3815$ & $14.4457$ & $23.88$\\
+$0.030$ & $11.4901$ & $14.3025$ & $47.09$\\
+$0.010$ & $11.1825$ & $14.2804$ & $113.74$\\
+$0.003$ & $11.0676$ & $14.2751$ & $347.07$\\
+\bottomrule
+\end{tabular}
+\caption{The local energy as two of six electrons are brought together, with
+the other four held fixed.  With the correct coefficients the local energy
+converges; with $a_{\uparrow\uparrow}=0$ it diverges as $1/r_{ij}$, and the
+variance of the energy is then unbounded.  Computed by
+\texttt{manybodymc.py}.}
+\label{tab:16-cusp}
+\end{table}
+
+\begin{notebox}
+\textbf{Why this is the interesting parameter.}  The spin dependence of
+$a_{ij}$ is what makes the spin assignment a physical variable rather than
+bookkeeping.  If the Jastrow factor were spin blind, exchanging the spins of
+two electrons would change $\Psi_T$ only through the determinants; with
+Eq.~(\ref{eq:16-cuspvalues}) it changes the correlation factor with every other
+electron as well.  That is why the exchange move of
+Section~\ref{sec:appspin} has an acceptance rate worth measuring.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{The determinant machinery}
+\label{sec:appdeterminant}
+
+\index{Slater determinant!efficient evaluation}
+A Monte Carlo run makes millions of single-particle moves and needs, at each
+one, the ratio $\Psi_T(\bm{R}')/\Psi_T(\bm{R})$ and then -- if the move is
+accepted -- the gradient and Laplacian of $\ln\Psi_T$ for every particle.
+Section~\ref{sec:slaterupdate} showed that all of this follows from the
+\emph{inverse} Slater matrix.  Nothing needs to be rederived here; it needs to
+be used.
+
+\paragraph{The ratio.}
+Moving particle $i$ changes one row of one of the two blocks, so by
+Eq.~(\ref{eq:2-Rinverse})
+\begin{equation}
+  R = \sum_{j}\phi_j(\bm{r}_i^{\mathrm{new}})\,d^{-1}_{ji}
+  \label{eq:16-ratio}
+\end{equation}
+is a single dot product of length $N/2$.  The other block is untouched and
+cancels, which is the saving of Eq.~(\ref{eq:2-ratiofactorises}).  If the move
+is accepted the inverse is repaired by the Sherman-Morrison
+formulae~(\ref{eq:2-inverseupdate}).  Two hundred consecutive accepted moves in
+\texttt{manybodymc.py} reproduce the brute-force quotient of two determinants
+to $3\times10^{-12}$, and $\|\bm{D}^{-1}\bm{D}-\bm{1}\|$ is still
+$9\times10^{-15}$ at the end: the inverse does not drift and never has to be
+rebuilt.
+
+\paragraph{The derivatives.}
+Equations~(\ref{eq:2-gradratio}) and (\ref{eq:2-lapratio}) give
+$\nabla_i\Det{D}/\Det{D}$ and $\nabla_i^2\Det{D}/\Det{D}$ as the same kind of
+dot product, with $\phi_j$ replaced by its derivatives.  The local energy then
+follows from
+\begin{equation}
+  \frac{\nabla^2\Psi_T}{\Psi_T}
+   = \frac{\nabla^2\Det{D}}{\Det{D}}
+   + 2\,\frac{\nabla\Det{D}}{\Det{D}}\cdot\nabla U
+   + \nabla^2 U + \left|\nabla U\right|^2 ,
+  \label{eq:16-laplacian}
+\end{equation}
+$U$ being the exponent of the Jastrow factor.  The determinant and the
+correlation factor are never differentiated together: only their separate
+derivatives appear, and each is available in closed form.  The quantum force is
+\begin{equation}
+  \bm{F}_i = 2\left(\frac{\nabla_i\Det{D}}{\Det{D}} + \nabla_i U\right).
+  \label{eq:16-quantumforce}
+\end{equation}
+Every one of these is differentiated by hand in \texttt{manybodymc.py} and
+checked against finite differences before anything is sampled -- the gradient
+of $\ln\Psi_T$ to $4\times10^{-8}$ and the local energy to $1\times10^{-4}$,
+both at the level of the finite-difference truncation error rather than of the
+formulae.
+
+\begin{notebox}
+\textbf{A practical note on the scaling.}  Table~\ref{tab:vmcscaling} promises
+$\bigO(dN^2)$ instead of $\bigO(dN^4)$, and that is the reason the algorithm is
+written this way.  For $N=6$, however, the determinants are $3\times3$, and a
+vectorised batched factorisation of a thousand such matrices at once is faster
+in practice than a Python loop carrying Sherman-Morrison updates one walker at
+a time.  \texttt{manybodymc.py} therefore contains both: the single-walker
+class that states the algorithm and verifies it, and a batched evaluator used
+for the production runs.  The asymptotic argument is right and the crossover is
+simply well above $N=6$.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{Sampling the spins}
+\label{sec:appspin}
+
+\index{spin sampling}\index{Moskowitz-Kalos ansatz}
+Section~\ref{sec:spinfactorisation} argued that for a spin-independent
+Hamiltonian the full antisymmetric determinant may be replaced by the product
+$\Det{D}_{\uparrow}\Det{D}_{\downarrow}$ at a fixed assignment of electrons to
+the two blocks, and that the energy is unchanged.  Every production code takes
+that on trust and never touches the assignment again.
+
+We do not have to.  Treat the spin configuration
+$\bm{\sigma}=(\sigma_1,\dots,\sigma_N)$, $\sigma_i=\pm1$, as a coordinate
+alongside the positions, and add a move: pick one spin-up and one spin-down
+electron at random and exchange their spins.  The proposal is symmetric -- the
+reverse move draws the same pair with the same probability -- so the ordinary
+Metropolis test applies,
+\begin{equation}
+  q = \frac{\left|\Psi_T(\bm{R},\bm{\sigma}')\right|^2}
+           {\left|\Psi_T(\bm{R},\bm{\sigma})\right|^2} ,
+  \label{eq:16-spinmetropolis}
+\end{equation}
+and $S_z$ is conserved exactly.  The move is not trivial: the two electrons
+change determinants, and by Eq.~(\ref{eq:16-cuspvalues}) their cusp
+coefficients with every other electron change too.  For six electrons at the
+optimised parameters it is accepted $42\%$ of the time.
+
+What the move buys is discussed in the next section, and it is not what one
+would expect.  What it settles immediately is the Moskowitz-Kalos claim: with
+the spins sampled the variational energy is $20.2206(29)$, and with the
+assignment frozen it is $20.2194(31)$.  The two agree, as promised, and now as
+a measurement.
+
+%----------------------------------------------------------------------
+\section{Nodes, and two ways to survive them}
+\label{sec:appnodes}
+
+\index{nodal surface}\index{drift!divergence at nodes}
+Here is the first thing that breaks in going from two electrons to six.  The
+two-electron trial function of Chapter~\ref{chap:vmc} is strictly positive.
+This one is not: $\Det{D}_{\uparrow}$ vanishes whenever the three spin-up
+electrons become collinear, which for the orbitals $(0,0)$, $(1,0)$, $(0,1)$ is
+exactly the condition that
+\begin{equation}
+  \det\begin{pmatrix}
+    1 & x_1 & y_1\\ 1 & x_2 & y_2\\ 1 & x_3 & y_3
+  \end{pmatrix} = 0 .
+  \label{eq:16-node}
+\end{equation}
+A walker can approach that surface, and when it does the quantum force
+$\bm{F}=2\nabla\ln\Psi_T$ diverges.  The drift step $D\bm{F}\Delta t$ then
+hurls the walker across the configuration space, and the local energy it
+reports on the way is enormous.  In a run of three hundred walkers the
+walker-averaged energy swings between $18.6$ and $21.7$ and the estimator is
+worthless -- not because of any error in the formulae, all of which have been
+checked, but because the Langevin proposal of Eq.~(\ref{eq:13-proposal}) is
+inappropriate near a singular drift.
+
+There are two cures, and it is instructive that they are independent.
+
+\paragraph{Cut the drift.}
+\index{effective time step}
+Umrigar, Nightingale and Runge~\cite{umrigar1993} replace the drift by
+\begin{equation}
+  \bm{F} \;\longrightarrow\;
+  \bm{F}\,\frac{-1+\sqrt{1+2a\bm{F}^2\Delta t}}{a\bm{F}^2\Delta t},
+  \label{eq:16-driftcutoff}
+\end{equation}
+which is the identity for small $\bm{F}$ and saturates for large, so the drift
+step never exceeds a fixed size.  The essential point is that the \emph{same}
+modified drift is used in the proposal and in the Green's function of
+Eq.~(\ref{eq:13-greensratio}).  Detailed balance is then untouched and the
+sampled distribution is still exactly $|\Psi_T|^2$ -- which is the lesson of
+Section~\ref{sec:vmcimportance}, where a deliberately wrong quantum force was
+shown to cost efficiency and not correctness.  Here that freedom is used on
+purpose.
+
+\paragraph{Or let the spins move.}
+A walker that has strayed close to a node has a small $|\Psi_T|$, so by
+Eq.~(\ref{eq:16-spinmetropolis}) almost any spin exchange is accepted:
+exchanging one of the three collinear electrons into the other block destroys
+the near-degeneracy at once.  The exchange move is an escape hatch that opens
+precisely when it is needed, and it requires the walker to move no distance at
+all.
+
+Table~\ref{tab:16-nodes} runs all four combinations.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{11pt}
+\begin{tabular}{llll}
+\toprule
+drift & spin moves & energy & series range\\
+\midrule
+plain & no  & $20.2662(457)$ & $18.592$ -- $21.678$\\
+plain & yes & $20.2187(32)$  & $20.141$ -- $20.306$\\
+cut   & no  & $20.2194(31)$  & $20.151$ -- $20.273$\\
+cut   & yes & $20.2206(29)$  & $20.150$ -- $20.304$\\
+\bottomrule
+\end{tabular}
+\caption{Variational Monte Carlo for six electrons at $\alpha=1.00$,
+$\beta=0.46$, $300$ walkers and $400$ steps.  ``Series range'' is the smallest
+and largest walker-averaged energy over the run.  Either remedy alone suffices
+and the two together are no better.  Computed by \texttt{manybodymc.py}.}
+\label{tab:16-nodes}
+\end{table}
+
+The three treated rows agree; the untreated one does not, and its error bar
+does not warn you.  The honest summary is that the spin sampling asked for in
+this chapter turns out to be worth rather little \emph{once the drift is cut},
+and a great deal if it is not.  Both are used from here on.
+
+%----------------------------------------------------------------------
+\section{Optimising the trial function}
+\label{sec:appoptimise}
+
+The machinery of Chapter~\ref{chap:optimres} carries over untouched.  The
+energy gradient is still the covariance of Eq.~(\ref{eq:14-gradient}), and only
+the parameter derivatives change.  That with respect to $\beta$ is elementary.
+That with respect to $\alpha$ now runs through the orbitals of the determinant,
+and is assembled blockwise as
+\begin{equation}
+  \frac{\partial \ln\Det{D}}{\partial \alpha}
+   = \mathrm{Tr}\left(\bm{D}^{-1}\frac{\partial \bm{D}}{\partial\alpha}\right),
+  \label{eq:16-alphagradient}
+\end{equation}
+which is the same inverse the sampling already maintains.  Both derivatives
+agree with finite differences of $\ln\Psi_T$ to $1\times10^{-9}$.
+
+Started deliberately far from the minimum, at $\alpha=0.90$ and $\beta=0.25$,
+plain gradient descent with $150$ walkers and $120$ steps per iteration --
+short, noisy runs, as Chapter~\ref{chap:optimres} insisted -- moves
+monotonically to $\alpha=1.00$, $\beta=0.40$ in fourteen iterations, lowering
+the energy from $21.008$ to $20.221$.  Refining on a scan puts the minimum at
+\begin{equation}
+  \alpha = 0.98, \qquad \beta = 0.46 ,
+  \label{eq:16-optimum}
+\end{equation}
+with the surface flat to within $8\times10^{-3}$ over
+$\alpha\in[0.96,1.02]$ and essentially flat in $\beta$ between $0.44$ and
+$0.48$.
+
+\begin{svgraybox}
+That $\alpha$ comes out at $1$ to within the noise is the physically
+interesting result.  It says that the optimal orbitals in the determinant are
+the \emph{non-interacting} oscillator eigenfunctions: the Jastrow factor
+absorbs the effect of the Coulomb interaction on the one-body part so
+completely that there is nothing left for a scale parameter to do.  Harju and
+co-workers~\cite{harju2002} found the same for this system by optimising the
+single-particle states freely, and noted that it fails for the three-electron
+dot, where the numbers of spin-up and spin-down electrons differ.  Closed
+shells are forgiving.
+\end{svgraybox}
+
+%----------------------------------------------------------------------
+\section{Variational Monte Carlo}
+\label{sec:appvmc}
+
+At the optimum, six hundred walkers taking nine hundred steps -- $540\,000$
+samples, in about half a minute -- give
+\begin{equation}
+  E_{\mathrm{VMC}} = 20.19961 \pm 0.00091 ,
+  \label{eq:16-vmc}
+\end{equation}
+with an acceptance rate of $97.4\%$, $41.6\%$ of the spin exchanges accepted,
+and a correlation time of $2.74$ steps.  The error is from blocking; the
+bootstrap gives $0.00065$ on the same series, and the two agree on the order of
+magnitude in the way Section~\ref{sec:optresampling} led one to expect.
+
+This single number already sits $0.074$ below the CCSD energy of
+Eq.~(\ref{eq:16-basisresults}), and $0.040$ above the benchmark of
+Eq.~(\ref{eq:16-benchmark}).  Neither comparison is quite what it looks like.
+The first is a statement about the oscillator basis, not about coupled cluster.
+The second is the deficiency of a two-parameter trial function, and it is what
+diffusion Monte Carlo now removes.
+
+%----------------------------------------------------------------------
+\section{Diffusion Monte Carlo, and a warning}
+\label{sec:appdmc}
+
+\index{diffusion Monte Carlo!fixed node}
+The algorithm is that of Chapter~\ref{chap:dmc}, unchanged except that the
+guiding function is now Eq.~(\ref{eq:16-slaterjastrow}) and that the fixed-node
+approximation of Section~\ref{sec:dmcfixednode} is no longer vacuous.  The
+nodal surface is Eq.~(\ref{eq:16-node}), and one thing about it is worth
+noticing: the Gaussian factors are common to all rows and cancel from the
+determinant, so the node depends on $\alpha$ only through a uniform dilation
+of the configuration space.  For six electrons the nodal surface is therefore
+essentially fixed by symmetry, and the fixed-node energy is a well-defined
+number rather than something that drifts as the trial function is retuned.
+
+\paragraph{The spin move must now be switched off.}
+This is the trap.  The exchange move of Section~\ref{sec:appspin} satisfies
+detailed balance with respect to $|\Psi_T|^2$.  That is exactly what
+variational Monte Carlo samples, and it is exactly \emph{not} what diffusion
+Monte Carlo samples: the target there is $f=\Psi_T\Phi$ of
+Eq.~(\ref{eq:15-mixeddistribution}).  Applying the exchange at every step
+inserts a move that pulls the walkers back towards the variational
+distribution, in competition with the branching that is trying to project them
+away from it.  The result is not a small bias.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{14pt}
+\begin{tabular}{ll}
+\toprule
+spin exchanges & energy\\
+\midrule
+at every step & $20.19483(321)$\\
+during equilibration only & $20.14812(507)$\\
+never & $20.14980(340)$\\
+\bottomrule
+\end{tabular}
+\caption{Diffusion Monte Carlo at $\Delta\tau=0.02$ with $200$ walkers.
+Exchanging the spins throughout returns, to within its error bar, the
+variational energy of Eq.~(\ref{eq:16-vmc}): the projection has been undone.
+Computed by \texttt{manybodymc.py}.}
+\label{tab:16-spinmoves}
+\end{table}
+
+The remedy is to exchange spins during the variational equilibration, which
+leaves each walker in a randomised assignment, and then freeze them.  The
+ensemble still averages over assignments -- different walkers carry different
+ones -- and nothing interferes with the projection.  That is the default in
+\texttt{manybodymc.py}, and Table~\ref{tab:16-spinmoves} shows it agreeing with
+the fully frozen calculation.
+
+\paragraph{The time step.}
+Table~\ref{tab:16-timestep} repeats the extrapolation of
+Section~\ref{sec:dmctimestep}, with the equilibration measured in imaginary
+time rather than in steps -- at $\Delta\tau=0.01$ a fixed number of steps
+covers a tenth of the imaginary time it does at $\Delta\tau=0.1$, and a
+calculation that forgets this reports the time-step error of its own
+unconverged projection.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{13pt}
+\begin{tabular}{lll}
+\toprule
+$\Delta\tau$ & energy & acceptance\\
+\midrule
+$0.10$ & $20.16003(230)$ & $94.3\%$\\
+$0.05$ & $20.16028(353)$ & $97.4\%$\\
+$0.02$ & $20.15882(327)$ & $99.2\%$\\
+$0.01$ & $20.16832(363)$ & $99.7\%$\\
+\midrule
+weighted mean & $20.16125(151)$ & $\chi^2/\mathrm{dof}=1.6$\\
+\bottomrule
+\end{tabular}
+\caption{Diffusion Monte Carlo for six electrons at $\alpha=0.98$,
+$\beta=0.46$, with $250$ walkers, $500$ steps and an equilibration of five
+units of imaginary time at every time step.  No time-step dependence is
+resolvable.  Computed by \texttt{manybodymc.py}.}
+\label{tab:16-timestep}
+\end{table}
+
+No time-step dependence survives the error bars, so the weighted mean is the
+result:
+\begin{equation}
+  \boxed{\;E_{\mathrm{DMC}} = 20.16125 \pm 0.00151\;}
+  \label{eq:16-dmc}
+\end{equation}
+against the published $20.1597(2)$ of Eq.~(\ref{eq:16-benchmark}).  The two
+agree to one standard error.
+
+%----------------------------------------------------------------------
+\section{The comparison}
+\label{sec:appcomparison}
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{llll}
+\toprule
+method & energy & basis & where\\
+\midrule
+Hartree-Fock & $20.72026$ & $42$ orbitals
+  & Table~\ref{tab:11-hierarchy}\\
+MP2 & $20.30256$ & $42$ orbitals & Table~\ref{tab:11-hierarchy}\\
+CCSD & $20.27325$ & $42$ orbitals & Table~\ref{tab:11-hierarchy}\\
+CCSD & $20.1737$ & $20$ shells & Ref.~\cite{lohne2011}\\
+$\Lambda$-CCSD(T) & $20.1582$ & $20$ shells & Ref.~\cite{lohne2011}\\
+\midrule
+VMC & $20.19961(91)$ & none & Eq.~(\ref{eq:16-vmc})\\
+DMC & $20.16125(151)$ & none & Eq.~(\ref{eq:16-dmc})\\
+DMC, published & $20.1597(2)$ & none & Ref.~\cite{lohne2011}\\
+\bottomrule
+\end{tabular}
+\caption{Six electrons in a two-dimensional parabolic trap at
+$\hbar\omega=1$, in atomic units.  The published coupled-cluster results use an
+effective interaction and a self-consistent Hartree-Fock basis, so they are not
+the same calculation as the $42$-orbital rows, only the same method carried to
+convergence.}
+\label{tab:16-comparison}
+\end{table}
+
+Three things can be read off Table~\ref{tab:16-comparison}, and they are
+different in kind.
+
+\emph{The basis is the limitation, not the method.}  CCSD in $42$ orbitals is
+$0.11$ above CCSD in twenty shells, and almost the whole of the apparent gap
+between coupled cluster and Monte Carlo is that, and not a failure of the
+cluster expansion.  Read the other way: at convergence, $\Lambda$-CCSD(T) and
+diffusion Monte Carlo -- a deterministic expansion in particle-hole excitations
+and a stochastic projection with a fixed nodal surface, sharing no
+approximation whatever -- agree to $1.5\times10^{-3}$ on a system with no exact
+solution.  That agreement is the real result of this chapter, and neither
+method could establish it alone.
+
+\emph{The Monte Carlo hierarchy behaves as advertised.}  The variational energy
+is an upper bound, the diffusion energy improves on it by $0.038$, and the
+diffusion energy is itself an upper bound because the nodes are approximate.
+Both are basis-free and neither has anything to converge.
+
+\emph{The remaining error is nodal.}  Our $20.16125(151)$ and the published
+$20.1597(2)$ use the same single-determinant nodes and agree; the difference
+from the truth, whatever it is, is the fixed-node error, and no amount of
+computer time reaches it.  Only better nodes will.
+
+%----------------------------------------------------------------------
+\section{Dependence on the confinement}
+\label{sec:appomega}
+
+Table~\ref{tab:11-omega} varied the trap frequency and found the correlation
+energy growing as the trap shallows.  Table~\ref{tab:16-omega} adds the two
+Monte Carlo columns, at $\alpha=0.98$ and $\beta=0.46\sqrt{\omega}$ -- the
+oscillator length is $\omega^{-1/2}$, so that is the only scaling the Jastrow
+range needs, and a short scan at each frequency confirms it.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{7pt}
+\small
+\begin{tabular}{rlllll}
+\toprule
+$\hbar\omega$ & $E_{\mathrm{HF}}$ & $E_{\mathrm{MP2}}$ & $E_{\mathrm{CCSD}}$
+  & $E_{\mathrm{VMC}}$ & $E_{\mathrm{DMC}}$\\
+\midrule
+$0.25$ & $\phantom{0}7.39179$ & $\phantom{0}7.06226$ & $\phantom{0}7.03671$
+  & $\phantom{0}7.02274(89)$ & $\phantom{0}6.98238(106)$\\
+$0.50$ & $12.27150$ & $11.89288$ & $11.86345$
+  & $11.82437(199)$ & $11.78488(116)$\\
+$1.00$ & $20.72026$ & $20.30256$ & $20.27325$
+  & $20.19961(91)$ & $20.15960(278)$\\
+$2.00$ & $35.67233$ & $35.22533$ & $35.19959$
+  & $35.09581(341)$ & $35.04162(394)$\\
+$4.00$ & $62.74116$ & $62.27348$ & $62.25276$
+  & $62.11527(657)$ & $62.05754(472)$\\
+\bottomrule
+\end{tabular}
+\caption{Six electrons at five trap frequencies.  The first three columns are
+the $42$-orbital results of Table~\ref{tab:11-omega}; the last two are this
+chapter, with $600$ walkers and $\Delta\tau=0.05/\omega$.  Computed by
+\texttt{manybodymc.py}.}
+\label{tab:16-omega}
+\end{table}
+
+The ordering
+$E_{\mathrm{HF}}>E_{\mathrm{MP2}}>E_{\mathrm{CCSD}}>E_{\mathrm{VMC}}>
+E_{\mathrm{DMC}}$ holds at every frequency, and the gap between the
+coupled-cluster and the Monte Carlo columns widens as $\omega$ falls --
+$0.014$ at $\omega=4$ against $0.054$ at $\omega=0.25$ -- because a shallow
+trap is a more strongly correlated system and the finite basis is worse there.
+
+\begin{notebox}
+\textbf{An honest discrepancy.}  At $\hbar\omega=0.5$ the published diffusion
+Monte Carlo value is $11.7888(2)$~\cite{lohne2011} and the table gives
+$11.78488(116)$, which is below it -- impossible for two calculations sharing
+the same nodes, since fixed-node energies are upper bounds.  The culprit is
+population control.  Repeating that point with $250$ walkers instead of $600$
+gives $11.77981(144)$, and with $800$ it gives $11.78543(149)$: the energy
+climbs as the population grows, which is the standard signature of
+population-control bias and the standard direction for it.  At $\hbar\omega=1$
+the same test finds no movement between $100$ and $400$ walkers, because the
+local energy fluctuates less and the branching is gentler.  The bias is
+$\mathcal{O}(1/N_{\mathrm{walkers}})$ and would be removed by running larger
+populations; it is left visible here because a residual of $4\times10^{-3}$ at
+the shallowest traps is exactly the kind of thing a table of six-digit numbers
+is apt to conceal.
+\end{notebox}
+
+%----------------------------------------------------------------------
+\section{What each method costs}
+\label{sec:appcost}
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{9pt}
+\begin{tabular}{lll}
+\toprule
+method & scaling & limited by\\
+\midrule
+Hartree-Fock & $\bigO(n^4)$ per iteration & the basis\\
+MP2 & $\bigO(n^5)$ & the basis\\
+CCSD & $\bigO(n^6)$ per iteration & the basis\\
+$\Lambda$-CCSD(T) & $\bigO(n^7)$ & the basis, weakly\\
+\midrule
+VMC & $\bigO(N^2)$ per sweep, $\bigO(M^{-1/2})$ & the trial function\\
+DMC & as VMC & the nodes of the trial function\\
+\bottomrule
+\end{tabular}
+\caption{$n$ is the number of single-particle states, $N$ the number of
+electrons, $M$ the number of Monte Carlo samples.  The two families are limited
+by entirely different things, which is why running both is worth more than
+running either twice.}
+\label{tab:16-cost}
+\end{table}
+
+The distinction in the last column is the point.  A basis-set method has a
+systematic error that shrinks as $n$ grows and a statistical error of zero; a
+Monte Carlo method has no basis-set error at all, a statistical error that
+shrinks as $M^{-1/2}$, and -- for diffusion Monte Carlo -- one systematic error
+that no amount of $M$ will touch.  When the two agree, as they do at the bottom
+of Table~\ref{tab:16-comparison}, the agreement means something precisely
+because the failure modes do not overlap.
+
+The costs also scale in the number of \emph{particles} quite differently.
+Going from six electrons to twenty multiplies the coupled-cluster work by
+$(n_{20}/n_6)^6$ with a basis that must also grow, while the Monte Carlo work
+grows as $N^2$ per sweep with the number of samples fixed by the accuracy
+wanted.  That is why the largest circular dots in the literature are done by
+diffusion Monte Carlo, and why Ref.~\cite{lohne2011} needed a renormalised
+interaction to bring coupled cluster into agreement with it at twenty
+electrons.
+
+%----------------------------------------------------------------------
+\section{Summary}
+\label{sec:appsummary}
+
+Six electrons is where the simplifications end.  The trial function needs a
+determinant, and therefore the inverse Slater matrix of
+Section~\ref{sec:slaterupdate}, the derivative ratios of
+Section~\ref{sec:slatergradients} and the spin factorisation of
+Section~\ref{sec:spinfactorisation}; the cusp coefficients become spin
+dependent, $1$ for antiparallel pairs and $\tfrac13$ for parallel ones, because
+the determinant supplies part of the node itself; the wave function acquires a
+nodal surface, which makes the drift divergent and requires either Umrigar's
+cutoff or the spin-exchange move to control; and diffusion Monte Carlo acquires
+a fixed-node error that is now the accuracy limit.
+
+Sampling the spin assignment is exact and useful in variational Monte Carlo,
+where it confirms the Moskowitz-Kalos factorisation numerically and rescues
+walkers from nodal regions, and it is wrong in diffusion Monte Carlo, where it
+preserves $|\Psi_T|^2$ rather than $\Psi_T\Phi$ and undoes the projection
+almost entirely.  The same move, correct in one method and destructive in the
+other, is a compact reminder of what the two methods actually sample.
+
+The numbers, finally, hang together.  A variational calculation with two
+parameters gives $20.19961(91)$; projecting it gives $20.16125(151)$, in
+agreement with published diffusion Monte Carlo at one standard error and with
+converged $\Lambda$-CCSD(T) at $1.5\times10^{-3}$.  The $42$-orbital coupled
+cluster of Chapter~\ref{chap:applications} sits a tenth of an atomic unit
+above, and that gap is the basis and nothing else.
+
+What no method here can do is improve the nodes.  Both Monte Carlo results rest
+on a single Slater determinant of oscillator orbitals, and
+Eq.~(\ref{eq:16-node}) -- three electrons collinear -- is a guess about the
+ground state that was never optimised and, within this ansatz, cannot be.  That
+is the last of the approximations in this book to remain uncontrolled, and it
+is the one that motivates what follows: trial functions flexible enough that
+their nodes are learned rather than assumed.
+
+%=============================================================================
+\section{Exercises}
+%=============================================================================
+
+\subsection*{Exercise 1: the trial function}
+\label{ex:16-trial}
+\addcontentsline{toc}{subsection}{Exercise 1: the trial function}
+
+\begin{enumerate}
+\item[a)] Derive Eq.~(\ref{eq:16-cusp}) by requiring the local energy of a
+  relative wave function behaving as $r^{\ell}$ at contact to stay finite as
+  $r\to0$ in $d$ dimensions.  Evaluate it for $\ell=0,1$ in $d=2$ and $d=3$ and
+  check the two-dimensional values against Eq.~(\ref{eq:16-cuspvalues}).
+
+\item[b)] Verify by hand that Eq.~(\ref{eq:16-slaterjastrow}) reduces to the
+  two-electron trial function of Eq.~(\ref{eq:13-trial}) when $N=2$, and say
+  which of the two cusp coefficients survives and why.
+
+\item[c)] Derive Eq.~(\ref{eq:16-laplacian}) and explain why the determinant
+  and the Jastrow factor never have to be differentiated together.
+
+\item[d)] The literature~\cite{harju2002} uses two range parameters, one for
+  parallel and one for antiparallel pairs.  Implement this in
+  \texttt{manybodymc.py} and optimise both with the gradient of
+  Eq.~(\ref{eq:14-gradient}).  How much does the variational energy improve,
+  and does the diffusion Monte Carlo energy change at all?
+\end{enumerate}
+
+\subsection*{Exercise 2: determinants in a Monte Carlo loop}
+\label{ex:16-determinant}
+\addcontentsline{toc}{subsection}{Exercise 2: determinants in a Monte Carlo loop}
+
+\begin{enumerate}
+\item[a)] Starting from Eq.~(\ref{eq:2-Rinverse}), show that when the
+  determinant factorises as in Eq.~(\ref{eq:2-detfactorises}) a single-particle
+  move leaves one factor untouched, and count the operations saved.
+
+\item[b)] Replace the Sherman-Morrison update in \texttt{manybodymc.py} by a
+  full recomputation of the inverse at every accepted move and measure the
+  running time for $N=6$, $N=12$ and $N=20$.  At which $N$ does the asymptotic
+  argument of Table~\ref{tab:vmcscaling} start to pay?
+
+\item[c)] Monitor $\|\bm{D}^{-1}\bm{D}-\bm{1}\|$ over a long run.  Under what
+  circumstances does it grow, and what does
+  Section~\ref{sec:slaterstability} suggest doing about it?
+
+\item[d)] Show that for six electrons the nodal surface of
+  $\Det{D}_{\uparrow}$ is the collinearity condition of
+  Eq.~(\ref{eq:16-node}), and that it is unchanged by the scale parameter
+  $\alpha$.  What is the corresponding condition for twelve electrons?
+\end{enumerate}
+
+\subsection*{Exercise 3: sampling the spins}
+\label{ex:16-spin}
+\addcontentsline{toc}{subsection}{Exercise 3: sampling the spins}
+
+\begin{enumerate}
+\item[a)] Show that the exchange proposal of Section~\ref{sec:appspin} is
+  symmetric, so that Eq.~(\ref{eq:16-spinmetropolis}) is the correct
+  acceptance ratio, and that it conserves $S_z$.
+
+\item[b)] Set $a_{\uparrow\uparrow}=a_{\uparrow\downarrow}$ in
+  \texttt{manybodymc.py} and measure the exchange acceptance rate.  Explain the
+  result in terms of what the move can and cannot change.
+
+\item[c)] Reproduce Table~\ref{tab:16-nodes}.  Then record, over a long run,
+  the joint distribution of the local energy and $\ln|\Det{D}|$, and use it to
+  argue that the walkers with extreme local energies are those close to a node.
+
+\item[d)] Reproduce Table~\ref{tab:16-spinmoves} and explain, from
+  Eq.~(\ref{eq:15-importanceequation}), why a move that satisfies detailed
+  balance with respect to $|\Psi_T|^2$ biases a diffusion Monte Carlo
+  calculation.  Devise a numerical test that measures the size of the bias as a
+  function of how often the exchange is attempted.
+\end{enumerate}
+
+\subsection*{Exercise 4: the comparison}
+\label{ex:16-comparison}
+\addcontentsline{toc}{subsection}{Exercise 4: the comparison}
+
+\begin{enumerate}
+\item[a)] Using \texttt{quantumdot.py}, extend the Hartree-Fock and CCSD
+  calculations of Chapter~\ref{chap:applications} to as many shells as your
+  machine allows, and plot the energy against the number of shells.  Fit the
+  tail and extrapolate.  How close do you get to the $20.1737$ of
+  Ref.~\cite{lohne2011}?
+
+\item[b)] Repeat the population-size study of the note in
+  Section~\ref{sec:appomega} at $\hbar\omega=0.25$, and estimate the
+  population-control bias by extrapolating in
+  $1/N_{\mathrm{walkers}}$.
+
+\item[c)] Run both Monte Carlo methods for $N=12$, which fills three shells.
+  Compare with the coupled-cluster results of Ref.~\cite{lohne2011}.  What
+  changes in the cost, and what changes in the quality of the trial function?
+
+\item[d)] Table~\ref{tab:16-cost} claims the two families of method are limited
+  by different things.  Design a calculation that would distinguish a
+  basis-set error from a fixed-node error in a system where neither is known
+  independently, and say what it would cost.
+\end{enumerate}

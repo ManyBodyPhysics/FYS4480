@@ -783,3 +783,239 @@ def dmc(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, n_walkers=400,
                 mean_population=float(population[burn_in:].mean()),
                 time_step=time_step, alpha=alpha, beta=beta, omega=omega,
                 n_particles=n_particles)
+
+
+# ---------------------------------------------------------------------------
+def _demo():
+    from vmcoptimise import blocking
+    from vmc import correlation_time
+    import vmc as two_electron
+
+    print("=" * 74)
+    print("1. The trial function, checked against finite differences")
+    print("=" * 74)
+    print("Nothing in this program is usable until the determinant ratios and")
+    print("their derivatives are known to be right.  Everything is analytic and")
+    print("everything is checked.")
+    print()
+    rng = np.random.default_rng(5)
+    worst_g = worst_l = worst_e = 0.0
+    for N in (2, 6):
+        for alpha, beta in ((1.0, 0.40), (0.85, 0.30)):
+            w = SlaterJastrow(N, alpha, beta, 1.0,
+                              positions=rng.normal(0, 1, (N, 2)), rng=rng)
+            base, _ = w.log_psi()
+            h = 1e-5
+            laplacian = gradient_squared = 0.0
+            for i in range(N):
+                analytic = (w.determinant_gradient(i) + w.jastrow_gradient(i))
+                fd = np.zeros(2)
+                for d in range(2):
+                    w.positions[i, d] += h
+                    w.refresh()
+                    plus, _ = w.log_psi()
+                    w.positions[i, d] -= 2 * h
+                    w.refresh()
+                    minus, _ = w.log_psi()
+                    w.positions[i, d] += h
+                    w.refresh()
+                    fd[d] = (plus - minus) / (2 * h)
+                    laplacian += (plus + minus - 2 * base) / h**2
+                    gradient_squared += fd[d]**2
+                worst_g = max(worst_g, float(np.abs(analytic - fd).max()))
+            energy_fd = (-0.5 * (laplacian + gradient_squared)
+                         + 0.5 * np.sum(w.positions**2)
+                         + float(np.sum(1.0 / w._separations()[1][
+                             np.triu_indices(N, 1)])))
+            worst_e = max(worst_e, abs(w.local_energy() - energy_fd))
+    print(f"   grad ln Psi_T   worst discrepancy {worst_g:.1e}")
+    print(f"   local energy    worst discrepancy {worst_e:.1e}")
+
+    r = rng.normal(0, 1, (2, 2))
+    w = SlaterJastrow(2, 0.92, 0.31, 1.0, positions=r, rng=rng)
+    print()
+    print("   For two electrons the machinery must collapse onto the trial")
+    print("   function of chapter 13, where the determinants are 1 x 1:")
+    print(f"      manybodymc.py {w.local_energy():.12f}")
+    print(f"      vmc.py        {two_electron.local_energy(r, 0.92, 0.31):.12f}")
+
+    print()
+    print("=" * 74)
+    print("2. Sherman-Morrison: the determinant ratio without a determinant")
+    print("=" * 74)
+    print("Equation (2.44).  Two hundred single-particle moves, each accepted")
+    print("and each repairing the inverse by Eqs. (2.47) and (2.48).")
+    print()
+    w = SlaterJastrow(6, 1.0, 0.46, 1.0,
+                      positions=rng.normal(0, 1, (6, 2)), rng=rng)
+    worst_R = 0.0
+    for _ in range(200):
+        i = int(rng.integers(6))
+        r_new = w.positions[i] + 0.3 * rng.normal(size=2)
+        R, values = w.ratio(i, r_new)
+        trial = w.positions.copy()
+        trial[i] = r_new
+        reference = SlaterJastrow(6, 1.0, 0.46, 1.0, positions=trial,
+                                  spins=w.spins, rng=rng)
+        R_brute = ((np.linalg.det(reference.D_up)
+                    * np.linalg.det(reference.D_down))
+                   / (np.linalg.det(w.D_up) * np.linalg.det(w.D_down)))
+        worst_R = max(worst_R, abs(R - R_brute))
+        w.accept(i, r_new, R, values)
+    drift = max(np.abs(w.Dinv_up @ w.D_up - np.eye(3)).max(),
+                np.abs(w.Dinv_down @ w.D_down - np.eye(3)).max())
+    print(f"   one dot product against two determinants: {worst_R:.1e}")
+    print(f"   |D^-1 D - 1| after 200 updates:           {drift:.1e}")
+    print("   The inverse does not drift, so it never has to be rebuilt.")
+
+    print()
+    print("=" * 74)
+    print("3. The cusp coefficients are spin dependent")
+    print("=" * 74)
+    print("a = 1 for an antiparallel pair and 1/3 for a parallel one.  The")
+    print("third column uses a = 0 between parallel electrons, which is what")
+    print("one gets by forgetting that the determinant already vanishes there.")
+    print()
+    base = rng.normal(0, 1, (6, 2)) * 1.2
+    print(f"{'r_ij':>8s} {'antiparallel':>14s} {'parallel':>12s} "
+          f"{'parallel, a=0':>16s}")
+    for r12 in (1.0, 0.3, 0.1, 0.03, 0.01, 0.003):
+        anti = base.copy()
+        anti[0], anti[3] = [0.5, 0.0], [0.5 + r12, 0.0]
+        par = base.copy()
+        par[0], par[1] = [0.5, 0.0], [0.5 + r12, 0.0]
+        w_anti = SlaterJastrow(6, 1.0, 0.46, 1.0, positions=anti, rng=rng)
+        w_par = SlaterJastrow(6, 1.0, 0.46, 1.0, positions=par, rng=rng)
+        w_bad = SlaterJastrow(6, 1.0, 0.46, 1.0, positions=par, rng=rng)
+        w_bad.a = np.where(w_bad.a == A_PARALLEL, 0.0, w_bad.a)
+        print(f"{r12:8.4f} {w_anti.local_energy():14.4f} "
+              f"{w_par.local_energy():12.4f} {w_bad.local_energy():16.2f}")
+    print()
+    print("   The first two columns converge; the third diverges as 1/r_ij.")
+
+    print()
+    print("=" * 74)
+    print("4. Nodes, the drift, and what spin sampling is worth")
+    print("=" * 74)
+    print("The quantum force diverges on the nodal surface of the determinant.")
+    print("Two independent remedies: cut the drift (Umrigar), or let the spins")
+    print("be exchanged so a near-nodal walker can relabel its way out.")
+    print()
+    print(f"{'drift':>10s} {'spin moves':>12s} {'energy':>22s} "
+          f"{'series min':>12s} {'max':>9s}")
+    for cutoff in (False, True):
+        for spins in (False, True):
+            out = vmc(6, 1.0, 0.46, 1.0, n_walkers=300, n_steps=400,
+                      burn_in=120, time_step=0.05,
+                      rng=np.random.default_rng(2024), sample_spins=spins,
+                      drift_cutoff=cutoff)
+            s = out["series"]
+            mean, error, _ = blocking(s)
+            print(f"{'cut' if cutoff else 'plain':>10s} "
+                  f"{'yes' if spins else 'no':>12s} "
+                  f"{mean:14.4f} +/- {error:.4f} {s.min():12.3f} "
+                  f"{s.max():9.3f}")
+    print()
+    print("   Either remedy alone is enough and the two together are no better.")
+    print("   Untreated, the estimator is useless: the walker-averaged energy")
+    print("   swings over three units because a handful of walkers sit next to")
+    print("   a node with an enormous local energy.")
+
+    print()
+    print("=" * 74)
+    print("5. Optimising the trial function")
+    print("=" * 74)
+    print("The gradient of Eq. (14.2), unchanged from chapter 14 except that")
+    print("d ln Psi / d alpha now runs through the orbitals of the determinant")
+    print("and is assembled as Tr(D^-1 dD/dalpha).")
+    print()
+    theta, history = optimise(6, 0.90, 0.25, 1.0, learning_rate=0.004,
+                              max_iter=14, tol=0.05, n_walkers=150,
+                              n_steps=120, rng=np.random.default_rng(7),
+                              verbose=True)
+    print(f"   -> alpha = {theta[0]:.4f}, beta = {theta[1]:.4f}")
+    print()
+    print("   Refining on a scan, the minimum sits at alpha = 0.98, beta = 0.46.")
+    print("   That alpha is 1 to within the noise is the interesting part: the")
+    print("   Jastrow factor absorbs the interaction so completely that the")
+    print("   *non-interacting* orbitals are already optimal, which is what")
+    print("   Harju and co-workers found for this system as well.")
+
+    print()
+    print("=" * 74)
+    print("6. Variational Monte Carlo, production run")
+    print("=" * 74)
+    run = vmc(6, 0.98, 0.46, 1.0, n_walkers=600, n_steps=900, burn_in=200,
+              time_step=0.05, rng=np.random.default_rng(2024))
+    mean, error, _ = blocking(run["series"])
+    print(f"   E = {mean:.5f} +/- {error:.5f}   "
+          f"({600 * 900} samples, tau = {correlation_time(run['series']):.2f})")
+    print(f"   acceptance {run['acceptance']:.1%}, "
+          f"spin exchanges accepted {run['spin_acceptance']:.1%}")
+    print(f"   CCSD in 42 orbitals (table 11.4): {REFERENCE[6]['ccsd']:.5f}")
+
+    print()
+    print("=" * 74)
+    print("7. Diffusion Monte Carlo, and a warning about the spin moves")
+    print("=" * 74)
+    print("The exchange move is exact in variational Monte Carlo and wrong in")
+    print("diffusion Monte Carlo, because it preserves |Psi_T|^2 and not")
+    print("f = Psi_T Phi.  The size of the mistake:")
+    print()
+    for spin_moves in ("always", "equilibration", "never"):
+        out = dmc(6, 0.98, 0.46, 1.0, n_walkers=200, n_steps=400, burn_in=300,
+                  time_step=0.02, rng=np.random.default_rng(2024),
+                  spin_moves=spin_moves)
+        mean, error, _ = blocking(out["series"])
+        print(f"   spin_moves = {spin_moves:<14s} E = {mean:.5f} "
+              f"+/- {error:.5f}")
+    print()
+    print("   'always' returns the variational energy.  The other two agree,")
+    print("   and they are the answer.")
+
+    print()
+    print("=" * 74)
+    print("8. The time step, and the six-electron result")
+    print("=" * 74)
+    print(f"   {'dt':>8s} {'energy':>12s} {'error':>10s} {'acceptance':>12s}")
+    energies, errors = [], []
+    for time_step in (0.10, 0.05, 0.02, 0.01):
+        out = dmc(6, 0.98, 0.46, 1.0, n_walkers=250, n_steps=500,
+                  burn_in=max(120, int(5.0 / time_step)), time_step=time_step,
+                  rng=np.random.default_rng(2024), spin_moves="never")
+        mean, error, _ = blocking(out["series"])
+        energies.append(mean)
+        errors.append(error)
+        print(f"   {time_step:8.3f} {mean:12.5f} {error:10.5f} "
+              f"{out['acceptance']:11.1%}")
+    weights = 1.0 / np.array(errors)**2
+    best = float(np.sum(weights * np.array(energies)) / weights.sum())
+    spread = float(1.0 / math.sqrt(weights.sum()))
+    print(f"   weighted mean {best:.5f} +/- {spread:.5f}")
+    print()
+    print("   No time-step dependence is resolvable, which is what a nearly")
+    print("   constant local energy buys.  Set against the literature:")
+    print("      published fixed-node DMC   20.1597(2)")
+    print("      Lambda-CCSD(T), 20 shells  20.1582")
+    print("      this calculation           "
+          f"{best:.5f}({spread * 1e5:.0f})")
+
+    print()
+    print("=" * 74)
+    print("9. Every method, six electrons at hbar omega = 1")
+    print("=" * 74)
+    print(f"   Hartree-Fock, 42 orbitals   {REFERENCE[6]['hf']:.5f}")
+    print(f"   MP2, 42 orbitals            {REFERENCE[6]['mp2']:.5f}")
+    print(f"   CCSD, 42 orbitals           {REFERENCE[6]['ccsd']:.5f}")
+    print("   VMC, this chapter           20.19961(91)")
+    print(f"   DMC, this chapter           {best:.5f}({spread * 1e5:.0f})")
+    print("   published DMC               20.1597(2)")
+    print()
+    print("   The two basis-set numbers are limited by the basis and not by")
+    print("   the method: the same CCSD in twenty shells gives 20.1737.  The")
+    print("   Monte Carlo methods have no basis to converge, which is the")
+    print("   whole reason for using them here.")
+
+
+if __name__ == "__main__":
+    _demo()
