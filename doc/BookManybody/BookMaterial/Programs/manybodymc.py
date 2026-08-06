@@ -660,21 +660,46 @@ def optimise(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, learning_rate=0.02,
 # ---------------------------------------------------------------------------
 def dmc(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, n_walkers=400,
         n_steps=3000, time_step=0.01, burn_in=600, rng=None,
-        feedback=0.05, sample_spins=True, effective_time_step=True,
-        drift_cutoff=True):
-    """Importance-sampled DMC, following chapter 15 with a Slater-Jastrow
-    guiding function and, optionally, spin-exchange moves."""
+        feedback=0.05, spin_moves="equilibration", effective_time_step=True,
+        drift_cutoff=True, equilibration=200):
+    """Importance-sampled DMC, following chapter 15, with a Slater-Jastrow
+    guiding function.
+
+    `spin_moves` decides what happens to the spin assignment, and the choice
+    matters far more than one would guess:
+
+      "equilibration"  exchanges during the variational start-up only, then
+                       frozen.  This is the correct default.  Each walker keeps
+                       whatever assignment it equilibrated into, so the
+                       ensemble still averages over assignments, but nothing
+                       interferes with the projection.
+
+      "never"          the assignment is the same for every walker throughout.
+
+      "always"         exchanges at every step, as in the variational
+                       calculation.  This is *wrong*, and instructively so.
+                       The exchange move satisfies detailed balance with
+                       respect to |Psi_T|^2, which is what variational Monte
+                       Carlo samples, and not with respect to f = Psi_T Phi,
+                       which is what diffusion Monte Carlo samples.  Applied at
+                       every step it drags the walkers back towards the
+                       variational distribution and throws away most of the
+                       projection.  The demo measures how much.
+    """
+    if spin_moves not in ("equilibration", "never", "always"):
+        raise ValueError("spin_moves must be equilibration, never or always")
     rng = np.random.default_rng(2024) if rng is None else rng
     ens = Ensemble(n_walkers, n_particles, alpha, beta, omega, rng)
     positions, spins = ens.positions, ens.spins
+    sample_spins = spin_moves == "always"
 
     # equilibrate in the variational distribution before branching starts
     log_old = ens.log_psi(positions, spins)
     force_old = ens.quantum_force(positions, spins)
-    for _ in range(200):
+    for _ in range(equilibration):
         positions, log_old, force_old, _, _, _ = _spatial_sweep(
             ens, positions, spins, log_old, force_old, 0.05, rng)
-        if sample_spins:
+        if spin_moves != "never":
             spins, log_old, _ = _spin_exchange(ens, positions, spins,
                                                log_old, rng)
             force_old = ens.quantum_force(positions, spins)
@@ -738,7 +763,7 @@ def dmc(n_particles=6, alpha=1.0, beta=0.4, omega=1.0, n_walkers=400,
                 growth=float(growth.mean()),
                 acceptance=acceptance / steps,
                 spin_acceptance=spin_acceptance / steps if sample_spins else 0.0,
-                population=population,
+                spin_moves=spin_moves, population=population,
                 mean_population=float(population[burn_in:].mean()),
                 time_step=time_step, alpha=alpha, beta=beta, omega=omega,
-                n_particles=n_particles, sample_spins=sample_spins)
+                n_particles=n_particles)
