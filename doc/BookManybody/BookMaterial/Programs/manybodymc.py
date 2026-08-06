@@ -37,8 +37,24 @@ the assignment once and never touches it.  This program instead treats the spin
 configuration as a stochastic variable and proposes exchanges of an unlike
 pair, which conserves S_z and which -- because a_ij is spin dependent -- has a
 non-trivial acceptance rate.  That turns the Moskowitz-Kalos claim from an
-assertion into something measured, and it adds a move that relabels electrons
-without moving them, which no amount of diffusion can accomplish.
+assertion into something measured.
+
+The two methods treat it differently, and the difference is not a detail.
+
+  * In *variational* Monte Carlo the exchange is an exact Metropolis move on
+    the extended space of positions and spins, and it is free: it samples the
+    same |Psi_T|^2 and agrees with the fixed-assignment result.  It also
+    rescues a walker that has strayed onto a nodal surface, because there
+    |Psi_T| is small and the exchange is accepted with probability near one.
+
+  * In *diffusion* Monte Carlo it is wrong if applied during the projection.
+    The exchange satisfies detailed balance with respect to |Psi_T|^2, which is
+    what variational Monte Carlo samples, and not with respect to f = Psi_T Phi,
+    which is what diffusion Monte Carlo samples.  Applied at every step it pulls
+    the walkers back towards the variational distribution and destroys most of
+    the projection: for six electrons at hbar omega = 1 it returns 20.195
+    instead of 20.160.  The remedy is to exchange during the variational
+    equilibration and then freeze the assignment, which is the default here.
 
 Author: Morten Hjorth-Jensen
 """
